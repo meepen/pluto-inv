@@ -11,4 +11,6 @@ return function(db)
 	end
 
 	db:connect()
+
+	return db
 end

@@ -4,6 +4,7 @@ include "pluto/files.lua" {
 	Shared = {
 		"files.lua",
 		"init.lua",
+		"weapons/override.lua",
 	},
 	Server = {
 		"sv.lua",
