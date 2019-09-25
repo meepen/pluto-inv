@@ -1,8 +1,8 @@
 local MOD = {}
 MOD.Type = "prefix"
-MOD.Name = "Strength"
+MOD.Name = "Bount"
 MOD.Tags = {
-	"damage"
+	"clip"
 }
 MOD.ModType = "percent"
 
@@ -13,17 +13,17 @@ end
 function MOD:GetDescription(rolls)
 	local roll = rolls[1]
 	if (roll > 0) then
-		return string.format("Damage is increased by %i%%", roll)
+		return string.format("Clip size is increased by %.1f%%", roll)
 	else
-		return string.format("Damage is reduced by %i%%", -roll)
+		return string.format("Clip size is decreased by %.1f%%", -roll)
 	end
 end
 
 MOD.Tiers = {
+	{ 20, 30 },
 	{ 10, 20 },
-	{ 5, 10 },
-	{ -5, 5 },
-	{ -10, -5 },
+	{ -10, 10 },
+	{ -20, -10 },
 }
 
 function MOD:ModifyWeapon()

@@ -8,6 +8,7 @@ function SWEP:SetupDataTables()
 end
 
 function SWEP:Initialize()
+	BaseClass.Initialize(self)
 	self.GetDamage_Old = self.GetDamage
 	self.GetDamage = self.GetDamageOverride
 end
