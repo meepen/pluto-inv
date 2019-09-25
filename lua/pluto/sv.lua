@@ -1,6 +1,7 @@
 include "files.lua" {
 	Server = {
 		"sv/config.lua",
+		"weapons/weapons.lua",
 		"weapons/random_spawns.lua",
 		"mods.lua",
 	},

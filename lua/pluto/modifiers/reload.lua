@@ -1,8 +1,8 @@
 local MOD = {}
 MOD.Type = "prefix"
-MOD.Name = "Capacity"
+MOD.Name = "Reloading"
 MOD.Tags = {
-	"clip"
+	"reload", "speed"
 }
 MOD.ModType = "percent"
 
@@ -13,17 +13,17 @@ end
 function MOD:GetDescription(rolls)
 	local roll = rolls[1]
 	if (roll > 0) then
-		return string.format("Clip size is increased by %.1f%%", roll)
+		return string.format("Reloads %.1f%% faster", roll)
 	else
-		return string.format("Clip size is decreased by %.1f%%", -roll)
+		return string.format("Reloads %.1f%% slower", -roll)
 	end
 end
 
 MOD.Tiers = {
-	{ 20, 30 },
-	{ 10, 20 },
-	{ -10, 10 },
-	{ -20, -10 },
+	{ 15, 25 },
+	{ 5, 15 },
+	{ -5, 5 },
+	{ -15, -5 },
 }
 
 function MOD:ModifyWeapon()

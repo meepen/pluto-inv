@@ -1,6 +1,6 @@
 local MOD = {}
 MOD.Type = "prefix"
-MOD.Name = "Speed"
+MOD.Name = "Cycle"
 MOD.Tags = {
 	"rpm", "speed"
 }
@@ -15,7 +15,7 @@ function MOD:GetDescription(rolls)
 	if (roll > 0) then
 		return string.format("RPM is increased by %.1f%%", roll)
 	else
-		return string.format("Recoil is reduced by %.1f%%", -roll)
+		return string.format("RPM is reduced by %.1f%%", -roll)
 	end
 end
 

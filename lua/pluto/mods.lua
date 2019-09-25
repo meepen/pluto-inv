@@ -24,6 +24,7 @@ for _, modname in pairs {
 	"poison",
 	"recoil",
 	"shock",
+	"zoomies",
 } do
 	local mod = include("modifiers/" .. modname .. ".lua")
 
@@ -113,12 +114,16 @@ end
 	end
 ]]
 
-local function bias(list, biases)
+local function bias(wpn, list, biases)
 	biases = biases or {}
 
 	local retn = {}
 
 	for _, item in pairs(list) do
+		if (wpn and item.CanRollOn and not item:CanRollOn(wpn)) then
+			continue
+		end
+
 		local bias = 1
 		for bias, amt in pairs(biases) do
 			if (item.Tags[bias]) then
@@ -144,7 +149,7 @@ local function bias(list, biases)
 end
 
 
-function pluto.mods.generateaffixes(affixcount, prefixmax, suffixmax, guaranteed, tagbiases, rolltier, roll)
+function pluto.mods.generateaffixes(wpn, affixcount, prefixmax, suffixmax, guaranteed, tagbiases, rolltier, roll)
 	affixcount = affixcount or 6
 
 	local allowed = {
@@ -179,8 +184,8 @@ function pluto.mods.generateaffixes(affixcount, prefixmax, suffixmax, guaranteed
 
 
 	local potential = {
-		suffix = bias(pluto.mods.suffix, tagbiases),
-		prefix = bias(pluto.mods.prefix, tagbiases),
+		suffix = bias(wpn, pluto.mods.suffix, tagbiases),
+		prefix = bias(wpn, pluto.mods.prefix, tagbiases),
 		current = {
 			suffix = 1,
 			prefix = 1,
@@ -210,7 +215,7 @@ function pluto.mods.generateaffixes(affixcount, prefixmax, suffixmax, guaranteed
 	return retn
 end
 
-concommand.Add("pluto_test_mod_generate", function(ply)
+concommand.Add("pluto_test_mod_generate_speed", function(ply)
 	if (IsValid(ply)) then
 		return
 	end
@@ -222,7 +227,7 @@ concommand.Add("pluto_test_mod_generate", function(ply)
 	local count = 100000
 
 	for i = 1, count do
-		pluto.mods.generateaffixes(6)
+		pluto.mods.generateaffixes(nil, 6)
 	end
 
 	print((time() - start) / count)
@@ -241,7 +246,7 @@ function pluto.mods.getrolls(mod, tier, rolls)
 end
 
 
-concommand.Add("pluto_generate_random", function(ply, cmd, args)
+concommand.Add("pluto_generate_random_mods", function(ply, cmd, args)
 	if (IsValid(ply)) then
 		return
 	end
@@ -253,7 +258,7 @@ concommand.Add("pluto_generate_random", function(ply, cmd, args)
 
 	for i = 1, count do
 		pprintf("Generated #%i", i)
-		for type, list in pairs(pluto.mods.generateaffixes(affixcount)) do
+		for type, list in pairs(pluto.mods.generateaffixes(nil, affixcount)) do
 			if (#list == 0) then
 				continue
 			end
