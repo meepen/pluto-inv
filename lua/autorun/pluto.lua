@@ -10,7 +10,6 @@ pluto.files.load {
 	Shared = {
 		"init.lua",
 		"weapons/override.lua",
-		"entities.lua",
 	},
 	Server = {
 		"sv.lua",

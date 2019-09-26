@@ -1,5 +1,31 @@
 include "shared.lua"
 
+local function ReadMod()
+	local name = net.ReadString()
+	local tier = net.ReadUInt(4)
+	local desc = net.ReadString()
+	local rolls
+
+	local fn
+	if (net.ReadBool()) then
+		fn = net.ReadFunction()
+		rolls = {}
+		for i = 1, net.ReadUInt(8) do
+			rolls[i] = net.ReadDouble()
+		end
+	end
+
+	return {
+		Name = name,
+		Tier = tier,
+		Desc = desc,
+		Mod = {
+			ModifyWeapon = fn
+		},
+		Rolls = rolls,
+	}
+end
+
 net.Receive("pluto_wpn_db", function(len)
 	local ent = bit.band(bit.bnot(0xff000000), net.ReadInt(32))
 
@@ -14,38 +40,26 @@ net.Receive("pluto_wpn_db", function(len)
 	PlutoData.Mods = modifiers
 
 	for ind = 1, net.ReadUInt(8) do
-		local name = net.ReadString()
-		local tier = net.ReadUInt(4)
-		local desc = net.ReadString()
-
-		modifiers.prefix[ind] = {
-			Name = name,
-			Tier = tier,
-			Desc = desc
-		}
+		modifiers.prefix[ind] = ReadMod()
 	end
 
 	for ind = 1, net.ReadUInt(8) do
-		local name = net.ReadString()
-		local tier = net.ReadUInt(4)
-		local desc = net.ReadString()
-
-		modifiers.suffix[ind] = {
-			Name = name,
-			Tier = tier,
-			Desc = desc
-		}
+		modifiers.suffix[ind] = ReadMod()
 	end
 
 	pluto.wpn_db[ent] = PlutoData
 
-	ent = ents.GetByHandle(ent)
-
-	if (IsValid(ent)) then
-		ent:ReceivePlutoData()
+	local found
+	for _, e in pairs(ents.GetAll()) do
+		if (e.GetPlutoID and e:GetPlutoID() == ent) then
+			found = e
+			break
+		end
 	end
 
-	net.ReadFunction()()
+	if (IsValid(found)) then
+		found:ReceivePlutoData()
+	end
 end)
 
 hook.Add("TTTPrepareRound", "pluto_wpn_db", function()
@@ -57,15 +71,10 @@ DEFINE_BASECLASS "weapon_tttbase_old"
 
 function SWEP:Initialize()
 	BaseClass.Initialize(self)
+	self:PlutoInitialize()
 
 	if (self:GetInventoryItem()) then
 		self:ReceivePlutoData()
-	end
-end
-
-function SWEP:ReceivePlutoData()
-	if (self:GetOwner() == ttt.GetHUDTarget()) then
-		self:DisplayPlutoData()
 	end
 end
 

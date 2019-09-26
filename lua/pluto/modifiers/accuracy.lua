@@ -26,7 +26,9 @@ MOD.Tiers = {
 	{ -20, -5 },
 }
 
-function MOD:ModifyWeapon()
+function MOD:ModifyWeapon(wep, rolls)
+	wep:DefinePlutoOverrides "Spread"
+	wep.Pluto.Spread = wep.Pluto.Spread - rolls[1] / 100
 end
 
 return MOD
