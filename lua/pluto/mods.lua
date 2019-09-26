@@ -150,8 +150,6 @@ end
 
 
 function pluto.mods.generateaffixes(wpn, affixcount, prefixmax, suffixmax, guaranteed, tagbiases, rolltier, roll)
-	affixcount = affixcount or 6
-
 	local allowed = {
 		prefix = prefixmax or 3,
 		suffix = suffixmax or 3

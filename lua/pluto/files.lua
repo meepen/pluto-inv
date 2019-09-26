@@ -16,7 +16,9 @@ local function realfile(fname)
 	return fname
 end
 
-return function(self)
+pluto.files = pluto.files or {}
+
+function pluto.files.load(self)
 	for _, file in ipairs(self.Shared) do
 		file = realfile(file)
 		if (SERVER) then

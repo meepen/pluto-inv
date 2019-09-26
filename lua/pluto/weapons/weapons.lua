@@ -1,6 +1,58 @@
 pluto.weapons = pluto.weapons or {}
+pluto.tiers = {}
 
--- TODO(meep): uniques
+local total_shares = 0
+for _, name in pairs {
+	"common",
+	"junk",
+	"mystical",
+	"otherworldly",
+	"powerful",
+	"shadowy",
+	"uncommon",
+	"vintage",
+} do
+	local item = include("pluto/tiers/" .. name .. ".lua")
+	if (not item) then
+		pwarnf("Tier %s didn't return a value", name)
+		continue
+	end
+
+	if (not item.Shares) then
+		pwarnf("Tier %s doesn't have shares", name)
+		continue
+	end
+
+	pluto.tiers[name] = item
+	total_shares = total_shares + item.Shares
+end
+
+pluto.tiers_pct = {}
+
+local pct = 0
+for name, item in pairs(pluto.tiers) do
+	pct = pct + item.Shares / total_shares
+	table.insert(pluto.tiers_pct, {
+		Percent = pct,
+		Tier = item
+	})
+end
+
+
+function pluto.tiers.random()
+	local rand = math.random()
+
+	for _, item in ipairs(pluto.tiers_pct) do
+		if (item.Percent >= rand) then
+			return item.Tier
+		end
+	end
+
+	pwarnf("Reached end of loop in pluto.tiers.random, rand: %f", rand)
+
+	return pluto.tiers.junk
+end
+
 
 function pluto.weapons.randomgun()
 	return table.Random(pluto.weapons.guns)
@@ -10,32 +62,38 @@ function pluto.weapons.randommelee()
 	return table.Random(pluto.weapons.melees)
 end
 
-function pluto.weapons.generatetier(tier, wep, ...)
+function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll)
+	if (wep) then
+		wep = weapons.GetStored(wep)
+	end
 	if (not wep) then
-		wep = pluto.weapons.randomgun()
+		wep = weapons.GetStored(pluto.weapons.randomgun())
 	end
 
-	-- TODO(meep): get tier
+	if (tier) then
+		tier = pluto.tiers[tier]
+	end
+
+	if (not tier) then
+		tier = pluto.tiers.random()
+	end
+
+	local biases = tier.biases or {}
+
+	if (tagbiases) then
+		for k, v in pairs(tagbiases) do
+			biases[k] = (biases[k] or 1) * v
+		end
+	end
 
 	return {
-		ClassName = wep,
-		Tier = tier or "no tier",
-		Mods = pluto.mods.generateaffixes(weapons.GetStored(wep), ...)
+		ClassName = wep.ClassName,
+		Tier = tier,
+		Mods = pluto.mods.generateaffixes(wep, math.random(1, tier.affixes), nil, nil, tier.guaranteed, biases, tier.rolltier or rolltier, tier.roll or roll)
 	}
 end
 
-function pluto.weapons.generateunique(unique, wep, ...)
-	if (not wep) then
-		wep = pluto.weapons.randomgun()
-	end
-
-	-- TODO(meep): get tier
-
-	return {
-		ClassName = wep,
-		Tier = tier or "no tier",
-		Mods = pluto.mods.generateaffixes(weapons.GetStored(wep), ...)
-	}
+function pluto.weapons.generateunique(unique)
 end
 
 concommand.Add("pluto_generate_random_weapons", function(ply, cmd, args)
@@ -43,15 +101,13 @@ concommand.Add("pluto_generate_random_weapons", function(ply, cmd, args)
 		return
 	end
 
-
 	local class = args[1]
-	local affixcount = tonumber(args[2] or 5)
+	local tier = args[2]
 	local count = tonumber(args[3] or 1)
 
-
 	for i = 1, count do
-		local gun = pluto.weapons.generatetier(nil, class, affixcount)
-		pprintf("Generated %s %s", gun.Tier, weapons.GetStored(gun.ClassName).PrintName)
+		local gun = pluto.weapons.generatetier(tier, class)
+		pprintf("Generated %s %s", gun.Tier.Name, weapons.GetStored(gun.ClassName).PrintName)
 		for type, list in pairs(gun.Mods) do
 			if (#list == 0) then
 				continue

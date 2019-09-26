@@ -10,6 +10,10 @@ function MOD:IsNegative(roll)
 	return roll < 0
 end
 
+function MOD:GetDamageMult(rolls)
+	return rolls[1] / 100
+end
+
 function MOD:GetDescription(rolls)
 	local roll = rolls[1]
 	if (roll > 0) then

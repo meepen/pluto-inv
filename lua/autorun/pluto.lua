@@ -1,10 +1,16 @@
-include "pluto/files.lua" {
+pluto = pluto or {}
+
+include "pluto/files.lua"
+AddCSLuaFile "pluto/files.lua"
+
+pluto.files.load {
 	Client = {
+		"cl/hacks.lua",
 	},
 	Shared = {
-		"files.lua",
 		"init.lua",
 		"weapons/override.lua",
+		"entities.lua",
 	},
 	Server = {
 		"sv.lua",
