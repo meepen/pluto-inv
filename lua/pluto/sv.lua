@@ -5,6 +5,8 @@ pluto.files.load {
 		"weapons/random_spawns.lua",
 		"mods.lua",
 		"sv/hacks.lua",
+		"db/init.lua",
+		"inv/init.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty

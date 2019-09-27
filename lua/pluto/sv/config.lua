@@ -1,4 +1,5 @@
-if (not pluto.db) then
+if (not pluto.db_init) then
 	require "mysqloo"
-	pluto.db = include "db.lua"(mysqloo.connect("paloma.meep.dev", "pluto", "M34v@g#b&TrN", "pluto"))
+	include "db.lua"(mysqloo.connect("paloma.meep.dev", "pluto", "M34v@g#b&TrN", "pluto"))
+	pluto.db_init = true
 end

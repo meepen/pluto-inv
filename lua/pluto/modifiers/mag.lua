@@ -27,13 +27,11 @@ MOD.Tiers = {
 }
 
 function MOD:ModifyWeapon(wep, roll)
-	print("HIYA", wep, roll[1])
 	wep.Primary.ClipSize_Original = wep.Primary.ClipSize_Original or wep.Primary.ClipSize
 
 	wep.Pluto.ClipSize = (wep.Pluto.ClipSize or 1) + roll[1] / 100
 	local round = wep.Pluto.ClipSize > 1 and math.ceil or math.floor
 	wep.Primary.ClipSize = round(wep.Primary.ClipSize_Original * wep.Pluto.ClipSize)
-	print(wep, roll[1], wep.Primary.ClipSize)
 end
 
 return MOD

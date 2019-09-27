@@ -20,7 +20,7 @@ function SWEP:ReceivePlutoData()
 	end
 
 	local data = self:GetInventoryItem()
-	
+
 	local mods = data.Mods
 
 	for _, list in pairs(mods) do
