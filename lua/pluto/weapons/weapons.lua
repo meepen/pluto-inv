@@ -96,16 +96,11 @@ function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll)
 end
 
 function pluto.weapons.update(item, cb)
-	assert(item.Snowflake, "no snowflake")
 	assert(item.RowID, "no rowid")
 	assert(item.Owner, "no owner")
 
 	local inserts = {
-		{ "REPLACE INTO pluto_weapons (id, owner, tier, class) VALUES(?, ?, ?, ?)", {item.Snowflake, item.Owner, item.Tier.InternalName, item.ClassName}, function(err, q)
-			local insert = q:lastInsert()
-
-			item.RowID = insert
-		end },
+		{ "REPLACE INTO pluto_weapons (owner, tier, class) VALUES(?, ?, ?, ?)", {item.Owner, item.Tier.InternalName, item.ClassName} },
 		{ "SET @gun = LAST_INSERT_ID()" },
 		{ "DELETE FROM pluto_mods WHERE gun_index = @gun" },
 	}
@@ -114,7 +109,7 @@ function pluto.weapons.update(item, cb)
 		for type, list in pairs(item.Mods) do
 			for _, mod in ipairs(list) do
 				table.insert(inserts, {
-					"INSERT INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3) VALUES (@gun, ?, ?, ?, ?, ?)",
+					"REPLACE INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3) VALUES (@gun, ?, ?, ?, ?, ?)",
 					{ mod.Mod, mod.Tier, mod.Roll[1], mod.Roll[2], mod.Roll[3] },
 					function(err, q)
 						if (err) then
@@ -131,27 +126,28 @@ function pluto.weapons.update(item, cb)
 
 	pluto.db.transact(inserts, function(err, t)
 		if (err) then
+			item.RowID = nil
 			cb(nil)
 			return
 		end
 
-		cb(item.Snowflake)
+		cb(item.RowID)
 	end)
 end
 
 function pluto.weapons.save(item, owner, cb)
-	if (item.Snowflake) then
-		error "snowflake already set"
+	if (item.RowID) then
+		error "rowid already set"
 	end
 
-	item.Snowflake = snowflake(pluto_machine_id:GetInt())
 	if (owner) then
 		item.Owner = pluto.db.steamid64(owner)
 	end
 
 	assert(item.Owner, "No owner")
 	local inserts = {
-		{ "REPLACE INTO pluto_weapons (id, owner, tier, class) VALUES(?, ?, ?, ?)", {item.Snowflake, item.Owner, item.Tier.InternalName, item.ClassName}, function(err, q)
+		{ "REPLACE INTO pluto_weapons (owner, tier, class) VALUES(?, ?, ?)", {item.Owner, item.Tier.InternalName, item.ClassName}, function(err, q)
+			print "a"
 			local insert = q:lastInsert()
 
 			item.RowID = insert
@@ -181,13 +177,12 @@ function pluto.weapons.save(item, owner, cb)
 	pluto.db.transact(inserts, function(err, t)
 		if (err) then
 			item.RowID = nil
-			item.Snowflake = nil
 			item.Owner = nil
-			cb(nil)
+			cb(nil, err)
 			return
 		end
 
-		cb(item.Snowflake)
+		cb(item.RowID)
 	end)
 end
 

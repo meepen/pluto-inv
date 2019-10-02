@@ -8,19 +8,18 @@ function SWEP:Initialize()
 	BaseClass.Initialize(self)
 	self:PlutoInitialize()
 
+	local item = pluto.NextWeaponSpawn
+	pluto.NextWeaponSpawn = nil
+
+	if (item == false) then
+		return
+	end
+
 	if (pluto.weapons.valid[self:GetClass()]) then
-		local item = pluto.weapons.generatetier(nil, self:GetClass())
+		if (not item) then
+			item = pluto.weapons.generatetier(nil, self:GetClass())
+		end
 		self:SetInventoryItem(item)
-		--[[
-		if (IsValid(player.GetHumans()[1])) then
-			pluto.weapons.save(item, player.GetHumans()[1], function(succ)
-				if (succ) then
-					pprintf("Saved weapon!!!! ID: %s", item.Snowflake)
-				else
-					pwarnf("Failed to save weapon :(")
-				end
-			end)
-		end]]
 	end
 	self.PlutoData = self.PlutoData or {}
 

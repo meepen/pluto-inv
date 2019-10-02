@@ -19,11 +19,6 @@ function pluto.db.query(query, args, cb, data, nostart)
 
 	local q
 
-	if (not cb and type(args) == "function") then
-		cb = args
-		args = nil
-	end
-
 	if (not args) then
 		q = pluto.db.db:query(query)
 	else
@@ -67,6 +62,7 @@ function pluto.db.query(query, args, cb, data, nostart)
 	end
 
 	function q:onSuccess(d)
+		print "3?"
 		if (not cb) then
 			return
 		end
@@ -76,6 +72,7 @@ function pluto.db.query(query, args, cb, data, nostart)
 
 	if (data) then
 		function q:onData(d)
+			print "4?"
 			data(self, d)
 		end
 	end
@@ -95,18 +92,30 @@ function pluto.db.transact(queries, cb, nostart)
 
 	local transact = pluto.db.db:createTransaction()
 
+	local start
+
 	for i, query in ipairs(queries) do
 		if (type(query) == "table") then
 			query[5] = true -- nostart
+			local old = query[3]
+			query[3] = function(...)
+				pprintf("Transaction query #%i: %.5f", i, SysTime() - start)
+				if (old) then
+					old(...)
+				end
+			end
 			queries[i] = pluto.db.query(unpack(query, 1, 5))
 		elseif (type(query) == "string") then
-			queries[i] = pluto.db.query(query, nil, nil, nil, true)
+			queries[i] = pluto.db.query(query, nil, function(...)
+				pprintf("Transaction query #%i: %.5f", i, SysTime() - start)
+			end, nil, true)
 		end
 
 		transact:addQuery(queries[i])
 	end
 
-	function transact:onSuccess()
+	function transact:onSuccess(...)
+		print "5?"
 		if (not cb) then
 			return
 		end
@@ -122,6 +131,8 @@ function pluto.db.transact(queries, cb, nostart)
 
 		cb(e, self)
 	end
+
+	start = SysTime()
 
 	if (not nostart) then
 		transact:start()
@@ -161,6 +172,7 @@ end)
 return function(db)
 	local connects = 0
 	function db:onConnected()
+		db:setCharacterSet "utf8mb4"
 		pprintf("Database connected!")
 		connects = connects + 1
 		if (connects == 1) then

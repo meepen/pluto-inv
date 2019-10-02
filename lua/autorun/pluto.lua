@@ -6,6 +6,7 @@ AddCSLuaFile "pluto/files.lua"
 pluto.files.load {
 	Client = {
 		"cl/hacks.lua",
+		"inv/ui.lua",
 	},
 	Shared = {
 		"init.lua",
