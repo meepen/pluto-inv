@@ -39,6 +39,16 @@ function pluto.db.query(query, args, cb, data, nostart)
 				q:setNull(ind)
 			end
 		end
+
+		q.oldstart = q.oldstart or q.start
+		q.start = function(self, ...)
+			q:oldstart(...)
+			
+			for ind, arg in pairs(args) do
+				q:setNull(ind)
+			end
+		end
+
 	end
 
 	last = q

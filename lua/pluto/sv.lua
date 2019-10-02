@@ -7,6 +7,7 @@ pluto.files.load {
 		"sv/hacks.lua",
 		"db/init.lua",
 		"inv/init.lua",
+		"inv/sv_manager.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty

@@ -7,10 +7,12 @@ pluto.files.load {
 	Client = {
 		"cl/hacks.lua",
 		"inv/ui.lua",
+		"inv/cl_manager.lua",
 	},
 	Shared = {
 		"init.lua",
 		"weapons/override.lua",
+		"inv/sh_manager.lua",
 	},
 	Server = {
 		"sv.lua",

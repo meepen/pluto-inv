@@ -2,13 +2,30 @@ hook.Add("PlutoDatabaseInitialize", "pluto_db_init", function(db)
 	pluto.db.transact {
 		{
 			[[
-				CREATE TABLE IF NOT EXISTS pluto_weapons (
-					idx INT UNSIGNED NOT NULL AUTO_INCREMENT,
+				CREATE TABLE IF NOT EXISTS pluto_tabs (
+					idx int UNSIGNED NOT NULL AUTO_INCREMENT,
 					owner BIGINT UNSIGNED NOT NULL,
-					tier VARCHAR(16) NOT NULL,
-					class VARCHAR(32) NOT NULL,
+					color INT UNSIGNED NOT NULL DEFAULT 0,
+					name VARCHAR(16) NOT NULL,
 					PRIMARY KEY(idx),
 					INDEX USING HASH(owner)
+				)
+			]]
+		},
+		{
+			[[
+				CREATE TABLE IF NOT EXISTS pluto_items (
+					idx INT UNSIGNED NOT NULL AUTO_INCREMENT,
+					tier VARCHAR(16) NOT NULL,
+					class VARCHAR(32) NOT NULL,
+
+					tab_id INT UNSIGNED NOT NULL,
+					tab_idx TINYINT UNSIGNED NOT NULL,
+
+					FOREIGN KEY(tab_id) REFERENCES pluto_tabs(idx) ON DELETE CASCADE,
+					PRIMARY KEY(tab_id, tab_idx),
+
+					INDEX USING HASH(idx)
 				)
 			]]
 		},
@@ -23,7 +40,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_db_init", function(db)
 					roll2 FLOAT,
 					roll3 FLOAT,
 					PRIMARY KEY(idx),
-					FOREIGN KEY (gun_index) REFERENCES pluto_weapons(idx) ON DELETE CASCADE
+					FOREIGN KEY (gun_index) REFERENCES pluto_items(idx) ON DELETE CASCADE
 				)
 			]]
 		},
@@ -38,30 +55,5 @@ hook.Add("PlutoDatabaseInitialize", "pluto_db_init", function(db)
 				)
 			]]
 		},
-		{
-			[[
-				CREATE TABLE IF NOT EXISTS pluto_tab_info (
-					idx int UNSIGNED NOT NULL AUTO_INCREMENT,
-					owner BIGINT UNSIGNED NOT NULL,
-					color INT UNSIGNED NOT NULL DEFAULT 0,
-					name VARCHAR(16),
-					type VARCHAR(16),
-					PRIMARY KEY(idx),
-					INDEX USING HASH(owner)
-				)
-			]]
-		},
-		{
-			[[
-				CREATE TABLE IF NOT EXISTS pluto_tab_data (
-					idx INT UNSIGNED NOT NULL,
-					tab_idx TINYINT UNSIGNED NOT NULL,
-					item_type TINYINT UNSIGNED NOT NULL,
-					item_id INT UNSIGNED NOT NULL,
-					FOREIGN KEY (idx) REFERENCES pluto_tab_info(idx) ON DELETE CASCADE,
-					PRIMARY KEY(idx, tab_idx)
-				)
-			]]
-		}
-	} -- :wait(true)
+	}:wait(true)
 end)

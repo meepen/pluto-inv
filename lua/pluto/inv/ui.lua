@@ -1,5 +1,8 @@
 local pad = 0
-local accent = Color(0, 173 ,123)
+local accent = Color(0, 173, 123)
+
+local active_text = Color(205, 203, 203)
+local inactive_text = Color(130, 130, 136)
 
 local function curve(level)
 	return 4 + level
@@ -73,7 +76,7 @@ function PANEL:Init()
 	self.Text = self:Add "DLabel"
 	self.Text:Dock(FILL)
 	self.Text:SetContentAlignment(5)
-	self.Text:SetTextColor(accent)
+	self.Text:SetTextColor(inactive_text)
 end
 function PANEL:SetText(t)
 	self.Text:SetText(t)
@@ -88,7 +91,15 @@ function PANEL:OnMousePressed(key)
 end
 
 function PANEL:DoClick()
-	print "clik"
+	self:GetParent():Select(self)
+end
+
+function PANEL:DoSelect()
+	self.Text:SetTextColor(active_text)
+end
+
+function PANEL:Unselect()
+	self.Text:SetTextColor(inactive_text)
 end
 
 local LastHeight = 0
@@ -112,6 +123,13 @@ function PANEL:PerformLayout(w, h)
 	self:SetTall(h)
 end
 
+function PANEL:SetItems(items)
+	PrintTable(items)
+end
+function PANEL:SetPanelColor(col)
+	print(col)
+end
+
 vgui.Register("pluto_inventory_tab", PANEL, "pluto_inventory_base")
 
 local PANEL = {}
@@ -119,11 +137,13 @@ local PANEL = {}
 function PANEL:Init()
 	self.Tabs = {}
 	self.CurPos = 0
-	for i = 1, 15 do 
-		self:AddTab "pluto_inventory_tab":SetText(tostring(i))
-	end
 
-	self:DockMargin(curve(2), 0, curve(2), 0)
+	for _, tab in SortedPairsByMemberValue(pluto.cl_inv, "ID") do
+		local pnl = self:AddTab "pluto_inventory_tab"
+		pnl:SetText(tab.Name)
+		pnl:SetPanelColor(tab.Color)
+		pnl:SetItems(tab.Items)
+	end
 end
 
 local function PerformLayoutHack(self, w, h)
@@ -148,6 +168,28 @@ function PANEL:Recalculate(tab)
 	end
 end
 
+function PANEL:Select(tab)
+	if (IsValid(self.Current)) then
+		self.Current:SetColor(inactive_color)
+		self.Current:Unselect()
+	end
+
+	self.Current = tab
+	if (tab.Position < self.CurPos) then
+		self.CurPos = tab.Position
+		self:Recalculate(tab)
+	end
+
+	if (tab.Position + tab:GetWide() > self.CurPos + self:GetWide()) then
+		self.CurPos = self.CurPos + tab.Position + tab:GetWide() - (self.CurPos + self:GetWide())
+		self:Recalculate(self.Next)
+	end
+
+	tab:SetColor(bg_color)
+
+	tab:DoSelect()
+end
+
 function PANEL:AddTab(class)
 	local tab = self:Add(class)
 	tab:SetWide(100)
@@ -161,6 +203,9 @@ function PANEL:AddTab(class)
 	end
 	if (not IsValid(self.Next)) then
 		self.Next = tab
+		self.Current = tab
+	else
+		tab:SetColor(inactive_color)
 	end
 	self.Last = tab
 
@@ -169,15 +214,19 @@ function PANEL:AddTab(class)
 
 	tab:InvalidateLayout(true)
 
+	if (not IsValid(self.Next)) then
+		self:Select(self.Current)
+	end
+
 	return tab
 end
 
 function PANEL:OnMouseWheeled(delta)
 	local totalwide = self.Last.Position + self.Last:GetWide() - self:GetWide()
-
 	if (totalwide < 0) then
 		return
 	end
+
 	self.CurPos = math.Clamp(self.CurPos - delta * 30, 0, totalwide)
 
 	self:Recalculate(self.Next)
@@ -188,11 +237,37 @@ vgui.Register("pluto_inventory_tabs", PANEL, "EditablePanel")
 local PANEL = {}
 
 function PANEL:Init()
+	self:SetCurveBottomLeft(false)
+	self:SetCurveBottomRight(false)
+	self:SetColor(inactive_color)
+	self:SetWide(20)
+end
+
+vgui.Register("pluto_inventory_tab_selector", PANEL, "pluto_inventory_base")
+
+local PANEL = {}
+
+function PANEL:Init()
+	self.Tabs = self:Add "pluto_inventory_tabs"
+	self.Tabs:Dock(FILL)
+
+	self.Controller = self:Add "pluto_inventory_tab_selector"
+	self.Controller:Dock(RIGHT)
+	self.Controller:DockMargin(pad / 2, 0, 0, 0)
+
+	self:DockMargin(curve(2), 0, curve(2), 0)
+end
+
+vgui.Register("pluto_inventory_tab_controller", PANEL, "EditablePanel")
+
+local PANEL = {}
+
+function PANEL:Init()
 	self:SetColor(Color(13, 12, 12, 220))
 	self:SetCurve(curve(3))
 	self:OnScreenSizeChanged()
 
-	self.Tabs = self:Add "pluto_inventory_tabs"
+	self.Tabs = self:Add "pluto_inventory_tab_controller"
 	self.Tabs:Dock(TOP)
 	self.Tabs:SetZPos(0)
 
@@ -242,6 +317,10 @@ end
 
 hook.Add("InputMouseApply", "pluto_inventory_ui", function()
 	if (input.WasKeyPressed(KEY_I) and not IsValid(pluto.ui)) then
+		if (pluto.inv.status ~= "ready") then
+			chat.AddText("wait for inventory!")
+			return
+		end
 		pluto.ui = vgui.Create "pluto_inventory"
 	end
 end)

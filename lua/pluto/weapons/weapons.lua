@@ -98,9 +98,11 @@ end
 function pluto.weapons.update(item, cb)
 	assert(item.RowID, "no rowid")
 	assert(item.Owner, "no owner")
+	assert(item.TabID, "no tabid")
+	assert(item.TabIndex, "no tabindex")
 
 	local inserts = {
-		{ "REPLACE INTO pluto_weapons (owner, tier, class) VALUES(?, ?, ?, ?)", {item.Owner, item.Tier.InternalName, item.ClassName} },
+		{ "REPLACE INTO pluto_items (tier, class, tab_id, tab_idx) VALUES(?, ?, ?, ?, ?)", {item.Tier.InternalName, item.ClassName, item.TabID, item.TabIndex} },
 		{ "SET @gun = LAST_INSERT_ID()" },
 		{ "DELETE FROM pluto_mods WHERE gun_index = @gun" },
 	}
@@ -109,7 +111,7 @@ function pluto.weapons.update(item, cb)
 		for type, list in pairs(item.Mods) do
 			for _, mod in ipairs(list) do
 				table.insert(inserts, {
-					"REPLACE INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3) VALUES (@gun, ?, ?, ?, ?, ?)",
+					"INSERT INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3) VALUES (@gun, ?, ?, ?, ?, ?)",
 					{ mod.Mod, mod.Tier, mod.Roll[1], mod.Roll[2], mod.Roll[3] },
 					function(err, q)
 						if (err) then
@@ -126,11 +128,11 @@ function pluto.weapons.update(item, cb)
 
 	pluto.db.transact(inserts, function(err, t)
 		if (err) then
-			item.RowID = nil
 			cb(nil)
 			return
 		end
 
+		item.LastUpdate = (item.LastUpdate or 0) + 1
 		cb(item.RowID)
 	end)
 end
@@ -145,8 +147,12 @@ function pluto.weapons.save(item, owner, cb)
 	end
 
 	assert(item.Owner, "No owner")
+	assert(item.TabID, "no tabid")
+	assert(item.TabIndex, "no tabindex")
+
+	print(item.Tier.InternalName, item.ClassName, item.TabID, item.TabIndex)
 	local inserts = {
-		{ "REPLACE INTO pluto_weapons (owner, tier, class) VALUES(?, ?, ?)", {item.Owner, item.Tier.InternalName, item.ClassName}, function(err, q)
+		{ "REPLACE INTO pluto_items (tier, class, tab_id, tab_idx) VALUES(?, ?, ?, ?)", {item.Tier.InternalName, item.ClassName, item.TabID, item.TabIndex}, function(err, q)
 			print "a"
 			local insert = q:lastInsert()
 
@@ -182,12 +188,56 @@ function pluto.weapons.save(item, owner, cb)
 			return
 		end
 
+		item.LastUpdate = (item.LastUpdate or 0) + 1
 		cb(item.RowID)
 	end)
 end
 
 function pluto.weapons.generateunique(unique)
 end
+
+local function FindEmptyTab(ply)
+	local inv = pluto.inv.invs[ply]
+	
+	for tabid, tab in SortedPairsByMemberValue(inv, "RowID") do
+		for i = 1, 64 do
+			if (not tab.Items[i]) then
+				return tabid, i
+			end
+		end
+	end
+end
+
+
+concommand.Add("pluto_add_weapon", function(ply, cmd, args)
+	if (not IsValid(ply)) then
+		return
+	end
+
+	if (not pluto.inv.invs[ply]) then
+		return
+	end
+
+	local i = pluto.weapons.generatetier("junk", "weapon_ttt_rifle")
+
+	i.TabID, i.TabIndex = FindEmptyTab(ply)
+
+	if (not i.TabID) then
+		pwarnf("no tabid")
+		return
+	end
+
+	print "saving"
+
+	local tab = pluto.inv.invs[ply][i.TabID]
+	tab.Items[i.TabIndex] = i
+
+	pluto.weapons.save(i, ply, function(id)
+		if (not id) then
+			tab.Items[i.TabIndex] = nil
+		end
+	end)
+end)
 
 concommand.Add("pluto_generate_random_weapons", function(ply, cmd, args)
 	if (IsValid(ply)) then

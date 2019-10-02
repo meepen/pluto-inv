@@ -173,7 +173,7 @@ function pluto.mods.generateaffixes(wpn, affixcount, prefixmax, suffixmax, guara
 				continue
 			end
 
-			retn[mod.Type] = pluto.mods.rollmod(mod, rolltier, roll)
+			table.insert(retn[mod.Type], pluto.mods.rollmod(mod, rolltier, roll))
 			affixcount = affixcount - 1
 
 			allowed[mod.Type] = allowed[mod.Type] - 1
