@@ -50,6 +50,7 @@ function pluto.inv.writeitem(ply, item)
 		net.WriteBool(true)
 
 		net.WriteString(item.Tier.Name)
+		net.WriteString(item.ClassName)
 
 		if (item.Mods.prefix) then
 			net.WriteUInt(#item.Mods.prefix, 8)

@@ -73,6 +73,8 @@ function pluto.inv.readitem()
 		}
 	}
 
+	item.ClassName = net.ReadString()
+
 	for i = 1, net.ReadUInt(8) do
 		item.Mods.prefix[i] = pluto.inv.readmod()
 	end
