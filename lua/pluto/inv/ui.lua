@@ -1,3 +1,5 @@
+pluto.ui = pluto.ui or {}
+
 local pad = 0
 local accent = Color(0, 173, 123)
 
@@ -16,10 +18,56 @@ local count = 6
 local PANEL = {}
 function PANEL:Init()
 	self:SetColor(Color(84, 89, 89, 255))
+
+	self.Image = self:Add "DImage"
+	self.Image:Dock(FILL)
+	self.Image:SetImage "tttrw/roles/innocent.png"
+	self.Image:SetVisible(false)
+
+	self:SetCursor "arrow"
 end
+
+function PANEL:Showcase(item)
+	self.showcasepnl = pluto.ui.showcase(item)
+	self.showcasepnl:MakePopup()
+	self.showcasepnl:SetKeyboardInputEnabled(false)
+	self.showcasepnl:SetMouseInputEnabled(false)
+	self.showcasepnl:SetPos(self:LocalToScreen(self:GetWide(), 0))
+end
+
+function PANEL:SetItem(item)
+	if (not item) then
+		self:SetCursor "arrow"
+		self.Image:SetVisible(false)
+		return
+	end
+
+	self:SetCursor "hand"
+	self.Image:SetVisible(true)
+
+	if (IsValid(self.showcasepnl)) then
+		self:Showcase(item)
+	end
+
+	self.Item = item
+end
+
+function PANEL:OnCursorEntered()
+	if (self.Item) then
+		self:Showcase(self.Item)
+	end
+end
+function PANEL:OnCursorExited()
+	if (IsValid(self.showcasepnl)) then
+		self.showcasepnl:Remove()
+	end
+end
+
 
 function PANEL:PerformLayout(w, h)
 	self:SetCurve(curve(0))
+	local p = curve(0) / 2
+	self:DockPadding(p, p, p, p)
 end
 
 vgui.Register("pluto_inventory_item", PANEL, "ttt_curved_panel")
@@ -52,6 +100,12 @@ function PANEL:PerformLayout(w, h)
 	self.Layout:SetSpaceY(divide)
 
 	self:DockPadding(divide * 1.5, divide * 1.5, divide * 1.5, divide * 1.5)
+end
+
+function PANEL:SetTab(tab)
+	for i = 1, 36 do
+		self.Items[i]:SetItem(tab.Items[i])
+	end
 end
 
 vgui.Register("pluto_inventory_items", PANEL, "pluto_inventory_base")
@@ -96,6 +150,10 @@ end
 
 function PANEL:DoSelect()
 	self.Text:SetTextColor(active_text)
+
+	if (self.Tab) then
+		self:GetParent():SetTab(self.Tab)
+	end
 end
 
 function PANEL:Unselect()
@@ -123,11 +181,13 @@ function PANEL:PerformLayout(w, h)
 	self:SetTall(h)
 end
 
-function PANEL:SetItems(items)
-	PrintTable(items)
-end
-function PANEL:SetPanelColor(col)
-	print(col)
+function PANEL:SetTab(tab)
+	self.Tab = tab
+	self:SetText(tab.Name)
+
+	if (self:GetParent().Current == self and tab) then
+		self:GetParent():SetTab(tab)
+	end
 end
 
 vgui.Register("pluto_inventory_tab", PANEL, "pluto_inventory_base")
@@ -140,10 +200,12 @@ function PANEL:Init()
 
 	for _, tab in SortedPairsByMemberValue(pluto.cl_inv, "ID") do
 		local pnl = self:AddTab "pluto_inventory_tab"
-		pnl:SetText(tab.Name)
-		pnl:SetPanelColor(tab.Color)
-		pnl:SetItems(tab.Items)
+		pnl:SetTab(tab)
 	end
+end
+
+function PANEL:SetTab(tab)
+	self:GetParent():SetTab(tab)
 end
 
 local function PerformLayoutHack(self, w, h)
@@ -203,7 +265,6 @@ function PANEL:AddTab(class)
 	end
 	if (not IsValid(self.Next)) then
 		self.Next = tab
-		self.Current = tab
 	else
 		tab:SetColor(inactive_color)
 	end
@@ -214,8 +275,9 @@ function PANEL:AddTab(class)
 
 	tab:InvalidateLayout(true)
 
-	if (not IsValid(self.Next)) then
-		self:Select(self.Current)
+	if (not IsValid(self.Current)) then
+		self.Current = tab
+		self:Select(tab)
 	end
 
 	return tab
@@ -230,6 +292,12 @@ function PANEL:OnMouseWheeled(delta)
 	self.CurPos = math.Clamp(self.CurPos - delta * 30, 0, totalwide)
 
 	self:Recalculate(self.Next)
+end
+
+function PANEL:PerformLayout()
+	if (IsValid(self.Current)) then
+		self:Select(self.Current)
+	end
 end
 
 vgui.Register("pluto_inventory_tabs", PANEL, "EditablePanel")
@@ -258,6 +326,10 @@ function PANEL:Init()
 	self:DockMargin(curve(2), 0, curve(2), 0)
 end
 
+function PANEL:SetTab(tab)
+	self:GetParent():SetTab(tab)
+end
+
 vgui.Register("pluto_inventory_tab_controller", PANEL, "EditablePanel")
 
 local PANEL = {}
@@ -267,15 +339,16 @@ function PANEL:Init()
 	self:SetCurve(curve(3))
 	self:OnScreenSizeChanged()
 
-	self.Tabs = self:Add "pluto_inventory_tab_controller"
-	self.Tabs:Dock(TOP)
-	self.Tabs:SetZPos(0)
-
 	self.Items = self:Add "pluto_inventory_items"
 	self.Items:Dock(TOP)
 	self.Items:SetZPos(1)
 
+	self.Tabs = self:Add "pluto_inventory_tab_controller"
+	self.Tabs:Dock(TOP)
+	self.Tabs:SetZPos(0)
+
 	self:MakePopup()
+	self:SetPopupStayAtBack(true)
 end
 
 function PANEL:OnScreenSizeChanged()
@@ -284,6 +357,11 @@ function PANEL:OnScreenSizeChanged()
 	pad = w * 0.05
 	self:DockPadding(pad, pad, pad, pad)
 	self:Center()
+end
+
+function PANEL:SetTab(tab)
+	self.Tab = tab
+	self.Items:SetTab(tab)
 end
 
 function PANEL:PerformLayout(w, h)
@@ -300,32 +378,264 @@ end
 vgui.Register("pluto_inventory", PANEL, "ttt_curved_panel")
 
 
-if (IsValid(pluto.ui)) then
-	pluto.ui:Remove()
-	pluto.ui = vgui.Create "pluto_inventory"
+if (IsValid(pluto.ui.pnl)) then
+	pluto.ui.pnl:Remove()
+	pluto.ui.pnl = vgui.Create "pluto_inventory"
 end
 
 local function create()
 	if (input.WasKeyPressed(KEY_I)) then
-		if (IsValid(pluto.ui) and vgui.FocusedHasParent(pluto.ui)) then
-			pluto.ui:Remove()
-		elseif (not IsValid(pluto.ui)) then
-			pluto.ui = vgui.Create "pluto_inventory"
+		if (IsValid(pluto.ui) and vgui.FocusedHasParent(pluto.ui.pnl)) then
+			pluto.ui.pnl:Remove()
+		elseif (not IsValid(pluto.ui.pnl)) then
+			pluto.ui.pnl = vgui.Create "pluto_inventory"
 		end
 	end
 end
 
 hook.Add("InputMouseApply", "pluto_inventory_ui", function()
-	if (input.WasKeyPressed(KEY_I) and not IsValid(pluto.ui)) then
+	if (input.WasKeyPressed(KEY_I) and not IsValid(pluto.ui.pnl)) then
 		if (pluto.inv.status ~= "ready") then
 			chat.AddText("wait for inventory!")
 			return
 		end
-		pluto.ui = vgui.Create "pluto_inventory"
+		pluto.ui.pnl = vgui.Create "pluto_inventory"
 	end
 end)
 hook.Add("PlayerTick", "pluto_inventory_ui", function()
-	if (input.WasKeyPressed(KEY_I) and IsValid(pluto.ui) and vgui.FocusedHasParent(pluto.ui)) then
-		pluto.ui:Remove()
+	if (input.WasKeyPressed(KEY_I) and IsValid(pluto.ui.pnl) and vgui.FocusedHasParent(pluto.ui.pnl)) then
+		pluto.ui.pnl:Remove()
 	end
 end)
+
+--[[
+	item showcase
+	shows an item (lol)
+]]
+
+local PANEL = {}
+
+function PANEL:Init()
+	self.Text = "Label"
+	self.Font = "DermaDefault"
+	self.Children = {}
+	self.Color = white_text
+end
+
+function PANEL:AddLine(line)
+	local pnl = self:Add "DLabel"
+	pnl:SetFont(self.Font)
+	pnl:SetTextColor(self.Color)
+	pnl:SetText(line)
+	pnl:SetContentAlignment(5)
+	pnl:Dock(TOP)
+	pnl:SetZPos(#self.Children)
+	local _, h = surface.GetTextSize(line)
+	pnl:SetTall(h)
+	self.Tall = self.Tall + h
+	table.insert(self.Children, pnl)
+end
+
+function PANEL:PerformLayout(_w, _h)
+	if (self.LastText == self.Text and self.LastWide == _w) then
+		return
+	end
+	self.LastText = self.Text
+	self.LastWide = _w
+	for _, child in pairs(self.Children) do
+		child:Remove()
+	end
+
+	self.Children = {}
+
+	local cur = {}
+	surface.SetFont(self.Font)
+	self.Tall = 0
+
+	for word in self.Text:gmatch("([^%s]+)%s*") do
+		cur[#cur + 1] = word
+		local w, h = surface.GetTextSize(table.concat(cur, " "))
+		if (w > _w) then
+			if (#cur == 1) then
+				self:AddLine(word)
+				cur = {}
+			else
+				cur[#cur] = nil
+				self:AddLine(table.concat(cur, " "))
+				local w, h = surface.GetTextSize(word)
+				if (w > _w) then
+					self:AddLine(word)
+					cur = {}
+				else
+					cur = {word}
+				end
+			end
+		end
+	end
+
+	if (#cur > 0) then
+		self:AddLine(table.concat(cur, " "))
+	end
+
+	self:SetTall(self.Tall)
+end
+
+function PANEL:SetTextColor(col)
+	self.Color = col
+	for _, child in pairs(self.Children) do
+		child:SetTextColor(col)
+	end
+end
+
+function PANEL:SetFont(font)
+	self.Font = font
+	self:InvalidateLayout(true)
+end
+
+function PANEL:SetText(text)
+	self.Text = text
+	self:InvalidateLayout(true)
+end
+
+vgui.Register("pluto_centered_wrap", PANEL, "EditablePanel")
+
+local PANEL = {}
+
+-- https://gist.github.com/efrederickson/4080372
+local numbers = { 1, 5, 10, 50, 100, 500, 1000 }
+local chars = { "I", "V", "X", "L", "C", "D", "M" }
+
+local function ToRomanNumerals(s)
+    --s = tostring(s)
+    s = tonumber(s)
+    if not s or s ~= s then error"Unable to convert to number" end
+    if s == math.huge then error"Unable to convert infinity" end
+    s = math.floor(s)
+    if s <= 0 then return s end
+	local ret = ""
+        for i = #numbers, 1, -1 do
+        local num = numbers[i]
+        while s - num >= 0 and s > 0 do
+            ret = ret .. chars[i]
+            s = s - num
+        end
+        --for j = i - 1, 1, -1 do
+        for j = 1, i - 1 do
+            local n2 = numbers[j]
+            if s - (num - n2) >= 0 and s < num and s > 0 and num - n2 ~= n2 then
+                ret = ret .. chars[j] .. chars[i]
+                s = s - (num - n2)
+                break
+            end
+        end
+    end
+    return ret
+end
+
+function PANEL:SetItem(item)
+	self:SetWide(ScrW() / 3)
+	self.ItemName:SetText(item.Tier .. " " .. weapons.GetStored(item.ClassName).PrintName)
+	self.ItemName:SizeToContentsY()
+	surface.SetFont(self.ItemName:GetFont())
+
+	self.ItemDesc:SetFont "pluto_item_showcase_smol"
+	self.ItemDesc:SetText("THIS IS A DESCRIPTION AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
+	self.ItemDesc:DockMargin(0, 0, 0, pad / 2)
+	local z = 3
+
+	if (item.Mods and item.Mods.prefix) then
+		for _, mod in ipairs(item.Mods.prefix) do
+			local p = self:Add "pluto_centered_wrap"
+			p:SetFont "pluto_item_showcase_smol"
+			p:SetText(mod.Name .. " " .. ToRomanNumerals(mod.Tier))
+			p:Dock(TOP)
+			p:SetZPos(z)
+			z = z + 1
+
+			local p = self:Add "pluto_centered_wrap"
+			p:SetFont "pluto_item_showcase_desc"
+			p:SetText(mod.Desc)
+			p:Dock(TOP)
+			p:SetZPos(z)
+			z = z + 1
+		end
+	end
+
+	if (item.Mods and item.Mods.suffix) then
+		for _, mod in ipairs(item.Mods.suffix) do
+			local p = self:Add "pluto_centered_wrap"
+			p:SetFont "pluto_item_showcase_smol"
+			p:SetText(mod.Name .. " " .. ToRomanNumerals(mod.Tier))
+			p:Dock(TOP)
+			p:SetZPos(z)
+			z = z + 1
+
+			local p = self:Add "pluto_centered_wrap"
+			p:SetFont "pluto_item_showcase_desc"
+			p:SetText(mod.Desc)
+			p:Dock(TOP)
+			p:SetZPos(z)
+			z = z + 1
+		end
+	end
+
+
+	self:DockPadding(pad, pad, pad, pad)
+	self:InvalidateLayout(true)
+
+	for _, child in pairs(self:GetChildren()) do
+		child:InvalidateLayout(true)
+	end
+end
+
+function PANEL:Init()
+	local w = math.min(500, math.max(400, ScrW() / 3))
+	pad = w * 0.05
+
+	local h = 720
+
+	surface.CreateFont("pluto_item_showcase_header", {
+		font = "Lato",
+		extended = true,
+		size = math.max(30, h / 15)
+	})
+
+	surface.CreateFont("pluto_item_showcase_desc", {
+		font = "Lato",
+		extended = true,
+		size = math.max(20, h / 35)
+	})
+
+
+	surface.CreateFont("pluto_item_showcase_smol", {
+		font = "Lato",
+		extended = true,
+		size = math.max(h / 50, 16)
+	})
+
+	self:SetColor(ColorAlpha(bg_color, 230))
+	self:SetCurve(curve(3))
+	self.ItemName = self:Add "DLabel"
+	self.ItemName:Dock(TOP)
+	self.ItemName:SetContentAlignment(5)
+	self.ItemName:SetFont "pluto_item_showcase_header"
+
+	self.ItemDesc = self:Add "pluto_centered_wrap"
+	self.ItemDesc:Dock(TOP)
+end
+
+vgui.Register("pluto_item_showcase", PANEL, "ttt_curved_panel")
+
+function pluto.ui.showcase(item)
+	if (IsValid(pluto.ui.showcasepnl)) then
+		pluto.ui.showcasepnl:Remove()
+	end
+
+	pluto.ui.showcasepnl = vgui.Create "pluto_item_showcase"
+
+	pluto.ui.showcasepnl:SetItem(item)
+	pluto.ui.showcasepnl:InvalidateLayout(true)
+	pluto.ui.showcasepnl:SizeToChildren(true, true)
+
+	return pluto.ui.showcasepnl
+end
