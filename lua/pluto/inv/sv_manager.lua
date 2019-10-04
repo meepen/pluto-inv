@@ -16,7 +16,6 @@ pluto.inv.sent = pluto.inv.sent or {}
 util.AddNetworkString "pluto_inv_data"
 
 function pluto.inv.writemod(ply, item)
-	PrintTable(item)
 	local mod = pluto.mods.byname[item.Mod]
 	local rolls = pluto.mods.getrolls(mod, item.Tier, item.Roll)
 
@@ -127,6 +126,22 @@ function pluto.inv.sendfullupdate(ply)
 	net.Send(ply)
 end
 
+function pluto.inv.writetabupdate(ply, tabid, tabindex)
+	local tab = pluto.inv.invs[ply][tabid]
+
+	local item = tab.Items[tabindex]
+
+	net.WriteUInt(tabid, 32)
+	net.WriteUInt(tabindex, 8)
+
+	if (item) then
+		net.WriteBool(true)
+		pluto.inv.writeitem(ply, item)
+	else
+		net.WriteBool(false)
+	end
+end
+
 function pluto.inv.init(ply, cb)
 	if (pluto.inv.invs[ply]) then
 		return cb(false)
@@ -169,3 +184,6 @@ function pluto.inv.init(ply, cb)
 		end)
 	end)
 end
+
+
+hook.Add("PlayerAuthed", "pluto_init_inventory", pluto.inv.sendfullupdate)

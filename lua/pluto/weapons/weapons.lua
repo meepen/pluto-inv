@@ -137,7 +137,21 @@ function pluto.weapons.update(item, cb)
 	end)
 end
 
+--[[
+local tab = pluto.inv.invs[ply][i.TabID]
+tab.Items[i.TabIndex] = i
+
+pluto.weapons.save(i, ply, function(id)
+	if (not id) then
+		tab.Items[i.TabIndex] = nil
+	end
+end)]]
+
 function pluto.weapons.save(item, owner, cb)
+	if (item.Invalid) then
+		error "invalid item"
+	end
+
 	if (item.RowID) then
 		error "rowid already set"
 	end
@@ -150,10 +164,17 @@ function pluto.weapons.save(item, owner, cb)
 	assert(item.TabID, "no tabid")
 	assert(item.TabIndex, "no tabindex")
 
-	print(item.Tier.InternalName, item.ClassName, item.TabID, item.TabIndex)
+	local tab = pluto.inv.invs[owner][item.TabID]
+	assert(tab, "invalid tab")
+
+	local old = tab.Items[item.TabIndex]
+
+	local tmp = table.Copy(item)
+	tmp.Invalid = true
+	tab.Items[item.TabIndex] = tmp
+
 	local inserts = {
 		{ "REPLACE INTO pluto_items (tier, class, tab_id, tab_idx) VALUES(?, ?, ?, ?)", {item.Tier.InternalName, item.ClassName, item.TabID, item.TabIndex}, function(err, q)
-			print "a"
 			local insert = q:lastInsert()
 
 			item.RowID = insert
@@ -184,8 +205,19 @@ function pluto.weapons.save(item, owner, cb)
 		if (err) then
 			item.RowID = nil
 			item.Owner = nil
+			tab.Items[item.TabIndex] = old
 			cb(nil, err)
 			return
+		end
+
+		tab.Items[item.TabIndex] = item
+
+		local ply = player.GetBySteamID64(item.Owner)
+		if (IsValid(ply)) then
+			net.Start "pluto_inv_data"
+				pluto.inv.send(ply, "tabupdate", item.TabID, item.TabIndex)
+				pluto.inv.send(ply, "end")
+			net.Send(ply)
 		end
 
 		item.LastUpdate = (item.LastUpdate or 0) + 1
@@ -220,7 +252,7 @@ concommand.Add("pluto_add_weapon", function(ply, cmd, args)
 
 	local i = pluto.weapons.generatetier("junk", "weapon_ttt_rifle")
 
-	i.TabID, i.TabIndex = FindEmptyTab(ply)
+	i.TabID, i.TabIndex = pluto.inv.getfreespace(ply)
 
 	if (not i.TabID) then
 		pwarnf("no tabid")
@@ -229,14 +261,7 @@ concommand.Add("pluto_add_weapon", function(ply, cmd, args)
 
 	print "saving"
 
-	local tab = pluto.inv.invs[ply][i.TabID]
-	tab.Items[i.TabIndex] = i
-
-	pluto.weapons.save(i, ply, function(id)
-		if (not id) then
-			tab.Items[i.TabIndex] = nil
-		end
-	end)
+	pluto.weapons.save(i, ply, print)
 end)
 
 concommand.Add("pluto_generate_random_weapons", function(ply, cmd, args)

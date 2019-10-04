@@ -1,4 +1,3 @@
-local MOD = {}
 MOD.Type = "suffix"
 MOD.Name = "Bleeding"
 MOD.Tags = {
@@ -20,10 +19,20 @@ MOD.Tiers = {
 	{ 5,  10 },
 }
 
-MOD.Hooks = {
-}
-
-function MOD.Hooks:Ass(wep, mod1, ...)
+function MOD:OnDamage(wep, vic, dmginfo, rolls, state)
+	if (IsValid(vic) and vic:IsPlayer() and dmginfo:GetDamage() > 0) then
+		state.bleeddamage = math.ceil(rolls[1] / 100 * dmginfo:GetDamage())
+		pluto.statuses.bleed(vic, {
+			Owner = wep:GetOwner(),
+			Weapon = wep,
+			Damage = state.bleeddamage
+		})
+	end
 end
 
+function MOD:PostDamage(wep, vic, dmginfo, rolls, state)
+	if (state.bleeddamage) then
+		dmginfo:SetDamage(dmginfo:GetDamage() - state.bleeddamage)
+	end
+end
 return MOD

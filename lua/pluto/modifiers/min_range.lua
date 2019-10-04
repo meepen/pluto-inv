@@ -1,4 +1,3 @@
-local MOD = {}
 MOD.Type = "prefix"
 MOD.Name = "Proximity"
 MOD.Tags = {
@@ -26,7 +25,9 @@ MOD.Tiers = {
 	{ -20, 0 },
 }
 
-function MOD:ModifyWeapon()
+function MOD:ModifyWeapon(wep, roll)
+	wep:DefinePlutoOverrides "DamageDropoffRange"
+	wep.Pluto.DamageDropoffRange = wep.Pluto.DamageDropoffRange + roll[1] / 100
 end
 
 return MOD

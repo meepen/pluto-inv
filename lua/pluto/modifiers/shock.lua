@@ -1,4 +1,3 @@
-local MOD = {}
 MOD.Type = "suffix"
 MOD.Name = "Shocking"
 MOD.Tags = {
@@ -16,14 +15,9 @@ function MOD:GetDescription(rolls)
 end
 
 MOD.Tiers = {
-	{ 5,   10  },
+	{ 5,   7.5  },
 	{ 2.5, 5   },
 	{ 1,   2.5 },
 }
-
-MOD.Hooks = {}
-
-function MOD.Hooks:Ass(wep, mod1, ...)
-end
 
 return MOD

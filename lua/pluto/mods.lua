@@ -1,4 +1,4 @@
-pluto.mods = {
+pluto.mods = pluto.mods or {
 	byname = {},
 	suffix = {},
 	prefix = {},
@@ -26,7 +26,10 @@ for _, modname in pairs {
 	"shock",
 	"zoomies",
 } do
-	local mod = include("modifiers/" .. modname .. ".lua")
+	MOD = pluto.mods.byname[modname] or {}
+	include("modifiers/" .. modname .. ".lua")
+	local mod = MOD
+	MOD = nil
 
 	if (not mod) then
 		pwarnf("Modifier %s didn't return value.", modname)
@@ -35,7 +38,6 @@ for _, modname in pairs {
 
 	mod.Name = mod.Name or modname
 	mod.InternalName = modname
-
 
 	-- faster indexing in rolls
 	if (mod.Tags) then
@@ -73,7 +75,7 @@ function pluto.mods.rollmod(mod, rolltier, roll)
 	local tier = rolltier(mod)
 
 	return {
-		Roll = defaultroll(mod, tier),
+		Roll = roll(mod, tier),
 		Tier = tier,
 		Mod = mod.InternalName
 	}

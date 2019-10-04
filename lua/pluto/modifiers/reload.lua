@@ -1,4 +1,3 @@
-local MOD = {}
 MOD.Type = "prefix"
 MOD.Name = "Reloading"
 MOD.Tags = {
@@ -26,7 +25,9 @@ MOD.Tiers = {
 	{ -15, -5 },
 }
 
-function MOD:ModifyWeapon()
+function MOD:ModifyWeapon(wep, roll)
+	wep:DefinePlutoOverrides "ReloadAnimationSpeed"
+	wep.Pluto.ReloadAnimationSpeed = wep.Pluto.ReloadAnimationSpeed - roll[1] / 100
 end
 
 return MOD

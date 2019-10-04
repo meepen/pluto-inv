@@ -1,4 +1,3 @@
-local MOD = {}
 MOD.Type = "prefix"
 MOD.Name = "Strength"
 MOD.Tags = {
@@ -30,7 +29,9 @@ MOD.Tiers = {
 	{ -10, -5 },
 }
 
-function MOD:ModifyWeapon()
+function MOD:ModifyWeapon(wep, rolls)
+	wep:DefinePlutoOverrides "Damage"
+	wep.Pluto.Damage = wep.Pluto.Damage + rolls[1] / 100
 end
 
 return MOD

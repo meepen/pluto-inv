@@ -1,4 +1,3 @@
-local MOD = {}
 MOD.Type = "prefix"
 MOD.Name = "Cycle"
 MOD.Tags = {
@@ -20,11 +19,15 @@ function MOD:GetDescription(rolls)
 end
 
 MOD.Tiers = {
-	{ 5,   10  },
-	{ 2.5, 5   },
-	{ -5,  2.5 },
-	{ -5, -2.5 },
+	{ 5,     10  },
+	{ 2.5,   5   },
+	{ -2.5,  2.5 },
+	{ -5,   -2.5 },
 	{ -7.5, -5 }
 }
+
+function MOD:ModifyWeapon(wep, rolls)
+	wep.Pluto.Delay = wep.Pluto.Delay + rolls[1] / 100
+end
 
 return MOD

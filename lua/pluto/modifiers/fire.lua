@@ -1,4 +1,3 @@
-local MOD = {}
 MOD.Type = "suffix"
 MOD.Name = "Flame"
 MOD.Tags = {
@@ -21,9 +20,21 @@ MOD.Tiers = {
 	{ 5,  10 },
 }
 
-MOD.Hooks = {}
+function MOD:OnDamage(wep, vic, dmginfo, rolls, state)
+	if (IsValid(vic) and vic:IsPlayer() and dmginfo:GetDamage() > 0) then
+		state.firedamage = math.ceil(rolls[1] / 100 * dmginfo:GetDamage())
+		pluto.statuses.fire(vic, {
+			Owner = wep:GetOwner(),
+			Weapon = wep,
+			Damage = state.firedamage
+		})
+	end
+end
 
-function MOD.Hooks:Ass(wep, mod1, ...)
+function MOD:PostDamage(wep, vic, dmginfo, rolls, state)
+	if (state.firedamage) then
+		dmginfo:SetDamage(dmginfo:GetDamage() - state.firedamage)
+	end
 end
 
 return MOD

@@ -39,16 +39,6 @@ function pluto.db.query(query, args, cb, data, nostart)
 				q:setNull(ind)
 			end
 		end
-
-		q.oldstart = q.oldstart or q.start
-		q.start = function(self, ...)
-			q:oldstart(...)
-			
-			for ind, arg in pairs(args) do
-				q:setNull(ind)
-			end
-		end
-
 	end
 
 	last = q
@@ -72,7 +62,6 @@ function pluto.db.query(query, args, cb, data, nostart)
 	end
 
 	function q:onSuccess(d)
-		print "3?"
 		if (not cb) then
 			return
 		end
@@ -82,13 +71,26 @@ function pluto.db.query(query, args, cb, data, nostart)
 
 	if (data) then
 		function q:onData(d)
-			print "4?"
 			data(self, d)
 		end
 	end
 
 	if (not nostart) then
 		q:start()
+
+		if (args) then
+			for ind, arg in pairs(args) do
+				if (type(arg) == "number") then
+					q:setNumber(ind, arg)
+				elseif (type(arg) == "string") then
+					q:setString(ind, arg)
+				elseif (type(arg) == "boolean") then
+					q:setBoolean(ind, arg)
+				else
+					q:setNull(ind)
+				end
+			end
+		end
 	end
 
 	return q
@@ -107,25 +109,20 @@ function pluto.db.transact(queries, cb, nostart)
 	for i, query in ipairs(queries) do
 		if (type(query) == "table") then
 			query[5] = true -- nostart
-			local old = query[3]
-			query[3] = function(...)
-				pprintf("Transaction query #%i: %.5f", i, SysTime() - start)
-				if (old) then
-					old(...)
-				end
-			end
 			queries[i] = pluto.db.query(unpack(query, 1, 5))
 		elseif (type(query) == "string") then
-			queries[i] = pluto.db.query(query, nil, function(...)
-				pprintf("Transaction query #%i: %.5f", i, SysTime() - start)
-			end, nil, true)
+			queries[i] = pluto.db.query(query, nil, nil, nil, true)
 		end
 
 		transact:addQuery(queries[i])
+		if (type(query) == "table" and query[2]) then
+			for ind in pairs(query[2]) do
+				queries[i]:setNull(ind)
+			end
+		end
 	end
 
 	function transact:onSuccess(...)
-		print "5?"
 		if (not cb) then
 			return
 		end

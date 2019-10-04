@@ -35,6 +35,12 @@ function PANEL:Showcase(item)
 	self.showcasepnl:SetPos(self:LocalToScreen(self:GetWide(), 0))
 end
 
+function PANEL:OnRemove()
+	if (IsValid(self.showcasepnl)) then
+		self.showcasepnl:Remove()
+	end
+end
+
 function PANEL:SetItem(item)
 	if (not item) then
 		self:SetCursor "arrow"
@@ -601,14 +607,14 @@ function PANEL:Init()
 	})
 
 	surface.CreateFont("pluto_item_showcase_desc", {
-		font = "Lato",
+		font = "Roboto",
 		extended = true,
 		size = math.max(20, h / 35)
 	})
 
 
 	surface.CreateFont("pluto_item_showcase_smol", {
-		font = "Lato",
+		font = "Roboto",
 		extended = true,
 		size = math.max(h / 50, 16)
 	})

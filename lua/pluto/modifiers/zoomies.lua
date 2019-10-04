@@ -1,4 +1,3 @@
-local MOD = {}
 MOD.Type = "suffix"
 MOD.Name = "Zoomies"
 MOD.Tags = { }
@@ -20,10 +19,5 @@ MOD.Tiers = {
 	{ 2, 2 },
 	{ 1, 1 },
 }
-
-MOD.Hooks = {}
-
-function MOD.Hooks:Ass(wep, mod1, ...)
-end
 
 return MOD

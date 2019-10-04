@@ -1,4 +1,3 @@
-local MOD = {}
 MOD.Type = "prefix"
 MOD.Name = "Control"
 MOD.Tags = {
@@ -26,5 +25,10 @@ MOD.Tiers = {
 	{ -30, -15 },
 	{ -50, -30 }
 }
+
+function MOD:ModifyWeapon(wep, roll)
+	wep:DefinePlutoOverrides "ViewPunchAngles"
+	wep.Pluto.DamageDropoffRange = wep.Pluto.ViewPunchAngles - roll[1] / 100
+end
 
 return MOD

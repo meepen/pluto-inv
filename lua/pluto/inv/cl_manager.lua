@@ -31,6 +31,8 @@ function pluto.inv.readmessage()
 	local uid = net.ReadUInt(8)
 	local id = pluto.inv.messages.sv2cl[uid]
 
+	print(uid, id)
+
 	if (id == "end") then
 		pluto.inv.readend()
 		return true
@@ -119,6 +121,19 @@ function pluto.inv.readtab()
 		local item = pluto.inv.readitem()
 		tab.Items[tabindex] = item
 	end
+end
+
+function pluto.inv.readtabupdate()
+	local tabid = net.ReadUInt(32)
+	local tabindex = net.ReadUInt(8)
+
+	local item
+	if (net.ReadBool()) then
+		item = pluto.inv.readitem()
+	end
+	pluto.cl_inv[tabid].Items[tabindex] = item
+
+	hook.Run("PlutoTabUpdate", tabid, tabindex, item)
 end
 
 function pluto.inv.readend()

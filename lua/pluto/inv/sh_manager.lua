@@ -10,6 +10,7 @@ pluto.inv.messages = {
 		[2] = "mod",
 		[3] = "tab",
 		[4] = "status",
+		[5] = "tabupdate"
 	}
 }
 

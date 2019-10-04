@@ -17,7 +17,7 @@ function SWEP:Initialize()
 
 	if (pluto.weapons.valid[self:GetClass()]) then
 		if (not item) then
-			item = pluto.weapons.generatetier(nil, self:GetClass())
+			item = pluto.weapons.generatetier("shadowy", self:GetClass())
 		end
 		self:SetInventoryItem(item)
 	end
@@ -126,3 +126,37 @@ end
 function SWEP:GetInventoryItem()
 	return self.PlutoData
 end
+
+hook.Add("EntityTakeDamage", "pluto_dmg_mods", function(targ, dmg)
+	if (dmg:GetDamage() <= 0 or bit.band(dmg:GetDamageType(), DMG_DIRECT) == DMG_DIRECT) then
+		return
+	end
+
+	local self = dmg:GetInflictor()
+	if (not IsValid(self) or not self.PlutoGun) then
+		return
+	end
+	local gun = self.PlutoGun
+
+	local state = {}
+
+	for type, list in pairs(gun.Mods) do
+		for _, item in ipairs(list) do
+			local mod = pluto.mods.byname[item.Mod]
+			if (mod.OnDamage) then
+				local rolls = pluto.mods.getrolls(mod, item.Tier, item.Roll)
+				mod:OnDamage(self, targ, dmg, rolls, state)
+			end
+		end
+	end
+
+	for type, list in pairs(gun.Mods) do
+		for _, item in ipairs(list) do
+			local mod = pluto.mods.byname[item.Mod]
+			if (mod.PostDamage) then
+				local rolls = pluto.mods.getrolls(mod, item.Tier, item.Roll)
+				mod:PostDamage(self, targ, dmg, rolls, state)
+			end
+		end
+	end
+end)

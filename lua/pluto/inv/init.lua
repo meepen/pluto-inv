@@ -28,7 +28,6 @@ function pluto.inv.retrievetabs(steamid, cb)
 				Name = tab.name,
 				Owner = steamid,
 			})
-			PrintTable(tab)
 		end
 
 		if (#tabs == 0) then
@@ -71,6 +70,18 @@ function pluto.inv.renametab(tab, cb)
 	pluto.db.query("UPDATE pluto_tabs SET name = ? WHERE idx = ?", {tab.Name, tab.RowID}, function(err, q)
 		return cb(not not err)
 	end)
+end
+
+function pluto.inv.getfreespace(ply)
+	local inv = pluto.inv.invs[ply]
+	
+	for tabid, tab in SortedPairsByMemberValue(inv, "RowID") do
+		for i = 1, 64 do
+			if (not tab.Items[i]) then
+				return tabid, i
+			end
+		end
+	end
 end
 
 function pluto.inv.retrieveitems(steamid, cb)

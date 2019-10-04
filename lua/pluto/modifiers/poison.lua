@@ -1,4 +1,3 @@
-local MOD = {}
 MOD.Type = "suffix"
 MOD.Name = "Toxicity"
 MOD.Tags = {
@@ -20,10 +19,21 @@ MOD.Tiers = {
 	{ 5,  10, 50, 75 },
 }
 
-MOD.Hooks = {
-}
+function MOD:OnDamage(wep, vic, dmginfo, rolls, state)
+	if (IsValid(vic) and vic:IsPlayer() and dmginfo:GetDamage() > 0) then
+		state.poisondamage = math.ceil(rolls[1] / 100 * dmginfo:GetDamage())
+		pluto.statuses.poison(vic, {
+			Owner = wep:GetOwner(),
+			Weapon = wep,
+			Damage = math.ceil(state.poisondamage * (1 + rolls[2] / 100))
+		})
+	end
+end
 
-function MOD.Hooks:Ass(wep, mod1, ...)
+function MOD:PostDamage(wep, vic, dmginfo, rolls, state)
+	if (state.poisondamage) then
+		dmginfo:SetDamage(dmginfo:GetDamage() - state.poisondamage)
+	end
 end
 
 return MOD

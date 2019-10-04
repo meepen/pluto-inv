@@ -51,10 +51,26 @@ function SWEP:DefinePlutoOverrides(type)
 
 	local old = self["Get" .. type]
 	self["Get" .. type] = function(self)
-		return old(self) * self.Pluto[type]
+		local pct = self.Pluto[type]
+		if (pct < 0) then
+			pct = 1 / (2 - pct)
+		end
+		return old(self) * pct
 	end
 end
 
 function SWEP:PlutoInitialize()
-	self.Pluto = {}
+	self.Pluto = {
+		Delay = 1
+	}
+
+	local old = self.GetDelay
+	function self:GetDelay()
+		local pct = self.Pluto.Delay
+		if (pct < 0) then
+			pct = 1 / (2 - pct)
+		end
+		local o = old(self)
+		return old(self) * pct
+	end
 end
