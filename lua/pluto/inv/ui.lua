@@ -16,12 +16,99 @@ local inactive_color = Color(47, 47, 48)
 local count = 6
 
 local PANEL = {}
+
+local colour = Material "models/debug/debugwhite"
+DEFINE_BASECLASS "ttt_curved_panel"
+
+function PANEL:OnRemove()
+	BaseClass.OnRemove(self)
+
+	if (IsValid(self.Model)) then
+		self.Model:Remove()
+	end
+end
+
+function PANEL:Init()
+	self.Random = math.random()
+	self:SetKeyboardInputEnabled(false)
+	self:SetMouseInputEnabled(false)
+	self:SetColor(Color(255,0,0))
+	self:SetCurve(curve(0) / 2)
+end
+
+function PANEL:SetWeapon(w)
+	if (IsValid(self.Model)) then
+		self.Model:Remove()
+	end
+	self.Model = ClientsideModel(w.WorldModel, RENDERGROUP_OTHER)
+	self.HoldType = w.HoldType
+end
+
+function PANEL:Paint(w, h)
+	BaseClass.Paint(self, w, h)
+
+	local err = self.Model
+	if (not IsValid(err)) then
+		return
+	end
+
+	local x, y = self:LocalToScreen(0, 0)
+	local mins, maxs = err:GetModelBounds()
+	local mul = mins:Distance(maxs) / 45
+	local offset 
+	if (self.HoldType == "pistol") then
+		offset = -Vector((maxs.x - mins.x) * -1 / 3, 0, (maxs.z - mins.z) * 3 / 3)
+	else
+		offset = -Vector((maxs.x - mins.x) * -0.5 / 3, 0, (maxs.z - mins.z) * 1.5 / 3)
+	end
+	local angle = Angle(0, -90)
+	cam.Start3D(angle:Forward() * mul * -56 - offset / 2, angle, 36, x, y, w, h)
+		render.SuppressEngineLighting(true)
+			err:SetAngles(Angle(-40, 10, 10))
+			err:SetPos(vector_origin)
+			render.PushFilterMin(TEXFILTER.ANISOTROPIC)
+			render.PushFilterMag(TEXFILTER.ANISOTROPIC)
+				err:DrawModel()
+			render.PopFilterMag()
+			render.PopFilterMin()
+		render.SuppressEngineLighting(false)
+	cam.End3D()
+end
+
+function PANEL:OnRemove()
+	if (IsValid(self.Model)) then
+		self.Model:Remove()
+	end
+end
+vgui.Register("pluto_weapon_inner", PANEL, "ttt_curved_panel")
+
+local PANEL = {}
+
+function PANEL:Init()
+	self.Random = math.random()
+	self:SetKeyboardInputEnabled(false)
+	self:SetMouseInputEnabled(false)
+	self:SetColor(inactive_color)
+	self:SetCurve(curve(0))
+	self.Inner = self:Add "pluto_weapon_inner"
+	self.Inner:Dock(FILL)
+	local pad = curve(0) / 2
+	self:DockPadding(pad, pad, pad, pad)
+end
+
+function PANEL:SetWeapon(w)
+	self.Inner:SetWeapon(w)
+end
+
+
+vgui.Register("pluto_weapon", PANEL, "ttt_curved_panel_outline")
+
+local PANEL = {}
 function PANEL:Init()
 	self:SetColor(Color(84, 89, 89, 255))
 
-	self.Image = self:Add "DImage"
+	self.Image = self:Add "pluto_weapon"
 	self.Image:Dock(FILL)
-	self.Image:SetImage "tttrw/roles/innocent.png"
 	self.Image:SetVisible(false)
 
 	self:SetCursor "arrow"
@@ -50,6 +137,7 @@ function PANEL:SetItem(item)
 
 	self:SetCursor "hand"
 	self.Image:SetVisible(true)
+	self.Image:SetWeapon(weapons.GetStored(item.ClassName))
 
 	if (IsValid(self.showcasepnl)) then
 		self:Showcase(item)
