@@ -15,38 +15,9 @@ pluto.received = {
 	item = {},
 }
 
-net.Receive("pluto_inv_data", function(len)
-	pprintf("Collecting %i bits of inventory data...", len)
-
-	while (not pluto.inv.readmessage()) do
-		print "Message read."
-	end
-end)
-
 pluto.inv = pluto.inv or {
 	status = "uninitialized",
 }
-
-function pluto.inv.readmessage()
-	local uid = net.ReadUInt(8)
-	local id = pluto.inv.messages.sv2cl[uid]
-
-	print(uid, id)
-
-	if (id == "end") then
-		pluto.inv.readend()
-		return true
-	end
-
-	local fn = pluto.inv["read" .. id]
-
-	if (not fn) then
-		pwarnf("no function for %i", uid)
-		return false
-	end
-
-	fn()
-end
 
 function pluto.inv.readmod(item)
 	local name = net.ReadString()
@@ -134,6 +105,34 @@ function pluto.inv.readtabupdate()
 	pluto.cl_inv[tabid].Items[tabindex] = item
 
 	hook.Run("PlutoTabUpdate", tabid, tabindex, item)
+end
+
+function pluto.inv.writetabswitch(tabid1, tabindex1, tabid2, tabindex2)
+	local tab1, tab2 = pluto.cl_inv[tabid1], pluto.cl_inv[tabid2]
+
+	tab1.Items[tabindex1], tab2.Items[tabindex2] = tab2.Items[tabindex2], tab1.Items[tabindex1]
+
+	net.WriteUInt(tabid1, 32)
+	net.WriteUInt(tabindex1, 8)
+	net.WriteUInt(tabid2, 32)
+	net.WriteUInt(tabindex2, 8)
+end
+
+function pluto.inv.writeend()
+end
+
+function pluto.inv.send(what, ...)
+	local id = pluto.inv.messages.cl2sv[what]
+
+	if (not id) then
+		pwarnf("id = nil for %s\n%s", what, debug.traceback())
+		return
+	end
+
+	net.WriteUInt(id, 8)
+	print("write" .. what)
+	local fn = pluto.inv["write" .. what]
+	fn(...)
 end
 
 function pluto.inv.readend()

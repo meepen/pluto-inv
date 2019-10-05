@@ -64,6 +64,31 @@ function pluto.inv.addtab(steamid, cb)
 	end)
 end
 
+function pluto.inv.switchtab(steamid, tabid1, tabindex1, tabid2, tabindex2, cb)
+	print(steamid, tabid1, tabindex1, tabid2, tabindex2, cb)
+	steamid = pluto.db.steamid64(steamid)
+	pluto.db.transact({
+		{ "SELECT 1 FROM pluto_items WHERE tab_id IN (?, ?) FOR UPDATE", {tabid1, tabid2}},
+		{ "UPDATE pluto_items SET tab_id = ?, tab_idx = 0 WHERE tab_id = ? AND tab_idx = ?", {tabid1, tabid2, tabindex2} },
+		{ "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE tab_id = ? AND tab_idx = ?", {tabid2, tabindex2, tabid1, tabindex1} },
+		{ "UPDATE pluto_items SET tab_idx = ? WHERE tab_id = ? AND tab_idx = 0", {tabindex1, tabid1} },
+	}, function(err)
+		if (err) then
+			cb(false)
+			return
+		end
+
+		local ply = player.GetBySteamID64(steamid)
+		if (IsValid(ply)) then
+			local inv = pluto.inv.invs[ply]
+			local tab1, tab2 = inv[tabid1], inv[tabid2]
+			tab1.Items[tabindex1], tab2.Items[tabindex2] = tab2.Items[tabindex2], tab1.Items[tabindex1]
+		end
+
+		cb(true)
+	end)
+end
+
 function pluto.inv.renametab(tab, cb)
 	assert(tab.RowID, "no rowid")
 	assert(tab.Name, "no name")

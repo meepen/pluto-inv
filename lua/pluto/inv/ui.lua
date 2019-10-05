@@ -80,6 +80,11 @@ function PANEL:OnRemove()
 		self.Model:Remove()
 	end
 end
+
+function PANEL:GetScissor()
+	return self:GetParent():GetScissor()
+end
+
 vgui.Register("pluto_weapon_inner", PANEL, "ttt_curved_panel")
 
 local PANEL = {}
@@ -100,6 +105,22 @@ function PANEL:SetWeapon(w)
 	self.Inner:SetWeapon(w)
 end
 
+function PANEL:GhostClick(p, m)
+	if (m == MOUSE_LEFT and p.ClassName == "pluto_inventory_item") then
+		local parent = self:GetParent()
+		local gparent = p
+
+		local i = parent.Item
+		local o = gparent.Item
+		parent:SetItem(o)
+		gparent:SetItem(i)
+
+		pluto.inv.message()
+			:write("tabswitch", pluto.ui.pnl.Tab.ID, parent.TabIndex, pluto.ui.pnl.Tab.ID, gparent.TabIndex)
+			:send()
+	end
+	pluto.ui.ghost = nil
+end
 
 vgui.Register("pluto_weapon", PANEL, "ttt_curved_panel_outline")
 
@@ -129,6 +150,8 @@ function PANEL:OnRemove()
 end
 
 function PANEL:SetItem(item)
+	self.Item = item
+
 	if (not item) then
 		self:SetCursor "arrow"
 		self.Image:SetVisible(false)
@@ -142,8 +165,6 @@ function PANEL:SetItem(item)
 	if (IsValid(self.showcasepnl)) then
 		self:Showcase(item)
 	end
-
-	self.Item = item
 end
 
 function PANEL:OnCursorEntered()
@@ -151,12 +172,18 @@ function PANEL:OnCursorEntered()
 		self:Showcase(self.Item)
 	end
 end
+
 function PANEL:OnCursorExited()
 	if (IsValid(self.showcasepnl)) then
 		self.showcasepnl:Remove()
 	end
 end
 
+function PANEL:OnMousePressed(code)
+	if (code == MOUSE_LEFT and self.Item) then
+		pluto.ui.ghost = self.Image
+	end
+end
 
 function PANEL:PerformLayout(w, h)
 	self:SetCurve(curve(0))
@@ -178,6 +205,7 @@ function PANEL:Init()
 
 	for i = 1, count * count do
 		local p = self.Layout:Add "pluto_inventory_item"
+		p.TabIndex = i
 		self.Items[i] = p
 	end
 end
@@ -197,8 +225,8 @@ function PANEL:PerformLayout(w, h)
 end
 
 function PANEL:SetTab(tab)
-	for i = 1, 36 do
-		self.Items[i]:SetItem(tab.Items[i])
+	for i = 1, count * count do
+		self.Items[i]:SetItem(tab.Items[i], tab.ID)
 	end
 end
 
@@ -627,7 +655,7 @@ local function ToRomanNumerals(s)
 end
 
 function PANEL:SetItem(item)
-	self:SetWide(ScrW() / 3)
+	self:SetWide(math.max(300, math.min(600, ScrW() / 3)))
 	self.ItemName:SetText(item.Tier .. " " .. weapons.GetStored(item.ClassName).PrintName)
 	self.ItemName:SizeToContentsY()
 	surface.SetFont(self.ItemName:GetFont())
@@ -733,3 +761,46 @@ function pluto.ui.showcase(item)
 
 	return pluto.ui.showcasepnl
 end
+
+hook.Add("PostRenderVGUI", "pluto_ghost", function()
+	if (IsValid(pluto.ui.ghost)) then
+		local p = pluto.ui.ghost
+
+		if ((input.IsMouseDown(MOUSE_RIGHT) or input.IsMouseDown(MOUSE_LEFT)) and not IsValid(vgui.GetHoveredPanel())) then
+			pluto.ui.ghost = nil
+			return
+		end
+
+		local w, h = p:GetSize()
+		local x, y = gui.MousePos()
+		x = x - w / 2
+		y = y - h / 2
+		
+		local b
+
+		if (p.SetScissor) then
+			b = p:GetScissor()
+			p:SetScissor(false)
+		end
+
+		local mi, ki = p:IsMouseInputEnabled(), p:IsKeyboardInputEnabled()
+
+		p:PaintAt(x, y) -- this resets mouseinput / keyboardinput???
+		p:SetMouseInputEnabled(mi)
+		p:SetKeyboardInputEnabled(ki)
+
+		if (p.SetScissor) then
+			p:SetScissor(b)
+		end
+	end
+end)
+
+hook.Add("VGUIMousePressAllowed", "pluto_ghost", function(mouse)
+	if (IsValid(pluto.ui.ghost)) then
+		local g = pluto.ui.ghost
+
+		if (g.GhostClick) then
+			return not g:GhostClick(vgui.GetHoveredPanel(), mouse)
+		end
+	end
+end)

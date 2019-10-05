@@ -214,10 +214,9 @@ function pluto.weapons.save(item, owner, cb)
 
 		local ply = player.GetBySteamID64(item.Owner)
 		if (IsValid(ply)) then
-			net.Start "pluto_inv_data"
-				pluto.inv.send(ply, "tabupdate", item.TabID, item.TabIndex)
-				pluto.inv.send(ply, "end")
-			net.Send(ply)
+			pluto.inv.message(ply)
+				:write("tabupdate", item.TabID, item.TabIndex)
+				:send()
 		end
 
 		item.LastUpdate = (item.LastUpdate or 0) + 1

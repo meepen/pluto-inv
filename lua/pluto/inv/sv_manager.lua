@@ -106,10 +106,9 @@ end
 
 function pluto.inv.sendfullupdate(ply)
 	if (not pluto.inv.invs[ply]) then
-		net.Start "pluto_inv_data"
-			pluto.inv.send(ply, "status", "retrieving")
-			pluto.inv.send(ply, "end")
-		net.Send(ply)
+		pluto.inv.message(ply)
+			:write("status", "retrieving")
+			:send()
 		pluto.inv.init(ply, function()
 			pluto.inv.sendfullupdate(ply)
 		end)
@@ -117,13 +116,14 @@ function pluto.inv.sendfullupdate(ply)
 		return
 	end
 
-	net.Start "pluto_inv_data"
-		pluto.inv.send(ply, "status", "updating")
-		for _, tab in pairs(pluto.inv.invs[ply]) do
-			pluto.inv.send(ply, "tab", tab)
-		end
-		pluto.inv.send(ply, "end")
-	net.Send(ply)
+	local m = pluto.inv.message(ply)
+		:write("status", "updating")
+		
+	for _, tab in pairs(pluto.inv.invs[ply]) do
+		m:write("tab", tab)
+	end
+	
+	m:send()
 end
 
 function pluto.inv.writetabupdate(ply, tabid, tabindex)
@@ -185,5 +185,17 @@ function pluto.inv.init(ply, cb)
 	end)
 end
 
+function pluto.inv.readtabswitch(ply)
+	local tabid1 = net.ReadUInt(32)
+	local tabindex1 = net.ReadUInt(8)
+	local tabid2 = net.ReadUInt(32)
+	local tabindex2 = net.ReadUInt(8)
+	
+	pluto.inv.switchtab(ply, tabid1, tabindex1, tabid2, tabindex2, print)
+end
+
+function pluto.inv.readend()
+	return true
+end
 
 hook.Add("PlayerAuthed", "pluto_init_inventory", pluto.inv.sendfullupdate)
