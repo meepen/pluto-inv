@@ -6,6 +6,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_db_init", function(db)
 					idx int UNSIGNED NOT NULL AUTO_INCREMENT,
 					owner BIGINT UNSIGNED NOT NULL,
 					color INT UNSIGNED NOT NULL DEFAULT 0,
+					tab_type varchar(16) NOT NULL DEFAULT "normal",
 					name VARCHAR(16) NOT NULL,
 					PRIMARY KEY(idx),
 					INDEX USING HASH(owner)
@@ -24,6 +25,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_db_init", function(db)
 
 					FOREIGN KEY(tab_id) REFERENCES pluto_tabs(idx) ON DELETE CASCADE,
 					PRIMARY KEY(tab_id, tab_idx),
+					INDEX USING HASH(tab_id),
 
 					INDEX USING HASH(idx)
 				)
