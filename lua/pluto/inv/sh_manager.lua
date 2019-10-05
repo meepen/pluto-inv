@@ -26,15 +26,12 @@ net.Receive("pluto_inv_data", function(len, cl)
 	pprintf("Collecting %i bits of inventory data...", len)
 
 	while (not pluto.inv.readmessage(cl)) do
-		print "Message read."
 	end
 end)
 
 function pluto.inv.readmessage(cl)
 	local uid = net.ReadUInt(8)
 	local id = (SERVER and pluto.inv.messages.cl2sv or pluto.inv.messages.sv2cl)[uid]
-
-	print(uid, id)
 
 	if (id == "end") then
 		pluto.inv.readend()

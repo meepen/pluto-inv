@@ -4,5 +4,6 @@ return {
 	tags = {
 		firerate = 2,
 	},
-	Shares = 10000
+	Shares = 10000,
+	Color = Color(61, 133, 198),
 }

@@ -4,5 +4,6 @@ return {
 	tags = {
 		dot = 2,
 	},
-	Shares = 500
+	Shares = 500,
+	Color = Color(0, 255, 141),
 }

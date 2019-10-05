@@ -1,5 +1,5 @@
 pluto.weapons = pluto.weapons or {}
-pluto.tiers = {}
+pluto.tiers = pluto.tiers or {}
 
 local total_shares = 0
 for _, name in pairs {
@@ -21,6 +21,12 @@ for _, name in pairs {
 	if (not item.Shares) then
 		pwarnf("Tier %s doesn't have shares", name)
 		continue
+	end
+
+	local prev = pluto.tiers[name]
+	if (prev) then
+		table.Merge(prev, item)
+		item = prev
 	end
 
 	item.InternalName = name
@@ -249,7 +255,7 @@ concommand.Add("pluto_add_weapon", function(ply, cmd, args)
 		return
 	end
 
-	local i = pluto.weapons.generatetier("junk", "weapon_ttt_rifle")
+	local i = pluto.weapons.generatetier()
 
 	i.TabID, i.TabIndex = pluto.inv.getfreespace(ply)
 

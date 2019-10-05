@@ -65,7 +65,6 @@ function pluto.inv.addtab(steamid, cb)
 end
 
 function pluto.inv.switchtab(steamid, tabid1, tabindex1, tabid2, tabindex2, cb)
-	print(steamid, tabid1, tabindex1, tabid2, tabindex2, cb)
 	steamid = pluto.db.steamid64(steamid)
 	pluto.db.transact({
 		{ "SELECT 1 FROM pluto_items WHERE tab_id IN (?, ?) FOR UPDATE", {tabid1, tabid2}},

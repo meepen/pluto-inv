@@ -8,7 +8,7 @@ function MOD:IsNegative(roll)
 end
 
 function MOD:CanRollOn(class)
-	return class.HasScope
+	return false and class.HasScope
 end
 
 function MOD:GetDescription(rolls)

@@ -159,6 +159,7 @@ function PANEL:SetItem(item)
 	end
 
 	self:SetCursor "hand"
+	self.Image.Inner:SetColor(item.Color)
 	self.Image:SetVisible(true)
 	self.Image:SetWeapon(weapons.GetStored(item.ClassName))
 
@@ -655,13 +656,13 @@ local function ToRomanNumerals(s)
 end
 
 function PANEL:SetItem(item)
-	self:SetWide(math.max(300, math.min(600, ScrW() / 3)))
+	self.ItemName:SetTextColor(item.Color)
 	self.ItemName:SetText(item.Tier .. " " .. weapons.GetStored(item.ClassName).PrintName)
 	self.ItemName:SizeToContentsY()
 	surface.SetFont(self.ItemName:GetFont())
 
 	self.ItemDesc:SetFont "pluto_item_showcase_smol"
-	self.ItemDesc:SetText("THIS IS A DESCRIPTION AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
+	self.ItemDesc:SetText("")
 	self.ItemDesc:DockMargin(0, 0, 0, pad / 2)
 	local z = 3
 
@@ -736,7 +737,6 @@ function PANEL:Init()
 	})
 
 	self:SetColor(ColorAlpha(bg_color, 230))
-	self:SetCurve(curve(3))
 	self.ItemName = self:Add "DLabel"
 	self.ItemName:Dock(TOP)
 	self.ItemName:SetContentAlignment(5)
@@ -746,7 +746,29 @@ function PANEL:Init()
 	self.ItemDesc:Dock(TOP)
 end
 
-vgui.Register("pluto_item_showcase", PANEL, "ttt_curved_panel")
+vgui.Register("pluto_item_showcase_inner", PANEL, "ttt_curved_panel")
+
+local PANEL = {}
+
+function PANEL:Init()
+	self.Inner = self:Add "pluto_item_showcase_inner"
+	self.Inner:Dock(FILL)
+	self:SetCurve(curve(4))
+	self:SetColor(white_text)
+	local pad = curve(4) / 2
+	self.Inner:SetCurve(pad)
+	self:DockPadding(pad, pad, pad, pad)
+end
+
+function PANEL:SetItem(item)
+	self:SetWide(math.max(300, math.min(600, ScrW() / 3)))
+	self.Inner:SetWide(math.max(300, math.min(600, ScrW() / 3)))
+	self.Inner:SetItem(item)
+	self.Inner:InvalidateLayout(true)
+	self.Inner:SizeToChildren(true, true)
+	self:SizeToChildren(true, true)
+end
+vgui.Register("pluto_item_showcase", PANEL, "ttt_curved_panel_outline")
 
 function pluto.ui.showcase(item)
 	if (IsValid(pluto.ui.showcasepnl)) then
@@ -757,7 +779,6 @@ function pluto.ui.showcase(item)
 
 	pluto.ui.showcasepnl:SetItem(item)
 	pluto.ui.showcasepnl:InvalidateLayout(true)
-	pluto.ui.showcasepnl:SizeToChildren(true, true)
 
 	return pluto.ui.showcasepnl
 end

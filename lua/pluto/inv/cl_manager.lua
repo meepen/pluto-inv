@@ -45,6 +45,7 @@ function pluto.inv.readitem()
 			prefix = {},
 		}
 	}
+	item.Color = net.ReadColor()
 
 	item.ClassName = net.ReadString()
 

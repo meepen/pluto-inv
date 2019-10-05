@@ -49,6 +49,7 @@ function pluto.inv.writeitem(ply, item)
 		net.WriteBool(true)
 
 		net.WriteString(item.Tier.Name)
+		net.WriteColor(item.Tier.Color or color_white)
 		net.WriteString(item.ClassName)
 
 		if (item.Mods.prefix) then
@@ -191,7 +192,11 @@ function pluto.inv.readtabswitch(ply)
 	local tabid2 = net.ReadUInt(32)
 	local tabindex2 = net.ReadUInt(8)
 	
-	pluto.inv.switchtab(ply, tabid1, tabindex1, tabid2, tabindex2, print)
+	pluto.inv.switchtab(ply, tabid1, tabindex1, tabid2, tabindex2, function(succ)
+		if (not succ and IsValid(ply)) then
+			ply:Kick "tab switch failed. report to meepen on discord"
+		end
+	end)
 end
 
 function pluto.inv.readend()
