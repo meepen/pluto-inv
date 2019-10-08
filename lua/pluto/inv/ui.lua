@@ -18,7 +18,7 @@ local count = 6
 local PANEL = {}
 
 local colour = Material "models/debug/debugwhite"
-DEFINE_BASECLASS "ttt_curved_panel"
+DEFINE_BASECLASS "DImage"
 
 function PANEL:OnRemove()
 	BaseClass.OnRemove(self)
@@ -28,12 +28,17 @@ function PANEL:OnRemove()
 	end
 end
 
+local bg_image = Material "pluto/item_bg.png"
+
 function PANEL:Init()
 	self.Random = math.random()
 	self:SetKeyboardInputEnabled(false)
 	self:SetMouseInputEnabled(false)
-	self:SetColor(Color(255,0,0))
-	self:SetCurve(curve(0) / 2)
+end
+
+function PANEL:SetItem(item)
+	self.Item = item
+	self:SetWeapon(weapons.GetStored(item.ClassName))
 end
 
 function PANEL:SetWeapon(w)
@@ -45,12 +50,17 @@ function PANEL:SetWeapon(w)
 end
 
 function PANEL:Paint(w, h)
-	BaseClass.Paint(self, w, h)
-
 	local err = self.Model
 	if (not IsValid(err)) then
 		return
 	end
+
+	surface.SetDrawColor(self.Item.Color)
+	surface.DrawRect(0, 0, w, h)
+
+	surface.SetMaterial(bg_image)
+	surface.SetDrawColor(255, 255, 255, 255)
+	surface.DrawTexturedRect(0, 0, w, h)
 
 	local x, y = self:LocalToScreen(0, 0)
 	local mins, maxs = err:GetModelBounds()
@@ -81,48 +91,7 @@ function PANEL:OnRemove()
 	end
 end
 
-function PANEL:GetScissor()
-	return self:GetParent():GetScissor()
-end
-
-vgui.Register("pluto_weapon_inner", PANEL, "ttt_curved_panel")
-
-local PANEL = {}
-
-function PANEL:Init()
-	self.Random = math.random()
-	self:SetKeyboardInputEnabled(false)
-	self:SetMouseInputEnabled(false)
-	self:SetColor(inactive_color)
-	self:SetCurve(curve(0))
-	self.Inner = self:Add "pluto_weapon_inner"
-	self.Inner:Dock(FILL)
-	local pad = curve(0) / 2
-	self:DockPadding(pad, pad, pad, pad)
-end
-
-function PANEL:SetWeapon(w)
-	self.Inner:SetWeapon(w)
-end
-
-function PANEL:GhostClick(p, m)
-	if (m == MOUSE_LEFT and p.ClassName == "pluto_inventory_item") then
-		local parent = self:GetParent()
-		local gparent = p
-
-		local i = parent.Item
-		local o = gparent.Item
-		parent:SetItem(o)
-		gparent:SetItem(i)
-
-		pluto.inv.message()
-			:write("tabswitch", pluto.ui.pnl.Tab.ID, parent.TabIndex, pluto.ui.pnl.Tab.ID, gparent.TabIndex)
-			:send()
-	end
-	pluto.ui.ghost = nil
-end
-
-vgui.Register("pluto_weapon", PANEL, "ttt_curved_panel_outline")
+vgui.Register("pluto_weapon", PANEL, "DImage")
 
 local PANEL = {}
 function PANEL:Init()
@@ -159,9 +128,8 @@ function PANEL:SetItem(item)
 	end
 
 	self:SetCursor "hand"
-	self.Image.Inner:SetColor(item.Color)
 	self.Image:SetVisible(true)
-	self.Image:SetWeapon(weapons.GetStored(item.ClassName))
+	self.Image:SetItem(item)
 
 	if (IsValid(self.showcasepnl)) then
 		self:Showcase(item)
@@ -182,8 +150,25 @@ end
 
 function PANEL:OnMousePressed(code)
 	if (code == MOUSE_LEFT and self.Item) then
-		pluto.ui.ghost = self.Image
+		pluto.ui.ghost = self
 	end
+end
+
+function PANEL:GhostClick(p, m)
+	if (m == MOUSE_LEFT and p.ClassName == "pluto_inventory_item") then
+		local parent = self
+		local gparent = p
+
+		local i = parent.Item
+		local o = gparent.Item
+		parent:SetItem(o)
+		gparent:SetItem(i)
+
+		pluto.inv.message()
+			:write("tabswitch", pluto.ui.pnl.Tab.ID, parent.TabIndex, pluto.ui.pnl.Tab.ID, gparent.TabIndex)
+			:send()
+	end
+	pluto.ui.ghost = nil
 end
 
 function PANEL:PerformLayout(w, h)
@@ -662,7 +647,7 @@ function PANEL:SetItem(item)
 	surface.SetFont(self.ItemName:GetFont())
 
 	self.ItemDesc:SetFont "pluto_item_showcase_smol"
-	self.ItemDesc:SetText("")
+	self.ItemDesc:SetText ""
 	self.ItemDesc:DockMargin(0, 0, 0, pad / 2)
 	local z = 3
 

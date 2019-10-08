@@ -1,5 +1,21 @@
 pluto.weapons = pluto.weapons or {}
-pluto.tiers = pluto.tiers or {}
+pluto.tiers = pluto.tiers or setmetatable({}, {
+	__index = {
+		random = function()
+			local rand = math.random()
+		
+			for _, item in ipairs(pluto.tiers_pct) do
+				if (item.Percent >= rand) then
+					return item.Tier
+				end
+			end
+		
+			pwarnf("Reached end of loop in pluto.tiers.random, rand: %f", rand)
+		
+			return pluto.tiers.junk
+		end
+	}
+})
 
 local total_shares = 0
 for _, name in pairs {
@@ -45,22 +61,6 @@ for name, item in pairs(pluto.tiers) do
 		Tier = item
 	})
 end
-
-
-function pluto.tiers.random()
-	local rand = math.random()
-
-	for _, item in ipairs(pluto.tiers_pct) do
-		if (item.Percent >= rand) then
-			return item.Tier
-		end
-	end
-
-	pwarnf("Reached end of loop in pluto.tiers.random, rand: %f", rand)
-
-	return pluto.tiers.junk
-end
-
 
 function pluto.weapons.randomgun()
 	return table.Random(pluto.weapons.guns)
