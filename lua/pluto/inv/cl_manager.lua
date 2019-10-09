@@ -10,6 +10,7 @@ pluto.cl_inv = pluto.cl_inv or {}
 		}
 	}
 ]]
+pluto.cl_currency = pluto.cl_currency or {}
 
 pluto.received = {
 	item = {},
@@ -95,6 +96,12 @@ function pluto.inv.readtab()
 	end
 end
 
+function pluto.inv.readcurrencyupdate(ply)
+	local currency = net.ReadString()
+	local amt = net.ReadUInt(32)
+	pluto.cl_currency[currency] = amt
+end
+
 function pluto.inv.readtabupdate()
 	local tabid = net.ReadUInt(32)
 	local tabindex = net.ReadUInt(8)
@@ -131,13 +138,10 @@ function pluto.inv.send(what, ...)
 	end
 
 	net.WriteUInt(id, 8)
-	print("write" .. what)
 	local fn = pluto.inv["write" .. what]
 	fn(...)
 end
 
 function pluto.inv.readend()
-	pluto.inv.status = "ready"
-	pprintf("Inventory ready.")
 	return true
 end

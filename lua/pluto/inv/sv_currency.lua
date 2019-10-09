@@ -67,7 +67,7 @@ pluto.currency = {
 
 for _, item in pairs(pluto.currency.list) do
 	pluto.currency.shares = pluto.currency.shares + item.Shares
-	pluto.currency.byname[item.Name] = item
+	pluto.currency.byname[item.InternalName] = item
 
 	resource.AddFile("materials/" .. item.Icon)
 end

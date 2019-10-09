@@ -11,7 +11,8 @@ pluto.inv.messages = {
 		[2] = "mod",
 		[3] = "tab",
 		[4] = "status",
-		[5] = "tabupdate"
+		[5] = "tabupdate",
+		[6] = "currencyupdate",
 	}
 }
 

@@ -13,10 +13,44 @@ function pluto.inv.defaulttabs(steamid, cb)
 	end)
 end
 
+function pluto.inv.retrievecurrency(steamid, cb)
+	steamid = pluto.db.steamid64(steamid)
+
+	pluto.db.query("SELECT currency, amount FROM pluto_currency_tab WHERE owner = ?", {steamid}, function(err, q)
+		if (err) then
+			return cb(false)
+		end
+
+		local cur = {}
+		for _, item in pairs(q:getData()) do
+			cur[item.currency] = amount
+		end
+
+		cb(cur)
+	end)
+end
+
+function pluto.inv.addcurrency(steamid, currency, amt, cb)
+	steamid = pluto.db.steamid64(steamid)
+
+	pluto.db.query("INSERT INTO pluto_currency_tab (owner, currency, amount) VALUES(?, ?, ?) ON DUPLICATE KEY amount = amount + ?", {steamid, currency, amt, amt}, function(err, q)
+		if (err) then
+			return cb(false)
+		end
+
+		local ply = player.GetBySteamID64(steamid)
+		if (IsValid(ply) and pluto.inv.currencies[ply]) then
+			pluto.inv.currencies[ply][currency] = (pluto.inv.currencies[ply][currency] or 0) + amt
+		end
+
+		cb(true)
+	end)
+end
+
 function pluto.inv.retrievetabs(steamid, cb)
 	steamid = pluto.db.steamid64(steamid)
 
-	pluto.db.query("SELECT idx, color, name FROM pluto_tabs WHERE owner = ?", {steamid}, function(err, q)
+	pluto.db.query("SELECT idx, color, name, tab_type FROM pluto_tabs WHERE owner = ?", {steamid}, function(err, q)
 		if (err) then
 			return cb(false)
 		end
@@ -27,6 +61,7 @@ function pluto.inv.retrievetabs(steamid, cb)
 				Color = tab.color,
 				Name = tab.name,
 				Owner = steamid,
+				Type = tab.tab_type,
 			})
 		end
 

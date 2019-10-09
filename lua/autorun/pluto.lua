@@ -13,6 +13,7 @@ pluto.files.load {
 		"init.lua",
 		"weapons/override.lua",
 		"inv/sh_manager.lua",
+		"inv/sh_tabs.lua",
 	},
 	Server = {
 		"sv.lua",

@@ -11,6 +11,8 @@ pluto.inv.invs = pluto.inv.invs or {}
 	}
 ]]
 
+pluto.inv.currencies = pluto.inv.currencies or {}
+
 pluto.inv.sent = pluto.inv.sent or {}
 
 util.AddNetworkString "pluto_inv_data"
@@ -80,6 +82,7 @@ function pluto.inv.send(ply, what, ...)
 		pwarnf("id = nil for %s\n%s", what, debug.traceback())
 		return
 	end
+
 	net.WriteUInt(id, 8)
 	local fn = pluto.inv["write" .. what]
 	fn(ply, ...)
@@ -118,13 +121,16 @@ function pluto.inv.sendfullupdate(ply)
 	end
 
 	local m = pluto.inv.message(ply)
-		:write("status", "updating")
 		
 	for _, tab in pairs(pluto.inv.invs[ply]) do
 		m:write("tab", tab)
 	end
+
+	for currency in pairs(pluto.inv.currencies[ply]) do
+		m:write("currencyupdate", currency)
+	end
 	
-	m:send()
+	m:write("status", "ready"):send()
 end
 
 function pluto.inv.writetabupdate(ply, tabid, tabindex)
@@ -143,46 +149,99 @@ function pluto.inv.writetabupdate(ply, tabid, tabindex)
 	end
 end
 
-function pluto.inv.init(ply, cb)
+function pluto.inv.writecurrencyupdate(ply, currency)
+	net.WriteString(currency)
+	net.WriteUInt(pluto.inv.currencies[ply][currency], 32)
+end
+
+local function noop() end
+
+function pluto.inv.init(ply, cb2)
+	local function cb(success, reason)
+		local realcb = cb2
+		cb2 = noop
+
+		if (not success and IsValid(ply)) then
+			ply:Kick("Couldn't init inventory: " .. reason)
+		end
+
+		return realcb(success)
+	end
+
 	if (pluto.inv.invs[ply]) then
 		return cb(false)
 	end
 
-	pluto.inv.retrievetabs(ply, function(tabs)
+	local tabs, items
+
+	local success = 0
+	local function TrySucceed()
+		success = success + 1
 		if (not IsValid(ply)) then
-			return cb(false)
-		end
-		if (not tabs) then
-			ply:Kick "Tabs not retrieved. Please report on our discord to Meepen."
-			return cb(false)
+			return cb(false, "disconnected")
 		end
 
-		pluto.inv.retrieveitems(ply, function(items)
-			if (not IsValid(ply)) then
-				return cb(false)
+		if (success == 2) then
+			cb(pluto.inv.invs[ply])
+		end
+	end
+
+	local function InitTabs()
+		if (not tabs or not items) then
+			return
+		end
+
+		local inv = {}
+
+		for _, tab in pairs(tabs) do
+			inv[tab.RowID] = tab
+			tab.Items = {}
+		end
+
+		for _, item in pairs(items) do
+			local tab = inv[item.TabID]
+			tab.Items[item.TabIndex] = item
+		end
+
+		pluto.inv.invs[ply] = inv
+
+		TrySucceed()
+	end
+
+	pluto.inv.retrievetabs(ply, function(_tabs)
+		if (not _tabs) then
+			return cb(false, "tabs")
+		end
+
+		tabs = _tabs
+
+		InitTabs()
+	end)
+
+	pluto.inv.retrieveitems(ply, function(_items)
+		if (not _items) then
+			return cb(false, "items")
+		end
+
+		items = _items
+
+		InitTabs()
+	end)
+
+	pluto.inv.retrievecurrency(ply, function(currencies)
+		if (not currencies) then
+			return cb(false, "currency")
+		end
+
+		for name in pairs(pluto.currency.byname) do
+			if (not currencies[name]) then
+				currencies[name] = 0
 			end
-	
-			if (not items) then
-				ply:Kick "Items not retrieved. Please report on our discord to Meepen."
-				return cb(false)
-			end
+		end
 
+		pluto.inv.currencies[ply] = currencies
 
-			local inv = {}
-
-			for _, tab in pairs(tabs) do
-				inv[tab.RowID] = tab
-				tab.Items = {}
-			end
-
-			for _, item in pairs(items) do
-				local tab = inv[item.TabID]
-				tab.Items[item.TabIndex] = item
-			end
-
-			pluto.inv.invs[ply] = inv
-			cb(inv)
-		end)
+		TrySucceed()
 	end)
 end
 
@@ -191,10 +250,53 @@ function pluto.inv.readtabswitch(ply)
 	local tabindex1 = net.ReadUInt(8)
 	local tabid2 = net.ReadUInt(32)
 	local tabindex2 = net.ReadUInt(8)
-	
+
+	local tab1 = pluto.inv.invs[ply][tabid1]
+	local tab2 = pluto.inv.invs[ply][tabid1]
+
+	if (not tab1 or not tab2) then
+		ply:Kick "tab switch failed (1) report to meepen on discord"
+		return
+	end
+
+	local i1 = tab1.Items[tabindex1]
+	local i2 = tab2.Items[tabindex2]
+
+	if (not i1 and not i2) then
+		return
+	end
+
+	local tabtype1 = pluto.tabs[tab1.Type]
+	local tabtype2 = pluto.tabs[tab2.Type]
+
+	if (not tabtype1 or not tabtype2) then
+		ply:Kick "tab switch failed (2) report to meepen on discord"
+		return
+	end
+
+	if (i1 and (not tabtype1.canremove(tabindex1, i1) or not tabtype2.canaccept(tabindex2, i1))) then
+		ply:Kick "tab switch failed (3) report to meepen on discord"
+		return
+	end
+
+	if (i2 and (not tabtype2.canremove(tabindex2, i2) or not tabtype1.canaccept(tabindex1, i2))) then
+		ply:Kick "tab switch failed (4) report to meepen on discord"
+		return
+	end
+
+	if (tabindex2 < 1 or tabindex2 >= tabtype2.size) then
+		ply:Kick "tab switch failed (5) report to meepen on discord"
+		return
+	end
+
+	if (tabindex1 < 1 or tabindex1 >= tabtype1.size) then
+		ply:Kick "tab switch failed (6) report to meepen on discord"
+		return
+	end
+
 	pluto.inv.switchtab(ply, tabid1, tabindex1, tabid2, tabindex2, function(succ)
 		if (not succ and IsValid(ply)) then
-			ply:Kick "tab switch failed. report to meepen on discord"
+			ply:Kick "tab switch failed (7) report to meepen on discord"
 		end
 	end)
 end
