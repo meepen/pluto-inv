@@ -873,50 +873,79 @@ local function ToRomanNumerals(s)
     return ret
 end
 
+function PANEL:AddMod(mod)
+	local z = self.ZPos or 3
+
+	local pnl = self:Add "EditablePanel"
+	pnl:SetZPos(z)
+	pnl:Dock(TOP)
+
+	local p = pnl:Add "DLabel"
+	p:SetFont "pluto_item_showcase_smol"
+	p:SetText(mod.Name .. " " .. ToRomanNumerals(mod.Tier))
+	p:SetTextColor(white_text)
+	p:Dock(LEFT)
+	p:SetContentAlignment(7)
+	p:SetZPos(0)
+
+	pnl.Label = p
+
+	local p = pnl:Add "DLabel"
+	p:SetFont "pluto_item_showcase_desc"
+	p:SetTextColor(white_text)
+	p:SetWrap(true)
+	p:SetAutoStretchVertical(true)
+	p:Dock(RIGHT)
+	p:SetZPos(1)
+	p:SetText(mod.Desc)
+
+	pnl.Desc = p
+
+	pnl:InvalidateLayout(true)
+
+	function pnl:PerformLayout(w, h)
+		self.Label:SetWide(w / 4)
+		self.Desc:SetWide(math.Round(w * 3 / 5))
+		timer.Simple(0,function()
+			if (not IsValid(self)) then
+				return
+			end
+			self.Desc:SizeToContentsY()
+			self:SetTall(self.Desc:GetTall())
+			self:GetParent():GetParent():Invalidate()
+		end)
+	end
+
+	pnl:InvalidateLayout(true)
+
+	self.ZPos = z + 1
+
+	return pnl
+end
+
 function PANEL:SetItem(item)
-	self.ItemName:SetTextColor(item.Color)
+	self.ItemName:SetTextColor(color_black)
 	self.ItemName:SetText(item.Tier .. " " .. weapons.GetStored(item.ClassName).PrintName)
 	self.ItemName:SizeToContentsY()
+	self.ItemBackground:SetTall(self.ItemName:GetTall() * 1.5)
+	local pad = self.ItemName:GetTall() * 0.25
+	self.ItemBackground:DockPadding(pad, pad, pad, pad)
+	self.ItemBackground:SetColor(item.Color)
 	surface.SetFont(self.ItemName:GetFont())
 
 	self.ItemDesc:SetFont "pluto_item_showcase_smol"
 	self.ItemDesc:SetText ""
 	self.ItemDesc:DockMargin(0, 0, 0, pad / 2)
-	local z = 3
 
 	if (item.Mods and item.Mods.prefix) then
 		for _, mod in ipairs(item.Mods.prefix) do
-			local p = self:Add "pluto_centered_wrap"
-			p:SetFont "pluto_item_showcase_smol"
-			p:SetText(mod.Name .. " " .. ToRomanNumerals(mod.Tier))
-			p:Dock(TOP)
-			p:SetZPos(z)
-			z = z + 1
-
-			local p = self:Add "pluto_centered_wrap"
-			p:SetFont "pluto_item_showcase_desc"
-			p:SetText(mod.Desc)
-			p:Dock(TOP)
-			p:SetZPos(z)
-			z = z + 1
+			self:AddMod(mod):DockMargin(0, pad / 2, 0, pad / 2)
 		end
 	end
 
 	if (item.Mods and item.Mods.suffix) then
 		for _, mod in ipairs(item.Mods.suffix) do
-			local p = self:Add "pluto_centered_wrap"
-			p:SetFont "pluto_item_showcase_smol"
-			p:SetText(mod.Name .. " " .. ToRomanNumerals(mod.Tier))
-			p:Dock(TOP)
-			p:SetZPos(z)
-			z = z + 1
-
-			local p = self:Add "pluto_centered_wrap"
-			p:SetFont "pluto_item_showcase_desc"
-			p:SetText(mod.Desc)
-			p:Dock(TOP)
-			p:SetZPos(z)
-			z = z + 1
+			self:AddMod(mod):DockMargin(0, pad / 2, 0, pad / 2)
 		end
 	end
 
@@ -938,7 +967,8 @@ function PANEL:Init()
 	surface.CreateFont("pluto_item_showcase_header", {
 		font = "Lato",
 		extended = true,
-		size = math.max(30, h / 15)
+		size = math.max(30, h / 28),
+		weight = 500,
 	})
 
 	surface.CreateFont("pluto_item_showcase_desc", {
@@ -954,9 +984,13 @@ function PANEL:Init()
 		size = math.max(h / 50, 16)
 	})
 
-	self:SetColor(ColorAlpha(bg_color, 230))
-	self.ItemName = self:Add "DLabel"
-	self.ItemName:Dock(TOP)
+	self:SetColor(bg_color)
+	self.ItemBackground = self:Add "ttt_curved_panel"
+	self.ItemBackground:SetCurve(curve(0))
+	self.ItemBackground:Dock(TOP)
+
+	self.ItemName = self.ItemBackground:Add "DLabel"
+	self.ItemName:Dock(FILL)
 	self.ItemName:SetContentAlignment(5)
 	self.ItemName:SetFont "pluto_item_showcase_header"
 
@@ -971,9 +1005,9 @@ local PANEL = {}
 function PANEL:Init()
 	self.Inner = self:Add "pluto_item_showcase_inner"
 	self.Inner:Dock(FILL)
-	self:SetCurve(curve(4))
-	self:SetColor(white_text)
-	local pad = curve(4) / 2
+	self:SetCurve(curve(0))
+	self:SetColor(color_black)
+	local pad = curve(0) / 2
 	self.Inner:SetCurve(pad)
 	self:DockPadding(pad, pad, pad, pad)
 end
@@ -982,6 +1016,10 @@ function PANEL:SetItem(item)
 	self:SetWide(math.max(300, math.min(600, ScrW() / 3)))
 	self.Inner:SetWide(math.max(300, math.min(600, ScrW() / 3)))
 	self.Inner:SetItem(item)
+	self:Invalidate()
+end
+
+function PANEL:Invalidate()
 	self.Inner:InvalidateLayout(true)
 	self.Inner:SizeToChildren(true, true)
 	self:SizeToChildren(true, true)
