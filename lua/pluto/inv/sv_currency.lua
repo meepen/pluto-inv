@@ -1,77 +1,44 @@
-pluto.currency = {
-	list = {
-		{
-			InternalName = "dice",
-			Name = "Reflective Die",
-			Icon = "pluto/currencies/dice.png",
-			Description = "Randomize the rolls on an item",
-			SubDescription = "Arizor lost this die in a bet with a farmer long ago. That farmer won a bet with Yuowi later, and gave him the power to create these at will",
-			Shares = 700,
-			Use = function(item)
-			end,
-		},
-		{
-			InternalName = "droplet",
-			Name = "Magic Droplet",
-			Icon = "pluto/currencies/droplet.png",
-			Description = "Removes all modifiers, and adds new ones",
-			SubDescription = "It's said this magic droplet was formed from one of Yuowi's former lovers",
-			Shares = 5000,
-			Use = function(item)
-			end,
-		},
-		{
-			InternalName = "hand",
-			Name = "Yuowi's Taking",
-			Icon = "pluto/currencies/goldenhand.png",
-			Description = "Takes a modifier away from a weapon",
-			SubDescription = "One of the many hands of Yuowi's victims",
-			Shares = 400,
-			Use = function(item)
-			end,
-		},
-		{
-			InternalName = "tome",
-			Name = "Arizor's Tome",
-			Icon = "pluto/currencies/tome.png",
-			Description = "Increases the tier of two random modifiers, and lowers the tier of another",
-			SubDescription = "Arizor hands these out to promising gunsmiths to augment their weapons and further their goals",
-			Shares = 300,
-			Use = function(item)
-			end,
-		},
-		{
-			InternalName = "mirror",
-			Name = "Mara's Mirror",
-			Icon = "pluto/currencies/brokenmirror.png",
-			Description = "Creates an unmodifiable second version of an item",
-			SubDescription = "Mara threw this mirror out after seeing what she had become",
-			Shares = 1,
-			Use = function(item)
-			end,
-		},
-		{
-			InternalName = "heart",
-			Name = "Mara's Heart",
-			Icon = "pluto/currencies/heart.png",
-			Description = "Adds a modifier to an item",
-			SubDescription = "Mara gives her heart to people who have shown compassion in their time of need",
-			Shares = 5,
-			Use = function(item)
-			end,
-		},
+pluto.currency.shares = 0
+
+for name, values in pairs {
+	dice = {
+		Shares = 700,
+		Use = function(item)
+		end,
 	},
-	byname = {},
-	shares = 0,
-}
+	droplet = {
+		Shares = 5000,
+		Use = function(item)
+		end,
+	},
+	hand = {
+		Shares = 400,
+		Use = function(item)
+		end,
+	},
+	tome = {
+		Shares = 300,
+		Use = function(item)
+		end,
+	},
+	mirror = {
+		Shares = 1,
+		Use = function(item)
+		end,
+	},
+	heart = {
+		Shares = 5,
+		Use = function(item)
+		end,
+	},
+} do
+	table.Merge(pluto.currency.byname[name], values)
+end
 
 for _, item in pairs(pluto.currency.list) do
 	pluto.currency.shares = pluto.currency.shares + item.Shares
-	pluto.currency.byname[item.InternalName] = item
-
 	resource.AddFile("materials/" .. item.Icon)
 end
-
 
 function pluto.currency.random(n)
 	if (not n) then

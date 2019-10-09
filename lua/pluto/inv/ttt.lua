@@ -28,7 +28,7 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 
 		local i = pluto.weapons.generatetier()
 
-		i.TabID, i.TabIndex = pluto.inv.getfreespace(ply)
+		i.TabID, i.TabIndex = pluto.inv.getfreespace(ply, i)
 
 		if (not i.TabID) then
 			ply:ChatPrint("you are too full to receive a gun!")

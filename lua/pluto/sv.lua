@@ -9,12 +9,11 @@ pluto.files.load {
 		"inv/init.lua",
 		"inv/sv_manager.lua",
 		"inv/ttt.lua",
-		"inv/sv_currency.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty
 	Resources = {
-		"materials/pluto/item_bg.png",
+		"materials/pluto/item_bg_real.png",
 	}
 }
 

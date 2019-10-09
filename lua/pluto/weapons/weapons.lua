@@ -233,19 +233,6 @@ end
 function pluto.weapons.generateunique(unique)
 end
 
-local function FindEmptyTab(ply)
-	local inv = pluto.inv.invs[ply]
-	
-	for tabid, tab in SortedPairsByMemberValue(inv, "RowID") do
-		for i = 1, 64 do
-			if (not tab.Items[i]) then
-				return tabid, i
-			end
-		end
-	end
-end
-
-
 concommand.Add("pluto_add_weapon", function(ply, cmd, args)
 	if (not IsValid(ply)) then
 		return
@@ -255,9 +242,10 @@ concommand.Add("pluto_add_weapon", function(ply, cmd, args)
 		return
 	end
 
-	local i = pluto.weapons.generatetier()
+	PrintTable(args)
+	local i = pluto.weapons.generatetier(args[1])
 
-	i.TabID, i.TabIndex = pluto.inv.getfreespace(ply)
+	i.TabID, i.TabIndex = pluto.inv.getfreespace(ply, i)
 
 	if (not i.TabID) then
 		pwarnf("no tabid")

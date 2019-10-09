@@ -143,12 +143,17 @@ function pluto.inv.renametab(tab, cb)
 	end)
 end
 
-function pluto.inv.getfreespace(ply)
+function pluto.inv.getfreespace(ply, item)
 	local inv = pluto.inv.invs[ply]
 	
 	for tabid, tab in SortedPairsByMemberValue(inv, "RowID") do
-		for i = 1, 64 do
-			if (not tab.Items[i]) then
+		local tabtype = pluto.tabs[tab.Type]
+		if (not tabtype) then
+			pwarnf("Unknown tab type: %s", tab.Type)
+			continue
+		end
+		for i = 1, tabtype.size do
+			if (not tab.Items[i] and tabtype.canaccept(i, item)) then
 				return tabid, i
 			end
 		end

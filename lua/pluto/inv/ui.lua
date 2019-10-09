@@ -12,6 +12,7 @@ end
 
 local bg_color = Color(36, 36, 37)
 local inactive_color = Color(47, 47, 48)
+local light_color = Color(84, 89, 89)
 
 local count = 6
 
@@ -28,17 +29,110 @@ function PANEL:OnRemove()
 	end
 end
 
-local bg_image = Material "pluto/item_bg.png"
+local function ColorToHSL(col)
+	local r = col.r / 255
+	local g = col.g / 255
+	local b = col.b / 255
+	local max = math.max(r, g, b)
+	local min = math.min(r, g, b)
+	local d = max - min
+
+	local h
+	if (d == 0) then 
+		h = 0
+	elseif (max == r) then
+		h = (g - b) / d % 6
+	elseif (max == g) then
+		h = (b - r) / d + 2
+	elseif (max == b) then
+		h = (r - g) / d + 4
+	end
+	local l = (min + max) / 2
+	local s = d == 0 and 0 or d / (1 - math.abs(2 * l - 1))
+
+	return h * 60, s, l
+end
+
+local function hue2rgb(p, q, t)
+	if (t < 0) then
+		t = t + 1
+	elseif (t > 1) then
+		t = t - 1
+	end
+
+	if (t < 1 / 6) then
+		return p + (q - p) * 6 * t
+	end
+
+	if (t < 0.5) then
+		return q
+	end
+
+	if (t < 2 / 3) then
+		return p + (q - p) * (2 / 3 - t) * 6
+	end
+
+	return p
+end
+
+local function HSLToColor(h, s, l)
+	local c = (1 - math.abs(2 * l - 1)) * s
+	local hp = h / 60.0
+	local x = c * (1 - math.abs((hp % 2) - 1))
+	local rgb1;
+	if (h ~= h) then
+		rgb1 = {[0] = 0, 0, 0}
+	elseif (hp <= 1) then
+		rgb1 = {[0] = c, x, 0}
+	elseif (hp <= 2) then
+		rgb1 = {[0] = x, c, 0}
+	elseif (hp <= 3) then
+		rgb1 = {[0] = 0, c, x}
+	elseif (hp <= 4) then
+		rgb1 = {[0] = 0, x, c}
+	elseif (hp <= 5) then
+		rgb1 = {[0] = x, 0, c}
+	elseif (hp <= 6) then
+		rgb1 = {[0] = c, 0, x}
+	end
+	local m = l - c * 0.5;
+	return Color(
+		math.Round(255 * (rgb1[0] + m)),
+		math.Round(255 * (rgb1[1] + m)),
+		math.Round(255 * (rgb1[2] + m))
+	)
+end
+
+local function Brightness(col)
+	local r, g, b = col.r / 255, col.g / 255, col.b / 255
+
+	return math.sqrt(r * r * 0.241 + g * g * 0.691 + b * b * 0.068)
+end
 
 function PANEL:Init()
 	self.Random = math.random()
 	self:SetKeyboardInputEnabled(false)
 	self:SetMouseInputEnabled(false)
+
+	self:SetCurve(curve(0))
+
+	self.Material = Material "pluto/item_bg_real.png"
 end
 
 function PANEL:SetItem(item)
 	self.Item = item
 	self:SetWeapon(weapons.GetStored(item.ClassName))
+
+	local _h, s, l = ColorToHSL(item.Color)
+	s = math.Clamp(s, 0, 0.6)
+	l = 0.5
+	local col = HSLToColor(_h, s, l)
+	self:SetColor(col)
+
+	_h, s, l = ColorToHSL(col)
+	local num = (math.Clamp(Brightness(col), 0.25, 0.75) - 0.25) * 2
+	col = HSLToColor(_h, s + num * 0.3, l + 0.3)
+	self.MaterialColor = col:ToVector()
 end
 
 function PANEL:SetWeapon(w)
@@ -49,40 +143,55 @@ function PANEL:SetWeapon(w)
 	self.HoldType = w.HoldType
 end
 
+DEFINE_BASECLASS "ttt_curved_panel"
+
 function PANEL:Paint(w, h)
-	local err = self.Model
-	if (not IsValid(err)) then
-		return
-	end
+	render.SetStencilWriteMask(1)
+	render.SetStencilTestMask(1)
+	render.SetStencilReferenceValue(1)
+	render.SetStencilCompareFunction(STENCIL_ALWAYS)
+	render.SetStencilPassOperation(STENCIL_REPLACE)
+	render.SetStencilFailOperation(STENCIL_KEEP)
+	render.SetStencilZFailOperation(STENCIL_KEEP)
+	render.ClearStencil()
 
-	surface.SetDrawColor(self.Item.Color)
-	surface.DrawRect(0, 0, w, h)
+	render.SetStencilEnable(true)
+		BaseClass.Paint(self, w, h)
 
-	surface.SetMaterial(bg_image)
-	surface.SetDrawColor(255, 255, 255, 255)
-	surface.DrawTexturedRect(0, 0, w, h)
+		render.SetStencilPassOperation(STENCIL_KEEP)
+		render.SetStencilCompareFunction(STENCIL_EQUAL)
+		local err = self.Model
+		if (not IsValid(err)) then
+			return
+		end
 
-	local x, y = self:LocalToScreen(0, 0)
-	local mins, maxs = err:GetModelBounds()
-	local mul = mins:Distance(maxs) / 45
-	local offset 
-	if (self.HoldType == "pistol") then
-		offset = -Vector((maxs.x - mins.x) * -1 / 3, 0, (maxs.z - mins.z) * 3 / 3)
-	else
-		offset = -Vector((maxs.x - mins.x) * -0.5 / 3, 0, (maxs.z - mins.z) * 1.5 / 3)
-	end
-	local angle = Angle(0, -90)
-	cam.Start3D(angle:Forward() * mul * -56 - offset / 2, angle, 36, x, y, w, h)
-		render.SuppressEngineLighting(true)
-			err:SetAngles(Angle(-40, 10, 10))
-			err:SetPos(vector_origin)
-			render.PushFilterMin(TEXFILTER.ANISOTROPIC)
-			render.PushFilterMag(TEXFILTER.ANISOTROPIC)
-				err:DrawModel()
-			render.PopFilterMag()
-			render.PopFilterMin()
-		render.SuppressEngineLighting(false)
-	cam.End3D()
+		self.Material:SetVector("$color", self.MaterialColor)
+		surface.SetMaterial(self.Material)
+		surface.SetDrawColor(255, 255, 255, 255)
+		surface.DrawTexturedRect(0, 0, w, h)
+
+		local x, y = self:LocalToScreen(0, 0)
+		local mins, maxs = err:GetModelBounds()
+		local mul = mins:Distance(maxs) / 45
+		local offset 
+		if (self.HoldType == "pistol") then
+			offset = -Vector((maxs.x - mins.x) * -1 / 3, 0, (maxs.z - mins.z) * 3 / 3)
+		else
+			offset = -Vector((maxs.x - mins.x) * -0.5 / 3, 0, (maxs.z - mins.z) * 1.5 / 3)
+		end
+		local angle = Angle(0, -90)
+		cam.Start3D(angle:Forward() * mul * -56 - offset / 2, angle, 36, x, y, w, h)
+			render.SuppressEngineLighting(true)
+				err:SetAngles(Angle(-40, 10, 10))
+				err:SetPos(vector_origin)
+				render.PushFilterMin(TEXFILTER.ANISOTROPIC)
+				render.PushFilterMag(TEXFILTER.ANISOTROPIC)
+					err:DrawModel()
+				render.PopFilterMag()
+				render.PopFilterMin()
+			render.SuppressEngineLighting(false)
+		cam.End3D()
+	render.SetStencilEnable(false)
 end
 
 function PANEL:OnRemove()
@@ -91,7 +200,11 @@ function PANEL:OnRemove()
 	end
 end
 
-vgui.Register("pluto_weapon", PANEL, "DImage")
+function PANEL:GetScissor()
+	return self:GetParent():GetScissor()
+end
+
+vgui.Register("pluto_weapon", PANEL, "ttt_curved_panel")
 
 local PANEL = {}
 function PANEL:Init()
@@ -174,7 +287,7 @@ end
 function PANEL:PerformLayout(w, h)
 	self:SetCurve(curve(0))
 	local p = curve(0) / 2
-	self:DockPadding(p, p, p, p)
+	--self:DockPadding(p, p, p, p)
 end
 
 vgui.Register("pluto_inventory_item", PANEL, "ttt_curved_panel")
@@ -217,6 +330,98 @@ function PANEL:SetTab(tab)
 end
 
 vgui.Register("pluto_inventory_items", PANEL, "pluto_inventory_base")
+
+local PANEL = {}
+
+function PANEL:Init()
+	self.Background = self:Add "ttt_curved_panel"
+
+	self.Image = self:Add "DImage"
+
+	self.Image:SetImage "pluto/currencies/goldenhand.png"
+
+	self.Background:Dock(BOTTOM)
+	local pad = curve(0)
+	self.Background:DockPadding(pad / 2, pad / 2, pad / 2, pad / 2)
+	self.Background:SetCurve(pad)
+	self.Background:SetColor(light_color)
+
+	self.Text = self.Background:Add "DLabel"
+
+	self.Text:Dock(FILL)
+	self.Text:SetContentAlignment(3)
+	self.Text:SetText "100"
+end
+
+function PANEL:Think()
+	self.Text:SetText(tostring(pluto.cl_currency[self.Currency] or 0))
+end
+
+local LastHeight = 0
+
+function PANEL:PerformLayout(w, h)
+	self.Background:SetTall(h * 0.7)
+
+	if (LastHeight ~= h) then
+		surface.CreateFont("pluto_inventory_currency", {
+			font = "Roboto",
+			size = math.floor(math.max(h * 1/3, 16) / 2) * 2,
+		})
+	end
+
+	self.Text:SetFont "pluto_inventory_currency"
+
+	local edge = 0.02
+	h = h
+	self.Image:SetSize(h * (1 - edge * 2), h * (1 - edge * 2))
+	self.Image:SetPos(h * (edge + 0.1), h * edge)
+end
+
+function PANEL:SetCurrency(cur)
+	self.Currency = cur
+	self.Image:SetImage(pluto.currency.byname[cur].Icon)
+end
+
+vgui.Register("pluto_inventory_currency", PANEL, "EditablePanel")
+
+local PANEL = {}
+
+DEFINE_BASECLASS "pluto_inventory_base"
+function PANEL:Init()
+	BaseClass.Init(self)
+	
+	self.Layout = self:Add "DIconLayout"
+	self.Layout:Dock(FILL)
+
+	self.Currencies = {}
+
+	for _, item in ipairs(pluto.currency.list) do
+		local p = self.Layout:Add "pluto_inventory_currency"
+		p:SetCurrency(item.InternalName)
+		self.Currencies[item.InternalName] = p
+	end
+end
+
+function PANEL:PerformLayout(w, h)
+	local count = 3
+	local d = 1
+	local size = math.floor(w / (count + d) / count) * count
+	local divide = size / (count + 2)
+
+	for _, item in pairs(self.Currencies) do
+		item:SetSize(size, size * 0.4)
+	end
+
+	self.Layout:SetSpaceX(divide)
+	self.Layout:SetSpaceY(divide)
+
+	self:DockPadding(divide * 1.5, divide * 1.5, divide * 1.5, divide * 1.5)
+end
+
+function PANEL:SetTab(tab)
+end
+
+vgui.Register("pluto_inventory_currencies", PANEL, "pluto_inventory_base")
 
 local PANEL = {}
 
@@ -480,8 +685,6 @@ function PANEL:OnScreenSizeChanged()
 end
 
 function PANEL:SetTab(tab)
-	print("TAB",tab)
-	PrintTable(tab or {})
 	local tabtype = pluto.tabs[tab.Type] or {element = "pluto_invalid_tab"}
 	if (IsValid(self.Items) and self.Items.ClassName ~= tabtype.element) then
 		self.Items:Remove()

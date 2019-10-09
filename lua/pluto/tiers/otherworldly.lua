@@ -5,5 +5,5 @@ return {
 		dot = 2,
 	},
 	Shares = 500,
-	Color = Color(0, 255, 141),
+	Color = Color(185, 70, 177),
 }

@@ -6,7 +6,7 @@ pluto.tabs = {
 		canremove = function(tabindex, item)
 			return true
 		end,
-		size = 64,
+		size = 36,
 		element = "pluto_inventory_items",
 	},
 	currency = {
