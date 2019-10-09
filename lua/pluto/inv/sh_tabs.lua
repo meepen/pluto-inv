@@ -7,6 +7,7 @@ pluto.tabs = {
 			return true
 		end,
 		size = 64,
+		element = "pluto_inventory_items",
 	},
 	currency = {
 		canaccept = function(tabindex, item)
@@ -16,5 +17,6 @@ pluto.tabs = {
 			return false
 		end,
 		size = 0,
+		element = "pluto_inventory_currencies",
 	},
 }

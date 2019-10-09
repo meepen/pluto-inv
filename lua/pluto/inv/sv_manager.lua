@@ -98,6 +98,7 @@ end
 function pluto.inv.writetab(ply, tab)
 	net.WriteUInt(tab.RowID, 32)
 	net.WriteString(tab.Name)
+	net.WriteString(tab.Type)
 	net.WriteUInt(tab.Color, 24) -- rgb8
 
 	net.WriteUInt(table.Count(tab.Items), 8)

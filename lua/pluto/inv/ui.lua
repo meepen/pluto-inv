@@ -441,15 +441,27 @@ end
 vgui.Register("pluto_inventory_tab_controller", PANEL, "EditablePanel")
 
 local PANEL = {}
+function PANEL:Init()
+	self.Label = self:Add "DLabel"
+	self.Label:Dock(FILL)
+	self.Label:SetFont "BudgetLabel"
+	self.Label:SetText "INVALID TAB"
+	self.Label:SetContentAlignment(5)
+end
+
+function PANEL:SetTab(tab)
+	self.Label:SetText("INVALID TAB: " .. tab.Type)
+end
+
+vgui.Register("pluto_invalid_tab", PANEL, "pluto_inventory_base")
+
+
+local PANEL = {}
 
 function PANEL:Init()
 	self:SetColor(Color(13, 12, 12, 220))
 	self:SetCurve(curve(3))
 	self:OnScreenSizeChanged()
-
-	self.Items = self:Add "pluto_inventory_items"
-	self.Items:Dock(TOP)
-	self.Items:SetZPos(1)
 
 	self.Tabs = self:Add "pluto_inventory_tab_controller"
 	self.Tabs:Dock(TOP)
@@ -468,6 +480,24 @@ function PANEL:OnScreenSizeChanged()
 end
 
 function PANEL:SetTab(tab)
+	print("TAB",tab)
+	PrintTable(tab or {})
+	local tabtype = pluto.tabs[tab.Type] or {element = "pluto_invalid_tab"}
+	if (IsValid(self.Items) and self.Items.ClassName ~= tabtype.element) then
+		self.Items:Remove()
+	end
+
+	if (not IsValid(self.Items)) then
+		pprintf("Recreating tab %s (%s)...", tab.Type, tabtype.element)
+
+		self.Items = self:Add(tabtype.element)
+		if (not IsValid(self.Items)) then
+			self.Items = self:Add "pluto_invalid_tab"
+		end
+		self.Items:Dock(TOP)
+		self.Items:SetZPos(1)
+	end
+
 	self.Tab = tab
 	self.Items:SetTab(tab)
 end

@@ -4,12 +4,12 @@ pluto.inv = pluto.inv or {
 }
 
 function pluto.inv.defaulttabs(steamid, cb)
-	pluto.inv.addtab(steamid, function(tab)
-		if (not tab) then
+	pluto.inv.addtabs(steamid, {"equip", "currency", "normal"}, function(tabs)
+		if (not tabs) then
 			return cb(false)
 		end
 
-		cb { tab }
+		cb(tabs)
 	end)
 end
 
@@ -73,28 +73,40 @@ function pluto.inv.retrievetabs(steamid, cb)
 	end)
 end
 
-function pluto.inv.addtab(steamid, cb)
+function pluto.inv.addtabs(steamid, types, cb)
+	if (#types == 0) then
+		return cb {}
+	end
+
 	steamid = pluto.db.steamid64(steamid)
-	pluto.db.transact({
-		{ "INSERT INTO pluto_tabs (name, owner) SELECT CAST(COUNT(*) + 1 as CHAR), ? FROM pluto_tabs WHERE owner = ?", {steamid, steamid} },
-		{ "SELECT idx, color, name FROM pluto_tabs WHERE idx = LAST_INSERT_ID()", nil, function(err, q)
+	local queries = {}
+
+	local tabs = {}
+	for i = 1, #types do
+		local type = types[i]
+		queries[i * 2 - 1] = { "INSERT INTO pluto_tabs (name, owner, tab_type) SELECT CAST(COUNT(*) + 1 as CHAR), ?, ? FROM pluto_tabs WHERE owner = ?", {steamid, type or "normal", steamid} }
+		queries[i * 2]     = { "SELECT idx, color, name, tab_type FROM pluto_tabs WHERE idx = LAST_INSERT_ID()", nil, function(err, q)
 			if (err) then
 				return
 			end
 
 			local tab = q:getData()[1]
 
-			cb {
+			tabs[i] = {
 				RowID = tab.idx,
 				Color = tab.color,
 				Name = tab.name,
 				Owner = steamid,
+				Type = tab.tab_type,
 			}
+		end }
+	end
 
-		end}
-	}, function(err)
+	pluto.db.transact(queries, function(err)
 		if (err) then
 			cb(false)
+		else
+			cb(tabs)
 		end
 	end)
 end
