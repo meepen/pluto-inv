@@ -146,6 +146,10 @@ end
 DEFINE_BASECLASS "ttt_curved_panel"
 
 function PANEL:Paint(w, h)
+	if (pluto.ui.ghost == self:GetParent() and not pluto.ui.ghost.paintover) then
+		return
+	end
+
 	render.SetStencilWriteMask(1)
 	render.SetStencilTestMask(1)
 	render.SetStencilReferenceValue(1)
@@ -1062,7 +1066,7 @@ function PANEL:Init()
 		font = "Lato",
 		extended = true,
 		size = math.max(30, h / 28),
-		weight = 500,
+		weight = 1000,
 	})
 
 	surface.CreateFont("pluto_item_showcase_desc", {
@@ -1085,7 +1089,7 @@ function PANEL:Init()
 
 	self.ItemName = self.ItemBackground:Add "DLabel"
 	self.ItemName:Dock(FILL)
-	self.ItemName:SetContentAlignment(5)
+	self.ItemName:SetContentAlignment(4)
 	self.ItemName:SetFont "pluto_item_showcase_header"
 
 	self.ItemDesc = self:Add "pluto_centered_wrap"
@@ -1162,7 +1166,9 @@ hook.Add("PostRenderVGUI", "pluto_ghost", function()
 
 		local mi, ki = p:IsMouseInputEnabled(), p:IsKeyboardInputEnabled()
 
+		pluto.ui.ghost.paintover = true
 		p:PaintAt(x, y) -- this resets mouseinput / keyboardinput???
+		pluto.ui.ghost.paintover = false
 		p:SetMouseInputEnabled(mi)
 		p:SetKeyboardInputEnabled(ki)
 

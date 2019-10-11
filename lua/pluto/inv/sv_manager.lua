@@ -299,8 +299,6 @@ function pluto.inv.readtabswitch(ply)
 		if (not succ and IsValid(ply)) then
 			ply:Kick "tab switch failed (7) report to meepen on discord"
 		end
-
-		print(succ)
 	end)
 end
 

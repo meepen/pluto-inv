@@ -11,7 +11,7 @@ end
 
 function MOD:GetDescription(rolls)
 	local roll = rolls[1]
-	return string.format("Hits have a %.01f%% to shock", roll)
+	return string.format("Hits have a %.01f%% chance to shock", roll)
 end
 
 MOD.Tiers = {

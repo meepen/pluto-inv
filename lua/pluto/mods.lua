@@ -215,24 +215,6 @@ function pluto.mods.generateaffixes(wpn, affixcount, prefixmax, suffixmax, guara
 	return retn
 end
 
-concommand.Add("pluto_test_mod_generate_speed", function(ply)
-	if (IsValid(ply)) then
-		return
-	end
-
-	local time = SysTime
-
-	local start = time()
-
-	local count = 100000
-
-	for i = 1, count do
-		pluto.mods.generateaffixes(nil, 6)
-	end
-
-	print((time() - start) / count)
-end)
-
 function pluto.mods.getrolls(mod, tier, rolls)
 	local retn = {}
 	tier = mod.Tiers[tier]
@@ -244,32 +226,3 @@ function pluto.mods.getrolls(mod, tier, rolls)
 
 	return retn
 end
-
-
-concommand.Add("pluto_generate_random_mods", function(ply, cmd, args)
-	if (IsValid(ply)) then
-		return
-	end
-
-
-	local affixcount = tonumber(args[1] or 5)
-	local count = tonumber(args[2] or 1)
-
-
-	for i = 1, count do
-		pprintf("Generated #%i", i)
-		for type, list in pairs(pluto.mods.generateaffixes(nil, affixcount)) do
-			if (#list == 0) then
-				continue
-			end
-
-			pprintf("    %s", type)
-
-			for _, item in ipairs(list) do
-				local mod = pluto.mods.byname[item.Mod]
-				local rolls = pluto.mods.getrolls(mod, item.Tier, item.Roll)
-				pprintf("        %s tier %i - %s", pluto.mods.formataffix(mod.Type, mod.Name), item.Tier, mod:GetDescription(rolls))
-			end
-		end
-	end
-end)
