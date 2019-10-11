@@ -59,3 +59,9 @@ hook.Add("PlutoDatabaseInitialize", "pluto_db_init", function(db)
 		},
 	}:wait(true)
 end)
+
+hook.Add("CheckPassword", "pluto_db", function()
+	RunConsoleCommand("sv_hibernate_think", GetConVar("sv_hibernate_think"):GetInt() + 1)
+	pluto.db.db:ping()
+	RunConsoleCommand("sv_hibernate_think", GetConVar("sv_hibernate_think"):GetInt() - 1)
+end)
