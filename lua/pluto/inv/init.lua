@@ -23,7 +23,7 @@ function pluto.inv.retrievecurrency(steamid, cb)
 
 		local cur = {}
 		for _, item in pairs(q:getData()) do
-			cur[item.currency] = amount
+			cur[item.currency] = item.amount
 		end
 
 		cb(cur)
