@@ -411,9 +411,6 @@ function PANEL:SetCurrency(cur)
 end
 
 function PANEL:GhostClick(p)
-	if (p.ClassName == "pluto_inventory_tab") then
-		return true
-	end
 	pluto.ui.ghost = nil
 	return false
 end
@@ -1268,8 +1265,10 @@ hook.Add("VGUIMousePressAllowed", "pluto_ghost", function(mouse)
 	if (IsValid(pluto.ui.ghost)) then
 		local g = pluto.ui.ghost
 
-		if (g.GhostClick) then
-			return not g:GhostClick(vgui.GetHoveredPanel(), mouse)
+		local hover = vgui.GetHoveredPanel()
+
+		if (g.GhostClick and hover.ClassName ~= "pluto_inventory_tab") then
+			return not g:GhostClick(hover, mouse)
 		end
 	end
 end)
