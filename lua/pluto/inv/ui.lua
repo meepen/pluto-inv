@@ -212,6 +212,8 @@ end
 vgui.Register("pluto_weapon", PANEL, "ttt_curved_panel")
 
 local PANEL = {}
+DEFINE_BASECLASS "ttt_curved_panel"
+
 function PANEL:Init()
 	self:SetColor(Color(84, 89, 89, 255))
 
@@ -220,6 +222,15 @@ function PANEL:Init()
 	self.Image:SetVisible(false)
 
 	self:SetCursor "arrow"
+end
+
+
+function PANEL:Paint(w, h)
+	if (not self.Tab.Active) then
+		return
+	end
+
+	BaseClass.Paint(self, w, h)
 end
 
 function PANEL:Showcase(item)
@@ -236,9 +247,10 @@ function PANEL:OnRemove()
 	end
 end
 
-function PANEL:SetItem(item, tabid)
-	if (tabid) then
-		self.TabID = tabid
+function PANEL:SetItem(item, tab)
+	if (tab) then
+		self.TabID = tab.ID
+		self.Tab = tab
 	end
 
 	self.Item = item
@@ -340,7 +352,7 @@ end
 
 function PANEL:SetTab(tab)
 	for i = 1, count * count do
-		self.Items[i]:SetItem(tab.Items[i], tab.ID)
+		self.Items[i]:SetItem(tab.Items[i], tab)
 	end
 end
 
@@ -367,7 +379,7 @@ function PANEL:Init()
 end
 
 function PANEL:OnMousePressed(mouse)
-	if (mouse == MOUSE_RIGHT) then
+	if (mouse == MOUSE_RIGHT and pluto.cl_currency[self.Currency] > 0) then
 		pluto.ui.ghost = self
 	end
 end
@@ -400,13 +412,14 @@ end
 
 function PANEL:Think()
 	local width_biggening = self:GetWide() / 5
-	local size = self:GetWide() - width_biggening + width_biggening * self:GetHoverPercent()
+	local size = self:GetWide() - width_biggening + width_biggening * (pluto.cl_currency[self.Currency] <= 0 and 0 or self:GetHoverPercent())
 
 	self.Image:SetSize(size, size)
 	self.Image:Center()
 end
 
 function PANEL:SetCurrency(cur)
+	self.Currency = cur
 	self.Image:SetImage(pluto.currency.byname[cur].Icon)
 end
 
@@ -590,7 +603,7 @@ function PANEL:SetTab(tab)
 
 	pprintf("Creating tab %s (%s)...", tab.Type, tabtype.element)
 
-	self.Items = vgui.Create(tabtype.element)
+	self.Items = self:Add(tabtype.element)
 	self.Items:SetVisible(false)
 	if (not IsValid(self.Items)) then
 		self.Items = self:Add "pluto_invalid_tab"
@@ -600,6 +613,7 @@ function PANEL:SetTab(tab)
 	self.Items:SetTab(tab)
 
 	tab.CurrentElement = self.Items
+	tab.CurrentParent = self
 
 	self.Tab = tab
 end
@@ -871,8 +885,9 @@ end
 
 function PANEL:SetTab(tab)
 	if (IsValid(self.Items)) then
-		self.Items:SetParent()
+		self.Items:SetParent(self.Tab.CurrentParent)
 		self.Items:SetVisible(false)
+		self.Tab.Active = false
 	end
 
 	self.Items = tab.CurrentElement
@@ -880,6 +895,7 @@ function PANEL:SetTab(tab)
 	self.Items:SetVisible(true)
 
 	self.Tab = tab
+	tab.Active = true
 end
 
 function PANEL:PerformLayout(w, h)
