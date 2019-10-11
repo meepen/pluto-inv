@@ -452,7 +452,7 @@ function PANEL:PerformLayout(w, h)
 	if (LastHeight ~= h) then
 		surface.CreateFont("pluto_inventory_currency", {
 			font = "Roboto",
-			size = math.floor(math.max(h * 1/3, 16) / 2) * 2,
+			size = math.floor(math.max(h * 0.45, 16) / 2) * 2,
 		})
 	end
 
