@@ -437,7 +437,7 @@ function PANEL:Init()
 
 	self.Text:Dock(FILL)
 	self.Text:SetContentAlignment(3)
-	self.Text:SetText "100"
+	self.Text:SetText "0"
 end
 
 function PANEL:Think()

@@ -10,7 +10,17 @@ function ENT:StartTouch(e)
 		net.Start(self:GetClass())
 			net.WriteVector(self:GetPos())
 		net.Send(e)
-		print(e, "collected", self)
+
+		local cur = self.Currency
+		
+		pluto.inv.addcurrency(e, cur.InternalName, 1, function(succ)
+			if (not succ) then
+				e:ChatPrint("i tried to add currency but it didn't work, tell meepen you lost: " .. cur.InternalName)
+				return
+			end
+
+			e:ChatPrint("You received a " .. cur.Name)
+		end)
 		self:Remove()
 	end
 end

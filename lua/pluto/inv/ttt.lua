@@ -17,13 +17,18 @@ end)
 hook.Add("TTTEndRound", "pluto_endround", function()
 	for _, obj in pairs(round.GetStartingPlayers()) do
 		local ply = obj.Player
-		if (not IsValid(ply) or math.random(3) ~= 1) then
+		if (not IsValid(ply)) then
 			continue
 		end
 
 		if (table.Count(pluto.afk[ply]) <= 3) then
 			ply.WasAFK = true
 			pprintf("%s was afk this round", ply:Nick())
+			continue
+		end
+		ply.WasAFK = false
+
+		if (not IsValid(ply) or math.random(3) ~= 1) then
 			continue
 		end
 
