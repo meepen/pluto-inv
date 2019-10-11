@@ -140,6 +140,7 @@ function PANEL:SetWeapon(w)
 		self.Model:Remove()
 	end
 	self.Model = ClientsideModel(w.WorldModel, RENDERGROUP_OTHER)
+	self.Model:SetNoDraw(true)
 	self.HoldType = w.HoldType
 end
 
@@ -350,18 +351,19 @@ DEFINE_BASECLASS "ttt_curved_panel_outline"
 
 function PANEL:Init()
 	self.Image = self:Add "DImage"
-	self.Image:Dock(FILL)
+	--self.Image:Dock(FILL)
 	local paint = self.Image.Paint
 	self.Image.Paint = function(self, w, h)
 		if (self:GetParent() ~= pluto.ui.ghost or self:GetParent().paintover) then
 			paint(self, w, h)
 		end
 	end
-	self:DockPadding(2, 2, 2, 2)
-	self:SetCurve(2)
 	-- self:SetColor(ColorAlpha(light_color, 200))
 	self.Image:SetImage "pluto/currencies/goldenhand.png"
 	self:SetCursor "hand"
+	self.HoverAnim = 0.05
+	self.HoverTime = SysTime() - self.HoverAnim
+	self.Hovered = true -- idk whatever
 end
 
 function PANEL:OnMousePressed(mouse)
@@ -370,18 +372,38 @@ function PANEL:OnMousePressed(mouse)
 	end
 end
 
-function PANEL:Paint(w, h)
-	if (self.Hovered and self ~= pluto.ui.ghost) then
-		BaseClass.Paint(self, w, h)
+function PANEL:ToggleHover()
+	self.HoverTime = SysTime() - self.HoverAnim * (1 - math.Clamp((SysTime() - self.HoverTime) / self.HoverAnim, 0, 1))
+	self.Hovered = not self.Hovered
+end
+
+function PANEL:GetHoverPercent()
+	if (self == pluto.ui.ghost and pluto.ui.ghost.paintover) then
+		return 1
 	end
+
+	local pct = math.Clamp((SysTime() - self.HoverTime) / self.HoverAnim, 0, 1)
+	if (self.Hovered) then
+		pct = 1 - pct
+	end
+
+	return pct
 end
 
 function PANEL:OnCursorExited()
-	self.Hovered = false
+	self:ToggleHover()
 end
 
 function PANEL:OnCursorEntered()
-	self.Hovered = true
+	self:ToggleHover()
+end
+
+function PANEL:Think()
+	local width_biggening = self:GetWide() / 5
+	local size = self:GetWide() - width_biggening + width_biggening * self:GetHoverPercent()
+
+	self.Image:SetSize(size, size)
+	self.Image:Center()
 end
 
 function PANEL:SetCurrency(cur)
@@ -396,7 +418,7 @@ function PANEL:GhostClick(p)
 	return false
 end
 
-vgui.Register("pluto_inventory_currency_image", PANEL, "ttt_curved_panel_outline")
+vgui.Register("pluto_inventory_currency_image", PANEL, "EditablePanel")
 
 local PANEL = {}
 
