@@ -285,12 +285,12 @@ function pluto.inv.readtabswitch(ply)
 		return
 	end
 
-	if (tabindex2 < 1 or tabindex2 >= tabtype2.size) then
+	if (tabindex2 < 1 or tabindex2 > tabtype2.size) then
 		ply:Kick "tab switch failed (5) report to meepen on discord"
 		return
 	end
 
-	if (tabindex1 < 1 or tabindex1 >= tabtype1.size) then
+	if (tabindex1 < 1 or tabindex1 > tabtype1.size) then
 		ply:Kick "tab switch failed (6) report to meepen on discord"
 		return
 	end
@@ -299,6 +299,42 @@ function pluto.inv.readtabswitch(ply)
 		if (not succ and IsValid(ply)) then
 			ply:Kick "tab switch failed (7) report to meepen on discord"
 		end
+
+		print(succ)
+	end)
+end
+
+function pluto.inv.readitemdelete(ply)
+	local tabid = net.ReadUInt(32)
+	local tabindex = net.ReadUInt(8)
+	local itemid = net.ReadUInt(32)
+
+	local tab = pluto.inv.invs[ply][tabid]
+
+	if (not tab) then
+		ply:Kick "no tab"
+		return
+	end
+
+	if (not tab.Items[tabindex]) then
+		ply:Kick "Tried to delete an item that wasn't there."
+		return
+	end
+
+	local i = tab.Items[tabindex]
+
+	if (i.RowID ~= itemid) then
+		ply:Kick "Prevented you from deleting the wrong item Report to meepen."
+		return
+	end
+	
+	pluto.inv.deleteitem(ply, itemid, function(succ)
+		if (not succ) then
+			ply:Kick "Couldn't delete item."
+			return
+		end
+
+		tab.Items[tabindex] = nil
 	end)
 end
 

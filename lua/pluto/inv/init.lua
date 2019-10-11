@@ -220,3 +220,21 @@ function pluto.inv.retrieveitems(steamid, cb)
 		end)
 	end)
 end
+
+function pluto.inv.deleteitem(steamid, itemid, cb)
+	steamid = pluto.db.steamid64(steamid)
+
+	print(steamid, itemid)
+
+	pluto.db.query("DELETE pluto_items FROM pluto_items INNER JOIN pluto_tabs ON pluto_items.tab_id = pluto_tabs.idx WHERE pluto_tabs.owner = ? AND pluto_items.idx = ?", {steamid, itemid}, function(err, q)
+		if (err) then
+			return cb(false)
+		end
+
+		if (q:affectedRows() ~= 1) then
+			return cb(false)
+		end
+
+		cb(true)
+	end)
+end

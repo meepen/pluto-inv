@@ -116,6 +116,12 @@ function pluto.inv.readtabupdate()
 	hook.Run("PlutoTabUpdate", tabid, tabindex, item)
 end
 
+function pluto.inv.writeitemdelete(tabid, tabindex, itemid)
+	net.WriteUInt(tabid, 32)
+	net.WriteUInt(tabindex, 8)
+	net.WriteUInt(itemid, 32)
+end
+
 function pluto.inv.writetabswitch(tabid1, tabindex1, tabid2, tabindex2)
 	local tab1, tab2 = pluto.cl_inv[tabid1], pluto.cl_inv[tabid2]
 

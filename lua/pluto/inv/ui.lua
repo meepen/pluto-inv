@@ -231,7 +231,11 @@ function PANEL:OnRemove()
 	end
 end
 
-function PANEL:SetItem(item)
+function PANEL:SetItem(item, tabid)
+	if (tabid) then
+		self.TabID = tabid
+	end
+
 	self.Item = item
 
 	if (not item) then
@@ -268,6 +272,10 @@ function PANEL:OnMousePressed(code)
 end
 
 function PANEL:GhostClick(p, m)
+	if (m == MOUSE_LEFT and p.ClassName == "pluto_inventory_garbage") then
+		return true
+	end
+
 	if (m == MOUSE_LEFT and p.ClassName == "pluto_inventory_item") then
 		local parent = self
 		local gparent = p
@@ -282,6 +290,8 @@ function PANEL:GhostClick(p, m)
 			:send()
 	end
 	pluto.ui.ghost = nil
+
+	return false
 end
 
 function PANEL:PerformLayout(w, h)
@@ -660,17 +670,98 @@ end
 
 vgui.Register("pluto_invalid_tab", PANEL, "pluto_inventory_base")
 
+local PANEL = {}
+function PANEL:OnMousePressed(mouse)
+	if (IsValid(pluto.ui.ghost)) then
+		-- assume is inventory item
+		self.Deleting = {
+			TabID = pluto.ui.ghost.TabID,
+			TabIndex = pluto.ui.ghost.TabIndex,
+			Item = pluto.ui.ghost.Item.ID,
+			Time = CurTime(),
+			EndTime = CurTime() + 2,
+		}
+	end
+end
+
+function PANEL:Think()
+	if (IsValid(pluto.ui.ghost) and self.Deleting) then
+		if (self.Deleting.EndTime < CurTime()) then
+
+			pluto.inv.message()
+				:write("itemdelete", self.Deleting.TabID, self.Deleting.TabIndex, self.Deleting.Item)
+				:send()
+			
+			pluto.ui.ghost:SetItem(nil)
+
+			self:StopIfDeleting()
+		end
+	end
+end
+function PANEL:StopIfDeleting()
+	if (self.Deleting) then
+		pluto.ui.ghost = nil
+		self.Deleting = nil
+	end
+end
+
+function PANEL:GhostMove(p, x, y, w, h)
+
+	if (self.Deleting) then
+		local pct = (CurTime() - self.Deleting.Time) / (self.Deleting.EndTime - self.Deleting.Time)
+
+		x = x + (math.random() - 0.5) * pct * w * 0.25
+		y = y + (math.random() - 0.5) * pct * h * 0.25
+	end
+
+	return x, y
+end
+
+function PANEL:GhostPaint(p, x, y, w, h)
+	if (self.Deleting) then
+		local pct = (CurTime() - self.Deleting.Time) / (self.Deleting.EndTime - self.Deleting.Time)
+
+		local midx, midy = x + w / 2, y + h / 2
+
+		render.SetScissorRect(midx - w / 2 * pct, midy - h / 2 * pct, midx + w / 2 * pct, midy + h / 2 * pct, true)
+		surface.SetDrawColor(255,0,0,200)
+		surface.DrawRect(x, y, w, h)
+		render.SetScissorRect(0, 0, 0, 0, false)
+	end
+end
+
+function PANEL:OnMouseReleased(mouse)
+	self:StopIfDeleting()
+end
+function PANEL:OnCursorExited()
+	self:StopIfDeleting()
+end
+vgui.Register("pluto_inventory_garbage", PANEL, "ttt_curved_panel")
+
+local PANEL = {}
+
+function PANEL:Init()
+	self.Garbage = self:Add "pluto_inventory_garbage"
+	self.Garbage:Dock(RIGHT)
+end
+
+vgui.Register("pluto_inventory_bar", PANEL, "pluto_inventory_base")
 
 local PANEL = {}
 
 function PANEL:Init()
 	self:SetColor(Color(13, 12, 12, 220))
 	self:SetCurve(curve(3))
-	self:OnScreenSizeChanged()
 
 	self.Tabs = self:Add "pluto_inventory_tab_controller"
 	self.Tabs:Dock(TOP)
 	self.Tabs:SetZPos(0)
+
+	self.ControlBar = self:Add "pluto_inventory_bar"
+	self.ControlBar:Dock(FILL)
+	self.ControlBar:SetZPos(1)
+
+	self:OnScreenSizeChanged()
 
 	self:MakePopup()
 	self:SetPopupStayAtBack(true)
@@ -680,7 +771,10 @@ function PANEL:OnScreenSizeChanged()
 	local w = math.min(500, math.max(400, ScrW() / 3))
 	self:SetSize(w, w * 1.2)
 	pad = w * 0.05
-	self:DockPadding(pad, pad, pad, pad)
+	local smol_pad = pad * 2 / 3
+	self:DockPadding(pad, smol_pad, pad, smol_pad)
+
+	self.ControlBar:DockMargin(0, smol_pad, 0, 0)
 	self:Center()
 end
 
@@ -1048,10 +1142,16 @@ hook.Add("PostRenderVGUI", "pluto_ghost", function()
 			return
 		end
 
+		local hover = vgui.GetHoveredPanel()
+
 		local w, h = p:GetSize()
 		local x, y = gui.MousePos()
 		x = x - w / 2
 		y = y - h / 2
+
+		if (IsValid(hover) and hover.GhostMove) then
+			x, y = hover:GhostMove(p, x, y, w, h)
+		end
 		
 		local b
 
@@ -1065,6 +1165,10 @@ hook.Add("PostRenderVGUI", "pluto_ghost", function()
 		p:PaintAt(x, y) -- this resets mouseinput / keyboardinput???
 		p:SetMouseInputEnabled(mi)
 		p:SetKeyboardInputEnabled(ki)
+
+		if (IsValid(hover) and hover.GhostPaint) then
+			hover:GhostPaint(p, x, y, w, h)
+		end
 
 		if (p.SetScissor) then
 			p:SetScissor(b)

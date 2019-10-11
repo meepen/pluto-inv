@@ -4,6 +4,7 @@ pluto.inv.messages = {
 	cl2sv = {
 		[0] = "end",
 		[1] = "tabswitch",
+		[2] = "itemdelete",
 	},
 	sv2cl = {
 		[0] = "end",
