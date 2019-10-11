@@ -41,7 +41,9 @@ function pluto.inv.addcurrency(steamid, currency, amt, cb)
 		local ply = player.GetBySteamID64(steamid)
 		if (IsValid(ply) and pluto.inv.currencies[ply]) then
 			pluto.inv.currencies[ply][currency] = (pluto.inv.currencies[ply][currency] or 0) + amt
-			-- net message
+			pluto.inv.message(ply)
+				:write("currencyupdate", currency)
+				:send()
 		end
 
 		cb(true)
