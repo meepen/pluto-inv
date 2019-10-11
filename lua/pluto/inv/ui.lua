@@ -346,13 +346,64 @@ end
 vgui.Register("pluto_inventory_items", PANEL, "pluto_inventory_base")
 
 local PANEL = {}
+DEFINE_BASECLASS "ttt_curved_panel_outline"
+
+function PANEL:Init()
+	self.Image = self:Add "DImage"
+	self.Image:Dock(FILL)
+	local paint = self.Image.Paint
+	self.Image.Paint = function(self, w, h)
+		if (self:GetParent() ~= pluto.ui.ghost or self:GetParent().paintover) then
+			paint(self, w, h)
+		end
+	end
+	self:DockPadding(2, 2, 2, 2)
+	self:SetCurve(2)
+	-- self:SetColor(ColorAlpha(light_color, 200))
+	self.Image:SetImage "pluto/currencies/goldenhand.png"
+	self:SetCursor "hand"
+end
+
+function PANEL:OnMousePressed(mouse)
+	if (mouse == MOUSE_RIGHT) then
+		pluto.ui.ghost = self
+	end
+end
+
+function PANEL:Paint(w, h)
+	if (self.Hovered and self ~= pluto.ui.ghost) then
+		BaseClass.Paint(self, w, h)
+	end
+end
+
+function PANEL:OnCursorExited()
+	self.Hovered = false
+end
+
+function PANEL:OnCursorEntered()
+	self.Hovered = true
+end
+
+function PANEL:SetCurrency(cur)
+	self.Image:SetImage(pluto.currency.byname[cur].Icon)
+end
+
+function PANEL:GhostClick(p)
+	if (p.ClassName == "pluto_inventory_tab") then
+		return true
+	end
+	pluto.ui.ghost = nil
+	return false
+end
+
+vgui.Register("pluto_inventory_currency_image", PANEL, "ttt_curved_panel_outline")
+
+local PANEL = {}
 
 function PANEL:Init()
 	self.Background = self:Add "ttt_curved_panel"
 
-	self.Image = self:Add "DImage"
-
-	self.Image:SetImage "pluto/currencies/goldenhand.png"
+	self.Image = self:Add "pluto_inventory_currency_image"
 
 	self.Background:Dock(BOTTOM)
 	local pad = curve(0)
@@ -393,7 +444,7 @@ end
 
 function PANEL:SetCurrency(cur)
 	self.Currency = cur
-	self.Image:SetImage(pluto.currency.byname[cur].Icon)
+	self.Image:SetCurrency(cur)
 end
 
 vgui.Register("pluto_inventory_currency", PANEL, "EditablePanel")
@@ -515,6 +566,23 @@ function PANEL:SetTab(tab)
 	if (self:GetParent().Current == self and tab) then
 		self:GetParent():SetTab(tab)
 	end
+
+	local tabtype = pluto.tabs[tab.Type] or {element = "pluto_invalid_tab"}
+
+	pprintf("Creating tab %s (%s)...", tab.Type, tabtype.element)
+
+	self.Items = vgui.Create(tabtype.element)
+	self.Items:SetVisible(false)
+	if (not IsValid(self.Items)) then
+		self.Items = self:Add "pluto_invalid_tab"
+	end
+	self.Items:Dock(TOP)
+	self.Items:SetZPos(1)
+	self.Items:SetTab(tab)
+
+	tab.CurrentElement = self.Items
+
+	self.Tab = tab
 end
 
 vgui.Register("pluto_inventory_tab", PANEL, "pluto_inventory_base")
@@ -526,8 +594,7 @@ function PANEL:Init()
 	self.CurPos = 0
 
 	for _, tab in SortedPairsByMemberValue(pluto.cl_inv, "ID") do
-		local pnl = self:AddTab "pluto_inventory_tab"
-		pnl:SetTab(tab)
+		self:AddTab("pluto_inventory_tab", tab)
 	end
 end
 
@@ -579,8 +646,9 @@ function PANEL:Select(tab)
 	tab:DoSelect()
 end
 
-function PANEL:AddTab(class)
+function PANEL:AddTab(class, tabt)
 	local tab = self:Add(class)
+	tab:SetTab(tabt)
 	tab:SetWide(100)
 
 	table.insert(self.Tabs, tab)
@@ -783,24 +851,16 @@ function PANEL:OnScreenSizeChanged()
 end
 
 function PANEL:SetTab(tab)
-	local tabtype = pluto.tabs[tab.Type] or {element = "pluto_invalid_tab"}
-	if (IsValid(self.Items) and self.Items.ClassName ~= tabtype.element) then
-		self.Items:Remove()
+	if (IsValid(self.Items)) then
+		self.Items:SetParent()
+		self.Items:SetVisible(false)
 	end
 
-	if (not IsValid(self.Items)) then
-		pprintf("Recreating tab %s (%s)...", tab.Type, tabtype.element)
-
-		self.Items = self:Add(tabtype.element)
-		if (not IsValid(self.Items)) then
-			self.Items = self:Add "pluto_invalid_tab"
-		end
-		self.Items:Dock(TOP)
-		self.Items:SetZPos(1)
-	end
+	self.Items = tab.CurrentElement
+	self.Items:SetParent(self)
+	self.Items:SetVisible(true)
 
 	self.Tab = tab
-	self.Items:SetTab(tab)
 end
 
 function PANEL:PerformLayout(w, h)
