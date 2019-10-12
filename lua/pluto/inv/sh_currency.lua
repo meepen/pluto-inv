@@ -28,7 +28,7 @@ pluto.currency = {
 			InternalName = "tome",
 			Name = "Arizor's Tome",
 			Icon = "pluto/currencies/tome.png",
-			Description = "Increases the tier of two random modifiers, and lowers the tier of another",
+			Description = "Increases the tier of a random modifier and lowers the tier of another",
 			SubDescription = "Arizor hands these out to promising gunsmiths to augment their weapons and further their goals",
 			Color = Color(142, 94, 166),
 		},

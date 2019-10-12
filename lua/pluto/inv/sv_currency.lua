@@ -91,7 +91,63 @@ for name, values in pairs {
 	},
 	heart = {
 		Shares = 5,
-		Use = function(item)
+		Use = function(ply, item)
+			if (not item.Mods) then
+				return
+			end
+
+			local prefixes = #item.Mods.prefix
+			local suffixes = #item.Mods.suffix
+
+			if (prefixes + suffixes == item.Tier.affixes) then
+				return
+			end
+			
+			local have = {}
+
+			for _, Mods in pairs(item.Mods) do
+				for _, mod in pairs(Mods) do
+					have[mod.Mod] = true
+				end
+			end
+
+			local potential = {}
+
+			local allowed = {}
+
+			if (prefixes < 3) then
+				local t = {}
+				for _, item in pairs(pluto.mods.prefix) do
+					if (not have[item.InternalName]) then
+						t[#t + 1] = item
+					end
+				end
+				if (#t > 0) then
+					allowed.prefix = t
+				end
+			end
+
+			if (suffixes < 3) then
+				local t = {}
+				for _, item in pairs(pluto.mods.suffix) do
+					if (not have[item.InternalName]) then
+						t[#t + 1] = item
+					end
+				end
+				if (#t > 0) then
+					allowed.suffix = t
+				end
+			end
+
+			local mods, type = table.Random(allowed)
+
+			local toadd = pluto.mods.bias(weapons.GetStored(item.ClassName), mods, tagbiases)[1]
+			
+			local newmod = pluto.mods.rollmod(toadd, item.Tier.rolltier, item.Tier.roll)
+			
+			table.insert(item.Mods[type], newmod)
+
+			UpdateAndDecrement(ply, item, "heart")
 		end,
 	},
 } do
@@ -197,7 +253,7 @@ end)
 hook.Add("TTTBeginRound", "pluto_currency", function()
 	for _, item in pairs(round.GetStartingPlayers()) do
 		if (item.Player.WasAFK) then
-			--continue
+			continue
 		end
 
 		local points = (pluto.currency.tospawn[item.Player] or 1) * 4
@@ -215,5 +271,5 @@ end)
 concommand.Add("pluto_spawn_cur", function(ply)
 	local pos = ply:GetEyeTrace().HitPos
 
-	pluto.currency.spawnfor(ply, "hand", pos)
+	pluto.currency.spawnfor(ply, "heart", pos)
 end)

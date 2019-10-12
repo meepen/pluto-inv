@@ -116,7 +116,7 @@ end
 	end
 ]]
 
-local function bias(wpn, list, biases)
+function pluto.mods.bias(wpn, list, biases)
 	biases = biases or {}
 
 	local retn = {}
@@ -149,7 +149,6 @@ local function bias(wpn, list, biases)
 
 	return retn
 end
-
 
 function pluto.mods.generateaffixes(wpn, affixcount, prefixmax, suffixmax, guaranteed, tagbiases, rolltier, roll)
 	local allowed = {
@@ -184,8 +183,8 @@ function pluto.mods.generateaffixes(wpn, affixcount, prefixmax, suffixmax, guara
 
 
 	local potential = {
-		suffix = bias(wpn, pluto.mods.suffix, tagbiases),
-		prefix = bias(wpn, pluto.mods.prefix, tagbiases),
+		suffix = pluto.mods.bias(wpn, pluto.mods.suffix, tagbiases),
+		prefix = pluto.mods.bias(wpn, pluto.mods.prefix, tagbiases),
 		current = {
 			suffix = 1,
 			prefix = 1,

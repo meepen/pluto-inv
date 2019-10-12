@@ -87,7 +87,12 @@ function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll)
 		tier = pluto.tiers.random()
 	end
 
-	local biases = tier.biases or {}
+	local biases
+	if (tier.biases) then
+		biases = table.Copy(tier.biases)
+	else
+		biases = {}
+	end
 
 	if (tagbiases) then
 		for k, v in pairs(tagbiases) do

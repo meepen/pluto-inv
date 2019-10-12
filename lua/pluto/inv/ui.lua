@@ -1134,6 +1134,7 @@ function PANEL:AddMod(mod)
 	pnl:InvalidateLayout(true)
 
 	self.ZPos = z + 1
+	self.Last = pnl
 
 	return pnl
 end
@@ -1162,6 +1163,8 @@ function PANEL:SetItem(item)
 		self.ItemSubDesc:DockMargin(0, pad / 2, 0, pad / 2)
 	end
 
+	self.Last = self.ItemSubDesc
+
 	if (item.Mods and item.Mods.prefix) then
 		for _, mod in ipairs(item.Mods.prefix) do
 			self:AddMod(mod):DockMargin(pad, pad / 2, pad, pad / 2)
@@ -1180,6 +1183,9 @@ function PANEL:SetItem(item)
 	for _, child in pairs(self:GetChildren()) do
 		child:InvalidateLayout(true)
 	end
+
+	local x, y = self:LocalToScreen(self.Last:GetPos())
+	y = y + self.Last:GetTall()
 end
 
 function PANEL:Init()

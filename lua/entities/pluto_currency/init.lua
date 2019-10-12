@@ -14,6 +14,10 @@ function ENT:StartTouch(e)
 		local cur = self.Currency
 		
 		pluto.inv.addcurrency(e, cur.InternalName, 1, function(succ)
+			if (not IsValid(e)) then
+				return
+			end
+
 			if (not succ) then
 				e:ChatPrint("i tried to add currency but it didn't work, tell meepen you lost: " .. cur.InternalName)
 				return
