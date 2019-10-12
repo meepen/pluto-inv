@@ -220,7 +220,7 @@ function pluto.mods.getrolls(mod, tier, rolls)
 	for i, roll in ipairs(rolls) do
 		local idx = (i - 1) * 2 + 1
 		local min, max = tier[idx], tier[idx + 1]
-		retn[i] = math.random() * (max - min) + min
+		retn[i] = roll * (max - min) + min
 	end
 
 	return retn
