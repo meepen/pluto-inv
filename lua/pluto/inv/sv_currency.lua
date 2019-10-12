@@ -1,30 +1,50 @@
 pluto.currency.shares = 0
 
+local function UpdateAndDecrement(ply, item, currency)
+	local trans = pluto.weapons.update(item, function(id)
+		if (not IsValid(ply)) then
+			return
+		end
+
+		pluto.inv.message(ply)
+			:write("item", item)
+			:send()
+
+	end, true)
+	trans:addQuery(pluto.inv.addcurrency(ply, currency, -1, function() end, true))
+	trans:start()
+end
+
 for name, values in pairs {
 	dice = {
 		Shares = 700,
-		Use = function(item)
+		Use = function(ply, item)
+			if (not item.Mods) then
+				return
+			end
+			local tier = item.Tier
+
+			local changed = false
+			for _, Mods in pairs(item.Mods) do
+				for _, mod in pairs(Mods) do
+					for k, num in ipairs(pluto.mods.rollmod(pluto.mods.byname[mod.Mod], function() return mod.Tier end, tier.roll).Roll) do
+						mod.Roll[k] = num
+						changed = true
+					end
+				end
+			end
+
+			if (changed) then
+				UpdateAndDecrement(ply, item, "dice")
+			end
 		end,
 	},
 	droplet = {
 		Shares = 5000,
 		Use = function(ply, item)
-			PrintTable(item)
 			item.Mods = pluto.weapons.generatetier(item.Tier, item.ClassName).Mods
-			local trans = pluto.weapons.update(item, function(id)
-				if (not IsValid(ply)) then
-					return
-				end
-
-				pluto.inv.message(ply)
-					:write("item", item)
-					:send()
-
-			end, true)
-			trans:addQuery(pluto.inv.addcurrency(ply, "droplet", -1, function()
-				-- TODO(meep): notify?
-			end, true))
-			trans:start()
+			
+			UpdateAndDecrement(ply, item, "droplet")
 		end,
 	},
 	hand = {
@@ -33,7 +53,7 @@ for name, values in pairs {
 		end,
 	},
 	tome = {
-		Shares = 300,
+		Shares = 100,
 		Use = function(item)
 		end,
 	},
@@ -75,18 +95,20 @@ pluto.currency.navs = {
 	total = 0,
 }
 
-for _, nav in pairs(navmesh.GetAllNavAreas()) do
-	local dist = nav:GetCorner(2):Distance(nav:GetCorner(0))
-
-	table.insert(pluto.currency.navs, {
-		Size = dist,
-		Nav = nav
-	})
-
-	pluto.currency.navs.total = pluto.currency.navs.total + dist
-end
-
 function pluto.currency.randompos()
+	if (pluto.currency.navs.total == 0) then
+		for _, nav in pairs(navmesh.GetAllNavAreas()) do
+			local dist = nav:GetCorner(2):Distance(nav:GetCorner(0))
+	
+			table.insert(pluto.currency.navs, {
+				Size = dist,
+				Nav = nav
+			})
+	
+			pluto.currency.navs.total = pluto.currency.navs.total + dist
+		end
+	end
+
 	local rand = math.random() * pluto.currency.navs.total
 	local initial = rand
 

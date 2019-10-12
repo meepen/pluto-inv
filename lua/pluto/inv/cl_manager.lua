@@ -12,7 +12,7 @@ pluto.cl_inv = pluto.cl_inv or {}
 ]]
 pluto.cl_currency = pluto.cl_currency or {}
 
-pluto.received = {
+pluto.received = pluto.received or {
 	item = {},
 }
 
@@ -43,13 +43,24 @@ function pluto.inv.readitem()
 		Mods = {
 			prefix = {},
 			suffix = {},
-		}
+		},
+		Version = 0,
 	}
+
+	item.Version = item.Version + 1
 
 	item.Tier = net.ReadString()
 	item.Color = net.ReadColor()
 
 	item.ClassName = net.ReadString()
+
+	for k in pairs(item.Mods.prefix) do
+		item.Mods.prefix[k] = nil
+	end
+
+	for k in pairs(item.Mods.suffix) do
+		item.Mods.suffix[k] = nil
+	end
 
 	for i = 1, net.ReadUInt(8) do
 		item.Mods.prefix[i] = pluto.inv.readmod()

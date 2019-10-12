@@ -236,6 +236,7 @@ end
 function PANEL:Showcase(item)
 	self.showcasepnl = pluto.ui.showcase(item)
 	self.showcasepnl:SetPos(self:LocalToScreen(self:GetWide() + 3, 0))
+	self.showcase_version = item.Version
 end
 
 function PANEL:OnRemove()
@@ -312,6 +313,12 @@ function PANEL:PerformLayout(w, h)
 	self:SetCurve(curve(0))
 	local p = curve(0) / 2
 	--self:DockPadding(p, p, p, p)
+end
+
+function PANEL:Think()
+	if (self.Item and self.Item.Version ~= self.showcase_version and IsValid(self.showcasepnl)) then
+		self:Showcase(self.Item)
+	end
 end
 
 vgui.Register("pluto_inventory_item", PANEL, "ttt_curved_panel")
