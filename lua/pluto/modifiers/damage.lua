@@ -16,9 +16,9 @@ end
 function MOD:GetDescription(rolls)
 	local roll = rolls[1]
 	if (roll > 0) then
-		return string.format("Damage is increased by %.2f%%", roll)
+		return string.format("Damage is increased by %.1f%%", roll)
 	else
-		return string.format("Damage is reduced by %.2f%%", -roll)
+		return string.format("Damage is reduced by %.1f%%", -roll)
 	end
 end
 
