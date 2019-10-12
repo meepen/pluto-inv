@@ -52,3 +52,37 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 		end)
 	end
 end)
+
+hook.Add("TTTPlayerGiveWeapons", "pluto_loadout", function(ply)
+	if (not pluto.inv.invs[ply]) then
+		return
+	end
+
+	local equip_tab
+
+	for _, tab in pairs(pluto.inv.invs[ply]) do
+		if (tab.Type == "equip") then
+			equip_tab = tab
+			break
+		end
+	end
+
+	if (not equip_tab) then
+		pwarnf("Player doesn't have equip tab!")
+		return
+	end
+
+	local i1 = equip_tab.Items[1]
+
+	if (i1) then
+		pluto.NextWeaponSpawn = i1
+		ply:Give(i1.ClassName)
+	end
+
+	local i2 = equip_tab.Items[2]
+
+	if (i2) then
+		pluto.NextWeaponSpawn = i2
+		ply:Give(i2.ClassName)
+	end
+end)
