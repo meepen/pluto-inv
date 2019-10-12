@@ -17,7 +17,7 @@ end
 
 for name, values in pairs {
 	dice = {
-		Shares = 700,
+		Shares = 500,
 		Use = function(ply, item)
 			if (not item.Mods) then
 				return
@@ -42,6 +42,10 @@ for name, values in pairs {
 	droplet = {
 		Shares = 5000,
 		Use = function(ply, item)
+			if (not item.Mods) then
+				return
+			end
+
 			item.Mods = pluto.weapons.generatetier(item.Tier, item.ClassName).Mods
 			
 			UpdateAndDecrement(ply, item, "droplet")
@@ -49,7 +53,30 @@ for name, values in pairs {
 	},
 	hand = {
 		Shares = 400,
-		Use = function(item)
+		Use = function(ply, item)
+			if (not item.Mods) then
+				return
+			end
+
+			local possible = {}
+			for _, Mods in pairs(item.Mods) do
+				for i = 1, #Mods do
+					table.insert(possible, {
+						Mods = Mods,
+						Index = i,
+					})
+				end
+			end
+
+			if (#possible <= 1) then
+				return
+			end
+
+			local rand = table.Random(possible)
+
+			table.remove(rand.Mods, rand.Index)
+
+			UpdateAndDecrement(ply, item, "hand")
 		end,
 	},
 	tome = {
@@ -188,5 +215,5 @@ end)
 concommand.Add("pluto_spawn_cur", function(ply)
 	local pos = ply:GetEyeTrace().HitPos
 
-	pluto.currency.spawnfor(ply, "droplet", pos)
+	pluto.currency.spawnfor(ply, "hand", pos)
 end)

@@ -8,6 +8,7 @@ function ENT:SetupDataTables()
 end
 
 function ENT:Initialize()
+	self:SetModel "models/hunter/misc/sphere025x025.mdl"
 	self.Size = 20
 	local maxs = Vector(self.Size / 2, self.Size / 2, self.Size / 2)
 	self:SetCollisionBounds(-maxs, maxs)
