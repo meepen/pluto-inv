@@ -21,8 +21,6 @@ util.AddNetworkString "pluto_inv_data"
 function pluto.inv.writemod(ply, item)
 	local mod = pluto.mods.byname[item.Mod]
 	local rolls = pluto.mods.getrolls(mod, item.Tier, item.Roll)
-	print(item.Tier, mod.InternalName)PrintTable(item.Roll)
-	PrintTable(rolls)
 
 	local name = pluto.mods.formataffix(mod.Type, mod.Name)
 	local tier = item.Tier
