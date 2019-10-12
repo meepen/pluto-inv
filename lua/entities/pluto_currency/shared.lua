@@ -16,4 +16,15 @@ function ENT:Initialize()
 	end
 
 	self.random = math.random()
+	hook.Add("ShouldCollide", self, self.ShouldCollide)
+end
+
+function ENT:ShouldCollide(e1, e2)
+	if (e1 ~= self and e2 ~= self) then
+		return
+	end
+
+	local other = e1 == self and e2 or e1
+
+	return other == self:GetOwner()
 end
