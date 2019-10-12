@@ -256,7 +256,7 @@ function pluto.inv.readtabswitch(ply)
 	local tabindex2 = net.ReadUInt(8)
 
 	local tab1 = pluto.inv.invs[ply][tabid1]
-	local tab2 = pluto.inv.invs[ply][tabid1]
+	local tab2 = pluto.inv.invs[ply][tabid2]
 
 	if (not tab1 or not tab2) then
 		ply:Kick "tab switch failed (1) report to meepen on discord"

@@ -301,7 +301,7 @@ function PANEL:GhostClick(p, m)
 		gparent:SetItem(i)
 
 		pluto.inv.message()
-			:write("tabswitch", pluto.ui.pnl.Tab.ID, parent.TabIndex, pluto.ui.pnl.Tab.ID, gparent.TabIndex)
+			:write("tabswitch", parent.Tab.ID, parent.TabIndex, gparent.Tab.ID, gparent.TabIndex)
 			:send()
 	end
 	pluto.ui.ghost = nil
@@ -361,6 +361,45 @@ function PANEL:SetTab(tab)
 end
 
 vgui.Register("pluto_inventory_items", PANEL, "pluto_inventory_base")
+
+local PANEL = {}
+DEFINE_BASECLASS "pluto_inventory_base"
+function PANEL:Init()
+	BaseClass.Init(self)
+	
+	self.Layout = self:Add "DIconLayout"
+	self.Layout:Dock(FILL)
+
+	self.Items = {}
+
+	for i = 1, 2 do
+		local p = self.Layout:Add "pluto_inventory_item"
+		p.TabIndex = i
+		self.Items[i] = p
+	end
+end
+
+function PANEL:PerformLayout(w, h)
+	local size = math.Round(w / (count + 2))
+	local divide = (w - size * count) / (count + 2)
+
+	for _, item in ipairs(self.Items) do
+		item:SetSize(size, size)
+	end
+
+	self.Layout:SetSpaceX(divide)
+	self.Layout:SetSpaceY(divide)
+
+	self:DockPadding(divide * 1.5, divide * 1.5, divide * 1.5, divide * 1.5)
+end
+
+function PANEL:SetTab(tab)
+	for i = 1, 2 do
+		self.Items[i]:SetItem(tab.Items[i], tab)
+	end
+end
+
+vgui.Register("pluto_inventory_equip", PANEL, "pluto_inventory_base")
 
 local PANEL = {}
 DEFINE_BASECLASS "ttt_curved_panel_outline"
