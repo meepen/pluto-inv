@@ -235,7 +235,7 @@ end
 
 function PANEL:Showcase(item)
 	self.showcasepnl = pluto.ui.showcase(item)
-	self.showcasepnl:SetPos(self:LocalToScreen(self:GetWide(), 0))
+	self.showcasepnl:SetPos(self:LocalToScreen(self:GetWide() + 3, 0))
 end
 
 function PANEL:OnRemove()
@@ -1149,17 +1149,19 @@ function PANEL:SetItem(item)
 	self.ItemDesc:DockMargin(0, pad, 0, pad / 2)
 
 	self.ItemSubDesc:SetText(item.SubDescription or "")
-	self.ItemSubDesc:DockMargin(0, pad / 2, 0, pad / 2)
+	if (self.ItemSubDesc:GetText() ~= "") then
+		self.ItemSubDesc:DockMargin(0, pad / 2, 0, pad / 2)
+	end
 
 	if (item.Mods and item.Mods.prefix) then
 		for _, mod in ipairs(item.Mods.prefix) do
-			self:AddMod(mod):DockMargin(0, pad / 2, 0, pad / 2)
+			self:AddMod(mod):DockMargin(pad, pad / 2, pad, pad / 2)
 		end
 	end
 
 	if (item.Mods and item.Mods.suffix) then
 		for _, mod in ipairs(item.Mods.suffix) do
-			self:AddMod(mod):DockMargin(0, pad / 2, 0, pad / 2)
+			self:AddMod(mod):DockMargin(pad, pad / 2, pad, pad / 2)
 		end
 	end
 

@@ -4,7 +4,7 @@ pluto.currency = {
 			InternalName = "dice",
 			Name = "Reflective Die",
 			Icon = "pluto/currencies/dice.png",
-			Description = "Randomize the rolls on an item",
+			Description = "Randomize the numeric rolls on an item",
 			SubDescription = "Arizor lost this die in a bet with a farmer long ago. That farmer won a bet with Yuowi later, and gave him the power to create these at will",
 			Color = Color(255, 208, 86),
 		},
