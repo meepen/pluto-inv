@@ -235,9 +235,6 @@ end
 
 function PANEL:Showcase(item)
 	self.showcasepnl = pluto.ui.showcase(item)
-	self.showcasepnl:MakePopup()
-	self.showcasepnl:SetKeyboardInputEnabled(false)
-	self.showcasepnl:SetMouseInputEnabled(false)
 	self.showcasepnl:SetPos(self:LocalToScreen(self:GetWide(), 0))
 end
 
@@ -404,9 +401,11 @@ end
 
 function PANEL:OnCursorExited()
 	self:ToggleHover()
+	self:OnRemove()
 end
 
 function PANEL:OnCursorEntered()
+	self:Showcase()
 	self:ToggleHover()
 end
 
@@ -424,8 +423,22 @@ function PANEL:SetCurrency(cur)
 end
 
 function PANEL:GhostClick(p)
+	if (p.Item) then
+		-- TODO(meep): use currency on item
+	end
 	pluto.ui.ghost = nil
 	return false
+end
+
+function PANEL:Showcase()
+	self.showcasepnl = pluto.ui.showcase(pluto.currency.byname[self.Currency])
+	self.showcasepnl:SetPos(self:LocalToScreen(self:GetWide(), 0))
+end
+
+function PANEL:OnRemove()
+	if (IsValid(self.showcasepnl)) then
+		self.showcasepnl:Remove()
+	end
 end
 
 vgui.Register("pluto_inventory_currency_image", PANEL, "EditablePanel")
@@ -1118,17 +1131,25 @@ end
 
 function PANEL:SetItem(item)
 	self.ItemName:SetTextColor(color_black)
-	self.ItemName:SetText(item.Tier .. " " .. weapons.GetStored(item.ClassName).PrintName)
+	if (item.ClassName) then -- item
+		self.ItemName:SetText(item.Tier .. " " .. weapons.GetStored(item.ClassName).PrintName)
+		self.ItemName:SetContentAlignment(4)
+	else -- currency???
+		self.ItemName:SetText(item.Name)
+		self.ItemName:SetContentAlignment(5)
+	end
+
 	self.ItemName:SizeToContentsY()
 	self.ItemBackground:SetTall(self.ItemName:GetTall() * 1.5)
 	local pad = self.ItemName:GetTall() * 0.25
 	self.ItemBackground:DockPadding(pad, pad, pad, pad)
 	self.ItemBackground:SetColor(item.Color)
-	surface.SetFont(self.ItemName:GetFont())
 
-	self.ItemDesc:SetFont "pluto_item_showcase_smol"
-	self.ItemDesc:SetText ""
-	self.ItemDesc:DockMargin(0, 0, 0, pad / 2)
+	self.ItemDesc:SetText(item.Description or "")
+	self.ItemDesc:DockMargin(0, pad, 0, pad / 2)
+
+	self.ItemSubDesc:SetText(item.SubDescription or "")
+	self.ItemSubDesc:DockMargin(0, pad / 2, 0, pad / 2)
 
 	if (item.Mods and item.Mods.prefix) then
 		for _, mod in ipairs(item.Mods.prefix) do
@@ -1141,7 +1162,6 @@ function PANEL:SetItem(item)
 			self:AddMod(mod):DockMargin(0, pad / 2, 0, pad / 2)
 		end
 	end
-
 
 	self:DockPadding(pad, pad, pad, pad)
 	self:InvalidateLayout(true)
@@ -1174,7 +1194,8 @@ function PANEL:Init()
 	surface.CreateFont("pluto_item_showcase_smol", {
 		font = "Roboto",
 		extended = true,
-		size = math.max(h / 50, 16)
+		size = math.max(h / 50, 16),
+		italic = true,
 	})
 
 	self:SetColor(bg_color)
@@ -1184,11 +1205,15 @@ function PANEL:Init()
 
 	self.ItemName = self.ItemBackground:Add "DLabel"
 	self.ItemName:Dock(FILL)
-	self.ItemName:SetContentAlignment(4)
 	self.ItemName:SetFont "pluto_item_showcase_header"
 
 	self.ItemDesc = self:Add "pluto_centered_wrap"
+	self.ItemDesc:SetFont "pluto_item_showcase_desc"
 	self.ItemDesc:Dock(TOP)
+
+	self.ItemSubDesc = self:Add "pluto_centered_wrap"
+	self.ItemSubDesc:SetFont "pluto_item_showcase_smol"
+	self.ItemSubDesc:Dock(TOP)
 end
 
 vgui.Register("pluto_item_showcase_inner", PANEL, "ttt_curved_panel")
@@ -1207,7 +1232,7 @@ end
 
 function PANEL:SetItem(item)
 	self:SetWide(math.max(300, math.min(600, ScrW() / 3)))
-	self.Inner:SetWide(math.max(300, math.min(600, ScrW() / 3)))
+	self.Inner:SetWide(math.max(300, math.min(500, ScrW() / 3)))
 	self.Inner:SetItem(item)
 	self:Invalidate()
 end
@@ -1225,6 +1250,9 @@ function pluto.ui.showcase(item)
 	end
 
 	pluto.ui.showcasepnl = vgui.Create "pluto_item_showcase"
+	pluto.ui.showcasepnl:MakePopup()
+	pluto.ui.showcasepnl:SetKeyboardInputEnabled(false)
+	pluto.ui.showcasepnl:SetMouseInputEnabled(false)
 
 	pluto.ui.showcasepnl:SetItem(item)
 	pluto.ui.showcasepnl:InvalidateLayout(true)
