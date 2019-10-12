@@ -5,6 +5,7 @@ pluto.inv.messages = {
 		[0] = "end",
 		[1] = "tabswitch",
 		[2] = "itemdelete",
+		[3] = "currencyuse",
 	},
 	sv2cl = {
 		[0] = "end",

@@ -74,6 +74,7 @@ function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll)
 	if (wep) then
 		wep = weapons.GetStored(wep)
 	end
+
 	if (not wep) then
 		wep = weapons.GetStored(pluto.weapons.randomgun())
 	end
@@ -101,14 +102,14 @@ function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll)
 	}
 end
 
-function pluto.weapons.update(item, cb)
+function pluto.weapons.update(item, cb, nostart)
 	assert(item.RowID, "no rowid")
 	assert(item.Owner, "no owner")
 	assert(item.TabID, "no tabid")
 	assert(item.TabIndex, "no tabindex")
 
 	local inserts = {
-		{ "REPLACE INTO pluto_items (tier, class, tab_id, tab_idx) VALUES(?, ?, ?, ?, ?)", {item.Tier.InternalName, item.ClassName, item.TabID, item.TabIndex} },
+		{ "REPLACE INTO pluto_items (tier, class, tab_id, tab_idx) VALUES(?, ?, ?, ?)", {item.Tier.InternalName, item.ClassName, item.TabID, item.TabIndex} },
 		{ "SET @gun = LAST_INSERT_ID()" },
 		{ "DELETE FROM pluto_mods WHERE gun_index = @gun" },
 	}
@@ -132,7 +133,7 @@ function pluto.weapons.update(item, cb)
 		end
 	end
 
-	pluto.db.transact(inserts, function(err, t)
+	return pluto.db.transact(inserts, function(err, t)
 		if (err) then
 			cb(nil)
 			return
@@ -140,7 +141,7 @@ function pluto.weapons.update(item, cb)
 
 		item.LastUpdate = (item.LastUpdate or 0) + 1
 		cb(item.RowID)
-	end)
+	end, nostart)
 end
 
 --[[

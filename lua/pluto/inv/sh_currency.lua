@@ -12,7 +12,7 @@ pluto.currency = {
 			InternalName = "droplet",
 			Name = "Magic Droplet",
 			Icon = "pluto/currencies/droplet.png",
-			Description = "Removes all modifiers, and adds new ones",
+			Description = "Removes all modifiers, replacing them with new ones",
 			SubDescription = "It's said this magic droplet was formed from one of Yuowi's many former lovers",
 			Color = Color(24, 125, 216),
 		},

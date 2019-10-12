@@ -19,15 +19,18 @@ function pluto.db.query(query, args, cb, data, nostart)
 
 	local q
 
-	if (not args) then
-		q = pluto.db.db:query(query)
-	else
-		q = pluto.db.prepared[query]
-		if (not q) then
-			q = pluto.db.db:prepare(query)
-			pluto.db.prepared[query] = q
+	q = pluto.db.prepared[query]
+	if (not q) then
+		q = pluto.db.db:prepare(query)
+		pluto.db.prepared[query] = q
+		q.args = {}
+	elseif (q.args) then
+		for ind in pairs(q.args) do
+			q:setNull(ind)
 		end
+	end
 
+	if (args) then
 		for ind, arg in pairs(args) do
 			if (type(arg) == "number") then
 				q:setNumber(ind, arg)
@@ -38,10 +41,10 @@ function pluto.db.query(query, args, cb, data, nostart)
 			else
 				q:setNull(ind)
 			end
+
+			q.args[ind] = true
 		end
 	end
-
-	last = q
 
 	function q:onAborted()
 		err("abort")
@@ -77,20 +80,6 @@ function pluto.db.query(query, args, cb, data, nostart)
 
 	if (not nostart) then
 		q:start()
-
-		if (args) then
-			for ind, arg in pairs(args) do
-				if (type(arg) == "number") then
-					q:setNumber(ind, arg)
-				elseif (type(arg) == "string") then
-					q:setString(ind, arg)
-				elseif (type(arg) == "boolean") then
-					q:setBoolean(ind, arg)
-				else
-					q:setNull(ind)
-				end
-			end
-		end
 	end
 
 	return q

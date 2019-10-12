@@ -8,7 +8,23 @@ for name, values in pairs {
 	},
 	droplet = {
 		Shares = 5000,
-		Use = function(item)
+		Use = function(ply, item)
+			PrintTable(item)
+			item.Mods = pluto.weapons.generatetier(item.Tier, item.ClassName).Mods
+			local trans = pluto.weapons.update(item, function(id)
+				if (not IsValid(ply)) then
+					return
+				end
+
+				pluto.inv.message(ply)
+					:write("item", item)
+					:send()
+
+			end, true)
+			trans:addQuery(pluto.inv.addcurrency(ply, "droplet", -1, function()
+				-- TODO(meep): notify?
+			end, true))
+			trans:start()
 		end,
 	},
 	hand = {

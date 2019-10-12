@@ -424,7 +424,9 @@ end
 
 function PANEL:GhostClick(p)
 	if (p.Item) then
-		-- TODO(meep): use currency on item
+		pluto.inv.message()
+			:write("currencyuse", self.Currency, p.Item)
+			:send()
 	end
 	pluto.ui.ghost = nil
 	return false

@@ -1,4 +1,5 @@
 pluto.inv.invs = pluto.inv.invs or {}
+pluto.inv.items = pluto.inv.items or {}
 --[[
 	{
 		[ply] = {
@@ -202,6 +203,8 @@ function pluto.inv.init(ply, cb2)
 		for _, item in pairs(items) do
 			local tab = inv[item.TabID]
 			tab.Items[item.TabIndex] = item
+			pluto.inv.items[item.RowID] = item
+			item.Owner = ply:SteamID64()
 		end
 
 		pluto.inv.invs[ply] = inv
@@ -334,6 +337,24 @@ function pluto.inv.readitemdelete(ply)
 
 		tab.Items[tabindex] = nil
 	end)
+end
+
+function pluto.inv.readcurrencyuse(ply)
+	local currency = net.ReadString()
+	local id = net.ReadUInt(32)
+
+	local amount = pluto.inv.currencies[ply][currency]
+	if (not amount or amount <= 0) then
+		return
+	end
+
+	local wpn = pluto.inv.items[id]
+
+	if (not wpn or wpn.Owner ~= ply:SteamID64()) then
+		return
+	end
+
+	pluto.currency.byname[currency].Use(ply, wpn)
 end
 
 function pluto.inv.readend()

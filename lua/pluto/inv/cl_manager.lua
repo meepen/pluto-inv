@@ -38,14 +38,15 @@ function pluto.inv.readitem()
 		return pluto.received.item[id]
 	end
 
-	local item = {
+	local item = pluto.received.item[id] or {
 		ID = id,
-		Tier = net.ReadString(),
 		Mods = {
-			suffix = {},
 			prefix = {},
+			suffix = {},
 		}
 	}
+
+	item.Tier = net.ReadString()
 	item.Color = net.ReadColor()
 
 	item.ClassName = net.ReadString()
@@ -120,6 +121,11 @@ function pluto.inv.writeitemdelete(tabid, tabindex, itemid)
 	net.WriteUInt(tabid, 32)
 	net.WriteUInt(tabindex, 8)
 	net.WriteUInt(itemid, 32)
+end
+
+function pluto.inv.writecurrencyuse(currency, item)
+	net.WriteString(currency)
+	net.WriteUInt(item.ID, 32)
 end
 
 function pluto.inv.writetabswitch(tabid1, tabindex1, tabid2, tabindex2)
