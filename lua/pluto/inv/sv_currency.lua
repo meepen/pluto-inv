@@ -111,8 +111,6 @@ for name, values in pairs {
 				end
 			end
 
-			local potential = {}
-
 			local allowed = {}
 
 			if (prefixes < 3) then

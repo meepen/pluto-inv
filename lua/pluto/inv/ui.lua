@@ -281,7 +281,7 @@ function PANEL:OnCursorExited()
 end
 
 function PANEL:OnMousePressed(code)
-	if (code == MOUSE_LEFT and self.Item) then
+	if (code == MOUSE_LEFT and self.Item and not IsValid(pluto.ui.ghost)) then
 		pluto.ui.ghost = self
 	end
 end
@@ -435,7 +435,10 @@ function PANEL:GhostClick(p)
 			:write("currencyuse", self.Currency, p.Item)
 			:send()
 	end
-	pluto.ui.ghost = nil
+	if (not input.IsKeyDown(KEY_LSHIFT)) then
+		print("5", p)
+		pluto.ui.ghost = nil
+	end
 	return false
 end
 
@@ -1282,6 +1285,7 @@ hook.Add("PostRenderVGUI", "pluto_ghost", function()
 		local p = pluto.ui.ghost
 
 		if ((input.IsMouseDown(MOUSE_RIGHT) or input.IsMouseDown(MOUSE_LEFT)) and not IsValid(vgui.GetHoveredPanel())) then
+			print("4", vgui.GetHoveredPanel())
 			pluto.ui.ghost = nil
 			return
 		end

@@ -70,6 +70,8 @@ function pluto.inv.readitem()
 		item.Mods.suffix[i] = pluto.inv.readmod()
 	end
 
+	PrintTable(item)
+
 	pluto.received.item[id] = item
 
 	return item

@@ -114,29 +114,29 @@ function pluto.weapons.update(item, cb, nostart)
 	assert(item.TabIndex, "no tabindex")
 
 	local inserts = {
-		{ "REPLACE INTO pluto_items (tier, class, tab_id, tab_idx) VALUES(?, ?, ?, ?)", {item.Tier.InternalName, item.ClassName, item.TabID, item.TabIndex} },
-		{ "SET @gun = LAST_INSERT_ID()" },
-		{ "DELETE FROM pluto_mods WHERE gun_index = @gun" },
+		{ "UPDATE pluto_items SET tier = ?, class = ? WHERE idx = ?", {item.Tier.InternalName, item.ClassName, item.RowID} },
+		{ "UPDATE pluto_mods SET deleted = TRUE WHERE gun_index = ?", {item.RowID} },
 	}
 
 	if (item.Mods) then
 		for type, list in pairs(item.Mods) do
 			for _, mod in ipairs(list) do
 				table.insert(inserts, {
-					"INSERT INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3) VALUES (@gun, ?, ?, ?, ?, ?)",
-					{ mod.Mod, mod.Tier, mod.Roll[1], mod.Roll[2], mod.Roll[3] },
+					"INSERT INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3, deleted) VALUES (?, ?, ?, ?, ?, ?, FALSE) ON DUPLICATE KEY UPDATE deleted = FALSE, tier = ?, roll1 = ?, roll2 = ?, roll3 = ?",
+					{ item.RowID, mod.Mod, mod.Tier, mod.Roll[1], mod.Roll[2], mod.Roll[3], mod.Tier, mod.Roll[1], mod.Roll[2], mod.Roll[3] },
 					function(err, q)
 						if (err) then
 							pwarnf("Couldn't save mod!!")
 							PrintTable(mod)
 							return
 						end
-						mod.RowID = q:lastInsert()
 					end
 				})
 			end
 		end
 	end
+
+	table.insert(inserts, { "DELETE FROM pluto_mods WHERE gun_index = ? and deleted = TRUE", {item.RowID} })
 
 	return pluto.db.transact(inserts, function(err, t)
 		if (err) then

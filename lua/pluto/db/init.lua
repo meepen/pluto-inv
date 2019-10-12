@@ -41,7 +41,11 @@ hook.Add("PlutoDatabaseInitialize", "pluto_db_init", function(db)
 					roll1 FLOAT,
 					roll2 FLOAT,
 					roll3 FLOAT,
+
+					deleted BOOLEAN NOT NULL DEFAULT FALSE,
 					PRIMARY KEY(idx),
+					UNIQUE(gun_index, modname),
+					INDEX USING HASH(gun_index),
 					FOREIGN KEY (gun_index) REFERENCES pluto_items(idx) ON DELETE CASCADE
 				)
 			]]

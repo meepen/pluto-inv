@@ -233,6 +233,7 @@ function pluto.inv.deleteitem(steamid, itemid, cb)
 		end
 
 		if (q:affectedRows() ~= 1) then
+			pwarnf("Affected rows: %i", q:affectedRows())
 			return cb(false)
 		end
 
