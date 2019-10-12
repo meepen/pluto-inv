@@ -268,8 +268,12 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 	end
 end)
 
-concommand.Add("pluto_spawn_cur", function(ply)
+concommand.Add("pluto_spawn_cur", function(ply, cmd, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+
 	local pos = ply:GetEyeTrace().HitPos
 
-	pluto.currency.spawnfor(ply, "heart", pos)
+	pluto.currency.spawnfor(ply, args[1] or "droplet", pos)
 end)

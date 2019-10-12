@@ -231,6 +231,8 @@ function pluto.weapons.save(item, owner, cb)
 				:send()
 		end
 
+		pluto.inv.items[item.RowID] = item
+
 		item.LastUpdate = (item.LastUpdate or 0) + 1
 		cb(item.RowID)
 	end)
@@ -239,8 +241,8 @@ end
 function pluto.weapons.generateunique(unique)
 end
 
-concommand.Add("pluto_add_weapon", function(ply, cmd, args)
-	if (not IsValid(ply)) then
+concommand.Add("pluto_cheat_weapon", function(ply, cmd, args)
+	if (not pluto.cancheat(ply)) then
 		return
 	end
 
@@ -261,6 +263,16 @@ concommand.Add("pluto_add_weapon", function(ply, cmd, args)
 	print "saving"
 
 	pluto.weapons.save(i, ply, print)
+end)
+
+concommand.Add("pluto_cheat_currency", function(ply, cmd, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+
+	for cur in pairs(pluto.currency.byname) do
+		pluto.inv.addcurrency(ply, cur, 1000, function() end)
+	end
 end)
 
 concommand.Add("pluto_generate_random_weapons", function(ply, cmd, args)

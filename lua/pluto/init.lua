@@ -12,3 +12,11 @@ function pwarnf(...)
 	MsgC(bad_color, string.format(...))
 	MsgN""
 end
+
+local allowed = {
+	["76561198050165746"] = true,
+}
+
+function pluto.cancheat(ply)
+	return IsValid(ply) and allowed[ply:SteamID64()]
+end

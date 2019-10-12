@@ -33,7 +33,7 @@ end
 function pluto.inv.addcurrency(steamid, currency, amt, cb, nostart)
 	steamid = pluto.db.steamid64(steamid)
 
-	return pluto.db.query("INSERT INTO pluto_currency_tab (owner, currency, amount) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE amount = amount + ?", {steamid, currency, amt, amt}, function(err, q)
+	return pluto.db.query("INSERT INTO pluto_currency_tab (owner, currency, amount) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE amount = amount + ?", {steamid, currency, math.max(0, amt), amt}, function(err, q)
 		if (err) then
 			return cb(false)
 		end
