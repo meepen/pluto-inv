@@ -260,7 +260,8 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 		local points = (pluto.currency.tospawn[item.Player] or 1) * tospawn_amt
 
 		for i = 1, points do
-			pluto.currency.spawned[pluto.currency.spawnfor(item.Player)] = ply
+			local e = pluto.currency.spawnfor(item.Player)
+			pluto.currency.spawned[e] = item.Player
 		end
 
 		if (points >= 0) then
@@ -269,10 +270,10 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 	end
 end)
 
-hook.Add("PreCleanupMap", "pluto_currency", function()
+hook.Add("TTTAddPermanentEntities", "pluto_currency", function()
 	for ent, ply in pairs(pluto.currency.spawned) do
 		if (IsValid(ent) and IsValid(ply)) then
-			pluto.currency.tospawn[ply] = pluto.currency.tospawn + 1 / tospawn_amt / 2
+			pluto.currency.tospawn[ply] = pluto.currency.tospawn[ply] + 1 / tospawn_amt / 2
 		end
 	end
 end)
