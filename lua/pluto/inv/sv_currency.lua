@@ -226,6 +226,7 @@ function pluto.currency.spawnfor(ply, currency, pos)
 end
 
 pluto.currency.tospawn = pluto.currency.tospawn or {}
+pluto.currency.spawned = pluto.currency.spawned or {}
 
 function pluto.currency.addpoints(ply, points)
 	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or 1) + points
@@ -248,20 +249,30 @@ hook.Add("DoPlayerDeath", function(vic, damager, dmg)
 	pluto.currency.addpoints(atk, points)
 end)
 
+local tospawn_amt = 4
+
 hook.Add("TTTBeginRound", "pluto_currency", function()
 	for _, item in pairs(round.GetStartingPlayers()) do
-		if (item.Player.WasAFK) then
+		if (item.Player.WasAFK or item.Player:GetRoleTeam() ~= "innocent") then
 			continue
 		end
 
-		local points = (pluto.currency.tospawn[item.Player] or 1) * 4
+		local points = (pluto.currency.tospawn[item.Player] or 1) * tospawn_amt
 
 		for i = 1, points do
-			pluto.currency.spawnfor(item.Player)
+			pluto.currency.spawned[pluto.currency.spawnfor(item.Player)] = ply
 		end
 
 		if (points >= 0) then
 			pluto.currency.tospawn[item.Player] = 1
+		end
+	end
+end)
+
+hook.Add("PreCleanupMap", "pluto_currency", function()
+	for ent, ply in pairs(pluto.currency.spawned) do
+		if (IsValid(ent) and IsValid(ply)) then
+			pluto.currency.tospawn[ply] = pluto.currency.tospawn + 1 / tospawn_amt / 2
 		end
 	end
 end)
