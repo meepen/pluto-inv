@@ -918,6 +918,8 @@ function PANEL:Think()
 				:write("itemdelete", self.Deleting.TabID, self.Deleting.TabIndex, self.Deleting.Item)
 				:send()
 			
+			pluto.cl_inv[self.Deleting.TabID].Items[self.Deleting.TabIndex] = nil
+			
 			pluto.ui.ghost:SetItem(nil)
 
 			self:StopIfDeleting()
