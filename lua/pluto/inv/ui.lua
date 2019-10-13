@@ -614,6 +614,38 @@ end
 vgui.Register("pluto_inventory_base", PANEL, "ttt_curved_panel")
 
 local PANEL = {}
+function PANEL:Init()
+	self.Tab = self:GetParent().Tab
+
+	self:SetText(self.Tab.Name)
+	self:SetFont "pluto_inventory_tab"
+	self:SetSkin "tttrw"
+	self:DockMargin(pad - 4, 0, pad - 4, 0)
+end
+
+function PANEL:AllowInput(t)
+	local t = self:GetText() .. t
+	if (utf8.len(t) > 16) then
+		return true
+	end
+	self:GetParent():SetText(t)
+	return false
+end
+
+function PANEL:OnFocusChanged(gained)
+	if (not gained) then
+		pluto.inv.message()
+			:write("tabrename", self.Tab.ID, self:GetText())
+			:send()
+
+		local p = self:GetParent()
+		self:Remove()
+	end
+end
+
+vgui.Register("pluto_inventory_rename_tab", PANEL, "DTextEntry")
+
+local PANEL = {}
 DEFINE_BASECLASS "pluto_inventory_base"
 function PANEL:Init()
 	BaseClass.Init(self)
@@ -625,6 +657,7 @@ function PANEL:Init()
 	self.Text:Dock(FILL)
 	self.Text:SetContentAlignment(5)
 	self.Text:SetTextColor(inactive_text)
+	self.Text:SetZPos(0)
 end
 function PANEL:SetText(t)
 	self.Text:SetText(t)
@@ -633,8 +666,12 @@ function PANEL:SetText(t)
 	self.Text:SetWide(w + pad * 2)
 end
 function PANEL:OnMousePressed(key)
-	if (key == MOUSE_LEFT) then
-		self:DoClick()
+	self:DoClick()
+	if (key == MOUSE_RIGHT) then
+		self.Entry = self:Add "pluto_inventory_rename_tab"
+		self.Entry:Dock(FILL)
+		self.Entry:SetZPos(1)
+		self.Entry:RequestFocus()
 	end
 end
 
@@ -1001,16 +1038,6 @@ if (IsValid(pluto.ui.pnl)) then
 	pluto.ui.pnl = vgui.Create "pluto_inventory"
 end
 
-local function create()
-	if (input.WasKeyPressed(KEY_I)) then
-		if (IsValid(pluto.ui) and vgui.FocusedHasParent(pluto.ui.pnl)) then
-			pluto.ui.pnl:Remove()
-		elseif (not IsValid(pluto.ui.pnl)) then
-			pluto.ui.pnl = vgui.Create "pluto_inventory"
-		end
-	end
-end
-
 hook.Add("InputMouseApply", "pluto_inventory_ui", function()
 	if (input.WasKeyPressed(KEY_I) and not IsValid(pluto.ui.pnl)) then
 		if (pluto.inv.status ~= "ready") then
@@ -1021,7 +1048,8 @@ hook.Add("InputMouseApply", "pluto_inventory_ui", function()
 	end
 end)
 hook.Add("PlayerTick", "pluto_inventory_ui", function()
-	if (input.WasKeyPressed(KEY_I) and IsValid(pluto.ui.pnl) and vgui.FocusedHasParent(pluto.ui.pnl)) then
+	local focus = vgui.GetKeyboardFocus()
+	if ((not IsValid(focus) or focus.ClassName ~= "pluto_inventory_rename_tab") and input.WasKeyPressed(KEY_I) and IsValid(pluto.ui.pnl) and vgui.FocusedHasParent(pluto.ui.pnl)) then
 		pluto.ui.pnl:Remove()
 	end
 end)

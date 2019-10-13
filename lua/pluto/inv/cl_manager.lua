@@ -150,6 +150,16 @@ function pluto.inv.writetabswitch(tabid1, tabindex1, tabid2, tabindex2)
 	net.WriteUInt(tabindex2, 8)
 end
 
+function pluto.inv.writetabrename(tabid, text)
+	net.WriteUInt(tabid, 32)
+	net.WriteString(text)
+
+	local tab = pluto.cl_inv[tabid]
+	if (tab) then
+		tab.Name = text
+	end
+end
+
 function pluto.inv.writeend()
 end
 

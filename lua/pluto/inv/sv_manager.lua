@@ -324,6 +324,30 @@ function pluto.inv.readcurrencyuse(ply)
 	pluto.currency.byname[currency].Use(ply, wpn)
 end
 
+function pluto.inv.readtabrename(ply)
+	local id = net.ReadUInt(32)
+	local name = net.ReadString()
+
+	if (utf8.len(name) > 16) then
+		return
+	end
+
+	local inv = pluto.inv.invs[ply]
+
+	if (not inv) then
+		return
+	end
+
+	local tab = inv[id]
+	if (not tab) then
+		return
+	end
+
+	tab.Name = name
+
+	pluto.inv.renametab(tab, function() end)
+end
+
 function pluto.inv.readend()
 	return true
 end
