@@ -4,6 +4,12 @@ AddCSLuaFile "shared.lua"
 util.AddNetworkString "pluto_wpn_db"
 DEFINE_BASECLASS "weapon_tttbase_old"
 
+local function _hook(name, self, fn)
+	hook.Add(name, self, function(...)
+		self[fn or name](...)
+	end)
+end
+
 function SWEP:Initialize()
 	BaseClass.Initialize(self)
 	self:PlutoInitialize()
@@ -23,7 +29,25 @@ function SWEP:Initialize()
 	end
 	self.PlutoData = self.PlutoData or {}
 
-	hook.Add("PlayerInitialSpawn", self, self.SendData)
+	_hook("PlayerInitialSpawn", self, "SendData")
+	_hook("DoPlayerDeath", self, "PlutoDoPlayerDeath")
+end
+
+function SWEP:PlutoDoPlayerDeath(ply, atk, dmg)
+	if (not IsValid(self:GetOwner()) or dmg:GetInflictor() ~= self or not self.PlutoGun) then
+		return
+	end
+
+	for type, list in pairs(self.PlutoGun.Mods) do
+		for _, item in ipairs(list) do
+			local mod = pluto.mods.byname[item.Mod]
+			if (mod.OnKill) then
+				local rolls = pluto.mods.getrolls(mod, item.Tier, item.Roll)
+				print (rolls)
+				mod:OnKill(self, self:GetOwner(), ply, rolls)
+			end
+		end
+	end
 end
 
 function SWEP:SendData(ply)

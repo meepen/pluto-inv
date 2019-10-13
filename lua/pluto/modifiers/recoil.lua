@@ -3,7 +3,6 @@ MOD.Name = "Control"
 MOD.Tags = {
 	"recoil"
 }
-MOD.ModType = "percent"
 
 function MOD:IsNegative(roll)
 	return roll < 0

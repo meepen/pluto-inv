@@ -3,7 +3,6 @@ MOD.Name = "Precise"
 MOD.Tags = {
 	"accuracy"
 }
-MOD.ModType = "percent"
 
 function MOD:IsNegative(roll)
 	return roll < 0

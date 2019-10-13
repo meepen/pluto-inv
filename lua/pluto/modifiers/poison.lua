@@ -3,7 +3,6 @@ MOD.Name = "Toxicity"
 MOD.Tags = {
 	"damage", "poison", "dot"
 }
-MOD.ModType = "dot"
 
 function MOD:IsNegative(roll)
 	return roll < 0

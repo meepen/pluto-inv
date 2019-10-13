@@ -3,7 +3,6 @@ MOD.Name = "Reloading"
 MOD.Tags = {
 	"reload", "speed"
 }
-MOD.ModType = "percent"
 
 function MOD:IsNegative(roll)
 	return roll < 0

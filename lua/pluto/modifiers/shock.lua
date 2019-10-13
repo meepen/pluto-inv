@@ -3,7 +3,6 @@ MOD.Name = "Shocking"
 MOD.Tags = {
 	"shock"
 }
-MOD.ModType = "special"
 
 function MOD:IsNegative(roll)
 	return roll < 0

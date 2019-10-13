@@ -3,7 +3,6 @@ MOD.Name = "Flame"
 MOD.Tags = {
 	"damage", "fire", "dot"
 }
-MOD.ModType = "dot"
 
 function MOD:IsNegative(roll)
 	return roll < 0

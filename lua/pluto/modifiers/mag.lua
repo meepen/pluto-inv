@@ -3,7 +3,6 @@ MOD.Name = "Capacity"
 MOD.Tags = {
 	"clip"
 }
-MOD.ModType = "percent"
 
 function MOD:IsNegative(roll)
 	return roll < 0

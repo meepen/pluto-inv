@@ -3,7 +3,6 @@ MOD.Name = "Cycle"
 MOD.Tags = {
 	"rpm", "speed"
 }
-MOD.ModType = "percent"
 
 function MOD:IsNegative(roll)
 	return roll < 0

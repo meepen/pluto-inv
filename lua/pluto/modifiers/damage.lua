@@ -3,7 +3,6 @@ MOD.Name = "Strength"
 MOD.Tags = {
 	"damage"
 }
-MOD.ModType = "percent"
 
 function MOD:IsNegative(roll)
 	return roll < 0

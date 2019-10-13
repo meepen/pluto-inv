@@ -1,7 +1,6 @@
 MOD.Type = "suffix"
 MOD.Name = "Zoomies"
 MOD.Tags = { }
-MOD.ModType = "special"
 
 function MOD:IsNegative(roll)
 	return roll < 0

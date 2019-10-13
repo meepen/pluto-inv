@@ -3,7 +3,6 @@ MOD.Name = "Bleeding"
 MOD.Tags = {
 	"damage", "bleed", "dot"
 }
-MOD.ModType = "dot"
 
 function MOD:IsNegative(roll)
 	return roll < 0

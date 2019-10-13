@@ -3,7 +3,6 @@ MOD.Name = "Proximity"
 MOD.Tags = {
 	"range"
 }
-MOD.ModType = "percent"
 
 function MOD:IsNegative(roll)
 	return roll < 0

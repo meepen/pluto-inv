@@ -22,6 +22,7 @@ for _, modname in pairs {
 	"max_range",
 	"min_range",
 	"poison",
+	"postheal",
 	"recoil",
 	"shock",
 	"zoomies",
