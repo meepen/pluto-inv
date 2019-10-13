@@ -18,6 +18,7 @@ for _, modname in pairs {
 	"damage",
 	"fire",
 	"firerate",
+	"limp",
 	"mag",
 	"max_range",
 	"min_range",

@@ -43,7 +43,6 @@ function SWEP:PlutoDoPlayerDeath(ply, atk, dmg)
 			local mod = pluto.mods.byname[item.Mod]
 			if (mod.OnKill) then
 				local rolls = pluto.mods.getrolls(mod, item.Tier, item.Roll)
-				print (rolls)
 				mod:OnKill(self, self:GetOwner(), ply, rolls)
 			end
 		end
@@ -81,7 +80,7 @@ function SWEP:SendData(ply)
 		if (gun.Mods.prefix) then
 			net.WriteUInt(#gun.Mods.prefix, 8)
 			for ind, item in ipairs(gun.Mods.prefix) do
-				modifiers.prefix[ind] = self:WriteMod(item)
+				modifiers.prefix[ind] = self:WriteMod(item, gun)
 			end
 		else
 			net.WriteUInt(0, 8)
@@ -90,7 +89,7 @@ function SWEP:SendData(ply)
 		if (gun.Mods.suffix) then
 			net.WriteUInt(#gun.Mods.suffix, 8)
 			for ind, item in ipairs(gun.Mods.suffix) do
-				modifiers.suffix[ind] = self:WriteMod(item)
+				modifiers.suffix[ind] = self:WriteMod(item, gun)
 			end
 		else
 			net.WriteUInt(0, 8)
@@ -103,13 +102,13 @@ function SWEP:SendData(ply)
 	end
 end
 
-function SWEP:WriteMod(item)
+function SWEP:WriteMod(item, wep)
 	local mod = pluto.mods.byname[item.Mod]
 	local rolls = pluto.mods.getrolls(mod, item.Tier, item.Roll)
 
 	local name = pluto.mods.formataffix(mod.Type, mod.Name)
 	local tier = item.Tier
-	local desc = mod:GetDescription(rolls)
+	local desc = mod:GetDescription(rolls, wep.ClassName)
 
 	net.WriteString(name)
 	net.WriteUInt(tier, 4)

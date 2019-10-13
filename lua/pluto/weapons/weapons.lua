@@ -297,7 +297,7 @@ concommand.Add("pluto_generate_random_weapons", function(ply, cmd, args)
 			for _, item in ipairs(list) do
 				local mod = pluto.mods.byname[item.Mod]
 				local rolls = pluto.mods.getrolls(mod, item.Tier, item.Roll)
-				pprintf("        %s tier %i - %s", pluto.mods.formataffix(mod.Type, mod.Name), item.Tier, mod:GetDescription(rolls))
+				pprintf("        %s tier %i - %s", pluto.mods.formataffix(mod.Type, mod.Name), item.Tier, mod:GetDescription(rolls, item.ClassName))
 			end
 		end
 	end

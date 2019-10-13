@@ -18,13 +18,13 @@ pluto.inv.sent = pluto.inv.sent or {}
 
 util.AddNetworkString "pluto_inv_data"
 
-function pluto.inv.writemod(ply, item)
+function pluto.inv.writemod(ply, item, gun)
 	local mod = pluto.mods.byname[item.Mod]
 	local rolls = pluto.mods.getrolls(mod, item.Tier, item.Roll)
 
 	local name = pluto.mods.formataffix(mod.Type, mod.Name)
 	local tier = item.Tier
-	local desc = mod:GetDescription(rolls)
+	local desc = mod:GetDescription(rolls, gun.ClassName)
 
 	net.WriteString(name)
 	net.WriteUInt(tier, 4)
@@ -57,8 +57,8 @@ function pluto.inv.writeitem(ply, item)
 
 		if (item.Mods.prefix) then
 			net.WriteUInt(#item.Mods.prefix, 8)
-			for ind, item in ipairs(item.Mods.prefix) do
-				pluto.inv.writemod(ply, item)
+			for ind, mod in ipairs(item.Mods.prefix) do
+				pluto.inv.writemod(ply, mod, item)
 			end
 		else
 			net.WriteUInt(0, 8)
@@ -66,8 +66,8 @@ function pluto.inv.writeitem(ply, item)
 
 		if (item.Mods.suffix) then
 			net.WriteUInt(#item.Mods.suffix, 8)
-			for ind, item in ipairs(item.Mods.suffix) do
-				pluto.inv.writemod(ply, item)
+			for ind, mod in ipairs(item.Mods.suffix) do
+				pluto.inv.writemod(ply, mod, item)
 			end
 		else
 			net.WriteUInt(0, 8)
@@ -169,8 +169,8 @@ function pluto.inv.writebufferitem(ply, item)
 
 	if (item.Mods.prefix) then
 		net.WriteUInt(#item.Mods.prefix, 8)
-		for ind, item in ipairs(item.Mods.prefix) do
-			pluto.inv.writemod(ply, item)
+		for ind, mod in ipairs(item.Mods.prefix) do
+			pluto.inv.writemod(ply, mod, item)
 		end
 	else
 		net.WriteUInt(0, 8)
@@ -178,8 +178,8 @@ function pluto.inv.writebufferitem(ply, item)
 
 	if (item.Mods.suffix) then
 		net.WriteUInt(#item.Mods.suffix, 8)
-		for ind, item in ipairs(item.Mods.suffix) do
-			pluto.inv.writemod(ply, item)
+		for ind, mod in ipairs(item.Mods.suffix) do
+			pluto.inv.writemod(ply, mod, item)
 		end
 	else
 		net.WriteUInt(0, 8)
