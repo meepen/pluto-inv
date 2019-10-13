@@ -48,40 +48,40 @@ pluto.tabs = {
 function pluto.canswitchtabs(tab1, tab2, tabindex1, tabindex2)
 	if (not tab1 or not tab2) then
 		ply:Kick "tab switch failed (1) report to meepen on discord"
-		return
+		return false, "no tab"
 	end
 
-	if (not tab1.Items or not tab2.Items) then
+	if (not tab1.Items and not tab2.Items) then
 		return false, "buffer"
 	end
 
-	local i1 = tab1.Items[tabindex1]
-	local i2 = tab2.Items[tabindex2]
+	local i1 = tab1.Items and tab1.Items[tabindex1]
+	local i2 = tab2.Items and tab2.Items[tabindex2]
 
 	if (not i1 and not i2) then
-		return false, "no items"
+		return false, "no item"
 	end
 
 	local tabtype1 = pluto.tabs[tab1.Type]
 	local tabtype2 = pluto.tabs[tab2.Type]
 
-	if (not tabtype1 or not tabtype2) then
+	if (not tabtype1 and not tabtype2) then
 		return false, "no tab types"
 	end
 
-	if (i1 and (not tabtype1.canremove(tabindex1, i1) or not tabtype2.canaccept(tabindex2, i1))) then
+	if (i1 and (tabtype1 and not tabtype1.canremove(tabindex1, i1) or tabtype2 and not tabtype2.canaccept(tabindex2, i1))) then
 		return false, "item1"
 	end
 
-	if (i2 and (not tabtype2.canremove(tabindex2, i2) or not tabtype1.canaccept(tabindex1, i2))) then
+	if (i2 and (tabtype2 and not tabtype2.canremove(tabindex2, i2) or tabtype1 and not tabtype1.canaccept(tabindex1, i2))) then
 		return false, "item2"
 	end
 
-	if (tabindex2 < 1 or tabindex2 > tabtype2.size) then
+	if (tabtype2 and tabindex2 < 1 or tabindex2 > tabtype2.size) then
 		return false, "tab2.size"
 	end
 
-	if (tabindex1 < 1 or tabindex1 > tabtype1.size) then
+	if (tabtype1 and (tabindex1 < 1 or tabindex1 > tabtype1.size)) then
 		return false, "tab1.size"
 	end
 	

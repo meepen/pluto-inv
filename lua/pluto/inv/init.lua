@@ -244,7 +244,7 @@ end
 function pluto.inv.getbufferitems(owner)
 	
 	local retn = {}
-	for _, item in ipairs(sql.Query("SELECT idx FROM pluto_items WHERE owner = " .. pluto.db.steamid64(owner) .. " ORDER BY idx DESC")) do
+	for _, item in ipairs(sql.Query("SELECT idx FROM pluto_items WHERE owner = " .. pluto.db.steamid64(owner) .. " ORDER BY idx DESC") or {}) do
 		table.insert(retn, pluto.inv.getbufferitem(item.idx))
 	end
 

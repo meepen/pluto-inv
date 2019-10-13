@@ -395,6 +395,16 @@ function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
 		return
 	end
 
+	local can, err = pluto.canswitchtabs({
+		ID = 0,
+		Items = {i},
+	}, pluto.inv.invs[ply][tabid], 1, tabindex)
+
+	if (not can) then
+		ply:Kick("cannot receive buffer item: " .. err)
+		return
+	end
+
 	i.TabID, i.TabIndex = tabid, tabindex
 
 	print "saving"

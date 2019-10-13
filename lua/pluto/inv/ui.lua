@@ -295,12 +295,19 @@ end
 
 function PANEL:GhostClick(p, m)
 	if (m == MOUSE_LEFT and p.ClassName == "pluto_inventory_garbage") then
-		return true
+		return self.Tab.ID ~= 0
 	end
 
 	if (m == MOUSE_LEFT and p.ClassName == "pluto_inventory_item" and self.Tab) then
 		local parent = self
 		local gparent = p
+
+		local can, err = pluto.canswitchtabs(parent.Tab, gparent.Tab, parent.TabIndex, gparent.TabIndex)
+
+		if (not can) then
+			pwarnf("err: %s", err)
+			return false
+		end
 
 		if (self.Tab.ID == 0 and gparent.Tab.Items) then
 			local oi = gparent.Tab.Items[gparent.TabIndex]
@@ -318,10 +325,7 @@ function PANEL:GhostClick(p, m)
 			for i = parent.TabIndex, 5 do
 				self:GetParent().Items[i]:SetItem(pluto.buffer[i])
 			end
-		else
-			if (not pluto.canswitchtabs(parent.Tab, gparent.Tab, parent.TabIndex, gparent.TabIndex)) then
-				return false
-			end
+		elseif (gparent.Tab.ID ~= 0) then
 			local i = parent.Item
 			local o = gparent.Item
 			parent:SetItem(o)
@@ -999,14 +1003,17 @@ function PANEL:Init()
 
 	self.Items = {}
 
+	self.FakeTab = {
+		ID = 0,
+		Active = true,
+		Items = pluto.buffer,
+	}
+
 	for i = 1, 5 do
 		local t = self:Add "pluto_inventory_item"
 		t:Dock(RIGHT)
 		t.TabIndex = i
-		t:SetItem(pluto.buffer[i], {
-			ID = 0,
-			Active = true,
-		})
+		t:SetItem(pluto.buffer[i], self.FakeTab)
 
 		self.Items[i] = t
 	end
