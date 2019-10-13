@@ -54,6 +54,16 @@ hook.Add("PlutoDatabaseInitialize", "pluto_db_init", function(db)
 		},
 		{
 			[[
+				CREATE TABLE IF NOT EXISTS pluto_weapon_stats (
+					gun_index INT UNSIGNED NOT NULL AUTO_INCREMENT,
+					stat VARCHAR(16) NOT NULL,
+					val BIGINT UNSIGNED NOT NULL,
+					FOREIGN KEY (gun_index) REFERENCES pluto_items(idx) ON DELETE CASCADE
+				)
+			]]
+		}
+		{
+			[[
 				CREATE TABLE IF NOT EXISTS pluto_currency_tab (
 					owner BIGINT UNSIGNED NOT NULL,
 					currency VARCHAR(8) NOT NULL,

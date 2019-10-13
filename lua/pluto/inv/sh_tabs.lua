@@ -77,7 +77,7 @@ function pluto.canswitchtabs(tab1, tab2, tabindex1, tabindex2)
 		return false, "item2"
 	end
 
-	if (tabtype2 and tabindex2 < 1 or tabindex2 > tabtype2.size) then
+	if (tabtype2 and (tabindex2 < 1 or tabindex2 > tabtype2.size)) then
 		return false, "tab2.size"
 	end
 
