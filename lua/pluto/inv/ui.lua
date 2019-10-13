@@ -369,36 +369,53 @@ local PANEL = {}
 DEFINE_BASECLASS "pluto_inventory_base"
 function PANEL:Init()
 	BaseClass.Init(self)
-	
-	self.Layout = self:Add "DIconLayout"
-	self.Layout:Dock(FILL)
 
 	self.Items = {}
 
-	for i = 1, 2 do
-		local p = self.Layout:Add "pluto_inventory_item"
+	self.Left = self:Add "EditablePanel"
+	self.Left:Dock(LEFT)
+	self.Right = self:Add "EditablePanel"
+	self.Right:Dock(RIGHT)
+
+	for i = 1, 12, 2 do
+		local p = self.Left:Add "pluto_inventory_item"
 		p.TabIndex = i
 		self.Items[i] = p
+		p:Dock(TOP)
 	end
+
+	for i = 2, 12, 2 do
+		local p = self.Right:Add "pluto_inventory_item"
+		p.TabIndex = i
+		self.Items[i] = p
+		p:Dock(TOP)
+	end
+
+	self.PlayerModel = self:Add "ttt_curved_panel"
 end
 
 function PANEL:PerformLayout(w, h)
 	local size = math.Round(w / (count + 2))
 	local divide = (w - size * count) / (count + 2)
+	self.PlayerModel:SetTall(h - divide * 3)
+	self.PlayerModel:SetWide(size * 3)
+	self.PlayerModel:Center()
 
-	for _, item in ipairs(self.Items) do
+	for i, item in ipairs(self.Items) do
 		item:SetSize(size, size)
+		item:DockMargin(0,  i <= 2 and 0 or divide / 2, 0, divide / 2)
 	end
 
-	self.Layout:SetSpaceX(divide)
-	self.Layout:SetSpaceY(divide)
+	self.Left:SetWide(size)
+	self.Right:SetWide(size)
+
 
 	self:DockPadding(divide * 1.5, divide * 1.5, divide * 1.5, divide * 1.5)
 end
 
 function PANEL:SetTab(tab)
-	for i = 1, 2 do
-		self.Items[i]:SetItem(tab.Items[i], tab)
+	for i, item in ipairs(self.Items) do
+		item:SetItem(tab.Items[i], tab)
 	end
 end
 

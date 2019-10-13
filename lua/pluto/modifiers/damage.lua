@@ -25,8 +25,8 @@ end
 MOD.Tiers = {
 	{ 10, 20 },
 	{ 5, 10 },
-	{ -5, 5 },
-	{ -10, -5 },
+	{ 2.5, 5 },
+	{ 0.1, 2.5 },
 }
 
 function MOD:ModifyWeapon(wep, rolls)
