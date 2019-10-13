@@ -969,6 +969,40 @@ local PANEL = {}
 function PANEL:Init()
 	self.Garbage = self:Add "pluto_inventory_garbage"
 	self.Garbage:Dock(RIGHT)
+
+	self.Items = {}
+
+	for i = 1, 5 do
+		local t = self:Add "pluto_inventory_item"
+		t:Dock(RIGHT)
+		t.TabIndex = i
+		t:SetItem(nil, {
+			ID = 0,
+			Active = true,
+		})
+
+		self.Items[i] = t
+	end
+
+	self.Items[6] = self.Garbage
+end
+
+function PANEL:PerformLayout(w, h)
+	local size = math.Round(w / (count + 2))
+	local divide = (w - size * count) / (count + 2)
+
+	for i, item in ipairs(self.Items) do
+		item:SetSize(size, size)
+		local left, right = divide / 2, divide / 2
+		if (i == 0) then
+			left = 0
+		elseif (i == 6) then
+			right = 0
+		end
+		item:DockMargin(left, 0, right, 0)
+	end
+
+	self:DockPadding(divide * 1.5, (h - size) / 2, divide * 1.5, (h - size) / 2)
 end
 
 vgui.Register("pluto_inventory_bar", PANEL, "pluto_inventory_base")
