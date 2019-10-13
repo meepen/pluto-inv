@@ -292,9 +292,12 @@ function PANEL:GhostClick(p, m)
 	end
 
 	if (m == MOUSE_LEFT and p.ClassName == "pluto_inventory_item") then
+
 		local parent = self
 		local gparent = p
-
+		if (not pluto.canswitchtabs(parent.Tab, gparent.Tab, parent.TabIndex, gparent.TabIndex)) then
+			return false
+		end
 		local i = parent.Item
 		local o = gparent.Item
 		parent:SetItem(o)

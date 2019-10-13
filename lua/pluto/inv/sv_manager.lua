@@ -258,49 +258,16 @@ function pluto.inv.readtabswitch(ply)
 	local tab1 = pluto.inv.invs[ply][tabid1]
 	local tab2 = pluto.inv.invs[ply][tabid2]
 
-	if (not tab1 or not tab2) then
-		ply:Kick "tab switch failed (1) report to meepen on discord"
-		return
-	end
+	local canswitch, fail = pluto.canswitchtabs(tab1, tab2, tabindex1, tabindex2)
 
-	local i1 = tab1.Items[tabindex1]
-	local i2 = tab2.Items[tabindex2]
-
-	if (not i1 and not i2) then
-		return
-	end
-
-	local tabtype1 = pluto.tabs[tab1.Type]
-	local tabtype2 = pluto.tabs[tab2.Type]
-
-	if (not tabtype1 or not tabtype2) then
-		ply:Kick "tab switch failed (2) report to meepen on discord"
-		return
-	end
-
-	if (i1 and (not tabtype1.canremove(tabindex1, i1) or not tabtype2.canaccept(tabindex2, i1))) then
-		ply:Kick "tab switch failed (3) report to meepen on discord"
-		return
-	end
-
-	if (i2 and (not tabtype2.canremove(tabindex2, i2) or not tabtype1.canaccept(tabindex1, i2))) then
-		ply:Kick "tab switch failed (4) report to meepen on discord"
-		return
-	end
-
-	if (tabindex2 < 1 or tabindex2 > tabtype2.size) then
-		ply:Kick "tab switch failed (5) report to meepen on discord"
-		return
-	end
-
-	if (tabindex1 < 1 or tabindex1 > tabtype1.size) then
-		ply:Kick "tab switch failed (6) report to meepen on discord"
+	if (not canswitch) then
+		ply:Kick("tab switch failed (" .. fail .. ") report to meepen on discord")
 		return
 	end
 
 	pluto.inv.switchtab(ply, tabid1, tabindex1, tabid2, tabindex2, function(succ)
 		if (not succ and IsValid(ply)) then
-			ply:Kick "tab switch failed (7) report to meepen on discord"
+			ply:Kick "tab switch failed (save) report to meepen on discord"
 		end
 	end)
 end
