@@ -17,7 +17,7 @@ function SWEP:Initialize()
 
 	if (pluto.weapons.valid[self:GetClass()]) then
 		if (not item) then
-			item = pluto.weapons.generatetier("shadowy", self:GetClass())
+			item = pluto.weapons.generatetier(nil, self:GetClass())
 		end
 		self:SetInventoryItem(item)
 	end

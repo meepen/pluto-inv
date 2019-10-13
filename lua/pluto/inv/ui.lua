@@ -442,7 +442,7 @@ function PANEL:Init()
 end
 
 function PANEL:OnMousePressed(mouse)
-	if (mouse == MOUSE_RIGHT and pluto.cl_currency[self.Currency] > 0) then
+	if (pluto.cl_currency[self.Currency] > 0) then
 		pluto.ui.ghost = self
 	end
 end
