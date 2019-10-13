@@ -240,3 +240,49 @@ function pluto.inv.deleteitem(steamid, itemid, cb)
 		cb(true)
 	end)
 end
+
+function pluto.inv.getbufferitems(owner)
+	
+	local retn = {}
+	for _, item in ipairs(sql.Query("SELECT idx FROM pluto_items WHERE owner = " .. pluto.db.steamid64(owner) .. " ORDER BY idx DESC")) do
+		table.insert(retn, pluto.inv.getbufferitem(item.idx))
+	end
+
+	return retn
+end
+
+function pluto.inv.getbufferitem(id)
+	local data = sql.QueryRow("SELECT tier, class, owner FROM pluto_items WHERE idx = " .. SQLStr(id))
+
+	if (not data) then
+		return
+	end
+
+	local wpn = {
+		BufferID = id,
+		Mods = {
+			prefix = {},
+			suffix = {},
+		},
+		Tier = pluto.tiers[data.tier],
+		ClassName = data.class,
+		Owner = data.owner
+	}
+
+	for _, item in pairs(sql.Query([[SELECT modname, pluto_mods.tier as tier, roll1, roll2, roll3 FROM pluto_mods
+		JOIN pluto_items ON pluto_mods.gun_index = pluto_items.idx
+	WHERE gun_index = ]] .. SQLStr(id)) or {}) do
+		local mod = pluto.mods.byname[item.modname]
+
+		wpn.Mods[mod.Type] = wpn.Mods[mod.Type] or {}
+
+		table.insert(wpn.Mods[mod.Type], {
+			Roll = { tonumber(item.roll1), tonumber(item.roll2), tonumber(item.roll3) },
+			Mod = item.modname,
+			Tier = tonumber(item.tier),
+			RowID = tonumber(item.idx),
+		})
+	end
+
+	return wpn
+end

@@ -131,6 +131,10 @@ function pluto.inv.sendfullupdate(ply)
 	for currency in pairs(pluto.inv.currencies[ply]) do
 		m:write("currencyupdate", currency)
 	end
+
+	for _, item in ipairs(pluto.inv.getbufferitems(ply)) do
+		m:write("bufferitem", item)
+	end
 	
 	m:write("status", "ready"):send()
 end
@@ -154,6 +158,32 @@ end
 function pluto.inv.writecurrencyupdate(ply, currency)
 	net.WriteString(currency)
 	net.WriteUInt(pluto.inv.currencies[ply][currency], 32)
+end
+
+function pluto.inv.writebufferitem(ply, item)
+	net.WriteInt(item.BufferID, 32)
+
+	net.WriteString(item.Tier.Name)
+	net.WriteColor(item.Tier.Color or color_white)
+	net.WriteString(item.ClassName)
+
+	if (item.Mods.prefix) then
+		net.WriteUInt(#item.Mods.prefix, 8)
+		for ind, item in ipairs(item.Mods.prefix) do
+			pluto.inv.writemod(ply, item)
+		end
+	else
+		net.WriteUInt(0, 8)
+	end
+
+	if (item.Mods.suffix) then
+		net.WriteUInt(#item.Mods.suffix, 8)
+		for ind, item in ipairs(item.Mods.suffix) do
+			pluto.inv.writemod(ply, item)
+		end
+	else
+		net.WriteUInt(0, 8)
+	end
 end
 
 local function noop() end
@@ -346,6 +376,37 @@ function pluto.inv.readtabrename(ply)
 	tab.Name = name
 
 	pluto.inv.renametab(tab, function() end)
+end
+
+function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
+	local bufferid = net.ReadInt(32)
+	local tabid = net.ReadUInt(32)
+	local tabindex = net.ReadUInt(8)
+
+	local i = pluto.inv.getbufferitem(bufferid)
+
+	if (not i) then
+		ply:Kick "no buffer item"
+		return
+	end
+
+	if (i.Owner ~= ply:SteamID64()) then
+		ply:Kick "NO"
+		return
+	end
+
+	i.TabID, i.TabIndex = tabid, tabindex
+
+	print "saving"
+
+	pluto.weapons.save(i, ply, function(id)
+		if (not id) then
+			ply:Kick("error claiming gun")
+			return
+		end
+
+		sql.Query("DELETE FROM pluto_items WHERE idx = " .. SQLStr(i.BufferID))
+	end)
 end
 
 function pluto.inv.readend()

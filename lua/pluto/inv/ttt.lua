@@ -14,6 +14,10 @@ hook.Add("PlayerButtonDown", "pluto_afk", function(ply, btn)
 	pluto.afk[ply][btn] = true
 end)
 
+local function ornull(n)
+	return n and SQLStr(n) or "NULL"
+end
+
 hook.Add("TTTEndRound", "pluto_endround", function()
 	for _, obj in pairs(round.GetStartingPlayers()) do
 		local ply = obj.Player
@@ -29,27 +33,46 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 		ply.WasAFK = false
 
 		if (not IsValid(ply) or math.random(3) ~= 1) then
-			continue
+			--continue
 		end
 
 		local i = pluto.weapons.generatetier()
+		sql.Query("INSERT INTO pluto_items (tier, class, owner) VALUES (" .. SQLStr(i.Tier.InternalName) .. ", " .. SQLStr(i.ClassName) .. ", " .. ply:SteamID64() .. ")")
+		local id = sql.QueryValue "SELECT last_insert_rowid() as id"
+		i.BufferID = id
 
-		i.TabID, i.TabIndex = pluto.inv.getfreespace(ply, i)
-
-		if (not i.TabID) then
-			ply:ChatPrint("you are too full to receive a gun!")
-			continue
+		if (i.Mods) then
+			for type, list in pairs(i.Mods) do
+				for _, mod in ipairs(list) do
+					sql.Query("INSERT INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3) VALUES (" .. 
+						id .. ", " ..
+						ornull(mod.Mod) .. ", " ..
+						ornull(mod.Tier) .. ", " ..
+						ornull(mod.Roll[1]) .. ", " ..
+						ornull(mod.Roll[2]) .. ", " ..
+						ornull(mod.Roll[3]) ..
+					")")
+				end
+			end
 		end
 
-		print "saving"
+		local items = sql.Query("SELECT idx FROM pluto_items WHERE owner = " .. SQLStr(ply:SteamID64()) .. " ORDER BY idx DESC")
 
-		pluto.weapons.save(i, ply, function(id)
-			if (not id) then
-				ply:ChatPrint("error giving you a gun")
-				return
+		if (#items > 5) then
+			for i = 6, #items do
+				items[i] = items[i].idx
 			end
-			ply:ChatPrint("You got mail!")
-		end)
+
+			-- TODO(meep): generate currency
+
+			sql.Query("DELETE FROM pluto_items WHERE idx IN (" .. table.concat(items, ", ", 6) .. ")")
+		end
+
+		pluto.inv.message(ply)
+			:write("bufferitem", i)
+			:send()
+
+		ply:ChatPrint("You got mail!")
 	end
 end)
 

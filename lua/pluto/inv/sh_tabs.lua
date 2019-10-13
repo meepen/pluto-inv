@@ -51,6 +51,10 @@ function pluto.canswitchtabs(tab1, tab2, tabindex1, tabindex2)
 		return
 	end
 
+	if (not tab1.Items or not tab2.Items) then
+		return false, "buffer"
+	end
+
 	local i1 = tab1.Items[tabindex1]
 	local i2 = tab2.Items[tabindex2]
 

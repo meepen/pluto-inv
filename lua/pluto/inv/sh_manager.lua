@@ -7,6 +7,7 @@ pluto.inv.messages = {
 		[2] = "itemdelete",
 		[3] = "currencyuse",
 		[4] = "tabrename",
+		[5] = "claimbuffer",
 	},
 	sv2cl = {
 		[0] = "end",
@@ -16,6 +17,7 @@ pluto.inv.messages = {
 		[4] = "status",
 		[5] = "tabupdate",
 		[6] = "currencyupdate",
+		[7] = "bufferitem",
 	}
 }
 

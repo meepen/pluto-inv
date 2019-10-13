@@ -16,6 +16,8 @@ pluto.received = pluto.received or {
 	item = {},
 }
 
+pluto.buffer = pluto.buffer or {}
+
 pluto.inv = pluto.inv or {
 	status = "uninitialized",
 }
@@ -128,6 +130,37 @@ function pluto.inv.readtabupdate()
 	hook.Run("PlutoTabUpdate", tabid, tabindex, item)
 end
 
+function pluto.inv.readbufferitem()
+	local id = net.ReadUInt(32)
+	local tier = net.ReadString()
+	local col = net.ReadColor()
+	local class = net.ReadString()
+
+	local item = {
+		BufferID = id,
+		Tier = tier,
+		Color = col,
+		ClassName = class,
+		Mods = {
+			prefix = {},
+			suffix = {},
+		},
+	}
+
+	for i = 1, net.ReadUInt(8) do
+		item.Mods.prefix[i] = pluto.inv.readmod()
+	end
+
+	for i = 1, net.ReadUInt(8) do
+		item.Mods.suffix[i] = pluto.inv.readmod()
+	end
+
+	table.insert(pluto.buffer, item)
+	if (#pluto.buffer > 5) then
+		table.remove(pluto.buffer, 1)
+	end
+end
+
 function pluto.inv.writeitemdelete(tabid, tabindex, itemid)
 	net.WriteUInt(tabid, 32)
 	net.WriteUInt(tabindex, 8)
@@ -158,6 +191,12 @@ function pluto.inv.writetabrename(tabid, text)
 	if (tab) then
 		tab.Name = text
 	end
+end
+
+function pluto.inv.writeclaimbuffer(bufferid, tabid, tabindex)
+	net.WriteInt(bufferid, 32)
+	net.WriteUInt(tabid, 32)
+	net.WriteUInt(tabindex, 8)
 end
 
 function pluto.inv.writeend()

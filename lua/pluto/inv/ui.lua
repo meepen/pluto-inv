@@ -222,8 +222,15 @@ function PANEL:Init()
 	self.Image:SetVisible(false)
 
 	self:SetCursor "arrow"
+
+	hook.Add("PlutoTabUpdate", self, self.PlutoTabUpdate)
 end
 
+function PANEL:PlutoTabUpdate(tabid, tabindex, item)
+	if (self.Tab and self.Tab.ID == tabid and self.TabIndex == tabindex) then
+		self:SetItem(item)
+	end
+end
 
 function PANEL:Paint(w, h)
 	if (not self.Tab.Active) then
@@ -291,21 +298,39 @@ function PANEL:GhostClick(p, m)
 		return true
 	end
 
-	if (m == MOUSE_LEFT and p.ClassName == "pluto_inventory_item") then
-
+	if (m == MOUSE_LEFT and p.ClassName == "pluto_inventory_item" and self.Tab) then
 		local parent = self
 		local gparent = p
-		if (not pluto.canswitchtabs(parent.Tab, gparent.Tab, parent.TabIndex, gparent.TabIndex)) then
-			return false
-		end
-		local i = parent.Item
-		local o = gparent.Item
-		parent:SetItem(o)
-		gparent:SetItem(i)
 
-		pluto.inv.message()
-			:write("tabswitch", parent.Tab.ID, parent.TabIndex, gparent.Tab.ID, gparent.TabIndex)
-			:send()
+		if (self.Tab.ID == 0 and gparent.Tab.Items) then
+			local oi = gparent.Tab.Items[gparent.TabIndex]
+
+			if (oi) then
+				return
+			end
+
+			pluto.inv.message()
+				:write("claimbuffer", parent.Item.BufferID, gparent.Tab.ID, gparent.TabIndex)
+				:send()
+
+			table.remove(pluto.buffer, parent.TabIndex)
+
+			for i = parent.TabIndex, 5 do
+				self:GetParent().Items[i]:SetItem(pluto.buffer[i])
+			end
+		else
+			if (not pluto.canswitchtabs(parent.Tab, gparent.Tab, parent.TabIndex, gparent.TabIndex)) then
+				return false
+			end
+			local i = parent.Item
+			local o = gparent.Item
+			parent:SetItem(o)
+			gparent:SetItem(i)
+
+			pluto.inv.message()
+				:write("tabswitch", parent.Tab.ID, parent.TabIndex, gparent.Tab.ID, gparent.TabIndex)
+				:send()
+		end
 	end
 	pluto.ui.ghost = nil
 
@@ -978,7 +1003,7 @@ function PANEL:Init()
 		local t = self:Add "pluto_inventory_item"
 		t:Dock(RIGHT)
 		t.TabIndex = i
-		t:SetItem(nil, {
+		t:SetItem(pluto.buffer[i], {
 			ID = 0,
 			Active = true,
 		})
