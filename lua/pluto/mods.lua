@@ -25,7 +25,9 @@ for _, modname in pairs {
 	"poison",
 	"postheal",
 	"recoil",
+	"recycle",
 	"shock",
+	-- "snipexp",
 	"zoomies",
 } do
 	MOD = pluto.mods.byname[modname] or {}

@@ -151,7 +151,11 @@ function SWEP:GetInventoryItem()
 end
 
 hook.Add("EntityTakeDamage", "pluto_dmg_mods", function(targ, dmg)
-	if (dmg:GetDamage() <= 0 or bit.band(dmg:GetDamageType(), DMG_DIRECT) == DMG_DIRECT) then
+	if (dmg:GetDamage() <= 0 or bit.band(dmg:GetDamageType(), DMG_BULLET) ~= DMG_BULLET) then
+		return
+	end
+
+	if (not hook.Run("PlayerShouldTakeDamage", targ, dmg:GetAttacker())) then
 		return
 	end
 
