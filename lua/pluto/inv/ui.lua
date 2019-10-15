@@ -929,6 +929,8 @@ end
 vgui.Register("pluto_invalid_tab", PANEL, "pluto_inventory_base")
 
 local PANEL = {}
+DEFINE_BASECLASS "DImage"
+
 function PANEL:OnMousePressed(mouse)
 	if (IsValid(pluto.ui.ghost)) then
 		-- assume is inventory item
@@ -996,7 +998,36 @@ end
 function PANEL:OnCursorExited()
 	self:StopIfDeleting()
 end
-vgui.Register("pluto_inventory_garbage", PANEL, "ttt_curved_panel")
+
+function PANEL:Paint(w, h)
+	local x, y = 4, 4
+
+	w = w - x * 2
+	h = h - y * 2
+
+	local ow, oh = w, h
+	local im_w, im_h = self.Image:GetInt "$realwidth", self.Image:GetInt "$realheight"
+
+	if (im_w > im_h) then
+		h = h * (im_h / im_w)
+		y = y + (oh - h) / 2
+	elseif (im_h > im_w) then
+		w = w * (im_w / im_h)
+		print((ow - w) / 2)
+		x = x + (ow - w) / 2
+	end
+
+	surface.SetDrawColor(255, 255, 255, 255)
+	surface.SetMaterial(self.Image)
+
+	surface.DrawTexturedRect(x, y, w, h)
+end
+
+function PANEL:Init()
+	self.Image = Material "materials/pluto/trashcan_128.png"
+end
+
+vgui.Register("pluto_inventory_garbage", PANEL, "EditablePanel")
 
 local PANEL = {}
 
