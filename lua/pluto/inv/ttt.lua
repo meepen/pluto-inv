@@ -28,29 +28,76 @@ local function name(x)
 	end
 end
 
+local types = {
+	"were crushed to death",
+	"were shot to death",
+	"were slashed to death",
+	"burned to death",
+	"got driven over",
+	"fell to your death",
+	"exploded",
+	"were clubbed to death",
+	"were shocked to death",
+	"bled to death",
+	"were lasered to death",
+	nil,
+	nil,
+	nil,
+	"drowned to death",
+	"were paralyzed to death",
+	"were gassed to death",
+	"were poisoned to death",
+	"were radiated to death",
+	nil,
+	"were acidified to death",
+	"were slowly cooked alive",
+	nil,
+	"were graity gunned to death",
+	"were plasmaed to death",
+	"were shot by an airboat",
+	"were dissolved to death",
+	"were blasted to death",
+	nil, -- "were damaged directly",
+	"were shotgunned to death",
+	"were sniped to death",
+	"were exploded by a missile defense",
+}
+
+local function damagedesc(n)
+	for i = 1, 31 do
+		if (bit.band(n, 2 ^ (i - 1)) ~= 0 and types[i]) then
+			return "You " .. types[i]
+		end
+	end
+
+	return "You died"
+end
+
 hook.Add("DoPlayerDeath", "pluto_info", function(vic, atk, dmg)
 	local wep = dmg:GetInflictor()
 	local atk = dmg:GetAttacker()
 
-	local text = "You died somehow."
+	local text = damagedesc(dmg:GetDamageType())
 
 	if (IsValid(atk)) then
-		if (atk:IsPlayer() and IsValid(wep) and wep:IsWeapon()) then
-			text = string.format("%s killed you with their %s. They were a %s.", atk:Nick(), name(wep), atk:GetRole())
-		elseif (dmg:IsDamageType(DMG_CRUSH)) then
-			local inf = wep or atk
-			if (IsValid(inf)) then
-				text = string.format("You were crushed by %s", name(inf))
-			else
-				text = "You were crushed."
+		if (atk:IsPlayer()) then
+			text = text .. " by " .. atk:Nick() .. " who was a" .. (atk:GetRole():match "^[aeiouAEIOU]" and "n" or "") .. " " .. atk:GetRole()
+
+			if (IsValid(wep)) then
+				text = text .. ". They used their " .. wep:GetPrintName()
 			end
-		elseif (dmg:IsDamageType(DMG_FALL)) then
-			text = "You fell to your death."
-		elseif (dmg:IsDamageType(DMG_DROWN)) then
-			text = "You drowned."
+		elseif (game.GetWorld() == atk) then
+			text = text .. " by the world"
+		elseif (atk:IsWeapon()) then
+			text = text .. " by " .. atk:GetPrintName()
+		elseif (atk.PrintName) then
+			text = text .. " by " .. atk.PrintName
+		else
+			text = text .. " by " .. atk:GetClass()
 		end
 	end
 
+	print(text)
 	vic:ChatPrint(text)
 end)
 

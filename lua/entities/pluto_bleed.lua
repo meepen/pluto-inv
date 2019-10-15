@@ -41,7 +41,7 @@ function ENT:DoDamage(damages)
 		dmg:SetAttacker(game.GetWorld())
 	end
 	dmg:SetDamageForce(vector_origin)
-	dmg:SetDamageType(DMG_DIRECT)
+	dmg:SetDamageType(DMG_DIRECT + DMG_SONIC)
 	dmg:SetDamagePosition(p:GetPos())
 	p:TakeDamageInfo(dmg)
 end

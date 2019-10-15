@@ -79,7 +79,7 @@ function ENT:DoDamage(damages)
 		dmg:SetAttacker(game.GetWorld())
 	end
 	dmg:SetDamageForce(vector_origin)
-	dmg:SetDamageType(DMG_BURN + DMG_DIRECT)
+	dmg:SetDamageType(DMG_SLOWBURN + DMG_DIRECT)
 	dmg:SetDamagePosition(p:GetPos())
 	p:TakeDamageInfo(dmg)
 	--p:EmitSound "General.BurningFlesh"
