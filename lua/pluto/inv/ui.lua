@@ -659,6 +659,8 @@ function PANEL:Init()
 	self:SetFont "pluto_inventory_tab"
 	self:SetSkin "tttrw"
 	self:DockMargin(pad - 4, 0, pad - 4, 0)
+
+	pluto.ui.pnl:SetKeyboardInputEnabled(true)
 end
 
 function PANEL:AllowInput(t)
@@ -672,12 +674,14 @@ end
 
 function PANEL:OnFocusChanged(gained)
 	if (not gained) then
+		self:GetParent():SetText(self:GetText())
 		pluto.inv.message()
 			:write("tabrename", self.Tab.ID, self:GetText())
 			:send()
 
 		local p = self:GetParent()
 		self:Remove()
+		pluto.ui.pnl:SetKeyboardInputEnabled(false)
 	end
 end
 
@@ -1093,6 +1097,7 @@ function PANEL:Init()
 
 	self:MakePopup()
 	self:SetPopupStayAtBack(true)
+	self:SetKeyboardInputEnabled(false)
 end
 
 function PANEL:OnScreenSizeChanged()
