@@ -1011,6 +1011,12 @@ function PANEL:Paint(w, h)
 	local ow, oh = w, h
 	local im_w, im_h = self.Image:GetInt "$realwidth", self.Image:GetInt "$realheight"
 
+	if (not im_w) then
+		surface.SetDrawColor(0, 255, 0, 255)
+		surface.DrawRect(0, 0, w, h)
+		return
+	end
+
 	if (im_w > im_h) then
 		h = h * (im_h / im_w)
 		y = y + (oh - h) / 2
