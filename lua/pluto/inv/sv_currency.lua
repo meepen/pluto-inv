@@ -102,7 +102,7 @@ for name, values in pairs {
 			if (prefixes + suffixes == item.Tier.affixes) then
 				return
 			end
-			
+
 			local have = {}
 
 			for _, Mods in pairs(item.Mods) do

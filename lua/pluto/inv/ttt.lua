@@ -23,9 +23,10 @@ local function name(x)
 		return nil
 	elseif (x:IsPlayer()) then
 		return x:Nick()
-	else
+	elseif (IsValid(x)) then
 		return x.GetPrintName and x:GetPrintName() or x.PrintName or x:GetClass()
 	end
+	return "idk"
 end
 
 local types = {
@@ -84,7 +85,7 @@ hook.Add("DoPlayerDeath", "pluto_info", function(vic, atk, dmg)
 			text = text .. " by " .. atk:Nick() .. " who was a" .. (atk:GetRole():match "^[aeiouAEIOU]" and "n" or "") .. " " .. atk:GetRole()
 
 			if (IsValid(wep)) then
-				text = text .. ". They used their " .. wep:GetPrintName()
+				text = text .. ". They used their " .. name(wep)
 			end
 		elseif (game.GetWorld() == atk) then
 			text = text .. " by the world"
