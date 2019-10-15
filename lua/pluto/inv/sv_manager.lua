@@ -347,7 +347,7 @@ function pluto.inv.readcurrencyuse(ply)
 			return
 		end
 
-		local wpn = pluto.inv.items[id]
+		wpn = pluto.inv.items[id]
 
 		if (not wpn or wpn.Owner ~= ply:SteamID64()) then
 			return
