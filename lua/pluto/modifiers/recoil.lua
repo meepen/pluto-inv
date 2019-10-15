@@ -11,9 +11,9 @@ end
 function MOD:GetDescription(rolls)
 	local roll = rolls[1]
 	if (roll > 0) then
-		return string.format("Recoil is reduced by %i%%", roll)
+		return string.format("Recoil is reduced by %.1f%%", roll)
 	else
-		return string.format("Recoil is increased by %i%%", -roll)
+		return string.format("Recoil is increased by %.1f%%", -roll)
 	end
 end
 

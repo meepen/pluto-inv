@@ -9,7 +9,7 @@ function MOD:IsNegative(roll)
 end
 
 function MOD:GetDescription(rolls)
-	return string.format("You gain %.01f%% of the bullets you fired back after kill", rolls[1] * 100)
+	return string.format("You gain %.01f%% of the bullets you hit back after kill", rolls[1] * 100)
 end
 
 function MOD:CanRollOn(class)

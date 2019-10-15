@@ -33,7 +33,7 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 		ply.WasAFK = false
 
 		if (not IsValid(ply) or math.random(3) ~= 1) then
-			--continue
+			continue
 		end
 
 		local i = pluto.weapons.generatetier()
