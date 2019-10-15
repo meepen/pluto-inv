@@ -80,12 +80,12 @@ for name, values in pairs {
 		end,
 	},
 	tome = {
-		Shares = 100,
+		Shares = 0, -- 100,
 		Use = function(item)
 		end,
 	},
 	mirror = {
-		Shares = 1,
+		Shares = 0, -- 1,
 		Use = function(item)
 		end,
 	},
