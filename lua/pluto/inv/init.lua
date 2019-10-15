@@ -76,7 +76,7 @@ function pluto.inv.retrievetabs(steamid, cb)
 	end)
 end
 
-function pluto.inv.addtabs(steamid, types, cb)
+function pluto.inv.addtabs(steamid, types, cb, nostart)
 	if (#types == 0) then
 		return cb {}
 	end
@@ -105,13 +105,13 @@ function pluto.inv.addtabs(steamid, types, cb)
 		end }
 	end
 
-	pluto.db.transact(queries, function(err)
+	return pluto.db.transact(queries, function(err)
 		if (err) then
 			cb(false)
 		else
 			cb(tabs)
 		end
-	end)
+	end, nil, nostart)
 end
 
 function pluto.inv.switchtab(steamid, tabid1, tabindex1, tabid2, tabindex2, cb)

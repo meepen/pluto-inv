@@ -148,6 +148,33 @@ for name, values in pairs {
 			UpdateAndDecrement(ply, item, "heart")
 		end,
 	},
+	coin = {
+		Shares = 2.5,
+		Use = function(ply)
+			local trans = pluto.inv.addtabs(ply, {"normal"}, function(tab)
+				if (not tab or not IsValid(ply)) then
+					return
+				end
+
+				tab = tab[1]
+
+				if (not tab) then
+					return
+				end
+
+				tab.Items = {}
+
+				pluto.inv.invs[ply][tab.RowID] = tab
+				pluto.inv.message(ply)
+					:write("tab", tab)
+					:send()
+
+			end, true)
+
+			trans:addQuery(pluto.inv.addcurrency(ply, "coin", -1, function() end, true))
+			trans:start()
+		end,
+	}
 } do
 	table.Merge(pluto.currency.byname[name], values)
 end

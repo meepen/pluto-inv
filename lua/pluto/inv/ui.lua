@@ -472,7 +472,16 @@ end
 
 function PANEL:OnMousePressed(mouse)
 	if (pluto.cl_currency[self.Currency] > 0) then
-		pluto.ui.ghost = self
+		local curtype = pluto.currency.byname[self.Currency]
+		if (curtype and curtype.NoTarget) then
+			Derma_Query("Really use " .. curtype.Name .. "? " .. curtype.Description, "Confirm use", "Yes", function()
+				pluto.inv.message()
+					:write("currencyuse", self.Currency)
+					:send()
+			end, "No", function() end)
+		else
+			pluto.ui.ghost = self
+		end
 	end
 end
 
@@ -870,12 +879,6 @@ function PANEL:OnMouseWheeled(delta)
 	self.CurPos = math.Clamp(self.CurPos - delta * 30, 0, totalwide)
 
 	self:Recalculate(self.Next)
-end
-
-function PANEL:PerformLayout()
-	if (IsValid(self.Current)) then
-		self:Select(self.Current)
-	end
 end
 
 vgui.Register("pluto_inventory_tabs", PANEL, "EditablePanel")

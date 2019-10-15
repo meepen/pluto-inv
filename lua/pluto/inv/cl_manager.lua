@@ -169,7 +169,10 @@ end
 
 function pluto.inv.writecurrencyuse(currency, item)
 	net.WriteString(currency)
-	net.WriteUInt(item.ID, 32)
+	net.WriteBool(not not item)
+	if (item) then
+		net.WriteUInt(item.ID, 32)
+	end
 end
 
 function pluto.inv.writetabswitch(tabid1, tabindex1, tabid2, tabindex2)

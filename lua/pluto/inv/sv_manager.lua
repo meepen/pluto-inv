@@ -338,17 +338,20 @@ end
 
 function pluto.inv.readcurrencyuse(ply)
 	local currency = net.ReadString()
-	local id = net.ReadUInt(32)
+	local wpn
+	if (net.ReadBool()) then
+		local id = net.ReadUInt(32)
 
-	local amount = pluto.inv.currencies[ply][currency]
-	if (not amount or amount <= 0) then
-		return
-	end
+		local amount = pluto.inv.currencies[ply][currency]
+		if (not amount or amount <= 0) then
+			return
+		end
 
-	local wpn = pluto.inv.items[id]
+		local wpn = pluto.inv.items[id]
 
-	if (not wpn or wpn.Owner ~= ply:SteamID64()) then
-		return
+		if (not wpn or wpn.Owner ~= ply:SteamID64()) then
+			return
+		end
 	end
 
 	pluto.currency.byname[currency].Use(ply, wpn)

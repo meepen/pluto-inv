@@ -51,6 +51,15 @@ pluto.currency.list = {
 		SubDescription = "Mara gives her heart to people who have shown compassion in their time of need",
 		Color = Color(204, 43, 75),
 	},
+	{
+		InternalName = "coin",
+		Name = "Coin",
+		Icon = "pluto/currencies/coin.png",
+		Description = "Adds a storage tab",
+		SubDescription = "$$$",
+		Color = Color(254, 233, 105),
+		NoTarget = true,
+	}
 }
 
 for _, item in pairs(pluto.currency.list) do
