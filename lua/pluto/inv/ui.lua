@@ -533,7 +533,6 @@ function PANEL:GhostClick(p)
 			:send()
 	end
 	if (not input.IsKeyDown(KEY_LSHIFT)) then
-		print("5", p)
 		pluto.ui.ghost = nil
 	end
 	return false
@@ -1017,7 +1016,6 @@ function PANEL:Paint(w, h)
 		y = y + (oh - h) / 2
 	elseif (im_h > im_w) then
 		w = w * (im_w / im_h)
-		print((ow - w) / 2)
 		x = x + (ow - w) / 2
 	end
 
@@ -1145,19 +1143,13 @@ if (IsValid(pluto.ui.pnl)) then
 	pluto.ui.pnl = vgui.Create "pluto_inventory"
 end
 
-hook.Add("InputMouseApply", "pluto_inventory_ui", function()
-	if (input.WasKeyPressed(KEY_I) and not IsValid(pluto.ui.pnl)) then
-		if (pluto.inv.status ~= "ready") then
-			chat.AddText("wait for inventory!")
-			return
+hook.Add("PlayerButtonDown", "pluto_inventory_ui", function(_, key)
+	if (IsFirstTimePredicted() and key == KEY_I) then
+		if (IsValid(pluto.ui.pnl)) then
+			pluto.ui.pnl:Remove()
+		else
+			pluto.ui.pnl = vgui.Create "pluto_inventory"
 		end
-		pluto.ui.pnl = vgui.Create "pluto_inventory"
-	end
-end)
-hook.Add("PlayerTick", "pluto_inventory_ui", function()
-	local focus = vgui.GetKeyboardFocus()
-	if ((not IsValid(focus) or focus.ClassName ~= "pluto_inventory_rename_tab") and input.WasKeyPressed(KEY_I) and IsValid(pluto.ui.pnl) and vgui.FocusedHasParent(pluto.ui.pnl)) then
-		pluto.ui.pnl:Remove()
 	end
 end)
 
@@ -1479,7 +1471,6 @@ hook.Add("PostRenderVGUI", "pluto_ghost", function()
 		local p = pluto.ui.ghost
 
 		if ((input.IsMouseDown(MOUSE_RIGHT) or input.IsMouseDown(MOUSE_LEFT)) and not IsValid(vgui.GetHoveredPanel())) then
-			print("4", vgui.GetHoveredPanel())
 			pluto.ui.ghost = nil
 			return
 		end

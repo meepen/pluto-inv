@@ -18,6 +18,42 @@ local function ornull(n)
 	return n and SQLStr(n) or "NULL"
 end
 
+local function name(x)
+	if (not IsValid(x)) then
+		return nil
+	elseif (x:IsPlayer()) then
+		return x:Nick()
+	else
+		return x.GetPrintName and x:GetPrintName() or x.PrintName or x:GetClass()
+	end
+end
+
+hook.Add("DoPlayerDeath", "pluto_info", function(vic, atk, dmg)
+	local wep = dmg:GetInflictor()
+	local atk = dmg:GetAttacker()
+
+	local text = "You died somehow."
+
+	if (IsValid(atk)) then
+		if (atk:IsPlayer() and IsValid(wep) and wep:IsWeapon()) then
+			text = string.format("%s killed you with their %s. They were a %s.", atk:Nick(), name(wep), atk:GetRole())
+		elseif (dmg:IsDamageType(DMG_CRUSH)) then
+			local inf = wep or atk
+			if (IsValid(inf)) then
+				text = string.format("You were crushed by %s", name(inf))
+			else
+				text = "You were crushed."
+			end
+		elseif (dmg:IsDamageType(DMG_FALL)) then
+			text = "You fell to your death."
+		elseif (dmg:IsDamageType(DMG_DROWN)) then
+			text = "You drowned."
+		end
+	end
+
+	vic:ChatPrint(text)
+end)
+
 hook.Add("TTTEndRound", "pluto_endround", function()
 	for _, obj in pairs(round.GetStartingPlayers()) do
 		local ply = obj.Player
