@@ -412,13 +412,12 @@ function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
 
 	print "saving"
 
+	sql.Query("DELETE FROM pluto_items WHERE idx = " .. SQLStr(i.BufferID))
 	pluto.weapons.save(i, ply, function(id)
 		if (not id) then
 			ply:Kick("error claiming gun")
 			return
 		end
-
-		sql.Query("DELETE FROM pluto_items WHERE idx = " .. SQLStr(i.BufferID))
 	end)
 end
 
