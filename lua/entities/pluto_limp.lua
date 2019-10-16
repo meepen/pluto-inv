@@ -15,7 +15,7 @@ function ENT:SetupDataTables()
 end
 
 function ENT:Think()
-	if (self:GetDeleteTime() < CurTime()) then
+	if (self:GetDeleteTime() < CurTime() and SERVER) then
 		self:Remove()
 	end
 end
