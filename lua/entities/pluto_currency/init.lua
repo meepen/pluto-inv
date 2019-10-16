@@ -5,8 +5,8 @@ function ENT:IsVisibleTo(ply)
 	return ply == self:GetOwner() and ply:Alive()
 end
 
-function ENT:StartTouch(e)
-	if (self:GetOwner() == e) then
+function ENT:Touch(e)
+	if (self:GetOwner() == e and not self.Got) then
 		net.Start(self:GetClass())
 			net.WriteVector(self:GetPos())
 		net.Send(e)
@@ -25,6 +25,7 @@ function ENT:StartTouch(e)
 
 			e:ChatPrint("You received a " .. cur.Name)
 		end)
+		self.Got = true
 		self:Remove()
 	end
 end

@@ -115,11 +115,20 @@ function PANEL:Init()
 	self:SetMouseInputEnabled(false)
 
 	self:SetCurve(curve(0))
+	self:SetColor(Color(0,0,0,0))
 
 	self.Material = Material "pluto/item_bg_real.png"
 end
 
 function PANEL:SetItem(item)
+	if (not item) then
+		if (IsValid(self.Model)) then
+			self.Model:Remove()
+		end
+		self:SetColor(Color(0,0,0,0))
+		return
+	end
+
 	self.Item = item
 	self:SetWeapon(weapons.GetStored(item.ClassName))
 
@@ -166,20 +175,28 @@ function PANEL:Paint(w, h)
 		render.SetStencilPassOperation(STENCIL_KEEP)
 		render.SetStencilCompareFunction(STENCIL_EQUAL)
 		local err = self.Model
+		local holdtype = self.HoldType
 		if (not IsValid(err)) then
-			return
+			err = self.DefaultModel
+			holdtype = self.DefaultHoldType
+			
+			if (not IsValid(err)) then
+				return
+			end
 		end
 
-		self.Material:SetVector("$color", self.MaterialColor)
-		surface.SetMaterial(self.Material)
-		surface.SetDrawColor(255, 255, 255, 255)
-		surface.DrawTexturedRect(0, 0, w, h)
+		if (self.Material and self.Item) then
+			self.Material:SetVector("$color", self.MaterialColor)
+			surface.SetMaterial(self.Material)
+			surface.SetDrawColor(255, 255, 255, err ~= self.DefaultModel and 255 or 1)
+			surface.DrawTexturedRect(0, 0, w, h)
+		end
 
 		local x, y = self:LocalToScreen(0, 0)
 		local mins, maxs = err:GetModelBounds()
 		local mul = mins:Distance(maxs) / 45
 		local offset 
-		if (self.HoldType == "pistol") then
+		if (holdtype == "pistol") then
 			offset = -Vector((maxs.x - mins.x) * -1 / 3, 0, (maxs.z - mins.z) * 3 / 3)
 		else
 			offset = -Vector((maxs.x - mins.x) * -0.5 / 3, 0, (maxs.z - mins.z) * 1.5 / 3)
@@ -199,9 +216,22 @@ function PANEL:Paint(w, h)
 	render.SetStencilEnable(false)
 end
 
+function PANEL:SetDefault(str)
+	local w = weapons.GetStored(str)
+	if (IsValid(self.DefaultModel)) then
+		self.DefaultModel:Remove()
+	end
+	self.DefaultModel = ClientsideModel(w.WorldModel, RENDERGROUP_OTHER)
+	self.DefaultModel:SetNoDraw(true)
+	self.DefaultHoldType = w.HoldType
+end
+
 function PANEL:OnRemove()
 	if (IsValid(self.Model)) then
 		self.Model:Remove()
+	end
+	if (IsValid(self.DefaultModel)) then
+		self.DefaultModel:Remove()
 	end
 end
 
@@ -224,6 +254,10 @@ function PANEL:Init()
 	self:SetCursor "arrow"
 
 	hook.Add("PlutoTabUpdate", self, self.PlutoTabUpdate)
+end
+
+function PANEL:SetDefault(str)
+	self.Image:SetDefault(str)
 end
 
 function PANEL:PlutoTabUpdate(tabid, tabindex, item)
@@ -259,10 +293,11 @@ function PANEL:SetItem(item, tab)
 	end
 
 	self.Item = item
+	self.Image:SetItem(item)
 
 	if (not item) then
 		self:SetCursor "arrow"
-		self.Image:SetVisible(false)
+		self.Image:SetVisible(self.Image.DefaultModel)
 		return
 	end
 
@@ -421,6 +456,10 @@ function PANEL:Init()
 	end
 
 	self.PlayerModel = self:Add "ttt_curved_panel"
+
+	self.Items[1]:SetDefault "weapon_ttt_m4a1"
+
+	self.Items[2]:SetDefault "weapon_ttt_pistol"
 end
 
 function PANEL:PerformLayout(w, h)
