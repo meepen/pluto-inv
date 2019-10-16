@@ -137,6 +137,12 @@ function pluto.inv.sendfullupdate(ply)
 	end
 	
 	m:write("status", "ready"):send()
+
+	if (ply:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE) then
+		ply:StripWeapons()
+		ply:StripAmmo()
+		hook.Run("PlayerLoadout", ply)
+	end
 end
 
 function pluto.inv.writetabupdate(ply, tabid, tabindex)
