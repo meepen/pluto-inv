@@ -156,7 +156,7 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 			:write("bufferitem", i)
 			:send()
 
-		ply:ChatPrint("You got mail!")
+		ply:ChatPrint("You have received a weapon! Check your inventory.")
 	end
 end)
 
