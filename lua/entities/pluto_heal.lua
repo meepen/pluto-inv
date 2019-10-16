@@ -5,7 +5,7 @@ ENT.Base = "pluto_flame"
 
 function ENT:DoDamage()
 	local p = self:GetParent()
-	if (not p:Alive()) then
+	if (not IsValid(p) or not p:Alive()) then
 		self:Remove()
 	end
 	

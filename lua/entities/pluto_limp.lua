@@ -16,7 +16,6 @@ end
 
 function ENT:Think()
 	if (self:GetDeleteTime() < CurTime()) then
-		print("delete")
 		self:Remove()
 	end
 end
