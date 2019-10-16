@@ -235,7 +235,20 @@ function pluto.currency.spawnfor(ply, currency, pos)
 	local e = ents.Create "pluto_currency"
 
 	if (not pos) then
-		pos = pluto.currency.randompos()
+		for i = 1, 100 do
+			pos = pluto.currency.randompos()
+			local mins, maxs = ply:GetHull()
+			if (not util.TraceHull {
+				start = pos,
+				endpos = pos,
+				mins = mins,
+				maxs = maxs,
+				collisiongroup = COLLISION_GROUP_PLAYER,
+				mask = MASK_PLAYERSOLID,
+			}.StartSolid) then
+				break
+			end
+		end
 	end
 
 	if (not currency) then
