@@ -8,6 +8,28 @@ hook.Add("TTTBeginRound", "pluto_afk", function()
 	for _, ply in pairs(round.GetStartingPlayers()) do
 		pluto.afk[ply.Player] = {}
 	end
+
+	timer.Create("pluto_afkcheck", 60, 1, function()
+		for _, info in pairs(round.GetStartingPlayers()) do
+			local ply = info.Player
+
+			if (ply:IsBot()) then
+				continue
+			end
+
+			if (table.Count(pluto.afk[ply]) <= 4) then
+				ply:Notify "If you don't move around within 10 seconds, you will be slain for AFK"
+				ply:ChatPrint "If you don't move around within 10 seconds, you will be slain for AFK"
+				timer.Simple(10, function()
+					if (table.Count(pluto.afk[ply]) <= 4) then
+						pprintf("%s is still afk", ply:Nick())
+						ply:Say "I have been slain for being afk."
+						ply:Kill()
+					end
+				end)
+			end
+		end
+	end)
 end)
 
 hook.Add("PlayerButtonDown", "pluto_afk", function(ply, btn)
@@ -103,6 +125,7 @@ hook.Add("DoPlayerDeath", "pluto_info", function(vic, atk, dmg)
 end)
 
 hook.Add("TTTEndRound", "pluto_endround", function()
+	timer.Remove "pluto_afkcheck"
 	for _, obj in pairs(round.GetStartingPlayers()) do
 		local ply = obj.Player
 		if (not IsValid(ply)) then

@@ -1055,7 +1055,7 @@ function PANEL:OnCursorExited()
 end
 
 function PANEL:Paint(w, h)
-	local x, y = 4, 4
+	local x, y = 8, 8
 
 	w = w - x * 2
 	h = h - y * 2
@@ -1177,7 +1177,11 @@ function PANEL:PerformLayout(w, h)
 
 	pad = w * 0.05
 	local smol_pad = pad * 2 / 3
-	self:DockPadding(self.Where and smol_pad or pad, smol_pad, self.Where and pad or smol_pad, 0)
+	if (self.Where ~= nil) then
+		self:DockPadding(self.Where and smol_pad or pad, smol_pad, self.Where and pad or smol_pad, 0)
+	else
+		self:DockPadding(pad, smol_pad, pad, 0)
+	end
 end
 
 vgui.Register("pluto_inventory_control", PANEL, "EditablePanel")
@@ -1191,7 +1195,7 @@ function PANEL:Init()
 	self.Control1:Dock(FILL)
 	self.Control1:SetZPos(0)
 
-	local w = math.min(500, math.max(400, ScrW() / 3))
+	local w = math.floor(math.min(500, math.max(400, ScrW() / 3)) / 2) * 2
 	local real_w = w
 	local h = w * 1.2
 
@@ -1240,7 +1244,7 @@ function PANEL:Init()
 	pad = real_w * 0.05
 	local smol_pad = pad * 2 / 3
 	self.ControlBar:SetTall(self.Bottom:GetTall() - smol_pad)
-	self.ControlBar:SetWide(real_w)
+	self.ControlBar:SetWide(real_w - pad - smol_pad)
 	self.ControlBar:Center()
 	--self:DockPadding(pad, smol_pad, pad, smol_pad)
 end
