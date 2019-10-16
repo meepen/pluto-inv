@@ -580,6 +580,10 @@ function PANEL:GhostClick(p)
 	return false
 end
 
+function PANEL:PaintAt(x, y)
+	self.Image:PaintAt(x, y)
+end
+
 function PANEL:Showcase()
 	self.showcasepnl = pluto.ui.showcase(pluto.currency.byname[self.Currency])
 	self.showcasepnl:SetPos(self:LocalToScreen(self:GetWide(), 0))
