@@ -183,6 +183,8 @@ function PANEL:Paint(w, h)
 			if (not IsValid(err)) then
 				return
 			end
+
+			render.SetBlend(0.5)
 		end
 
 		if (self.Material and self.Item) then
@@ -213,6 +215,7 @@ function PANEL:Paint(w, h)
 				render.PopFilterMin()
 			render.SuppressEngineLighting(false)
 		cam.End3D()
+		render.SetBlend(1)
 	render.SetStencilEnable(false)
 end
 
@@ -1201,8 +1204,6 @@ function PANEL:Init()
 			if (tab.Type == "equip" or tab.Type == "currency") then
 				d = tabs2
 			end
-
-			print(d == tabs1)
 
 			d[#d + 1] = tab
 		end
