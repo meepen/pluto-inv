@@ -7,6 +7,7 @@ function ENT:DoDamage()
 	local p = self:GetParent()
 	if (not IsValid(p) or not p:Alive()) then
 		self:Remove()
+		return
 	end
 	
 	p:SetHealth(math.min(p:GetMaxHealth(), p:Health() + 1))
