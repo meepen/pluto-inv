@@ -46,7 +46,7 @@ for name, values in pairs {
 				return
 			end
 
-			item.Mods = pluto.weapons.generatetier(item.Tier.Name, item.ClassName).Mods
+			item.Mods = pluto.weapons.generatetier(item.Tier.InternalName, item.ClassName).Mods
 			
 			UpdateAndDecrement(ply, item, "droplet")
 		end,
