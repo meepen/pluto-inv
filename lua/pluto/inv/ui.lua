@@ -826,14 +826,16 @@ local PANEL = {}
 function PANEL:Init()
 	self.Tabs = {}
 	self.CurPos = 0
-
-	for _, tab in SortedPairsByMemberValue(pluto.cl_inv, "ID") do
-		self:AddTab("pluto_inventory_tab", tab)
-	end
 end
 
 function PANEL:SetTab(tab)
 	self:GetParent():SetTab(tab)
+end
+
+function PANEL:SetTabs(tabs)
+	for _, tab in SortedPairsByMemberValue(tabs, "ID") do
+		self:AddTab("pluto_inventory_tab", tab)
+	end
 end
 
 local function PerformLayoutHack(self, w, h)
@@ -942,15 +944,19 @@ function PANEL:Init()
 	self.Tabs = self:Add "pluto_inventory_tabs"
 	self.Tabs:Dock(FILL)
 
-	self.Controller = self:Add "pluto_inventory_tab_selector"
-	self.Controller:Dock(RIGHT)
-	self.Controller:DockMargin(pad / 2, 0, 0, 0)
+	--self.Controller = self:Add "pluto_inventory_tab_selector"
+	--self.Controller:Dock(RIGHT)
+	--self.Controller:DockMargin(pad / 2, 0, 0, 0)
 
 	self:DockMargin(curve(2), 0, curve(2), 0)
 end
 
 function PANEL:SetTab(tab)
 	self:GetParent():SetTab(tab)
+end
+
+function PANEL:SetTabs(tabs)
+	self.Tabs:SetTabs(tabs)
 end
 
 vgui.Register("pluto_inventory_tab_controller", PANEL, "EditablePanel")
@@ -1125,33 +1131,9 @@ vgui.Register("pluto_inventory_bar", PANEL, "pluto_inventory_base")
 local PANEL = {}
 
 function PANEL:Init()
-	self:SetColor(Color(13, 12, 12, 220))
-	self:SetCurve(curve(3))
-
 	self.Tabs = self:Add "pluto_inventory_tab_controller"
 	self.Tabs:Dock(TOP)
 	self.Tabs:SetZPos(0)
-
-	self.ControlBar = self:Add "pluto_inventory_bar"
-	self.ControlBar:Dock(FILL)
-	self.ControlBar:SetZPos(1)
-
-	self:OnScreenSizeChanged()
-
-	self:MakePopup()
-	self:SetPopupStayAtBack(true)
-	self:SetKeyboardInputEnabled(false)
-end
-
-function PANEL:OnScreenSizeChanged()
-	local w = math.min(500, math.max(400, ScrW() / 3))
-	self:SetSize(w, w * 1.2)
-	pad = w * 0.05
-	local smol_pad = pad * 2 / 3
-	self:DockPadding(pad, smol_pad, pad, smol_pad)
-
-	self.ControlBar:DockMargin(0, smol_pad, 0, 0)
-	self:Center()
 end
 
 function PANEL:SetTab(tab)
@@ -1169,15 +1151,93 @@ function PANEL:SetTab(tab)
 	tab.Active = true
 end
 
+function PANEL:SetTabs(tabs)
+	self.Tabs:SetTabs(tabs)
+end
+
+function PANEL:SetWhere(leftright)
+	self.Where = leftright
+end
+
 function PANEL:PerformLayout(w, h)
-	w = w - w * 0.1
-	h = h - w * 0.1
+	local real_h = h
+	w = w - w * 0.07
+	h = h - w * 0.07
 
 	self.Items:SetTall(w)
 
-	h = h - w
+	self.Tabs:SetTall(real_h - h)
 
-	self.Tabs:SetTall(h * 1 / 3)
+	pad = w * 0.05
+	local smol_pad = pad * 2 / 3
+	self:DockPadding(self.Where and smol_pad or pad, smol_pad, self.Where and pad or smol_pad, 0)
+end
+
+vgui.Register("pluto_inventory_control", PANEL, "EditablePanel")
+
+local PANEL = {}
+function PANEL:Init()
+	self:SetColor(Color(13, 12, 12, 220))
+	self:SetCurve(curve(3))
+
+	self.Control1 = self:Add "pluto_inventory_control"
+	self.Control1:Dock(FILL)
+	self.Control1:SetZPos(0)
+
+	local w = math.min(500, math.max(400, ScrW() / 3))
+	local real_w = w
+	local h = w * 1.2
+
+	if (ScrW() >= 800) then
+		w = math.min(w * 2, ScrW())
+		self.Control2 = self:Add "pluto_inventory_control"
+		self.Control1:SetWhere(true)
+		self.Control2:SetWhere(false)
+
+		local tabs1, tabs2 = {}, {}
+
+		for k, tab in pairs(pluto.cl_inv) do
+			local d = tabs1
+			if (tab.Type == "equip" or tab.Type == "currency") then
+				d = tabs2
+			end
+
+			print(d == tabs1)
+
+			d[#d + 1] = tab
+		end
+
+		self.Control1:SetTabs(tabs1)
+		self.Control2:SetTabs(tabs2)
+
+		self.Control2:Dock(LEFT)
+		self.Control2:SetWide(w / 2)
+		self.Control2:SetZPos(2)
+	else
+		self.Control1:SetTabs(pluto.cl_inv)
+	end
+
+	self:SetSize(w, h)
+	self:Center()
+	self:InvalidateChildren(true)
+
+	self:MakePopup()
+	self:SetPopupStayAtBack(true)
+	self:SetKeyboardInputEnabled(false)
+
+	self.Bottom = self:Add "EditablePanel"
+	self.Bottom:Dock(BOTTOM)
+	self.Bottom:SetTall(h * 0.15)
+	self.Bottom:InvalidateParent(true)
+
+	self.ControlBar = self.Bottom:Add "pluto_inventory_bar"
+	self.ControlBar:SetZPos(1)
+	pad = real_w * 0.05
+	local smol_pad = pad * 2 / 3
+	self.ControlBar:SetTall(self.Bottom:GetTall() - smol_pad)
+	self.ControlBar:SetWide(real_w)
+	self.ControlBar:Center()
+	--self:DockPadding(pad, smol_pad, pad, smol_pad)
 end
 
 vgui.Register("pluto_inventory", PANEL, "ttt_curved_panel")
@@ -1530,7 +1590,7 @@ hook.Add("PostRenderVGUI", "pluto_ghost", function()
 		if (IsValid(hover) and hover.GhostMove) then
 			x, y = hover:GhostMove(p, x, y, w, h)
 		end
-		
+
 		local b
 
 		if (p.SetScissor) then
