@@ -276,7 +276,7 @@ hook.Add("DoPlayerDeath", function(vic, damager, dmg)
 	pluto.currency.addpoints(atk, points)
 end)
 
-local tospawn_amt = 4
+local tospawn_amt = 1.5
 
 hook.Add("TTTBeginRound", "pluto_currency", function()
 	for _, item in pairs(round.GetStartingPlayers()) do
@@ -292,7 +292,7 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 		end
 
 		if (points >= 0) then
-			pluto.currency.tospawn[item.Player] = 1
+			pluto.currency.tospawn[item.Player] = 1 + points - math.floor(points)
 		end
 	end
 end)
