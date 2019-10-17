@@ -329,9 +329,44 @@ function PANEL:OnCursorExited()
 end
 
 function PANEL:OnMousePressed(code)
-	if (code == MOUSE_LEFT and self.Item and not IsValid(pluto.ui.ghost)) then
-		pluto.ui.ghost = self
+	if (self.Item and not IsValid(pluto.ui.ghost)) then
+		if (code == MOUSE_LEFT) then
+			pluto.ui.ghost = self
+		elseif (code == MOUSE_RIGHT) then
+			local tabele, t
+			for _, tab in pairs(pluto.cl_inv) do
+				if (tab.Type == "equip" and IsValid(tab.CurrentElement)) then
+					tabele = tab.CurrentElement
+					t = tab
+					break
+				end
+			end
+
+			local tabtype = pluto.tabs.equip
+			if (not IsValid(tabele) or not tabtype) then
+				return
+			end
+
+			local thistab = pluto.tabs[self.Tab.Type]
+
+			for i = 1, tabtype.size do
+				if (tabtype.canaccept(i, self.Item) and (not t.Items[self.TabIndex] or thistab.canaccept(self.TabIndex, t.Items[self.TabIndex]))) then
+					self:SwitchWith(tabele.Items[i])
+				end
+			end
+		end
 	end
+end
+
+function PANEL:SwitchWith(other)
+	local i = self.Item
+	local o = other.Item
+	self:SetItem(o)
+	other:SetItem(i)
+
+	pluto.inv.message()
+		:write("tabswitch", self.Tab.ID, self.TabIndex, other.Tab.ID, other.TabIndex)
+		:send()
 end
 
 function PANEL:GhostClick(p, m)
@@ -372,14 +407,7 @@ function PANEL:GhostClick(p, m)
 				self:GetParent().Items[i]:SetItem(pluto.buffer[i])
 			end
 		elseif (gparent.Tab.ID ~= 0) then
-			local i = parent.Item
-			local o = gparent.Item
-			parent:SetItem(o)
-			gparent:SetItem(i)
-
-			pluto.inv.message()
-				:write("tabswitch", parent.Tab.ID, parent.TabIndex, gparent.Tab.ID, gparent.TabIndex)
-				:send()
+			self:SwitchWith(gparent)
 		end
 	end
 	pluto.ui.ghost = nil
