@@ -332,7 +332,8 @@ function PANEL:OnMousePressed(code)
 	if (self.Item and not IsValid(pluto.ui.ghost)) then
 		if (code == MOUSE_LEFT) then
 			pluto.ui.ghost = self
-		elseif (code == MOUSE_RIGHT) then
+		elseif (code == MOUSE_RIGHT and self.Item.ID) then
+			print(self.Item.ID)
 			local tabele, t
 			for _, tab in pairs(pluto.cl_inv) do
 				if (tab.Type == "equip" and IsValid(tab.CurrentElement)) then
