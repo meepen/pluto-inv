@@ -174,6 +174,8 @@ function PANEL:Paint(w, h)
 
 		render.SetStencilPassOperation(STENCIL_KEEP)
 		render.SetStencilCompareFunction(STENCIL_EQUAL)
+		local r, g, b = render.GetColorModulation()
+		render.SetColorModulation(1, 1, 1)
 		local err = self.Model
 		local holdtype = self.HoldType
 		if (not IsValid(err)) then
@@ -215,6 +217,7 @@ function PANEL:Paint(w, h)
 				render.PopFilterMin()
 			render.SuppressEngineLighting(false)
 		cam.End3D()
+		render.SetColorModulation(r, g, b)
 		render.SetBlend(1)
 	render.SetStencilEnable(false)
 end
