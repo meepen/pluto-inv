@@ -1422,6 +1422,8 @@ function PANEL:AddMod(mod)
 
 	function pnl.Desc:PerformLayout(w, h)
 		self:GetParent():SetTall(h)
+		self:GetParent():GetParent():Resize()
+		self:GetParent():GetParent():GetParent():SizeToChildren(true, true)
 	end
 
 	function pnl:PerformLayout(w, h)
@@ -1472,10 +1474,13 @@ function PANEL:SetItem(item)
 			self:AddMod(mod):DockMargin(pad, pad / 2, pad, pad / 2)
 		end
 	end
-
-	local x, y = self:LocalToScreen(self.Last:GetPos())
-	y = y + self.Last:GetTall()
 end
+
+function PANEL:Resize()
+	self:SizeToChildren(true, true)
+	self:SetTall(self:GetTall() + pad / 2)
+end
+
 local h = 720
 
 surface.CreateFont("pluto_item_showcase_header", {
