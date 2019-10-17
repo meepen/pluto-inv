@@ -573,7 +573,7 @@ function PANEL:SetCurrency(cur)
 end
 
 function PANEL:GhostClick(p)
-	if (p.Item) then
+	if (p.Item and p.Item.ID) then
 		pluto.inv.message()
 			:write("currencyuse", self.Currency, p.Item)
 			:send()
