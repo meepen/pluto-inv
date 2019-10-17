@@ -98,7 +98,11 @@ function SWEP:DisplayPlutoData()
 	MsgN ""
 
 	self.Showcase = pluto.ui.showcase(data)
-	self.Showcase:SetPos(ScrW() * 2 / 3 - self.Showcase:GetWide() / 2, ScrH() - self.Showcase:GetTall())
+	local pl = self.Showcase.PerformLayout
+	function self.Showcase:PerformLayout(w, h)
+		self:SetPos(ScrW() * 2 / 3 - self:GetWide() / 2, ScrH() - self:GetTall())
+		return pl and pl(self, w, h) or nil
+	end
 
 	local s = self.Showcase
 
