@@ -21,7 +21,7 @@ function ENT:Think()
 end
 
 function ENT:TTTUpdatePlayerSpeed(ply, data)
-	if (ply == self:GetParent() and CurTime() % 0.2 > 0.15) then
+	if (ply == self:GetParent() and CurTime() % 0.2 > 0.10) then
 		data.FinalMultiplier = data.FinalMultiplier * 0.1
 	end
 end
