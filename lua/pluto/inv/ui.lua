@@ -459,6 +459,7 @@ function PANEL:Init()
 	end
 
 	self.PlayerModel = self:Add "ttt_curved_panel"
+	self.PlayerModel:SetColor(Color(0,0,0,100))
 
 	self.Items[1]:SetDefault "weapon_ttt_m4a1"
 
