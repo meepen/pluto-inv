@@ -98,19 +98,29 @@ function SWEP:DisplayPlutoData()
 	MsgN ""
 
 	self.Showcase = pluto.ui.showcase(data)
-	local pl = self.Showcase.PerformLayout
-	function self.Showcase:PerformLayout(w, h)
-		self:SetPos(ScrW() * 2 / 3 - self:GetWide() / 2, ScrH() - self:GetTall())
-		return pl and pl(self, w, h) or nil
+	self.Showcase.Start = CurTime()
+
+	local t = self.Showcase.Think
+	function self.Showcase:Think()
+		if (t) then
+			t(self)
+		end
+
+		local diff = CurTime() - self.Start
+		local frac = 1
+		if (diff < 0.2) then
+			frac = diff / 0.2
+		elseif (diff > 1.8) then
+			frac = 1 - (diff - 1.8) / 0.2
+		elseif (diff > 2) then
+			self:Remove()
+		end
+
+
+		self:SetPos(ScrW() * 2 / 3 - self:GetWide() / 2, ScrH() - self:GetTall() * frac)
 	end
 
 	local s = self.Showcase
-
-	timer.Simple(2, function()
-		if (IsValid(s)) then
-			s:Remove()
-		end
-	end)
 end
 
 function SWEP:Deploy()
