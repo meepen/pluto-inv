@@ -13,9 +13,9 @@ function MOD:GetDescription(rolls)
 end
 
 MOD.Tiers = {
-	{ 25, 33, 50, 75 },
-	{ 10, 25, 50, 75 },
-	{ 5,  10, 50, 75 },
+	{ 25, 33, 30, 45 },
+	{ 10, 25, 30, 45 },
+	{ 5,  10, 30, 45 },
 }
 
 function MOD:OnDamage(wep, vic, dmginfo, rolls, state)
