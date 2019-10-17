@@ -1420,22 +1420,14 @@ function PANEL:AddMod(mod)
 
 	pnl.Desc = p
 
-	pnl:InvalidateLayout(true)
+	function pnl.Desc:PerformLayout(w, h)
+		self:GetParent():SetTall(h)
+	end
 
 	function pnl:PerformLayout(w, h)
 		self.Label:SetWide(w / 4)
 		self.Desc:SetWide(math.Round(w * 3 / 5))
-		timer.Simple(0,function()
-			if (not IsValid(self)) then
-				return
-			end
-			self.Desc:SizeToContentsY()
-			self:SetTall(self.Desc:GetTall())
-			self:GetParent():GetParent():Invalidate()
-		end)
 	end
-
-	pnl:InvalidateLayout(true)
 
 	self.ZPos = z + 1
 	self.Last = pnl
@@ -1481,43 +1473,34 @@ function PANEL:SetItem(item)
 		end
 	end
 
-	self:DockPadding(pad, pad, pad, pad)
-	self:InvalidateLayout(true)
-
-	for _, child in pairs(self:GetChildren()) do
-		child:InvalidateLayout(true)
-	end
-
 	local x, y = self:LocalToScreen(self.Last:GetPos())
 	y = y + self.Last:GetTall()
 end
+local h = 720
+
+surface.CreateFont("pluto_item_showcase_header", {
+	font = "Lato",
+	extended = true,
+	size = math.max(30, h / 28),
+	weight = 1000,
+})
+
+surface.CreateFont("pluto_item_showcase_desc", {
+	font = "Roboto",
+	extended = true,
+	size = math.max(20, h / 35)
+})
+
+surface.CreateFont("pluto_item_showcase_smol", {
+	font = "Roboto",
+	extended = true,
+	size = math.max(h / 50, 16),
+	italic = true,
+})
 
 function PANEL:Init()
 	local w = math.min(500, math.max(400, ScrW() / 3))
 	pad = w * 0.05
-
-	local h = 720
-
-	surface.CreateFont("pluto_item_showcase_header", {
-		font = "Lato",
-		extended = true,
-		size = math.max(30, h / 28),
-		weight = 1000,
-	})
-
-	surface.CreateFont("pluto_item_showcase_desc", {
-		font = "Roboto",
-		extended = true,
-		size = math.max(20, h / 35)
-	})
-
-
-	surface.CreateFont("pluto_item_showcase_smol", {
-		font = "Roboto",
-		extended = true,
-		size = math.max(h / 50, 16),
-		italic = true,
-	})
 
 	self:SetColor(bg_color)
 	self.ItemBackground = self:Add "ttt_curved_panel"
@@ -1576,7 +1559,6 @@ function pluto.ui.showcase(item)
 	pluto.ui.showcasepnl:SetMouseInputEnabled(false)
 
 	pluto.ui.showcasepnl:SetItem(item)
-	pluto.ui.showcasepnl:InvalidateLayout(true)
 
 	return pluto.ui.showcasepnl
 end

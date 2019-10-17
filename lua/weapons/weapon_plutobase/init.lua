@@ -74,6 +74,7 @@ function SWEP:SendData(ply)
 	net.Start "pluto_wpn_db"
 		net.WriteInt(self:GetPlutoID(), 32)
 		net.WriteString(gun.Tier.Name)
+		net.WriteColor(gun.Tier.Color)
 		self.PlutoData.Tier = gun.Tier.Name
 		self.PlutoData.Mods = modifiers
 

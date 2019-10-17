@@ -37,6 +37,7 @@ net.Receive("pluto_wpn_db", function(len)
 	}
 
 	PlutoData.Tier = net.ReadString()
+	PlutoData.Color = net.ReadColor()
 	PlutoData.Mods = modifiers
 
 	for ind = 1, net.ReadUInt(8) do
@@ -80,6 +81,7 @@ end
 
 function SWEP:DisplayPlutoData()
 	local data = self:GetInventoryItem()
+	data.ClassName = self:GetClass()
 	pprintf("%s %s", data.Tier, self.PrintName)
 
 	for type, list in pairs(data.Mods) do
@@ -94,6 +96,9 @@ function SWEP:DisplayPlutoData()
 		end
 	end
 	MsgN ""
+
+	self.Showcase = pluto.ui.showcase(data)
+	self.Showcase:SetPos(ScrW() * 2 / 3 - self.Showcase:GetWide() / 2, ScrH() - self.Showcase:GetTall())
 end
 
 function SWEP:Deploy()
