@@ -1166,6 +1166,9 @@ function PANEL:Init()
 	self.Tabs = self:Add "pluto_inventory_tab_controller"
 	self.Tabs:Dock(TOP)
 	self.Tabs:SetZPos(0)
+	self.Close = self:Add "ttt_close_button"
+	self.Close:SetSize(24, 24)
+	self.Close:SetColor(Color(37, 173, 125))
 end
 
 function PANEL:SetTab(tab)
@@ -1189,6 +1192,10 @@ end
 
 function PANEL:SetWhere(leftright)
 	self.Where = leftright
+
+	if (not self.Where) then
+		self.Close:Remove()
+	end
 end
 
 function PANEL:PerformLayout(w, h)
@@ -1206,6 +1213,10 @@ function PANEL:PerformLayout(w, h)
 		self:DockPadding(self.Where and smol_pad or pad, smol_pad, self.Where and pad or smol_pad, 0)
 	else
 		self:DockPadding(pad, smol_pad, pad, 0)
+	end
+
+	if (IsValid(self.Close)) then
+		self.Close:SetPos(self:GetWide() - self.Close:GetWide() * 1.5, self.Close:GetWide() * 0.5)
 	end
 end
 
