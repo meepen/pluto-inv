@@ -7,27 +7,23 @@ ENT.Icon = "tttrw/tbutton.png"
 ENT.PrintName = "Fire"
 
 function ENT:Initialize()
-	hook.Add("PlayerRagdollCreated", self, self.PlayerRagdollCreated)
+	hook.Add("DoPlayerDeath", self, self.DoPlayerDeath)
+	hook.Add("PlayerTick", self, self.PlayerTick)
 end
 
 function ENT:SetupDataTables()
 	self.Damages = {}
 end
 
-function ENT:OnRemove()
-	if (IsValid(self:GetParent())) then
-		self:GetParent():EmitSound "General.StopBurning"
-	end
-end
 
-function ENT:PlayerRagdollCreated(ply, rag, atk)
+function ENT:DoPlayerDeath(ply)
 	if (ply == self:GetParent()) then
-		self:SetParent(rag)
+		self:Remove()
 	end
 end
 
-function ENT:Think()
-	if (not SERVER) then
+function ENT:PlayerTick(ply)
+	if (not SERVER or self:GetParent() ~= ply or (self.Next and self.Next > CurTime())) then
 		return
 	end
 
@@ -53,7 +49,7 @@ function ENT:Think()
 		damages = damages[1]
 	end
 
-	self:NextThink(CurTime() + self:GetDelay())
+	self.Next = CurTime() + self:GetDelay()
 	return true
 end
 
