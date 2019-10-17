@@ -573,7 +573,11 @@ function PANEL:SetCurrency(cur)
 end
 
 function PANEL:GhostClick(p)
-	if (p.Item and p.Item.ID) then
+	if (p.Item) then
+		if (not p.Item.ID) then
+			-- TODO(meep): popup thingy
+			return
+		end
 		pluto.inv.message()
 			:write("currencyuse", self.Currency, p.Item)
 			:send()
@@ -1000,6 +1004,10 @@ function PANEL:OnMousePressed(mouse)
 			Time = CurTime(),
 			EndTime = CurTime() + 2,
 		}
+	else
+		local p = vgui.Create "pluto_falling_text"
+		p:SetText "Hold an item on this to delete it!"
+		p:SetPos(gui.MousePos())
 	end
 end
 
@@ -1021,6 +1029,14 @@ function PANEL:Think()
 end
 function PANEL:StopIfDeleting()
 	if (self.Deleting) then
+		local pct = (CurTime() - self.Deleting.Time) / (self.Deleting.EndTime - self.Deleting.Time)
+
+		if (pct <= 0.1) then
+			local p = vgui.Create "pluto_falling_text"
+			p:SetText "Hold the item down to delete it!"
+			p:SetPos(gui.MousePos())
+		end
+
 		pluto.ui.ghost = nil
 		self.Deleting = nil
 	end
@@ -1299,11 +1315,18 @@ function PANEL:AddLine(line)
 	table.insert(self.Children, pnl)
 end
 
-function PANEL:PerformLayout(_w, _h)
-	if (self.LastText == self.Text and self.LastWide == _w) then
+function PANEL:PerformLayout(w, h)
+	self:DoLayout(w, h)
+end
+
+function PANEL:DoLayout(_w, _h)
+	print "WWWWW"
+	local text = self.Text or "Label"
+	print("layout", text)
+	if (self.LastText == text and self.LastWide == _w) then
 		return
 	end
-	self.LastText = self.Text
+	self.LastText = text
 	self.LastWide = _w
 	for _, child in pairs(self.Children) do
 		child:Remove()
@@ -1315,7 +1338,7 @@ function PANEL:PerformLayout(_w, _h)
 	surface.SetFont(self.Font)
 	self.Tall = 0
 
-	for word in self.Text:gmatch("([^%s]+)%s*") do
+	for word in text:gmatch("([^%s]+)%s*") do
 		cur[#cur + 1] = word
 		local w, h = surface.GetTextSize(table.concat(cur, " "))
 		if (w > _w) then
@@ -1357,7 +1380,7 @@ end
 
 function PANEL:SetText(text)
 	self.Text = text
-	self:InvalidateLayout(true)
+	self:DoLayout(self:GetSize())
 end
 
 vgui.Register("pluto_centered_wrap", PANEL, "EditablePanel")
@@ -1569,6 +1592,48 @@ function pluto.ui.showcase(item)
 
 	return pluto.ui.showcasepnl
 end
+
+local PANEL = {}
+
+function PANEL:Init()
+	self.Text = self:Add "pluto_centered_wrap"
+	self.Text:SetFont "pluto_item_showcase_desc"
+	self.Text:Dock(TOP)
+	self.Text:SetTextColor(color_white)
+	local pad = pad / 2
+	self:DockPadding(pad, pad, pad, pad)
+	self:SetWide(200)
+	function self.Text:PerformLayout(w, h)
+		self:SetWide(self:GetParent():GetWide() - pad * 2)
+		self:GetParent():SetTall(h + pad * 2)
+		self:DoLayout(self:GetSize())
+	end
+	self.Start = CurTime()
+	self.Ends = CurTime() + 2
+	self:SetCurve(4)
+
+	self:MakePopup()
+	self:SetKeyboardInputEnabled(false)
+	self:SetMouseInputEnabled(false)
+end
+
+function PANEL:SetText(t)
+	self.Text:SetText(t)
+end
+
+function PANEL:Think()
+	self.OriginalY = self.OriginalY or select(2, self:GetPos())
+	local frac = (self.Ends - CurTime()) / (self.Ends - self.Start)
+	if (frac <= 0) then
+		self:Remove()
+	end
+	local x, y = self:GetPos()
+	self:SetPos(x, self.OriginalY + 100 * (1 - frac))
+	self:SetColor(Color(17, 15, 13, frac * 255))
+	self.Text:SetTextColor(ColorAlpha(white_text, frac * 255))
+end
+
+vgui.Register("pluto_falling_text", PANEL, "ttt_curved_panel")
 
 hook.Add("PostRenderVGUI", "pluto_ghost", function()
 	if (IsValid(pluto.ui.ghost)) then
