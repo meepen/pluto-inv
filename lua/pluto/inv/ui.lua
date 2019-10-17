@@ -1426,7 +1426,6 @@ function PANEL:AddMod(mod)
 	function pnl.Desc:PerformLayout(w, h)
 		self:GetParent():SetTall(h)
 		self:GetParent():GetParent():Resize()
-		self:GetParent():GetParent():GetParent():SizeToChildren(true, true)
 	end
 
 	function pnl:PerformLayout(w, h)
@@ -1461,7 +1460,7 @@ function PANEL:SetItem(item)
 
 	self.ItemSubDesc:SetText(item.SubDescription or "")
 	if (self.ItemSubDesc:GetText() ~= "") then
-		self.ItemSubDesc:DockMargin(0, pad / 2, 0, pad / 2)
+		self.ItemSubDesc:DockMargin(0, pad / 2, 0, pad)
 	end
 
 	self.Last = self.ItemSubDesc
@@ -1477,11 +1476,17 @@ function PANEL:SetItem(item)
 			self:AddMod(mod):DockMargin(pad, pad / 2, pad, pad / 2)
 		end
 	end
+
+	self:InvalidateLayout(true)
+	self:InvalidateChildren(true)
+
+	self:Resize()
 end
 
 function PANEL:Resize()
 	self:SizeToChildren(true, true)
 	self:SetTall(self:GetTall() + pad / 2)
+	self:GetParent():SizeToChildren(true, true)
 end
 
 local h = 720
@@ -1546,14 +1551,8 @@ function PANEL:SetItem(item)
 	self:SetWide(math.max(300, math.min(600, ScrW() / 3)))
 	self.Inner:SetWide(math.max(300, math.min(500, ScrW() / 3)))
 	self.Inner:SetItem(item)
-	self:Invalidate()
 end
 
-function PANEL:Invalidate()
-	self.Inner:InvalidateLayout(true)
-	self.Inner:SizeToChildren(true, true)
-	self:SizeToChildren(true, true)
-end
 vgui.Register("pluto_item_showcase", PANEL, "ttt_curved_panel_outline")
 
 function pluto.ui.showcase(item)
