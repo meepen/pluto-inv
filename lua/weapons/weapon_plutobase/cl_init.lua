@@ -99,6 +99,14 @@ function SWEP:DisplayPlutoData()
 
 	self.Showcase = pluto.ui.showcase(data)
 	self.Showcase:SetPos(ScrW() * 2 / 3 - self.Showcase:GetWide() / 2, ScrH() - self.Showcase:GetTall())
+
+	local s = self.Showcase
+
+	timer.Simple(2, function()
+		if (IsValid(s)) then
+			s:Remove()
+		end
+	end)
 end
 
 function SWEP:Deploy()
@@ -109,4 +117,12 @@ function SWEP:Deploy()
 	if (data and IsFirstTimePredicted()) then
 		self:DisplayPlutoData()
 	end
+end
+
+function SWEP:Holster(w)
+	if (IsValid(self.Showcase)) then
+		self.Showcase:Remove()
+	end
+
+	return BaseClass.Holster(self, w)
 end
