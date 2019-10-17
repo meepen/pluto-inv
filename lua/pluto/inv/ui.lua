@@ -336,6 +336,11 @@ end
 
 function PANEL:GhostClick(p, m)
 	if (m == MOUSE_LEFT and p.ClassName == "pluto_inventory_garbage") then
+		if (self.Tab.ID == 0) then
+			local p = vgui.Create "pluto_falling_text"
+			p:SetText "You cannot delete the buffer items on the bottom row! They will delete themselves"
+			p:SetPos(gui.MousePos())
+		end
 		return self.Tab.ID ~= 0
 	end
 
@@ -1018,9 +1023,9 @@ function PANEL:Think()
 			pluto.inv.message()
 				:write("itemdelete", self.Deleting.TabID, self.Deleting.TabIndex, self.Deleting.Item)
 				:send()
-			
+
 			pluto.cl_inv[self.Deleting.TabID].Items[self.Deleting.TabIndex] = nil
-			
+
 			pluto.ui.ghost:SetItem(nil)
 
 			self:StopIfDeleting()
@@ -1266,7 +1271,6 @@ function PANEL:Init()
 	self.ControlBar:SetTall(self.Bottom:GetTall() - smol_pad)
 	self.ControlBar:SetWide(real_w - pad - smol_pad)
 	self.ControlBar:Center()
-	--self:DockPadding(pad, smol_pad, pad, smol_pad)
 end
 
 vgui.Register("pluto_inventory", PANEL, "ttt_curved_panel")
@@ -1320,9 +1324,7 @@ function PANEL:PerformLayout(w, h)
 end
 
 function PANEL:DoLayout(_w, _h)
-	print "WWWWW"
 	local text = self.Text or "Label"
-	print("layout", text)
 	if (self.LastText == text and self.LastWide == _w) then
 		return
 	end
