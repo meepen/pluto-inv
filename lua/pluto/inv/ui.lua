@@ -1383,10 +1383,11 @@ function PANEL:DoLayout(_w, _h)
 	surface.SetFont(self.Font)
 	self.Tall = 0
 
-	for word in text:gmatch("([^%s]+)%s*") do
+	local last_newline = false
+	for word, spaces in text:gmatch("([^%s]+)(%s*)") do
 		cur[#cur + 1] = word
 		local w, h = surface.GetTextSize(table.concat(cur, " "))
-		if (w > _w) then
+		if (w > _w or last_newline) then
 			if (#cur == 1) then
 				self:AddLine(word)
 				cur = {}
@@ -1402,6 +1403,7 @@ function PANEL:DoLayout(_w, _h)
 				end
 			end
 		end
+		last_newline = spaces:find "\n"
 	end
 
 	if (#cur > 0) then
@@ -1507,7 +1509,9 @@ function PANEL:AddMod(mod)
 		if (self.LastDesc ~= desc) then
 			self:SetText(desc)
 		end
+
 		BaseClass.Think(self)
+
 		if (self.LastDesc ~= desc) then
 			self:GetParent():GetParent():Resize()
 			self.LastDesc = desc
