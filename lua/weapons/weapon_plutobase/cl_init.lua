@@ -123,13 +123,13 @@ function SWEP:DisplayPlutoData()
 end
 
 function SWEP:Deploy()
-	BaseClass.Deploy(self)
-
 	local data = self:GetInventoryItem()
 
 	if (data and IsFirstTimePredicted()) then
 		self:DisplayPlutoData()
 	end
+
+	return BaseClass.Deploy(self)
 end
 
 function SWEP:Holster(w)
