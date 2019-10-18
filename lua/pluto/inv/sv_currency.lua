@@ -291,7 +291,11 @@ end)
 
 local tospawn_amt = 3.4
 
+local start
+local old_data
+
 hook.Add("TTTBeginRound", "pluto_currency", function()
+	start = CurTime()
 	for _, item in pairs(round.GetStartingPlayers()) do
 		if (item.Player.WasAFK or item.Player:GetRoleTeam() ~= "innocent") then
 			continue
@@ -307,6 +311,13 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 		if (points >= 0) then
 			pluto.currency.tospawn[item.Player] = 1 + points - math.floor(points)
 		end
+	end
+	old_data = table.Copy(pluto.currency.tospawn)
+end)
+
+hook.Add("TTTEndRound", "pluto_currency", function()
+	if (CurTime() - start <= 60 and player.GetCount() <= 5) then
+		pluto.currency.tospawn = old_data
 	end
 end)
 

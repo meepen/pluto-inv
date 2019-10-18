@@ -1171,7 +1171,6 @@ function PANEL:Init()
 end
 
 function PANEL:PlutoBufferChanged()
-
 	for i = 1, 5 do
 		self.Items[i]:SetItem(pluto.buffer[i])
 		if (self.Items[i] == pluto.ui.ghost) then
