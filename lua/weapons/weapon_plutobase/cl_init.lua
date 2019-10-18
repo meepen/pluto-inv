@@ -110,10 +110,10 @@ function SWEP:DisplayPlutoData()
 		local frac = 1
 		if (diff < 0.2) then
 			frac = (diff / 0.2) ^ 0.5
-		elseif (diff > 1.8) then
-			frac = 1 - ((diff - 1.8) / 0.2) ^ 0.5
 		elseif (diff > 2) then
 			self:Remove()
+		elseif (diff > 1.8) then
+			frac = 1 - ((diff - 1.8) / 0.2) ^ 0.5
 		end
 
 		self:SetPos(ScrW() * 2 / 3 - self:GetWide() / 2, ScrH() - self:GetTall() * frac)

@@ -1783,3 +1783,34 @@ hook.Add("VGUIMousePressAllowed", "pluto_ghost", function(mouse)
 		end
 	end
 end)
+
+hook.Add("PlutoBufferChanged", "pluto_buffer", function()
+	local p = vgui.Create "pluto_item_showcase"
+	p:MakePopup()
+	p:SetKeyboardInputEnabled(false)
+	p:SetMouseInputEnabled(false)
+
+	p:SetItem(pluto.buffer[#pluto.buffer])
+
+	local think = p.Think
+	p.Start = CurTime()
+	function p:Think()
+		local x, y = ScrW(), ScrH() / 3
+
+		local diff = CurTime() - self.Start
+		local frac = 1
+		if (diff < 0.2) then
+			frac = (diff / 0.2) ^ 0.5
+		elseif (diff > 3) then
+			self:Remove()
+		elseif (diff > 2.8) then
+			frac = 1 - ((diff - 1.8) / 0.2) ^ 0.5
+		end
+
+		x = x - self:GetWide() * frac
+
+		self:SetPos(x, y)
+
+		return think and think(self) or nil
+	end
+end)
