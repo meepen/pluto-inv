@@ -333,7 +333,6 @@ function PANEL:OnMousePressed(code)
 		if (code == MOUSE_LEFT) then
 			pluto.ui.ghost = self
 		elseif (code == MOUSE_RIGHT and self.Item.ID) then
-			print(self.Item.ID)
 			local tabele, t
 			for _, tab in pairs(pluto.cl_inv) do
 				if (tab.Type == "equip" and IsValid(tab.CurrentElement)) then
@@ -1166,7 +1165,19 @@ function PANEL:Init()
 		self.Items[i] = t
 	end
 
+	hook.Add("PlutoBufferChanged", self, self.PlutoBufferChanged)
+
 	self.Items[6] = self.Garbage
+end
+
+function PANEL:PlutoBufferChanged()
+
+	for i = 1, 5 do
+		self.Items[i]:SetItem(pluto.buffer[i])
+		if (self.Items[i] == pluto.ui.ghost) then
+			pluto.ui.ghost = nil
+		end
+	end
 end
 
 function PANEL:PerformLayout(w, h)

@@ -175,6 +175,7 @@ function pluto.inv.readbufferitem()
 	if (#pluto.buffer > 5) then
 		table.remove(pluto.buffer, 1)
 	end
+	hook.Run("PlutoBufferChanged")
 end
 
 function pluto.inv.writeitemdelete(tabid, tabindex, itemid)
