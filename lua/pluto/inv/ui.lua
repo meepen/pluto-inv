@@ -1804,7 +1804,7 @@ hook.Add("PlutoBufferChanged", "pluto_buffer", function()
 		elseif (diff > 3) then
 			self:Remove()
 		elseif (diff > 2.8) then
-			frac = 1 - ((diff - 1.8) / 0.2) ^ 0.5
+			frac = 1 - ((diff - 2.8) / 0.2) ^ 0.5
 		end
 
 		x = x - self:GetWide() * frac
