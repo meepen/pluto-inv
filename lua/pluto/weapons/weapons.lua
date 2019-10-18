@@ -274,31 +274,3 @@ concommand.Add("pluto_cheat_currency", function(ply, cmd, args)
 		pluto.inv.addcurrency(ply, cur, 1000, function() end)
 	end
 end)
-
-concommand.Add("pluto_generate_random_weapons", function(ply, cmd, args)
-	if (IsValid(ply)) then
-		return
-	end
-
-	local class = args[1]
-	local tier = args[2]
-	local count = tonumber(args[3] or 1)
-
-	for i = 1, count do
-		local gun = pluto.weapons.generatetier(tier, class)
-		pprintf("Generated %s %s", gun.Tier.Name, weapons.GetStored(gun.ClassName).PrintName)
-		for type, list in pairs(gun.Mods) do
-			if (#list == 0) then
-				continue
-			end
-
-			pprintf("    %s", type)
-
-			for _, item in ipairs(list) do
-				local mod = pluto.mods.byname[item.Mod]
-				local rolls = pluto.mods.getrolls(mod, item.Tier, item.Roll)
-				pprintf("        %s tier %i - %s", pluto.mods.formataffix(mod.Type, mod.Name), item.Tier, mod:GetDescription(rolls, item.ClassName))
-			end
-		end
-	end
-end)

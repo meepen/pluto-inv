@@ -23,10 +23,24 @@ pluto.inv = pluto.inv or {
 }
 
 function pluto.inv.readmod(item)
+	local rolls = {}
+	local minsmaxs = {}
+
+	local amt = net.ReadUInt(2)
+
+	for i = 1, amt do
+		rolls[i] = net.ReadString()
+
+		minsmaxs[i] = {net.ReadString(), net.ReadString()}
+	end
+
 	local name = net.ReadString()
 	local tier = net.ReadUInt(4)
 	local desc = net.ReadString()
+
 	return {
+		Rolls = rolls,
+		MinsMaxs = minsmaxs,
 		Name = name,
 		Tier = tier,
 		Desc = desc

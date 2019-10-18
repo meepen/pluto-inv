@@ -12,9 +12,11 @@ function MOD:CanRollOn(class)
 	return class.Primary and class.Primary.Ammo == "357"
 end
 
-function MOD:GetDescription(rolls)
-	return string.format("%.02f%% of your shots will fire a rocket", rolls[1])
+function MOD:FormatModifier(index, roll)
+	return string.format("%.01f%%", roll)
 end
+
+MOD.Description = "%s of your shots will fire a rocket"
 
 MOD.Tiers = {
 	{ 0.25, 0.3 },

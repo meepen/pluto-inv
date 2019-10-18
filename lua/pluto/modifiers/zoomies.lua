@@ -10,9 +10,11 @@ function MOD:CanRollOn(class)
 	return false and class.HasScope
 end
 
-function MOD:GetDescription(rolls)
-	return string.format("You can zoom %i additional time%s", rolls[1], rolls[1] == 1 and "" or "s")
+function MOD:FormatModifier(index, roll)
+	return string.format("%i", roll)
 end
+
+MOD.Description = "You can zoom %s additional times"
 
 MOD.Tiers = {
 	{ 2, 2 },

@@ -8,15 +8,17 @@ function MOD:IsNegative(roll)
 	return roll < 0
 end
 
-function MOD:GetDescription(rolls, wep)
+function MOD:GetModifier(roll, wep)
+	return math.min(0.3, roll * wep:GetDelay()) * 100
+end
+
+function MOD:FormatModifier(index, roll, wep)
 	DEFINE_BASECLASS(wep)
 
-	if (not BaseClass) then
-		return "INVALID WEAPON"
-	end
-
-	return string.format("Has a %.02f%% chance to cripple on hit", math.min(0.3, rolls[1] * BaseClass:GetDelay()) * 100)
+	return string.format("%.02f%%", self:GetModifier(roll, BaseClass))
 end
+
+MOD.Description = "Has a %s chance to cripple on hit"
 
 MOD.Tiers = {
 	{ 0.3, 0.4 },
@@ -26,7 +28,7 @@ MOD.Tiers = {
 }
 
 function MOD:OnDamage(wep, vic, dmginfo, rolls, state)
-	if (math.random() < math.min(0.3, rolls[1] * wep:GetDelay())) then
+	if (SERVER and math.random() < self:GetModifier(rolls[1], wep)) then
 		pluto.statuses.limp(vic, 1)
 	end
 end

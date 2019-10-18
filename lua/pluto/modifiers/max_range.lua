@@ -8,14 +8,11 @@ function MOD:IsNegative(roll)
 	return roll < 0
 end
 
-function MOD:GetDescription(rolls)
-	local roll = rolls[1]
-	if (roll > 0) then
-		return string.format("Max range is increased by %.1f%%", roll)
-	else
-		return string.format("Max range is decreased by %.1f%%", -roll)
-	end
+function MOD:FormatModifier(index, roll)
+	return string.format("%.01f%%", roll)
 end
+
+MOD.Description = "Farthest distance you can damage is %s further"
 
 MOD.Tiers = {
 	{ 30, 50 },

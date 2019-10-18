@@ -8,10 +8,11 @@ function MOD:IsNegative(roll)
 	return roll < 0
 end
 
-function MOD:GetDescription(rolls)
-	local roll = rolls[1]
-	return string.format("Converts %.01f%% of your damage to Fire on hit", roll)
+function MOD:FormatModifier(index, roll)
+	return string.format("%.01f%%", roll)
 end
+
+MOD.Description = "Converts %s of your damage to Fire on hit"
 
 MOD.Tiers = {
 	{ 25, 33 },

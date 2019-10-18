@@ -1198,6 +1198,9 @@ function PANEL:Init()
 	self.Close = self:Add "ttt_close_button"
 	self.Close:SetSize(24, 24)
 	self.Close:SetColor(Color(37, 173, 125))
+	function self.Close:DoClick()
+		self:GetParent():GetParent():Remove()
+	end
 end
 
 function PANEL:SetTab(tab)
@@ -1484,13 +1487,38 @@ function PANEL:AddMod(mod)
 	p:SetAutoStretchVertical(true)
 	p:Dock(RIGHT)
 	p:SetZPos(1)
-	p:SetText(mod.Desc)
+
+	DEFINE_BASECLASS "DLabel"
+
+	function p:Think()
+		local desc = mod.Desc
+		local fmt = mod.Rolls
+		if (LocalPlayer():KeyDown(IN_DUCK) and mod.MinsMaxs) then
+			fmt = {}
+			for i = 1, #mod.Rolls do
+				fmt[i] = string.format("%s (%s to %s)", mod.Rolls[i], mod.MinsMaxs[i][1], mod.MinsMaxs[i][2])
+			end
+		end
+
+		if (fmt and mod.MinsMaxs) then
+			desc = string.format(mod.Desc, unpack(fmt))
+		end
+
+		if (self.LastDesc ~= desc) then
+			self:SetText(desc)
+		end
+		BaseClass.Think(self)
+		if (self.LastDesc ~= desc) then
+			self:GetParent():GetParent():Resize()
+			self.LastDesc = desc
+		end
+	end
 
 	pnl.Desc = p
 
 	function pnl.Desc:PerformLayout(w, h)
 		self:GetParent():SetTall(h)
-		self:GetParent():GetParent():Resize()
+		--self:GetParent():GetParent():Resize()
 	end
 
 	function pnl:PerformLayout(w, h)
@@ -1551,13 +1579,12 @@ function PANEL:SetItem(item)
 		end
 	end
 
-	self:InvalidateLayout(true)
-	self:InvalidateChildren(true)
-
 	self:Resize()
 end
 
 function PANEL:Resize()
+	self:InvalidateLayout(true)
+	self:InvalidateChildren(true)
 	self:SizeToChildren(true, true)
 	self:SetTall(self:GetTall() + pad / 2)
 	self:GetParent():SizeToChildren(true, true)

@@ -24,11 +24,18 @@ function pluto.inv.writemod(ply, item, gun)
 
 	local name = pluto.mods.formataffix(mod.Type, mod.Name)
 	local tier = item.Tier
-	local desc = mod:GetDescription(rolls, gun.ClassName)
+	local tierroll = mod.Tiers[item.Tier]
+
+	net.WriteUInt(#rolls, 2)
+	for i, roll in ipairs(rolls) do
+		net.WriteString(mod:FormatModifier(i, roll, gun.ClassName))
+		net.WriteString(mod:FormatModifier(i, tierroll[i * 2 - 1], gun.ClassName))
+		net.WriteString(mod:FormatModifier(i, tierroll[i * 2], gun.ClassName))
+	end
 
 	net.WriteString(name)
 	net.WriteUInt(tier, 4)
-	net.WriteString(desc)
+	net.WriteString(mod.Description)
 end
 
 function pluto.inv.writeitem(ply, item)

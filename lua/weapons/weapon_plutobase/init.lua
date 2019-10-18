@@ -109,7 +109,13 @@ function SWEP:WriteMod(item, wep)
 
 	local name = pluto.mods.formataffix(mod.Type, mod.Name)
 	local tier = item.Tier
-	local desc = mod:GetDescription(rolls, wep.ClassName)
+	
+	local fmt = {}
+	for i, roll in ipairs(rolls) do
+		fmt[i] = mod:FormatModifier(i, roll, self:GetClass())
+	end
+
+	local desc = string.format(mod.Description, unpack(fmt))
 
 	net.WriteString(name)
 	net.WriteUInt(tier, 4)

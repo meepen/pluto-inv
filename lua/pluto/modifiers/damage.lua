@@ -12,14 +12,11 @@ function MOD:GetDamageMult(rolls)
 	return rolls[1] / 100
 end
 
-function MOD:GetDescription(rolls)
-	local roll = rolls[1]
-	if (roll > 0) then
-		return string.format("Damage is increased by %.1f%%", roll)
-	else
-		return string.format("Damage is reduced by %.1f%%", -roll)
-	end
+function MOD:FormatModifier(index, roll)
+	return string.format("%.01f%%", roll)
 end
+
+MOD.Description = "Damage is increased by %s"
 
 MOD.Tiers = {
 	{ 10, 20 },
