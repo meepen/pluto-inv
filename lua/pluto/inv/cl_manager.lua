@@ -52,6 +52,8 @@ function pluto.inv.readitem()
 	item.Version = item.Version + 1
 
 	item.Tier = net.ReadString()
+	item.SubDescription = net.ReadString()
+	item.AffixMax = net.ReadUInt(3)
 	item.Color = net.ReadColor()
 
 	item.ClassName = net.ReadString()

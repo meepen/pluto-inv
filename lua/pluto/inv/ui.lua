@@ -1521,9 +1521,18 @@ function PANEL:SetItem(item)
 	self.ItemBackground:SetColor(item.Color)
 
 	self.ItemDesc:SetText(item.Description or "")
-	self.ItemDesc:DockMargin(0, pad, 0, pad / 2)
+	local subdesc = item.SubDescription or ""
+	if (item.AffixMax) then
+		subdesc = subdesc .. "\n" .. "You can get up to " .. item.AffixMax .. " modifiers on this item."
+	end
 
-	self.ItemSubDesc:SetText(item.SubDescription or "")
+	if (item.ClassName) then
+		self.ItemDesc:DockMargin(0, pad, 0, 0)
+	else
+		self.ItemDesc:DockMargin(0, pad, 0, pad / 2)
+	end
+
+	self.ItemSubDesc:SetText(subdesc)
 	if (self.ItemSubDesc:GetText() ~= "") then
 		self.ItemSubDesc:DockMargin(0, pad / 2, 0, pad)
 	end

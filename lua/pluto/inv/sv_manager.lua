@@ -52,6 +52,8 @@ function pluto.inv.writeitem(ply, item)
 		net.WriteBool(true)
 
 		net.WriteString(item.Tier.Name)
+		net.WriteString(item.Tier.SubDescription or "")
+		net.WriteUInt(item.Tier.affixes, 3)
 		net.WriteColor(item.Tier.Color or color_white)
 		net.WriteString(item.ClassName)
 
