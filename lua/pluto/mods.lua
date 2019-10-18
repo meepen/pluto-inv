@@ -25,6 +25,7 @@ for _, modname in pairs {
 	"poison",
 	"postheal",
 	"recoil",
+	"reload",
 	"recycle",
 	"shock",
 	-- "snipexp",
