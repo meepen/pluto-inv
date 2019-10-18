@@ -12,7 +12,9 @@ function MOD:FormatModifier(index, roll)
 	return string.format("%.01f%%", roll)
 end
 
-MOD.Description = "This gun shoots %s faster"
+function MOD:GetDescription(rolls)
+	return rolls[1] >= 0 and "This gun shoots %s faster" or "This gun shoots %s slower"
+end
 
 MOD.Tiers = {
 	{ 5,     10  },
