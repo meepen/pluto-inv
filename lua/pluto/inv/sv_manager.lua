@@ -28,14 +28,14 @@ function pluto.inv.writemod(ply, item, gun)
 
 	net.WriteUInt(#rolls, 2)
 	for i, roll in ipairs(rolls) do
-		net.WriteString(mod:FormatModifier(i, roll, gun.ClassName))
+		net.WriteString(mod:FormatModifier(i, math.abs(roll), gun.ClassName))
 		net.WriteString(mod:FormatModifier(i, tierroll[i * 2 - 1], gun.ClassName))
 		net.WriteString(mod:FormatModifier(i, tierroll[i * 2], gun.ClassName))
 	end
 
 	net.WriteString(name)
 	net.WriteUInt(tier, 4)
-	net.WriteString(mod.Description)
+	net.WriteString(mod.Description or mod:GetDescription(rolls))
 end
 
 function pluto.inv.writeitem(ply, item)

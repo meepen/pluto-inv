@@ -112,10 +112,10 @@ function SWEP:WriteMod(item, wep)
 	
 	local fmt = {}
 	for i, roll in ipairs(rolls) do
-		fmt[i] = mod:FormatModifier(i, roll, self:GetClass())
+		fmt[i] = mod:FormatModifier(i, math.abs(roll), self:GetClass())
 	end
 
-	local desc = string.format(mod.Description, unpack(fmt))
+	local desc = string.format(mod.Description or mod:GetDescription(rolls), unpack(fmt))
 
 	net.WriteString(name)
 	net.WriteUInt(tier, 4)

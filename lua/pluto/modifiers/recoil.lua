@@ -12,7 +12,9 @@ function MOD:FormatModifier(index, roll)
 	return string.format("%.01f%%", roll)
 end
 
-MOD.Description = "Recoil is increased by %s"
+function MOD:GetDescription(rolls)
+	return rolls[1] > 0 and "Recoil is decreased by %s" or "Recoil is increased by %s"
+end
 
 MOD.Tiers = {
 	{ 15, 25 },
