@@ -9,6 +9,7 @@ local inactive_text = Color(130, 130, 136)
 local function curve(level)
 	return 4 + level
 end
+pluto.ui.curve = curve
 
 local bg_color = Color(36, 36, 37)
 local inactive_color = Color(47, 47, 48)
@@ -330,9 +331,15 @@ end
 
 function PANEL:OnMousePressed(code)
 	if (self.Item and not IsValid(pluto.ui.ghost)) then
-		if (code == MOUSE_LEFT) then
+		if (code == MOUSE_LEFT and not self.NoGhost) then
 			pluto.ui.ghost = self
 		elseif (code == MOUSE_RIGHT and self.Item.ID) then
+			if (self.Tab and self.Tab.ID == 0) then
+				if (self.RightClick) then
+					self:RightClick()
+				end
+				return
+			end
 			local tabele, t
 			for _, tab in pairs(pluto.cl_inv) do
 				if (tab.Type == "equip" and IsValid(tab.CurrentElement)) then
@@ -383,14 +390,11 @@ function PANEL:GhostClick(p, m)
 		local parent = self
 		local gparent = p
 
-		local can, err = pluto.canswitchtabs(parent.Tab, gparent.Tab, parent.TabIndex, gparent.TabIndex)
-
-		if (not can) then
-			pwarnf("err: %s", err)
-			return false
+		if (self.Tab.ID == 0 and gparent.Tab.ID == 0) then
+			return
 		end
 
-		if (self.Tab.ID == 0 and gparent.Tab.Items) then
+		if (self.Tab.ID == 0 and gparent.Tab.Items and gparent.Tab.ID ~= 0) then
 			local oi = gparent.Tab.Items[gparent.TabIndex]
 
 			if (oi) then
@@ -406,7 +410,15 @@ function PANEL:GhostClick(p, m)
 			for i = parent.TabIndex, 5 do
 				self:GetParent().Items[i]:SetItem(pluto.buffer[i])
 			end
+		elseif (gparent.Tab.ID == 0 and gparent.SwitchWith and gparent.Tab.Type) then
+			gparent:SwitchWith(self)
 		elseif (gparent.Tab.ID ~= 0) then
+			local can, err = pluto.canswitchtabs(parent.Tab, gparent.Tab, parent.TabIndex, gparent.TabIndex)
+
+			if (not can) then
+				pwarnf("err: %s", err)
+				return false
+			end
 			self:SwitchWith(gparent)
 		end
 	end
@@ -881,7 +893,14 @@ function PANEL:SetTab(tab)
 end
 
 function PANEL:SetTabs(tabs)
-	for _, tab in SortedPairsByMemberValue(tabs, "ID") do
+	table.sort(tabs, function(a, b)
+		return a.ID < b.ID
+	end)
+	if (tabs[1] and tabs[1].ID == 0) then
+		table.insert(tabs, tabs[1])
+		table.remove(tabs, 1)
+	end
+	for _, tab in ipairs(tabs) do
 		self:AddTab("pluto_inventory_tab", tab)
 	end
 end
@@ -1224,12 +1243,26 @@ function PANEL:SetTab(tab)
 	self.Items:SetParent(self)
 	self.Items:SetVisible(true)
 
+	local old = self.Tab
+
 	self.Tab = tab
 	tab.Active = true
+
+	self:GetParent():TabChanged(self, old)
 end
 
-function PANEL:SetTabs(tabs)
-	self.Tabs:SetTabs(tabs)
+function PANEL:SetTabs(tabs, addtrade)
+	local t = {}
+	for k,v in pairs(tabs) do
+		t[k] = v
+	end
+
+
+	if (addtrade) then
+		table.insert(t, 2, pluto.tradetab)
+	end
+
+	self.Tabs:SetTabs(t)
 end
 
 function PANEL:SetWhere(leftright)
@@ -1241,15 +1274,14 @@ function PANEL:SetWhere(leftright)
 end
 
 function PANEL:PerformLayout(w, h)
-	local real_h = h
-	w = w - w * 0.07
-	h = h - w * 0.07
+	local real_h = w * 0.07
 
-	self.Items:SetTall(w)
+	self.Items:SetTall(h - real_h - pad)
 
-	self.Tabs:SetTall(real_h - h)
+	self.Tabs:SetTall(real_h)
 
 	pad = w * 0.05
+	pluto.ui.pad = pad
 	local smol_pad = pad * 2 / 3
 	if (self.Where ~= nil) then
 		self:DockPadding(self.Where and smol_pad or pad, smol_pad, self.Where and pad or smol_pad, 0)
@@ -1295,13 +1327,13 @@ function PANEL:Init()
 		end
 
 		self.Control1:SetTabs(tabs1)
-		self.Control2:SetTabs(tabs2)
+		self.Control2:SetTabs(tabs2, true)
 
 		self.Control2:Dock(LEFT)
 		self.Control2:SetWide(w / 2)
 		self.Control2:SetZPos(2)
 	else
-		self.Control1:SetTabs(pluto.cl_inv)
+		self.Control1:SetTabs(pluto.cl_inv, true)
 	end
 
 	self:SetSize(w, h)
@@ -1313,17 +1345,36 @@ function PANEL:Init()
 	self:SetKeyboardInputEnabled(false)
 
 	self.Bottom = self:Add "EditablePanel"
+	self.Bottom:SetZPos(1)
 	self.Bottom:Dock(BOTTOM)
 	self.Bottom:SetTall(h * 0.15)
 	self.Bottom:InvalidateParent(true)
+	pad = real_w * 0.05
+	pluto.ui.pad = pad
+	local smol_pad = pad * 2 / 3
+	self.Bottom:DockPadding(0, smol_pad / 2, 0, smol_pad / 2)
 
 	self.ControlBar = self.Bottom:Add "pluto_inventory_bar"
 	self.ControlBar:SetZPos(1)
-	pad = real_w * 0.05
-	local smol_pad = pad * 2 / 3
 	self.ControlBar:SetTall(self.Bottom:GetTall() - smol_pad)
-	self.ControlBar:SetWide(real_w - pad - smol_pad)
+	self.ControlBar:SetWide(real_w - pad * 1.5)
 	self.ControlBar:Center()
+end
+
+function PANEL:TabChanged(ele, old)
+	if (not IsValid(self.Bottom)) then
+		return
+	end
+
+	if (old and old.Type ~= "trade" and ele.Tab.Type == "trade") then
+		self.Bottom:SetZPos(4)
+	elseif (old and old.Type == "trade" and ele.Tab.Type ~= "trade") then
+		self.Bottom:SetZPos(1)
+	end
+	self.Bottom:InvalidateParent(true)
+
+	self.ControlBar:Center()
+	ele:InvalidateParent(true)
 end
 
 vgui.Register("pluto_inventory", PANEL, "ttt_curved_panel")
@@ -1335,7 +1386,7 @@ if (IsValid(pluto.ui.pnl)) then
 end
 
 hook.Add("PlayerButtonDown", "pluto_inventory_ui", function(_, key)
-	if (IsFirstTimePredicted() and key == KEY_I) then
+	if (IsFirstTimePredicted() and key == KEY_I and pluto.inv.status == "ready") then
 		if (IsValid(pluto.ui.pnl)) then
 			pluto.ui.pnl:Remove()
 		else
@@ -1626,9 +1677,17 @@ surface.CreateFont("pluto_item_showcase_smol", {
 	italic = true,
 })
 
+surface.CreateFont("pluto_item_chat_smol", {
+	font = "Roboto",
+	extended = true,
+	size = math.max(h / 50, 16),
+	italic = true,
+})
+
 function PANEL:Init()
 	local w = math.min(500, math.max(400, ScrW() / 3))
 	pad = w * 0.05
+	pluto.ui.pad = pad
 
 	self:SetColor(bg_color)
 	self.ItemBackground = self:Add "ttt_curved_panel"
@@ -1771,6 +1830,14 @@ hook.Add("PostRenderVGUI", "pluto_ghost", function()
 		end
 	end
 end)
+
+pluto.tradetab = {
+	Type = "trade",
+	Name = "Trade",
+	ID = 0,
+	Items = {},
+	Currency = {},
+}
 
 hook.Add("VGUIMousePressAllowed", "pluto_ghost", function(mouse)
 	if (IsValid(pluto.ui.ghost)) then

@@ -3,6 +3,13 @@ pluto.inv = pluto.inv or {
 	weapons = {}
 }
 
+local PLAYER = FindMetaTable "Player"
+PLAYER.RealSteamID64 = PLAYER.RealSteamID64 or PLAYER.SteamID64
+
+function PLAYER:SteamID64()
+	return self:RealSteamID64() or "0"
+end
+
 function pluto.inv.defaulttabs(steamid, cb)
 	pluto.inv.addtabs(steamid, {"equip", "currency", "normal"}, function(tabs)
 		if (not tabs) then

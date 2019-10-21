@@ -124,6 +124,44 @@ hook.Add("DoPlayerDeath", "pluto_info", function(vic, atk, dmg)
 	vic:ChatPrint(text)
 end)
 
+function pluto.inv.generatebufferitem(ply)
+	local i = pluto.weapons.generatetier()
+	sql.Query("INSERT INTO pluto_items (tier, class, owner) VALUES (" .. SQLStr(i.Tier.InternalName) .. ", " .. SQLStr(i.ClassName) .. ", " .. ply:SteamID64() .. ")")
+	local id = sql.QueryValue "SELECT last_insert_rowid() as id"
+	i.BufferID = id
+
+	if (i.Mods) then
+		for type, list in pairs(i.Mods) do
+			for _, mod in ipairs(list) do
+				sql.Query("INSERT INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3) VALUES (" .. 
+					id .. ", " ..
+					ornull(mod.Mod) .. ", " ..
+					ornull(mod.Tier) .. ", " ..
+					ornull(mod.Roll[1]) .. ", " ..
+					ornull(mod.Roll[2]) .. ", " ..
+					ornull(mod.Roll[3]) ..
+				")")
+			end
+		end
+	end
+
+	local items = sql.Query("SELECT idx FROM pluto_items WHERE owner = " .. ply:SteamID64() .. " ORDER BY idx DESC")
+
+	if (#items > 5) then
+		for i = 6, #items do
+			items[i] = items[i].idx
+		end
+
+		-- TODO(meep): generate currency
+
+		sql.Query("DELETE FROM pluto_items WHERE idx IN (" .. table.concat(items, ", ", 6) .. ")")
+	end
+
+	pluto.inv.message(ply)
+		:write("bufferitem", i)
+		:send()
+end
+
 hook.Add("TTTEndRound", "pluto_endround", function()
 	timer.Remove "pluto_afkcheck"
 	for _, obj in pairs(round.GetStartingPlayers()) do
@@ -143,41 +181,7 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 			continue
 		end
 
-		local i = pluto.weapons.generatetier()
-		sql.Query("INSERT INTO pluto_items (tier, class, owner) VALUES (" .. SQLStr(i.Tier.InternalName) .. ", " .. SQLStr(i.ClassName) .. ", " .. ply:SteamID64() .. ")")
-		local id = sql.QueryValue "SELECT last_insert_rowid() as id"
-		i.BufferID = id
-
-		if (i.Mods) then
-			for type, list in pairs(i.Mods) do
-				for _, mod in ipairs(list) do
-					sql.Query("INSERT INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3) VALUES (" .. 
-						id .. ", " ..
-						ornull(mod.Mod) .. ", " ..
-						ornull(mod.Tier) .. ", " ..
-						ornull(mod.Roll[1]) .. ", " ..
-						ornull(mod.Roll[2]) .. ", " ..
-						ornull(mod.Roll[3]) ..
-					")")
-				end
-			end
-		end
-
-		local items = sql.Query("SELECT idx FROM pluto_items WHERE owner = " .. SQLStr(ply:SteamID64()) .. " ORDER BY idx DESC")
-
-		if (#items > 5) then
-			for i = 6, #items do
-				items[i] = items[i].idx
-			end
-
-			-- TODO(meep): generate currency
-
-			sql.Query("DELETE FROM pluto_items WHERE idx IN (" .. table.concat(items, ", ", 6) .. ")")
-		end
-
-		pluto.inv.message(ply)
-			:write("bufferitem", i)
-			:send()
+		pluto.inv.generatebufferitem(ply)
 
 		ply:ChatPrint("You have received a weapon! Check your inventory.")
 	end

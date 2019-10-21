@@ -43,12 +43,37 @@ pluto.tabs = {
 		size = 2,
 		element = "pluto_inventory_equip",
 	},
+	trade = {
+		canaccept = function(tabindex, item)
+			return item.TabID ~= 0
+		end,
+		canremove = function(tabindex, item)
+			return true
+		end,
+		size = 12,
+		element = "pluto_trade",
+	},
 }
 
 function pluto.canswitchtabs(tab1, tab2, tabindex1, tabindex2)
 	if (not tab1 or not tab2) then
-		ply:Kick "tab switch failed (1) report to meepen on discord"
 		return false, "no tab"
+	end
+
+	if (tab2.ID == 0 and tab1.ID == 0) then
+		return false, "both fake"
+	end
+
+	if (tab2.ID == 0 or tab1.ID == 0) then
+		local fake = tab2.ID == 0 and tab2 or tab1
+		local fakeidx = fake == tab1 and tabindex1 or tabindex2
+
+		local notfake = fake == tab1 and tab2 or tab1
+		local notfakeidx = notfake == tab1 and tabindex1 or tabindex2
+
+		if (notfake.Items[notfakeidx]) then
+			return false, "notfake not empty"
+		end
 	end
 
 	if (not tab1.Items and not tab2.Items) then

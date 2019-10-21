@@ -250,7 +250,6 @@ concommand.Add("pluto_cheat_weapon", function(ply, cmd, args)
 		return
 	end
 
-	PrintTable(args)
 	local i = pluto.weapons.generatetier(args[1])
 
 	i.TabID, i.TabIndex = pluto.inv.getfreespace(ply, i)

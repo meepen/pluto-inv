@@ -132,6 +132,7 @@ function pluto.inv.sendfullupdate(ply)
 	end
 
 	local m = pluto.inv.message(ply)
+	m:write "fullupdate"
 		
 	for _, tab in pairs(pluto.inv.invs[ply]) do
 		m:write("tab", tab)

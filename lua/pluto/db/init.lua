@@ -1,6 +1,4 @@
-local queries =
-
-hook.Add("PlutoDatabaseInitialize", "pluto_db_init", function(db)
+hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 	pluto.db.transact {
 		{
 			[[

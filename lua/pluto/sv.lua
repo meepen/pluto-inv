@@ -9,6 +9,7 @@ pluto.files.load {
 		"inv/init.lua",
 		"inv/sv_manager.lua",
 		"inv/ttt.lua",
+		"trades/sv.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty

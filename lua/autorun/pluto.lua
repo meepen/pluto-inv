@@ -8,6 +8,7 @@ pluto.files.load {
 		"cl/hacks.lua",
 		"inv/ui.lua",
 		"inv/cl_manager.lua",
+		"trades/cl.lua",
 	},
 	Shared = {
 		"init.lua",

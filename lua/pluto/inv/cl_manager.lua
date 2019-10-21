@@ -99,6 +99,13 @@ function pluto.inv.readstatus()
 	pprintf("Inventory status = %s", pluto.inv.status)
 end
 
+function pluto.inv.readfullupdate()
+	pluto.cl_inv = {}
+	if (IsValid(pluto.ui.pnl)) then
+		pluto.ui.pnl:Remove()
+	end
+end
+
 function pluto.inv.readtab()
 	local id = net.ReadUInt(32)
 	local tab = pluto.cl_inv[id]

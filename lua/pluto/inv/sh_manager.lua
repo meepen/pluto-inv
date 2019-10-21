@@ -8,6 +8,10 @@ pluto.inv.messages = {
 		[3] = "currencyuse",
 		[4] = "tabrename",
 		[5] = "claimbuffer",
+		[6] = "tradeupdate",
+		[7] = "trademessage",
+		[8] = "traderequest",
+		[9] = "tradeaccept",
 	},
 	sv2cl = {
 		[0] = "end",
@@ -18,8 +22,15 @@ pluto.inv.messages = {
 		[5] = "tabupdate",
 		[6] = "currencyupdate",
 		[7] = "bufferitem",
+		[8] = "tradeupdate",
+		[9] = "trademessage",
+		[10] = "tradeaccept",
+		[11] = "fullupdate",
 	}
 }
+
+function pluto.inv.writefullupdate()
+end
 
 for k, v in pairs(pluto.inv.messages.cl2sv) do
 	pluto.inv.messages.cl2sv[v] = k
