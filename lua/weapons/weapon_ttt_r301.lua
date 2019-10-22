@@ -87,7 +87,7 @@ SWEP.Silenced = false
 SWEP.FireSoundAffectedByClipSize = true
 
 SWEP.Primary.ClipSize = 28
-SWEP.Primary.DefaultClip = 28
+SWEP.Primary.DefaultClip = 28 * 2
 SWEP.Primary.Ammo = "pistol"
 SWEP.AmmoEnt = "item_ammo_pistol_ttt"
 SWEP.Primary.Recoil = 1
@@ -129,7 +129,6 @@ SWEP.Offset = {
 		Up = 0,
 		Right = 0,
 		Forward = 180
-	
 	},
 	Scale = 1
 }
