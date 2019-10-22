@@ -31,8 +31,8 @@ pluto.currency.list = {
 		InternalName = "tome",
 		Name = "Arizor's Tome",
 		Icon = "pluto/currencies/tome.png",
-		Description = "Increases the tier of a random modifier with a 40% chance to remove another",
-		SubDescription = "Arizor hands these out to promising gunsmiths to augment their weapons and further their goals",
+		Description = "Corrupts an item unpredictably",
+		SubDescription = "Arizor hands these out to ruthless gunsmiths to augment their weapons and further themselves in life",
 		Color = Color(142, 94, 166),
 	},
 	{
