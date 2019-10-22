@@ -134,13 +134,6 @@ function pluto.inv.switchtab(steamid, tabid1, tabindex1, tabid2, tabindex2, cb)
 			return
 		end
 
-		local ply = player.GetBySteamID64(steamid)
-		if (IsValid(ply)) then
-			local inv = pluto.inv.invs[ply]
-			local tab1, tab2 = inv[tabid1], inv[tabid2]
-			tab1.Items[tabindex1], tab2.Items[tabindex2] = tab2.Items[tabindex2], tab1.Items[tabindex1]
-		end
-
 		cb(true)
 	end)
 end

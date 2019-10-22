@@ -42,4 +42,8 @@ function pluto.files.load(self)
 		file = realfile(file)
 		AddCSLuaFile(file)
 	end
+
+	for _, v in pairs(self.Workshop or {}) do
+		resource.AddWorkshop(v)
+	end
 end

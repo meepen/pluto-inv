@@ -307,14 +307,18 @@ function pluto.inv.readtabswitch(ply)
 	local canswitch, fail = pluto.canswitchtabs(tab1, tab2, tabindex1, tabindex2)
 
 	if (not canswitch) then
-		ply:Kick("tab switch failed (" .. fail .. ") report to meepen on discord")
+		pluto.inv.message(ply):write "fullupdate":send()
 		return
 	end
 
+	tab1.Items[tabindex1], tab2.Items[tabindex2] = tab2.Items[tabindex2], tab1.Items[tabindex1]
+
 	pluto.inv.switchtab(ply, tabid1, tabindex1, tabid2, tabindex2, function(succ)
-		if (not succ and IsValid(ply)) then
-			ply:Kick "tab switch failed (save) report to meepen on discord"
+		if (succ or not IsValid(ply)) then
+			return
 		end
+
+		pluto.inv.message(ply):write "fullupdate":send()
 	end)
 end
 
@@ -326,29 +330,30 @@ function pluto.inv.readitemdelete(ply)
 	local tab = pluto.inv.invs[ply][tabid]
 
 	if (not tab) then
-		ply:Kick "no tab"
+		pluto.inv.message(ply):write "fullupdate":send()
 		return
 	end
 
 	if (not tab.Items[tabindex]) then
-		ply:Kick "Tried to delete an item that wasn't there."
+		pluto.inv.message(ply):write "fullupdate":send()
 		return
 	end
 
 	local i = tab.Items[tabindex]
 
 	if (i.RowID ~= itemid) then
-		ply:Kick "Prevented you from deleting the wrong item Report to meepen."
+		pluto.inv.message(ply):write "fullupdate":send()
 		return
 	end
 	
+	tab.Items[tabindex] = nil
+
 	pluto.inv.deleteitem(ply, itemid, function(succ)
-		if (not succ) then
-			ply:Kick "Couldn't delete item."
+		if (succ or not IsValid(ply)) then
 			return
 		end
 
-		tab.Items[tabindex] = nil
+		pluto.inv.message(ply):write "fullupdate":send()
 	end)
 end
 
@@ -405,12 +410,12 @@ function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
 	local i = pluto.inv.getbufferitem(bufferid)
 
 	if (not i) then
-		ply:Kick "no buffer item"
+		pluto.inv.message(ply):write "fullupdate":send()
 		return
 	end
 
 	if (i.Owner ~= ply:SteamID64()) then
-		ply:Kick "NO"
+		pluto.inv.message(ply):write "fullupdate":send()
 		return
 	end
 
@@ -420,20 +425,19 @@ function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
 	}, pluto.inv.invs[ply][tabid], 1, tabindex)
 
 	if (not can) then
-		ply:Kick("cannot receive buffer item: " .. err)
+		pluto.inv.message(ply):write "fullupdate":send()
 		return
 	end
 
 	i.TabID, i.TabIndex = tabid, tabindex
 
-	print "saving"
-
 	sql.Query("DELETE FROM pluto_items WHERE idx = " .. SQLStr(i.BufferID))
 	pluto.weapons.save(i, ply, function(id)
-		if (not id) then
-			ply:Kick("error claiming gun")
+		if (id or not IsValid(ply)) then
 			return
 		end
+
+		pluto.inv.message(ply):write "fullupdate":send()
 	end)
 end
 
