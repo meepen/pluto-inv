@@ -23,7 +23,7 @@ pluto.currency.list = {
 		InternalName = "hand",
 		Name = "Yaari's Taking",
 		Icon = "pluto/currencies/goldenhand.png",
-		Description = "Removes a random modifier and decreases the tier of another",
+		Description = "Removes a random modifier and enhances the tier of another",
 		SubDescription = "One of the many hands of Yaari's victims",
 		Color = Color(255, 208, 86),
 	},
