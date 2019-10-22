@@ -119,6 +119,21 @@ SWEP.Ironsights = {
 	Zoom = 0.9,
 }
 
+SWEP.Offset = {
+	Pos = {
+		Up = 0,
+		Right = 0,
+		Forward = 0
+	},
+	Ang = {
+		Up = 0,
+		Right = 0,
+		Forward = 180
+	
+	},
+	Scale = 1
+}
+
 SWEP.VElements = {
 	["ironholo"] = { type = "Model", model = "models/hunter/plates/plate025.mdl", bone = "def_c_base", rel = "", pos = Vector(-0.06, -5.85, 20), angle = Angle(0, -30, 0), size = Vector(0.017, 0.017, 0.009), color = Color(255, 107, 0, 137), surpresslightning = false, material = "lights/white", skin = 0, bodygroup = {} },
 	["ironholo+"] = { type = "Model", model = "models/hunter/plates/plate025.mdl", bone = "def_c_base", rel = "", pos = Vector(0.059, -5.85, 20), angle = Angle(0, 30, 0), size = Vector(0.017, 0.017, 0.009), color = Color(255, 107, 0, 137), surpresslightning = false, material = "lights/white", skin = 0, bodygroup = {} }
