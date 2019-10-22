@@ -19,7 +19,7 @@ end
 MOD.Description = "Damage is increased by %s"
 
 MOD.Tiers = {
-	{ 10, 20 },
+	{ 10, 17.5 },
 	{ 5, 10 },
 	{ 2.5, 5 },
 	{ 0.1, 2.5 },
