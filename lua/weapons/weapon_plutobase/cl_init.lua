@@ -73,10 +73,6 @@ DEFINE_BASECLASS "weapon_tttbase_old"
 function SWEP:Initialize()
 	BaseClass.Initialize(self)
 	self:PlutoInitialize()
-
-	if (self:GetInventoryItem()) then
-		self:ReceivePlutoData()
-	end
 end
 
 function SWEP:DisplayPlutoData()
