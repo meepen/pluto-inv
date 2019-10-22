@@ -88,7 +88,9 @@ for name, values in pairs {
 			table.remove(rand.Mods, rand.Index)
 
 			local increase = table.Random(incr_possible)
-			increase.Tier = increase.Tier - 1
+			if (increase) then
+				increase.Tier = increase.Tier - 1
+			end
 
 			UpdateAndDecrement(ply, item, "hand")
 		end,
