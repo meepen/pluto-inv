@@ -59,11 +59,19 @@ for name, values in pairs {
 			end
 
 			local possible = {}
+			local incr_possible = {}
 			for _, Mods in pairs(item.Mods) do
 				for i = 1, #Mods do
+					local mod = Mods[i]
+					local incr
+					if (mod.Tier > 1) then
+						table.insert(incr_possible, Mods[i])
+						incr = #incr_possible
+					end
 					table.insert(possible, {
 						Mods = Mods,
 						Index = i,
+						Incr = incr
 					})
 				end
 			end
@@ -73,8 +81,14 @@ for name, values in pairs {
 			end
 
 			local rand = table.Random(possible)
+			if (rand.Incr) then
+				table.remove(incr_possible, rand.Incr)
+			end
 
 			table.remove(rand.Mods, rand.Index)
+
+			local increase = table.Random(incr_possible)
+			increase.Tier = increase.Tier - 1
 
 			UpdateAndDecrement(ply, item, "hand")
 		end,

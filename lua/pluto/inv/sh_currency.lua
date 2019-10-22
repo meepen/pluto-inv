@@ -8,7 +8,7 @@ pluto.currency.list = {
 		Name = "Reflective Die",
 		Icon = "pluto/currencies/dice.png",
 		Description = "Randomizes all the rolls on modifiers",
-		SubDescription = "Arizor lost this die in a bet with a farmer long ago. That farmer won a bet with Yuowi later, and gave him the power to create these at will",
+		SubDescription = "Arizor lost this die in a bet with a farmer long ago. That farmer won a bet with Yaari later, and gave him the power to create these at will",
 		Color = Color(255, 208, 86),
 	},
 	{
@@ -16,15 +16,15 @@ pluto.currency.list = {
 		Name = "Magic Droplet",
 		Icon = "pluto/currencies/droplet.png",
 		Description = "Removes all modifiers and rolls new ones",
-		SubDescription = "It's said this magic droplet was formed from one of Yuowi's many former lovers",
+		SubDescription = "It's said this magic droplet was formed from one of Yaari's many former lovers",
 		Color = Color(24, 125, 216),
 	},
 	{
 		InternalName = "hand",
-		Name = "Yuowi's Taking",
+		Name = "Yaari's Taking",
 		Icon = "pluto/currencies/goldenhand.png",
-		Description = "Removes a random modifier",
-		SubDescription = "One of the many hands of Yuowi's victims",
+		Description = "Removes a random modifier and decreases the tier of another",
+		SubDescription = "One of the many hands of Yaari's victims",
 		Color = Color(255, 208, 86),
 	},
 	{
