@@ -375,6 +375,10 @@ function pluto.inv.readcurrencyuse(ply)
 		end
 	end
 
+	if (not pluto.inv.currencies[ply] or pluto.inv.currencies[ply][currency] < 1) then
+		return
+	end
+
 	pluto.currency.byname[currency].Use(ply, wpn)
 end
 
