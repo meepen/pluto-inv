@@ -18,7 +18,7 @@ pluto.files.load {
 		"materials/pluto/trashcan_128.png",
 	},
 	Workshop = {
-		"1896040511",
+		"1896665699",
 	},
 }
 
