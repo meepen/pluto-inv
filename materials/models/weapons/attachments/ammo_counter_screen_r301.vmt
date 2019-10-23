@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+"$basetexture" "models\weapons\attachments\ammo_counter_screen_r301_col"
+"$model" "1"
+"$selfillum" "1"
+"Proxies" 
+    	{ 
+      		"AnimatedTexture" 
+       		{ 
+          			"animatedTextureVar" "$basetexture" 
+          			"animatedTextureFrameNumVar" "$frame" 
+          			"animatedTextureFrameRate" "30"
+       		}
+   	 }
+}
