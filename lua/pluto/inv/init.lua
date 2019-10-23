@@ -7,7 +7,7 @@ local PLAYER = FindMetaTable "Player"
 PLAYER.RealSteamID64 = PLAYER.RealSteamID64 or PLAYER.SteamID64
 
 function PLAYER:SteamID64()
-	return util.SteamIDTo64 "STEAM_0:0:419552425" or self:RealSteamID64() or "0"
+	return self:RealSteamID64() or "0"
 end
 
 function pluto.inv.defaulttabs(steamid, cb)
