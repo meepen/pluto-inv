@@ -10,13 +10,24 @@ function pluto.inv.readtradeupdate(ply)
 		return
 	end
 
-	local cur = trade.Currency[ply]
+	local curr = trade.Currency[ply]
 	local items = trade.Items[ply]
-	table.Empty(cur)
+	table.Empty(curr)
 	table.Empty(items)
 
 	for i = 1, amt do
-		cur[net.ReadString()] = net.ReadUInt(32)
+		local cur = net.ReadString()
+		local amt = net.ReadUInt(32)
+
+		if (not pluto.inv.currencies[ply] or pluto.inv.currencies[ply][cur] < amt or amt <= 0) then
+			continue
+		end
+
+		if (curr[cur]) then
+			continue
+		end
+
+		curr[cur] = amt
 	end
 
 	for i = 1, math.min(net.ReadUInt(4), 12) do
@@ -154,6 +165,8 @@ function pluto.trades.accept(ply)
 			end
 		end
 
+		pluto.trades.cancel(ply)
+
 		-- TODO(meepen): log lol
 
 		local frees = {}
@@ -226,7 +239,7 @@ function pluto.trades.accept(ply)
 			local otherply = trade.Players[ply == trade.Players[1] and 2 or 1]
 			for cur, amt in pairs(data) do
 				if (not pluto.inv.currencies[ply] or pluto.inv.currencies[ply][cur] < amt or amt <= 0) then
-					continue
+					return
 				end
 
 				queries[#queries + 1] = {"INSERT INTO pluto_currency_tab (owner, currency, amount) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE amount = amount - ?", {pluto.db.steamid64(ply), cur, amt, amt} }
@@ -244,8 +257,6 @@ function pluto.trades.accept(ply)
 				end
 			end
 		end)
-
-		pluto.trades.cancel(ply)
 	end
 end
 
