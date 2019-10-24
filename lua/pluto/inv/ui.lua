@@ -395,6 +395,13 @@ function PANEL:GhostClick(p, m)
 		end
 
 		if (self.Tab.ID == 0 and gparent.Tab.Items and gparent.Tab.ID ~= 0) then
+			local can, err = pluto.canswitchtabs(parent.Tab, gparent.Tab, parent.TabIndex, gparent.TabIndex)
+
+			if (not can) then
+				pwarnf("err: %s", err)
+				return false
+			end
+
 			local oi = gparent.Tab.Items[gparent.TabIndex]
 
 			if (oi) then
@@ -529,8 +536,7 @@ function PANEL:PerformLayout(w, h)
 	self.Left:SetWide(size)
 	self.Right:SetWide(size)
 
-
-	self:DockPadding(divide * 1.5, divide * 1.5, divide * 1.5, divide * 1.5)
+	self:DockPadding(divide * 1.5, divide * 1.5, divide * 1.5, divide * 1)
 end
 
 function PANEL:SetTab(tab)
