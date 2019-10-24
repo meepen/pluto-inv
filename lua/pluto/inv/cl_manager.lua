@@ -101,6 +101,7 @@ end
 
 function pluto.inv.readfullupdate()
 	pluto.cl_inv = {}
+	pluto.buffer = {}
 	if (IsValid(pluto.ui.pnl)) then
 		pluto.ui.pnl:Remove()
 	end
