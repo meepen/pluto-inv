@@ -143,7 +143,7 @@ function pluto.db.steamid64(obj)
 		return obj:SteamID64()
 	end
 
-	if (obj:StartWith "S") then
+	if (type(obj) == "string" and obj:StartWith "S") then
 		obj = util.SteamIDTo64(obj)
 	end
 
