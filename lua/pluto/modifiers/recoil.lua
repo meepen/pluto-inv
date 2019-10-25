@@ -26,7 +26,7 @@ MOD.Tiers = {
 
 function MOD:ModifyWeapon(wep, roll)
 	wep:DefinePlutoOverrides "ViewPunchAngles"
-	wep.Pluto.DamageDropoffRange = wep.Pluto.ViewPunchAngles - roll[1] / 100
+	wep.Pluto.ViewPunchAngles = wep.Pluto.ViewPunchAngles - roll[1] / 100
 end
 
 return MOD
