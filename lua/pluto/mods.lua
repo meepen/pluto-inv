@@ -29,6 +29,7 @@ for _, modname in pairs {
 	"recycle",
 	"shock",
 	-- "snipexp",
+	"unchanging",
 	"zoomies",
 } do
 	MOD = pluto.mods.byname[modname] or {}

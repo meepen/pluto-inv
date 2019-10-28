@@ -281,10 +281,17 @@ function PANEL:Init()
 	self:SetCursor "arrow"
 
 	hook.Add("PlutoTabUpdate", self, self.PlutoTabUpdate)
+	hook.Add("PlutoItemUpdate", self, self.PlutoItemUpdate)
 end
 
 function PANEL:SetDefault(str)
 	self.Image:SetDefault(str)
+end
+
+function PANEL:PlutoItemUpdate(item)
+	if (self.Tab and self.Item and self.Item.ID == item.ID) then
+		self:SetItem(item)
+	end
 end
 
 function PANEL:PlutoTabUpdate(tabid, tabindex, item)

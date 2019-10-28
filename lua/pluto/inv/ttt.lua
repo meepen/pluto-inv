@@ -124,8 +124,8 @@ hook.Add("DoPlayerDeath", "pluto_info", function(vic, atk, dmg)
 	vic:ChatPrint(text)
 end)
 
-function pluto.inv.generatebufferitem(ply)
-	local i = pluto.weapons.generatetier()
+function pluto.inv.generatebufferitem(ply, ...)
+	local i = pluto.weapons.generatetier(...)
 	sql.Query("INSERT INTO pluto_items (tier, class, owner) VALUES (" .. SQLStr(i.Tier.InternalName) .. ", " .. SQLStr(i.ClassName) .. ", " .. ply:SteamID64() .. ")")
 	local id = sql.QueryValue "SELECT last_insert_rowid() as id"
 	i.BufferID = id

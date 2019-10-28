@@ -15,6 +15,64 @@ local function UpdateAndDecrement(ply, item, currency)
 	trans:start()
 end
 
+local function getnewmod(item, prefix_max, suffix_max, ignoretier)
+	prefix_max = prefix_max or 3
+	suffix_max = suffix_max or 3
+
+	if (not item.Mods) then
+		return
+	end
+
+	local prefixes = #item.Mods.prefix
+	local suffixes = #item.Mods.suffix
+
+	if (not ignoretier and prefixes + suffixes == item.Tier.affixes) then
+		return
+	end
+
+	local have = {}
+
+	for _, Mods in pairs(item.Mods) do
+		for _, mod in pairs(Mods) do
+			have[mod.Mod] = true
+		end
+	end
+
+	local allowed = {}
+
+	if (prefixes < prefix_max) then
+		local t = {}
+		for _, item in pairs(pluto.mods.prefix) do
+			if (not have[item.InternalName]) then
+				t[#t + 1] = item
+			end
+		end
+		if (#t > 0) then
+			allowed.prefix = t
+		end
+	end
+
+	if (suffixes < suffix_max) then
+		local t = {}
+		for _, item in pairs(pluto.mods.suffix) do
+			if (not have[item.InternalName]) then
+				t[#t + 1] = item
+			end
+		end
+		if (#t > 0) then
+			allowed.suffix = t
+		end
+	end
+
+	local mods, type = table.Random(allowed)
+
+	local toadd = pluto.mods.bias(weapons.GetStored(item.ClassName), mods, tagbiases)[1]
+	
+	local newmod = pluto.mods.rollmod(toadd, item.Tier.rolltier, item.Tier.roll)
+	
+	table.insert(item.Mods[type], newmod)
+end
+
 for name, values in pairs {
 	dice = {
 		Shares = 500,
@@ -97,7 +155,37 @@ for name, values in pairs {
 	},
 	tome = {
 		Shares = 0,
-		Use = function(item)
+		Use = function(ply, item)
+			if (not item.Mods) then
+				return
+			end
+
+			local rand = math.floor(math.random(1, 12) / 2) + 1
+			if (rand == 1) then     -- 2 mods
+				getnewmod(item, 5, 3, true)
+				getnewmod(item, 5, 3, true)
+			elseif (rand == 2) then -- 1 mod
+				getnewmod(item, 5, 3, true)
+			elseif (rand == 3) then -- nothing
+			elseif (rand == 4) then -- base gun change
+				item.ClassName = pluto.weapons.randomgun()
+			elseif (rand == 5) then -- tier change
+				local newitem = pluto.weapons.generatetier(nil, item.ClassName)
+				item.Tier = newitem.Tier
+				item.Mods = newitem.Mods
+			elseif (rand == 6) then -- reroll
+				item.Mods = pluto.weapons.generatetier(item.Tier.InternalName, item.ClassName).Mods
+			else
+				return
+			end
+
+			table.insert(item.Mods.prefix, {
+				Roll = {},
+				Tier = 1,
+				Mod = "unchanging"
+			})
+
+			UpdateAndDecrement(ply, item, "tome")
 		end,
 	},
 	mirror = {
@@ -108,58 +196,7 @@ for name, values in pairs {
 	heart = {
 		Shares = 5,
 		Use = function(ply, item)
-			if (not item.Mods) then
-				return
-			end
-
-			local prefixes = #item.Mods.prefix
-			local suffixes = #item.Mods.suffix
-
-			if (prefixes + suffixes == item.Tier.affixes) then
-				return
-			end
-
-			local have = {}
-
-			for _, Mods in pairs(item.Mods) do
-				for _, mod in pairs(Mods) do
-					have[mod.Mod] = true
-				end
-			end
-
-			local allowed = {}
-
-			if (prefixes < 3) then
-				local t = {}
-				for _, item in pairs(pluto.mods.prefix) do
-					if (not have[item.InternalName]) then
-						t[#t + 1] = item
-					end
-				end
-				if (#t > 0) then
-					allowed.prefix = t
-				end
-			end
-
-			if (suffixes < 3) then
-				local t = {}
-				for _, item in pairs(pluto.mods.suffix) do
-					if (not have[item.InternalName]) then
-						t[#t + 1] = item
-					end
-				end
-				if (#t > 0) then
-					allowed.suffix = t
-				end
-			end
-
-			local mods, type = table.Random(allowed)
-
-			local toadd = pluto.mods.bias(weapons.GetStored(item.ClassName), mods, tagbiases)[1]
-			
-			local newmod = pluto.mods.rollmod(toadd, item.Tier.rolltier, item.Tier.roll)
-			
-			table.insert(item.Mods[type], newmod)
+			getnewmod(item)
 
 			UpdateAndDecrement(ply, item, "heart")
 		end,
@@ -307,7 +344,7 @@ end)
 
 local tospawn_amt = 3.4
 
-local start
+local start = CurTime()
 local old_data
 
 hook.Add("TTTBeginRound", "pluto_currency", function()

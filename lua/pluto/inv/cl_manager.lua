@@ -90,6 +90,8 @@ function pluto.inv.readitem()
 
 	pluto.received.item[id] = item
 
+	hook.Run("PlutoItemUpdate", item)
+
 	return item
 end
 

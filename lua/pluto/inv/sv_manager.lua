@@ -379,6 +379,17 @@ function pluto.inv.readcurrencyuse(ply)
 		return
 	end
 
+	if (wpn.Mods) then
+		for _, mods in pairs(wpn.Mods) do
+			for _, mod in pairs(mods) do
+				local m = pluto.mods.byname[mod.Mod]
+				if (m and m.PreventChange == true) then
+					return
+				end
+			end
+		end
+	end
+
 	pluto.currency.byname[currency].Use(ply, wpn)
 end
 
