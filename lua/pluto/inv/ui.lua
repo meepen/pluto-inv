@@ -151,10 +151,32 @@ function PANEL:SetWeapon(w)
 	end
 	self.Model = ClientsideModel(w.WorldModel, RENDERGROUP_OTHER)
 	self.Model:SetNoDraw(true)
+	self.Class = w.ClassName
 	self.HoldType = w.HoldType
 end
 
 DEFINE_BASECLASS "ttt_curved_panel"
+local lookups = {
+	weapon_ttt_mac10 = {2.2, 3.9},
+	weapon_ttt_ak47 = {5, 3},
+	weapon_ttt_r301 = {-7, 9},
+	weapon_ttt_glock = {1, 4, size = 1.1},
+	weapon_ttt_deagle = {0.5, 5},
+	weapon_ttt_mp5 = {2, 7.5},
+	weapon_ttt_sg550 = {3.0, 5},
+	weapon_ttt_galil = {4, 4},
+	weapon_ttt_m4a1 = {5, 3},
+	weapon_ttt_tmp = {0, 5},
+	weapon_ttt_g3sg1 = {7.2, 1.9},
+	weapon_ttt_p228 = {1.5, 3.7, size = 1.1},
+	weapon_ttt_shotgun = {2.8, 4},
+	weapon_ttt_rifle = {2.8, 4},
+	weapon_ttt_sg552 = {8, 0},
+	weapon_ttt_p90 = {4, 5},
+	weapon_ttt_huge = {4, 6.5},
+	weapon_ttt_pistol = {1.5, 4.2, size = 1.1},
+	Default = {0, 0},
+}
 
 function PANEL:Paint(w, h)
 	if (pluto.ui.ghost == self:GetParent() and not pluto.ui.ghost.paintover) then
@@ -178,10 +200,9 @@ function PANEL:Paint(w, h)
 		local r, g, b = render.GetColorModulation()
 		render.SetColorModulation(1, 1, 1)
 		local err = self.Model
-		local holdtype = self.HoldType
+		local lookup = lookups.Default
 		if (not IsValid(err)) then
 			err = self.DefaultModel
-			holdtype = self.DefaultHoldType
 			
 			if (not IsValid(err)) then
 				return
@@ -197,26 +218,25 @@ function PANEL:Paint(w, h)
 			surface.DrawTexturedRect(0, 0, w, h)
 		end
 
+		lookup = lookups[self.Class] or lookup
+
 		local x, y = self:LocalToScreen(0, 0)
 		local mins, maxs = err:GetModelBounds()
-		local mul = mins:Distance(maxs) / 45
-		local offset 
-		if (holdtype == "pistol") then
-			offset = -Vector((maxs.x - mins.x) * -1 / 3, 0, (maxs.z - mins.z) * 3 / 3)
-		else
-			offset = -Vector((maxs.x - mins.x) * -0.5 / 3, 0, (maxs.z - mins.z) * 1.5 / 3)
-		end
 		local angle = Angle(0, -90)
-		cam.Start3D(angle:Forward() * mul * -56 - offset / 2, angle, 36, x, y, w, h)
-			render.SuppressEngineLighting(true)
-				err:SetAngles(Angle(-40, 10, 10))
-				err:SetPos(vector_origin)
-				render.PushFilterMin(TEXFILTER.ANISOTROPIC)
-				render.PushFilterMag(TEXFILTER.ANISOTROPIC)
-					err:DrawModel()
-				render.PopFilterMag()
-				render.PopFilterMin()
-			render.SuppressEngineLighting(false)
+		local size = mins:Distance(maxs) / 2.5 * (lookup.size or 1) * 1.1
+
+		cam.Start3D(vector_origin, angle, 90, x, y, w, h)
+			cam.StartOrthoView(lookup[1] + -size, lookup[2] + size, lookup[1] + size, lookup[2] + -size)
+				render.SuppressEngineLighting(true)
+					err:SetAngles(Angle(-40, 10, 10))
+					err:SetPos(vector_origin)
+					render.PushFilterMin(TEXFILTER.ANISOTROPIC)
+					render.PushFilterMag(TEXFILTER.ANISOTROPIC)
+						err:DrawModel()
+					render.PopFilterMag()
+					render.PopFilterMin()
+				render.SuppressEngineLighting(false)
+			cam.EndOrthoView()
 		cam.End3D()
 		render.SetColorModulation(r, g, b)
 		render.SetBlend(1)
