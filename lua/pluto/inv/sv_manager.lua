@@ -379,7 +379,7 @@ function pluto.inv.readcurrencyuse(ply)
 		return
 	end
 
-	if (wpn.Mods) then
+	if (wpn and wpn.Mods) then
 		for _, mods in pairs(wpn.Mods) do
 			for _, mod in pairs(mods) do
 				local m = pluto.mods.byname[mod.Mod]
