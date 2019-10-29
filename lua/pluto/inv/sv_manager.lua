@@ -307,7 +307,7 @@ function pluto.inv.readtabswitch(ply)
 	local canswitch, fail = pluto.canswitchtabs(tab1, tab2, tabindex1, tabindex2)
 
 	if (not canswitch) then
-		pluto.inv.message(ply):write "fullupdate":send()
+		pluto.inv.sendfullupdate(ply)
 		return
 	end
 
@@ -318,7 +318,7 @@ function pluto.inv.readtabswitch(ply)
 			return
 		end
 
-		pluto.inv.message(ply):write "fullupdate":send()
+		pluto.inv.sendfullupdate(ply)
 	end)
 end
 
@@ -330,19 +330,19 @@ function pluto.inv.readitemdelete(ply)
 	local tab = pluto.inv.invs[ply][tabid]
 
 	if (not tab) then
-		pluto.inv.message(ply):write "fullupdate":send()
+		pluto.inv.sendfullupdate(ply)
 		return
 	end
 
 	if (not tab.Items[tabindex]) then
-		pluto.inv.message(ply):write "fullupdate":send()
+		pluto.inv.sendfullupdate(ply)
 		return
 	end
 
 	local i = tab.Items[tabindex]
 
 	if (i.RowID ~= itemid) then
-		pluto.inv.message(ply):write "fullupdate":send()
+		pluto.inv.sendfullupdate(ply)
 		return
 	end
 	
@@ -353,7 +353,7 @@ function pluto.inv.readitemdelete(ply)
 			return
 		end
 
-		pluto.inv.message(ply):write "fullupdate":send()
+		pluto.inv.sendfullupdate(ply)
 	end)
 end
 
@@ -425,12 +425,12 @@ function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
 	local i = pluto.inv.getbufferitem(bufferid)
 
 	if (not i) then
-		pluto.inv.message(ply):write "fullupdate":send()
+		pluto.inv.sendfullupdate(ply)
 		return
 	end
 
 	if (i.Owner ~= ply:SteamID64()) then
-		pluto.inv.message(ply):write "fullupdate":send()
+		pluto.inv.sendfullupdate(ply)
 		return
 	end
 
@@ -440,7 +440,7 @@ function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
 	}, pluto.inv.invs[ply][tabid], 1, tabindex)
 
 	if (not can) then
-		pluto.inv.message(ply):write "fullupdate":send()
+		pluto.inv.sendfullupdate(ply)
 		return
 	end
 
@@ -452,7 +452,7 @@ function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
 			return
 		end
 
-		pluto.inv.message(ply):write "fullupdate":send()
+		pluto.inv.sendfullupdate(ply)
 	end)
 end
 
