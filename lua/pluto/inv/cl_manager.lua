@@ -104,9 +104,25 @@ end
 function pluto.inv.readfullupdate()
 	pluto.cl_inv = {}
 	pluto.buffer = {}
+	pluto.cl_currency = {}
 	if (IsValid(pluto.ui.pnl)) then
 		pluto.ui.pnl:Remove()
 	end
+	
+
+	for i = 1, net.ReadUInt(32) do
+		pluto.inv.readtab()
+	end
+
+	for i = 1, net.ReadUInt(32) do
+		pluto.inv.readcurrencyupdate()
+	end
+	
+	for i = 1, net.ReadUInt(8) do
+		pluto.inv.readbufferitem()
+	end
+
+	pluto.inv.readstatus()
 end
 
 function pluto.inv.readtab()

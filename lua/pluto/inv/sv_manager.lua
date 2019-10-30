@@ -119,40 +119,43 @@ function pluto.inv.writetab(ply, tab)
 	end
 end
 
-function pluto.inv.sendfullupdate(ply)
-	if (not pluto.inv.invs[ply]) then
-		pluto.inv.message(ply)
-			:write("status", "retrieving")
-			:send()
-		pluto.inv.init(ply, function()
-			pluto.inv.sendfullupdate(ply)
-		end)
-
-		return
-	end
-
-	local m = pluto.inv.message(ply)
-	m:write "fullupdate"
+function pluto.inv.writefullupdate(ply)
+	net.WriteUInt(table.Count(pluto.inv.invs[ply]), 32)
 		
 	for _, tab in pairs(pluto.inv.invs[ply]) do
-		m:write("tab", tab)
+		pluto.inv.writetab(ply, tab)
 	end
 
+	net.WriteUInt(table.Count(pluto.inv.currencies[ply]), 32)
 	for currency in pairs(pluto.inv.currencies[ply]) do
-		m:write("currencyupdate", currency)
-	end
-
-	for _, item in ipairs(pluto.inv.getbufferitems(ply)) do
-		m:write("bufferitem", item)
+		pluto.inv.writecurrencyupdate(ply, currency)
 	end
 	
-	m:write("status", "ready"):send()
+	local buffer = pluto.inv.getbufferitems(ply)
 
-	if (ply:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE) then
-		ply:StripWeapons()
-		ply:StripAmmo()
-		hook.Run("PlayerLoadout", ply)
+	net.WriteUInt(#buffer, 8)
+	for _, item in ipairs(buffer) do
+		pluto.inv.writebufferitem(ply, item)
 	end
+	
+	pluto.inv.writestatus(ply, "ready")
+end
+
+function pluto.inv.sendfullupdate(ply)
+	pluto.inv.message(ply)
+		:write("status", "retrieving")
+		:send()
+
+	pluto.inv.invs[ply] = nil
+
+	pluto.inv.init(ply, function()
+		if (ply:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE) then
+			ply:StripWeapons()
+			ply:StripAmmo()
+			hook.Run("PlayerLoadout", ply)
+		end
+		pluto.inv.message(ply):write "fullupdate":send()
+	end)
 end
 
 function pluto.inv.writetabupdate(ply, tabid, tabindex)

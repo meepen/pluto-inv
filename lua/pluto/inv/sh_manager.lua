@@ -29,9 +29,6 @@ pluto.inv.messages = {
 	}
 }
 
-function pluto.inv.writefullupdate()
-end
-
 for k, v in pairs(pluto.inv.messages.cl2sv) do
 	pluto.inv.messages.cl2sv[v] = k
 end
