@@ -35,6 +35,16 @@ function ENT:SV_Initialize()
 	self:PhysicsInitBox(self:GetCollisionBounds())
 	self:SetCustomCollisionCheck(true)
 	hook.Add("SetupPlayerVisibility", self, self.SetupPlayerVisibility)
+
+	self.RoundCreated = ttt.GetRoundNumber()
+
+	hook.Add("TTTPrepareRound", self, self.TTTPrepareRound)
+end
+
+function ENT:TTTPrepareRound()
+	if (ttt.GetRoundNumber() - self.RoundCreated >= 3) then
+		self:Remove()
+	end
 end
 
 function ENT:SetCurrency(currency)
@@ -42,3 +52,7 @@ function ENT:SetCurrency(currency)
 
 	self:SetIcon(currency.Icon)
 end
+
+hook.Add("TTTAddPermanentEntities", "pluto_currency", function(list)
+	table.insert(list, "pluto_currency")
+end)

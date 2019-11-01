@@ -10,7 +10,7 @@ function ENT:Initialize()
 	self:SetModel "models/custom_prop/plutogg/ghost/ghost.mdl"
 	self:PhysicsInitBox(-maxs, maxs)
 	self:SetMoveType(MOVETYPE_NONE)
-	self:SetSpeed(300)
+	self:SetSpeed(200)
 	self:SetHealth(1)
 
 	self:SetLastPos(self:GetPos())

@@ -360,11 +360,7 @@ end)
 
 local tospawn_amt = 3.4
 
-local start = CurTime()
-local old_data
-
 hook.Add("TTTBeginRound", "pluto_currency", function()
-	start = CurTime()
 	for _, item in pairs(round.GetStartingPlayers()) do
 		if (item.Player.WasAFK or item.Player:GetRoleTeam() ~= "innocent") then
 			continue
@@ -381,7 +377,6 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 			pluto.currency.tospawn[item.Player] = 1 + points - math.floor(points)
 		end
 	end
-	old_data = table.Copy(pluto.currency.tospawn)
 
 	if (math.random(1, 10) == 1) then
 		admin.chatf(white_text, "A horde of ", ttt.teams.traitor.Color, "spirits ", white_text, "have entered this realm.")
@@ -400,20 +395,6 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 
 			admin.chatf(white_text, "The remaining ", ttt.teams.traitor.Color, "spirits ", white_text, "have left this realm.")
 		end)
-	end
-end)
-
-hook.Add("TTTEndRound", "pluto_currency", function()
-	if (CurTime() - start <= 60 and player.GetCount() <= 5) then
-		pluto.currency.tospawn = old_data
-	end
-end)
-
-hook.Add("TTTAddPermanentEntities", "pluto_currency", function()
-	for ent, ply in pairs(pluto.currency.spawned) do
-		if (IsValid(ent) and IsValid(ply)) then
-			pluto.currency.tospawn[ply] = pluto.currency.tospawn[ply] + 1 / tospawn_amt / 2
-		end
 	end
 end)
 
