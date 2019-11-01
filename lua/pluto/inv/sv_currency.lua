@@ -384,6 +384,7 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 	old_data = table.Copy(pluto.currency.tospawn)
 
 	if (math.random(1, 10) == 1) then
+		admin.chatf(white_text, "A ", ttt.teams.traitor.Color, "ghost ", white_text, "has entered this realm.")
 		local e = ents.Create "pluto_ghost"
 		e:SetPos(pluto.currency.randompos())
 		e:Spawn()
