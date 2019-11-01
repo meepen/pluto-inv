@@ -55,19 +55,25 @@ end
 
 function ENT:Think()
 	if (SERVER and (CurTime() - self:GetStart()) / (self:GetLastPos():Distance(self:GetNextPos()) / self:GetSpeed()) >= 1) then
-		local pos
-		for i = 1, 100 do
-			pos = pluto.currency.randompos()
-			local mins, maxs = vector_origin, vector_origin
-			if (not util.TraceHull {
-				start = pos,
-				endpos = pos,
-				mins = mins,
-				maxs = maxs,
-				collisiongroup = COLLISION_GROUP_PLAYER,
-				mask = MASK_PLAYERSOLID,
-			}.StartSolid) then
-				break
+		local pos = self:GetNextPos()
+		for _, nav in pairs(navmesh.GetAllNavAreas()) do
+			if (nav:Contains(pos)) then
+				local next = table.Random(nav:GetAdjacentAreas())
+				for i = 1, 100 do
+					pos = next:GetRandomPoint()
+					local mins, maxs = vector_origin, vector_origin
+					if (not util.TraceHull {
+						start = pos,
+						endpos = pos,
+						mins = mins,
+						maxs = maxs,
+						collisiongroup = COLLISION_GROUP_PLAYER,
+						mask = MASK_PLAYERSOLID,
+					}.StartSolid) then
+						print(pos)
+						break
+					end
+				end
 			end
 		end
 
@@ -77,7 +83,7 @@ function ENT:Think()
 	end
 
 	local pos, ang = self:GetPosition()
-	self:SetPos(pos)
+	self:SetPos(pos + vector_up * 20)
 	self:SetAngles(ang)
 
 	self:NextThink(CurTime())
