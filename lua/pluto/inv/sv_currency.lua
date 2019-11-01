@@ -383,7 +383,7 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 	end
 	old_data = table.Copy(pluto.currency.tospawn)
 
-	if (math.random(1, 3) == 1) then
+	if (math.random(1, 10) == 1) then
 		local e = ents.Create "pluto_ghost"
 		e:SetPos(pluto.currency.randompos())
 		e:Spawn()
