@@ -1,0 +1,1 @@
+gmpublish update -addon content.gma -icon icon.jpg -id 1896665699

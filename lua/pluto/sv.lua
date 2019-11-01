@@ -10,6 +10,7 @@ pluto.files.load {
 		"inv/sv_manager.lua",
 		"inv/ttt.lua",
 		"trades/sv.lua",
+		"mapvote/mapvote.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty

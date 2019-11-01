@@ -9,6 +9,7 @@ pluto.files.load {
 		"inv/ui.lua",
 		"inv/cl_manager.lua",
 		"trades/cl.lua",
+		"mapvote/cl_mapvote.lua",
 	},
 	Shared = {
 		"init.lua",

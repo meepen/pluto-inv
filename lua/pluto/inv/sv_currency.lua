@@ -154,7 +154,7 @@ for name, values in pairs {
 		end,
 	},
 	tome = {
-		Shares = 0,
+		Shares = 20,
 		Use = function(ply, item)
 			if (not item.Mods) then
 				return
@@ -237,6 +237,23 @@ for _, item in pairs(pluto.currency.list) do
 	resource.AddFile("materials/" .. item.Icon)
 end
 
+function pluto.ghost_killed(e, dmg)
+	local atk = dmg:GetAttacker()
+	if (not IsValid(atk) or not atk:IsPlayer()) then
+		return
+	end
+
+	pluto.currency.spawnfor(atk, "tome", atk:GetPos())
+
+	admin.chatf(white_text, "A ", ttt.teams.traitor.Color, "ghost ", white_text, "has been vanquished.")
+
+	for _, ply in pairs(player.GetAll()) do
+		pluto.currency.spawnfor(ply, "tome")
+	end
+
+	return true
+end
+
 function pluto.currency.random(n)
 	if (not n) then
 		n = math.random()
@@ -279,7 +296,6 @@ function pluto.currency.randompos()
 			return item.Nav:GetRandomPoint()
 		end
 	end
-
 
 	pwarnf("Initial rand: %.5f, rand end: %.5f, total: %.5f", initial, rand, pluto.currency.navs.total)
 end
@@ -366,6 +382,12 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 		end
 	end
 	old_data = table.Copy(pluto.currency.tospawn)
+
+	if (math.random(1, 3) == 1) then
+		local e = ents.Create "pluto_ghost"
+		e:SetPos(pluto.currency.randompos())
+		e:Spawn()
+	end
 end)
 
 hook.Add("TTTEndRound", "pluto_currency", function()

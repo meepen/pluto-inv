@@ -1,16 +1,23 @@
 AddCSLuaFile()
 
-ENT.Base = "base_nextbot"
+ENT.Base = "base_anim"
 ENT.Spawnable = true
 
-local size = 10
+local size = 15
 local maxs = Vector(size, size, size)
-local mins = -maxs
 
 function ENT:Initialize()
 	self:SetModel "models/custom_prop/plutogg/ghost/ghost.mdl"
-	self:PhysicsInitBox(mins, maxs)
+	self:PhysicsInitBox(-maxs, maxs)
+	self:SetMoveType(MOVETYPE_NONE)
 	self:SetSpeed(300)
+	self:SetHealth(1)
+
+	self:SetLastPos(self:GetPos())
+
+	if (SERVER) then
+		self:SetLagCompensated(true)
+	end
 end
 
 function ENT:SetupDataTables()
@@ -20,55 +27,59 @@ function ENT:SetupDataTables()
 	self:NetworkVar("Vector", 1, "LastPos")
 end
 
-function ENT:RunBehaviour()
-	while (true) do
-		local pos
-		while not pos do
-			for i = 1, 100 do
-				pos = pluto.currency.randompos()
-				local mins, maxs = vector_origin, vector_origin
-				if (not util.TraceHull {
-					start = pos,
-					endpos = pos,
-					mins = mins,
-					maxs = maxs,
-					collisiongroup = COLLISION_GROUP_PLAYER,
-					mask = MASK_PLAYERSOLID,
-				}.StartSolid) then
-					break
-				end
-			end
-			coroutine.wait(0.1)
-		end
-
-		self.NextPos = pos
-		self:SetStart(CurTime())
-		self:SetLastPos(self:GetPos())
-		self:SetNextPos(pos)
-		
-		while ((CurTime() - self:GetStart()) / (self:GetLastPos():Distance(self:GetNextPos()) / self:GetSpeed()) < 1) do
-			coroutine.yield()
-		end
-
-		coroutine.yield()
+function ENT:OnTakeDamage(dmg)
+	if (SERVER and pluto.ghost_killed(self, dmg)) then
+		self:Remove()
 	end
 end
 
-function ENT:AdvancePos(pos)
-	pos = pos + vector_up * size / 2 + vector_up * size * math.sin(CurTime() * 5) / 2
-	pos = pos + (self:GetNextPos() - self:GetLastPos()):Angle():Right() * -size * math.sin(CurTime() * 3.5) / 2
-	if (SERVER) then
-		self:SetPos(pos)
-	else
-		self:SetRenderOrigin(pos)
-	end
-end
-
-function ENT:Think()
+function ENT:GetPosition()
 	local first, next = self:GetLastPos(), self:GetNextPos()
 	local frac = (CurTime() - self:GetStart()) / (first:Distance(next) / self:GetSpeed())
 
 	frac = math.Clamp(frac, 0, 1)
 
-	self:AdvancePos(first + (next - first) * frac)
+	local pos = first + (next - first) * frac
+
+	pos = pos + vector_up * size / 2 + vector_up * size * math.sin(CurTime() * 5) / 2
+	pos = pos + (self:GetNextPos() - self:GetLastPos()):Angle():Right() * -size * math.sin(CurTime() * 3.5) / 2
+
+	local ang = (self:GetLastPos() - self:GetNextPos()):Angle()
+
+	return pos, ang
+end
+
+if (CLIENT) then
+	return
+end
+
+function ENT:Think()
+	if (SERVER and (CurTime() - self:GetStart()) / (self:GetLastPos():Distance(self:GetNextPos()) / self:GetSpeed()) >= 1) then
+		local pos
+		for i = 1, 100 do
+			pos = pluto.currency.randompos()
+			local mins, maxs = vector_origin, vector_origin
+			if (not util.TraceHull {
+				start = pos,
+				endpos = pos,
+				mins = mins,
+				maxs = maxs,
+				collisiongroup = COLLISION_GROUP_PLAYER,
+				mask = MASK_PLAYERSOLID,
+			}.StartSolid) then
+				break
+			end
+		end
+
+		self:SetStart(CurTime())
+		self:SetLastPos(self:GetNextPos())
+		self:SetNextPos(pos)
+	end
+
+	local pos, ang = self:GetPosition()
+	self:SetPos(pos)
+	self:SetAngles(ang)
+
+	self:NextThink(CurTime())
+	return true
 end

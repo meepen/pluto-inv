@@ -1,0 +1,6 @@
+{
+	"title"		:	"pluto.gg content",
+	"type"		:	"ServerContent",
+	"tags"		:	[ ],
+	"ignore"	: [ "*.gma", "icon.jpg", "*.bat", ".git/*", "lua/*" ]
+}
