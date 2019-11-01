@@ -70,7 +70,6 @@ function ENT:Think()
 						collisiongroup = COLLISION_GROUP_PLAYER,
 						mask = MASK_PLAYERSOLID,
 					}.StartSolid) then
-						print(pos)
 						break
 					end
 				end

@@ -387,6 +387,12 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 		local e = ents.Create "pluto_ghost"
 		e:SetPos(pluto.currency.randompos())
 		e:Spawn()
+		timer.Simple(60, function()
+			if (IsValid(e)) then
+				e:Remove()
+				admin.chatf(white_text, "A ", ttt.teams.traitor.Color, "ghost ", white_text, "has survived and left this realm.")
+			end
+		end)
 	end
 end)
 
