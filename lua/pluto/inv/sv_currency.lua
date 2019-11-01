@@ -384,15 +384,21 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 	old_data = table.Copy(pluto.currency.tospawn)
 
 	if (math.random(1, 10) == 1) then
-		admin.chatf(white_text, "A ", ttt.teams.traitor.Color, "ghost ", white_text, "has entered this realm.")
-		local e = ents.Create "pluto_ghost"
-		e:SetPos(pluto.currency.randompos())
-		e:Spawn()
+		admin.chatf(white_text, "A horde of ", ttt.teams.traitor.Color, "spirits ", white_text, "have entered this realm.")
+		local ghosts = {}
+		for i = 1, 5 do
+			ghosts[i] = ents.Create "pluto_ghost"
+			ghosts[i]:SetPos(pluto.currency.randompos())
+			ghosts[i]:Spawn()
+		end
 		timer.Simple(60, function()
-			if (IsValid(e)) then
-				e:Remove()
-				admin.chatf(white_text, "A ", ttt.teams.traitor.Color, "ghost ", white_text, "has survived and left this realm.")
+			for _, ghost in pairs(ghosts) do
+				if (IsValid(ghost)) then
+					ghost:Remove()
+				end
 			end
+
+			admin.chatf(white_text, "The remaining ", ttt.teams.traitor.Color, "spirits ", white_text, "have left this realm.")
 		end)
 	end
 end)
