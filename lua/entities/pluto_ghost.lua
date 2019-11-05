@@ -13,6 +13,7 @@ function ENT:Initialize()
 	self:SetSpeed(200)
 	self:SetHealth(1)
 
+	self:SetNextPos(self:GetPos())
 	self:SetLastPos(self:GetPos())
 
 	if (SERVER) then
