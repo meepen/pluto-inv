@@ -9,8 +9,6 @@ hook.Add("TTTPopulateSettingsMenu", "pluto_settings", function()
 	ttt.settings:AddTab("Pluto", cat)
 end)
 
-hook.Add("CalcView", "pluto_fov", function()
-	return {
-		fov = pluto_fov:GetFloat()
-	}
+hook.Add("TTTGetFOV", "pluto_fov", function()
+	return pluto_fov:GetFloat()
 end)
