@@ -1,0 +1,17 @@
+vertexlitgeneric
+{
+$basetexture "models/player/faith/t_earpiece_01"
+$bumpmap "models/player/faith/t_earpiece_01_n"
+$nodecal 1
+$halflambert 1
+
+$normalmapalphaenvmapmask 1
+
+$phong 1
+$phongboost "3.5"
+$phongexponent "8"
+
+$phongtint "[.85 .85 1]"
+$phongfresnelranges "[.2 .5 5]"
+$surfaceprop plastic
+}

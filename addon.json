@@ -2,5 +2,5 @@
 	"title"		:	"pluto.gg content",
 	"type"		:	"ServerContent",
 	"tags"		:	[ ],
-	"ignore"	: [ "*.gma", "icon.jpg", "*.bat", ".git/*", "lua/*" ]
+	"ignore"	: [ ".gitignore", "*.gma", "icon.jpg", "*.bat", ".git/*", "lua/*", "node_modules/*", "resize.js", "package.json", "package-lock.json" ]
 }

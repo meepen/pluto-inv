@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+"$basetexture" "models\Splinks\Haus\The_Plague_Doktor\Tex_0003_0"
+$bumpmap "models\Splinks\Haus\The_Plague_Doktor\Tex_0003_Nrm"
+"$phong" "1"
+"$phongexponent" "7"
+"$phongboost"	"0.4"
+"$phongfresnelranges"	"[0.05 0.5 1]"
+"$phongalbedotint" "1"
+"$nocull" 1
+$nodecal 1
+}

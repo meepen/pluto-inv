@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+"$basetexture" "models\splinks\haus\the_plague_doktor\face"
+"$nocull" 1
+}

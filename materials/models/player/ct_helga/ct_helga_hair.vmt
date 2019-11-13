@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+	$basetexture		"models/player/ct_helga/ct_helga_hair"
+	$bumpmap			"models/player/ct_helga/ct_helga_hair_normal"
+
+	$phong "1"
+	$phongboost "128"
+	$phongexponent "6"
+	$phongfresnelranges "[0.05 0.10 1.0]"
+
+	$alphatest "1"
+	$alphatestreference "0.85"
+
+	$nocull "1"
+}

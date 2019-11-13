@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture"	"models\zsssamus\zss_eyesr"
+	"$halflambert"	"1"
+"$translucent" 1
+}

@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$baseTexture"	"models\zsssamus\zss_face"
+"$bumpmap" "models\zsssamus\zss_face_n"
+"$alphatest" 1
+	"$halflambert"	"1"
+
+}

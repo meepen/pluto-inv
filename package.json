@@ -1,0 +1,11 @@
+{
+	"name": "a",
+	"version": "1.0.0",
+	"dependencies": {
+		"sharp": "0.17.1",
+		"vtflib": "1.0.1"
+	},
+	"scripts": {
+		"resize": "node resize"
+	}
+}

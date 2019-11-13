@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+	"$baseTexture"	"models\zsssamus\zss_suit"
+"$bumpmap" "models\zsssamus\zss_suit_n"
+	"$halflambert"	"1"
+"$alphatest" 1
+$phong 1
+$phongexponent 5
+$phongboost 1
+$phongfresnelranges "[1 1.5 2]"
+"$phongtint" "[.1 .1 .2]"
+$rimlight 1
+$rimlightexponent 5
+$rimlightboost 5
+}

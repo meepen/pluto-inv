@@ -1,0 +1,10 @@
+"VertexLitGeneric"
+{
+	$basetexture		"models/player/ct_helga/ct_helga_glove"
+	$bumpmap			"models/player/ct_helga/ct_helga_glove_normal"
+
+	$phong "1"
+	$phongboost "16"
+	$phongexponent "6"
+	$phongfresnelranges "[0.04 0.10 1.0]"
+}

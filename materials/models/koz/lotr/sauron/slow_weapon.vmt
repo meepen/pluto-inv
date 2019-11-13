@@ -1,0 +1,10 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/koz/lotr/sauron/slow_weapon"
+	"$bumpmap" "models/koz/lotr/sauron/slow_weapon_bump"
+
+ 	"$phong" "1"
+	"$phongexponent" "10"
+	"$phongboost"	"15"
+	"$phongfresnelranges"	"[.15 .5 1]"
+}

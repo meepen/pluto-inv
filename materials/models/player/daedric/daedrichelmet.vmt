@@ -1,0 +1,14 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/player/daedric/daedrichelmet"
+	"$bumpmap" "models/player/daedric/daedrichelmet_n"
+	"$halflambert" 1
+
+	"$normalmapalphaenvmapmask" 1
+	"$nocull" 1
+
+	"$phong" 1
+	"$phongexponent" 5
+	"$phongboost" 5
+	"$phongfresnelranges" "[0.05 0.5 1]"
+}

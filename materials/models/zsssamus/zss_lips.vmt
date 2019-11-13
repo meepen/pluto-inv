@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture"	"models\zsssamus\zss_lips"
+	"$halflambert"	"1"
+"$alphatest" 1
+}

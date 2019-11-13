@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture"	"models\zsssamus\zss_gun"
+	"$halflambert"	"1"
+
+}

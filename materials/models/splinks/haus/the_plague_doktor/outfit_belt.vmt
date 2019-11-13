@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+"$basetexture" "models\splinks\haus\the_plague_doktor\Doks_Swag"
+$bumpmap "models\splinks\haus\the_plague_doktor\Doks_Swag_Nrm"
+$AmbientOcclTexture "models\splinks\haus\the_plague_doktor\Doks_Swag_ao"
+$ambientocclusion 1
+"$phong"     "1"
+"$phongboost"   "1"
+"$phongfresnelranges"   "[1 9 3]"
+"$phongtint"                   "[0.85 0.93 1]" 
+"$envmap" "env_cubemap"
+"$normalmapalphaenvmapmask" "1"
+$envmaptint "[0.25 0.26 0.27]"
+"$nocull" 1
+}

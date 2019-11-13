@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+$baseTexture "models\splinks\haus\the_plague_doktor\tm_anarchist_lowerbody"
+$bumpmap "models\splinks\haus\the_plague_doktor\tm_anarchist_lowerbody_normal"
+"$phong" "1"
+"$phongexponent" "7"
+"$phongboost"	"1"
+"$phongfresnelranges"	"[0.01 0.1 0.5]"
+"$phongalbedotint" "1"
+"$nocull" 1
+$nodecal 1
+}

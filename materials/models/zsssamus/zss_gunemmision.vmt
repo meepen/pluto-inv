@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture"	"models\zsssamus\zss_gunemmision"
+	"$halflambert"	"1"
+"$translucent" 1
+}

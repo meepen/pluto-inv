@@ -1,0 +1,12 @@
+"VertexlitGeneric"
+{
+	$basetexture "models/kuma96/2b/cloth_d"
+	$bumpmap "models/kuma96/2b/cloth_ns"
+	$envmap env_cubemap
+	$normalmapalphaenvmapmask 1
+	$envmaptint "[.01 .01 .01]"
+	$phong 1
+	$phongexponent 10
+	$phongboost 25
+	$phongfresnelranges "[.01 0.5 1.0]"
+}

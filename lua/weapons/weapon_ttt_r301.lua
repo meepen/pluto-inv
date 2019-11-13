@@ -1,3 +1,4 @@
+
 sound.Add {
 	name = "R301.Deploy",
 	channel = CHAN_ITEM,
@@ -93,9 +94,10 @@ SWEP.AmmoEnt = "item_ammo_pistol_ttt"
 SWEP.Primary.Recoil = 1
 
 SWEP.ViewModel = "models/v_models/v_r301.mdl"
-SWEP.ViewModelFOV = 65
+SWEP.ViewModelFOV = 90
 SWEP.ViewModelFlip = false
 SWEP.UseHands = true
+SWEP.NoPlayerModelHands = true
 
 SWEP.WorldModel = "models/w_models/weapons/w_rifle_m16a2.mdl"
 

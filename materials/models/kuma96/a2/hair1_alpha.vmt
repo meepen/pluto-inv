@@ -1,0 +1,6 @@
+"VertexlitGeneric"
+{
+	$basetexture "models/kuma96/a2/hair1_d"
+	$alphatest 1
+	$nocull 1
+}

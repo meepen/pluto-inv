@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+$basetexture "models\Splinks\Haus\The_Plague_Doktor\Haus_Complection"
+$bumpmap "models\Splinks\Haus\The_Plague_Doktor\Haus_Complection_Nrm"
+$AmbientOcclTexture "models\Splinks\Haus\The_Plague_Doktor\Haus_Complection_ao"
+$ambientocclusion 1
+$phong 1
+$phongboost 1.4
+$phongexponent 12
+$phongtint "[.85 .85 1]"
+$phongfresnelranges "[.2 .5 5]"
+$nodecal 1
+$halflambert 0
+$diffuseexp "1.5"
+$nocull 1
+}

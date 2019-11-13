@@ -1,0 +1,13 @@
+"VertexLitGeneric"
+{
+$baseTexture "models\splinks\haus\the_plague_doktor\arms\doktor_gloves"
+$bumpmap "models\splinks\haus\the_plague_doktor\arms\doktor_gloves_n"
+$phong 1
+$phongboost 2
+$phongexponent 8
+$phongtint "[1 1 1]"
+$halflambert 0
+$phongfresnelranges	"[0.05 0.5 1]"
+$ambientocclusion 1
+$diffuseexp "1.5"
+}

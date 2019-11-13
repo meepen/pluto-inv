@@ -1,0 +1,14 @@
+"VertexLitGeneric"
+{
+"$basetexture" "models\splinks\haus\the_plague_doktor\Scarf"
+$bumpmap "models\splinks\haus\the_plague_doktor\Scarf_Nrm"
+"$phong" "1"
+"$phongexponent" "10"
+"$phongfresnelranges"	"[0.05 0.5 1]"
+"$phongalbedotint" "1"
+"$nocull" 1
+"$detail"					"models\splinks\haus\the_plague_doktor\burlap.vtf"
+"$detailscale" "1.2"
+"$detailblendfactor" "2"
+"$detailblendmode" "0"
+}

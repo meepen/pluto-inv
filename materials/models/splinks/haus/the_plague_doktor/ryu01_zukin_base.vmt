@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+$basetexture "models\Splinks\Haus\The_Plague_Doktor\ryu01_zukin_base"
+$nocull 1
+$nodecal 1
+}

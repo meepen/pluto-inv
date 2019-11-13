@@ -1,0 +1,14 @@
+"VertexLitGeneric"
+{
+	$basetexture		"models/player/ct_helga/ct_helga_eyelashes"
+	$bumpmap			"null-bumpmap"
+
+	$phong "1"
+	$phongboost "4"
+	$phongexponent "6"
+	$phongfresnelranges "[0.05 0.10 1.0]"
+
+	$translucent "1"
+
+	$nocull "1"
+}
