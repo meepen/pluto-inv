@@ -6,9 +6,11 @@ AddCSLuaFile "pluto/files.lua"
 pluto.files.load {
 	Client = {
 		"cl/hacks.lua",
+		"cl/settings.lua",
 		"inv/ui.lua",
 		"inv/cl_manager.lua",
 		"trades/cl.lua",
+		"models/cl_models.lua",
 		"mapvote/cl_mapvote.lua",
 	},
 	Shared = {
