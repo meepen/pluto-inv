@@ -19,9 +19,7 @@ pluto.files.load {
 		"materials/pluto/item_bg_real.png",
 		"materials/pluto/trashcan_128.png",
 	},
-	Workshop = {
-		"1896665699",
-	},
+	Workshop = {},
 }
 
 concommand.Add("pluto_reload", function(ply)

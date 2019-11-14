@@ -12,6 +12,7 @@ pluto.files.load {
 		"trades/cl.lua",
 		"models/cl_models.lua",
 		"mapvote/cl_mapvote.lua",
+		"cl/workshop.lua",
 	},
 	Shared = {
 		"init.lua",
