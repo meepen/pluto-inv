@@ -1,0 +1,10 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/custom_prop/plutogg/ghost/text"
+	"$bumpmap" "models/custom_prop/plutogg/ghost/text_N"
+
+	"$phong"	"1"
+	"$phongboost"	"9.9934895"
+	"$phongfresnelranges"	"[0.1 0.23 0.945]"
+	"$phongdisablehalflambert"	"1"
+}

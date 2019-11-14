@@ -1,4 +1,5 @@
 local downloads = {
+	"20191114",
 	"20191113",
 }
 local fname = "pluto_" .. downloads[1] .. ".dat"
