@@ -6,7 +6,7 @@ function pluto.model(name)
 	return function(d)
 		d.InternalName = d
 		pluto.models[name] = d
-		resource.AddFile(d.Model)
+		-- resource.AddFile(d.Model)
 		player_manager.AddValidModel(d.Name, d.Model)
 		if (d.Hands) then
 			player_manager.AddValidHands(d.Name, d.Hands, 0, "00000000")
@@ -14,7 +14,7 @@ function pluto.model(name)
 
 		for _, fname in pairs(d.Downloads or {}) do
 			for _, add in pairs((file.Find(fname .. "*", "GAME"))) do
-				resource.AddFile(fname .. add)
+				-- resource.AddFile(fname .. add)
 			end
 		end
 	end
