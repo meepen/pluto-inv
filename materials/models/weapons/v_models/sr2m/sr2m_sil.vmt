@@ -1,0 +1,7 @@
+"VertexlitGeneric"
+{
+	"$basetexture" 			"models\weapons\v_models\sr2m\SR2M_Sil"
+	"$nocull" 			"1"
+
+
+}

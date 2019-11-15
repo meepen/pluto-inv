@@ -1,9 +1,10 @@
 const sharp = require("sharp");
-const {VTFFile, VTFImageData} = require("vtflib");
+const {VTFFile, VTFImageData} = require("./vtflib");
+const ffmpeg = require("fluent-ffmpeg");
 
 const { resolve } = require('path');
 const { readdir } = require('fs').promises;
-const { statSync, writeSync, openSync, readFileSync } = require("fs");
+const { statSync, writeSync, openSync, readFileSync, unlinkSync } = require("fs");
 
 async function* getFiles(dir) {
 	const dirents = await readdir(dir, { withFileTypes: true });
@@ -17,9 +18,11 @@ async function* getFiles(dir) {
 	}
 }
 
+
+// TEXTURES
 const resize_to = 512;
 (async () => {
-	for await (const f of getFiles('materials')) {
+	for await (const f of getFiles("materials")) {
 		if (f.substr(-4) === ".vtf" && statSync(f).size > 1000000) {
 
 			let img = new VTFFile(readFileSync(f));
@@ -59,4 +62,18 @@ const resize_to = 512;
 			}
 		}
 	}
-})()
+})();
+
+(async () => {
+	for await (const f of getFiles("sound")) {
+		if (f.substr(-4) !== ".ogg") {
+			ffmpeg(f)
+				.audioCodec("libvorbis")
+				.output(f.split('.').slice(0, -1).join('.') + ".ogg")
+				.on("end", () => {
+					unlinkSync(f);
+				})
+				.run();
+		}
+	}
+})();

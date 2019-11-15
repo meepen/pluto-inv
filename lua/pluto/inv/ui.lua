@@ -149,6 +149,9 @@ function PANEL:SetWeapon(w)
 	if (IsValid(self.Model)) then
 		self.Model:Remove()
 	end
+	if (not w) then
+		return
+	end
 	self.Model = ClientsideModel(w.WorldModel, RENDERGROUP_OTHER)
 	self.Model:SetNoDraw(true)
 	self.Class = w.ClassName
@@ -160,6 +163,9 @@ local lookups = {
 	weapon_ttt_mac10 = {2.2, 3.9},
 	weapon_ttt_ak47 = {5, 3},
 	weapon_ttt_r301 = {-7, 9},
+	weapon_ttt_ppsh41 = {-5, -1},
+	weapon_ttt_ump = {-2, 7, size = 0.7, angle = Angle(0, -80, -6)},
+	weapon_ttt_tec9 = {-6, 9.5, size = 0.9},
 	weapon_ttt_glock = {1, 4, size = 1.1},
 	weapon_ttt_deagle = {0.5, 5},
 	weapon_ttt_mp5 = {2, 7.5},
@@ -174,6 +180,7 @@ local lookups = {
 	weapon_ttt_sg552 = {8, 0},
 	weapon_ttt_p90 = {4, 5},
 	weapon_ttt_huge = {4, 6.5},
+	weapon_ttt_usas12 = {0, 0, angle = Angle(0, 20, -35)},
 	weapon_ttt_pistol = {1.5, 4.2, size = 1.1},
 	Default = {0, 0},
 }
@@ -225,7 +232,7 @@ function PANEL:Paint(w, h)
 		local angle = Angle(0, -90)
 		local size = mins:Distance(maxs) / 2.5 * (lookup.size or 1) * 1.1
 
-		cam.Start3D(vector_origin, angle, 90, x, y, w, h)
+		cam.Start3D(vector_origin, lookup.angle or angle, 90, x, y, w, h)
 			cam.StartOrthoView(lookup[1] + -size, lookup[2] + size, lookup[1] + size, lookup[2] + -size)
 				render.SuppressEngineLighting(true)
 					err:SetAngles(Angle(-40, 10, 10))
@@ -1633,7 +1640,8 @@ end
 function PANEL:SetItem(item)
 	self.ItemName:SetTextColor(color_black)
 	if (item.ClassName) then -- item
-		self.ItemName:SetText(item.Tier .. " " .. weapons.GetStored(item.ClassName).PrintName)
+		local w = weapons.GetStored(item.ClassName)
+		self.ItemName:SetText(item.Tier .. " " .. (w and w.PrintName or "N/A"))
 		self.ItemName:SetContentAlignment(4)
 	else -- currency???
 		self.ItemName:SetText(item.Name)

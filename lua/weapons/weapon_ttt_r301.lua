@@ -4,42 +4,42 @@ sound.Add {
 	channel = CHAN_ITEM,
 	volume = 1.0,
 	level = 80,
-	sound = "weapons/r301/gunother/r301_deploy.wav"
+	sound = "weapons/r301/gunother/r301_deploy.ogg"
 }
 sound.Add {
 	name = "R301.MagOut",
 	channel = CHAN_ITEM,
 	volume = 1.0,
 	level = 80,
-	sound = "weapons/r301/gunother/r301_mag_pull.wav"
+	sound = "weapons/r301/gunother/r301_mag_pull.ogg"
 }
 sound.Add {
 	name = "R301.MagGrab",
 	channel = CHAN_ITEM,
 	volume = 1.0,
 	level = 80,
-	sound = "weapons/r301/gunother/r301_mag_grab.wav"
+	sound = "weapons/r301/gunother/r301_mag_grab.ogg"
 }
 sound.Add {
 	name = "R301.MagIn",
 	channel = CHAN_ITEM,
 	volume = 1.0,
 	level = 80,
-	sound = "weapons/r301/gunother/r301_mag_insert.wav"
+	sound = "weapons/r301/gunother/r301_mag_insert.ogg"
 }
 sound.Add {
 	name = "R301.BoltBack",
 	channel = CHAN_ITEM,
 	volume = 1.0,
 	level = 80,
-	sound = "weapons/r301/gunother/r301_bolt_back.wav"
+	sound = "weapons/r301/gunother/r301_bolt_back.ogg"
 }
 sound.Add {
 	name = "R301.BoltForward",
 	channel = CHAN_ITEM,
 	volume = 1.0,
 	level = 80,
-	sound = "weapons/r301/gunother/r301_bolt_forward.wav"
+	sound = "weapons/r301/gunother/r301_bolt_forward.ogg"
 }
 
 -- Copyright (c) 2018-2019 TFA Base Devs
@@ -75,7 +75,7 @@ SWEP.PrintName              = "R301"
 SWEP.Slot               = 2
 SWEP.SlotPos                = 73
 
-SWEP.Primary.Sound = Sound "weapons/r301/gunfire/r301_fire.wav"
+SWEP.Primary.Sound = "weapons/r301/gunfire/r301_fire.ogg"
 SWEP.Primary.Damage = 14
 SWEP.Primary.Automatic = true
 SWEP.Primary.Delay = 0.083

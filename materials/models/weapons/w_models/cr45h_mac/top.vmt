@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/weapons/v_models/cr45h_mac/top"
+	"$bumpmap" "models/weapons/v_models/cr45h_mac/top_norm"
+}

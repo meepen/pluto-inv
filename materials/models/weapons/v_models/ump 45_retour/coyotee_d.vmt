@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\weapons\v_models\ump 45_retour\coyotee_d"
+	"$bumpmap" "models\weapons\v_models\ump 45_retour\coyotee_n"
+ $phong                      1
+    $phongboost                 0.1
+    $phongfresnelranges         "[.1 0.2 1]"
+$NOCULL 1
+
+	"$PhongExponentTexture" "models\weapons\v_models\ump 45_retour\coyotee_s"
+
+}

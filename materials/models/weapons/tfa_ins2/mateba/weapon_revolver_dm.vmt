@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" 	"models/weapons/tfa_ins2/mateba/weapon_revolver_dm"
+	"$bumpmap" 	"models/weapons/tfa_ins2/mateba/weapon_revolver_nm"
+	
+	"$phong"  					"1"
+	"$phongtint"				"[0.65 0.9 1]"
+	"$phongboost"				"1.5"
+	"$phongalbedotint"			"1"
+	"$phongexponenttexture"		"models/weapons/tfa_ins2/mateba/weapon_revolver_exp"
+
+	"$envmap" 					"env_cubemap"
+	"$normalmapalphaenvmapmask"	"1"
+	"$envmaptint" 				"[0.1 0.1 0.1]"
+}

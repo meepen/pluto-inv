@@ -1,26 +1,77 @@
-local downloads = {
-	"20191114",
-	"20191113",
-}
-local fname = "pluto_" .. downloads[1] .. ".dat"
+for pack, data in pairs {
+	pluto = {
+		remote = "https://pluto.gg/datastore/server/content.gma",
+		versions = {
+			"20191115",
+			"20191114",
+			"20191113"
+		}
+	},
+	shotguns = {
+		remote = "https://pluto.gg/datastore/server/shotguns.gma",
+		versions = {
+			"20191115",
+		}
+	},
+	mp7 = {
+		remote = "https://pluto.gg/datastore/server/mp7.gma",
+		versions = {
+			"20191115",
+		}
+	},
+	tec9 = {
+		remote = "https://pluto.gg/datastore/server/tec9.gma",
+		versions = {
+			"20191115",
+		}
+	},
+	ump45 = {
+		remote = "https://pluto.gg/datastore/server/ump45.gma",
+		versions = {
+			"20191115",
+		}
+	},
+} do
+	local fname = pack .. "_" .. data.versions[1] .. ".dat"
 
-for i = 2, #downloads do
-	file.Delete("pluto_" .. downloads[i] .. ".dat")
-end
-
-local function mount()
-	local succ, fs = game.MountGMA("data/" .. fname)
-
-	if (not succ) then
-		print "couldn't mount addon"
+	for i = 2, #data.versions do
+		file.Delete(pack .. "_" .. data.versions[i] .. ".dat")
 	end
-end
 
-if (not file.Exists(fname, "DATA")) then
-	http.Fetch("https://pluto.gg/datastore/content.gma", function(b)
-		file.Write(fname, b)
+	local function fail(err)
+		print(pack .. " failed: " .. err)
+		file.Delete("data/" .. fname)
+	end
+
+	local function update(msg)
+		print(pack .. " update: " .. msg)
+	end
+
+	local function success()
+		print(pack .. " mounted")
+		RunConsoleCommand "snd_restart"
+	end
+
+	local function mount()
+		local succ, fs = game.MountGMA("data/" .. fname)
+
+		if (not succ) then
+			fail "couldn't mount"
+		else
+			success()
+		end
+	end
+
+	if (not file.Exists(fname, "DATA")) then
+		http.Fetch(data.remote, function(b, size, headers, code)
+			if (code == 200) then
+				file.Write(fname, b)
+				mount()
+			else
+				fail(code)
+			end
+		end)
+	else
 		mount()
-	end)
-else
-	mount()
+	end
 end

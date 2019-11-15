@@ -35,4 +35,3 @@ hook.Add("PlayerSetModel", "pluto_model", function(ply)
 		return true
 	end
 end)
-

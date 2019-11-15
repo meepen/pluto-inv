@@ -1,0 +1,14 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/weapons/v_models/cr45h_mac/butt"
+	"$bumpmap" "models/weapons/v_models/cr45h_mac/butt_normal"
+	"$phongexponenttexture" "models/weapons/v_models/cr45h_mac/butt_shitty_spec"
+	"$nocull" 1
+
+	"$nocull" 1
+
+	"$phong" 1
+	"$phongboost" "0.1"
+	"$phongfresnelranges" "[1 0.6 1]"
+	"$phongalbedotint" "1"
+}
