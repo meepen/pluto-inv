@@ -19,7 +19,7 @@ TFA.AddWeaponSound(pref .. ".ROF", path .. "fireselect.ogg")
 SWEP.Base				= "weapon_tttbase"
 
 SWEP.Author				= "Trash Burglar"
-SWEP.PrintName				= "Uzi"
+SWEP.PrintName				= "MP7"
 SWEP.Slot				= 2
 SWEP.SlotPos				= 0
 SWEP.DrawCrosshair			= true
@@ -75,5 +75,5 @@ SWEP.Bullets = {
 	DamageDropoffRange = 300,
 	DamageDropoffRangeMax = 900,
 	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.035, 0.035)
+	Spread = Vector(0.035, 0.045)
 }
