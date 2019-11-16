@@ -4,6 +4,8 @@ SWEP.PrintName = "USAS12"
 SWEP.Slot = 2
 SWEP.SlotPos = 0
 
+SWEP.ViewModelPos = Vector(0, 0, -0.8)
+
 function SWEP:FireAnimationEvent(_, _, event)
 	if (event == 5001) then
 		return true
@@ -13,7 +15,7 @@ end
 SWEP.ViewModelFlip = true
 SWEP.ViewModel = "models/weapons/v_shot_u12.mdl"
 SWEP.WorldModel = "models/weapons/w_shot_u12.mdl"
-SWEP.ViewModelFOV = 70
+SWEP.ViewModelFOV = 57
 
 SWEP.HoldType = "ar2"
 
