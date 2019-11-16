@@ -165,7 +165,7 @@ local lookups = {
 	weapon_ttt_r301 = {-7, 9},
 	weapon_ttt_ppsh41 = {-5, -1},
 	weapon_ttt_ump = {-2, 7, size = 0.7, angle = Angle(0, -80, -6)},
-	weapon_ttt_tec9 = {-6, 9.5, size = 0.9},
+	weapon_ttt_tec9 = {0, 0, angle = Angle(0, -90, 90)},
 	weapon_ttt_glock = {1, 4, size = 1.1},
 	weapon_ttt_deagle = {0.5, 5},
 	weapon_ttt_mp5 = {2, 7.5},

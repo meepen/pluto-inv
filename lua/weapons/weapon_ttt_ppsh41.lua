@@ -107,8 +107,6 @@ SWEP.ViewModelFOV	= 60
 SWEP.ViewModelFlip	= true
 SWEP.ViewModel		= "models/weapons/pps/v_smg_pps.mdl"
 SWEP.WorldModel		= "models/weapons/pps/w_smg_pps.mdl"
-SWEP.Spawnable			= true
-SWEP.AdminSpawnable		= true
 
 SWEP.Primary.ClipSize		= 50
 SWEP.Primary.DefaultClip	= 50
@@ -127,6 +125,7 @@ SWEP.HeadshotMultiplier = 1.6
 
 SWEP.AutoSpawnable         = true
 SWEP.Spawnable             = true
+SWEP.AdminSpawnable		= true
 
 SWEP.Bullets = {
 	HullSize = 0,

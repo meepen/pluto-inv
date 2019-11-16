@@ -90,20 +90,6 @@ SWEP.Offset = {
 	Scale = 1
 }
 
---[[
-SWEP.Sounds = {
-	draw = {
-		{time = 0.4, sound = "TEC9_COCK"},
-	},
-	reload = {
-		{time = 0.27, sound = "TEC9_MAGOUT"},
-		{time = 1, sound = "TEC9_MAGIN"},
-		{time = 2.1, sound = "TEC9_COCK"},
-	}
-}]]
-
-SWEP.Spawnable = true
-
 SWEP.Offset = {
 	Pos = {
 		Up =  -2,
@@ -137,6 +123,10 @@ SWEP.Ironsights = {
 	SlowDown = 0.3,
 	Zoom = 0.9,
 }
+
+SWEP.AutoSpawnable         = true
+SWEP.Spawnable             = true
+SWEP.AdminSpawnable		= true
 
 SWEP.Primary.Recoil = 1
 

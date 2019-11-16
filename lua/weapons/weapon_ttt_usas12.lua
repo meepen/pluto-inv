@@ -13,11 +13,9 @@ end
 SWEP.ViewModelFlip = true
 SWEP.ViewModel = "models/weapons/v_shot_u12.mdl"
 SWEP.WorldModel = "models/weapons/w_shot_u12.mdl"
+SWEP.ViewModelFOV = 70
 
 SWEP.HoldType = "ar2"
-
-SWEP.Spawnable = true
-SWEP.AdminSpawnable = false
 
 SWEP.Primary.Sound = Sound "Weapon_USAS.Single"
 SWEP.Primary.Recoil = 1.2
@@ -35,6 +33,10 @@ SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = "none"
+
+SWEP.AutoSpawnable         = true
+SWEP.Spawnable             = true
+SWEP.AdminSpawnable		= true
 
 SWEP.Bullets = {
 	HullSize = 0,
