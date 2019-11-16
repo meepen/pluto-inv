@@ -18,3 +18,46 @@ for k, wsid in pairs(map_lookup) do
 		break
 	end
 end
+
+
+local changes = {
+	ttt_innocentmotel_v1 = {
+		Remove = {
+			1593,
+			1594,
+			1551,
+			1550,
+		}
+	}
+}
+
+local dat = changes[game.GetMap()]
+
+
+if (not dat) then
+	return
+end
+
+hook.Add("InitPostEntity", "pluto_maps", function()
+	if (dat.Remove) then
+		for _, id in pairs(dat.Remove) do
+			local e = ents.GetMapCreatedEntity(id)
+			print(id, e)
+			if (IsValid(e)) then
+				e:Remove()
+			end
+		end
+	end
+end)
+
+hook.Add("PostCleanupMap", "pluto_maps", function()
+	if (dat.Remove) then
+		for _, id in pairs(dat.Remove) do
+			local e = ents.GetMapCreatedEntity(id)
+			print(id, e)
+			if (IsValid(e)) then
+				e:Remove()
+			end
+		end
+	end
+end)
