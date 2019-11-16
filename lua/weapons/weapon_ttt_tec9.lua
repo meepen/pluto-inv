@@ -1,5 +1,69 @@
 AddCSLuaFile()
 
+local instbl = {}
+instbl["channel"] = CHAN_WEAPON
+instbl["level"] = "75"
+instbl["volume"] = "1.0"
+instbl["CompatibilityAttenuation"] = "1"
+instbl["pitch"] = "95,105"
+instbl["sound"] = "weapons/tfa_csgo/tec9/tec9_clipin.ogg"
+instbl["name"] = "TFA_CSGO_TEC9.CLIPIN"
+sound.Add(instbl)
+
+local instbl = {}
+instbl["channel"] = CHAN_WEAPON
+instbl["level"] = "75"
+instbl["volume"] = "1.0"
+instbl["CompatibilityAttenuation"] = "1"
+instbl["pitch"] = "95,105"
+instbl["sound"] = "weapons/tfa_csgo/tec9/tec9_clipout.ogg"
+instbl["name"] = "TFA_CSGO_TEC9.CLIPOUT"
+sound.Add(instbl)
+
+local instbl = {}
+instbl["channel"] = CHAN_WEAPON
+instbl["level"] = "75"
+instbl["volume"] = "1.0"
+instbl["CompatibilityAttenuation"] = "1"
+instbl["pitch"] = "95,105"
+instbl["sound"] = "weapons/tfa_csgo/tec9/tec9_boltpull.ogg"
+instbl["name"] = "TFA_CSGO_TEC9.BOLTPULL"
+
+sound.Add(instbl)
+
+local instbl = {}
+instbl["channel"] = CHAN_WEAPON
+instbl["level"] = "75"
+instbl["volume"] = "1.0"
+instbl["CompatibilityAttenuation"] = "1"
+instbl["pitch"] = "95,105"
+instbl["sound"] = "weapons/tfa_csgo/tec9/tec9_boltrelease.ogg"
+instbl["name"] = "TFA_CSGO_TEC9.BOLTRELEASE"
+
+sound.Add(instbl)
+local instbl = {}
+instbl["channel"] = CHAN_WEAPON
+instbl["level"] = "75"
+instbl["volume"] = "1.0"
+instbl["CompatibilityAttenuation"] = "1"
+instbl["pitch"] = "95,105"
+instbl["sound"] = "weapons/tfa_csgo/tec9/tec9_draw.ogg"
+instbl["name"] = "TFA_CSGO_TEC9.DRAW"
+
+sound.Add(instbl)
+
+sound.Add(instbl)
+local instbl = {}
+instbl["channel"] = CHAN_WEAPON
+instbl["level"] = "75"
+instbl["volume"] = "1.0"
+instbl["CompatibilityAttenuation"] = "0"
+instbl["pitch"] = "95,105"
+instbl["sound"] = "weapons/tfa_csgo/tec9/tec9-1.ogg"
+instbl["name"] = "TFA_CSGO_TEC9.1"
+
+sound.Add(instbl)
+
 SWEP.Base = "weapon_tttbase"
 SWEP.Category = "SMGs"
 SWEP.Author = "Trash Burglar"
@@ -9,12 +73,12 @@ SWEP.Slot = 1
 SWEP.SlotPos = 0
 SWEP.DrawAmmo = true
 SWEP.DrawCrosshair = true
-SWEP.HoldType = "pistol"
 
 SWEP.ViewModelFOV = 47
-SWEP.ViewModelFlip = true
-SWEP.ViewModel = "models/weapons/v_smg_tec10.mdl"
-SWEP.WorldModel = "models/weapons/w_smg_tec10.mdl"
+SWEP.ViewModelFlip = false
+SWEP.HoldType = "pistol"
+SWEP.ViewModel = "models/weapons/tfa_csgo/tec9/c_tec9.mdl"
+SWEP.WorldModel = "models/weapons/tfa_csgo/tec9/w_tec9.mdl"
 
 SWEP.Offset = {
 	Pos = {
@@ -30,22 +94,7 @@ SWEP.Offset = {
 	Scale = 1
 }
 
-sound.Add {
-	name = "TEC9_MAGOUT",
-	channel = CHAN_WEAPON,
-	sound = "weapons/tec9/tec9magout.ogg"
-}
-sound.Add {
-	name = "TEC9_MAGIN",
-	channel = CHAN_WEAPON,
-	sound = "weapons/tec9/tec9magin.ogg"
-}
-sound.Add {
-	name = "TEC9_COCK",
-	channel = CHAN_WEAPON,
-	sound = "weapons/tec9/tec9cock.ogg"
-}
-
+--[[
 SWEP.Sounds = {
 	draw = {
 		{time = 0.4, sound = "TEC9_COCK"},
@@ -55,16 +104,9 @@ SWEP.Sounds = {
 		{time = 1, sound = "TEC9_MAGIN"},
 		{time = 2.1, sound = "TEC9_COCK"},
 	}
-}
+}]]
 
 SWEP.Spawnable = true
-
-sound.Add {
-	name = "TEC9_SHOOT",
-	channel = CHAN_WEAPON,
-	volume = 0.3,
-	sound = "weapons/tec9/tec9bangbang.ogg"
-}
 
 SWEP.Offset = {
 	Pos = {
@@ -82,7 +124,7 @@ SWEP.Offset = {
 SWEP.HeashotMultiplier = 1.5
 
 SWEP.Primary.Damage = 16
-SWEP.Primary.Sound = "TEC9_SHOOT"
+SWEP.Primary.Sound = "TFA_CSGO_TEC9.1"
 SWEP.Primary.Delay = 60 / 500
 SWEP.Primary.ClipSize = 32
 SWEP.Primary.DefaultClip = 64

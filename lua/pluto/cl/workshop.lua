@@ -16,12 +16,14 @@ for pack, data in pairs {
 	mp7 = {
 		remote = "https://pluto.gg/datastore/server/mp7.gma",
 		versions = {
+			"20191117",
 			"20191115",
 		}
 	},
 	tec9 = {
 		remote = "https://pluto.gg/datastore/server/tec9.gma",
 		versions = {
+			"20191116",
 			"20191115",
 		}
 	},
