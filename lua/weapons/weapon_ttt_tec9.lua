@@ -89,7 +89,7 @@ SWEP.Offset = {
 	}
 }
 
-SWEP.HeashotMultiplier = 1.5
+SWEP.HeadshotMultiplier = 1.5
 
 SWEP.Primary.Damage = 16
 SWEP.Primary.Sound = "TFA_CSGO_TEC9.1"
