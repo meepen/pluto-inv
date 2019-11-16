@@ -20,14 +20,14 @@ local function getnewmod(item, prefix_max, suffix_max, ignoretier)
 	suffix_max = suffix_max or 3
 
 	if (not item.Mods) then
-		return
+		return false
 	end
 
 	local prefixes = #item.Mods.prefix
 	local suffixes = #item.Mods.suffix
 
 	if (not ignoretier and prefixes + suffixes == item.Tier.affixes) then
-		return
+		return false
 	end
 
 	local have = {}
@@ -71,6 +71,8 @@ local function getnewmod(item, prefix_max, suffix_max, ignoretier)
 	local newmod = pluto.mods.rollmod(toadd, item.Tier.rolltier, item.Tier.roll)
 	
 	table.insert(item.Mods[type], newmod)
+
+	return true
 end
 
 for name, values in pairs {
@@ -196,9 +198,9 @@ for name, values in pairs {
 	heart = {
 		Shares = 5,
 		Use = function(ply, item)
-			getnewmod(item)
-
-			UpdateAndDecrement(ply, item, "heart")
+			if (getnewmod(item)) then
+				UpdateAndDecrement(ply, item, "heart")
+			end
 		end,
 	},
 	coin = {
