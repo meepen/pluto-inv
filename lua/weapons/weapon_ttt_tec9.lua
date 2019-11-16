@@ -28,7 +28,6 @@ instbl["CompatibilityAttenuation"] = "1"
 instbl["pitch"] = "95,105"
 instbl["sound"] = "weapons/tfa_csgo/tec9/tec9_boltpull.ogg"
 instbl["name"] = "TFA_CSGO_TEC9.BOLTPULL"
-
 sound.Add(instbl)
 
 local instbl = {}
@@ -39,8 +38,8 @@ instbl["CompatibilityAttenuation"] = "1"
 instbl["pitch"] = "95,105"
 instbl["sound"] = "weapons/tfa_csgo/tec9/tec9_boltrelease.ogg"
 instbl["name"] = "TFA_CSGO_TEC9.BOLTRELEASE"
-
 sound.Add(instbl)
+
 local instbl = {}
 instbl["channel"] = CHAN_WEAPON
 instbl["level"] = "75"
@@ -49,10 +48,8 @@ instbl["CompatibilityAttenuation"] = "1"
 instbl["pitch"] = "95,105"
 instbl["sound"] = "weapons/tfa_csgo/tec9/tec9_draw.ogg"
 instbl["name"] = "TFA_CSGO_TEC9.DRAW"
-
 sound.Add(instbl)
 
-sound.Add(instbl)
 local instbl = {}
 instbl["channel"] = CHAN_WEAPON
 instbl["level"] = "75"
@@ -61,7 +58,6 @@ instbl["CompatibilityAttenuation"] = "0"
 instbl["pitch"] = "95,105"
 instbl["sound"] = "weapons/tfa_csgo/tec9/tec9-1.ogg"
 instbl["name"] = "TFA_CSGO_TEC9.1"
-
 sound.Add(instbl)
 
 SWEP.Base = "weapon_tttbase"
@@ -89,7 +85,7 @@ SWEP.Offset = {
 	Ang = {
 		Up = -1,
 		Right = -2,
-		Forward = 178
+		Forward = 90
 	},
 	Scale = 1
 }
@@ -110,13 +106,13 @@ SWEP.Spawnable = true
 
 SWEP.Offset = {
 	Pos = {
-		Up = 3,
+		Up =  -2,
 		Right = 1,
-		Forward = -2.5,
+		Forward = 7
 	},
 	Ang = {
 		Up = 0,
-		Right = -10,
+		Right = 90,
 		Forward = 180,
 	}
 }
