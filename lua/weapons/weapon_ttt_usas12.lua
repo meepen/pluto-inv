@@ -29,6 +29,8 @@ SWEP.Primary.ClipSize = 9
 SWEP.Primary.DefaultClip = 18
 SWEP.Primary.Automatic = true
 
+SWEP.HeadshotMultiplier = 1.5
+
 SWEP.Primary.Ammo = "Buckshot"
 SWEP.AmmoEnt = "item_box_buckshot_ttt"
 
