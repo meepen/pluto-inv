@@ -13,7 +13,7 @@ hook.Add("TTTBeginRound", "pluto_afk", function()
 		for _, info in pairs(round.GetStartingPlayers()) do
 			local ply = info.Player
 
-			if (ply:IsBot()) then
+			if (ply:IsBot() or not ply:Alive()) then
 				continue
 			end
 
@@ -21,7 +21,7 @@ hook.Add("TTTBeginRound", "pluto_afk", function()
 				ply:Notify "If you don't move around within 10 seconds, you will be slain for AFK"
 				ply:ChatPrint "If you don't move around within 10 seconds, you will be slain for AFK"
 				timer.Simple(10, function()
-					if (table.Count(pluto.afk[ply]) <= 3) then
+					if (table.Count(pluto.afk[ply]) <= 3 and ply:Alive()) then
 						pprintf("%s is still afk", ply:Nick())
 						ply:Say "I have been slain for being afk."
 						ply:Kill()
