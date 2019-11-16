@@ -1,6 +1,0 @@
-{
-	"title"		:	"pluto.gg content",
-	"type"		:	"ServerContent",
-	"tags"		:	[ ],
-	"ignore"	: [ ".gitignore", "*.gma", "icon.jpg", "*.bat", ".git/*", "lua/*", "node_modules/*", "*.js", "package.json", "package-lock.json" ]
-}

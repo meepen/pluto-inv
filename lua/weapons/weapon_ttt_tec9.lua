@@ -78,20 +78,6 @@ SWEP.WorldModel = "models/weapons/tfa_csgo/tec9/w_tec9.mdl"
 
 SWEP.Offset = {
 	Pos = {
-		Up = 0,
-		Right = 0,
-		Forward = 0,
-	},
-	Ang = {
-		Up = -1,
-		Right = -2,
-		Forward = 90
-	},
-	Scale = 1
-}
-
-SWEP.Offset = {
-	Pos = {
 		Up =  -2,
 		Right = 1,
 		Forward = 7
@@ -116,8 +102,8 @@ SWEP.Primary.Ammo          = "smg1"
 SWEP.AmmoEnt               = "item_ammo_smg1_ttt"
 
 SWEP.Ironsights = {
-	Pos = Vector(4.039, 6.278, 2.279),
-	Angle = Vector(-0.04, 0.086, 0),
+	Pos = Vector(-5.14, -2, 2.6),
+	Angle = vector_origin,
 	TimeTo = 0.2,
 	TimeFrom = 0.15,
 	SlowDown = 0.3,
