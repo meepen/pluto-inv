@@ -104,9 +104,9 @@ SWEP.AmmoEnt               = "item_ammo_smg1_ttt"
 SWEP.Ironsights = {
 	Pos = Vector(-5.14, -2, 2.6),
 	Angle = vector_origin,
-	TimeTo = 0.2,
-	TimeFrom = 0.15,
-	SlowDown = 0.3,
+	TimeTo = 0.18,
+	TimeFrom = 0.13,
+	SlowDown = 0.42,
 	Zoom = 0.9,
 }
 

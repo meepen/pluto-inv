@@ -115,8 +115,8 @@ SWEP.Bullets = {
 SWEP.Ironsights = {
 	Pos = Vector(-3.23, 1.66, 0.85),
 	Angle = Vector(1.18, 0, -6),
-	TimeTo = 0.2,
-	TimeFrom = 0.15,
+	TimeTo = 0.23,
+	TimeFrom = 0.22,
 	SlowDown = 0.3,
 	Zoom = 0.9,
 }
