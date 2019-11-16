@@ -41,5 +41,5 @@ function pluto.statuses.limp(ply, time)
 		flame:Spawn()
 	end
 
-	flame:SetDeleteTime(flame:GetDeleteTime() + time)
+	flame:SetDeleteTime(math.max(flame:GetDeleteTime(), time))
 end
