@@ -109,7 +109,7 @@ SWEP.ViewModel		= "models/weapons/pps/v_smg_pps.mdl"
 SWEP.WorldModel		= "models/weapons/pps/w_smg_pps.mdl"
 
 SWEP.Primary.ClipSize		= 50
-SWEP.Primary.DefaultClip	= 50
+SWEP.Primary.DefaultClip	= 100
 SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo          = "smg1"
 SWEP.AmmoEnt               = "item_ammo_smg1_ttt"
