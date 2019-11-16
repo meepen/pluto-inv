@@ -378,7 +378,8 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 		end
 	end
 
-	if (math.random(10) == 1) then
+	-- ghosts
+	if (false and math.random(10) == 1) then
 		admin.chatf(white_text, "A horde of ", ttt.teams.traitor.Color, "spirits ", white_text, "have entered this realm.")
 		local ghosts = {}
 		for i = 1, 5 do
