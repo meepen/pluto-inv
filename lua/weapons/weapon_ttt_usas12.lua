@@ -19,7 +19,7 @@ SWEP.HoldType = "ar2"
 
 SWEP.Primary.Sound = Sound "Weapon_USAS.Single"
 SWEP.Primary.Recoil = 1.2
-SWEP.Primary.Damage = 6.8
+SWEP.Primary.Damage = 7.5
 SWEP.Primary.RecoilTiming  = 0.06
 SWEP.Primary.Cone = 0.04
 SWEP.Primary.Delay = 60 / 150
@@ -88,3 +88,15 @@ sound.Add {
 	soundlevel = 50,
 	sound = "weapons/usas12/ak47_clipin.ogg"
 }
+
+
+function SWEP:DrawWorldModel()
+	self:SetRenderAngles()
+	if (not IsValid(self:GetOwner())) then
+		local ang = self:GetAngles()
+		ang:RotateAroundAxis(ang:Forward(), 90)
+		ang:RotateAroundAxis(ang:Right(), 90)
+		self:SetRenderAngles(ang)
+	end
+	self:DrawModel()
+end
