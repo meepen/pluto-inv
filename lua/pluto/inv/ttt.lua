@@ -9,7 +9,7 @@ hook.Add("TTTBeginRound", "pluto_afk", function()
 		pluto.afk[ply.Player] = {}
 	end
 
-	timer.Create("pluto_afkcheck", 60, 1, function()
+	timer.Create("pluto_afkcheck", 90, 1, function()
 		for _, info in pairs(round.GetStartingPlayers()) do
 			local ply = info.Player
 
