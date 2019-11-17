@@ -34,6 +34,7 @@ local packs =  {
 	ump45 = {
 		remote = "https://pluto.gg/datastore/server/ump45.gma",
 		versions = {
+			"20191116",
 			"20191115",
 		}
 	},
