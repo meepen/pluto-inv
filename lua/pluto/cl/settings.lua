@@ -2,7 +2,7 @@ local pluto_fov = CreateConVar("pluto_fov", GetConVar "fov_desired":GetFloat(), 
 
 hook.Add("TTTPopulateSettingsMenu", "pluto_settings", function()
 	local cat = vgui.Create "ttt_settings_category"
-	
+
 	cat:AddSlider("FOV", "pluto_fov")
 	cat:InvalidateLayout(true)
 	cat:SizeToContents()

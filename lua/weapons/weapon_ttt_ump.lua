@@ -19,8 +19,11 @@ SWEP.ViewModelFlip = false
 SWEP.ViewModel = "models/weapons/v_rif_ump9.mdl"
 SWEP.WorldModel = "models/weapons/w_rif_ump9.mdl"
 SWEP.Base = "weapon_tttbase"
-SWEP.Spawnable = true
-SWEP.AdminSpawnable = true
+
+SWEP.AutoSpawnable      = false
+SWEP.Spawnable          = false
+SWEP.AdminSpawnable		= false
+
 SWEP.UseHands = false
 
 SWEP.Primary.Sound = "CW_UMP9_FIRE"
@@ -29,11 +32,11 @@ SWEP.Primary.Delay = 60 / 500
 SWEP.Primary.ClipSize = 25
 SWEP.Primary.DefaultClip = 74
 SWEP.Primary.Automatic = true 
-SWEP.Primary.Damage = 20
+SWEP.Primary.Damage = 19
 SWEP.Primary.Ammo = "pistol"
 SWEP.AmmoEnt = "item_ammo_pistol_ttt"
 
-SWEP.HeadshotMultiplier = 1.5
+SWEP.HeadshotMultiplier = 1.2
 
 SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
@@ -55,8 +58,8 @@ SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
 	DamageDropoffRange = 250,
-	DamageDropoffRangeMax = 2200,
-	DamageMinimumPercent = 0.1,
+	DamageDropoffRangeMax = 1500,
+	DamageMinimumPercent = 0.25,
 	Spread = Vector(0.01, 0.01),
 	Tracer = 0,
 }
