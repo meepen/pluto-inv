@@ -1893,6 +1893,9 @@ hook.Add("VGUIMousePressAllowed", "pluto_ghost", function(mouse)
 end)
 
 hook.Add("PlutoBufferChanged", "pluto_buffer", function()
+	if (pluto.inv.status ~= "ready") then
+		return
+	end
 	local p = vgui.Create "pluto_item_showcase"
 	p:MakePopup()
 	p:SetKeyboardInputEnabled(false)
