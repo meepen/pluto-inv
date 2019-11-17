@@ -10,6 +10,7 @@ local map_lookup = {
 	["ttt_bb_teenroom_b.*"] = "141103402",
 	ttt_richland_fix = "572477267",
 	["ttt_community_bowling.*"] = "131667838",
+	["ttt_pluto_icebox_.*"] = "1897157110",
 }
 
 for k, wsid in pairs(map_lookup) do
