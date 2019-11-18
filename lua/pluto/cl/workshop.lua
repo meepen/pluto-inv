@@ -1,7 +1,3 @@
-local function starttime()
-	return tostring(math.ceil((system.SteamTime() - system.AppTime()) / 4) * 4)
-end
-
 local packs =  {
 	pluto = {
 		remote = "https://pluto.gg/datastore/server/content.gma",
@@ -40,23 +36,13 @@ local packs =  {
 	},
 }
 
-for pack, data in pairs(packs) do
-	data.cv = CreateConVar("pluto_pack_2" .. pack, 0, {FCVAR_ARCHIVE})
-end
+pluto.ws_cache = {}
 
 local function run()
 	for pack, data in pairs(packs) do
-		local cv = data.cv
-
-		if (cv:GetString() == starttime()) then
-			print("Already mounted: " .. pack)
-			continue
-		end
-
 		local function success()
 			print(pack .. " mounted")
 			RunConsoleCommand "snd_restart"
-			cv:SetString(starttime())
 		end
 
 		local fname = pack .. "_" .. data.versions[1] .. ".dat"
@@ -76,6 +62,13 @@ local function run()
 
 		local function mount()
 			local succ, fs = game.MountGMA("data/" .. fname)
+
+			for _, item in pairs(fs) do
+				local match = item:match "materials/(.+)%.vmt"
+				if (match) then
+					table.insert(pluto.ws_cache, (Material(match)))
+				end
+			end
 
 			if (not succ) then
 				fail "couldn't mount"
