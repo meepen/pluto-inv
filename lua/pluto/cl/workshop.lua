@@ -44,6 +44,7 @@ pluto.ws_cache = {
 
 local function run()
 	for pack, data in pairs(packs) do
+
 		local function success()
 			print(pack .. " mounted")
 			RunConsoleCommand "snd_restart"
@@ -65,6 +66,10 @@ local function run()
 		end
 
 		local function mount()
+			local to_fix = {
+				vtf = {}
+			}
+
 			local succ, fs = game.MountGMA("data/" .. fname)
 
 			for _, item in pairs(fs) do
@@ -74,9 +79,22 @@ local function run()
 				end
 				match = item:match "materials/(.+)%.vtf"
 				if (match) then
-					LocalPlayer():ConCommand("mat_reloadtexture " .. match)
+					table.insert(to_fix.vtf, match)
 				end
 			end
+
+			hook.Add("Think", "pluto_" .. pack, function()
+				if (not IsValid(LocalPlayer())) then
+					return
+			
+				end
+
+				for _, item in pairs(to_fix.vtf) do
+					LocalPlayer():ConCommand("mat_reloadtexture " .. item)
+				end
+
+				hook.Remove("Think", "pluto_" .. pack)
+			end)
 
 			if (not succ) then
 				fail "couldn't mount"
