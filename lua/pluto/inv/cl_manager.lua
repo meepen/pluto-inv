@@ -56,36 +56,45 @@ function pluto.inv.readitem()
 
 	local item = pluto.received.item[id] or {
 		ID = id,
-		Mods = {
-			prefix = {},
-			suffix = {},
-		},
 		Version = 0,
 	}
 
 	item.Version = item.Version + 1
 
-	item.Tier = net.ReadString()
-	item.SubDescription = net.ReadString()
-	item.AffixMax = net.ReadUInt(3)
-	item.Color = net.ReadColor()
-
 	item.ClassName = net.ReadString()
 
-	for k in pairs(item.Mods.prefix) do
-		item.Mods.prefix[k] = nil
-	end
+	item.Type = pluto.inv.itemtype(item)
 
-	for k in pairs(item.Mods.suffix) do
-		item.Mods.suffix[k] = nil
-	end
+	if (item.Type == "Weapon") then
+		item.Mods = {
+			prefix = {},
+			suffix = {},
+		}
+		item.Tier = net.ReadString()
+		item.SubDescription = net.ReadString()
+		item.Color = net.ReadColor()
 
-	for i = 1, net.ReadUInt(8) do
-		item.Mods.prefix[i] = pluto.inv.readmod()
-	end
+		item.AffixMax = net.ReadUInt(3)
+		for k in pairs(item.Mods.prefix) do
+			item.Mods.prefix[k] = nil
+		end
 
-	for i = 1, net.ReadUInt(8) do
-		item.Mods.suffix[i] = pluto.inv.readmod()
+		for k in pairs(item.Mods.suffix) do
+			item.Mods.suffix[k] = nil
+		end
+
+		for i = 1, net.ReadUInt(8) do
+			item.Mods.prefix[i] = pluto.inv.readmod()
+		end
+
+		for i = 1, net.ReadUInt(8) do
+			item.Mods.suffix[i] = pluto.inv.readmod()
+		end
+	elseif (item.Type == "Model") then
+		item.Model = pluto.models[item.ClassName:match "^model_(.+)$"]
+		item.Color = item.Model.Color or Color(255, 255, 255)
+		item.Name = item.Model.Name .. " Model"
+		item.SubDescription = item.Model.SubDescription
 	end
 
 	pluto.received.item[id] = item
@@ -173,28 +182,36 @@ function pluto.inv.readtabupdate()
 end
 
 function pluto.inv.readbufferitem()
-	local id = net.ReadUInt(32)
-	local tier = net.ReadString()
-	local col = net.ReadColor()
+	local id = net.ReadInt(32)
 	local class = net.ReadString()
 
 	local item = {
 		BufferID = id,
-		Tier = tier,
-		Color = col,
-		ClassName = class,
-		Mods = {
-			prefix = {},
-			suffix = {},
-		},
+		ClassName = class
 	}
 
-	for i = 1, net.ReadUInt(8) do
-		item.Mods.prefix[i] = pluto.inv.readmod()
-	end
+	item.Type = pluto.inv.itemtype(item)
 
-	for i = 1, net.ReadUInt(8) do
-		item.Mods.suffix[i] = pluto.inv.readmod()
+	if (item.Type == "Weapon") then
+		item.Tier = net.ReadString()
+		item.Color = net.ReadColor()
+		item.Mods = {
+			prefix = {},
+			suffix = {},
+		}
+
+		for i = 1, net.ReadUInt(8) do
+			item.Mods.prefix[i] = pluto.inv.readmod()
+		end
+
+		for i = 1, net.ReadUInt(8) do
+			item.Mods.suffix[i] = pluto.inv.readmod()
+		end
+	elseif (item.Type == "Model") then
+		item.Model = pluto.models[item.ClassName:match "^model_(.+)$"]
+		item.Color = item.Model.Color or Color(255, 255, 255)
+		item.Name = item.Model.Name .. " Model"
+		item.SubDescription = item.Model.SubDescription
 	end
 
 	table.insert(pluto.buffer, item)

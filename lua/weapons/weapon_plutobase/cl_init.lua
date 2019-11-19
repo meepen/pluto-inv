@@ -29,7 +29,9 @@ end
 net.Receive("pluto_wpn_db", function(len)
 	local ent = bit.band(bit.bnot(0xff000000), net.ReadInt(32))
 
-	local PlutoData = {}
+	local PlutoData = {
+		Type = "Weapon",
+	}
 
 	local modifiers = {
 		prefix = {},

@@ -320,20 +320,6 @@ const VTFImageData = exports.VTFImageData = class VTFImageData {
 
 				return data;
 
-			case "ABGR8888":
-				data = Buffer.from(from);
-				for (let i = 0; i < data.length; i += 4) {
-					let a = data[i];
-					let b = data[i + 1];
-
-					data[i] = data[i + 3];
-					data[i + 1] = data[i + 2];
-					data[i + 2] = b;
-					data[i + 3] = a;
-				}
-
-				return data;
-
 			case "BGRA8888":
 				data = Buffer.from(from);
 				for (let i = 0; i < data.length; i += 4) {

@@ -29,6 +29,17 @@ pluto.inv.messages = {
 	}
 }
 
+function pluto.inv.itemtype(i)
+	local class = type(i) == "table" and i.ClassName or i
+	if (class:StartWith "weapon_") then
+		return "Weapon"
+	elseif (class:StartWith "model_") then
+		return "Model"
+	else
+		return "Unknown"
+	end
+end
+
 for k, v in pairs(pluto.inv.messages.cl2sv) do
 	pluto.inv.messages.cl2sv[v] = k
 end

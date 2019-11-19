@@ -179,19 +179,28 @@ function pluto.inv.retrieveitems(steamid, cb)
 		local by_mysql_id = {}
 
 		for i, item in pairs(q:getData()) do
-			ids[i] = tostring(tonumber(item.idx))
 			weapons[item.idx] = {
 				RowID = item.idx,
 				TabIndex = item.tab_idx,
 				TabID = item.tab_id,
-				Mods = {
-					prefix = {},
-					suffix = {},
-				},
 				Tier = pluto.tiers[item.tier],
 				ClassName = item.class,
 				Owner = steamid
 			}
+
+			local i = weapons[item.idx]
+			i.Type = pluto.inv.itemtype(i)
+
+			if (i.Type == "Weapon") then
+				weapons[item.idx].Mods = {
+					prefix = {},
+					suffix = {},
+				}
+
+				ids[i] = tostring(tonumber(item.idx))
+			elseif (i.Type == "Model") then
+				i.Model = pluto.models[i.ClassName:match"model_(.+)"]
+			end
 		end
 
 		pluto.db.query([[
@@ -242,7 +251,6 @@ function pluto.inv.deleteitem(steamid, itemid, cb)
 end
 
 function pluto.inv.getbufferitems(owner)
-	
 	local retn = {}
 	for _, item in ipairs(sql.Query("SELECT idx FROM pluto_items WHERE owner = " .. pluto.db.steamid64(owner) .. " ORDER BY idx DESC") or {}) do
 		table.insert(retn, pluto.inv.getbufferitem(item.idx))
@@ -260,28 +268,35 @@ function pluto.inv.getbufferitem(id)
 
 	local wpn = {
 		BufferID = id,
-		Mods = {
-			prefix = {},
-			suffix = {},
-		},
-		Tier = pluto.tiers[data.tier],
 		ClassName = data.class,
 		Owner = data.owner
 	}
 
-	for _, item in pairs(sql.Query([[SELECT modname, pluto_mods.tier as tier, roll1, roll2, roll3 FROM pluto_mods
-		JOIN pluto_items ON pluto_mods.gun_index = pluto_items.idx
-	WHERE gun_index = ]] .. SQLStr(id)) or {}) do
-		local mod = pluto.mods.byname[item.modname]
+	wpn.Type = pluto.inv.itemtype(wpn)
 
-		wpn.Mods[mod.Type] = wpn.Mods[mod.Type] or {}
+	if (wpn.Type == "Weapon") then
+		wpn.Mods = {
+			prefix = {},
+			suffix = {},
+		}
+		wpn.Tier = pluto.tiers[data.tier]
 
-		table.insert(wpn.Mods[mod.Type], {
-			Roll = { tonumber(item.roll1), tonumber(item.roll2), tonumber(item.roll3) },
-			Mod = item.modname,
-			Tier = tonumber(item.tier),
-			RowID = tonumber(item.idx),
-		})
+		for _, item in pairs(sql.Query([[SELECT modname, pluto_mods.tier as tier, roll1, roll2, roll3 FROM pluto_mods
+			JOIN pluto_items ON pluto_mods.gun_index = pluto_items.idx
+			WHERE gun_index = ]] .. SQLStr(id)) or {}) do
+			local mod = pluto.mods.byname[item.modname]
+
+			wpn.Mods[mod.Type] = wpn.Mods[mod.Type] or {}
+
+			table.insert(wpn.Mods[mod.Type], {
+				Roll = { tonumber(item.roll1), tonumber(item.roll2), tonumber(item.roll3) },
+				Mod = item.modname,
+				Tier = tonumber(item.tier),
+				RowID = tonumber(item.idx),
+			})
+		end
+	elseif (wpn.Type == "Model") then
+		wpn.Model = pluto.models[wpn.ClassName:match "^model_(.+)$"]
 	end
 
 	return wpn

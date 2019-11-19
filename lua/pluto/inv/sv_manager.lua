@@ -52,34 +52,35 @@ function pluto.inv.writeitem(ply, item)
 		pluto.inv.sent[ply].items = sent
 	end
 
-
 	local data = sent[item.RowID]
 	if (not data or data ~= item.LastUpdate) then
 		sent[item.RowID] = item.LastUpdate
 		net.WriteBool(true)
-
-		net.WriteString(item.Tier.Name)
-		net.WriteString(item.Tier.SubDescription or "")
-		net.WriteUInt(item.Tier.affixes, 3)
-		net.WriteColor(item.Tier.Color or color_white)
 		net.WriteString(item.ClassName)
 
-		if (item.Mods.prefix) then
-			net.WriteUInt(#item.Mods.prefix, 8)
-			for ind, mod in ipairs(item.Mods.prefix) do
-				pluto.inv.writemod(ply, mod, item)
-			end
-		else
-			net.WriteUInt(0, 8)
-		end
+		if (item.Type == "Weapon") then
+			net.WriteString(item.Tier.Name)
+			net.WriteString(item.Tier.SubDescription or "")
+			net.WriteColor(item.Tier.Color or color_white)
 
-		if (item.Mods.suffix) then
-			net.WriteUInt(#item.Mods.suffix, 8)
-			for ind, mod in ipairs(item.Mods.suffix) do
-				pluto.inv.writemod(ply, mod, item)
+			net.WriteUInt(item.Tier.affixes, 3)
+			if (item.Mods.prefix) then
+				net.WriteUInt(#item.Mods.prefix, 8)
+				for ind, mod in ipairs(item.Mods.prefix) do
+					pluto.inv.writemod(ply, mod, item)
+				end
+			else
+				net.WriteUInt(0, 8)
 			end
-		else
-			net.WriteUInt(0, 8)
+
+			if (item.Mods.suffix) then
+				net.WriteUInt(#item.Mods.suffix, 8)
+				for ind, mod in ipairs(item.Mods.suffix) do
+					pluto.inv.writemod(ply, mod, item)
+				end
+			else
+				net.WriteUInt(0, 8)
+			end
 		end
 	else
 		net.WriteBool(false)
@@ -182,26 +183,28 @@ end
 function pluto.inv.writebufferitem(ply, item)
 	net.WriteInt(item.BufferID, 32)
 
-	net.WriteString(item.Tier.Name)
-	net.WriteColor(item.Tier.Color or color_white)
 	net.WriteString(item.ClassName)
 
-	if (item.Mods.prefix) then
-		net.WriteUInt(#item.Mods.prefix, 8)
-		for ind, mod in ipairs(item.Mods.prefix) do
-			pluto.inv.writemod(ply, mod, item)
+	if (pluto.inv.itemtype(item) == "Weapon") then
+		net.WriteString(item.Tier.Name)
+		net.WriteColor(item.Tier.Color or color_white)
+		if (item.Mods.prefix) then
+			net.WriteUInt(#item.Mods.prefix, 8)
+			for ind, mod in ipairs(item.Mods.prefix) do
+				pluto.inv.writemod(ply, mod, item)
+			end
+		else
+			net.WriteUInt(0, 8)
 		end
-	else
-		net.WriteUInt(0, 8)
-	end
 
-	if (item.Mods.suffix) then
-		net.WriteUInt(#item.Mods.suffix, 8)
-		for ind, mod in ipairs(item.Mods.suffix) do
-			pluto.inv.writemod(ply, mod, item)
+		if (item.Mods.suffix) then
+			net.WriteUInt(#item.Mods.suffix, 8)
+			for ind, mod in ipairs(item.Mods.suffix) do
+				pluto.inv.writemod(ply, mod, item)
+			end
+		else
+			net.WriteUInt(0, 8)
 		end
-	else
-		net.WriteUInt(0, 8)
 	end
 end
 

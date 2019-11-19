@@ -2,6 +2,8 @@ local packs =  {
 	pluto = {
 		remote = "https://pluto.gg/datastore/server/content.gma",
 		versions = {
+			"20191119",
+			"20191118",
 			"20191115",
 			"20191114",
 			"20191113"
@@ -36,7 +38,9 @@ local packs =  {
 	},
 }
 
-pluto.ws_cache = {}
+pluto.ws_cache = {
+	Material "models/weapons/v_models/hands/v_hands",
+}
 
 local function run()
 	for pack, data in pairs(packs) do
@@ -67,6 +71,10 @@ local function run()
 				local match = item:match "materials/(.+)%.vmt"
 				if (match) then
 					table.insert(pluto.ws_cache, (Material(match)))
+				end
+				match = item:match "materials/(.+)%.vtf"
+				if (match) then
+					LocalPlayer():ConCommand("mat_reloadtexture " .. match)
 				end
 			end
 

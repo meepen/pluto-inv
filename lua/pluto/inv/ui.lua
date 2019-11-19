@@ -122,16 +122,19 @@ function PANEL:Init()
 end
 
 function PANEL:SetItem(item)
+	self.Item = item
+	if (IsValid(self.Model)) then
+		self.Model:Remove()
+	end
+
 	if (not item) then
-		if (IsValid(self.Model)) then
-			self.Model:Remove()
-		end
+		self.MaterialColor = nil
+		self.Type = nil
 		self:SetColor(Color(0,0,0,0))
 		return
 	end
 
-	self.Item = item
-	self:SetWeapon(weapons.GetStored(item.ClassName))
+	self.Type = item.Type
 
 	local _h, s, l = ColorToHSL(item.Color)
 	s = math.Clamp(s, 0, 0.6)
@@ -143,19 +146,34 @@ function PANEL:SetItem(item)
 	local num = (math.Clamp(Brightness(col), 0.25, 0.75) - 0.25) * 2
 	col = HSLToColor(_h, s + num * 0.3, l + 0.3)
 	self.MaterialColor = col:ToVector()
+
+	if (self.Type == "Weapon") then
+		self:SetWeapon(item)
+	elseif (self.Type == "Model") then
+		self:SetModel(item)
+	else
+		pwarnf("Unknown type: %s", tostring(self.Type))
+		return
+	end
 end
 
-function PANEL:SetWeapon(w)
-	if (IsValid(self.Model)) then
-		self.Model:Remove()
-	end
+function PANEL:SetWeapon(item)
+	local w = weapons.GetStored(item.ClassName)
 	if (not w) then
 		return
 	end
+
 	self.Model = ClientsideModel(w.WorldModel, RENDERGROUP_OTHER)
 	self.Model:SetNoDraw(true)
 	self.Class = w.ClassName
-	self.HoldType = w.HoldType
+end
+
+function PANEL:SetModel(item)
+	local mdl = item.Model
+	self.Model = ClientsideModel(mdl.Model)
+	if (IsValid(self.Model)) then
+		self.Model:ResetSequence(self.Model:LookupSequence "idle_all_01")
+	end
 end
 
 DEFINE_BASECLASS "ttt_curved_panel"
@@ -165,7 +183,7 @@ local lookups = {
 	weapon_ttt_r301 = {-7, 9},
 	weapon_ttt_ppsh41 = {-5, -1},
 	weapon_ttt_ump = {-2, 7, size = 0.7, angle = Angle(0, -80, -6)},
-	weapon_ttt_tec9 = {0, 0, angle = Angle(0, -90, 90)},
+	weapon_ttt_tec9 = {0, -0.5, angle = Angle(0, -90, 90)},
 	weapon_ttt_glock = {1, 4, size = 1.1},
 	weapon_ttt_deagle = {0.5, 5},
 	weapon_ttt_mp5 = {2, 7.5},
@@ -207,63 +225,94 @@ function PANEL:Paint(w, h)
 		local r, g, b = render.GetColorModulation()
 		render.SetColorModulation(1, 1, 1)
 		local err = self.Model
-		local lookup = lookups.Default
-		if (not IsValid(err)) then
-			err = self.DefaultModel
-			
-			if (not IsValid(err)) then
-				return
-			end
+		local typ = self.Type
+		local class = self.Class
 
-			render.SetBlend(0.5)
-		end
-
-		if (self.Material and self.Item) then
+		if (self.Material and self.MaterialColor) then
 			self.Material:SetVector("$color", self.MaterialColor)
 			surface.SetMaterial(self.Material)
 			surface.SetDrawColor(255, 255, 255, err ~= self.DefaultModel and 255 or 1)
 			surface.DrawTexturedRect(0, 0, w, h)
 		end
 
-		lookup = lookups[self.Class] or lookup
+		if (not IsValid(err)) then
+			err = self.DefaultModel
+			typ = self.DefaultType
+			class = self.DefaultClass
+			render.SetBlend(0.5)
+		end
 
-		local x, y = self:LocalToScreen(0, 0)
-		local mins, maxs = err:GetModelBounds()
-		local angle = Angle(0, -90)
-		local size = mins:Distance(maxs) / 2.5 * (lookup.size or 1) * 1.1
+		if (IsValid(err)) then
+			if (typ == "Weapon") then
+				local lookup = lookups.Default
+				if (not IsValid(err)) then
+					return
+				end
 
-		cam.Start3D(vector_origin, lookup.angle or angle, 90, x, y, w, h)
-			cam.StartOrthoView(lookup[1] + -size, lookup[2] + size, lookup[1] + size, lookup[2] + -size)
-				render.SuppressEngineLighting(true)
-					err:SetAngles(Angle(-40, 10, 10))
-					err:SetPos(vector_origin)
-					render.PushFilterMin(TEXFILTER.ANISOTROPIC)
-					render.PushFilterMag(TEXFILTER.ANISOTROPIC)
+				lookup = lookups[class] or lookup
+
+				local x, y = self:LocalToScreen(0, 0)
+				local mins, maxs = err:GetModelBounds()
+				local angle = Angle(0, -90)
+				local size = mins:Distance(maxs) / 2.5 * (lookup.size or 1) * 1.1
+
+				cam.Start3D(vector_origin, lookup.angle or angle, 90, x, y, w, h)
+					cam.StartOrthoView(lookup[1] + -size, lookup[2] + size, lookup[1] + size, lookup[2] + -size)
+						render.SuppressEngineLighting(true)
+							err:SetAngles(Angle(-40, 10, 10))
+							render.PushFilterMin(TEXFILTER.ANISOTROPIC)
+							render.PushFilterMag(TEXFILTER.ANISOTROPIC)
+								err:DrawModel()
+							render.PopFilterMag()
+							render.PopFilterMin()
+						render.SuppressEngineLighting(false)
+					cam.EndOrthoView()
+				cam.End3D()
+			elseif (typ == "Model") then
+				local mins, maxs = err:GetModelBounds()
+				local x, y = self:LocalToScreen(0, 0)
+
+				cam.Start3D(Vector(50, 0, (maxs.z - mins.z) / 2), Angle(0, -180), 90, x, y, self:GetSize())
+					render.SuppressEngineLighting(true)
+
+						err:SetAngles(err:GetAngles() - Angle(0, 50) * FrameTime())
 						err:DrawModel()
-					render.PopFilterMag()
-					render.PopFilterMin()
-				render.SuppressEngineLighting(false)
-			cam.EndOrthoView()
-		cam.End3D()
+
+					render.SuppressEngineLighting(false)
+				cam.End3D()
+			end
+		end
+
 		render.SetColorModulation(r, g, b)
 		render.SetBlend(1)
 	render.SetStencilEnable(false)
 end
 
-function PANEL:SetDefault(str)
-	local w = weapons.GetStored(str)
-	if (IsValid(self.DefaultModel)) then
-		self.DefaultModel:Remove()
+function PANEL:SetDefault(class)
+	local str
+	local type = pluto.inv.itemtype(class)
+	if (type == "Weapon") then
+		str = weapons.GetStored(class).WorldModel
+	elseif (type == "Model") then
+		str = pluto.models[class:match"model_(.+)"].Model
 	end
-	self.DefaultModel = ClientsideModel(w.WorldModel, RENDERGROUP_OTHER)
+
+	self.DefaultModel = ClientsideModel(str)
 	self.DefaultModel:SetNoDraw(true)
-	self.DefaultHoldType = w.HoldType
+
+	if (IsValid(self.DefaultModel) and type == "Model") then
+		self.DefaultModel:ResetSequence(self.DefaultModel:LookupSequence "idle_all_01")
+	end
+
+	self.DefaultType = type
+	self.DefaultClass = class
 end
 
 function PANEL:OnRemove()
 	if (IsValid(self.Model)) then
 		self.Model:Remove()
 	end
+
 	if (IsValid(self.DefaultModel)) then
 		self.DefaultModel:Remove()
 	end
@@ -273,7 +322,7 @@ function PANEL:GetScissor()
 	return self:GetParent():GetScissor()
 end
 
-vgui.Register("pluto_weapon", PANEL, "ttt_curved_panel")
+vgui.Register("pluto_item", PANEL, "ttt_curved_panel")
 
 local PANEL = {}
 DEFINE_BASECLASS "ttt_curved_panel"
@@ -281,7 +330,7 @@ DEFINE_BASECLASS "ttt_curved_panel"
 function PANEL:Init()
 	self:SetColor(Color(84, 89, 89, 255))
 
-	self.Image = self:Add "pluto_weapon"
+	self.Image = self:Add "pluto_item"
 	self.Image:Dock(FILL)
 	self.Image:SetVisible(false)
 
@@ -291,8 +340,8 @@ function PANEL:Init()
 	hook.Add("PlutoItemUpdate", self, self.PlutoItemUpdate)
 end
 
-function PANEL:SetDefault(str)
-	self.Image:SetDefault(str)
+function PANEL:SetDefault(c)
+	self.Image:SetDefault(c)
 end
 
 function PANEL:PlutoItemUpdate(item)
@@ -335,6 +384,7 @@ function PANEL:SetItem(item, tab)
 
 	self.Item = item
 	self.Image:SetItem(item)
+	self:OnSetItem(item)
 
 	if (not item) then
 		self:SetCursor "arrow"
@@ -349,6 +399,9 @@ function PANEL:SetItem(item, tab)
 	if (IsValid(self.showcasepnl)) then
 		self:Showcase(item)
 	end
+end
+
+function PANEL:OnSetItem(item)
 end
 
 function PANEL:OnCursorEntered()
@@ -547,20 +600,108 @@ function PANEL:Init()
 		p:Dock(TOP)
 	end
 
-	self.PlayerModel = self:Add "ttt_curved_panel"
-	self.PlayerModel:SetColor(Color(0,0,0,100))
+	self.PlayerModelBG = self:Add "ttt_curved_panel"
+	self.PlayerModelBG:SetColor(Color(0,0,0,100))
+
+	self.PlayerModel = self.PlayerModelBG:Add "DModelPanel"
+	self.PlayerModel:Dock(FILL)
+
+	function self.PlayerModel:SetPlutoModel(m)
+		self:SetModel(m)
+
+		if (self.WeaponItem) then
+			self:SetPlutoWeapon(self.WeaponItem)
+		end
+	
+		self:SetFOV(30)
+	end
+
+	function self.PlayerModel:SetStance(s)
+		local seq = self:GetEntity():LookupSequence(s)
+		if (seq == -1) then
+			return false
+		end
+
+		self:GetEntity():ResetSequence(seq)
+
+		self.Stance = s
+
+		return true
+	end
+
+	function self.PlayerModel:SetPlutoWeapon(item)
+		if (IsValid(self.Weapon)) then
+			self.Weapon:Remove()
+		end
+
+
+		if (not item) then
+			self:SetStance "idle_all_01"
+			return
+		end
+
+		local stored = weapons.GetStored(item.ClassName)
+
+		if (not stored) then
+			return
+		end
+
+		self.WeaponItem = item
+
+		local set = false
+		if (stored.HoldType == "ar2") then
+			set = self:SetStance "idle_passive"
+		end
+
+		if (not set) then
+			self:SetStance "idle_all_01"
+		end
+
+		self.Weapon = ClientsideModel(stored.WorldModel, stored.RenderGroup)
+		if (IsValid(self.Weapon)) then
+			self.Weapon:SetParent(self:GetEntity())
+			self.Weapon:AddEffects(EF_BONEMERGE + EF_BONEMERGE_FASTCULL)
+			self.Weapon.RenderOverride = stored.DrawWorldModel
+		end
+	end
+	
+	self.PlayerModel:SetPlutoModel(pluto.models.default.Model)
+
+	function self.PlayerModel:PreDrawModel()
+		if (IsValid(self.Weapon)) then
+			self.Weapon:DrawModel()
+		end
+
+		return true
+	end
+	
+	function self.PlayerModel:LayoutEntity(e)
+		if (self.bAnimated) then
+			self:RunAnimation()
+		end
+
+		e:SetAngles(e:GetAngles() - Angle(0, 50) * FrameTime())
+	end
 
 	self.Items[1]:SetDefault "weapon_ttt_m4a1"
-
 	self.Items[2]:SetDefault "weapon_ttt_pistol"
+	self.Items[3]:SetDefault "model_default"
+
+	self.Items[1].OnSetItem = function(s, i)
+		self.PlayerModel:SetPlutoWeapon(i)
+	end
+
+	self.Items[3].OnSetItem = function(s, i)
+		self.PlayerModel:SetPlutoModel(i and i.Model and i.Model.Model or pluto.models.default.Model)
+	end
 end
 
 function PANEL:PerformLayout(w, h)
 	local size = math.Round(w / (count + 2))
 	local divide = (w - size * count) / (count + 2)
-	self.PlayerModel:SetTall(h - divide * 3)
-	self.PlayerModel:SetWide(size * 3)
-	self.PlayerModel:Center()
+	self.PlayerModelBG:SetTall(h - divide * 3)
+	self.PlayerModelBG:SetWide(size * 3.5)
+	self.PlayerModelBG:Center()
 
 	for i, item in ipairs(self.Items) do
 		item:SetSize(size, size)
@@ -1639,7 +1780,7 @@ end
 
 function PANEL:SetItem(item)
 	self.ItemName:SetTextColor(color_black)
-	if (item.ClassName) then -- item
+	if (item.Type == "Weapon") then -- item
 		local w = weapons.GetStored(item.ClassName)
 		self.ItemName:SetText(item.Tier .. " " .. (w and w.PrintName or "N/A"))
 		self.ItemName:SetContentAlignment(4)
@@ -1734,6 +1875,8 @@ function PANEL:Init()
 	self.ItemBackground = self:Add "ttt_curved_panel"
 	self.ItemBackground:SetCurve(curve(0))
 	self.ItemBackground:Dock(TOP)
+	self.ItemBackground:SetCurveBottomLeft(false)
+	self.ItemBackground:SetCurveBottomRight(false)
 
 	self.ItemName = self.ItemBackground:Add "DLabel"
 	self.ItemName:Dock(FILL)

@@ -9,6 +9,7 @@ pluto.files.load {
 		"inv/init.lua",
 		"inv/sv_manager.lua",
 		"inv/ttt.lua",
+		"inv/sv_buffer.lua",
 		"trades/sv.lua",
 		"mapvote/mapvote.lua",
 		"models/sv_models.lua",

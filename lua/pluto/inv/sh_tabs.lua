@@ -21,26 +21,30 @@ pluto.tabs = {
 	},
 	equip = {
 		canaccept = function(tabindex, item)
-			if (tabindex == 1) then -- primary
-				local wep = weapons.GetStored(item.ClassName)
-				if (not wep) then
-					return false
-				end
-
-				return wep.Slot == 2
-			elseif (tabindex == 2) then -- secondary
-				local wep = weapons.GetStored(item.ClassName)
-				if (not wep) then
-					return false
-				end
-
-				return wep.Slot == 1
+			if (not item) then
+				return false
 			end
+
+			if (item.ClassName:StartWith "weapon_") then
+				local wep = weapons.GetStored(item.ClassName)
+				if (not wep) then
+					return false
+				end
+				if (tabindex == 1) then -- primary
+					return wep.Slot == 2
+				elseif (tabindex == 2) then -- secondary
+					return wep.Slot == 1
+				end
+			elseif (item.ClassName:StartWith "model_" and tabindex == 3) then
+				return true
+			end
+
+			return false
 		end,
 		canremove = function(tabindex, item)
 			return true
 		end,
-		size = 2,
+		size = 3,
 		element = "pluto_inventory_equip",
 	},
 	trade = {

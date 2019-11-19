@@ -6,9 +6,7 @@
 	"$envmap" "env_cubemap"
     "$normalmapalphaenvmapmask" 1
 	"$envmaptint" "[.03 .03 .03]"
-	
-	"$selfillum" "1"
-	
+
 	"$halflambert" "0"
 	
 	"$ambientocclusion" "1"
