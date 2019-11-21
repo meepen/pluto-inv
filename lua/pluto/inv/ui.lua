@@ -640,7 +640,7 @@ function PANEL:Init()
 			return
 		end
 
-		local stored = weapons.GetStored(item.ClassName)
+		local stored = baseclass.Get(item.ClassName)
 
 		if (not stored) then
 			return
@@ -661,7 +661,8 @@ function PANEL:Init()
 		if (IsValid(self.Weapon)) then
 			self.Weapon:SetParent(self:GetEntity())
 			self.Weapon:AddEffects(EF_BONEMERGE + EF_BONEMERGE_FASTCULL)
-			self.Weapon.RenderOverride = stored.DrawWorldModel
+			table.Merge(self.Weapon, stored)
+			self.Weapon.RenderOverride = self.Weapon.DrawWorldModel
 		end
 	end
 	
