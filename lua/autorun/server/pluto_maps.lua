@@ -43,7 +43,6 @@ hook.Add("InitPostEntity", "pluto_maps", function()
 	if (dat.Remove) then
 		for _, id in pairs(dat.Remove) do
 			local e = ents.GetMapCreatedEntity(id)
-			print(id, e)
 			if (IsValid(e)) then
 				e:Remove()
 			end
@@ -55,7 +54,6 @@ hook.Add("PostCleanupMap", "pluto_maps", function()
 	if (dat.Remove) then
 		for _, id in pairs(dat.Remove) do
 			local e = ents.GetMapCreatedEntity(id)
-			print(id, e)
 			if (IsValid(e)) then
 				e:Remove()
 			end
