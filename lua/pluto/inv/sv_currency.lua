@@ -221,7 +221,13 @@ for name, values in pairs {
 			trans:start()
 		end,
 		Types = "None",
-	}
+	},
+	crate0 = {
+		Shares = 10,
+		Use = function(ply)
+		end,
+		Types = "None"
+	},
 } do
 	table.Merge(pluto.currency.byname[name], values)
 end

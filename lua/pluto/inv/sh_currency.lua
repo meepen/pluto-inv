@@ -59,7 +59,19 @@ pluto.currency.list = {
 		SubDescription = "$$$",
 		Color = Color(254, 233, 105),
 		NoTarget = true,
-	}
+	},
+	{
+		InternalName = "crate0",
+		Name = "Box",
+		Icon = "pluto/currencies/crate0.png",
+		Description = "Contains a model or a very rare weapon",
+		SubDescription = "Who's there? It's been so long... please don't open me... it hurts... (not usable yet)",
+		NoTarget = true,
+		Color = Color(240, 192, 71),
+		Use = function()
+			-- create thing
+		end,
+	},
 }
 
 for _, item in pairs(pluto.currency.list) do

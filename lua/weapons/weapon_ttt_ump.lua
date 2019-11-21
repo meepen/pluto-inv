@@ -20,9 +20,9 @@ SWEP.ViewModel = "models/weapons/v_rif_ump9.mdl"
 SWEP.WorldModel = "models/weapons/w_rif_ump9.mdl"
 SWEP.Base = "weapon_tttbase"
 
-SWEP.AutoSpawnable      = false
-SWEP.Spawnable          = false
-SWEP.AdminSpawnable		= false
+SWEP.AutoSpawnable      = true
+SWEP.Spawnable          = true
+SWEP.AdminSpawnable		= true
 
 SWEP.UseHands = false
 
@@ -32,7 +32,7 @@ SWEP.Primary.Delay = 60 / 500
 SWEP.Primary.ClipSize = 25
 SWEP.Primary.DefaultClip = 74
 SWEP.Primary.Automatic = true 
-SWEP.Primary.Damage = 19
+SWEP.Primary.Damage = 16
 SWEP.Primary.Ammo = "pistol"
 SWEP.AmmoEnt = "item_ammo_pistol_ttt"
 
