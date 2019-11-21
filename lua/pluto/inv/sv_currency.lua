@@ -79,9 +79,6 @@ for name, values in pairs {
 	dice = {
 		Shares = 500,
 		Use = function(ply, item)
-			if (not item.Mods) then
-				return
-			end
 			local tier = item.Tier
 
 			local changed = false
@@ -98,26 +95,20 @@ for name, values in pairs {
 				UpdateAndDecrement(ply, item, "dice")
 			end
 		end,
+		Types = "Weapon",
 	},
 	droplet = {
 		Shares = 5000,
 		Use = function(ply, item)
-			if (not item.Mods) then
-				return
-			end
-
 			item.Mods = pluto.weapons.generatetier(item.Tier.InternalName, item.ClassName).Mods
 			
 			UpdateAndDecrement(ply, item, "droplet")
 		end,
+		Types = "Weapon",
 	},
 	hand = {
 		Shares = 400,
 		Use = function(ply, item)
-			if (not item.Mods) then
-				return
-			end
-
 			local possible = {}
 			local incr_possible = {}
 			for _, Mods in pairs(item.Mods) do
@@ -154,14 +145,11 @@ for name, values in pairs {
 
 			UpdateAndDecrement(ply, item, "hand")
 		end,
+		Types = "Weapon",
 	},
 	tome = {
 		Shares = 20,
 		Use = function(ply, item)
-			if (not item.Mods) then
-				return
-			end
-
 			local rand = math.floor(math.random(1, 12) / 2) + 1
 			if (rand == 1) then     -- 2 mods
 				getnewmod(item, 5, 3, true)
@@ -189,11 +177,13 @@ for name, values in pairs {
 
 			UpdateAndDecrement(ply, item, "tome")
 		end,
+		Types = "Weapon",
 	},
 	mirror = {
 		Shares = 0,
 		Use = function(item)
 		end,
+		Types = "Weapon",
 	},
 	heart = {
 		Shares = 5,
@@ -202,6 +192,7 @@ for name, values in pairs {
 				UpdateAndDecrement(ply, item, "heart")
 			end
 		end,
+		Types = "Weapon",
 	},
 	coin = {
 		Shares = 2.5,
@@ -229,6 +220,7 @@ for name, values in pairs {
 			trans:addQuery(pluto.inv.addcurrency(ply, "coin", -1, function() end, true))
 			trans:start()
 		end,
+		Types = "None",
 	}
 } do
 	table.Merge(pluto.currency.byname[name], values)

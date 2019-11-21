@@ -363,6 +363,20 @@ function pluto.inv.readitemdelete(ply)
 	end)
 end
 
+
+local function allowed(types, wpn)
+	local type = wpn and wpn.Type or "None"
+	if (isstring(types)) then
+		return types == type
+	end
+
+	if (istable(types) and table.HasValue(types, type)) then
+		return true
+	end
+
+	return false
+end
+
 function pluto.inv.readcurrencyuse(ply)
 	local currency = net.ReadString()
 	local wpn
@@ -385,6 +399,12 @@ function pluto.inv.readcurrencyuse(ply)
 		return
 	end
 
+	local cur = pluto.currency.byname[currency]
+
+	if (not allowed(cur.Types, wpn)) then
+		return
+	end
+
 	if (wpn and wpn.Mods) then
 		for _, mods in pairs(wpn.Mods) do
 			for _, mod in pairs(mods) do
@@ -396,7 +416,7 @@ function pluto.inv.readcurrencyuse(ply)
 		end
 	end
 
-	pluto.currency.byname[currency].Use(ply, wpn)
+	cur.Use(ply, wpn)
 end
 
 function pluto.inv.readtabrename(ply)
