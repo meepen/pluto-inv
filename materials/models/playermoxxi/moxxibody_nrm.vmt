@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/playermoxxi/MoxxieBody_Nrm"
+//	"$translucent" 1
+	"$nocull" 1
+	"$halflambert" 1
+}

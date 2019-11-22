@@ -40,12 +40,28 @@ local packs =  {
 	["2b"] = {
 		remote = "https://pluto.gg/datastore/server/2b.gma",
 		versions = {
-			"3",
-			"2",
-			"1",
-			"0",
+			"20191121",
 		}
-	}
+	},
+	a2 = {
+		remote = "https://pluto.gg/datastore/server/a2.gma",
+		versions = {
+			"20191121",
+		}
+	},
+	doom = {
+		remote = "https://pluto.gg/datastore/server/doom.gma",
+		versions = {
+			"20191121",
+		}
+	},
+	--[[
+	moxxi = {
+		remote = "https://pluto.gg/datastore/server/moxxi.gma",
+		versions = {
+			"20191121",
+		}
+	},]]
 }
 
 pluto.ws_cache = {
@@ -96,7 +112,6 @@ local function run()
 			hook.Add("Think", "pluto_" .. pack, function()
 				if (not IsValid(LocalPlayer())) then
 					return
-			
 				end
 
 				for _, item in pairs(to_fix.vtf) do

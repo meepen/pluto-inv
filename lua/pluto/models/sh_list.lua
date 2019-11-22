@@ -19,9 +19,17 @@ c "2b" {
 	Color = rare,
 }
 
-c "a2" {
+c "a2lh" {
 	Name = "A2",
 	Model = "models/kuma96/a2/a2lh_pm.mdl",
+	Hands = "models/kuma96/a2/a2_carms.mdl",
+	SubDescription = "I never quite realized... how beautiful this world is.",
+	Color = COL(1),
+}
+
+c "a2" {
+	Name = "A2 Short Hair",
+	Model = "models/kuma96/a2/a2sh_pm.mdl",
 	Hands = "models/kuma96/a2/a2_carms.mdl",
 	SubDescription = "I never quite realized... how beautiful this world is.",
 	Color = COL(1),
@@ -100,4 +108,11 @@ c "chewie" {
 c "default" {
 	Name = "Terrorist",
 	Model = "models/player/phoenix.mdl"
+}
+
+c "moxxi" {
+	Name = "Mad Moxxi",
+	Model = "models/player_moxxi.mdl",
+	Hands = "models/arms_moxxi.mdl",
+	Color = rare
 }

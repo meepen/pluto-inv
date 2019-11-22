@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/playermoxxi/eyeball_r"
+	"$iris" "models/playermoxxi/pupil"
+	"$halflambert" 1
+	"$nodecal" 1
+}

@@ -1,0 +1,10 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/playermoxxi/MoxxiHead_Dif"
+	"$bumpmap"     "models/playermoxxi/MoxxiHead_Nrm"
+
+	"$halflambert" 1
+	"$rimlight" "1"
+	"$rimlightexponent" "4"
+	"$rimlightboost" "1"
+}
