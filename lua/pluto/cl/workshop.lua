@@ -2,6 +2,7 @@ local packs =  {
 	pluto = {
 		remote = "https://pluto.gg/datastore/server/content.gma",
 		versions = {
+			"20191121",
 			"20191119",
 			"20191118",
 			"20191115",
@@ -36,6 +37,15 @@ local packs =  {
 			"20191115",
 		}
 	},
+	["2b"] = {
+		remote = "https://pluto.gg/datastore/server/2b.gma",
+		versions = {
+			"3",
+			"2",
+			"1",
+			"0",
+		}
+	}
 }
 
 pluto.ws_cache = {

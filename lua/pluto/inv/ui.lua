@@ -1,7 +1,6 @@
 pluto.ui = pluto.ui or {}
 
 local pad = 0
-local accent = Color(0, 173, 123)
 
 local active_text = Color(205, 203, 203)
 local inactive_text = Color(130, 130, 136)
