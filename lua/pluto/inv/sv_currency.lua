@@ -223,7 +223,7 @@ for name, values in pairs {
 		Types = "None",
 	},
 	crate0 = {
-		Shares = 10,
+		Shares = 5,
 		Use = function(ply)
 		end,
 		Types = "None"
