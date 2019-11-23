@@ -24,6 +24,8 @@ function pluto.inv.generatebufferweapon(ply, ...)
 	end
 
 	pluto.inv.notifybufferitem(ply, i)
+
+	return i.BufferID
 end
 
 function pluto.inv.generatebuffermodel(ply, mdl)
@@ -41,7 +43,7 @@ function pluto.inv.generatebuffermodel(ply, mdl)
 	i.BufferID = id
 
 	pluto.inv.notifybufferitem(ply, i)
-	return true
+	return i.BufferID
 end
 
 function pluto.inv.notifybufferitem(ply, i)

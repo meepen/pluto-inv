@@ -288,3 +288,7 @@ end
 function pluto.inv.readend()
 	return true
 end
+
+function pluto.inv.readcrate_id()
+	hook.Run("CrateOpenResponse", net.ReadInt(32))
+end

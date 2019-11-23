@@ -503,4 +503,8 @@ function pluto.inv.readend()
 	return true
 end
 
+function pluto.inv.writecrate_id(ply, id)
+	net.WriteInt(id, 32)
+end
+
 hook.Add("PlayerAuthed", "pluto_init_inventory", pluto.inv.sendfullupdate)

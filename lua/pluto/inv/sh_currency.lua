@@ -69,7 +69,17 @@ pluto.currency.list = {
 		NoTarget = true,
 		Color = Color(240, 192, 71),
 		Use = function()
-			-- create thing
+			if (IsValid(pluto.opener)) then
+				pluto.opener:Remove()
+			end
+
+			pluto.opener = vgui.Create "tttrw_base"
+
+			pluto.opener:AddTab("Open Box", vgui.Create "pluto_box_open")
+
+			pluto.opener:SetSize(640, 400)
+			pluto.opener:Center()
+			pluto.opener:MakePopup()
 		end,
 	},
 }
@@ -80,4 +90,69 @@ end
 
 if (SERVER) then
 	include "sv_currency.lua"
+else
+	local PANEL = {}
+	function PANEL:Init()
+		local main = self
+		self:SetTall(310)
+		self:Dock(TOP)
+		self.Image = self:Add "DImage"
+
+		self.Image:SetImage(pluto.currency.byname.crate0.Icon)
+
+		function self.Image:PerformLayout(w, h)
+			self:SetSize(self:GetParent():GetTall() - 20, self:GetParent():GetTall() - 20)
+			self:Center()
+		end
+
+		self.Image.Start = RealTime()
+		self.Image.Ends = RealTime() + 3
+
+		function self.Image:Think()
+			local x, y = self:GetParent():GetWide() / 2 - self:GetWide() / 2, self:GetParent():GetTall() / 2 - self:GetTall() / 2
+
+			local pct = math.min(1, (RealTime() - self.Start) / (self.Ends - self.Start))
+
+			self:SetPos(x + (math.random() - 0.5) * 40 * pct, y + (math.random() - 0.5) * 40 * pct)
+
+			if (pct == 1 and not self.Sent) then
+				self.Sent = true
+				pluto.inv.message()
+					:write("currencyuse", "crate0")
+					:send()
+			end
+		end
+
+		hook.Add("CrateOpenResponse", self, function(self, id)
+			for _, item in pairs(pluto.buffer) do
+				if (item.BufferID == id) then
+					self.Image:Remove()
+
+					if (item.Type == "Model") then
+						self.Image = self:Add "PlutoPlayerModel"
+
+						self.Image:SetPlutoModel(item.Model)
+					elseif (item.Type == "Weapon") then
+						self.Image = self:Add "pluto_item"
+
+						self.Image:SetItem(item)
+
+						function self:GetScissor() return false end
+					end
+					
+					sound.PlayFile("sound/garrysmod/balloon_pop_cute.wav", "mono", function(s)
+						if (IsValid(s)) then
+							s:Play()
+						end
+					end)
+					function self.Image:PerformLayout(w, h)
+						self:SetSize(self:GetParent():GetTall() - 20, self:GetParent():GetTall() - 20)
+						self:Center()
+					end
+				end
+			end
+		end)
+	end
+	
+	vgui.Register("pluto_box_open", PANEL, "EditablePanel")
 end

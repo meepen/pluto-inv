@@ -165,7 +165,7 @@ c "moxxi" {
 
 c "wick2" {
 	Name = "John Wick",
-	Model = "models/wick_chapter2/wick_chapter2.mdl",
+	Model = "models/wick_chapter2.mdl",
 	Hands = "models/wick_chapter2/wick_chapter2_c_arms.mdl",
 	SubDescription = "John wasn't exactly the boogeyman... he was the one you sent to kill the fucking boogeyman\n\nSuggested by Danger on the November 2019 Forum Thread",
 	Color = COL(0.9),
@@ -216,8 +216,8 @@ c "bigboss" {
 
 c "hevsuit" {
 	Name = "HEV Mark V",
-	Model = "models/player/hv5/hev_helmet.mdl",
-	Hands = "models/player/hv5/arms/v_hev.mdl",
+	Model = "models/player/sgg/hev_helmet.mdl",
+	Hands = "models/player/sgg/arms/v_hev.mdl",
 	Color = COL(0.2),
 	SubDescription = "...\nSuggested by Prismatic on the November 2019 Forum Thread"
 }
@@ -267,7 +267,5 @@ function pluto.updatemodel(ent, item)
 		end
 
 		ent:SetBodygroup(bgid, id)
-
-		print(bgid, id)
 	end
 end

@@ -26,6 +26,7 @@ for _, name in pairs {
 	"powerful",
 	"shadowy",
 	"uncommon",
+	"unique",
 	"vintage",
 } do
 	local item = include("pluto/tiers/" .. name .. ".lua")
@@ -103,7 +104,7 @@ function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll)
 	return {
 		ClassName = wep.ClassName,
 		Tier = tier,
-		Mods = pluto.mods.generateaffixes(wep, math.random(1, tier.affixes), nil, nil, tier.guaranteed, biases, tier.rolltier or rolltier, tier.roll or roll)
+		Mods = pluto.mods.generateaffixes(wep, tier.affixes and tier.affixes > 0 and math.random(1, tier.affixes) or 0, nil, nil, tier.guaranteed, biases, tier.rolltier or rolltier, tier.roll or roll)
 	}
 end
 

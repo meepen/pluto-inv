@@ -199,6 +199,8 @@ local lookups = {
 	weapon_ttt_huge = {4, 6.5},
 	weapon_ttt_usas12 = {0, 0, angle = Angle(0, 20, -35)},
 	weapon_ttt_pistol = {1.5, 4.2, size = 1.1},
+	weapon_ttt_ak47_u = {0, 7, size = 0.7, angle = Angle(45, 180, -60)},
+	weapon_ttt_deagle_u = {-3.5, 6, size = 0.7, angle = Angle(-45, 180, 145)},
 	Default = {0, 0},
 }
 
@@ -574,6 +576,86 @@ end
 vgui.Register("pluto_inventory_items", PANEL, "pluto_inventory_base")
 
 local PANEL = {}
+
+function PANEL:SetPlutoModel(m, i)
+	self:SetModel(m.Model)
+
+	pluto.updatemodel(self:GetEntity(), i)
+
+	if (self.WeaponItem) then
+		self:SetPlutoWeapon(self.WeaponItem)
+	end
+end
+
+function PANEL:SetStance(s)
+	local seq = self:GetEntity():LookupSequence(s)
+	if (seq == -1) then
+		return false
+	end
+
+	self:GetEntity():ResetSequence(seq)
+
+	self.Stance = s
+
+	return true
+end
+
+function PANEL:SetPlutoWeapon(item)
+	if (IsValid(self.Weapon)) then
+		self.Weapon:Remove()
+	end
+
+
+	if (not item) then
+		self:SetStance "idle_all_01"
+		return
+	end
+
+	local stored = baseclass.Get(item.ClassName)
+
+	if (not stored) then
+		return
+	end
+
+	self.WeaponItem = item
+
+	local set = false
+	if (stored.HoldType == "ar2") then
+		set = self:SetStance "idle_passive"
+	end
+
+	if (not set) then
+		self:SetStance "idle_all_01"
+	end
+
+	self.Weapon = ClientsideModel(stored.WorldModel, stored.RenderGroup)
+	if (IsValid(self.Weapon)) then
+		self.Weapon:SetParent(self:GetEntity())
+		self.Weapon:AddEffects(EF_BONEMERGE + EF_BONEMERGE_FASTCULL)
+		table.Merge(self.Weapon, stored)
+		self.Weapon.RenderOverride = self.Weapon.DrawWorldModel
+	end
+end
+
+function PANEL:PreDrawModel()
+	if (IsValid(self.Weapon)) then
+		self.Weapon:DrawModel()
+	end
+
+	return true
+end
+
+function PANEL:LayoutEntity(e)
+	if (self.bAnimated) then
+		self:RunAnimation()
+	end
+
+	e:SetAngles(e:GetAngles() - Angle(0, 50) * FrameTime())
+end
+
+vgui.Register("PlutoPlayerModel", PANEL, "DModelPanel")
+
+local PANEL = {}
 DEFINE_BASECLASS "pluto_inventory_base"
 function PANEL:Init()
 	BaseClass.Init(self)
@@ -602,88 +684,11 @@ function PANEL:Init()
 	self.PlayerModelBG = self:Add "ttt_curved_panel"
 	self.PlayerModelBG:SetColor(Color(0,0,0,100))
 
-	self.PlayerModel = self.PlayerModelBG:Add "DModelPanel"
+	self.PlayerModel = self.PlayerModelBG:Add "PlutoPlayerModel"
 	self.PlayerModel:Dock(FILL)
 
-	function self.PlayerModel:SetPlutoModel(m, i)
-		self:SetModel(m.Model)
-
-		pluto.updatemodel(self:GetEntity(), i)
-
-		if (self.WeaponItem) then
-			self:SetPlutoWeapon(self.WeaponItem)
-		end
-	
-		self:SetFOV(30)
-	end
-
-	function self.PlayerModel:SetStance(s)
-		local seq = self:GetEntity():LookupSequence(s)
-		if (seq == -1) then
-			return false
-		end
-
-		self:GetEntity():ResetSequence(seq)
-
-		self.Stance = s
-
-		return true
-	end
-
-	function self.PlayerModel:SetPlutoWeapon(item)
-		if (IsValid(self.Weapon)) then
-			self.Weapon:Remove()
-		end
-
-
-		if (not item) then
-			self:SetStance "idle_all_01"
-			return
-		end
-
-		local stored = baseclass.Get(item.ClassName)
-
-		if (not stored) then
-			return
-		end
-
-		self.WeaponItem = item
-
-		local set = false
-		if (stored.HoldType == "ar2") then
-			set = self:SetStance "idle_passive"
-		end
-
-		if (not set) then
-			self:SetStance "idle_all_01"
-		end
-
-		self.Weapon = ClientsideModel(stored.WorldModel, stored.RenderGroup)
-		if (IsValid(self.Weapon)) then
-			self.Weapon:SetParent(self:GetEntity())
-			self.Weapon:AddEffects(EF_BONEMERGE + EF_BONEMERGE_FASTCULL)
-			table.Merge(self.Weapon, stored)
-			self.Weapon.RenderOverride = self.Weapon.DrawWorldModel
-		end
-	end
-	
 	self.PlayerModel:SetPlutoModel(pluto.models.default)
-
-	function self.PlayerModel:PreDrawModel()
-		if (IsValid(self.Weapon)) then
-			self.Weapon:DrawModel()
-		end
-
-		return true
-	end
-	
-	function self.PlayerModel:LayoutEntity(e)
-		if (self.bAnimated) then
-			self:RunAnimation()
-		end
-
-		e:SetAngles(e:GetAngles() - Angle(0, 50) * FrameTime())
-	end
+	self.PlayerModel:SetFOV(30)
 
 	self.Items[1]:SetDefault "weapon_ttt_m4a1"
 	self.Items[2]:SetDefault "weapon_ttt_pistol"
@@ -695,6 +700,7 @@ function PANEL:Init()
 
 	self.Items[3].OnSetItem = function(s, i)
 		self.PlayerModel:SetPlutoModel(i and i.Model or pluto.models.default, i)
+		self.PlayerModel:SetFOV(30)
 	end
 end
 
@@ -747,7 +753,9 @@ end
 function PANEL:OnMousePressed(mouse)
 	if (pluto.cl_currency[self.Currency] > 0) then
 		local curtype = pluto.currency.byname[self.Currency]
-		if (curtype and curtype.NoTarget) then
+		if (curtype.Use) then
+			curtype.Use()
+		elseif (curtype and curtype.NoTarget) then
 			Derma_Query("Really use " .. curtype.Name .. "? " .. curtype.Description, "Confirm use", "Yes", function()
 				pluto.inv.message()
 					:write("currencyuse", self.Currency)

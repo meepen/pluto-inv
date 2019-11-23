@@ -75,6 +75,42 @@ local function getnewmod(item, prefix_max, suffix_max, ignoretier)
 	return true
 end
 
+local crate0_contents = {
+	model_jacket = 400,
+	model_sauron = 200,
+	model_odst = 100,
+	model_helga = 100,
+	model_wonderw = 100,
+	model_plague = 70,
+	model_bigboss = 70,
+	model_daedric = 40,
+	model_chewie = 30,
+	model_lilith = 25,
+	model_a2lh = 15,
+	model_a2 = 15,
+	model_wick2 = 3,
+	weapon_ttt_ak47_u = 0.5,
+	weapon_ttt_deagle_u = 0.5,
+}
+
+local function rollcrate(crate)
+	local m = math.random()
+
+	local total = 0
+	for _, v in pairs(crate) do
+		total = total + v
+	end
+
+	m = m * total
+
+	for itemname, val in pairs(crate) do
+		m = m - val
+		if (m <= 0) then
+			return itemname, val / total
+		end
+	end
+end
+
 for name, values in pairs {
 	dice = {
 		Shares = 500,
@@ -225,6 +261,24 @@ for name, values in pairs {
 	crate0 = {
 		Shares = 0.5,
 		Use = function(ply)
+			local gotten = rollcrate(crate0_contents)
+			local type = pluto.inv.itemtype(gotten)
+
+			if (type == "Model") then -- model
+				local id = pluto.inv.generatebuffermodel(ply, gotten:match "^model_(.+)$")
+
+				pluto.inv.message(ply)
+					:write("crate_id", id)
+					:send()
+			elseif (type == "Weapon") then -- unique
+				local id = pluto.inv.generatebufferweapon(ply, "unique", gotten)
+
+				pluto.inv.message(ply)
+					:write("crate_id", id)
+					:send()
+			end
+
+			pluto.inv.addcurrency(ply, "crate0", -1, function() end)
 		end,
 		Types = "None"
 	},

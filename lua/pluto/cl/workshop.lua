@@ -58,6 +58,7 @@ local packs =  {
 	wick = {
 		remote = "https://pluto.gg/datastore/server/wick.gma",
 		versions = {
+			"20191123",
 			"20191122",
 		}
 	},
@@ -82,6 +83,7 @@ local packs =  {
 	hevsuit = {
 		remote = "https://pluto.gg/datastore/server/hevsuit.gma",
 		versions = {
+			"20191123",
 			"20191122",
 		}
 	},
