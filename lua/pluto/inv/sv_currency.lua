@@ -231,7 +231,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	coin = {
-		Shares = 0.3,
+		Shares = 0.7,
 		Use = function(ply)
 			local trans = pluto.inv.addtabs(ply, {"normal"}, function(tab)
 				if (not tab or not IsValid(ply)) then
@@ -259,7 +259,7 @@ for name, values in pairs {
 		Types = "None",
 	},
 	crate0 = {
-		Shares = 0.5,
+		Shares = 9,
 		Use = function(ply)
 			local gotten = rollcrate(crate0_contents)
 			local type = pluto.inv.itemtype(gotten)
