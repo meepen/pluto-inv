@@ -1,0 +1,8 @@
+"VertexlitGeneric"{
+	"$basetexture" "models\v_models\weapons\wy\Eyes2"
+	"$additive" 	"1"
+	"$Selfillum"	"1"
+$translucent 1
+$nocull 1
+
+}

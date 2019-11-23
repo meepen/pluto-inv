@@ -1,0 +1,21 @@
+"EyeRefract"
+{
+	"$iris" "models\payday2\player\jacket\eyes"
+	"$AmbientOcclTexture" "models\payday2\player\jacket\detail\eye_ambient"			// Ambient occlusion in RGB, A unused
+	"$Envmap"             "models\payday2\player\jacket\detail\eye_cubemap"			// Reflection environment map
+	"$CorneaTexture"      "models\payday2\player\jacket\detail\eye-cornea"			// Special texture that has 2D cornea normal in RG and other data in BA
+
+	"$EyeballRadius" ".57"// Default 0.5
+	"$AmbientOcclColor" "[.45 .45 .45]"       // Default 0.33, 0.33, 0.33
+	"$Dilation" ".4"// Default 0.5
+	"$ParallaxStrength" ".1"          // Default 0.25
+	"$CorneaBumpStrength" ".7"// Default 1.0
+
+       $halflambert 1
+        $nodecal 1
+ 
+        $RaytraceSphere 1	                      
+        $SphereTexkillCombo 1
+
+       
+}

@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{
+	// Original shader: VertexLitTexture
+	"$basetexture" "models\hv5\HEV/ted_facemap"
+	"$nocull" 1
+	"$Translucent" 1
+	"$alphatest" 1
+	"$halflambert" 1
+}

@@ -19,6 +19,9 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 					idx INT UNSIGNED NOT NULL AUTO_INCREMENT,
 					tier VARCHAR(16) NOT NULL,
 					class VARCHAR(32) NOT NULL,
+					nick VARCHAR(32) NULL,
+					special_name VARCHAR(32) NULL,
+					exp INT UNSIGNED NOT NULL DEFAULT 0,
 	
 					tab_id INT UNSIGNED NOT NULL,
 					tab_idx TINYINT UNSIGNED NOT NULL,

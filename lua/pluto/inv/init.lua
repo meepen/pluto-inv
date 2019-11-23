@@ -166,7 +166,7 @@ end
 function pluto.inv.retrieveitems(steamid, cb)
 	steamid = pluto.db.steamid64(steamid)
 
-	pluto.db.query("SELECT pluto_items.idx as idx, tier, class, tab_id, tab_idx FROM pluto_items JOIN pluto_tabs ON pluto_tabs.idx = pluto_items.tab_id WHERE owner = ?", {steamid}, function(err, q)
+	pluto.db.query("SELECT pluto_items.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick FROM pluto_items JOIN pluto_tabs ON pluto_tabs.idx = pluto_items.tab_id WHERE owner = ?", {steamid}, function(err, q)
 		if (err) then
 			pwarnf("sql error: %s\n%s", err, debug.traceback())
 			return
@@ -179,14 +179,17 @@ function pluto.inv.retrieveitems(steamid, cb)
 		local by_mysql_id = {}
 
 		for i, item in pairs(q:getData()) do
-			weapons[item.idx] = {
+			weapons[item.idx] = setmetatable({
 				RowID = item.idx,
 				TabIndex = item.tab_idx,
 				TabID = item.tab_id,
 				Tier = pluto.tiers[item.tier],
 				ClassName = item.class,
-				Owner = steamid
-			}
+				Owner = steamid,
+				SpecialName = item.special_name,
+				Experience = item.exp,
+				Nickname = item.nick,
+			}, pluto.inv.item_mt)
 
 			local i = weapons[item.idx]
 			i.Type = pluto.inv.itemtype(i)

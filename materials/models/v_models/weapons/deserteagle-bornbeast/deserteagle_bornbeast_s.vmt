@@ -1,0 +1,22 @@
+"VertexlitGeneric"
+{
+	"$basetexture" 	"models\v_models\weapons\DESERTEAGLE-BORNBEAST\DESERTEAGLE_BORNBEAST_S"
+        "$bumpmap" 	"models\v_models\weapons\DESERTEAGLE-BORNBEAST\DESERTEAGLE_BORNBEAST_N"
+	"$envmap" "env_cubemap"
+	"$normalmapalphaenvmapmask" "1"
+	"$selfillum" 1
+	"$phong" 		"1"
+	"$phongexponent" 	"5"
+	"$phongboost" ".5"
+	"$phongfresnelranges" "[.9 1.5 1]"
+"Proxies" 
+		{ 
+		"AnimatedTexture" 
+			{ 
+			"animatedTextureVar" "$basetexture" 
+			"animatedTextureFrameNumVar" "$frame" 
+			"animatedTextureFrameRate" "8" 
+			}
+		} 
+}
+

@@ -1,0 +1,23 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/payday2/player/weapons/axe_df"
+	"$bumpmap" "models/payday2/player/weapons/axe_nm"
+
+	$surfaceprop wood
+
+	 $model "1"
+	"$halflambert" "0"
+	$diffuseexp 1.5
+	"$phong" "1"
+	$phongboost "1.4"
+	$phongexponent 12
+	$phongtint "[.85 .85 1]"
+	$phongfresnelranges "[.2 .5 1]"
+	$ambientocclusion 1
+	$PhongAlbedoTint 1
+	"$rimlight" "1"												// To enable rim lighting (requires phong)
+	"$rimlightexponent" "33"										// Exponent for phong component of rim lighting	
+	"$rimlightboost" "1"										// Boost for ambient cube component of rim lighting
+	$rimmask 1
+	"$diffuseexp" "1.5"
+}

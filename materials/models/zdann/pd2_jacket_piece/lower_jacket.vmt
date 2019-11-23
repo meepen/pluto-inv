@@ -1,0 +1,35 @@
+VertexLitGeneric
+{
+"$baseTexture" "models\zdann\pd2_jacket_piece\lower_jacket"
+"$bumpmap" "models\zdann\pd2_jacket_piece\lower_jacket_normal"
+"$PhongWarpTexture" "models\payday2\player\jacket\detail\phongwarp_metal"
+
+$surfaceprop metal
+$nocull "1"
+$halflambert 0
+$diffuseexp 1.5
+
+
+	"$phongexponenttexture" 	"models\payday2\player\jacket\detail\phong\Phong_036"
+	$PhongAlbedoTint 1
+
+
+ 	"$phong" "1"
+	"$phongexponent" "13"
+	"$phongboost"	"1.0"
+	"$phongfresnelranges"	"[0.001 6 1]"
+
+
+	"$rimlight" "1" 
+	"$rimlightexponent" "0.5" 
+	"$rimlightboost" "1.5" 
+	"$rimmask" 1
+
+
+	$Envmap "env_cubemap" 
+	"$envmaptint" "[0.02 0.02 0.02]"
+}
+
+
+
+

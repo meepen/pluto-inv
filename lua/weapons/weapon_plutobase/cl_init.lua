@@ -27,7 +27,7 @@ local function ReadMod()
 end
 
 net.Receive("pluto_wpn_db", function(len)
-	local ent = bit.band(bit.bnot(0xff000000), net.ReadInt(32))
+	local ent = net.ReadInt(32)
 
 	local PlutoData = {
 		Type = "Weapon",
@@ -40,6 +40,7 @@ net.Receive("pluto_wpn_db", function(len)
 
 	PlutoData.Tier = net.ReadString()
 	PlutoData.Color = net.ReadColor()
+	PlutoData.PrintName = net.ReadString()
 	PlutoData.Mods = modifiers
 
 	for ind = 1, net.ReadUInt(8) do
@@ -51,6 +52,10 @@ net.Receive("pluto_wpn_db", function(len)
 	end
 
 	pluto.wpn_db[ent] = PlutoData
+
+	function PlutoData:GetPrintName()
+		return self.PrintName
+	end
 
 	local found
 	for _, e in pairs(ents.GetAll()) do

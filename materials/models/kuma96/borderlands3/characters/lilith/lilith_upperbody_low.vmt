@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	$basetexture "models/kuma96/borderlands3/characters/lilith/lilith_upperbody_d"
+	$halflambert 1
+}

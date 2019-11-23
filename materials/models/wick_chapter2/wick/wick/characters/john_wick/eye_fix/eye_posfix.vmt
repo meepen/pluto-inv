@@ -1,0 +1,16 @@
+"Vertexlitgeneric"
+{
+     "$Basetexture" "models\wick_chapter2\wick\wick\characters\john_wick\eye_fix\Eye_Posfix"
+     "$Bumpmap" "models\wick_chapter2\wick\wick\characters\john_wick\eye_fix\Eye_Flat_Nrm"
+
+     "$Phong" "1"
+     "$Phongfresnelranges" "[0.28 0.64 1]" // Range values that control optional Fresnel equations
+     "$Halflambert" "1" // Enables half-lambertian lighting
+
+     "$Phongexponent" "525" // Applies a defined constant exponent value over the whole texture
+     "$Phongboost" "1" 
+
+     "$Rimlight" "1"
+     "$Rimlightexponent" "1"
+     "$Rimlightboost" "0.16"
+}

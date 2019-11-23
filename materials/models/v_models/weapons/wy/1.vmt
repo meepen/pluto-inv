@@ -1,0 +1,15 @@
+VertexLitGeneric
+{
+        "$basetexture""models\v_models\weapons\wy\1"
+        "$additive" 1
+        "$selfillum" 1
+"Proxies" 
+		{ 
+		"AnimatedTexture" 
+			{ 
+			"animatedTextureVar" "$basetexture" 
+			"animatedTextureFrameNumVar" "$frame" 
+			"animatedTextureFrameRate" "20" 
+			}
+		} 
+}

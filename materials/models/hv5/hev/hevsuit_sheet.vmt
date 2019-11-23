@@ -1,0 +1,27 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\hv5\HEV\hevsuit_sheet"
+	"$bumpmap" "models\hv5\HEV\hevsuit_sheet_normal"
+	"$surfaceprop" "plastic"
+	"$halflambert" "0"
+	"$multipass" "1"
+	"$phong" "1"
+	"$phongexponent" "25"
+	"$phongboost"	"1"
+	"$phongfresnelranges"	"[0.25 0.5 1]"
+	"$rimlight" "1"
+	"$rimlightexponent" "25"
+	"$rimlightboost" "0.5"
+	"$basealphaenvmapmask" "0"
+"$blendtintbybasealpha" "1" 
+"$blendtintcoloroverbase" "0"
+
+Proxies
+{
+PlayerColor
+{
+resultVar	$color2
+default 0.75 0.75 0.75
+}
+}
+}

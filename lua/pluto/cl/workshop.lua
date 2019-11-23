@@ -55,6 +55,48 @@ local packs =  {
 			"20191121",
 		}
 	},
+	wick = {
+		remote = "https://pluto.gg/datastore/server/wick.gma",
+		versions = {
+			"20191122",
+		}
+	},
+	lilith = {
+		remote = "https://pluto.gg/datastore/server/lilith.gma",
+		versions = {
+			"20191122",
+		}
+	},
+	odst = {
+		remote = "https://pluto.gg/datastore/server/odst.gma",
+		versions = {
+			"20191122",
+		}
+	},
+	bigboss = {
+		remote = "https://pluto.gg/datastore/server/bigboss.gma",
+		versions = {
+			"20191122",
+		}
+	},
+	hevsuit = {
+		remote = "https://pluto.gg/datastore/server/hevsuit.gma",
+		versions = {
+			"20191122",
+		}
+	},
+	jacket = {
+		remote = "https://pluto.gg/datastore/server/jacket.gma",
+		versions = {
+			"20191122",
+		}
+	},
+	unique0 = {
+		remote = "https://pluto.gg/datastore/server/unique0.gma",
+		versions = {
+			"20191122",
+		}
+	}
 	--[[
 	moxxi = {
 		remote = "https://pluto.gg/datastore/server/moxxi.gma",
@@ -102,6 +144,8 @@ local function run()
 				local match = item:match "materials/(.+)%.vmt"
 				if (match) then
 					table.insert(pluto.ws_cache, (Material(match)))
+					table.insert(pluto.ws_cache, (Material(match)))
+					table.insert(pluto.ws_cache, (Material(match)))
 				end
 				match = item:match "materials/(.+)%.vtf"
 				if (match) then
@@ -115,7 +159,7 @@ local function run()
 				end
 
 				for _, item in pairs(to_fix.vtf) do
-					LocalPlayer():ConCommand("mat_reloadtexture " .. item)
+					LocalPlayer():ConCommand("mat_reloadtexture \"" .. item .. "\"")
 				end
 
 				hook.Remove("Think", "pluto_" .. pack)

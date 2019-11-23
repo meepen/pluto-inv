@@ -1,0 +1,16 @@
+"VertexlitGeneric"{
+	"$basetexture" "models\v_models\weapons\DESERTEAGLE-BORNBEAST\Eyes"
+	"$additive" 	"1"
+	"$Selfillum"	"1"
+$translucent 1
+$nocull 1
+"Proxies"
+{
+"AnimatedTexture"
+{
+"animatedTextureVar" "$basetexture"
+"animatedTextureFrameNumVar" "$frame"
+"animatedTextureFrameRate" "11" 
+}
+}
+}

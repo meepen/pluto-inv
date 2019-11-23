@@ -1,0 +1,21 @@
+"VertexlitGeneric"
+{
+	"$basetexture""models\v_models\weapons\wy/ak47wy"
+	"$bumpmap" 	"models\v_models\weapons\wy/ak47wy_n"
+	"$envmap" "env_cubemap"
+	"$phongboost" ".5"
+	"$phong" 		"1"
+	"$normalmapalphaenvmapmask" "1"
+	"$phongexponent" 	"12"
+	"$phongfresnelranges" "[.9 1.5 1]"
+	"$selfillum" 1
+	"Proxies" 
+		{ 
+		"AnimatedTexture" 
+			{ 
+			"animatedTextureVar" "$basetexture" 
+			"animatedTextureFrameNumVar" "$frame" 
+			"animatedTextureFrameRate" "12" 
+			}
+		} 	
+}

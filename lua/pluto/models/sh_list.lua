@@ -11,12 +11,25 @@ local function COL(g)
 	return Color(nr + (xr - nr) * g, ng + (xg - ng) * g, nb + (xb - nb) * g)
 end
 
+local function rand(seed)
+	seed = (1103515245 * seed + 12345) % (2^31)
+	return seed
+end
+
 c "2b" {
 	Name = "2B",
 	Model = "models/kuma96/2b/2b_pm.mdl",
 	Hands = "models/kuma96/2b/2b_carms.mdl",
 	SubDescription = "Everything that lives is designed to end. We are perpetually trapped... in a never-ending spiral of life and death.",
 	Color = rare,
+	GenerateBodygroups = function(item)
+		local id = rand(item.RowID or item.ID)
+		local t = {}
+		t.Skirt = id % 2
+		id = math.floor(id / 2)
+		t.Headband = id % 2
+		return t
+	end
 }
 
 c "a2lh" {
@@ -25,6 +38,11 @@ c "a2lh" {
 	Hands = "models/kuma96/a2/a2_carms.mdl",
 	SubDescription = "I never quite realized... how beautiful this world is.",
 	Color = COL(1),
+	GenerateBodygroups = function(item)
+		return {
+			Cloth = item.Owner == "76561198050165746" and rand(item.RowID or item.ID) % 2 or 0
+		}
+	end,
 }
 
 c "a2" {
@@ -32,7 +50,12 @@ c "a2" {
 	Model = "models/kuma96/a2/a2sh_pm.mdl",
 	Hands = "models/kuma96/a2/a2_carms.mdl",
 	SubDescription = "I never quite realized... how beautiful this world is.",
-	Color = COL(1),
+	Color = COL(0.75),
+	GenerateBodygroups = function(item)
+		return {
+			Cloth = item.Owner == "76561198050165746" and rand(item.RowID or item.ID) % 2 or 0
+		}
+	end,
 }
 
 c "plague" {
@@ -41,6 +64,11 @@ c "plague" {
 	Hands = "models/player/plague_doktor/viewmodel.mdl",
 	SubDescription = "I have no idea what's awaiting me, or what will happen when this all ends. For the moment I know this: there are sick people and they need curing.",
 	Color = COL(0.8),
+	GenerateBodygroups = function(item)
+		return {
+			Legs = rand(item.RowID or item.ID) % 2
+		}
+	end,
 }
 
 c "daedric" {
@@ -56,6 +84,11 @@ c "wonderw" {
 	Model = "models/player/bobert/ww600.mdl",
 	SubDescription = "What one does when faced with the truth is more difficult than you'd think.",
 	Color = COL(0.5),
+	GenerateBodygroups = function(item)
+		return {
+			Lasso = rand(item.RowID or item.ID) % 2
+		}
+	end,
 }
 
 c "doomguy" {
@@ -71,6 +104,11 @@ c "sauron" {
 	Model = "models/auditor/lotr/sauron_alter2_pm.mdl",
 	SubDescription = "Build me an army, worthy of Mordor.",
 	Color = COL(0.2),
+	GenerateBodygroups = function(item)
+		return {
+			Weapon = (rand(item.RowID or item.ID) % 2) * 4
+		}
+	end,
 }
 
 c "helga" {
@@ -116,3 +154,96 @@ c "moxxi" {
 	Hands = "models/arms_moxxi.mdl",
 	Color = rare
 }
+
+c "wick2" {
+	Name = "John Wick",
+	Model = "models/wick_chapter2/wick_chapter2.mdl",
+	Hands = "models/wick_chapter2/wick_chapter2_c_arms.mdl",
+	SubDescription = "John wasn't exactly the boogeyman... he was the one you sent to kill the fucking boogeyman\n\nSuggested by Danger on the November 2019 Forum Thread",
+	Color = COL(0.9),
+}
+
+c "lilith" {
+	Name = "Lilith",
+	Model = "models/kuma96/borderlands3/characters/lilith/lilith_pm.mdl",
+	Hands = "models/kuma96/borderlands3/characters/lilith/c_arms_lilith.mdl",
+	SubDescription = "Ever seen a siren in action? Here's your chance.\nSuggested by FishCake on the November 2019 Forum Thread",
+	Color = COL(0.85),
+	GenerateBodygroups = function(item)
+		return {
+			Belt = rand(item.RowID or item.ID) % 2
+		}
+	end,
+}
+
+c "odst" {
+	Name = "ODST Armor",
+	Model = "models/voxelzero/player/odst.mdl",
+	SubDescription = "\nSuggested by shadow on the November 2019 Forum Thread",
+	Color = COL(0.4),
+}
+
+c "bigboss" {
+	Name = "Big Boss",
+	Model = "models/player/big_boss.mdl",
+	Hands = "models/player/big_boss_hands.mdl",
+	Color = COL(0.55),
+	SubDescription = "Kept you waiting, huh?\nSuggested by Linus just the tips on the November 2019 Forum Thread",
+	GenerateBodygroups = function(item)
+		local id = rand(item.RowID or item.ID or 0)
+
+		local t = {}
+
+		t.eyepatch = id % 2
+		id = math.floor(id / 2)
+
+		t.facepaint = id % 21
+		id = math.floor(id / 21)
+
+		t.camouflage = id % 8
+
+		return t
+	end
+}
+
+c "hevsuit" {
+	Name = "HEV Mark V",
+	Model = "models/player/hv5/hev_helmet.mdl",
+	Hands = "models/player/hv5/arms/v_hev.mdl",
+	Color = COL(0.2),
+	SubDescription = "...\nSuggested by Prismatic on the November 2019 Forum Thread"
+}
+
+c "jacket" {
+	Name = "Jacket",
+	Model = "models/splinks/hotline_miami/jacket/player_jacket.mdl",
+	Hands = "models/splinks/hotline_miami/jacket/arms_jacket.md",
+	Color = COL(0.38),
+	SubDescription = "\nSuggested by johnny2by4 on the November 2019 Forum Thread",
+	GenerateBodygroups = function(item)
+		return {
+			Mask = rand(item.RowID or item.ID) % 19
+		}
+	end,
+}
+
+function pluto.updatemodel(ent, item)
+	PrintTable(ent:GetBodyGroups())
+	if (not item or not item.Model or not item.Model.GenerateBodygroups) then
+		return
+	end
+
+	local bg = item.Model.GenerateBodygroups(item)
+
+	for name, id in pairs(bg or {}) do
+		local bgid = ent:FindBodygroupByName(name)
+		if (bgid == -1) then
+			pwarnf("Couldn't find %s on %s", name, item.Model.Model)
+			continue
+		end
+
+		ent:SetBodygroup(bgid, id)
+
+		print(bgid, id)
+	end
+end

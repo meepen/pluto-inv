@@ -1,11 +1,17 @@
-pluto.models = {}
+pluto.models = pluto.models or {}
 
 AddCSLuaFile "sh_list.lua"
 
 function pluto.model(name)
 	return function(d)
 		d.InternalName = name
-		pluto.models[name] = d
+		local old = pluto.models[name]
+		if (old) then
+			table.Merge(old, d)
+			d = old
+		else
+			pluto.models[name] = d
+		end
 		-- resource.AddFile(d.Model)
 		player_manager.AddValidModel(d.Name, d.Model)
 		if (d.Hands) then
@@ -47,6 +53,7 @@ hook.Add("PlayerSetModel", "pluto_model", function(ply)
 
 	if (mdl and mdl.Type == "Model") then
 		ply:SetModel(mdl.Model.Model)
+		pluto.updatemodel(ply, mdl)
 		return true
 	end
 end)

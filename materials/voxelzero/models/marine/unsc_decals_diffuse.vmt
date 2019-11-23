@@ -1,0 +1,7 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "voxelzero/models/marine/unsc_decals_diffuse"
+	"$translucent"	"1"
+	"$alphatest"	"1"
+	"$blendTintColorOverBase" "0"
+}

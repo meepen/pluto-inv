@@ -101,3 +101,35 @@ function pluto.inv.message(ply)
 		Player = ply
 	}, a)
 end
+
+local ITEM = {}
+
+pluto.inv.item_mt = pluto.inv.item_mt or {}
+pluto.inv.item_mt.__index = ITEM
+
+function ITEM:GetPrintName()
+	if (self.Nickname) then
+		return "\"" .. self.Nickname .. "\""
+	end
+
+	if (self.SpecialName) then
+		return self.SpecialName
+	end
+
+	return self:GetDefaultName()
+end
+
+function ITEM:GetDefaultName()
+	if (self.Type == "Weapon") then -- item
+		local w = weapons.GetStored(self.ClassName)
+		local tier = self.Tier
+		if (istable(tier)) then
+			tier = tier.Name
+		end
+		return tier .. " " .. (w and w.PrintName or "N/A")
+	elseif (self.Type == "Model") then
+		return self.Name
+	end
+
+	return "Unknown type: " .. self.Type
+end

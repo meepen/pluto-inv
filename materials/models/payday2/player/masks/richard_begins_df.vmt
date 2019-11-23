@@ -1,0 +1,66 @@
+"vertexlitGeneric"
+{
+	"$basetexture" "models\payday2\player\masks\richard_begins_df"
+	"$bumpmap" "models\payday2\player\jacket\richard_returns_n"
+
+
+	"$PhongWarpTexture" "models\payday2\player\jacket\detail\phongwarp_metal"
+
+$surfaceprop metal
+$nodecal 1
+$nocull "1"
+$halflambert 0
+$diffuseexp 1.5
+
+ 	"$phong" "1"
+	"$phongexponent" "10"
+	"$phongboost"	"2.5"
+	"$phongfresnelranges"	"[0.001 2 1]"
+	"$phongalbedotint" "1"
+
+
+	"$rimlight" "1" 
+	"$rimlightexponent" "0.5" 
+	"$rimlightboost" "1.5" 
+	"$rimmask" 1
+
+
+	// ------------------------------------------------------------------------
+	// PLAYER COLOR CUSTOMIZATION
+	// ------------------------------------------------------------------------
+	
+	// Only a small part of the material is coloured here, so the chain of
+	// proxies that modulates rimlight/phong is not present.
+	// See ALyx's plyr_sheet for a proper example of those.
+	
+	"$blendtintbybasealpha" "1" 
+ 	"$blendtintcoloroverbase" "0"
+	
+	// --- Test values. Comment the PlayerColor proxy to use one of these.
+	// "$color2" "{0 0 0}" // Black
+	// "$color2" "{255 0 0}" // Blue (default)
+	// "$color2" "{59 121 160}" // Blue (TF2)
+	// "$color2" "{180 52 41}" // Red (TF2)
+	// "$color2" "{100 72 58}" // Brown
+	// "$color2" "{140 208 112}" // Green
+	// "$color2" "{248 166 202}" // Pink
+	// "$color2" "{160 100 140}" // Purple
+	// "$color2" "{242 168 96}" // Yellow (gold-ish)
+	
+	Proxies
+	{
+		PlayerColor
+		{
+			resultVar	$color2
+			default		0.9 0.8 0.7
+		}
+		Clamp
+		{
+			min 0.15
+			max 0.90
+			srcVar1 "$color2"
+			resultVar "$color2"
+		}
+	}
+}
+

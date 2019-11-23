@@ -223,6 +223,19 @@ class BinaryEditor {
 	}
 }
 
+const Color565 = function Color565(buf, loc) {
+	let rgb = Buffer.alloc(4);
+
+	let short = buf.readUInt16LE(loc);
+
+	rgb[2] = (short & 0x1f) << 3;
+	rgb[1] = ((short >> 5) & 0x3f) << 2;
+	rgb[0] = ((short >> 11) & 0x1f) << 3;
+	rgb[3] = 0xff;
+
+	return rgb;
+}
+
 const VTFImageData = exports.VTFImageData = class VTFImageData {
 	constructor(width, height, depth, format, data) {
 		this.Width = width;
@@ -268,6 +281,92 @@ const VTFImageData = exports.VTFImageData = class VTFImageData {
 				}
 				return data;
 
+			case "DXT1":
+				// idk why tf no js modules work so let's copy vtflib!!
+				data = Buffer.alloc(this.Width * this.Height * 4);
+
+				let colours = [
+					null,
+					null,
+					Buffer.alloc(4),
+					Buffer.alloc(4)
+				];
+
+				const nBpp = 4;						// bytes per pixel (4 channels (RGBA))
+				const nBpc = 1;						// bytes per channel (1 byte per channel)
+				let iBps = nBpp * nBpc * this.Width;		// bytes per scanline
+			
+				let DataOffset = 0;
+			
+				for (let y = 0; y < this.Height; y += 4)
+				{
+					for (let x = 0; x < this.Width; x += 4)
+					{
+						let color_0 = Color565(from, DataOffset);
+						let color_0s = from.readUInt16LE(DataOffset);
+						let color_1 = Color565(from, DataOffset + 2);
+						let color_1s = from.readUInt16LE(DataOffset + 2);
+						let bitmask = from.readUInt32LE(DataOffset + 4);
+						DataOffset += 8;
+
+						colours[0] = color_0;
+						colours[1] = color_1;
+
+						if (color_0s > color_1s)
+						{
+							// Four-color block: derive the other two colors.    
+							// 00 = color_0, 01 = color_1, 10 = color_2, 11 = color_3
+							// These 2-bit codes correspond to the 2-bit fields 
+							// stored in the 64-bit block.
+							colours[2][2] = (2 * color_0[2] + color_1[2] + 1) / 3;
+							colours[2][1] = (2 * color_0[1] + color_1[1] + 1) / 3;
+							colours[2][0] = (2 * color_0[0] + color_1[0] + 1) / 3;
+							colours[2][3] = 0xFF;
+			
+							colours[3][2] = (color_0[2] + 2 * color_1[2] + 1) / 3;
+							colours[3][1] = (color_0[1] + 2 * color_1[1] + 1) / 3;
+							colours[3][0] = (color_0[0] + 2 * color_1[0] + 1) / 3;
+							colours[3][3] = 0xFF;
+						}
+						else
+						{
+							// Three-color block: derive the other color.
+							// 00 = color_0,  01 = color_1,  10 = color_2,
+							// 11 = transparent.
+							// These 2-bit codes correspond to the 2-bit fields 
+							// stored in the 64-bit block. 
+							colours[2][2] = (color_0[2] + color_1[2]) / 2;
+							colours[2][1] = (color_0[1] + color_1[1]) / 2;
+							colours[2][0] = (color_0[0] + color_1[0]) / 2;
+							colours[2][3] = 0xFF;
+			
+							colours[3][2] = (color_0[2] + 2 * color_1[2] + 1) / 3;
+							colours[3][1] = (color_0[1] + 2 * color_1[1] + 1) / 3;
+							colours[3][0] = (color_0[0] + 2 * color_1[0] + 1) / 3;
+							colours[3][3] = 0x00;
+						}
+			
+						for (let j = 0, k = 0; j < 4; j++)
+						{
+							for (let i = 0; i < 4; i++, k++)
+							{
+								let Select = (bitmask >> (k*2)) & 0x03;
+								let col = colours[Select];
+
+								if (((x + i) < this.Width) && ((y + j) < this.Height))
+								{
+									let Offset = (y + j) * iBps + (x + i) * nBpp;
+									data[Offset + 0] = col[0];
+									data[Offset + 1] = col[1];
+									data[Offset + 2] = col[2];
+									data[Offset + 3] = col[3];
+								}
+							}
+						}
+					}
+				}
+				return data;
+
 			case "RGBA8888":
 				return Buffer.from(from);
 
@@ -280,13 +379,13 @@ const VTFImageData = exports.VTFImageData = class VTFImageData {
 					data[base + 3] = 255;
 				}
 				return data;
-			
+
 			case "BGR888":
 				data = Buffer.alloc(from.length / 3 * 4);
 				for (let i = 0; i < from.length; i += 3) {
 					let base = i / 3 * 4;
 					for (let x = 0; x < 3; x++)
-						data[base + x] = from[i + 3 - x]
+						data[base + x] = from[i + 2 - x];
 					data[base + 3] = 255;
 				}
 				return data;
@@ -303,8 +402,6 @@ const VTFImageData = exports.VTFImageData = class VTFImageData {
 				return Buffer.from(dxt.compress(from, width, height, dxt.flags.DXT5));
 			case "DXT3":
 				return Buffer.from(dxt.compress(from, width, height, dxt.flags.DXT3));
-			case "DXT1":
-				return Buffer.from(dxt.compress(from, width, height, dxt.flags.DXT1));
 			
 			case "ABGR8888":
 				data = Buffer.from(from);
@@ -328,6 +425,9 @@ const VTFImageData = exports.VTFImageData = class VTFImageData {
 					data[i + 2] = b;
 				}
 				return data;
+
+			case "DXT1":
+				from = dxt.compress(from, width, height, dxt.flags.DXT1);
 
 			case "RGB888":
 				data = Buffer.alloc(from.length / 4 * 3);
@@ -447,7 +547,7 @@ exports.VTFFile = class VTFFile extends BinaryEditor {
 			if (this.ImageFormat !== "none") {
 				if (imageOffset)
 					this.size = imageOffset;
-				this.Resources.push(new VTFResource(VTFResourceTypes.IMAGE, this.read(ComputeImageSize(this.Width, this.Height, this.Depth, this.MipCount, this.ImageFormat))));
+				this.Resources.push(new VTFResource(VTFResourceTypes.IMAGE, this.read((this.Frames + 1) * ComputeImageSize(this.Width, this.Height, this.Depth, this.MipCount, this.ImageFormat))));
 			}
 
 			this.size = last_size;
@@ -483,15 +583,18 @@ exports.VTFFile = class VTFFile extends BinaryEditor {
 		return this.Resources.find(x => x.Type == VTFResourceTypes.IMAGE);
 	}
 
-	getImages() {
+	getImages(frame) {
+		if (!frame)
+			frame = 0;
+
 		let imgs = [];
 
 		let img = this.getImageResource();
 
-		let cur = img.Data.length;
 		let uiWidth = this.Width;
 		let uiHeight = this.Height;
 		let uiDepth = this.Depth;
+		let cur = ComputeImageSize(uiWidth, uiHeight, uiDepth, this.MipCount, this.ImageFormat) * (frame + 1);
 
 		for (let i = 0; i < this.MipCount; i++) {
 			let end = cur;
@@ -516,6 +619,14 @@ exports.VTFFile = class VTFFile extends BinaryEditor {
 		return imgs;
 	}
 
+	getImageFrames() {
+		let frames = [];
+		for (let i = 0; i < this.Frames; i++) {
+			frames.push(this.getImages(i));
+		}
+		return frames;
+	}
+
 	setImage(newimage) {
 		let img = this.getImageResource();
 
@@ -524,6 +635,22 @@ exports.VTFFile = class VTFFile extends BinaryEditor {
 		this.Width = newimage.Width;
 		this.Height = newimage.Height;
 		this.Depth = newimage.Depth;
+		this.Frames = 1;
+		this.MipCount = 1;
+	}
+
+	setImageFrames(frames) {
+		let data = Buffer.concat(frames.map(x => x.Data));
+		let newimage = frames[0];
+
+		let img = this.getImageResource();
+
+		img.Data = data;
+		this.ImageFormat = newimage.Format;
+		this.Width = newimage.Width;
+		this.Height = newimage.Height;
+		this.Depth = newimage.Depth;
+		this.Frames = frames.length;
 		this.MipCount = 1;
 	}
 

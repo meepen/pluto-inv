@@ -1,0 +1,15 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "voxelzero/models/marine/marine_odst_set_diffuse"
+	"$bumpmap" "voxelzero/models/marine/marine_odst_set_normal"
+	
+	"$phong" "1"
+	"$phongexponenttexture" "voxelzero/models/marine/marine_odst_set_normal"
+	"$phongboost" "0.4"
+	"$phongfresnelranges" "[0 0.2 0.5]"
+	
+	"$rimlight" "1"
+	"$rimlightexponent" "5"
+	"$rimlightboost" "0.01"
+	"$blendTintByBaseAlpha"	"1"
+}

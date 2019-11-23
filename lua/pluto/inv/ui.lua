@@ -605,8 +605,10 @@ function PANEL:Init()
 	self.PlayerModel = self.PlayerModelBG:Add "DModelPanel"
 	self.PlayerModel:Dock(FILL)
 
-	function self.PlayerModel:SetPlutoModel(m)
-		self:SetModel(m)
+	function self.PlayerModel:SetPlutoModel(m, i)
+		self:SetModel(m.Model)
+
+		pluto.updatemodel(self:GetEntity(), i)
 
 		if (self.WeaponItem) then
 			self:SetPlutoWeapon(self.WeaponItem)
@@ -665,7 +667,7 @@ function PANEL:Init()
 		end
 	end
 	
-	self.PlayerModel:SetPlutoModel(pluto.models.default.Model)
+	self.PlayerModel:SetPlutoModel(pluto.models.default)
 
 	function self.PlayerModel:PreDrawModel()
 		if (IsValid(self.Weapon)) then
@@ -692,7 +694,7 @@ function PANEL:Init()
 	end
 
 	self.Items[3].OnSetItem = function(s, i)
-		self.PlayerModel:SetPlutoModel(i and i.Model and i.Model.Model or pluto.models.default.Model)
+		self.PlayerModel:SetPlutoModel(i and i.Model or pluto.models.default, i)
 	end
 end
 
@@ -1780,13 +1782,25 @@ end
 
 function PANEL:SetItem(item)
 	self.ItemName:SetTextColor(color_black)
-	if (item.Type == "Weapon") then -- item
-		local w = weapons.GetStored(item.ClassName)
-		self.ItemName:SetText(item.Tier .. " " .. (w and w.PrintName or "N/A"))
-		self.ItemName:SetContentAlignment(4)
+	self.ItemID:SetTextColor(color_black)
+	if (item.GetPrintName) then -- item
+		self.ItemName:SetText(item:GetPrintName())
+		if (item.Type == "Weapon") then
+			self.ItemName:SetContentAlignment(4)
+		else
+			self.ItemName:SetContentAlignment(5)
+		end
 	else -- currency???
 		self.ItemName:SetText(item.Name)
 		self.ItemName:SetContentAlignment(5)
+	end
+
+	if (item.ID) then
+		self.ItemID:SetText(item.ID)
+	elseif (item.BufferID) then
+		self.ItemID:SetText("b" .. item.BufferID)
+	else
+		self.ItemID:SetText ""
 	end
 
 	self.ItemName:SizeToContentsY()
@@ -1846,6 +1860,13 @@ surface.CreateFont("pluto_item_showcase_header", {
 	weight = 1000,
 })
 
+surface.CreateFont("pluto_item_showcase_id", {
+	font = "Roboto",
+	extended = true,
+	size = math.max(10, h / 50),
+	weight = 1000,
+})
+
 surface.CreateFont("pluto_item_showcase_desc", {
 	font = "Roboto",
 	extended = true,
@@ -1881,6 +1902,11 @@ function PANEL:Init()
 	self.ItemName = self.ItemBackground:Add "DLabel"
 	self.ItemName:Dock(FILL)
 	self.ItemName:SetFont "pluto_item_showcase_header"
+
+	self.ItemID = self.ItemName:Add "DLabel"
+	self.ItemID:Dock(FILL)
+	self.ItemID:SetContentAlignment(3)
+	self.ItemID:SetFont "pluto_item_showcase_id"
 
 	self.ItemDesc = self:Add "pluto_centered_wrap"
 	self.ItemDesc:SetFont "pluto_item_showcase_desc"

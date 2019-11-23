@@ -57,6 +57,21 @@ function pluto.inv.writeitem(ply, item)
 		sent[item.RowID] = item.LastUpdate
 		net.WriteBool(true)
 		net.WriteString(item.ClassName)
+		net.WriteUInt(item.Experience, 32)
+
+		if (item.SpecialName) then
+			net.WriteBool(true)
+			net.WriteString(item.SpecialName)
+		else
+			net.WriteBool(false)
+		end
+
+		if (item.Nickname) then
+			net.WriteBool(true)
+			net.WriteString(item.Nickname)
+		else
+			net.WriteBool(false)
+		end
 
 		if (item.Type == "Weapon") then
 			net.WriteString(item.Tier.Name)
@@ -470,6 +485,7 @@ function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
 		return
 	end
 
+	i.Experience = 0
 	i.TabID, i.TabIndex = tabid, tabindex
 
 	sql.Query("DELETE FROM pluto_items WHERE idx = " .. SQLStr(i.BufferID))

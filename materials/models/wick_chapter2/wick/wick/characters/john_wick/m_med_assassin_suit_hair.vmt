@@ -1,0 +1,39 @@
+//Arachnit's super duper cool MLG vmt config, donut steal plz. :(
+
+"VertexLitGeneric"
+{
+//Basic
+	"$BaseTexture" 			    "models/wick_chapter2/wick/wick/characters/john_wick/T_Assassin_Suit_Hair_D"
+	"$BumpMap" 				    "models/wick_chapter2/wick/wick/characters/john_wick/T_Assassin_Suit_Hair_N"
+	"$PhongExponentTexture"     "models/wick_chapter2/wick/wick/characters/john_wick/T_Assassin_Suit_Hair_M"
+
+//Warp
+	"$LightWarpTexture"         "models/player/pyro/pyro_lightwarp"		//< Change as needed
+
+//Phong
+	"$Phong"				    "1"
+	"$PhongBoost"               "0.5" 	//< Change as needed
+//	"$PhongExponent"            "5" 	//< $PhongExponent overrides $PhongExponentTexture !!!
+	"$PhongFresnelRanges"	    "[0.3 1 8]"
+	"$PhongAlbedoTint"          "0"
+	"$NormalmapAlphaPhongMask"  "1"
+
+//Rimlight
+	"$Rimlight" 			    "1"
+	"$RimMask" 				    "1"
+	"$RimlightExponent"         "4"
+	"$RimlightBoost"            "1.0"
+
+//Other
+	"$Model"                    "1"
+	"$HalfLambert" 			    "1"
+	"$NoDecal" 				    "0"
+	"$AmbientOcclusion" 	    "1"
+	"$NoCull" 				    "0"
+	"$SurfaceProp" 			    "flesh"
+//	"$BlendTintByBaseAlpha"     "1"
+//	"$Color2"					"{ 64 64 64 }"	//< RGB colors
+	"$CloakPassEnabled" 		"1" 	//< For SFM and TF2
+//	"$CloakColorTint" 			"[0.4 0.5 1]" // BLU
+//	"$CloakColorTint" 			"[1 0.5 0.4]" // RED
+}

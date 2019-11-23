@@ -54,14 +54,22 @@ function pluto.inv.readitem()
 		return pluto.received.item[id]
 	end
 
-	local item = pluto.received.item[id] or {
+	local item = pluto.received.item[id] or setmetatable({
 		ID = id,
 		Version = 0,
-	}
+		Owner = LocalPlayer():SteamID64(),
+	}, pluto.inv.item_mt)
 
 	item.Version = item.Version + 1
 
 	item.ClassName = net.ReadString()
+	item.Experience = net.ReadUInt(32)
+	if (net.ReadBool()) then
+		item.SpecialName = net.ReadString()
+	end
+	if (net.ReadBool()) then
+		item.Nickname = net.ReadString()
+	end
 
 	item.Type = pluto.inv.itemtype(item)
 
@@ -185,10 +193,10 @@ function pluto.inv.readbufferitem()
 	local id = net.ReadInt(32)
 	local class = net.ReadString()
 
-	local item = {
+	local item = setmetatable({
 		BufferID = id,
 		ClassName = class
-	}
+	}, pluto.inv.item_mt)
 
 	item.Type = pluto.inv.itemtype(item)
 

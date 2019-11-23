@@ -23,7 +23,8 @@ function SWEP:Initialize()
 
 	if (pluto.weapons.valid[self:GetClass()]) then
 		if (not item) then
-			item = pluto.weapons.generatetier(nil, self:GetClass())
+			item = setmetatable(pluto.weapons.generatetier(nil, self:GetClass()), pluto.inv.item_mt)
+			item.Type = "Weapon"
 		end
 		self:SetInventoryItem(item)
 	end
@@ -75,6 +76,7 @@ function SWEP:SendData(ply)
 		net.WriteInt(self:GetPlutoID(), 32)
 		net.WriteString(gun.Tier.Name)
 		net.WriteColor(gun.Tier.Color)
+		net.WriteString(gun:GetPrintName())
 		self.PlutoData.Tier = gun.Tier.Name
 		self.PlutoData.Mods = modifiers
 

@@ -1,0 +1,23 @@
+"vertexlitGeneric"
+{
+	"$basetexture" "models\payday2\player\jacket\jacket_body"
+	"$bumpmap" "models\payday2\player\jacket\jacket_body_n"
+	$phongexponenttexture "models\payday2\player\jacket\detail\Phong_008"
+
+
+
+	 $model "1"
+	"$halflambert" "0"
+	"$phong" "1"
+	$phongboost "2"
+//	$phongexponent 26
+	$phongtint "[1 .85 1]"
+	$phongfresnelranges "[.002 2 .5]"
+	$ambientocclusion 1
+	$PhongAlbedoTint 1
+	"$rimlight" "1"												// To enable rim lighting (requires phong)
+	"$rimlightexponent" "33"										// Exponent for phong component of rim lighting	
+	"$rimlightboost" "0.4"										// Boost for ambient cube component of rim lighting
+	$rimmask 1
+	"$diffuseexp" "1.5"
+}
