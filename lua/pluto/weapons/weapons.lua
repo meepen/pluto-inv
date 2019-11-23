@@ -104,7 +104,7 @@ function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll, affixm
 	return {
 		ClassName = wep.ClassName,
 		Tier = tier,
-		Mods = pluto.mods.generateaffixes(wep, math.min(affixmax, tier.affixes and tier.affixes > 0 and math.random(1, tier.affixes) or 0), nil, nil, tier.guaranteed, biases, tier.rolltier or rolltier, tier.roll or roll)
+		Mods = pluto.mods.generateaffixes(wep, math.min(affixmax or 0, tier.affixes and tier.affixes > 0 and math.random(1, tier.affixes) or 0), nil, nil, tier.guaranteed, biases, tier.rolltier or rolltier, tier.roll or roll)
 	}
 end
 
