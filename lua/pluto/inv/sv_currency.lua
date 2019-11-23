@@ -136,7 +136,16 @@ for name, values in pairs {
 	droplet = {
 		Shares = 5000,
 		Use = function(ply, item)
-			item.Mods = pluto.weapons.generatetier(item.Tier.InternalName, item.ClassName).Mods
+			item.Mods = pluto.weapons.generatetier(item.Tier.InternalName, item.ClassName, nil, nil, function(mod, tier)
+				local needed = #mod.Tiers[tier] / 2
+			
+				local retn = {}
+				for i = 1, needed do
+					retn[i] = math.random() * 2 / 3
+				end
+			
+				return retn
+			end, item.Tier.affixes == 2 and 2 or item.Tier.affixes - 1).Mods
 			
 			UpdateAndDecrement(ply, item, "droplet")
 		end,

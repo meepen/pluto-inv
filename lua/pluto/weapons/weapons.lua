@@ -71,7 +71,7 @@ function pluto.weapons.randommelee()
 	return table.Random(pluto.weapons.melees)
 end
 
-function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll)
+function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll, affixmax)
 	if (wep) then
 		wep = weapons.GetStored(wep)
 	end
@@ -104,7 +104,7 @@ function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll)
 	return {
 		ClassName = wep.ClassName,
 		Tier = tier,
-		Mods = pluto.mods.generateaffixes(wep, tier.affixes and tier.affixes > 0 and math.random(1, tier.affixes) or 0, nil, nil, tier.guaranteed, biases, tier.rolltier or rolltier, tier.roll or roll)
+		Mods = pluto.mods.generateaffixes(wep, math.min(affixmax, tier.affixes and tier.affixes > 0 and math.random(1, tier.affixes) or 0), nil, nil, tier.guaranteed, biases, tier.rolltier or rolltier, tier.roll or roll)
 	}
 end
 
