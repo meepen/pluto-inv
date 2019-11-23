@@ -58,6 +58,8 @@ local packs =  {
 	wick = {
 		remote = "https://pluto.gg/datastore/server/wick.gma",
 		versions = {
+			"20191123_3",
+			"20191123_2",
 			"20191123",
 			"20191122",
 		}
