@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	$basetexture "models/kuma96/borderlands3/characters/maya/maya_body_d"
+	$halflambert 1
+}

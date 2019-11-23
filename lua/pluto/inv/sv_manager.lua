@@ -487,6 +487,7 @@ function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
 
 	i.Experience = 0
 	i.TabID, i.TabIndex = tabid, tabindex
+	setmetatable(i, pluto.inv.item_mt)
 
 	sql.Query("DELETE FROM pluto_items WHERE idx = " .. SQLStr(i.BufferID))
 	pluto.weapons.save(i, ply, function(id)

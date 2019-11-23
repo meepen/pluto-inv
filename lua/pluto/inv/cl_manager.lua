@@ -57,7 +57,6 @@ function pluto.inv.readitem()
 	local item = pluto.received.item[id] or setmetatable({
 		ID = id,
 		Version = 0,
-		Owner = LocalPlayer():SteamID64(),
 	}, pluto.inv.item_mt)
 
 	item.Version = item.Version + 1

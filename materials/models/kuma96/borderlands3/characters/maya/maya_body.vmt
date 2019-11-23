@@ -1,0 +1,10 @@
+"VertexlitGeneric"
+{
+	$basetexture "models/kuma96/borderlands3/characters/maya/maya_body_d"
+	$bumpmap "models/kuma96/borderlands3/characters/maya/maya_body_n"
+	
+	$phong 1
+	$phongexponenttexture "models/kuma96/borderlands3/characters/maya/maya_body_e"
+	$phongboost 10
+	$phongfresnelranges "[.1 .23 .945]"
+}

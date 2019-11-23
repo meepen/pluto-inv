@@ -94,9 +94,17 @@ local packs =  {
 	unique0 = {
 		remote = "https://pluto.gg/datastore/server/unique0.gma",
 		versions = {
+			"20191123",
 			"20191122",
 		}
-	}
+	},
+	maya = {
+		remote = "https://pluto.gg/datastore/server/maya.gma",
+		versions = {
+			"20191122",
+			"20191123",
+		}
+	},
 	--[[
 	moxxi = {
 		remote = "https://pluto.gg/datastore/server/moxxi.gma",
@@ -107,6 +115,8 @@ local packs =  {
 }
 
 pluto.ws_cache = {
+	Material "models/weapons/v_models/hands/v_hands",
+	Material "models/weapons/v_models/hands/v_hands",
 	Material "models/weapons/v_models/hands/v_hands",
 }
 

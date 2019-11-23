@@ -76,6 +76,10 @@ function SWEP:SendData(ply)
 		net.WriteInt(self:GetPlutoID(), 32)
 		net.WriteString(gun.Tier.Name)
 		net.WriteColor(gun.Tier.Color)
+		if (not gun.GetPrintName) then
+			
+		PrintTable(gun)
+		end
 		net.WriteString(gun:GetPrintName())
 		self.PlutoData.Tier = gun.Tier.Name
 		self.PlutoData.Mods = modifiers

@@ -16,6 +16,10 @@ local function rand(seed)
 	return seed
 end
 
+local function own(i)
+	return CLIENT and LocalPlayer():SteamID64() or i.Owner or "0"
+end
+
 c "2b" {
 	Name = "2B",
 	Model = "models/kuma96/2b/2b_pm.mdl",
@@ -25,9 +29,13 @@ c "2b" {
 	GenerateBodygroups = function(item)
 		local id = rand(item.RowID or item.ID)
 		local t = {}
-		t.Skirt = id % 2
-		id = math.floor(id / 2)
 		t.Headband = id % 2
+		id = math.floor(id / 2)
+
+		t.Skirt = id % (own(item) == "76561198050165746" and 3 or 2)
+
+		t["Virtuous Contract"] = 0
+		t["Beastlord"] = 0
 		return t
 	end
 }
@@ -40,7 +48,7 @@ c "a2lh" {
 	Color = COL(1),
 	GenerateBodygroups = function(item)
 		return {
-			Cloth = item.Owner == "76561198050165746" and rand(item.RowID or item.ID) % 2 or 0
+			Cloth = own(item) == "76561198050165746" and rand(item.RowID or item.ID) % 2 or 0
 		}
 	end,
 }
@@ -217,7 +225,7 @@ c "hevsuit" {
 c "jacket" {
 	Name = "Jacket",
 	Model = "models/splinks/hotline_miami/jacket/player_jacket.mdl",
-	Hands = "models/splinks/hotline_miami/jacket/arms_jacket.md",
+	Hands = "models/splinks/hotline_miami/jacket/arms_jacket.mdl",
 	Color = COL(0.38),
 	SubDescription = "\nSuggested by johnny2by4 on the November 2019 Forum Thread",
 	GenerateBodygroups = function(item)
@@ -227,13 +235,29 @@ c "jacket" {
 	end,
 }
 
+c "maya" {
+	Name = "Maya",
+	Model = "models/kuma96/borderlands3/characters/maya/maya_pm.mdl",
+	Hands = "models/kuma96/borderlands3/characters/maya/c_arms_maya.mdl",
+	SubDescription = "<3",
+	Color = rare,
+	GenerateBodygroups = function(item)
+		return {
+			Coat = rand(item.RowID or item.ID) % 2
+		}
+	end
+}
+
 function pluto.updatemodel(ent, item)
-	PrintTable(ent:GetBodyGroups())
 	if (not item or not item.Model or not item.Model.GenerateBodygroups) then
 		return
 	end
 
 	local bg = item.Model.GenerateBodygroups(item)
+
+	for _, d in pairs(ent:GetBodyGroups()) do
+		ent:SetBodygroup(d.id, 0)
+	end
 
 	for name, id in pairs(bg or {}) do
 		local bgid = ent:FindBodygroupByName(name)
