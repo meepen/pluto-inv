@@ -134,7 +134,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	droplet = {
-		Shares = 5000,
+		Shares = 3000,
 		Use = function(ply, item)
 			item.Mods = pluto.weapons.generatetier(item.Tier.InternalName, item.ClassName, nil, nil, function(mod, tier)
 				local needed = #mod.Tiers[tier] / 2
