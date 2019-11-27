@@ -231,7 +231,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	heart = {
-		Shares = 5,
+		Shares = 10,
 		Use = function(ply, item)
 			if (getnewmod(item)) then
 				UpdateAndDecrement(ply, item, "heart")
@@ -268,7 +268,7 @@ for name, values in pairs {
 		Types = "None",
 	},
 	crate0 = {
-		Shares = 29,
+		Shares = 39,
 		Use = function(ply)
 			local gotten = rollcrate(crate0_contents)
 			local type = pluto.inv.itemtype(gotten)

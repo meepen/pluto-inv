@@ -147,7 +147,7 @@ function pluto.db.steamid64(obj)
 		obj = util.SteamIDTo64(obj)
 	end
 
-	if (not obj or obj == 0) then
+	if (not obj) then
 		error("Bad object to convert to steamid: " .. tostring(obj))
 	end
 
