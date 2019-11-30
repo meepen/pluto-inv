@@ -2,7 +2,6 @@
 	"name": "a",
 	"version": "1.0.0",
 	"dependencies": {
-		"sharp": "0.17.1",
 		"vtflib": "1.0.1",
 		"fluent-ffmpeg": "2.1.2",
 		"crc-32": "1.2.0"

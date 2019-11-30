@@ -1,4 +1,3 @@
-const sharp = require("sharp");
 const {VTFFile, VTFImageData, GetImageTypeData} = require("./vtflib");
 const ffmpeg = require("fluent-ffmpeg");
 
@@ -110,6 +109,7 @@ const resize_to = 512;
 	}
 })();
 
+// SOUNDS
 (async () => {
 	for await (const f of getFiles("sound")) {
 		if (f.substr(-4) !== ".ogg") {
