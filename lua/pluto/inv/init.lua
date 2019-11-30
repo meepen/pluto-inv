@@ -6,8 +6,10 @@ pluto.inv = pluto.inv or {
 local PLAYER = FindMetaTable "Player"
 PLAYER.RealSteamID64 = PLAYER.RealSteamID64 or PLAYER.SteamID64
 
+local fake_cv = CreateConVar("pluto_fake_steamid", "")
+
 function PLAYER:SteamID64()
-	return self:RealSteamID64() or "0"
+	return fake_cv:GetString() ~= "" and fake_cv:GetString() or self:RealSteamID64() or "0"
 end
 
 function pluto.inv.defaulttabs(steamid, cb)
