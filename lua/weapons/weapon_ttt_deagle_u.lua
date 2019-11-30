@@ -90,7 +90,7 @@ function SWEP:SecondaryAttack()
 
 	self:SetMeleeTime(CurTime() + self.MeleeAttack)
 
-	self:EmitSound((table.Random(swing)))
+	self:EmitSound(table.Random(swing), nil, nil, nil, CHAN_USER_BASE + 1)
 
 	self.Owner:DoAnimationEvent(ACT_GMOD_GESTURE_MELEE_SHOVE_2HAND)
 end
@@ -158,7 +158,7 @@ function SWEP:Think()
 			dmg:SetDamagePosition(tr_main.HitPos)
 			dmg:SetDamageType(DMG_CLUB)
 
-			self:EmitSound((table.Random(hit)))
+			self:EmitSound(table.Random(hit), nil, nil, nil, CHAN_USER_BASE + 1)
 
 			if (SERVER) then
 				hitEnt:DispatchTraceAttack(dmg, tr_main)
