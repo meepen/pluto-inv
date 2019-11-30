@@ -605,8 +605,7 @@ function PANEL:SetPlutoWeapon(item)
 		self.Weapon:Remove()
 	end
 
-
-	if (not item) then
+	if (not item or item.Type ~= "Weapon") then
 		self:SetStance "idle_all_01"
 		return
 	end
