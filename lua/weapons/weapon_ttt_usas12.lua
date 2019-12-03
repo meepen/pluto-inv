@@ -21,7 +21,7 @@ SWEP.HoldType = "ar2"
 
 SWEP.Primary.Sound = Sound "Weapon_USAS.Single"
 SWEP.Primary.Recoil = 1.2
-SWEP.Primary.Damage = 7
+SWEP.Primary.Damage = 6.3
 SWEP.Primary.RecoilTiming  = 0.06
 SWEP.Primary.Cone = 0.04
 SWEP.Primary.Delay = 60 / 150
@@ -47,7 +47,7 @@ SWEP.Bullets = {
 	HullSize = 0,
 	Num = 5,
 	DamageDropoffRange = 300,
-	DamageDropoffRangeMax = 1200,
+	DamageDropoffRangeMax = 900,
 	DamageMinimumPercent = 0.1,
 	Spread = Vector(0.05, 0.05)
 }
