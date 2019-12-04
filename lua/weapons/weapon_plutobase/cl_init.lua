@@ -34,8 +34,9 @@ net.Receive("pluto_wpn_db", function(len)
 	}
 
 	local modifiers = {
-		prefix = {},
-		suffix = {},
+		implicit = {},
+		prefix   = {},
+		suffix   = {},
 	}
 
 	PlutoData.Tier = net.ReadString()

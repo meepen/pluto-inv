@@ -2,9 +2,11 @@ return {
 	Name = "Shadowy",
 	affixes = 5,
 	tags = {
-		dot = 3,
+		dot = 2,
 	},
-	SubDescription = "This gun seems to roll more Damage over Time modifiers",
+	SubDescription = {
+		tags = "This gun seems to roll Damage over Time modifiers 2x as often",
+	},
 	Shares = 750,
 	Color = Color(112, 89, 166),
 }

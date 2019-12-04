@@ -4,7 +4,10 @@ return {
 	tags = {
 		damage = 3,
 	},
-	SubDescription = "This gun seems to roll better damage modifiers",
+	SubDescription = {
+		tags = "This gun seems to roll Damage modifiers 3x as often",
+		rolltier = "This gun seems to roll better Damage modifiers",
+	},
 	rolltier = function(mod)
 		if (mod.Tags and mod.Tags.damage) then
 			local bias = 1.5

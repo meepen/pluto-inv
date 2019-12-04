@@ -17,6 +17,26 @@ pluto.tiers = pluto.tiers or setmetatable({}, {
 	}
 })
 
+local TIER = {}
+pluto.tier_mt = pluto.tier_mt or {}
+pluto.tier_mt.__index = TIER
+
+function TIER:GetSubDescription()
+	local desc = self.SubDescription
+
+	if (type(desc) == "table") then
+		local r = {}
+
+		for k, v in SortedPairs(desc) do
+			r[#r + 1] = v
+		end
+
+		return table.concat(r, "\n")
+	end
+
+	return desc or ""
+end
+
 local total_shares = 0
 for _, name in pairs {
 	"common",
@@ -34,6 +54,8 @@ for _, name in pairs {
 		pwarnf("Tier %s didn't return a value", name)
 		continue
 	end
+
+	setmetatable(item, pluto.tier_mt)
 
 	if (not item.Shares) then
 		pwarnf("Tier %s doesn't have shares", name)

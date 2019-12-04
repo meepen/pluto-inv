@@ -118,11 +118,27 @@ local packs =  {
 	},]]
 }
 
-pluto.ws_cache = {
-	Material "models/weapons/v_models/hands/v_hands",
-	Material "models/weapons/v_models/hands/v_hands",
-	Material "models/weapons/v_models/hands/v_hands",
+pluto.mount_cache = pluto.mount_cache or {
+	vmt = {},
+	vtf = {},
 }
+
+function pluto.cache_mat(name)
+	local tmp = pluto.mount_cache.vmt[name]
+
+	if (not tmp) then
+		tmp = {}
+		pluto.mount_cache.vmt[name] = tmp
+	end
+
+	table.insert(tmp, (Material(name)))
+end
+
+function pluto.cache_tex(name)
+	table.insert(pluto.mount_cache.vtf, name)
+end
+
+pluto.cache_mat "models/weapons/v_models/hands/v_hands"
 
 local function run()
 	for pack, data in pairs(packs) do
@@ -154,15 +170,20 @@ local function run()
 
 			local succ, fs = game.MountGMA("data/" .. fname)
 
+			if (not succ) then
+				fail "couldn't mount"
+				return
+			end
+
 			for _, item in pairs(fs) do
 				local match = item:match "materials/(.+)%.vmt"
 				if (match) then
-					table.insert(pluto.ws_cache, (Material(match)))
-					table.insert(pluto.ws_cache, (Material(match)))
-					table.insert(pluto.ws_cache, (Material(match)))
+					pluto.cache_mat(match)
 				end
+
 				match = item:match "materials/(.+)%.vtf"
 				if (match) then
+					pluto.cache_tex(match)
 					table.insert(to_fix.vtf, match)
 				end
 			end
@@ -179,11 +200,7 @@ local function run()
 				hook.Remove("Think", "pluto_" .. pack)
 			end)
 
-			if (not succ) then
-				fail "couldn't mount"
-			else
-				success()
-			end
+			success()
 		end
 
 		if (not file.Exists(fname, "DATA")) then

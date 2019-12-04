@@ -1,6 +1,8 @@
-MOD.Type = "suffix"
+MOD.Type = "implicit"
 MOD.Name = "The Tome"
 MOD.Tags = {}
+
+MOD.Color = Color(255, 0, 0)
 MOD.PreventChange = true
 
 function MOD:IsNegative(roll)
@@ -15,7 +17,7 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
-MOD.Description = "This gun has been corrupted. It cannot be changed."
+MOD.Description = "Tomed - Cannot be changed"
 
 MOD.Tiers = {
 	{ 1, 1 },

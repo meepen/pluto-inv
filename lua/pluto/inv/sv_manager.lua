@@ -33,6 +33,11 @@ function pluto.inv.writemod(ply, item, gun)
 		net.WriteString(mod:FormatModifier(i, tierroll[i * 2], gun.ClassName))
 	end
 
+	net.WriteBool(not not mod.Color)
+	if (mod.Color) then
+		net.WriteColor(mod.Color)
+	end
+
 	net.WriteString(name)
 	net.WriteUInt(tier, 4)
 	net.WriteString(mod.Description or mod:GetDescription(rolls))
@@ -75,26 +80,19 @@ function pluto.inv.writeitem(ply, item)
 
 		if (item.Type == "Weapon") then
 			net.WriteString(item.Tier.Name)
-			net.WriteString(item.Tier.SubDescription or "")
+			net.WriteString(item.Tier:GetSubDescription())
 			net.WriteColor(item.Tier.Color or color_white)
 
 			net.WriteUInt(item.Tier.affixes, 3)
-			if (item.Mods.prefix) then
-				net.WriteUInt(#item.Mods.prefix, 8)
-				for ind, mod in ipairs(item.Mods.prefix) do
-					pluto.inv.writemod(ply, mod, item)
-				end
-			else
-				net.WriteUInt(0, 8)
-			end
 
-			if (item.Mods.suffix) then
-				net.WriteUInt(#item.Mods.suffix, 8)
-				for ind, mod in ipairs(item.Mods.suffix) do
+			net.WriteUInt(table.Count(item.Mods), 8)
+			for type, mods in pairs(item.Mods) do
+				net.WriteString(type)
+				net.WriteUInt(#mods, 8)
+
+				for ind, mod in ipairs(mods) do
 					pluto.inv.writemod(ply, mod, item)
 				end
-			else
-				net.WriteUInt(0, 8)
 			end
 		end
 	else

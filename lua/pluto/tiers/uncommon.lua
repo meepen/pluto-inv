@@ -4,7 +4,9 @@ return {
 	tags = {
 		firerate = 2,
 	},
-	SubDescription = "This gun seems to roll firerate more often",
+	SubDescription = {
+		tags = "This gun seems to roll Fire Rate modifiers 2x as often",
+	},
 	Shares = 10000,
 	Color = Color(51, 166, 204),
 }

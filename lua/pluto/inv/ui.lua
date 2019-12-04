@@ -1716,6 +1716,23 @@ local function ToRomanNumerals(s)
     return ret
 end
 
+function PANEL:AddImplicit(mod)
+	local z = self.ZPos or 3
+
+	local p = self:Add "DLabel"
+	p:SetContentAlignment(5)
+	p:SetFont "pluto_item_showcase_impl"
+	p:SetTextColor(mod.Color or white_text)
+	p:SetZPos(z)
+	p:Dock(TOP)
+	p:SetText(mod.Desc)
+
+	self.ZPos = z + 1
+	self.Last = pnl
+
+	return p
+end
+
 function PANEL:AddMod(mod)
 	local z = self.ZPos or 3
 
@@ -1835,6 +1852,12 @@ function PANEL:SetItem(item)
 
 	self.Last = self.ItemSubDesc
 
+	if (item.Mods and item.Mods.implicit) then
+		for _, mod in ipairs(item.Mods.implicit) do
+			self:AddImplicit(mod):DockMargin(pad, pad / 2, pad, pad / 2)
+		end
+	end
+
 	if (item.Mods and item.Mods.prefix) then
 		for _, mod in ipairs(item.Mods.prefix) do
 			self:AddMod(mod):DockMargin(pad, pad / 2, pad, pad / 2)
@@ -1877,6 +1900,13 @@ surface.CreateFont("pluto_item_showcase_id", {
 surface.CreateFont("pluto_item_showcase_desc", {
 	font = "Roboto",
 	extended = true,
+	size = math.max(20, h / 35)
+})
+
+surface.CreateFont("pluto_item_showcase_impl", {
+	font = "Roboto",
+	extended = true,
+	italic = true,
 	size = math.max(20, h / 35)
 })
 

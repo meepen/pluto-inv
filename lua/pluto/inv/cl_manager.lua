@@ -34,6 +34,12 @@ function pluto.inv.readmod(item)
 		minsmaxs[i] = {net.ReadString(), net.ReadString()}
 	end
 
+	local color
+
+	if (net.ReadBool()) then
+		color = net.ReadColor()
+	end
+
 	local name = net.ReadString()
 	local tier = net.ReadUInt(4)
 	local desc = net.ReadString()
@@ -43,7 +49,8 @@ function pluto.inv.readmod(item)
 		MinsMaxs = minsmaxs,
 		Name = name,
 		Tier = tier,
-		Desc = desc
+		Desc = desc,
+		Color = color,
 	}
 end
 
@@ -74,28 +81,28 @@ function pluto.inv.readitem()
 
 	if (item.Type == "Weapon") then
 		item.Mods = {
+			implicit = {},
 			prefix = {},
 			suffix = {},
 		}
+
 		item.Tier = net.ReadString()
 		item.SubDescription = net.ReadString()
 		item.Color = net.ReadColor()
 
 		item.AffixMax = net.ReadUInt(3)
-		for k in pairs(item.Mods.prefix) do
-			item.Mods.prefix[k] = nil
-		end
 
-		for k in pairs(item.Mods.suffix) do
-			item.Mods.suffix[k] = nil
+		for k in pairs(item.Mods) do
+			item.Mods[k] = {}
 		end
 
 		for i = 1, net.ReadUInt(8) do
-			item.Mods.prefix[i] = pluto.inv.readmod()
-		end
+			local t = {}
+			item.Mods[net.ReadString()] = t
 
-		for i = 1, net.ReadUInt(8) do
-			item.Mods.suffix[i] = pluto.inv.readmod()
+			for i = 1, net.ReadUInt(8) do
+				t[i] = pluto.inv.readmod()
+			end
 		end
 	elseif (item.Type == "Model") then
 		item.Model = pluto.models[item.ClassName:match "^model_(.+)$"]
@@ -203,6 +210,7 @@ function pluto.inv.readbufferitem()
 		item.Tier = net.ReadString()
 		item.Color = net.ReadColor()
 		item.Mods = {
+			implicit = {},
 			prefix = {},
 			suffix = {},
 		}

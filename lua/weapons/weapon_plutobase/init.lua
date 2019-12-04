@@ -68,8 +68,9 @@ function SWEP:SendData(ply)
 	end
 
 	local modifiers = {
-		prefix = {},
-		suffix = {},
+		implicit = {},
+		prefix   = {},
+		suffix   = {},
 	}
 
 	net.Start "pluto_wpn_db"

@@ -1,7 +1,8 @@
 pluto.mods = pluto.mods or {
-	byname = {},
-	suffix = {},
-	prefix = {},
+	byname   = {},
+	suffix   = {},
+	prefix   = {},
+	implicit = {},
 }
 
 function pluto.mods.formataffix(affixtype, name)

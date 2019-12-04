@@ -214,7 +214,9 @@ for name, values in pairs {
 				return
 			end
 
-			table.insert(item.Mods.prefix, {
+			item.Mods.implicit = item.Mods.implicit or {}
+
+			table.insert(item.Mods.implicit, {
 				Roll = {},
 				Tier = 1,
 				Mod = "unchanging"
@@ -225,13 +227,13 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	mirror = {
-		Shares = 0,
+		Shares = 0.1,
 		Use = function(item)
 		end,
 		Types = "Weapon",
 	},
 	heart = {
-		Shares = 10,
+		Shares = 8.5,
 		Use = function(ply, item)
 			if (getnewmod(item)) then
 				UpdateAndDecrement(ply, item, "heart")
