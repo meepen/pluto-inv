@@ -17,6 +17,7 @@ for _, modname in pairs {
 	"accuracy",
 	"bleeding",
 	"damage",
+	"diced",
 	"fire",
 	"firerate",
 	"limp",
@@ -49,7 +50,7 @@ for _, modname in pairs {
 	-- faster indexing in rolls
 	if (mod.Tags) then
 		for k, v in pairs(mod.Tags) do
-			mod.Tags[k] = v
+			mod.Tags[v] = k
 		end
 	end
 
@@ -133,21 +134,25 @@ function pluto.mods.bias(wpn, list, biases)
 			continue
 		end
 
+		local dontadd = false
+
 		local bias = 1
-		for bias, amt in pairs(biases) do
-			if (item.Tags[bias]) then
+		for name, amt in pairs(biases) do
+			if (item.Tags[name]) then
 				bias = bias * amt
 			end
 		end
 
-		retn[#retn + 1] = {
-			item = item,
-			roll = math.random() * bias
-		}
+		if (not dontadd) then
+			retn[#retn + 1] = {
+				item = item,
+				roll = math.random() * bias
+			}
+		end
 	end
 
 	table.sort(retn, function(a, b)
-		return b.roll > a.roll
+		return b.roll < a.roll
 	end)
 
 	for k, v in pairs(retn) do

@@ -17,7 +17,7 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
-MOD.Description = "Tomed - Cannot be changed"
+MOD.Description = "Corrupted"
 
 MOD.Tiers = {
 	{ 1, 1 },

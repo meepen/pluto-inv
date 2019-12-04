@@ -28,6 +28,14 @@ function pluto.inv.generatebufferweapon(ply, ...)
 	return i.BufferID
 end
 
+concommand.Add("pluto_generate_weapon", function(ply, cmd, arg, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+
+	pluto.inv.generatebufferweapon(ply, unpack(arg))
+end)
+
 function pluto.inv.generatebuffermodel(ply, mdl)
 	local i = {
 		ClassName = "model_" .. mdl,

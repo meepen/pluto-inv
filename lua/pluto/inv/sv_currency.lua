@@ -136,7 +136,7 @@ for name, values in pairs {
 	droplet = {
 		Shares = 3000,
 		Use = function(ply, item)
-			item.Mods = pluto.weapons.generatetier(item.Tier.InternalName, item.ClassName, nil, nil, function(mod, tier)
+			local new_mods = pluto.weapons.generatetier(item.Tier.InternalName, item.ClassName, nil, nil, function(mod, tier)
 				local needed = #mod.Tiers[tier] / 2
 			
 				local retn = {}
@@ -146,6 +146,11 @@ for name, values in pairs {
 			
 				return retn
 			end, item.Tier.affixes == 2 and 2 or item.Tier.affixes - 1).Mods
+
+			print "a"
+
+			item.Mods.prefix = new_mods.prefix
+			item.Mods.suffix = new_mods.suffix
 			
 			UpdateAndDecrement(ply, item, "droplet")
 		end,
@@ -209,7 +214,10 @@ for name, values in pairs {
 				item.Tier = newitem.Tier
 				item.Mods = newitem.Mods
 			elseif (rand == 6) then -- reroll
-				item.Mods = pluto.weapons.generatetier(item.Tier.InternalName, item.ClassName).Mods
+				local new_mods = pluto.weapons.generatetier(item.Tier.InternalName, item.ClassName).Mods
+
+				item.Mods.prefix = new_mods.prefix
+				item.Mods.suffix = new_mods.suffix
 			else
 				return
 			end
@@ -424,6 +432,11 @@ hook.Add("DoPlayerDeath", function(vic, damager, dmg)
 end)
 
 local tospawn_amt = 2.7
+
+function pluto.currency.givespawns(ply, amt)
+	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or 0) + amt
+end
+
 
 hook.Add("TTTBeginRound", "pluto_currency", function()
 	for _, item in pairs(round.GetStartingPlayers()) do

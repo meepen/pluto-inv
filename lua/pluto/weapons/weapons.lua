@@ -40,11 +40,13 @@ end
 local total_shares = 0
 for _, name in pairs {
 	"common",
+	"confused",
 	"junk",
 	"mystical",
 	"otherworldly",
 	"powerful",
 	"shadowy",
+	"stable",
 	"uncommon",
 	"unique",
 	"vintage",
@@ -111,8 +113,8 @@ function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll, affixm
 	end
 
 	local biases
-	if (tier.biases) then
-		biases = table.Copy(tier.biases)
+	if (tier.tags) then
+		biases = table.Copy(tier.tags)
 	else
 		biases = {}
 	end
@@ -126,7 +128,16 @@ function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll, affixm
 	return {
 		ClassName = wep.ClassName,
 		Tier = tier,
-		Mods = pluto.mods.generateaffixes(wep, math.min(affixmax or math.huge, tier.affixes and tier.affixes > 0 and math.random(1, tier.affixes) or 0), nil, nil, tier.guaranteed, biases, tier.rolltier or rolltier, tier.roll or roll)
+		Mods = pluto.mods.generateaffixes(
+			wep,
+			math.min(affixmax or math.huge, tier.affixes and tier.affixes > 0 and math.random(1, tier.affixes) or 0),
+			nil,
+			nil,
+			tier.guaranteed, 
+			biases,
+			tier.rolltier or rolltier,
+			tier.roll or roll
+		)
 	}
 end
 
