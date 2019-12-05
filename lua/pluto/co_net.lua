@@ -5,10 +5,6 @@ co_net = co_net or {
 
 local _net = net
 
-local function pack(...)
-	return {..., n = select("#", ...)}
-end
-
 for _, index in pairs {
 	"Angle",
 	"Bit",
