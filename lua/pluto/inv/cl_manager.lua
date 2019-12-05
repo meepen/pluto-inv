@@ -69,6 +69,7 @@ function pluto.inv.readitem()
 	item.Version = item.Version + 1
 
 	item.ClassName = net.ReadString()
+
 	item.Experience = net.ReadUInt(32)
 	if (net.ReadBool()) then
 		item.SpecialName = net.ReadString()
@@ -131,7 +132,6 @@ function pluto.inv.readfullupdate()
 	if (IsValid(pluto.ui.pnl)) then
 		pluto.ui.pnl:Remove()
 	end
-	
 
 	for i = 1, net.ReadUInt(32) do
 		pluto.inv.readtab()
@@ -140,7 +140,7 @@ function pluto.inv.readfullupdate()
 	for i = 1, net.ReadUInt(32) do
 		pluto.inv.readcurrencyupdate()
 	end
-	
+
 	for i = 1, net.ReadUInt(8) do
 		pluto.inv.readbufferitem()
 	end

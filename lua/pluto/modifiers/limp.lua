@@ -29,7 +29,7 @@ MOD.Tiers = {
 
 function MOD:OnDamage(wep, vic, dmginfo, rolls, state)
 	if (SERVER and math.random() < self:GetModifier(rolls[1], wep) / wep.Bullets.Num) then
-		pluto.statuses.limp(vic, 2.5)
+		pluto.statuses.limp(vic, 4)
 	end
 end
 

@@ -15,6 +15,7 @@ pluto.files.load {
 		"cl/workshop.lua",
 	},
 	Shared = {
+		"co_net.lua",
 		"init.lua",
 		"weapons/override.lua",
 		"inv/sh_manager.lua",

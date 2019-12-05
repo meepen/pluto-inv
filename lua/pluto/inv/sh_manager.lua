@@ -48,7 +48,7 @@ for k, v in pairs(pluto.inv.messages.sv2cl) do
 	pluto.inv.messages.sv2cl[v] = k
 end
 
-net.Receive("pluto_inv_data", function(len, cl)
+co_net.Receive("pluto_inv_data", function(len, cl)
 	pprintf("Collecting %i bits of inventory data...", len)
 
 	while (not pluto.inv.readmessage(cl)) do
@@ -86,17 +86,19 @@ local a = {
 		end,
 		send = function(self)
 			self:write("end")
-			if (SERVER) then
-				net.Send(self.Player)
-			else
-				net.SendToServer()
-			end
+			net.Finish()
 		end
 	}
 }
 
 function pluto.inv.message(ply)
-	net.Start "pluto_inv_data"
+	co_net.Start("pluto_inv_data", function()
+		if (SERVER) then
+			net.Send(ply)
+		else
+			net.SendToServer()
+		end
+	end)
 
 	return setmetatable({
 		Player = ply
