@@ -80,18 +80,20 @@ function pluto.inv.readitem()
 
 	item.Type = pluto.inv.itemtype(item)
 
+	if (item.Type == "Weapon" or item.Type == "Shard") then
+		item.Tier = net.ReadString()
+		item.SubDescription = net.ReadString()
+		item.Color = net.ReadColor()
+
+		item.AffixMax = net.ReadUInt(3)
+	end
+
 	if (item.Type == "Weapon") then
 		item.Mods = {
 			implicit = {},
 			prefix = {},
 			suffix = {},
 		}
-
-		item.Tier = net.ReadString()
-		item.SubDescription = net.ReadString()
-		item.Color = net.ReadColor()
-
-		item.AffixMax = net.ReadUInt(3)
 
 		for k in pairs(item.Mods) do
 			item.Mods[k] = {}
@@ -206,9 +208,16 @@ function pluto.inv.readbufferitem()
 
 	item.Type = pluto.inv.itemtype(item)
 
-	if (item.Type == "Weapon") then
+	-- TODO(meep): make readitembody
+
+	if (item.Type == "Weapon" or item.Type == "Shard") then
 		item.Tier = net.ReadString()
+		item.SubDescription = net.ReadString()
 		item.Color = net.ReadColor()
+		item.AffixMax = net.ReadUInt(3)
+	end
+
+	if (item.Type == "Weapon") then
 		item.Mods = {
 			implicit = {},
 			prefix = {},

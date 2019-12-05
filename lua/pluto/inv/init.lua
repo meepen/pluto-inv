@@ -167,26 +167,6 @@ function pluto.inv.getfreespace(ply, item)
 	end
 end
 
-local function CombineColors(...)
-	local cols = {
-		r = 0,
-		g = 0,
-		b = 0,
-		a = 255
-	}
-
-	local num = select("#", ...)
-	for i = 1, num do
-		local c = select(i, ...)
-
-		cols.r = cols.r + c.r / num
-		cols.g = cols.g + c.g / num
-		cols.b = cols.b + c.b / num
-	end
-
-	return Color(cols.r, cols.g, cols.b, cols.a)
-end
-
 function pluto.inv.retrieveitems(steamid, cb)
 	steamid = pluto.db.steamid64(steamid)
 
@@ -226,31 +206,11 @@ function pluto.inv.retrieveitems(steamid, cb)
 			end
 
 			if (item.tier == "crafted" and item.tier1 ~= nil) then
-				local tier = setmetatable({}, pluto.tier_mt)
-				local t1 = pluto.tiers[item.tier1]
-				local t2 = pluto.tiers[item.tier2]
-				local t3 = pluto.tiers[item.tier3]
-				tier.Name = "Crafted"
-				tier.InternalName = "crafted"
-
-				tier.SubDescription = {
-					string.format("Crafted from %s, %s and %s shards", t1.Name, t2.Name, t3.Name)
+				it.Tier = pluto.craft.tier {
+					item.tier1,
+					item.tier2,
+					item.tier3
 				}
-
-				if (t2.tags) then
-					table.insert(tier.SubDescription, t2.SubDescription.tags)
-					tier.tags = t2.tags
-				end
-
-				if (t3.rolltier) then
-					table.insert(tier.SubDescription, t3.SubDescription.rolltier)
-					tier.rolltier = t3.rolltier
-				end
-
-				tier.affixes = t1.affixes or 0
-				tier.Color = CombineColors(t1.Color, t1.Color, t1.Color, t2.Color, t2.Color, t3.Color)
-
-				it.Tier = tier
 			end
 
 			weapons[item.idx] = it
@@ -329,13 +289,16 @@ function pluto.inv.getbufferitem(id)
 
 	wpn.Type = pluto.inv.itemtype(wpn)
 
+	if (wpn.Type == "Shard" or wpn.Type == "Weapon") then
+		wpn.Tier = pluto.tiers[data.tier]
+	end
+
 	if (wpn.Type == "Weapon") then
 		wpn.Mods = {
 			implicit = {},
 			prefix = {},
 			suffix = {},
 		}
-		wpn.Tier = pluto.tiers[data.tier]
 
 		for _, item in pairs(sql.Query([[SELECT modname, pluto_mods.tier as tier, roll1, roll2, roll3 FROM pluto_mods
 			JOIN pluto_items ON pluto_mods.gun_index = pluto_items.idx

@@ -32,7 +32,9 @@ pluto.inv.messages = {
 
 function pluto.inv.itemtype(i)
 	local class = type(i) == "table" and i.ClassName or i
-	if (class:StartWith "weapon_") then
+	if (class == "shard") then
+		return "Shard"
+	elseif (class:StartWith "weapon_") then
 		return "Weapon"
 	elseif (class:StartWith "model_") then
 		return "Model"
@@ -123,7 +125,13 @@ function ITEM:GetPrintName()
 end
 
 function ITEM:GetDefaultName()
-	if (self.Type == "Weapon") then -- item
+	if (self.Type == "Shard") then
+		local tier = self.Tier
+		if (istable(tier)) then
+			tier = tier.Name
+		end
+		return tier .. " Tier Shard"
+	elseif (self.Type == "Weapon") then -- item
 		local w = weapons.GetStored(self.ClassName)
 		local tier = self.Tier
 		if (istable(tier)) then

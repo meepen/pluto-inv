@@ -28,6 +28,22 @@ function pluto.inv.generatebufferweapon(ply, ...)
 	return i.BufferID
 end
 
+function pluto.inv.generatebuffershard(ply, tier)
+	local i = {
+		ClassName = "shard",
+		Tier = pluto.tiers[tier],
+		Type = "Shard",
+	}
+
+	sql.Query("INSERT INTO pluto_items (tier, class, owner) VALUES (" .. SQLStr(tier) .. ", 'shard', " .. ply:SteamID64() .. ")")
+	local id = sql.QueryValue "SELECT last_insert_rowid() as id"
+	i.BufferID = id
+
+	pluto.inv.notifybufferitem(ply, i)
+
+	return i.BufferID
+end
+
 concommand.Add("pluto_generate_weapon", function(ply, cmd, arg, args)
 	if (not pluto.cancheat(ply)) then
 		return
@@ -61,8 +77,6 @@ function pluto.inv.notifybufferitem(ply, i)
 		for i = 6, #items do
 			items[i] = items[i].idx
 		end
-
-		-- TODO(meep): generate currency
 
 		sql.Query("DELETE FROM pluto_items WHERE idx IN (" .. table.concat(items, ", ", 6) .. ")")
 	end

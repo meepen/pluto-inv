@@ -78,13 +78,14 @@ function pluto.inv.writeitem(ply, item)
 			net.WriteBool(false)
 		end
 
-		if (item.Type == "Weapon") then
+		if (item.Type == "Shard" or item.Type == "Weapon") then
 			net.WriteString(item.Tier.Name)
 			net.WriteString(item.Tier:GetSubDescription())
 			net.WriteColor(item.Tier.Color or color_white)
-
 			net.WriteUInt(item.Tier.affixes, 3)
+		end
 
+		if (item.Type == "Weapon") then
 			net.WriteUInt(table.Count(item.Mods), 8)
 			for type, mods in pairs(item.Mods) do
 				net.WriteString(type)
@@ -198,9 +199,16 @@ function pluto.inv.writebufferitem(ply, item)
 
 	net.WriteString(item.ClassName)
 
-	if (pluto.inv.itemtype(item) == "Weapon") then
+	local tp = pluto.inv.itemtype(item)
+
+	if (tp == "Shard" or tp == "Weapon") then
 		net.WriteString(item.Tier.Name)
+		net.WriteString(item.Tier:GetSubDescription())
 		net.WriteColor(item.Tier.Color or color_white)
+		net.WriteUInt(item.Tier.affixes, 3)
+	end
+
+	if (tp == "Weapon") then
 		if (item.Mods.prefix) then
 			net.WriteUInt(#item.Mods.prefix, 8)
 			for ind, mod in ipairs(item.Mods.prefix) do
