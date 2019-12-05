@@ -649,7 +649,31 @@ function PANEL:LayoutEntity(e)
 		self:RunAnimation()
 	end
 
-	e:SetAngles(e:GetAngles() - Angle(0, 50) * FrameTime())
+	if (self.OverrideRotate) then
+		local now_x = input.GetCursorPos()
+		local last_x = self.LastX or now_x
+
+		e:SetAngles(e:GetAngles() - Angle(0, .3) * (last_x - now_x))
+
+		self.LastX = now_x
+	elseif (not self.StopRotate) then
+		e:SetAngles(e:GetAngles() - Angle(0, 50) * FrameTime())
+	end
+end
+
+function PANEL:DragMousePress(mcode)
+	if (mcode == MOUSE_RIGHT) then
+		self.StopRotate = not self.StopRotate
+	elseif (mcode == MOUSE_LEFT) then
+		self.OverrideRotate = true
+	end
+end
+
+function PANEL:DragMouseRelease()
+	if (self.OverrideRotate) then
+		self.OverrideRotate = false
+		self.LastX = nil
+	end
 end
 
 vgui.Register("PlutoPlayerModel", PANEL, "DModelPanel")
