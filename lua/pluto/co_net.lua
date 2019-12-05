@@ -1,9 +1,9 @@
+local _net = net
+
 co_net = co_net or {
 	coroutines = {},
 	max_packet = 0xfe00 * 8,
 }
-
-local _net = net
 
 for _, index in pairs {
 	"Angle",
