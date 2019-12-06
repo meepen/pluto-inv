@@ -205,7 +205,7 @@ local lookups = {
 }
 
 function PANEL:Paint(w, h)
-	if (pluto.ui.ghost == self:GetParent() and not pluto.ui.ghost.paintover) then
+	if (self.norender or pluto.ui.ghost == self:GetParent() and not pluto.ui.ghost.paintover) then
 		return
 	end
 
@@ -518,6 +518,12 @@ function PANEL:GhostClick(p, m)
 		end
 	end
 	pluto.ui.ghost = nil
+
+	if (self.Item and p ~= self) then
+		timer.Simple(0, function()
+			pluto.ui.ghost = self
+		end)
+	end
 
 	return false
 end
