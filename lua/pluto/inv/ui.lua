@@ -443,14 +443,86 @@ function PANEL:OnMousePressed(code)
 			if (not IsValid(tabele) or not tabtype) then
 				return
 			end
+			local rightclick_menu = DermaMenu()
+			if (self.Tab.Type ~= "equip") then
+				rightclick_menu:AddOption("Equip",function()
+					local thistab = pluto.tabs[self.Tab.Type]
 
-			local thistab = pluto.tabs[self.Tab.Type]
-
-			for i = 1, tabtype.size do
-				if (tabtype.canaccept(i, self.Item) and (not t.Items[self.TabIndex] or thistab.canaccept(self.TabIndex, t.Items[self.TabIndex]))) then
-					self:SwitchWith(tabele.Items[i])
-				end
+					for i = 1, tabtype.size do
+						if (tabtype.canaccept(i, self.Item) and (not t.Items[self.TabIndex] or thistab.canaccept(self.TabIndex, t.Items[self.TabIndex]))) then
+							self:SwitchWith(tabele.Items[i])
+						end
+					end
+				end):SetIcon("icon16/add.png")
 			end
+
+			rightclick_menu:AddOption("Upload item stats", function()
+				OVERRIDE_DETAILED = true
+				local show = pluto.ui.showcase(self.Item)
+				local item_name = self.Item:GetPrintName()
+				hook.Add("PostRender", "Upload", function()
+					hook.Remove("PostRender", "Upload")
+					OVERRIDE_DETAILED = false
+					local data = render.Capture {
+						format = "png",
+						quality = 100,
+						h = show:GetTall(),
+						w = show:GetWide(),
+						x = 0,
+						y = 0,
+						alpha = false,
+					}
+					show:Remove()
+					HTTP {
+						url = "https://api.imgur.com/3/album",
+						method = "post",
+						headers = {
+							Authorization = "Client-ID 3693fd6ea039830",
+						},
+						success = function(_, c, _, _)
+							local album = util.JSONToTable(c)
+							if (not album.success) then
+								Derma_Message("Your upload was not successful! Please try again.", "Upload failed", ":(")
+								return
+							end
+
+							HTTP {
+								url = "https://api.imgur.com/3/image",
+								method = "post",
+								headers = {
+									Authorization = "Client-ID 3693fd6ea039830"
+								},
+								success = function(_, b, _, _)
+									b = util.JSONToTable(b)
+									if (b.success) then
+										Derma_Message("Your picture of your stats has been uploaded and copied to your clipboard!\nYou can now simply paste it anywhere, like our Discord! discord.gg/pluto", "Upload success", "Thanks!")
+										SetClipboardText("https://imgur.com/a/" .. album.data.id)
+									else
+										Derma_Message("Your upload was not successful! Please try again.", "Upload failed", "Thanks")
+									end
+								end,
+								failed = function(a) 
+									Derma_Message("Imgur appears to be having some issues, please wait and try again!", "Upload failed", "Ok")
+								end,
+								parameters = {
+									image = util.Base64Encode(data),
+									album = album.data.deletehash
+								},
+							}
+						end,
+						failed = function(a)
+							Derma_Message("Your upload was not successful! Please try again.", "Upload failed", "Ok")
+						end,
+						parameters = {
+							title = string.format("%s's %s", LocalPlayer():Nick(), item_name),
+							description = string.format("Taken by %s https://steamcommunity.com/profiles/%s\nDiscord: https://discord.gg/pluto\nWebsite: https://pluto.gg", LocalPlayer():Nick(), LocalPlayer():SteamID64()), 
+						},
+					}
+				end)
+			end):SetIcon("icon16/camera.png")
+
+			rightclick_menu:Open()
+			rightclick_menu:SetPos(input.GetCursorPos())--s
 		end
 	end
 end
@@ -1804,7 +1876,7 @@ function PANEL:AddMod(mod)
 	function p:Think()
 		local desc = mod.Desc
 		local fmt = mod.Rolls
-		if (LocalPlayer():KeyDown(IN_DUCK) and mod.MinsMaxs) then
+		if ((OVERRIDE_DETAILED or LocalPlayer():KeyDown(IN_DUCK)) and mod.MinsMaxs) then
 			fmt = {}
 			for i = 1, #mod.Rolls do
 				fmt[i] = string.format("%s (%s to %s)", mod.Rolls[i], mod.MinsMaxs[i][1], mod.MinsMaxs[i][2])
