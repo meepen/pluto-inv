@@ -15,7 +15,6 @@ function ENT:GetImage()
 end
 
 function ENT:DrawTranslucent()
-	if not IsValid(self:GetImage()) then return end
 	render.SetMaterial(self:GetImage())
 	local pos = self:GetPos()
 	local size = self.Size * 0.75
