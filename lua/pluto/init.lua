@@ -15,6 +15,7 @@ end
 
 local allowed = {
 	["76561198050165746"] = true,
+	["76561198055769267"] = true,
 }
 
 function pluto.cancheat(ply)

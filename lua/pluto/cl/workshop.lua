@@ -16,6 +16,12 @@ local packs =  {
 			"20191115",
 		}
 	},
+	m21 = {
+		remote = "https://pluto.gg/datastore/server/m21.gma",
+		versions = {
+			"20191205",
+		}
+	},
 	mp7 = {
 		remote = "https://pluto.gg/datastore/server/mp7.gma",
 		versions = {

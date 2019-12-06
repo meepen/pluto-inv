@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\weapons\v_models\cod4_m21\scope"
+      	"$bumpmap" "models\weapons\v_models\cod4_m21\scope_normal"
+	"$envmap" "env_cubemap"
+	"$normalmapalphaenvmapmask" "1"
+	"$envmaptint" "[.40 .40 .40]"
+}
