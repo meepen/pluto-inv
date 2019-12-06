@@ -418,7 +418,7 @@ function PANEL:OnCursorExited()
 		self.showcasepnl:Remove()
 	end
 end
-
+local uploading_item = false
 function PANEL:OnMousePressed(code)
 	if (self.Item and not IsValid(pluto.ui.ghost)) then
 		if (code == MOUSE_LEFT and not self.NoGhost) then
@@ -438,19 +438,97 @@ function PANEL:OnMousePressed(code)
 					break
 				end
 			end
-
+			local rightclick_menu = DermaMenu()
+		
 			local tabtype = pluto.tabs.equip
 			if (not IsValid(tabele) or not tabtype) then
 				return
 			end
+			local rightclick_menu = DermaMenu()
+			if self.Tab.Type == "normal" then
+				rightclick_menu:AddOption("Equip",function()
+					local thistab = pluto.tabs[self.Tab.Type]
 
-			local thistab = pluto.tabs[self.Tab.Type]
-
-			for i = 1, tabtype.size do
-				if (tabtype.canaccept(i, self.Item) and (not t.Items[self.TabIndex] or thistab.canaccept(self.TabIndex, t.Items[self.TabIndex]))) then
-					self:SwitchWith(tabele.Items[i])
-				end
+					for i = 1, tabtype.size do
+						if (tabtype.canaccept(i, self.Item) and (not t.Items[self.TabIndex] or thistab.canaccept(self.TabIndex, t.Items[self.TabIndex]))) then
+							self:SwitchWith(tabele.Items[i])
+						end
+					end
+				end):SetIcon("icon16/add.png")
 			end
+			if not uploading_item then 
+				rightclick_menu:AddOption("Upload item stats",function()
+					local show = pluto.ui.showcase(self.Item)
+					local item_name = self.Item:GetPrintName()
+					hook.Add("PostRender","Upload picture",function()
+						hook.Remove("PostRender","Upload picture")
+						local data = render.Capture({
+							format = "jpeg",
+							quality = 100, //100 is max quality, but 70 is good enough.
+							h = show:GetTall(),
+							w = show:GetWide(),
+							x = 0,
+							y = 0,
+						})
+						show:Remove()
+						uploading_item = true
+						HTTP({
+						url = "https://api.imgur.com/3/album",
+						method = "post",
+						headers = {
+							["Authorization"] = "Client-ID 3693fd6ea039830"
+						},
+						success = function(_,c,_,_)
+							local album = util.JSONToTable(c)
+							if not album.success then
+								Derma_Message("Your upload was not successful! Please try again.", "Upload failed", "Thanks")
+								uploading_item = false
+								return
+							end
+							HTTP({
+								url = "https://api.imgur.com/3/image",
+								method = "post",
+								headers = {
+									["Authorization"] = "Client-ID 3693fd6ea039830"
+								},
+								success = function(_,b,_,_)
+									local ob = b
+									b = util.JSONToTable(b)
+									if b.success then
+										local l = "https://imgur.com/a/" .. album.data.id
+										Derma_Message("Your picture of your stats has been uploaded and copied to your clipboard! (" .. l .. ")\nYou can now simply paste it anywhere, like our Discord!", "Upload success", "Thanks!")
+										SetClipboardText(l)
+									else
+										Derma_Message("Your upload was not successful! Please try again.", "Upload failed", "Thanks")
+									end
+									uploading_item = false
+								end,
+								failed = function(a) 
+									Derma_Message("Imgur appears to be having some issues, please wait and try again!", "Upload failed", "Ok")
+									uploading_item = false
+								end,
+								parameters = {
+									image = util.Base64Encode(data),
+									album = album.data.deletehash
+								},
+							})
+							end,
+							failed = function(a) 
+								Derma_Message("Your upload was not successful! Please try again.", "Upload failed", "Ok")
+								uploading_item = false
+							end,
+							parameters = {
+								title = LocalPlayer():Nick() .. "'s '" .. (item_name) .. "'",
+								description = (item_name) .. "\nOwned by " .. LocalPlayer():Nick() .. " (" .. LocalPlayer():SteamID() .. ") (https://steamcommunity.com/profiles/" .. LocalPlayer():SteamID64() .. ")\nCaptured on " .. (GetHostName() or "pluto.gg") .. "\n\nCheck out our website at https://pluto.gg/ !"
+							},
+						})
+					end)
+					render.Spin()
+				end):SetIcon("icon16/camera.png")
+			end
+
+			rightclick_menu:Open()
+			rightclick_menu:SetPos(input.GetCursorPos())--s
 		end
 	end
 end
