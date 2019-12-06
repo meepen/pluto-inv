@@ -150,6 +150,8 @@ function PANEL:SetItem(item)
 		self:SetWeapon(item)
 	elseif (self.Type == "Model") then
 		self:SetModel(item)
+	elseif (self.Type == "Shard") then
+		self.MaterialColor = nil
 	else
 		pwarnf("Unknown type: %s", tostring(self.Type))
 		return

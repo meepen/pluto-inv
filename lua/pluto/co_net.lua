@@ -1,4 +1,4 @@
-local _net = net
+_net = _net or net
 
 co_net = co_net or {
 	coroutines = {},
@@ -22,6 +22,8 @@ for _, index in pairs {
 	"Type",
 	"UInt",
 	"Vector",
+
+	"Function",
 } do
 	co_net["Write" .. index] = function(...)
 		local wt = co_net.BitsWritten()
@@ -102,7 +104,11 @@ function co_net.Receive(name, fn)
 		net = _net
 		if (not succ) then
 			print(debug.traceback(co, err))
-			error(err)
+			error(debug.traceback(co, err))
 		end
 	end)
 end
+
+hook.Add("Tick", "pluto_ensure_co_net", function()
+	net = _net
+end)

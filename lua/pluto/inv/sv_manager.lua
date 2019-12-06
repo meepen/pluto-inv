@@ -376,7 +376,12 @@ function pluto.inv.readitemdelete(ply)
 	tab.Items[tabindex] = nil
 
 	pluto.inv.deleteitem(ply, itemid, function(succ)
-		if (succ or not IsValid(ply)) then
+		if (succ) then
+			if (IsValid(ply)) then
+				if (i.Type == "Weapon" and math.random() < 1 / 3) then
+					pluto.inv.generatebuffershard(ply, i.Tier.InternalName)
+				end
+			end
 			return
 		end
 

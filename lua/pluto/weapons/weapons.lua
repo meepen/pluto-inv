@@ -81,6 +81,9 @@ pluto.tiers_pct = {}
 local pct = 0
 for name, item in pairs(pluto.tiers) do
 	pct = pct + item.Shares / total_shares
+
+	item.SharePercent = item.Shares / total_shares
+
 	table.insert(pluto.tiers_pct, {
 		Percent = pct,
 		Tier = item
