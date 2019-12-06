@@ -465,6 +465,15 @@ function PANEL:SwitchWith(other)
 end
 
 function PANEL:GhostClick(p, m)
+	if (not p) then
+		return
+	end
+
+	if (m == MOUSE_RIGHT) then
+		pluto.ui.ghost = nil
+		return
+	end
+
 	if (m == MOUSE_LEFT and p.ClassName == "pluto_inventory_garbage") then
 		if (self.Tab.ID == 0) then
 			local p = vgui.Create "pluto_falling_text"
@@ -516,13 +525,13 @@ function PANEL:GhostClick(p, m)
 			end
 			self:SwitchWith(gparent)
 		end
-	end
-	pluto.ui.ghost = nil
-
-	if (self.Item and p ~= self) then
-		timer.Simple(0, function()
-			pluto.ui.ghost = self
-		end)
+		pluto.ui.ghost = nil
+	
+		if (self.Item and p ~= self) then
+			timer.Simple(0, function()
+				pluto.ui.ghost = self
+			end)
+		end
 	end
 
 	return false
