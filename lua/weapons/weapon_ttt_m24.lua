@@ -49,6 +49,19 @@ SWEP.ViewModel             = "models/weapons/v_snip_agu.mdl"
 SWEP.WorldModel            = "models/weapons/w_snip_agu.mdl"
 SWEP.HasScope              = true
 
+SWEP.Offset = {
+	Pos = {
+		Up = 2,
+		Right = 1,
+		Forward = 0,
+	},
+	Ang = {
+		Up = 0,
+		Right = -10,
+		Forward = 180,
+	}
+}
+
 sound.Add {
 	name = "Weapon_cod4m21.Boltpull",
 	channel = CHAN_WEAPON,

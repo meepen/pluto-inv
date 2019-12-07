@@ -203,6 +203,7 @@ local lookups = {
 	weapon_ttt_pistol = {1.5, 4.2, size = 1.1},
 	weapon_ttt_ak47_u = {0, 7, size = 0.7, angle = Angle(45, 180, -60)},
 	weapon_ttt_deagle_u = {-3.5, 6, size = 0.7, angle = Angle(-45, 180, 145)},
+	weapon_ttt_m24 = {-10, 12},
 	Default = {0, 0},
 }
 
