@@ -1,5 +1,7 @@
 pluto.currency.shares = 0
 
+local tospawn_amt = CreateConVar("pluto_currency_spawnrate", "2.7")
+
 local function UpdateAndDecrement(ply, item, currency)
 	local trans = pluto.weapons.update(item, function(id)
 		if (not IsValid(ply)) then
@@ -431,8 +433,6 @@ hook.Add("DoPlayerDeath", function(vic, damager, dmg)
 	pluto.currency.addpoints(atk, points)
 end)
 
-local tospawn_amt = 2.7
-
 function pluto.currency.givespawns(ply, amt)
 	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or 0) + amt
 end
@@ -444,7 +444,7 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 			continue
 		end
 
-		local points = (pluto.currency.tospawn[item.Player] or 1) * tospawn_amt
+		local points = (pluto.currency.tospawn[item.Player] or 1) * tospawn_amt:GetFloat()
 
 		for i = 1, points do
 			local e = pluto.currency.spawnfor(item.Player)
