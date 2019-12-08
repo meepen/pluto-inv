@@ -33,7 +33,7 @@ SWEP.Primary.Automatic     = true
 SWEP.Primary.Ammo          = "357"
 SWEP.Primary.ClipSize      = 5
 SWEP.Primary.DefaultClip   = 21
-SWEP.Primary.Sound         = "Weapon_cod4m21.trigger"
+SWEP.Primary.Sound         = "Weapon_M4A1.Silenced"
 
 SWEP.Secondary.Sound       = Sound "Default.Zoom"
 
@@ -93,6 +93,15 @@ sound.Add {
 	soundlevel = 50,
 	sound = "weapons/cod4m21/trigger.ogg"
 }
+
+SWEP.Sounds = {
+	reload = {
+		{time = 0.58, sound = "Weapon_cod4m21.clipout"},
+		{time = 1.48, sound = "Weapon_cod4m21_clipin"},
+		{time = 2.6, sound = "Weapon_cod4m21.Boltpull"},
+	},
+}
+
 SWEP.Ironsights = {
 	Pos = Vector(5, -15, -2),
 	Angle = Vector(2.6, 1.37, 3.5),
