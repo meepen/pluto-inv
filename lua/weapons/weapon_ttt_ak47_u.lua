@@ -24,6 +24,8 @@ SWEP.SlotPos 		= 1
 SWEP.Base 		= "weapon_tttbase"
 SWEP.HoldType 	= "ar2"
 
+SWEP.Ortho = {0, 7, size = 0.7, angle = Angle(45, 180, -60)}
+
 SWEP.ViewModel 	= "models/cf/c_ak47_beast.mdl"
 SWEP.WorldModel = "models/cf/w_ak47_beast.mdl"
 

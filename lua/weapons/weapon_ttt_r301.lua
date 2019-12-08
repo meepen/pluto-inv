@@ -75,6 +75,8 @@ SWEP.PrintName              = "R301"
 SWEP.Slot               = 2
 SWEP.SlotPos                = 73
 
+SWEP.Ortho = {-7, 9}
+
 SWEP.Primary.Sound = "weapons/r301/gunfire/r301_fire.ogg"
 SWEP.Primary.Damage = 14
 SWEP.Primary.Automatic = true

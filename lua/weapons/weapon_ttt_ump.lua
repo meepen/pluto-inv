@@ -81,6 +81,8 @@ SWEP.Offset = {
 	}
 }
 
+SWEP.Ortho = {-2, 7, size = 0.7, angle = Angle(0, -80, -6)}
+
 SWEP.Sounds = {
 	draw = {
 		{time = 0, sound = "weapons/ump9/draw.ogg"}

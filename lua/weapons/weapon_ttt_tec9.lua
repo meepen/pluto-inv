@@ -70,6 +70,8 @@ SWEP.SlotPos = 0
 SWEP.DrawAmmo = true
 SWEP.DrawCrosshair = true
 
+SWEP.Ortho = {0, -0.5, angle = Angle(0, -90, 90)}
+
 SWEP.ViewModelFOV = 47
 SWEP.ViewModelFlip = false
 SWEP.HoldType = "pistol"

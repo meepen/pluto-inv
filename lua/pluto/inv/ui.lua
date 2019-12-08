@@ -178,34 +178,6 @@ function PANEL:SetModel(item)
 end
 
 DEFINE_BASECLASS "ttt_curved_panel"
-local lookups = {
-	weapon_ttt_mac10 = {2.2, 3.9},
-	weapon_ttt_ak47 = {5, 3},
-	weapon_ttt_r301 = {-7, 9},
-	weapon_ttt_ppsh41 = {-5, -1},
-	weapon_ttt_ump = {-2, 7, size = 0.7, angle = Angle(0, -80, -6)},
-	weapon_ttt_tec9 = {0, -0.5, angle = Angle(0, -90, 90)},
-	weapon_ttt_glock = {1, 4, size = 1.1},
-	weapon_ttt_deagle = {0.5, 5},
-	weapon_ttt_mp5 = {2, 7.5},
-	weapon_ttt_sg550 = {3.0, 5},
-	weapon_ttt_galil = {4, 4},
-	weapon_ttt_m4a1 = {5, 3},
-	weapon_ttt_tmp = {0, 5},
-	weapon_ttt_g3sg1 = {7.2, 1.9},
-	weapon_ttt_p228 = {1.5, 3.7, size = 1.1},
-	weapon_ttt_shotgun = {2.8, 4},
-	weapon_ttt_rifle = {2.8, 4},
-	weapon_ttt_sg552 = {8, 0},
-	weapon_ttt_p90 = {4, 5},
-	weapon_ttt_huge = {4, 6.5},
-	weapon_ttt_usas12 = {0, 0, angle = Angle(0, 20, -35)},
-	weapon_ttt_pistol = {1.5, 4.2, size = 1.1},
-	weapon_ttt_ak47_u = {0, 7, size = 0.7, angle = Angle(45, 180, -60)},
-	weapon_ttt_deagle_u = {-3.5, 6, size = 0.7, angle = Angle(-45, 180, 145)},
-	weapon_ttt_m24 = {-10, 12},
-	Default = {0, 0},
-}
 
 function PANEL:Paint(w, h)
 	if (self.norender or pluto.ui.ghost == self:GetParent() and not pluto.ui.ghost.paintover) then
@@ -248,12 +220,11 @@ function PANEL:Paint(w, h)
 
 		if (IsValid(err)) then
 			if (typ == "Weapon") then
-				local lookup = lookups.Default
 				if (not IsValid(err)) then
 					return
 				end
 
-				lookup = lookups[class] or lookup
+				local lookup = weapons.GetStored(class).Ortho or {0, 0}
 
 				local x, y = self:LocalToScreen(0, 0)
 				local mins, maxs = err:GetModelBounds()

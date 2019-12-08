@@ -26,6 +26,8 @@ SWEP.HoldType 	= "pistol"
 SWEP.ViewModel 	= "models/cf/c_deagle_beast.mdl"
 SWEP.WorldModel = "models/cf/w_deagle_beast.mdl"
 
+SWEP.Ortho = {-3.5, 6, size = 0.7, angle = Angle(-45, 180, 145)}
+
 SWEP.Primary.Sound 		= Sound("weapons/deagle_beast/deagle-1.ogg")
 SWEP.Primary.Damage 	= 45
 SWEP.Primary.ClipSize 	= 8

@@ -4,6 +4,8 @@ SWEP.PrintName = "USAS12"
 SWEP.Slot = 2
 SWEP.SlotPos = 0
 
+SWEP.Ortho = {0, 0, angle = Angle(0, 20, -35)}
+
 SWEP.ViewModelPos = Vector(0, 0, -0.8)
 
 function SWEP:FireAnimationEvent(_, _, event)
