@@ -73,6 +73,7 @@ local packs =  {
 	lilith = {
 		remote = "https://pluto.gg/datastore/server/lilith.gma",
 		versions = {
+			"20191211",
 			"20191122",
 		}
 	},
