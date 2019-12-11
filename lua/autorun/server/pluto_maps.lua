@@ -16,6 +16,8 @@ local map_lookup = {
 	ttt_skyscraper = "253328815",
 	ttt_stadium = "104506140",
 	ttt_whitehouse_v9 = "296631816",
+	ttt_forest_final = "147635981",
+	ttt_clue_se_2017 = "971786142",
 }
 
 for k, wsid in pairs(map_lookup) do
