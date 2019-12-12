@@ -100,6 +100,7 @@ end)
 
 hook.Add("TTTEndRound", "pluto_endround", function()
 	timer.Remove "pluto_afkcheck"
+	sql.Begin()
 	for _, obj in pairs(round.GetStartingPlayers()) do
 		local ply = obj.Player
 		if (not IsValid(ply)) then
@@ -121,6 +122,7 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 
 		ply:ChatPrint("You have received a weapon! Check your inventory.")
 	end
+	sql.Commit()
 end)
 
 hook.Add("TTTPlayerGiveWeapons", "pluto_loadout", function(ply)

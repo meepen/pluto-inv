@@ -21,7 +21,7 @@ function ENT:DoDamage(damages)
 end
 
 function ENT:GetDelay()
-	return 0.06
+	return 0.03
 end
 
 function pluto.statuses.poison(ply, damage)
