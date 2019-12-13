@@ -1866,7 +1866,12 @@ function PANEL:AddMod(mod)
 		BaseClass.Think(self)
 
 		if (self.LastDesc ~= desc) then
-			self:GetParent():GetParent():Resize()
+			local p = self:GetParent():GetParent()
+			timer.Simple(0, function()
+				if (IsValid(p)) then
+					p:Resize()
+				end
+			end)
 			self.LastDesc = desc
 		end
 	end
