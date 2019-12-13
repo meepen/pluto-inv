@@ -35,18 +35,49 @@ function SWEP:Initialize()
 end
 
 function SWEP:PlutoDoPlayerDeath(ply, atk, dmg)
-	if (not IsValid(self:GetOwner()) or dmg:GetInflictor() ~= self or not self.PlutoGun) then
+	if (not IsValid(self:GetOwner()) or dmg:GetInflictor() ~= self or not self.RunModFunctionSequence) then
 		return
 	end
 
-	for type, list in pairs(self.PlutoGun.Mods) do
+	self:RunModFunctionSequence("Kill", nil, self:GetOwner(), ply)
+end
+
+function SWEP:RunModFunctionSingle(funcname, ...)
+	local gun = self.PlutoGun
+	if (not gun) then
+		return
+	end
+
+	for type, list in pairs(gun.Mods) do
 		for _, item in ipairs(list) do
 			local mod = pluto.mods.byname[item.Mod]
-			if (mod.OnKill) then
+			if (mod[funcname]) then
 				local rolls = pluto.mods.getrolls(mod, item.Tier, item.Roll)
-				mod:OnKill(self, self:GetOwner(), ply, rolls)
+				mod[funcname](mod, self, rolls, ...)
 			end
 		end
+	end
+end
+
+function SWEP:RunModFunctionSequence(funcname, state, ...)
+	local args = {n = select("#", ...) + 1, ...}
+	args[args.n] = state or {}
+
+	self:RunModFunctionSingle("Pre" .. funcname, unpack(args, 1, args.n))
+	self:RunModFunctionSingle("On" .. funcname, unpack(args, 1, args.n))
+	self:RunModFunctionSingle("Post" .. funcname, unpack(args, 1, args.n))
+end
+
+function SWEP:DoFireBullets()
+	self:RunModFunctionSequence("Fire", nil, tr, dmginfo)
+	BaseClass.DoFireBullets(self)
+end
+
+function SWEP:FireBulletsCallback(tr, dmginfo)
+	BaseClass.FireBulletsCallback(self, tr, dmginfo)
+
+	if (not tr.IsFake) then
+		self:RunModFunctionSequence("Shoot", nil, tr, dmginfo)
 	end
 end
 
@@ -171,30 +202,9 @@ hook.Add("EntityTakeDamage", "pluto_dmg_mods", function(targ, dmg)
 	end
 
 	local self = dmg:GetInflictor()
-	if (not IsValid(self) or not self.PlutoGun) then
+	if (not IsValid(self) or not self.RunModFunctionSequence) then
 		return
 	end
-	local gun = self.PlutoGun
 
-	local state = {}
-
-	for type, list in pairs(gun.Mods) do
-		for _, item in ipairs(list) do
-			local mod = pluto.mods.byname[item.Mod]
-			if (mod.OnDamage) then
-				local rolls = pluto.mods.getrolls(mod, item.Tier, item.Roll)
-				mod:OnDamage(self, targ, dmg, rolls, state)
-			end
-		end
-	end
-
-	for type, list in pairs(gun.Mods) do
-		for _, item in ipairs(list) do
-			local mod = pluto.mods.byname[item.Mod]
-			if (mod.PostDamage) then
-				local rolls = pluto.mods.getrolls(mod, item.Tier, item.Roll)
-				mod:PostDamage(self, targ, dmg, rolls, state)
-			end
-		end
-	end
+	self:RunModFunctionSequence("Damage", nil, targ, dmg)
 end)

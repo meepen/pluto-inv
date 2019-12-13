@@ -24,7 +24,7 @@ MOD.Tiers = {
 	{ 5, 5, 1, 5 },
 }
 
-function MOD:OnKill(wep, atk, vic, rolls)
+function MOD:OnKill(wep, rolls, atk, vic)
 	if (atk:GetRoleTeam() ~= vic:GetRoleTeam()) then
 		pluto.statuses.heal(atk, atk:GetMaxHealth() * rolls[1] / 100, rolls[2])
 	end

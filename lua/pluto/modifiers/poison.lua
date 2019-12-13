@@ -20,7 +20,7 @@ MOD.Tiers = {
 	{ 5,  10, 30, 45 },
 }
 
-function MOD:OnDamage(wep, vic, dmginfo, rolls, state)
+function MOD:OnDamage(wep, rolls, vic, dmginfo, state)
 	if (IsValid(vic) and vic:IsPlayer() and dmginfo:GetDamage() > 0) then
 		state.poisondamage = math.ceil(rolls[1] / 100 * dmginfo:GetDamage())
 		pluto.statuses.poison(vic, {
@@ -31,7 +31,7 @@ function MOD:OnDamage(wep, vic, dmginfo, rolls, state)
 	end
 end
 
-function MOD:PostDamage(wep, vic, dmginfo, rolls, state)
+function MOD:PostDamage(wep, rolls, vic, dmginfo, state)
 	if (state.poisondamage) then
 		dmginfo:SetDamage(dmginfo:GetDamage() - state.poisondamage)
 	end

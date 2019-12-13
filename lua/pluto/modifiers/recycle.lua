@@ -24,12 +24,12 @@ MOD.Tiers = {
 	{ 15, 30 },
 }
 
-function MOD:OnDamage(wep, vic, dmginfo, rolls, state)
+function MOD:OnDamage(wep, rolls, vic, dmginfo, state)
 	wep.AmmoUsed = wep.AmmoUsed or {}
 	wep.AmmoUsed[vic] = (wep.AmmoUsed[vic] or 0) + 1
 end
 
-function MOD:OnKill(wep, atk, vic, rolls)
+function MOD:OnKill(wep, rolls, atk, vic)
 	local amt = wep.AmmoUsed[vic]
 	if (amt) then
 		atk:GiveAmmo(amt * rolls[1] / 100, wep:GetPrimaryAmmoType())

@@ -22,7 +22,7 @@ MOD.Tiers = {
 	{ 1, 1 },
 }
 
-function MOD:OnKill(wep, atk, vic, rolls)
+function MOD:OnKill(wep, rolls, atk, vic)
 	if (IsValid(atk)) then
 		pluto.currency.givespawns(atk, 1)
 	end
