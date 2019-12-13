@@ -1861,17 +1861,16 @@ function PANEL:AddMod(mod)
 
 		if (self.LastDesc ~= desc) then
 			self:SetText(desc)
+			self:SizeToContentsY()
+			self:InvalidateLayout(true)
 		end
 
 		BaseClass.Think(self)
 
 		if (self.LastDesc ~= desc) then
 			local p = self:GetParent():GetParent()
-			timer.Simple(0, function()
-				if (IsValid(p)) then
-					p:Resize()
-				end
-			end)
+
+			p:Resize()
 			self.LastDesc = desc
 		end
 	end
