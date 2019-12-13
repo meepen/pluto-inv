@@ -20,6 +20,8 @@ pluto.files.load {
 	Resources = {
 		"materials/pluto/item_bg_real.png",
 		"materials/pluto/trashcan_128.png",
+		"materials/pluto/shard128.png",
+		"materials/pluto/shard128add.png",
 	},
 	Workshop = {},
 }

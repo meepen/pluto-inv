@@ -120,6 +120,10 @@ function PANEL:Init()
 	self.Material = Material "pluto/item_bg_real.png"
 end
 
+function PANEL:SetShard()
+	self.RealImage = Material "pluto/shard128.png"
+end
+
 function PANEL:SetItem(item)
 	self.Item = item
 	if (IsValid(self.Model)) then
@@ -146,12 +150,14 @@ function PANEL:SetItem(item)
 	col = HSLToColor(_h, s + num * 0.3, l + 0.3)
 	self.MaterialColor = col:ToVector()
 
+	self.RealImage = nil
+
 	if (self.Type == "Weapon") then
 		self:SetWeapon(item)
 	elseif (self.Type == "Model") then
 		self:SetModel(item)
 	elseif (self.Type == "Shard") then
-		self.MaterialColor = nil
+		self:SetShard()
 	else
 		pwarnf("Unknown type: %s", tostring(self.Type))
 		return
@@ -184,6 +190,14 @@ function PANEL:Paint(w, h)
 		return
 	end
 
+	if (self.RealImage) then
+		self.RealImage:SetVector("$color", self.MaterialColor)
+		surface.SetDrawColor(255, 255, 255, 255)
+		surface.SetMaterial(self.RealImage)
+		surface.DrawTexturedRect(0, 0, w, h)
+		return
+	end
+
 	render.SetStencilWriteMask(1)
 	render.SetStencilTestMask(1)
 	render.SetStencilReferenceValue(1)
@@ -204,11 +218,13 @@ function PANEL:Paint(w, h)
 		local typ = self.Type
 		local class = self.Class
 
-		if (self.Material and self.MaterialColor) then
-			self.Material:SetVector("$color", self.MaterialColor)
-			surface.SetMaterial(self.Material)
-			surface.SetDrawColor(255, 255, 255, err ~= self.DefaultModel and 255 or 1)
-			surface.DrawTexturedRect(0, 0, w, h)
+		if (self.MaterialColor) then
+			if (self.Material) then
+				self.Material:SetVector("$color", self.MaterialColor)
+				surface.SetMaterial(self.Material)
+				surface.SetDrawColor(255, 255, 255, err ~= self.DefaultModel and 255 or 1)
+				surface.DrawTexturedRect(0, 0, w, h)
+			end
 		end
 
 		if (not IsValid(err)) then

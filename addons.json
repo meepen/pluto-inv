@@ -1209,5 +1209,16 @@
 		"sound/weapons/cod4m21/sg550_clipin.ogg",
 		"sound/weapons/cod4m21/sg550_clipout.ogg",
 		"sound/weapons/cod4m21/trigger.ogg"
+	],
+	"fastdl": [
+		"materials/pluto/currencies/dice.png",
+		"materials/pluto/currencies/droplet.png",
+		"materials/pluto/currencies/goldenhand.png",
+		"materials/pluto/currencies/tome.png",
+		"materials/pluto/currencies/brokenmirror.png",
+		"materials/pluto/currencies/heart.png",
+		"materials/pluto/currencies/coin.png",
+		"materials/pluto/currencies/crate0.png",
+		"materials/pluto/currencies/shard.png"
 	]
 }
