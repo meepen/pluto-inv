@@ -149,8 +149,6 @@ for name, values in pairs {
 				return retn
 			end, item.Tier.affixes == 2 and 2 or item.Tier.affixes - 1).Mods
 
-			print "a"
-
 			item.Mods.prefix = new_mods.prefix
 			item.Mods.suffix = new_mods.suffix
 			
