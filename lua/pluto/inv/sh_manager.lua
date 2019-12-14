@@ -2,16 +2,18 @@ pluto.inv = pluto.inv or {}
 
 pluto.inv.messages = {
 	cl2sv = {
-		[0] = "end",
-		[1] = "tabswitch",
-		[2] = "itemdelete",
-		[3] = "currencyuse",
-		[4] = "tabrename",
-		[5] = "claimbuffer",
-		[6] = "tradeupdate",
-		[7] = "trademessage",
-		[8] = "traderequest",
-		[9] = "tradeaccept",
+		[0]  = "end",
+		[1]  = "tabswitch",
+		[2]  = "itemdelete",
+		[3]  = "currencyuse",
+		[4]  = "tabrename",
+		[5]  = "claimbuffer",
+		[6]  = "tradeupdate",
+		[7]  = "trademessage",
+		[8]  = "traderequest",
+		[9]  = "tradeaccept",
+		[10] = "votemap",
+		[11] = "likemap",
 	},
 	sv2cl = {
 		[0] = "end",
@@ -27,6 +29,8 @@ pluto.inv.messages = {
 		[10] = "tradeaccept",
 		[11] = "fullupdate",
 		[12] = "crate_id",
+		[13] = "mapvote",
+		[14] = "mapvotes",
 	}
 }
 

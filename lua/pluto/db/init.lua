@@ -102,6 +102,28 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 				)
 			]]
 		},
+		{
+			[[
+				CREATE TABLE IF NOT EXISTS pluto_map_vote (
+					voter BIGINT UNSIGNED NOT NULL,
+					liked BOOLEAN NOT NULL,
+					mapname VARCHAR(32) NOT NULL,
+
+					PRIMARY KEY(voter, mapname),
+					INDEX USING HASH(mapname)
+				)
+			]]
+		},
+		{
+			[[
+				CREATE TABLE IF NOT EXISTS pluto_map_info (
+					mapname VARCHAR(32) NOT NULL,
+					played INT UNSIGNED NOT NULL DEFAULT 0,
+
+					PRIMARY KEY(mapname)
+				)
+			]]
+		},
 	}:wait(true)
 
 	local queries = {

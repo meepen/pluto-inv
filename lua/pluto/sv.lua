@@ -22,6 +22,13 @@ pluto.files.load {
 		"materials/pluto/trashcan_128.png",
 		"materials/pluto/shard128.png",
 		"materials/pluto/shard128add.png",
+		"materials/pluto/icons/bluevoted.png",
+		"materials/pluto/icons/voted.png",
+		"materials/pluto/icons/liked.png",
+		"materials/pluto/icons/disliked.png",
+		"materials/pluto/icons/likednotvoted.png",
+		"materials/pluto/icons/dislikednotvoted.png",
+		"materials/pluto/icons/likeanddislike.png",
 	},
 	Workshop = {},
 }

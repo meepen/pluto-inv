@@ -1,16 +1,15 @@
 local map_lookup = {
 	ttt_innocentmotel_v1 = "285372790",
-	["ttt_pluto_test.*"] = "1851705099",
+	--["ttt_pluto_test.*"] = "1851705099",
 	ttt_penitentiary = "1335770232",
 	ttt_chaser_v2 = "109410344",
 	ttt_magma_v2a  = "208061322",
 	de_dolls = "821268438",
-	["ttt_rooftops_2016.*"] = "534491717",
-	["ttt_island.*"] = "183797802",
-	["ttt_bb_teenroom_b.*"] = "141103402",
+	ttt_island_2013 = "183797802",
+	ttt_bb_teenroom_b2 = "141103402",
 	ttt_richland_fix = "572477267",
-	["ttt_community_bowling.*"] = "131667838",
-	["ttt_pluto_icebox_.*"] = "1897157110",
+	ttt_community_bowling_v5a = "131667838",
+	ttt_pluto_icebox_v2 = "1897157110",
 	ttt_casino_b2 = "169342118",
 	ttt_mcdonalds = "264839450",
 	ttt_skyscraper = "253328815",
@@ -20,8 +19,21 @@ local map_lookup = {
 	ttt_clue_se_2017 = "971786142",
 }
 
-for k, wsid in pairs(map_lookup) do
-	if (game.GetMap():match("^" .. k .. "$")) then
+function pluto.GetValidMaps()
+	local r = {}
+	for map, id in pairs(map_lookup) do
+		if (not file.Exists("maps/" .. map .. ".bsp", "GAME") or not file.Exists("maps/" .. map .. ".nav", "GAME")) then
+			continue
+		end
+
+		r[#r + 1] = map
+	end
+
+	return r
+end
+
+for map, wsid in pairs(map_lookup) do
+	if (game.GetMap() == map) then
 		resource.AddWorkshop(wsid)
 		break
 	end
