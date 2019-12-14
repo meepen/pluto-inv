@@ -25,11 +25,11 @@ MOD.Tiers = {
 
 function MOD:PreDamage(wep, rolls, vic, dmginfo, state)
 	if (wep.MarksmanshipFiring) then
-		wep.CurMarksmanship = (wep.CurMarksmanship or 0) + 1
+		if (vic:IsPlayer()) then
+			wep.CurMarksmanship = (wep.CurMarksmanship or 0) + 1
+		end
 		wep.MarksmanshipFiring = false
 	end
-
-	print(wep.CurMarksmanship)
 
 	dmginfo:ScaleDamage(1 + (rolls[1] / 100 * wep.CurMarksmanship))
 end
