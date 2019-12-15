@@ -122,7 +122,7 @@ SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
 	DamageDropoffRange = 300,
-	DamageDropoffRangeMax = 1200,
+	DamageDropoffRangeMax = 1000,
 	DamageMinimumPercent = 0.1,
 	Spread = Vector(0.02, 0.02)
 }

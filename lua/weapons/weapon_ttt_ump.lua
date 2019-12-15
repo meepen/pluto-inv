@@ -29,14 +29,14 @@ SWEP.UseHands = false
 SWEP.Primary.Sound = "CW_UMP9_FIRE"
 SWEP.Primary.Delay = 60 / 500
 
-SWEP.Primary.ClipSize = 25
+SWEP.Primary.ClipSize = 27
 SWEP.Primary.DefaultClip = 74
 SWEP.Primary.Automatic = true 
-SWEP.Primary.Damage = 16
-SWEP.Primary.Ammo = "pistol"
-SWEP.AmmoEnt = "item_ammo_pistol_ttt"
+SWEP.Primary.Damage = 17.5
+SWEP.Primary.Ammo = "SMG1"
+SWEP.AmmoEnt = "item_ammo_smg1_ttt"
 
-SWEP.HeadshotMultiplier = 1.2
+SWEP.HeadshotMultiplier = 1.4
 
 SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
@@ -57,10 +57,10 @@ SWEP.Ironsights = {
 SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
-	DamageDropoffRange = 250,
-	DamageDropoffRangeMax = 1900,
-	DamageMinimumPercent = 0.35,
-	Spread = Vector(0.01, 0.01),
+	DamageDropoffRange = 550,
+	DamageDropoffRangeMax = 3500,
+	DamageMinimumPercent = 0.2,
+	Spread = Vector(0.03, 0.02),
 	Tracer = 0,
 }
 
