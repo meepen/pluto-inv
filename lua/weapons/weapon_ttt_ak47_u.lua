@@ -33,7 +33,7 @@ SWEP.Primary.Sound 		= Sound "weapons/ak47_beast/rifle_fire_1.ogg"
 SWEP.Primary.Damage 	= 29
 SWEP.Primary.Recoil = 1.4
 SWEP.Primary.ClipSize 	= 40
-SWEP.Primary.Delay 		= 0.13
+SWEP.Primary.Delay 		= 0.12
 SWEP.Primary.DefaultClip= 120
 SWEP.Primary.Automatic 	= true
 SWEP.Primary.Ammo          = "Pistol"
@@ -50,6 +50,16 @@ SWEP.Ironsights = {
 	SlowDown = 0.4,
 	Zoom = 0.8,
 }
+
+SWEP.Bullets = {
+	HullSize = 0,
+	Num = 1,
+	DamageDropoffRange = 650,
+	DamageDropoffRangeMax = 4500,
+	DamageMinimumPercent = 0.1,
+	Spread = Vector(0.03, 0.035)
+}
+
 
 DEFINE_BASECLASS "weapon_tttbase"
 
@@ -70,5 +80,5 @@ function SWEP:Initialize()
 end
 
 function SWEP:GetDelay()
-	return math.max(0.09009009009, 0.17 - self:GetKills() * 0.007)
+	return math.max(0.09009009009, 0.17 - self:GetKills() * 0.006)
 end
