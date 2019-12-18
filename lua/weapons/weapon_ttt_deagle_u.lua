@@ -31,14 +31,14 @@ SWEP.Ortho = {-3.5, 6, size = 0.7, angle = Angle(-45, 180, 145)}
 SWEP.Primary.Sound 		= Sound("weapons/deagle_beast/deagle-1.ogg")
 SWEP.Primary.Damage 	= 45
 SWEP.Primary.ClipSize 	= 8
-SWEP.Primary.Delay 		= 0.8
+SWEP.Primary.Delay 		= 0.6
 SWEP.Primary.DefaultClip= 16
 SWEP.Primary.Automatic 	= true
 SWEP.Primary.Ammo          = "AlyxGun"
 SWEP.AmmoEnt               = "item_ammo_revolver_ttt"
 SWEP.Primary.Recoil = 2
 SWEP.Primary.RecoilTiming = 0.1
-SWEP.HeadshotMultiplier = 2.4
+SWEP.HeadshotMultiplier = 5
 
 SWEP.MeleeRange 	= 50
 SWEP.MeleeDamage 	= 62
@@ -53,7 +53,7 @@ SWEP.Bullets = {
 	DamageDropoffRange = 600,
 	DamageDropoffRangeMax = 3600,
 	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.05, 0.075)
+	Spread = Vector(0.05, 0.05)
 }
 
 SWEP.NoPlayerModelHands = true
