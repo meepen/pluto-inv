@@ -177,6 +177,9 @@ function PANEL:Init()
 		self.Items[1]:SetItem()
 		self.Items[2]:SetItem()
 		self.Items[3]:SetItem()
+		self.Tabs.Items[1] = nil
+		self.Tabs.Items[2] = nil
+		self.Tabs.Items[3] = nil
 	end
 
 	function self.OutcomeLayer.PerformLayout(s, w, h)
