@@ -161,7 +161,7 @@ function PANEL:Init()
 	self.CraftButton:SetColor(Color(50,51,52))
 	self.CraftButton:SetFont "pluto_craft_combine"
 	self.CraftButton:SetText "Combine Shards!"
-	self.CraftButton:DockMargin(50, 20, 50, 20)
+	self.CraftButton:DockMargin(50, 10, 50, 10)
 
 	function self.CraftButton.DoClick(s)
 		pluto.inv.message()
