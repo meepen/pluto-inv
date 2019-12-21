@@ -1576,7 +1576,7 @@ function PANEL:SetTabs(tabs, addtrade)
 
 	if (addtrade) then
 		table.insert(t, pluto.tradetab)
-		table.insert(t, pluto.crafttab)
+		--table.insert(t, pluto.crafttab)
 	end
 
 	self.Tabs:SetTabs(t)
