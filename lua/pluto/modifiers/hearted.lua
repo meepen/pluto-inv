@@ -1,8 +1,8 @@
 MOD.Type = "implicit"
-MOD.Name = "Diced"
+MOD.Name = "Hearted"
 MOD.Tags = {}
 
-MOD.Color = Color(235, 193, 40)
+MOD.Color = Color(204, 43, 75)
 
 function MOD:IsNegative(roll)
 	return roll < 0
@@ -16,16 +16,12 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
-MOD.Description = "Rolls better numbers on modifiers"
+MOD.Description = "Has an extra affix slot"
+
+MOD.ExtraAffixes = 1
 
 MOD.Tiers = {
 	{ 1, 1 },
 }
-
-function MOD:OnRollMod(item, mod)
-	for i = 1, #mod.Roll do
-		mod.Roll[i] = math.min(1, mod.Roll[i] + 0.15)
-	end
-end
 
 return MOD

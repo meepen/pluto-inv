@@ -16,10 +16,14 @@ end
 for _, modname in pairs {
 	"accuracy",
 	"bleeding",
+	"coined",
 	"damage",
 	"diced",
+	"dropletted",
 	"fire",
 	"firerate",
+	"handed",
+	"hearted",
 	"limp",
 	"mag",
 	"max_range",
@@ -60,7 +64,6 @@ for _, modname in pairs {
 	pluto.mods.byname[modname] = mod
 end
 
-
 local function defaulttierbias(mod)
 	return math.random(1, #mod.Tiers)
 end
@@ -74,7 +77,6 @@ local function defaultroll(mod, tier)
 
 	return retn
 end
-
 
 function pluto.mods.rollmod(mod, rolltier, roll)
 	rolltier = rolltier or defaulttierbias
@@ -228,11 +230,12 @@ end
 
 function pluto.mods.getrolls(mod, tier, rolls)
 	local retn = {}
-	tier = mod.Tiers[tier]
-	for i, roll in ipairs(rolls) do
-		local idx = (i - 1) * 2 + 1
-		local min, max = tier[idx], tier[idx + 1]
-		retn[i] = roll * (max - min) + min
+
+	tier = mod.Tiers[tier] or mod.Tiers[#mod.Tiers]
+
+	for idx = 2, #tier, 2 do
+		local min, max = tier[idx - 1], tier[idx]
+		retn[idx / 2] = (rolls[idx / 2] or 0) * (max - min) + min
 	end
 
 	return retn

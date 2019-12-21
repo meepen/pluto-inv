@@ -1,8 +1,8 @@
 MOD.Type = "implicit"
-MOD.Name = "Diced"
+MOD.Name = "Handed"
 MOD.Tags = {}
 
-MOD.Color = Color(235, 193, 40)
+MOD.Color = Color(255, 208, 86)
 
 function MOD:IsNegative(roll)
 	return roll < 0
@@ -16,15 +16,15 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
-MOD.Description = "Rolls better numbers on modifiers"
+MOD.Description = "Mods roll one tier lower 50% of the time"
 
 MOD.Tiers = {
 	{ 1, 1 },
 }
 
 function MOD:OnRollMod(item, mod)
-	for i = 1, #mod.Roll do
-		mod.Roll[i] = math.min(1, mod.Roll[i] + 0.15)
+	if (math.random() < 0.5) then
+		mod.Tier = math.max(1, mod.Tier - 1)
 	end
 end
 

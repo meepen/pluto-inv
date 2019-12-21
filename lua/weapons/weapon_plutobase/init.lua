@@ -23,7 +23,7 @@ function SWEP:Initialize()
 
 	if (pluto.weapons.valid[self:GetClass()]) then
 		if (not item) then
-			item = setmetatable(pluto.weapons.generatetier(nil, self:GetClass()), pluto.inv.item_mt)
+			item = pluto.weapons.generatetier(nil, self:GetClass())
 			item.Type = "Weapon"
 		end
 		self:SetInventoryItem(item)

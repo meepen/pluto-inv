@@ -14,6 +14,8 @@ pluto.inv.messages = {
 		[9]  = "tradeaccept",
 		[10] = "votemap",
 		[11] = "likemap",
+		[12] = "requestcraftresults",
+		[13] = "craft",
 	},
 	sv2cl = {
 		[0] = "end",
@@ -31,6 +33,7 @@ pluto.inv.messages = {
 		[12] = "crate_id",
 		[13] = "mapvote",
 		[14] = "mapvotes",
+		[15] = "craftresults",
 	}
 }
 
@@ -126,6 +129,43 @@ function ITEM:GetPrintName()
 	end
 
 	return self:GetDefaultName()
+end
+
+function ITEM:GetMod(name)
+	local real = pluto.mods.byname[name]
+
+	if (not real) then
+		return
+	end
+
+	if (not self.Mods or not self.Mods[real.Type]) then
+		return
+	end
+
+	for _, mod in pairs(self.Mods[real.Type]) do
+		if (mod.Mod == name) then
+			return mod
+		end
+	end
+end
+
+function ITEM:GetMaxAffixes()
+	local affix = 0
+
+	if (self.Tier) then
+		affix = self.Tier.affixes
+	end
+
+	if (self.Mods and self.Mods.implicit) then
+		for _, modd in pairs(self.Mods.implicit) do
+			local mod = pluto.mods.byname[modd.Mod]
+			if (mod.ExtraAffixes) then
+				affix = affix + mod.ExtraAffixes
+			end
+		end
+	end
+
+	return affix
 end
 
 function ITEM:GetDefaultName()

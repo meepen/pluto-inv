@@ -62,9 +62,6 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 					tier2 VARCHAR(16) NOT NULL,
 					tier3 VARCHAR(16) NOT NULL,
 
-					currency1 VARCHAR(16),
-					currency2 VARCHAR(16),
-
 					PRIMARY KEY(gun_index),
 
 					FOREIGN KEY (gun_index) REFERENCES pluto_items(idx) ON DELETE CASCADE

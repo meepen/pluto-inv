@@ -17,66 +17,6 @@ local function UpdateAndDecrement(ply, item, currency)
 	trans:start()
 end
 
-local function getnewmod(item, prefix_max, suffix_max, ignoretier)
-	prefix_max = prefix_max or 3
-	suffix_max = suffix_max or 3
-
-	if (not item.Mods) then
-		return false
-	end
-
-	local prefixes = #item.Mods.prefix
-	local suffixes = #item.Mods.suffix
-
-	if (not ignoretier and prefixes + suffixes == item.Tier.affixes) then
-		return false
-	end
-
-	local have = {}
-
-	for _, Mods in pairs(item.Mods) do
-		for _, mod in pairs(Mods) do
-			have[mod.Mod] = true
-		end
-	end
-
-	local allowed = {}
-
-	if (prefixes < prefix_max) then
-		local t = {}
-		for _, item in pairs(pluto.mods.prefix) do
-			if (not have[item.InternalName]) then
-				t[#t + 1] = item
-			end
-		end
-		if (#t > 0) then
-			allowed.prefix = t
-		end
-	end
-
-	if (suffixes < suffix_max) then
-		local t = {}
-		for _, item in pairs(pluto.mods.suffix) do
-			if (not have[item.InternalName]) then
-				t[#t + 1] = item
-			end
-		end
-		if (#t > 0) then
-			allowed.suffix = t
-		end
-	end
-
-	local mods, type = table.Random(allowed)
-
-	local toadd = pluto.mods.bias(weapons.GetStored(item.ClassName), mods, tagbiases)[1]
-	
-	local newmod = pluto.mods.rollmod(toadd, item.Tier.rolltier, item.Tier.roll)
-	
-	table.insert(item.Mods[type], newmod)
-
-	return true
-end
-
 local crate0_contents = {
 	model_jacket = 400,
 	model_sauron = 200,
@@ -134,27 +74,47 @@ for name, values in pairs {
 			end
 		end,
 		Types = "Weapon",
+		Crafted = {
+			Chance = 1 / 3,
+			Mod = "diced",
+		},
 	},
 	droplet = {
 		Shares = 3000,
 		Use = function(ply, item)
-			local new_mods = pluto.weapons.generatetier(item.Tier.InternalName, item.ClassName, nil, nil, function(mod, tier)
+			local affixes = item:GetMaxAffixes()
+
+			if (affixes >= 4 and not item:GetMod "dropletted") then
+				affixes = affixes - 1
+			end
+
+			local new_mods = pluto.weapons.generatetier(item.Tier, item.ClassName, nil, nil, function(mod, tier)
 				local needed = #mod.Tiers[tier] / 2
 			
 				local retn = {}
 				for i = 1, needed do
 					retn[i] = math.random() * 2 / 3
 				end
-			
+
 				return retn
-			end, item.Tier.affixes == 2 and 2 or item.Tier.affixes - 1).Mods
+			end, affixes).Mods
 
 			item.Mods.prefix = new_mods.prefix
 			item.Mods.suffix = new_mods.suffix
-			
+
+			for _, mods in pairs(new_mods) do
+				for _, mod in pairs(mods) do
+					pluto.weapons.onrollmod(item, mod)
+				end
+			end
+
 			UpdateAndDecrement(ply, item, "droplet")
 		end,
 		Types = "Weapon",
+		Crafted = {
+			Chance = 1 / 3,
+			Mod = "dropletted",
+		},
 	},
 	hand = {
 		Shares = 400,
@@ -196,16 +156,20 @@ for name, values in pairs {
 			UpdateAndDecrement(ply, item, "hand")
 		end,
 		Types = "Weapon",
+		Crafted = {
+			Chance = 1 / 3,
+			Mod = "handed",
+		},
 	},
 	tome = {
 		Shares = 20,
 		Use = function(ply, item)
 			local rand = math.floor(math.random(1, 12) / 2) + 1
 			if (rand == 1) then     -- 2 mods
-				getnewmod(item, 5, 3, true)
-				getnewmod(item, 5, 3, true)
+				pluto.weapons.generatemod(item, 5, 3, true)
+				pluto.weapons.generatemod(item, 5, 3, true)
 			elseif (rand == 2) then -- 1 mod
-				getnewmod(item, 5, 3, true)
+				pluto.weapons.generatemod(item, 5, 3, true)
 			elseif (rand == 3) then -- nothing
 			elseif (rand == 4) then -- base gun change
 				item.ClassName = pluto.weapons.randomgun()
@@ -218,36 +182,50 @@ for name, values in pairs {
 
 				item.Mods.prefix = new_mods.prefix
 				item.Mods.suffix = new_mods.suffix
+
+				for _, mods in pairs(new_mods) do
+					for _, mod in pairs(mods) do
+						pluto.weapons.onrollmod(item, mod)
+					end
+				end
 			else
 				return
 			end
 
 			item.Mods.implicit = item.Mods.implicit or {}
 
-			table.insert(item.Mods.implicit, {
-				Roll = {},
-				Tier = 1,
-				Mod = "unchanging"
-			})
+			pluto.weapons.addmod(item, "unchanging")
 
 			UpdateAndDecrement(ply, item, "tome")
 		end,
 		Types = "Weapon",
+		Crafted = {
+			Chance = 0,
+			Mod = "tomeded",
+		},
 	},
 	mirror = {
 		Shares = 0.1,
 		Use = function(item)
 		end,
 		Types = "Weapon",
+		Crafted = {
+			Chance = 0,
+			Mod = "mirrorered",
+		},
 	},
 	heart = {
 		Shares = 8.5,
 		Use = function(ply, item)
-			if (getnewmod(item)) then
+			if (pluto.weapons.generatemod(item)) then
 				UpdateAndDecrement(ply, item, "heart")
 			end
 		end,
 		Types = "Weapon",
+		Crafted = {
+			Chance = 0.95,
+			Mod = "hearted",
+		},
 	},
 	coin = {
 		Shares = 0.7,
@@ -276,6 +254,10 @@ for name, values in pairs {
 			trans:start()
 		end,
 		Types = "None",
+		Crafted = {
+			Chance = 0.5,
+			Mod = "coined",
+		},
 	},
 	crate0 = {
 		Shares = 39,
@@ -299,7 +281,11 @@ for name, values in pairs {
 
 			pluto.inv.addcurrency(ply, "crate0", -1, function() end)
 		end,
-		Types = "None"
+		Types = "None",
+		Crafted = {
+			Chance = 0,
+			Mod = "crated",
+		},
 	},
 } do
 	table.Merge(pluto.currency.byname[name], values)

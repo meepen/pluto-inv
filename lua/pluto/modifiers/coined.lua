@@ -1,8 +1,8 @@
 MOD.Type = "implicit"
-MOD.Name = "Diced"
+MOD.Name = "Coined"
 MOD.Tags = {}
 
-MOD.Color = Color(235, 193, 40)
+MOD.Color = Color(254, 233, 105)
 
 function MOD:IsNegative(roll)
 	return roll < 0
@@ -16,15 +16,15 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
-MOD.Description = "Rolls better numbers on modifiers"
+MOD.Description = "Doubles currency rewards"
 
 MOD.Tiers = {
 	{ 1, 1 },
 }
 
-function MOD:OnRollMod(item, mod)
-	for i = 1, #mod.Roll do
-		mod.Roll[i] = math.min(1, mod.Roll[i] + 0.15)
+function MOD:OnKill(wep, rolls, atk, vic)
+	if (IsValid(atk)) then
+		pluto.currency.givespawns(atk, 1)
 	end
 end
 

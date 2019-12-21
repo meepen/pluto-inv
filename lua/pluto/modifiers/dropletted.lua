@@ -1,8 +1,8 @@
 MOD.Type = "implicit"
-MOD.Name = "Diced"
+MOD.Name = "Dropletted"
 MOD.Tags = {}
 
-MOD.Color = Color(235, 193, 40)
+MOD.Color = Color(24, 125, 216)
 
 function MOD:IsNegative(roll)
 	return roll < 0
@@ -16,16 +16,10 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
-MOD.Description = "Rolls better numbers on modifiers"
+MOD.Description = "Droplets can roll max modifiers"
 
 MOD.Tiers = {
 	{ 1, 1 },
 }
-
-function MOD:OnRollMod(item, mod)
-	for i = 1, #mod.Roll do
-		mod.Roll[i] = math.min(1, mod.Roll[i] + 0.15)
-	end
-end
 
 return MOD

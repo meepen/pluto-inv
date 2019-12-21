@@ -3,7 +3,7 @@ pluto.inv = pluto.inv or {
 	weapons = {}
 }
 
-pluto.itemids = pluto.itemids or {}
+pluto.itemids = pluto.inv.items or pluto.itemids or {}
 
 local PLAYER = FindMetaTable "Player"
 PLAYER.RealSteamID64 = PLAYER.RealSteamID64 or PLAYER.SteamID64
@@ -205,17 +205,16 @@ function pluto.inv.retrieveitems(steamid, cb)
 				it.Model = pluto.models[it.ClassName:match"model_(.+)"]
 			end
 
-			if (item.tier == "crafted" and item.tier1 ~= nil) then
+			if (item.tier == "crafted") then
 				it.Tier = pluto.craft.tier {
-					item.tier1,
-					item.tier2,
-					item.tier3
+					item.tier1 or "unique",
+					item.tier2 or "unique",
+					item.tier3 or "unique",
 				}
 			end
 
 			weapons[item.idx] = it
 			pluto.itemids[it.RowID] = it
-
 		end
 
 		pluto.db.query([[
@@ -235,6 +234,10 @@ function pluto.inv.retrieveitems(steamid, cb)
 
 				wpn.Mods[mod.Type] = wpn.Mods[mod.Type] or {}
 
+				if (not item.tier) then
+					error "wtf"
+				end
+
 				table.insert(wpn.Mods[mod.Type], {
 					Roll = { item.roll1, item.roll2, item.roll3 },
 					Mod = item.modname,
@@ -248,21 +251,44 @@ function pluto.inv.retrieveitems(steamid, cb)
 	end)
 end
 
-function pluto.inv.deleteitem(steamid, itemid, cb)
+function pluto.inv.deleteitem(steamid, itemid, cb, nostart)
 	steamid = pluto.db.steamid64(steamid)
 
-	pluto.db.query("DELETE pluto_items FROM pluto_items INNER JOIN pluto_tabs ON pluto_items.tab_id = pluto_tabs.idx WHERE pluto_tabs.owner = ? AND pluto_items.idx = ?", {steamid, itemid}, function(err, q)
+	local i = pluto.itemids[itemid]
+
+	local cl = player.GetBySteamID64(steamid)
+	if (i) then
+		if (IsValid(cl)) then
+			local tabs = pluto.inv.invs[cl]
+			if (tabs and tabs[i.TabID] and tabs[i.TabID].Items[i.TabIndex] == i) then
+				tabs[i.TabID].Items[i.TabIndex] = nil
+			end
+		end
+		i.Invalid = true
+		i.RowID = nil
+	end
+
+	return pluto.db.query("delete pluto_items from pluto_items inner join pluto_tabs on pluto_tabs.idx = pluto_items.tab_id where pluto_items.idx = ? and pluto_tabs.owner = ?", {itemid, steamid}, function(err, q)
 		if (err) then
+			if (IsValid(cl)) then
+				pluto.inv.sendfullupdate(cl)
+			end
 			return cb(false)
 		end
 
 		if (q:affectedRows() ~= 1) then
+			if (IsValid(cl)) then
+				pluto.inv.sendfullupdate(cl)
+			end
+
 			pwarnf("Affected rows: %i", q:affectedRows())
 			return cb(false)
 		end
 
+		pluto.itemids[itemid] = nil
+
 		cb(true)
-	end)
+	end, nil, nostart)
 end
 
 function pluto.inv.getbufferitems(owner)
@@ -281,11 +307,11 @@ function pluto.inv.getbufferitem(id)
 		return
 	end
 
-	local wpn = {
+	local wpn = setmetatable({
 		BufferID = id,
 		ClassName = data.class,
 		Owner = data.owner
-	}
+	}, pluto.inv.item_mt)
 
 	wpn.Type = pluto.inv.itemtype(wpn)
 

@@ -2,9 +2,10 @@
 	"name": "a",
 	"version": "1.0.0",
 	"dependencies": {
-		"vtflib": "1.0.1",
+		"crc-32": "1.2.0",
 		"fluent-ffmpeg": "2.1.2",
-		"crc-32": "1.2.0"
+		"vtflib": "1.0.1",
+		"webhook-discord": "^3.5.1"
 	},
 	"scripts": {
 		"resize": "node resize"

@@ -17,6 +17,7 @@ local map_lookup = {
 	ttt_whitehouse_v9 = "296631816",
 	ttt_forest_final = "147635981",
 	ttt_clue_se_2017 = "971786142",
+	ttt_skyscraper_2015_v1p_f4 = "376339464",
 }
 
 function pluto.GetValidMaps()

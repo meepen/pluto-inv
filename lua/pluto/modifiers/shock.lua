@@ -31,7 +31,7 @@ function MOD:PreDamage(wep, rolls, vic, dmginfo, state)
 		wep.MarksmanshipFiring = false
 	end
 
-	dmginfo:ScaleDamage(1 + (rolls[1] / 100 * wep.CurMarksmanship))
+	dmginfo:ScaleDamage(1 + (rolls[1] / 100 * (wep.CurMarksmanship or 0)))
 end
 
 function MOD:OnFire(wep)
