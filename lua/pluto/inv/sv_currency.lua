@@ -121,7 +121,11 @@ for name, values in pairs {
 		Use = function(ply, item)
 			local possible = {}
 			local incr_possible = {}
-			for _, Mods in pairs(item.Mods) do
+			for typ, Mods in pairs(item.Mods) do
+				if (typ == "implicit") then
+					continue
+				end
+
 				for i = 1, #Mods do
 					local mod = Mods[i]
 					local incr
