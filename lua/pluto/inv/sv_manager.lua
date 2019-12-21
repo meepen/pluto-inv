@@ -317,6 +317,12 @@ function pluto.inv.readtabswitch(ply)
 	end
 
 	tab1.Items[tabindex1], tab2.Items[tabindex2] = tab2.Items[tabindex2], tab1.Items[tabindex1]
+	if (tab1.Items[tabindex1]) then
+		tab1.Items[tabindex1].TabID, tab1.Items[tabindex1].TabIndex = tabid1, tabindex1
+	end
+	if (tab2.Items[tabindex2]) then
+		tab2.Items[tabindex2].TabID, tab2.Items[tabindex2].TabIndex = tabid2, tabindex2
+	end
 
 	pluto.inv.switchtab(ply, tabid1, tabindex1, tabid2, tabindex2, function(succ)
 		if (succ or not IsValid(ply)) then

@@ -272,14 +272,14 @@ end
 function pluto.inv.writecraft(info)
 	local i1, i2, i3 = info.Shards[1], info.Shards[2], info.Shards[3]
 
-	for _, tab in pairs(pluto.cl_inv) do
-		for idx, item in pairs(tab.Items or {}) do
-			print(item.ID)
-			if (item.ID == i1.ID or item.ID == i2.ID or item.ID == i3.ID) then
-				tab.Items[idx] = nil
+	if (i1 and i2 and i3) then
+		for _, tab in pairs(pluto.cl_inv) do
+			for idx, item in pairs(tab.Items or {}) do
+				if (i1 and item.ID == i1.ID or i2 and item.ID == i2.ID or i3 and item.ID == i3.ID) then
+					tab.Items[idx] = nil
 
-				print "del"
-				hook.Run("PlutoTabUpdate", tab.ID, idx, nil)
+					hook.Run("PlutoTabUpdate", tab.ID, idx, nil)
+				end
 			end
 		end
 	end
