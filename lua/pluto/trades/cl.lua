@@ -162,7 +162,7 @@ function PANEL:SetCurrency(cur)
 
 	self.Image:SetImage(c.Icon)
 	self.Top:SetText(c.Name)
-	self.Input:SetText(0)
+	self.Input:SetText(pluto.cl_currency[cur] or 0)
 end
 
 function PANEL:DoClick()
