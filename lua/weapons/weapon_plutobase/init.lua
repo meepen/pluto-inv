@@ -39,6 +39,12 @@ function SWEP:PlutoDoPlayerDeath(ply, atk, dmg)
 		return
 	end
 
+	if (self.PlutoGun and self.PlutoGun.Owner == self:GetOwner():SteamID64()) then
+		if (atk:GetRoleTeam() ~= ply:GetRoleTeam()) then -- add experience to weapon
+			pluto.inv.addexperience(self.PlutoGun.RowID, (atk:GetRole() == "Innocent" and 75 or 150) + math.random(0, 25))
+		end
+	end
+
 	self:RunModFunctionSequence("Kill", nil, self:GetOwner(), ply)
 end
 

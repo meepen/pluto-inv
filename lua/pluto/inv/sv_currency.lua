@@ -411,9 +411,9 @@ hook.Add("DoPlayerDeath", function(vic, damager, dmg)
 		return
 	end
 
-	local points = 1
+	local points = 0.25
 
-	if (atk:GetTeam() == vic:GetTeam()) then
+	if (atk:GetRoleTeam() == vic:GetRoleTeam()) then
 		-- base on karma
 		points = -vic:GetKarma() / atk:GetKarma()
 	end

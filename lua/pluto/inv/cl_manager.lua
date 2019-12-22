@@ -281,3 +281,19 @@ end
 function pluto.inv.readcrate_id()
 	hook.Run("CrateOpenResponse", net.ReadInt(32))
 end
+
+
+function pluto.inv.readexpupdate()
+	local itemid = net.ReadUInt(32)
+	local exp = net.ReadUInt(32)
+
+
+	local item = pluto.received.item[itemid]
+
+	if (not item) then
+		pwarnf("Item ID not found for expupdate: %i", itemid)
+		return
+	end
+
+	item.Experience = exp
+end

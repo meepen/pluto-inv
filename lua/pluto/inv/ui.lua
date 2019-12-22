@@ -1370,7 +1370,7 @@ function PANEL:OnMousePressed(mouse)
 			TabIndex = pluto.ui.ghost.TabIndex,
 			Item = pluto.ui.ghost.Item.ID,
 			Time = CurTime(),
-			EndTime = CurTime() + 2,
+			EndTime = CurTime() + 1,
 		}
 	else
 		local p = vgui.Create "pluto_falling_text"
@@ -1576,7 +1576,7 @@ function PANEL:SetTabs(tabs, addtrade)
 
 	if (addtrade) then
 		table.insert(t, pluto.tradetab)
-		--table.insert(t, pluto.crafttab)
+		table.insert(t, pluto.crafttab)
 	end
 
 	self.Tabs:SetTabs(t)
@@ -1938,6 +1938,7 @@ end
 function PANEL:SetItem(item)
 	self.ItemName:SetTextColor(color_black)
 	self.ItemID:SetTextColor(color_black)
+	self.Experience:SetTextColor(color_black)
 	if (item.GetPrintName) then -- item
 		self.ItemName:SetText(item:GetPrintName())
 		if (item.Type == "Weapon") then
@@ -1957,6 +1958,14 @@ function PANEL:SetItem(item)
 	else
 		self.ItemID:SetText ""
 	end
+	self.ItemID:SizeToContentsY()
+
+	if (item.Experience) then
+		self.Experience:SetText("EXP: " .. item.Experience)
+	else
+		self.Experience:SetText ""
+	end
+	self.Experience:SizeToContentsY()
 
 	self.ItemName:SizeToContentsY()
 	self.ItemBackground:SetTall(self.ItemName:GetTall() * 1.5)
@@ -2075,6 +2084,11 @@ function PANEL:Init()
 	self.ItemID:Dock(FILL)
 	self.ItemID:SetContentAlignment(3)
 	self.ItemID:SetFont "pluto_item_showcase_id"
+
+	self.Experience = self.ItemName:Add "DLabel"
+	self.Experience:Dock(TOP)
+	self.Experience:SetContentAlignment(3)
+	self.Experience:SetFont "pluto_item_showcase_id"
 
 	self.ItemDesc = self:Add "pluto_centered_wrap"
 	self.ItemDesc:SetFont "pluto_item_showcase_desc"

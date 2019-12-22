@@ -309,6 +309,11 @@ function pluto.inv.readtabswitch(ply)
 	local tab1 = pluto.inv.invs[ply][tabid1]
 	local tab2 = pluto.inv.invs[ply][tabid2]
 
+	if (not tab1 or not tab2) then
+		pluto.inv.sendfullupdate(ply)
+		return
+	end
+
 	local canswitch, fail = pluto.canswitchtabs(tab1, tab2, tabindex1, tabindex2)
 
 	if (not canswitch) then
@@ -316,12 +321,21 @@ function pluto.inv.readtabswitch(ply)
 		return
 	end
 
-	tab1.Items[tabindex1], tab2.Items[tabindex2] = tab2.Items[tabindex2], tab1.Items[tabindex1]
-	if (tab1.Items[tabindex1]) then
-		tab1.Items[tabindex1].TabID, tab1.Items[tabindex1].TabIndex = tabid1, tabindex1
+	local i1, i2 = tab1.Items[tabindex1], tab2.Items[tabindex2]
+
+	if (i1 and ply:SteamID64() ~= i1.Owner or i2 and i2.Owner ~= ply:SteamID64()) then
+		pluto.inv.sendfullupdate(ply)
+		return
 	end
-	if (tab2.Items[tabindex2]) then
-		tab2.Items[tabindex2].TabID, tab2.Items[tabindex2].TabIndex = tabid2, tabindex2
+
+	tab1.Items[tabindex1], tab2.Items[tabindex2] = i2, i1
+
+	if (i1) then
+		i1.TabID, i1.TabIndex = tabid2, tabindex2
+	end
+
+	if (i2) then
+		i2.TabID, i2.TabIndex = tabid1, tabindex1
 	end
 
 	pluto.inv.switchtab(ply, tabid1, tabindex1, tabid2, tabindex2, function(succ)
@@ -499,6 +513,11 @@ end
 
 function pluto.inv.writecrate_id(ply, id)
 	net.WriteInt(id, 32)
+end
+
+function pluto.inv.writeexpupdate(cl, item)
+	net.WriteUInt(item.RowID, 32)
+	net.WriteUInt(item.Experience, 32)
 end
 
 hook.Add("PlayerAuthed", "pluto_init_inventory", pluto.inv.sendfullupdate)

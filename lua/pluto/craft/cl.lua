@@ -140,7 +140,11 @@ function PANEL:Init()
 	
 	self.Currency = self.CurrencyElements:Add "pluto_trade_currency"
 	self.Currency:SetModifiable()
-	function self.Currency:OnUpdate() end
+	function self.Currency:OnUpdate()
+		if (self.Info and self.Info.Amount >= 10) then
+			self.Info.Amount = 10
+		end
+	end
 
 	self.Outcomes = {}
 
@@ -160,7 +164,7 @@ function PANEL:Init()
 	self.CraftButton:SetCurve(4)
 	self.CraftButton:SetColor(Color(50,51,52))
 	self.CraftButton:SetFont "pluto_craft_combine"
-	self.CraftButton:SetText "Combine Shards!"
+	self.CraftButton:SetText "Combine!"
 	self.CraftButton:DockMargin(50, 10, 50, 10)
 
 	function self.CraftButton.DoClick(s)
@@ -177,9 +181,9 @@ function PANEL:Init()
 		self.Items[1]:SetItem()
 		self.Items[2]:SetItem()
 		self.Items[3]:SetItem()
-		self.Tabs.Items[1] = nil
-		self.Tabs.Items[2] = nil
-		self.Tabs.Items[3] = nil
+		self.Tab.Items[1] = nil
+		self.Tab.Items[2] = nil
+		self.Tab.Items[3] = nil
 	end
 
 	function self.OutcomeLayer.PerformLayout(s, w, h)

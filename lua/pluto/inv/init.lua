@@ -127,13 +127,29 @@ end
 
 function pluto.inv.switchtab(steamid, tabid1, tabindex1, tabid2, tabindex2, cb)
 	steamid = pluto.db.steamid64(steamid)
+
+	local affected = 0
+
+	local function addaffected(e, q)
+		if (e) then
+			return
+		end
+
+		affected = affected + q:affectedRows()
+	end
+
 	pluto.db.transact({
-		{ "SELECT 1 FROM pluto_items WHERE tab_id IN (?, ?) FOR UPDATE", {tabid1, tabid2}},
-		{ "UPDATE pluto_items SET tab_id = ?, tab_idx = 0 WHERE tab_id = ? AND tab_idx = ?", {tabid1, tabid2, tabindex2} },
-		{ "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE tab_id = ? AND tab_idx = ?", {tabid2, tabindex2, tabid1, tabindex1} },
-		{ "UPDATE pluto_items SET tab_idx = ? WHERE tab_id = ? AND tab_idx = 0", {tabindex1, tabid1} },
-	}, function(err)
+		{ "SELECT 1 FROM pluto_items WHERE tab_id IN (?, ?) FOR UPDATE", {tabid1, tabid2} },
+		{ "UPDATE pluto_items SET tab_id = ?, tab_idx = 0 WHERE tab_id = ? AND tab_idx = ?", {tabid1, tabid2, tabindex2}, addaffected },
+		{ "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE tab_id = ? AND tab_idx = ?", {tabid2, tabindex2, tabid1, tabindex1}, addaffected },
+		{ "UPDATE pluto_items SET tab_idx = ? WHERE tab_id = ? AND tab_idx = 0", {tabindex1, tabid1}, addaffected },
+	}, function(err, q)
 		if (err) then
+			cb(false)
+			return
+		end
+
+		if (affected ~= 1 and affected ~= 3) then
 			cb(false)
 			return
 		end
@@ -289,6 +305,22 @@ function pluto.inv.deleteitem(steamid, itemid, cb, nostart)
 
 		cb(true)
 	end, nil, nostart)
+end
+
+function pluto.inv.addexperience(id, exp) -- should not need cb :shrug:
+	local item = pluto.itemids[id]
+	if (item) then -- notify exp
+		item.Experience = (item.Experience or 0) +exp
+		local cl = player.GetBySteamID64(item.Owner)
+		if (IsValid(cl)) then
+			pluto.inv.message(cl)
+				:write("expupdate", item)
+				:send()
+		end
+	end
+
+	pluto.db.query("UPDATE pluto_items SET exp = exp + ? WHERE idx = ?", {exp, id}, function(e, q)
+	end)
 end
 
 function pluto.inv.getbufferitems(owner)

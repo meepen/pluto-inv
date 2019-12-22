@@ -111,7 +111,6 @@ function pluto.inv.readrequestcraftresults(cl)
 	i2 = pluto.inv.items[i2]
 	i3 = pluto.inv.items[i3]
 
-
 	if (i1 and i2 and i3 and i1.Type == "Shard" and i2.Type == "Shard" and i3.Type == "Shard") then
 		local outcomes = pluto.craft.alloutcomes {
 			i1.Tier.InternalName,
@@ -120,7 +119,12 @@ function pluto.inv.readrequestcraftresults(cl)
 		}
 
 		for i = 1, #outcomes do
-			outcomes[i] = pluto.weapons.generatetier(outcomes[i])
+			outcomes[i] = setmetatable({
+				Type = "Shard",
+				ClassName = "shard",
+				SpecialName = "Random Crafted Weapon",
+				Tier = outcomes[i]
+			}, pluto.inv.item_mt)
 		end
 
 		pluto.inv.message(cl)
@@ -145,7 +149,7 @@ function pluto.inv.readcraft(cl)
 			Currency = net.ReadString(),
 		}
 
-		cur.Amount = net.ReadUInt(32)
+		cur.Amount = math.min(10, net.ReadUInt(32))
 	end
 	
 	i1 = pluto.inv.items[i1]
