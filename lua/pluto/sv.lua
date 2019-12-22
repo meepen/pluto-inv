@@ -14,6 +14,7 @@ pluto.files.load {
 		"mapvote/mapvote.lua",
 		"models/sv_models.lua",
 		"craft/sv.lua",
+		"inv/sv_exp.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty
