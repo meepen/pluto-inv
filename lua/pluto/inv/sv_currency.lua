@@ -203,7 +203,7 @@ for name, values in pairs {
 			UpdateAndDecrement(ply, item, "tome")
 		end,
 		Types = "Weapon",
-		Crafted = nil and {
+		Crafted = {
 			Chance = 0,
 			Mod = "tomeded",
 		},
@@ -213,7 +213,7 @@ for name, values in pairs {
 		Use = function(item)
 		end,
 		Types = "Weapon",
-		Crafted = nil and {
+		Crafted = {
 			Chance = 0,
 			Mod = "mirrorered",
 		},
@@ -286,7 +286,7 @@ for name, values in pairs {
 			pluto.inv.addcurrency(ply, "crate0", -1, function() end)
 		end,
 		Types = "None",
-		Crafted = nil and {
+		Crafted = {
 			Chance = 0,
 			Mod = "crated",
 		},

@@ -150,6 +150,13 @@ function pluto.inv.readcraft(cl)
 		}
 
 		cur.Amount = math.min(10, net.ReadUInt(32))
+
+		local cur = pluto.currency.byname[cur.Currency]
+
+		if (cur.CanCraft == false) then
+			pluto.inv.sendfullupdate(cl)
+			return
+		end
 	end
 	
 	i1 = pluto.inv.items[i1]

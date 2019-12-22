@@ -34,6 +34,7 @@ pluto.currency.list = {
 		Description = "Corrupts an item unpredictably",
 		SubDescription = "Arizor hands these out to ruthless gunsmiths to augment their weapons and further themselves in life",
 		Color = Color(142, 94, 166),
+		CanCraft = false,
 	},
 	{
 		InternalName = "mirror",
@@ -42,6 +43,7 @@ pluto.currency.list = {
 		Description = "Creates a mirror image of an item (unmodifiable)",
 		SubDescription = "Mara threw this mirror out after seeing what she had become",
 		Color = Color(177, 173, 205),
+		CanCraft = false,
 	},
 	{
 		InternalName = "heart",
@@ -68,6 +70,7 @@ pluto.currency.list = {
 		SubDescription = "Who's there? It's been so long... please don't open me... I want to live...",
 		NoTarget = true,
 		Color = Color(240, 192, 71),
+		CanCraft = false,
 		Use = function()
 			if (IsValid(pluto.opener)) then
 				pluto.opener:Remove()
