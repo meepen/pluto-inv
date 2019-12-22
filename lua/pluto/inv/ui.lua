@@ -2087,7 +2087,7 @@ function PANEL:Init()
 
 	self.Experience = self.ItemName:Add "DLabel"
 	self.Experience:Dock(TOP)
-	self.Experience:SetContentAlignment(3)
+	self.Experience:SetContentAlignment(9)
 	self.Experience:SetFont "pluto_item_showcase_id"
 
 	self.ItemDesc = self:Add "pluto_centered_wrap"
