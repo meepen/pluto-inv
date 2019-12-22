@@ -24,7 +24,7 @@ MOD.Tiers = {
 
 function MOD:OnKill(wep, rolls, atk, vic)
 	if (IsValid(atk)) then
-		pluto.currency.givespawns(atk, 1)
+		pluto.currency.givespawns(atk, 0.3)
 	end
 end
 

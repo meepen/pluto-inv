@@ -400,10 +400,6 @@ end
 pluto.currency.tospawn = pluto.currency.tospawn or {}
 pluto.currency.spawned = pluto.currency.spawned or {}
 
-function pluto.currency.addpoints(ply, points)
-	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or 1) + points
-end
-
 hook.Add("DoPlayerDeath", "pluto_currency_add", function(vic, damager, dmg)
 	local atk = dmg:GetAttacker()
 
@@ -411,14 +407,14 @@ hook.Add("DoPlayerDeath", "pluto_currency_add", function(vic, damager, dmg)
 		return
 	end
 
-	local points = 1
+	local points = 0.3
 
 	if (atk:GetRoleTeam() == vic:GetRoleTeam()) then
 		-- base on karma
 		points = -vic:GetKarma() / atk:GetKarma()
 	end
 
-	pluto.currency.addpoints(atk, points)
+	pluto.currency.givespawns(atk, points)
 end)
 
 function pluto.currency.givespawns(ply, amt)
