@@ -411,7 +411,7 @@ hook.Add("DoPlayerDeath", "pluto_currency_add", function(vic, damager, dmg)
 		return
 	end
 
-	local points = 0.25
+	local points = 1
 
 	if (atk:GetRoleTeam() == vic:GetRoleTeam()) then
 		-- base on karma
