@@ -143,6 +143,11 @@ end
 function pluto.inv.readcraft(cl)
 	local i1, i2, i3 = net.ReadUInt(32), net.ReadUInt(32), net.ReadUInt(32)
 
+	if (i1 == i2 or i1 == i3 or i1 == i2) then
+		pluto.inv.sendfullupdate(cl)
+		return
+	end
+
 	local cur
 	if (net.ReadBool()) then
 		cur = {
