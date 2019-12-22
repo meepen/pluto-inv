@@ -225,7 +225,7 @@ function pluto.inv.readcraft(cl)
 		end
 
 		local chance = crafted.Chance
-		chance = chance * (1 + cur.Amount / (cur.Amount + 1))
+		chance = chance * (1 + cur.Amount / 10)
 
 		if (math.random() < chance) then
 			pluto.weapons.addmod(wpn, crafted.Mod)
