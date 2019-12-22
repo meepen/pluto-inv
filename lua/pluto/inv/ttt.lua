@@ -114,7 +114,7 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 		end
 		ply.WasAFK = false
 
-		if (not IsValid(ply) or math.random(3) ~= 1) then
+		if (not IsValid(ply) or math.random(2) ~= 1) then
 			continue
 		end
 
