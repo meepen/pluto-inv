@@ -138,6 +138,10 @@ function pluto.inv.switchtab(steamid, tabid1, tabindex1, tabid2, tabindex2, cb)
 		affected = affected + q:affectedRows()
 	end
 
+	if (tabid1 == tabid2 and tabindex1 == tabindex2) then
+		return cb(true)
+	end
+
 	pluto.db.transact({
 		{ "SELECT 1 FROM pluto_items WHERE tab_id IN (?, ?) FOR UPDATE", {tabid1, tabid2} },
 		{ "UPDATE pluto_items SET tab_id = ?, tab_idx = 0 WHERE tab_id = ? AND tab_idx = ?", {tabid1, tabid2, tabindex2}, addaffected },
