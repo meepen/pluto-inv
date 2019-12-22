@@ -152,7 +152,7 @@ function pluto.weapons.update(item, cb, nostart)
 	assert(item.TabIndex, "no tabindex")
 
 	local inserts = {
-		{ "UPDATE pluto_items SET tier = ?, class = ? WHERE idx = ?", {item.Tier.InternalName, item.ClassName, item.RowID} },
+		{ "UPDATE pluto_items SET tier = ?, class = ?, special_name = ?, nick = ? WHERE idx = ?", {item.Tier.InternalName, item.ClassName, item.SpecialName, item.Nickname, item.RowID} },
 		{ "UPDATE pluto_mods SET deleted = TRUE WHERE gun_index = ?", {item.RowID} },
 	}
 
@@ -160,8 +160,8 @@ function pluto.weapons.update(item, cb, nostart)
 		for type, list in pairs(item.Mods) do
 			for _, mod in ipairs(list) do
 				table.insert(inserts, {
-					"INSERT INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3, deleted) VALUES (?, ?, ?, ?, ?, ?, FALSE) ON DUPLICATE KEY UPDATE deleted = FALSE, tier = ?, roll1 = ?, roll2 = ?, roll3 = ?",
-					{ item.RowID, mod.Mod, mod.Tier, mod.Roll[1], mod.Roll[2], mod.Roll[3], mod.Tier, mod.Roll[1], mod.Roll[2], mod.Roll[3] },
+					"INSERT INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3, deleted) VALUES (?, ?, ?, ?, ?, ?, FALSE) ON DUPLICATE KEY UPDATE deleted = FALSE, tier = VALUE(tier), roll1 = VALUE(roll1), roll2 = VALUE(roll2), roll3 = VALUE(roll3)",
+					{ item.RowID, mod.Mod, mod.Tier, mod.Roll[1], mod.Roll[2], mod.Roll[3] },
 					function(err, q)
 						if (err) then
 							pwarnf("Couldn't save mod!!")
@@ -214,7 +214,7 @@ function pluto.weapons.save(item, owner, cb, nostart, statementsonly)
 	tab.Items[item.TabIndex] = tmp
 
 	local inserts = {
-		{ "REPLACE INTO pluto_items (tier, class, tab_id, tab_idx) VALUES(?, ?, ?, ?)", {type(item.Tier) == "string" and item.Tier or item.Tier and item.Tier.InternalName or "", item.ClassName, item.TabID, item.TabIndex}, function(err, q)
+		{ "REPLACE INTO pluto_items (tier, class, tab_id, tab_idx, nick, special_name) VALUES(?, ?, ?, ?, ?, ?)", {type(item.Tier) == "string" and item.Tier or item.Tier and item.Tier.InternalName or "", item.ClassName, item.TabID, item.TabIndex, item.Nickname, item.SpecialName}, function(err, q)
 			local insert = q:lastInsert()
 
 			item.RowID = insert

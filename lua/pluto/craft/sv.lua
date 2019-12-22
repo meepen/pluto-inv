@@ -168,10 +168,12 @@ function pluto.inv.readcraft(cl)
 	end
 
 	if (i1.Owner ~= i2.Owner or i3.Owner ~= i1.Owner or i1.Owner ~= cl:SteamID64()) then
+		pluto.inv.sendfullupdate(cl)
 		return
 	end
 
 	if (i1.Type ~= "Shard" and i2.Type ~= "Shard" and i3.Type ~= "Shard") then
+		pluto.inv.sendfullupdate(cl)
 		return
 	end
 
@@ -208,10 +210,12 @@ function pluto.inv.readcraft(cl)
 		local crafted = pluto.currency.byname[cur.Currency].Crafted
 
 		if (not crafted) then
+			pluto.inv.sendfullupdate(cl)
 			return
 		end
 
 		if (not pluto.inv.currencies[cl] or not pluto.inv.currencies[cl][cur.Currency] or pluto.inv.currencies[cl][cur.Currency] < cur.Amount) then
+			pluto.inv.sendfullupdate(cl)
 			return
 		end
 
@@ -220,6 +224,8 @@ function pluto.inv.readcraft(cl)
 
 		if (math.random() < chance) then
 			pluto.weapons.addmod(wpn, crafted.Mod)
+
+			wpn.SpecialName = pluto.mods.byname[crafted.Mod].Name .. " %s"
 		end
 	end
 

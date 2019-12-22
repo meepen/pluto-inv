@@ -189,3 +189,16 @@ function ITEM:GetDefaultName()
 
 	return "Unknown type: " .. self.Type
 end
+
+function ITEM:GetRawName()
+	if (self.Type == "Shard") then
+		return "Tier Shard"
+	elseif (self.Type == "Weapon") then -- item
+		local w = weapons.GetStored(self.ClassName)
+		return w and w.PrintName or "N/A"
+	elseif (self.Type == "Model") then
+		return self.Name
+	end
+
+	return "Unknown type: " .. self.Type
+end
