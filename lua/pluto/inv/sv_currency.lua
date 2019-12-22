@@ -404,7 +404,7 @@ function pluto.currency.addpoints(ply, points)
 	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or 1) + points
 end
 
-hook.Add("DoPlayerDeath", function(vic, damager, dmg)
+hook.Add("DoPlayerDeath", "pluto_currency_add", function(vic, damager, dmg)
 	local atk = dmg:GetAttacker()
 
 	if (not IsValid(atk) or not atk:IsPlayer()) then
