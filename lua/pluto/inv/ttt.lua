@@ -116,7 +116,7 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 		end
 		ply.WasAFK = false
 
-		if (not IsValid(ply) or math.random() <= pluto_weapon_droprate:GetFloat()) then
+		if (not IsValid(ply) or math.random() > pluto_weapon_droprate:GetFloat()) then
 			continue
 		end
 
