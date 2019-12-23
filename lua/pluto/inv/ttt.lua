@@ -1,3 +1,5 @@
+local pluto_weapon_droprate = CreateConVar("pluto_weapon_droprate", "0.5", nil, nil, 0, 1)
+
 pluto.afk = pluto.afk or {}
 
 hook.Add("PlayerInitialSpawn", "pluto_afk", function(ply)
@@ -114,7 +116,7 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 		end
 		ply.WasAFK = false
 
-		if (not IsValid(ply) or math.random(2) ~= 1) then
+		if (not IsValid(ply) or math.random() <= pluto_weapon_droprate:GetFloat()) then
 			continue
 		end
 
