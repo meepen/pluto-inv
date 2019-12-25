@@ -137,6 +137,7 @@ local packs =  {
 	nigt = {
 		remote = "https://pluto.gg/datastore/server/nigt.gma",
 		versions = {
+			"20191225_1",
 			"20191225",
 		}
 	},

@@ -282,7 +282,7 @@ c "cayde6" {
 
 c "nigt1" {
 	Name = "Sentinel 1",
-	Model = "models/nigt_sentinel_1.mdl",
+	Model = "models/demons/nigt_sentinel_1.mdl",
 	Hands = "models/nigt_sentinel_1_arm.mdl",
 	Color = CHRISTMAS(0.4),
 	SubDescription = "Suggested by NukeBeta on the December 2019 Forum Thread",
@@ -290,7 +290,7 @@ c "nigt1" {
 
 c "nigt2" {
 	Name = "Sentinel 2",
-	Model = "models/nigt_sentinel_2.mdl",
+	Model = "models/demons/nigt_sentinel_2.mdl",
 	Hands = "models/nigt_sentinel_2_arm.mdl",
 	Color = CHRISTMAS(0.4),
 	SubDescription = "Suggested by NukeBeta on the December 2019 Forum Thread",
