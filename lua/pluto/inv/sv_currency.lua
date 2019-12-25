@@ -492,7 +492,7 @@ hook.Add("DoPlayerDeath", "pluto_currency_add", function(vic, damager, dmg)
 
 	if (atk:GetRoleTeam() == vic:GetRoleTeam()) then
 		-- base on karma
-		points = -vic:GetKarma() / atk:GetKarma()
+		--points = -vic:GetKarma() / atk:GetKarma()
 	end
 
 	pluto.currency.givespawns(atk, points)
