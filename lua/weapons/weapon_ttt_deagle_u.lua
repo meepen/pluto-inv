@@ -53,7 +53,7 @@ SWEP.Bullets = {
 	DamageDropoffRange = 600,
 	DamageDropoffRangeMax = 3600,
 	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.05, 0.05)
+	Spread = Vector(0.01, 0.01)
 }
 
 SWEP.NoPlayerModelHands = true
