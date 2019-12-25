@@ -69,6 +69,9 @@ local crate1_contents = {
 	model_metro_male_3 = fill,
 	model_metro_male_2 = fill,
 	model_metro_male_1 = fill,
+
+	model_hansolo = 30,
+	model_zerosamus = 2,
 }
 
 local function process_percents(contents)
