@@ -524,7 +524,7 @@ c "metro_female_5" {
 c "osrsbob" {
 	Name = "Bob",
 	Model = "models/player/runescape/player_bob.mdl",
-	Hands = "models/player/runescape/player_bob.mdl",
+	--Hands = "models/player/runescape/player_bob.mdl",
 	Color = CHRISTMAS(0.5),
 	SubDescription = "\nSuggested by CheeseJuggernaut on the December 2019 Forum Thread",
 }
