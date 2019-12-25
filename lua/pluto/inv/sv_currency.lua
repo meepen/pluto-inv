@@ -43,7 +43,7 @@ local crate1_contents = {
 	model_weebshit = 1,
 	model_tomb = 20,
 	model_warmor = 100,
-	model_cayde6 = 30,
+	model_cayde6 = 20,
 	model_nigt1 = 100,
 	model_nigt2 = 100,
 
