@@ -344,7 +344,7 @@ for name, values in pairs {
 		},
 	},
 	crate1 = {
-		Shares = 60,
+		Shares = 0, -- 60,
 		Use = function(ply)
 			local gotten = rollcrate(crate1_contents)
 			local type = pluto.inv.itemtype(gotten)
