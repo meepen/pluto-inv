@@ -1,0 +1,18 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\captainbigbutt\vocaloid\christmas_miku\hair"
+	"$bumpmap" "models\captainbigbutt\vocaloid\christmas_miku\normal"
+	"$nodecal" "1"
+
+	"$lightwarptexture" "models\captainbigbutt\vocaloid\christmas_miku\hairwarp"
+
+	"$phong" "1"
+	"$phongboost"	".5"
+	"$phongalbedotint" "1"
+	"$phongexponenttexture" "models\captainbigbutt\vocaloid\christmas_miku\phong_exp"
+	"$phongfresnelranges"	"[1 .1 .1]"
+
+	"$rimlight"               "1"
+	"$rimlightexponent"       "3"
+	"$rimlightboost"          "4"
+}

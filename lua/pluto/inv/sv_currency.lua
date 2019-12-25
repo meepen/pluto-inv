@@ -35,6 +35,55 @@ local crate0_contents = {
 	weapon_ttt_deagle_u = 0.5,
 }
 
+local fill = 750 / (5 + 6 + 9)
+local crate1_contents = {
+	model_osrs = 50,
+	model_puggamax = 40,
+	model_santa = 5,
+	model_weebshit = 1,
+	model_tomb = 20,
+	model_warmor = 100,
+	model_cayde6 = 30,
+	model_nigt1 = 100,
+	model_nigt2 = 100,
+
+	model_metro_female_5 = fill,
+	model_metro_female_4 = fill,
+	model_metro_female_3 = fill,
+	model_metro_female_2 = fill,
+	model_metro_female_1 = fill,
+
+	model_metro6 = fill,
+	model_metro5 = fill,
+	model_metro4 = fill,
+	model_metro3 = fill,
+	model_metro2 = fill,
+	model_metro1 = fill,
+
+	model_metro_male_9 = fill,
+	model_metro_male_8 = fill,
+	model_metro_male_7 = fill,
+	model_metro_male_6 = fill,
+	model_metro_male_5 = fill,
+	model_metro_male_4 = fill,
+	model_metro_male_3 = fill,
+	model_metro_male_2 = fill,
+	model_metro_male_1 = fill,
+}
+
+local function process_percents(contents)
+	local shares = 0
+	for k, n in pairs(contents) do
+		shares = shares + n
+	end
+
+	for k, n in SortedPairsByValue(contents) do
+		pprintf("%.02f%% - %s", (n / shares) * 100, k)
+	end
+end
+
+process_percents(crate1_contents)
+
 local function rollcrate(crate)
 	local m = math.random()
 
@@ -284,6 +333,35 @@ for name, values in pairs {
 			end
 
 			pluto.inv.addcurrency(ply, "crate0", -1, function() end)
+		end,
+		Types = "None",
+		Crafted = {
+			Chance = 0,
+			Mod = "crated",
+		},
+	},
+	crate1 = {
+		Shares = 60,
+		Use = function(ply)
+			local gotten = rollcrate(crate1_contents)
+			local type = pluto.inv.itemtype(gotten)
+			print(gotten, type)
+
+			if (type == "Model") then -- model
+				local id = pluto.inv.generatebuffermodel(ply, gotten:match "^model_(.+)$")
+
+				pluto.inv.message(ply)
+					:write("crate_id", id)
+					:send()
+			elseif (type == "Weapon") then -- unique
+				local id = pluto.inv.generatebufferweapon(ply, "unique", gotten)
+
+				pluto.inv.message(ply)
+					:write("crate_id", id)
+					:send()
+			end
+
+			pluto.inv.addcurrency(ply, "crate1", -1, function() end)
 		end,
 		Types = "None",
 		Crafted = {

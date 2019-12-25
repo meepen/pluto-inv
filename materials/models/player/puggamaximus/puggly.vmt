@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\player\puggamaximus\puggly"
+	"$bumpmap" "models\player\puggamaximus\puggly_n"
+	
+}

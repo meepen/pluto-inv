@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\MetroLL/act_bab_body_blue"
+
+	"$bumpmap" "models\MetroLL/act_bab_body_bump"
+        "$lightwarptexture" 	"models\MetroLL\Clothes_wrp"
+	"$model" 1
+	"$nocull" 1
+	"$phong" "1"
+	"$phongexponent" "10"
+	"$phongboost" ".2"
+	"$phongfresnelranges" "[0.3 1 7]"
+	"$phongalbedotint" "1"		
+}
+

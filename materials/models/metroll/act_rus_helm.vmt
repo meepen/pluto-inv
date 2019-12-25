@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\MetroLL/act_rus_helm"
+	"$bumpmap" "models\MetroLL/act_rus_helm_Bump"
+        "$lightwarptexture" 	"models\MetroLL\Clothes_wrp"
+	"$model" "1"
+	"$phong" "1"
+	"$phongexponent" "5"
+	"$phongboost"	".2"
+	"$phongfresnelranges"	"[.5 3 48]"
+
+}

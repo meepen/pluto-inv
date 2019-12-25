@@ -1,0 +1,13 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models\doom\humans\night_sentinel\helm"
+	"$bumpmap" "models\doom\humans\night_sentinel\helm_n"
+
+	"$phongexponenttexture" "models\doom\humans\night_sentinel\helm_e"
+
+	"$phong" "1"
+	"$phongboost"	"10.465625"
+	"$phongfresnelranges"	"[0.76 0.921 1.25]"
+//	"$selfillummask" "models\doom\humans\night_sentinel\helm_i"
+
+}

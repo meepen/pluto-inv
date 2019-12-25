@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\MetroLL\mouth"
+	"$halflambert" 1
+	"$nocull" 1
+}

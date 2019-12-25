@@ -1,0 +1,17 @@
+"VertexLitGeneric"
+{
+"$basetexture" 			"models\Devarture\destiny_dir\destiny_2\factions\vanguard\characters\cayde_6\vest\CaydeVest_Diff"
+"$bumpmap" 			"models\Devarture\destiny_dir\destiny_2\factions\vanguard\characters\cayde_6\vest\CaydeVest_Norm"
+
+"$phong"				"1.00"
+"$phongexponent"			"15"
+"$phongboost"			"0.05"
+"$phongexponenttexture"		"models\Devarture\destiny_dir\destiny_2\factions\vanguard\characters\cayde_6\vest\CaydeVest_Exp"
+"$phongfresnelranges"		"[0.8 4.75 32.55]"
+"$phongalbedotint"			"1.00"
+"$phongdisablehalflambert"		"1.00"
+
+"$phongtint"		"[0.450 0.4 0.3294]"
+"$blendtintbybasealpha"		"1.00"
+"$blendtintcoverbase"		"1.00"
+}

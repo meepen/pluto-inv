@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\player\puggamaximus\coat02"
+	"$bumpmap" "models\player\puggamaximus\coat_n"
+        "$nocull" "1"
+}

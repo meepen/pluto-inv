@@ -1,0 +1,17 @@
+"VertexLitGeneric"
+{
+"$basetexture" 			"models\Devarture\destiny_dir\destiny_2\factions\vanguard\characters\cayde_6\eye\CaydeEye_Diff"
+"$bumpmap" 			"models\Devarture\destiny_dir\destiny_2\factions\vanguard\characters\cayde_6\eye\CaydeEye_Norm"
+
+"$phong"				"1.00"
+"$phongexponent"			"15"
+"$phongboost"			"0.05"
+"$phongfresnelranges"		"[1.6 1.75 3.55]"
+"$phongalbedotint"			"1.00"
+"$phongdisablehalflambert"		"1.00"
+$nocull 1
+
+"$phongtint"		"[0.65 0.65 0.65]"
+$blendtintbybasealpha		"1.00"
+$blendtintcoverbase		1.00
+}

@@ -1,0 +1,13 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\lt_c\sci_fi\humans\citizens\eric_facemap"
+	"$bumpmap"     "models\lt_c\sci_fi\humans\citizens\eric_facemap_n"
+	"$nocull" 1
+	"$blendtintbybasealpha" 1
+	
+	$phong 1
+	$phongboost 1
+	$phongexponent 5
+	$phongtint "[1 .85 .85]"
+	$phongfresnelranges "[.5 .85 30]"
+}

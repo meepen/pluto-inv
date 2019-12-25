@@ -1,0 +1,10 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\player\puggamaximus\arms_gloves"
+	"$bumpmap" "models\player\puggamaximus\arms_gloves_normal"
+	"$phong" 1
+	"$phongboost" ".5"
+	"$phongexponent" 5
+	"$phongtint" "[.85 .85 1]"
+	"$phongfresnelranges" "[.3 .65 30]"
+}

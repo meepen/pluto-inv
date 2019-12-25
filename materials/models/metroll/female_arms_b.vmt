@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\MetroLL/female_arms_b"
+	"$bumpmap" "models\MetroLL/female_arms_n"
+	"$model" 1
+	"$phong" "1"
+	"$phongexponent" "10"
+	"$phongboost" ".007"
+	"$phongfresnelranges" "[0.3 1 7]"
+	"$phongalbedotint" "1"
+}

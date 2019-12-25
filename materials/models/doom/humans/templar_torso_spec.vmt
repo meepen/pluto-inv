@@ -1,0 +1,17 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models\doom\humans\night_sentinel\torso_e"
+	"$bumpmap" "models\doom\humans\night_sentinel\torso_n"
+
+	"$BasemapAlphaPhongMask"	"1"
+
+	"$color2"			"[0 0 0]"
+	"$additive"	"1"
+
+	"$phongexponenttexture" "models\doom\humans\night_sentinel\torso_e"
+
+	"$phong" "1"
+	"$phongboost"	"0.9986979"
+
+	"$phongfresnelranges"	"[0.22 0.856 20]"
+}

@@ -1,0 +1,33 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models\doom\humans\night_sentinel\torso"
+	"$bumpmap" "models\doom\humans\night_sentinel\torso_n"
+
+	"$phongexponenttexture" "models\doom\humans\night_sentinel\torso_e"
+
+	"$phong" "1"
+
+	"$phongboost"	"10.465625"
+	"$phongfresnelranges"	"[0.76 0.921 1.25]"
+
+
+//	"$selfillummask" "models\doom\humans\night_sentinel\torso_i"
+
+	"$selfillum"	"1"
+	"$selfIllumFresnel"	"1"
+//	"$selfIllumFresnelMinMaxExp"	"[0.1 15 0.5]"
+//	"$selfillumtint"	"[1.3 0.6 0.6]"
+
+	"$selfIllumFresnelMinMaxExp"	"[0.5 1.35 0.2]"
+//	"$selfillumtint"	"[26.9 49.3 53]"
+	"$selfillumtint"	"[21.5 39.4 53]"
+
+	Proxies
+	{
+		PlayerColor
+		{
+			resultVar	$selfillumtint
+		}
+	}
+
+}

@@ -1,0 +1,9 @@
+"VertexlitGeneric"
+{
+	$basetexture "models/kuma96/winterizedarmor/helmet_d"
+	$bumpmap "models/kuma96/winterizedarmor/helmet_n"
+	$phong 1
+	$phongexponent 15
+	$phongboost 2.5
+	$phongfresnelranges "[.01 .5 1]"
+}

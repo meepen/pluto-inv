@@ -70,6 +70,14 @@ function pluto.inv.generatebuffermodel(ply, mdl)
 	return i.BufferID
 end
 
+concommand.Add("pluto_spawn_model", function(ply, cmd, arg, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+
+	pluto.inv.generatebuffermodel(ply, unpack(arg))
+end)
+
 function pluto.inv.notifybufferitem(ply, i)
 	local items = sql.Query("SELECT idx FROM pluto_items WHERE owner = " .. ply:SteamID64() .. " ORDER BY idx DESC")
 
