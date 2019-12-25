@@ -37,7 +37,7 @@ local crate0_contents = {
 
 local fill = 750 / (5 + 6 + 9)
 local crate1_contents = {
-	model_osrs = 50,
+	model_osrsbob = 50,
 	model_puggamax = 40,
 	model_santa = 5,
 	model_weebshit = 1,
