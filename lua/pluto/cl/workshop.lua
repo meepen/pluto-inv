@@ -171,6 +171,12 @@ local packs =  {
 			"20191225",
 		}
 	},
+	--[[lancer = {
+		remote = "soon:tm:",
+		versions = {
+			"20191225",
+		}
+	},]]
 	--[[
 	moxxi = {
 		remote = "https://pluto.gg/datastore/server/moxxi.gma",

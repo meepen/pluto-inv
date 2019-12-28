@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	"$basetexture" "weapons/cog_lancer"
+	"$translucent" 1
+}
