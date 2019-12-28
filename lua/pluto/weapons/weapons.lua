@@ -315,8 +315,8 @@ function pluto.weapons.addmod(item, modname)
 end
 
 function pluto.weapons.generatemod(item, prefix_max, suffix_max, ignoretier)
-	prefix_max = prefix_max or 3
 	suffix_max = suffix_max or 3
+	prefix_max = prefix_max or math.max(item:GetMaxAffixes() - suffix_max, 3)
 
 	if (not item.Mods) then
 		return false
