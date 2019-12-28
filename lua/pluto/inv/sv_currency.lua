@@ -142,7 +142,7 @@ for name, values in pairs {
 
 			local new_mods = pluto.weapons.generatetier(item.Tier, item.ClassName, nil, nil, function(mod, tier)
 				local needed = #mod.Tiers[tier] / 2
-			
+
 				local retn = {}
 				for i = 1, needed do
 					retn[i] = math.random() * 2 / 3
