@@ -109,6 +109,17 @@ local function Brightness(col)
 	return math.sqrt(r * r * 0.241 + g * g * 0.691 + b * b * 0.068)
 end
 
+function pluto.inv.colors(col)
+	local _h, s, l = ColorToHSL(col)
+	s = math.Clamp(s, 0, 0.6)
+	l = 0.5
+	local col = HSLToColor(_h, s, l)
+
+	_h, s, l = ColorToHSL(col)
+	local num = (math.Clamp(Brightness(col), 0.25, 0.75) - 0.25) * 2
+	return col, HSLToColor(_h, s + num * 0.3, l + 0.3)
+end
+
 function PANEL:Init()
 	self.Random = math.random()
 	self:SetKeyboardInputEnabled(false)
@@ -118,6 +129,16 @@ function PANEL:Init()
 	self:SetColor(Color(0,0,0,0))
 
 	self.Material = Material "pluto/item_bg_real.png"
+end
+
+function PANEL:SetShard()
+	self.RealImage = Material "pluto/newshard.png"
+	self.RealImageAdd = Material "pluto/newshardbg.png"
+	self.RealColor, self.AddColor = pluto.inv.colors(self.Item.Color)
+
+	local h, s, v = ColorToHSL(self.RealColor)
+
+	self.RealColor = HSLToColor(h, 0.4, v)
 end
 
 function PANEL:SetItem(item)
@@ -135,23 +156,19 @@ function PANEL:SetItem(item)
 
 	self.Type = item.Type
 
-	local _h, s, l = ColorToHSL(item.Color)
-	s = math.Clamp(s, 0, 0.6)
-	l = 0.5
-	local col = HSLToColor(_h, s, l)
-	self:SetColor(col)
+	local maincol, matcol = pluto.inv.colors(item.Color)
+	self:SetColor(maincol)
 
-	_h, s, l = ColorToHSL(col)
-	local num = (math.Clamp(Brightness(col), 0.25, 0.75) - 0.25) * 2
-	col = HSLToColor(_h, s + num * 0.3, l + 0.3)
-	self.MaterialColor = col:ToVector()
+	self.MaterialColor = matcol:ToVector()
+
+	self.RealImage = nil
 
 	if (self.Type == "Weapon") then
 		self:SetWeapon(item)
 	elseif (self.Type == "Model") then
 		self:SetModel(item)
 	elseif (self.Type == "Shard") then
-		self.MaterialColor = nil
+		self:SetShard()
 	else
 		pwarnf("Unknown type: %s", tostring(self.Type))
 		return
@@ -178,36 +195,20 @@ function PANEL:SetModel(item)
 end
 
 DEFINE_BASECLASS "ttt_curved_panel"
-local lookups = {
-	weapon_ttt_mac10 = {2.2, 3.9},
-	weapon_ttt_ak47 = {5, 3},
-	weapon_ttt_r301 = {-7, 9},
-	weapon_ttt_ppsh41 = {-5, -1},
-	weapon_ttt_ump = {-2, 7, size = 0.7, angle = Angle(0, -80, -6)},
-	weapon_ttt_tec9 = {0, -0.5, angle = Angle(0, -90, 90)},
-	weapon_ttt_glock = {1, 4, size = 1.1},
-	weapon_ttt_deagle = {0.5, 5},
-	weapon_ttt_mp5 = {2, 7.5},
-	weapon_ttt_sg550 = {3.0, 5},
-	weapon_ttt_galil = {4, 4},
-	weapon_ttt_m4a1 = {5, 3},
-	weapon_ttt_tmp = {0, 5},
-	weapon_ttt_g3sg1 = {7.2, 1.9},
-	weapon_ttt_p228 = {1.5, 3.7, size = 1.1},
-	weapon_ttt_shotgun = {2.8, 4},
-	weapon_ttt_rifle = {2.8, 4},
-	weapon_ttt_sg552 = {8, 0},
-	weapon_ttt_p90 = {4, 5},
-	weapon_ttt_huge = {4, 6.5},
-	weapon_ttt_usas12 = {0, 0, angle = Angle(0, 20, -35)},
-	weapon_ttt_pistol = {1.5, 4.2, size = 1.1},
-	weapon_ttt_ak47_u = {0, 7, size = 0.7, angle = Angle(45, 180, -60)},
-	weapon_ttt_deagle_u = {-3.5, 6, size = 0.7, angle = Angle(-45, 180, 145)},
-	Default = {0, 0},
-}
 
 function PANEL:Paint(w, h)
 	if (self.norender or pluto.ui.ghost == self:GetParent() and not pluto.ui.ghost.paintover) then
+		return
+	end
+
+	if (self.RealImage) then
+		self.RealImage:SetVector("$color", self.RealColor:ToVector())
+		self.RealImageAdd:SetVector("$color", self.AddColor:ToVector())
+		surface.SetDrawColor(255, 255, 255, 255)
+		surface.SetMaterial(self.RealImage)
+		surface.DrawTexturedRect(0, 0, w, h)
+		surface.SetMaterial(self.RealImageAdd)
+		surface.DrawTexturedRect(0, 0, w, h)
 		return
 	end
 
@@ -231,11 +232,13 @@ function PANEL:Paint(w, h)
 		local typ = self.Type
 		local class = self.Class
 
-		if (self.Material and self.MaterialColor) then
-			self.Material:SetVector("$color", self.MaterialColor)
-			surface.SetMaterial(self.Material)
-			surface.SetDrawColor(255, 255, 255, err ~= self.DefaultModel and 255 or 1)
-			surface.DrawTexturedRect(0, 0, w, h)
+		if (self.MaterialColor) then
+			if (self.Material) then
+				self.Material:SetVector("$color", self.MaterialColor)
+				surface.SetMaterial(self.Material)
+				surface.SetDrawColor(255, 255, 255, err ~= self.DefaultModel and 255 or 1)
+				surface.DrawTexturedRect(0, 0, w, h)
+			end
 		end
 
 		if (not IsValid(err)) then
@@ -247,12 +250,11 @@ function PANEL:Paint(w, h)
 
 		if (IsValid(err)) then
 			if (typ == "Weapon") then
-				local lookup = lookups.Default
 				if (not IsValid(err)) then
 					return
 				end
 
-				lookup = lookups[class] or lookup
+				local lookup = weapons.GetStored(class).Ortho or {0, 0}
 
 				local x, y = self:LocalToScreen(0, 0)
 				local mins, maxs = err:GetModelBounds()
@@ -265,7 +267,9 @@ function PANEL:Paint(w, h)
 							err:SetAngles(Angle(-40, 10, 10))
 							render.PushFilterMin(TEXFILTER.ANISOTROPIC)
 							render.PushFilterMag(TEXFILTER.ANISOTROPIC)
-								err:DrawModel()
+								self:Scissor()
+									err:DrawModel()
+								render.SetScissorRect(0, 0, 0, 0, false)
 							render.PopFilterMag()
 							render.PopFilterMin()
 						render.SuppressEngineLighting(false)
@@ -360,6 +364,10 @@ function PANEL:PlutoTabUpdate(tabid, tabindex, item)
 end
 
 function PANEL:Paint(w, h)
+	if (self.norender or pluto.ui.ghost == self and self.paintover) then
+		return
+	end
+
 	if (not self.Tab.Active) then
 		return
 	end
@@ -544,7 +552,7 @@ function PANEL:GhostClick(p, m)
 	end
 
 	if (m == MOUSE_RIGHT) then
-		pluto.ui.ghost = nil
+		pluto.ui.unsetghost()
 		return
 	end
 
@@ -599,7 +607,7 @@ function PANEL:GhostClick(p, m)
 			end
 			self:SwitchWith(gparent)
 		end
-		pluto.ui.ghost = nil
+		pluto.ui.unsetghost()
 	
 		if (self.Item and p ~= self) then
 			timer.Simple(0, function()
@@ -931,7 +939,7 @@ function PANEL:GhostClick(p)
 			:send()
 	end
 	if (not input.IsKeyDown(KEY_LSHIFT)) then
-		pluto.ui.ghost = nil
+		pluto.ui.unsetghost()
 	end
 	return false
 end
@@ -1197,12 +1205,17 @@ end
 
 function PANEL:SetTabs(tabs)
 	table.sort(tabs, function(a, b)
+		if (a.FakeID or b.FakeID) then
+			if (a.FakeID and not b.FakeID) then
+				return false
+			elseif (b.FakeID and not a.FakeID) then
+				return true
+			else
+				return a.FakeID > b.FakeID
+			end
+		end
 		return a.ID < b.ID
 	end)
-	if (tabs[1] and tabs[1].ID == 0) then
-		table.insert(tabs, tabs[1])
-		table.remove(tabs, 1)
-	end
 	for _, tab in ipairs(tabs) do
 		self:AddTab("pluto_inventory_tab", tab)
 	end
@@ -1357,7 +1370,7 @@ function PANEL:OnMousePressed(mouse)
 			TabIndex = pluto.ui.ghost.TabIndex,
 			Item = pluto.ui.ghost.Item.ID,
 			Time = CurTime(),
-			EndTime = CurTime() + 2,
+			EndTime = CurTime() + 1,
 		}
 	else
 		local p = vgui.Create "pluto_falling_text"
@@ -1392,7 +1405,7 @@ function PANEL:StopIfDeleting()
 			p:SetPos(gui.MousePos())
 		end
 
-		pluto.ui.ghost = nil
+		pluto.ui.unsetghost()
 		self.Deleting = nil
 	end
 end
@@ -1496,7 +1509,7 @@ function PANEL:PlutoBufferChanged()
 	for i = 1, 5 do
 		self.Items[i]:SetItem(pluto.buffer[i])
 		if (self.Items[i] == pluto.ui.ghost) then
-			pluto.ui.ghost = nil
+			pluto.ui.unsetghost()
 		end
 	end
 end
@@ -1562,7 +1575,8 @@ function PANEL:SetTabs(tabs, addtrade)
 
 
 	if (addtrade) then
-		table.insert(t, 2, pluto.tradetab)
+		table.insert(t, pluto.tradetab)
+		table.insert(t, pluto.crafttab)
 	end
 
 	self.Tabs:SetTabs(t)
@@ -1889,12 +1903,16 @@ function PANEL:AddMod(mod)
 
 		if (self.LastDesc ~= desc) then
 			self:SetText(desc)
+			self:SizeToContentsY()
+			self:InvalidateLayout(true)
 		end
 
 		BaseClass.Think(self)
 
 		if (self.LastDesc ~= desc) then
-			self:GetParent():GetParent():Resize()
+			local p = self:GetParent():GetParent()
+
+			p:Resize()
 			self.LastDesc = desc
 		end
 	end
@@ -1920,6 +1938,7 @@ end
 function PANEL:SetItem(item)
 	self.ItemName:SetTextColor(color_black)
 	self.ItemID:SetTextColor(color_black)
+	self.Experience:SetTextColor(color_black)
 	if (item.GetPrintName) then -- item
 		self.ItemName:SetText(item:GetPrintName())
 		if (item.Type == "Weapon") then
@@ -1939,6 +1958,14 @@ function PANEL:SetItem(item)
 	else
 		self.ItemID:SetText ""
 	end
+	self.ItemID:SizeToContentsY()
+
+	if (item.Experience) then
+		self.Experience:SetText("EXP: " .. item.Experience)
+	else
+		self.Experience:SetText ""
+	end
+	self.Experience:SizeToContentsY()
 
 	self.ItemName:SizeToContentsY()
 	self.ItemBackground:SetTall(self.ItemName:GetTall() * 1.5)
@@ -2058,6 +2085,11 @@ function PANEL:Init()
 	self.ItemID:SetContentAlignment(3)
 	self.ItemID:SetFont "pluto_item_showcase_id"
 
+	self.Experience = self.ItemName:Add "DLabel"
+	self.Experience:Dock(TOP)
+	self.Experience:SetContentAlignment(9)
+	self.Experience:SetFont "pluto_item_showcase_id"
+
 	self.ItemDesc = self:Add "pluto_centered_wrap"
 	self.ItemDesc:SetFont "pluto_item_showcase_desc"
 	self.ItemDesc:Dock(TOP)
@@ -2146,12 +2178,24 @@ end
 
 vgui.Register("pluto_falling_text", PANEL, "ttt_curved_panel")
 
+hook.Add("PreRender", "pluto_ghost", function()
+	if (IsValid(pluto.ui.ghost)) then
+		local p = pluto.ui.ghost
+		local mi, ki = p:IsMouseInputEnabled(), p:IsKeyboardInputEnabled()
+		pluto.ui.ghost.paintover = true
+		p:PaintAt(p:LocalToScreen(0, 0)) -- this resets mouseinput / keyboardinput???
+		pluto.ui.ghost.paintover = false
+		p:SetMouseInputEnabled(mi)
+		p:SetKeyboardInputEnabled(ki)
+	end
+end)
+
 hook.Add("PostRenderVGUI", "pluto_ghost", function()
 	if (IsValid(pluto.ui.ghost)) then
 		local p = pluto.ui.ghost
 
 		if ((input.IsMouseDown(MOUSE_RIGHT) or input.IsMouseDown(MOUSE_LEFT)) and not IsValid(vgui.GetHoveredPanel())) then
-			pluto.ui.ghost = nil
+			pluto.ui.unsetghost()
 			return
 		end
 
@@ -2197,6 +2241,16 @@ pluto.tradetab = {
 	ID = 0,
 	Items = {},
 	Currency = {},
+	FakeID = 2,
+}
+
+pluto.crafttab = {
+	Type = "craft",
+	Name = "Craft",
+	ID = 0,
+	Items = {},
+	Currency = {},
+	FakeID = 1,
 }
 
 hook.Add("VGUIMousePressAllowed", "pluto_ghost", function(mouse)
@@ -2244,3 +2298,10 @@ hook.Add("PlutoBufferChanged", "pluto_buffer", function()
 		return think and think(self) or nil
 	end
 end)
+
+function pluto.ui.unsetghost()
+	if (pluto.ui.ghost) then
+		pluto.ui.ghost:PaintAt(pluto.ui.ghost:LocalToScreen(0, 0))
+		pluto.ui.ghost = nil
+	end
+end

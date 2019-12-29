@@ -1,0 +1,30 @@
+"VertexLitGeneric"
+{
+"$basetexture" 			"models\Devarture\destiny_dir\destiny_2\factions\vanguard\weapons\aceofspades\AceOfSpades01_Diff"
+"$bumpmap" 			"models\Devarture\destiny_dir\destiny_2\factions\vanguard\weapons\aceofspades\AceOfSpades01_Norm"
+
+"$phong"				"1.00"
+//"$phongexponent"		"15"
+"$phongboost"			"1.5"
+"$phongexponenttexture"		"models\Devarture\destiny_dir\destiny_2\factions\vanguard\weapons\aceofspades\AceOfSpades01_Exp2"
+"$phongfresnelranges"		"[2.5 3.75 16.55]"
+"$phongalbedotint"			"1.00"
+"$phongdisablehalflambert"		"1.00"
+"$color"		"[0.6 0.6 0.6]"
+
+"$blendtintbybasealpha"		"1.00"
+"$blendtintcoverbase"		"1.00"
+
+"$detail"				"models\Devarture\destiny_dir\destiny_2\shared\details\metal_generic_detail"
+"$detailblendmode" 		"0.00"
+"$detailblendfactor" 		".6"
+"$detailscale"			"48.00"
+
+"$envmap" "models/Devarture\destiny_dir\destiny_2\shared\cubemaps\painted_silver"
+"$envmaptint" "[0.15 0.15 0.15]"
+
+"$normalmapalphaenvmapmask" "1"
+
+"$halflambert" "1"
+"$nocull" "1"
+}

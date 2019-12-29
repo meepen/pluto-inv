@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\MetroLL/M_greek_03_co"
+	"$bumpmap" "models\MetroLL/M_greek_03_N"
+        "$lightwarptexture" 	"models\MetroLL\Base_M_caucasian_wrp"
+	"$model" "1"
+	"$phong" "1"
+	"$phongexponent" "5"
+	"$phongboost"	"1"
+	"$phongfresnelranges"	"[.5 3 48]"
+
+}

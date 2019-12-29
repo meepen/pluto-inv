@@ -2,16 +2,20 @@ pluto.inv = pluto.inv or {}
 
 pluto.inv.messages = {
 	cl2sv = {
-		[0] = "end",
-		[1] = "tabswitch",
-		[2] = "itemdelete",
-		[3] = "currencyuse",
-		[4] = "tabrename",
-		[5] = "claimbuffer",
-		[6] = "tradeupdate",
-		[7] = "trademessage",
-		[8] = "traderequest",
-		[9] = "tradeaccept",
+		[0]  = "end",
+		[1]  = "tabswitch",
+		[2]  = "itemdelete",
+		[3]  = "currencyuse",
+		[4]  = "tabrename",
+		[5]  = "claimbuffer",
+		[6]  = "tradeupdate",
+		[7]  = "trademessage",
+		[8]  = "traderequest",
+		[9]  = "tradeaccept",
+		[10] = "votemap",
+		[11] = "likemap",
+		[12] = "requestcraftresults",
+		[13] = "craft",
 	},
 	sv2cl = {
 		[0] = "end",
@@ -27,6 +31,10 @@ pluto.inv.messages = {
 		[10] = "tradeaccept",
 		[11] = "fullupdate",
 		[12] = "crate_id",
+		[13] = "mapvote",
+		[14] = "mapvotes",
+		[15] = "craftresults",
+		[16] = "expupdate",
 	}
 }
 
@@ -124,6 +132,43 @@ function ITEM:GetPrintName()
 	return self:GetDefaultName()
 end
 
+function ITEM:GetMod(name)
+	local real = pluto.mods.byname[name]
+
+	if (not real) then
+		return
+	end
+
+	if (not self.Mods or not self.Mods[real.Type]) then
+		return
+	end
+
+	for _, mod in pairs(self.Mods[real.Type]) do
+		if (mod.Mod == name) then
+			return mod
+		end
+	end
+end
+
+function ITEM:GetMaxAffixes()
+	local affix = 0
+
+	if (self.Tier) then
+		affix = self.Tier.affixes
+	end
+
+	if (self.Mods and self.Mods.implicit) then
+		for _, modd in pairs(self.Mods.implicit) do
+			local mod = pluto.mods.byname[modd.Mod]
+			if (mod.ExtraAffixes) then
+				affix = affix + mod.ExtraAffixes
+			end
+		end
+	end
+
+	return affix
+end
+
 function ITEM:GetDefaultName()
 	if (self.Type == "Shard") then
 		local tier = self.Tier
@@ -138,6 +183,19 @@ function ITEM:GetDefaultName()
 			tier = tier.Name
 		end
 		return tier .. " " .. (w and w.PrintName or "N/A")
+	elseif (self.Type == "Model") then
+		return self.Name
+	end
+
+	return "Unknown type: " .. self.Type
+end
+
+function ITEM:GetRawName()
+	if (self.Type == "Shard") then
+		return "Tier Shard"
+	elseif (self.Type == "Weapon") then -- item
+		local w = weapons.GetStored(self.ClassName)
+		return w and w.PrintName or "N/A"
 	elseif (self.Type == "Model") then
 		return self.Name
 	end

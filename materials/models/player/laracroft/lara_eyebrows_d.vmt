@@ -1,0 +1,9 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/player/laracroft/Lara_eyebrows_D"
+	"$bumpmap" "models/player/laracroft/Lara_eyebrows_N"
+
+$halflambert 1
+$translucent 1
+$nocull 1
+}

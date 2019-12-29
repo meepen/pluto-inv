@@ -47,7 +47,7 @@ function ENT:DoDamage(damages)
 end
 
 function ENT:GetDelay()
-	return 0.05
+	return 0.025
 end
 
 function pluto.statuses.bleed(ply, damage)

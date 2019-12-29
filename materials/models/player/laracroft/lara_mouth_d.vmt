@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/player/laracroft/Lara_mouth_D"
+	"$bumpmap" "models/player/laracroft/Lara_mouth_N"
+}

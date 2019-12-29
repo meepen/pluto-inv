@@ -1,3 +1,5 @@
+local pluto_weapon_droprate = CreateConVar("pluto_weapon_droprate", "0.5", nil, nil, 0, 1)
+
 pluto.afk = pluto.afk or {}
 
 hook.Add("PlayerInitialSpawn", "pluto_afk", function(ply)
@@ -100,6 +102,7 @@ end)
 
 hook.Add("TTTEndRound", "pluto_endround", function()
 	timer.Remove "pluto_afkcheck"
+	sql.Begin()
 	for _, obj in pairs(round.GetStartingPlayers()) do
 		local ply = obj.Player
 		if (not IsValid(ply)) then
@@ -113,7 +116,7 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 		end
 		ply.WasAFK = false
 
-		if (not IsValid(ply) or math.random(3) ~= 1) then
+		if (not IsValid(ply) or math.random() > pluto_weapon_droprate:GetFloat()) then
 			continue
 		end
 
@@ -121,6 +124,7 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 
 		ply:ChatPrint("You have received a weapon! Check your inventory.")
 	end
+	sql.Commit()
 end)
 
 hook.Add("TTTPlayerGiveWeapons", "pluto_loadout", function(ply)

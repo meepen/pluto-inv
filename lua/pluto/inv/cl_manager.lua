@@ -54,20 +54,7 @@ function pluto.inv.readmod(item)
 	}
 end
 
-function pluto.inv.readitem()
-	local id = net.ReadUInt(32)
-
-	if (not net.ReadBool()) then
-		return pluto.received.item[id]
-	end
-
-	local item = pluto.received.item[id] or setmetatable({
-		ID = id,
-		Version = 0,
-	}, pluto.inv.item_mt)
-
-	item.Version = item.Version + 1
-
+function pluto.inv.readbaseitem(item)
 	item.ClassName = net.ReadString()
 
 	item.Experience = net.ReadUInt(32)
@@ -113,6 +100,23 @@ function pluto.inv.readitem()
 		item.Name = item.Model.Name .. " Model"
 		item.SubDescription = item.Model.SubDescription
 	end
+end
+
+function pluto.inv.readitem()
+	local id = net.ReadUInt(32)
+
+	if (not net.ReadBool()) then
+		return pluto.received.item[id]
+	end
+
+	local item = pluto.received.item[id] or setmetatable({
+		ID = id,
+		Version = 0,
+	}, pluto.inv.item_mt)
+
+	item.Version = item.Version + 1
+
+	pluto.inv.readbaseitem(item)
 
 	pluto.received.item[id] = item
 
@@ -199,44 +203,12 @@ end
 
 function pluto.inv.readbufferitem()
 	local id = net.ReadInt(32)
-	local class = net.ReadString()
 
 	local item = setmetatable({
 		BufferID = id,
-		ClassName = class
 	}, pluto.inv.item_mt)
 
-	item.Type = pluto.inv.itemtype(item)
-
-	-- TODO(meep): make readitembody
-
-	if (item.Type == "Weapon" or item.Type == "Shard") then
-		item.Tier = net.ReadString()
-		item.SubDescription = net.ReadString()
-		item.Color = net.ReadColor()
-		item.AffixMax = net.ReadUInt(3)
-	end
-
-	if (item.Type == "Weapon") then
-		item.Mods = {
-			implicit = {},
-			prefix = {},
-			suffix = {},
-		}
-
-		for i = 1, net.ReadUInt(8) do
-			item.Mods.prefix[i] = pluto.inv.readmod()
-		end
-
-		for i = 1, net.ReadUInt(8) do
-			item.Mods.suffix[i] = pluto.inv.readmod()
-		end
-	elseif (item.Type == "Model") then
-		item.Model = pluto.models[item.ClassName:match "^model_(.+)$"]
-		item.Color = item.Model.Color or Color(255, 255, 255)
-		item.Name = item.Model.Name .. " Model"
-		item.SubDescription = item.Model.SubDescription
-	end
+	pluto.inv.readbaseitem(item)
 
 	table.insert(pluto.buffer, item)
 	if (#pluto.buffer > 5) then
@@ -308,4 +280,20 @@ end
 
 function pluto.inv.readcrate_id()
 	hook.Run("CrateOpenResponse", net.ReadInt(32))
+end
+
+
+function pluto.inv.readexpupdate()
+	local itemid = net.ReadUInt(32)
+	local exp = net.ReadUInt(32)
+
+
+	local item = pluto.received.item[itemid]
+
+	if (not item) then
+		pwarnf("Item ID not found for expupdate: %i", itemid)
+		return
+	end
+
+	item.Experience = exp
 end

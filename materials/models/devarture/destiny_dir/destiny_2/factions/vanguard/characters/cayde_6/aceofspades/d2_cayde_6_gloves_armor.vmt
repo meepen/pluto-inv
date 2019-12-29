@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+"$basetexture" 			"models\Devarture\destiny_dir\destiny_2\factions\vanguard\characters\cayde_6\aceofspades\AceOfSpades_Diff"
+"$bumpmap" 			"models\Devarture\destiny_dir\destiny_2\factions\vanguard\characters\cayde_6\aceofspades\AceOfSpades_Norm"
+
+"$phong"				"1.00"
+"$phongexponent"			"15"
+"$phongboost"			"0.05"
+"$phongexponenttexture"		"models\Devarture\destiny_dir\destiny_2\factions\vanguard\characters\cayde_6\aceofspades\AceOfSpades_Exp"
+"$phongfresnelranges"		"[0.5 1.75 12.55]"
+"$phongalbedotint"			"1.00"
+"$phongdisablehalflambert"		"1.00"
+
+"$blendtintbybasealpha"		"1.00"
+"$blendtintcoverbase"		"1.00"
+}

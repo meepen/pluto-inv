@@ -1,0 +1,16 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/gow2/weapons/cogassaultrifleblades/COG_AssaultRifle_Blades_Diffuse"
+	"$bumpmap"  "models/gow2/weapons/cogassaultrifleblades/COG_AssaultRifle_Blades_Normal"
+
+                "$model" "1"
+	"$halflambert" 1
+                "$alphatest" 1
+	"$phong" "1"
+	"$phongboost"   "1"
+	"$phongfresnelranges" "[0.1 .5 1]"
+	"$phongexponent" 30
+	"$phongalbedotint" "1"
+
+	"$nocull" 1
+}

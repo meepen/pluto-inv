@@ -8,13 +8,15 @@ SWEP.Slot               = 2
 SWEP.ViewModelFlip      = true
 SWEP.ViewModelFOV       = 64
 
-SWEP.IconLetter         = "w"
+SWEP.Ortho = {-10, 12}
 
 SWEP.Base                  = "weapon_tttbase"
 
 SWEP.Kind                  = WEAPON_HEAVY
 SWEP.WeaponID              = AMMO_RIFLE
 SWEP.ViewModelFOV          = 85
+SWEP.UseHands = true
+SWEP.NoPlayerModelHands = false
 
 SWEP.Bullets = {
 	HullSize = 0,
@@ -22,7 +24,7 @@ SWEP.Bullets = {
 	DamageDropoffRange = 5300,
 	DamageDropoffRangeMax = 9600,
 	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.002, 0.002, 0.002)
+	Spread = vector_origin
 }
 
 SWEP.Primary.Damage        = 47
@@ -33,7 +35,7 @@ SWEP.Primary.Automatic     = true
 SWEP.Primary.Ammo          = "357"
 SWEP.Primary.ClipSize      = 5
 SWEP.Primary.DefaultClip   = 21
-SWEP.Primary.Sound         = "Weapon_cod4m21.trigger"
+SWEP.Primary.Sound         = "Weapon_M4A1.Silenced"
 
 SWEP.Secondary.Sound       = Sound "Default.Zoom"
 
@@ -48,6 +50,19 @@ SWEP.AmmoEnt               = "item_ammo_357_ttt"
 SWEP.ViewModel             = "models/weapons/v_snip_agu.mdl"
 SWEP.WorldModel            = "models/weapons/w_snip_agu.mdl"
 SWEP.HasScope              = true
+
+SWEP.Offset = {
+	Pos = {
+		Up = 2,
+		Right = 1,
+		Forward = 0,
+	},
+	Ang = {
+		Up = 0,
+		Right = -10,
+		Forward = 180,
+	}
+}
 
 sound.Add {
 	name = "Weapon_cod4m21.Boltpull",
@@ -80,6 +95,15 @@ sound.Add {
 	soundlevel = 50,
 	sound = "weapons/cod4m21/trigger.ogg"
 }
+
+SWEP.Sounds = {
+	reload = {
+		{time = 0.58, sound = "Weapon_cod4m21.clipout"},
+		{time = 1.48, sound = "Weapon_cod4m21_clipin"},
+		{time = 2.6, sound = "Weapon_cod4m21.Boltpull"},
+	},
+}
+
 SWEP.Ironsights = {
 	Pos = Vector(5, -15, -2),
 	Angle = Vector(2.6, 1.37, 3.5),

@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\lt_c\sci_fi\humans\citizens/lt_facemap"
+	"$bumpmap" "models\lt_c\sci_fi\humans\citizens/lt_facemap_n"
+	"$halflambert" 1
+
+   	"$phong" "1"
+	"$phongexponent" "10"
+	"$phongboost" "2"	
+	"$phongfresnelranges"	"[.1 0.2 1]"
+}

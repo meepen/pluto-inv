@@ -107,7 +107,7 @@ function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll, affixm
 		wep = weapons.GetStored(pluto.weapons.randomgun())
 	end
 
-	if (tier) then
+	if (type(tier) == "string") then
 		tier = pluto.tiers[tier]
 	end
 
@@ -128,12 +128,13 @@ function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll, affixm
 		end
 	end
 
-	return {
+	return setmetatable({
 		ClassName = wep.ClassName,
 		Tier = tier,
+		Type = "Weapon",
 		Mods = pluto.mods.generateaffixes(
 			wep,
-			math.min(affixmax or math.huge, tier.affixes and tier.affixes > 0 and math.random(1, tier.affixes) or 0),
+			math.random(1, affixmax or tier.affixes or 0),
 			nil,
 			nil,
 			tier.guaranteed, 
@@ -141,7 +142,7 @@ function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll, affixm
 			tier.rolltier or rolltier,
 			tier.roll or roll
 		)
-	}
+	}, pluto.inv.item_mt)
 end
 
 function pluto.weapons.update(item, cb, nostart)
@@ -151,7 +152,7 @@ function pluto.weapons.update(item, cb, nostart)
 	assert(item.TabIndex, "no tabindex")
 
 	local inserts = {
-		{ "UPDATE pluto_items SET tier = ?, class = ? WHERE idx = ?", {item.Tier.InternalName, item.ClassName, item.RowID} },
+		{ "UPDATE pluto_items SET tier = ?, class = ?, special_name = ?, nick = ? WHERE idx = ?", {item.Tier.InternalName, item.ClassName, item.SpecialName, item.Nickname, item.RowID} },
 		{ "UPDATE pluto_mods SET deleted = TRUE WHERE gun_index = ?", {item.RowID} },
 	}
 
@@ -159,8 +160,8 @@ function pluto.weapons.update(item, cb, nostart)
 		for type, list in pairs(item.Mods) do
 			for _, mod in ipairs(list) do
 				table.insert(inserts, {
-					"INSERT INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3, deleted) VALUES (?, ?, ?, ?, ?, ?, FALSE) ON DUPLICATE KEY UPDATE deleted = FALSE, tier = ?, roll1 = ?, roll2 = ?, roll3 = ?",
-					{ item.RowID, mod.Mod, mod.Tier, mod.Roll[1], mod.Roll[2], mod.Roll[3], mod.Tier, mod.Roll[1], mod.Roll[2], mod.Roll[3] },
+					"INSERT INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3, deleted) VALUES (?, ?, ?, ?, ?, ?, FALSE) ON DUPLICATE KEY UPDATE deleted = FALSE, tier = VALUE(tier), roll1 = VALUE(roll1), roll2 = VALUE(roll2), roll3 = VALUE(roll3)",
+					{ item.RowID, mod.Mod, mod.Tier, mod.Roll[1], mod.Roll[2], mod.Roll[3] },
 					function(err, q)
 						if (err) then
 							pwarnf("Couldn't save mod!!")
@@ -186,17 +187,7 @@ function pluto.weapons.update(item, cb, nostart)
 	end, nostart)
 end
 
---[[
-local tab = pluto.inv.invs[ply][i.TabID]
-tab.Items[i.TabIndex] = i
-
-pluto.weapons.save(i, ply, function(id)
-	if (not id) then
-		tab.Items[i.TabIndex] = nil
-	end
-end)]]
-
-function pluto.weapons.save(item, owner, cb)
+function pluto.weapons.save(item, owner, cb, nostart, statementsonly)
 	if (item.Invalid) then
 		error "invalid item"
 	end
@@ -223,13 +214,25 @@ function pluto.weapons.save(item, owner, cb)
 	tab.Items[item.TabIndex] = tmp
 
 	local inserts = {
-		{ "REPLACE INTO pluto_items (tier, class, tab_id, tab_idx) VALUES(?, ?, ?, ?)", {type(item.Tier) == "string" and item.Tier or item.Tier and item.Tier.InternalName or "", item.ClassName, item.TabID, item.TabIndex}, function(err, q)
+		{ "REPLACE INTO pluto_items (tier, class, tab_id, tab_idx, nick, special_name) VALUES(?, ?, ?, ?, ?, ?)", {type(item.Tier) == "string" and item.Tier or item.Tier and item.Tier.InternalName or "", item.ClassName, item.TabID, item.TabIndex, item.Nickname, item.SpecialName}, function(err, q)
 			local insert = q:lastInsert()
 
 			item.RowID = insert
 		end },
 		{ "SET @gun = LAST_INSERT_ID()" },
 	}
+
+	if (item.Tier and item.Tier.InternalName == "crafted") then
+		inserts[#inserts + 1] = {
+			"INSERT INTO pluto_craft_data (gun_index, tier1, tier2, tier3) VALUES (@gun, ?, ?, ?) ON DUPLICATE KEY UPDATE tier1 = tier1",
+			{
+				item.Tier.Tiers[1],
+				item.Tier.Tiers[2],
+				item.Tier.Tiers[3],
+			},
+			function() end,
+		}
+	end
 
 	if (item.Type == "Weapon") then
 		for type, list in pairs(item.Mods) do
@@ -250,13 +253,19 @@ function pluto.weapons.save(item, owner, cb)
 		end
 	end
 
-	pluto.db.transact(inserts, function(err, t)
+	return pluto.db.transact(inserts, function(err, t)
 		if (err) then
 			item.RowID = nil
 			item.Owner = nil
 			tab.Items[item.TabIndex] = old
 			cb(nil, err)
 			return
+		end
+
+		local old = tab.Items[item.TabIndex]
+
+		if (old and not old.Invalid) then
+			pluto.itemids[old.RowID] = nil
 		end
 
 		tab.Items[item.TabIndex] = item
@@ -271,11 +280,96 @@ function pluto.weapons.save(item, owner, cb)
 		pluto.inv.items[item.RowID] = item
 
 		item.LastUpdate = (item.LastUpdate or 0) + 1
+
+		pluto.itemids[item.RowID] = item
 		cb(item.RowID)
-	end)
+	end, nostart)
 end
 
 function pluto.weapons.generateunique(unique)
+end
+
+function pluto.weapons.onrollmod(item, newmod)
+	for _, ms in pairs(item.Mods) do
+		for _, m in pairs(ms) do
+			local M = pluto.mods.byname[m.Mod]
+			if (M.OnRollMod) then
+				M:OnRollMod(item, newmod)
+			end
+		end
+	end
+end
+
+function pluto.weapons.addmod(item, modname)
+	local toadd = pluto.mods.byname[modname]
+
+	local newmod = pluto.mods.rollmod(toadd, item.Tier.rolltier, item.Tier.roll)
+
+	if (not item.Mods[toadd.Type]) then
+		item.Mods[toadd.Type] = {}
+	end
+
+	table.insert(item.Mods[toadd.Type], newmod)
+
+	pluto.weapons.onrollmod(item, newmod)
+end
+
+function pluto.weapons.generatemod(item, prefix_max, suffix_max, ignoretier)
+	suffix_max = suffix_max or 3
+	prefix_max = prefix_max or math.max(item:GetMaxAffixes() - suffix_max, 3)
+
+	if (not item.Mods) then
+		return false
+	end
+
+	local prefixes = #item.Mods.prefix
+	local suffixes = #item.Mods.suffix
+
+	if (not ignoretier and prefixes + suffixes == item:GetMaxAffixes()) then
+		return false
+	end
+
+	local have = {}
+
+	for _, Mods in pairs(item.Mods) do
+		for _, mod in pairs(Mods) do
+			have[mod.Mod] = true
+		end
+	end
+
+	local allowed = {}
+
+	if (prefixes < prefix_max) then
+		local t = {}
+		for _, item in pairs(pluto.mods.prefix) do
+			if (not have[item.InternalName]) then
+				t[#t + 1] = item
+			end
+		end
+		if (#t > 0) then
+			allowed.prefix = t
+		end
+	end
+
+	if (suffixes < suffix_max) then
+		local t = {}
+		for _, item in pairs(pluto.mods.suffix) do
+			if (not have[item.InternalName]) then
+				t[#t + 1] = item
+			end
+		end
+		if (#t > 0) then
+			allowed.suffix = t
+		end
+	end
+
+	local mods, type = table.Random(allowed)
+
+	local toadd = pluto.mods.bias(weapons.GetStored(item.ClassName), mods, tagbiases)[1]
+
+	pluto.weapons.addmod(item, toadd.InternalName)
+
+	return true
 end
 
 concommand.Add("pluto_cheat_weapon", function(ply, cmd, args)

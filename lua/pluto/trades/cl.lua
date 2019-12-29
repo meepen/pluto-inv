@@ -207,11 +207,22 @@ end
 
 vgui.Register("pluto_currency_select", PANEL, "ttt_curved_panel")
 
-local function CurrencySelect(cb)
+function CurrencySelect(pnl, cb)
 	local p = vgui.Create "pluto_currency_select"
 	p:SetCurrent(currentdata)
 	p:MakePopup()
 	p:Center()
+
+	local rem = pnl.OnRemove
+	function pnl:OnRemove()
+		if (IsValid(p)) then
+			p:Remove()
+		end
+
+		if (rem) then
+			rem(self)
+		end
+	end
 	function p:OnSelect(data)
 		cb(data)
 	end
@@ -242,7 +253,7 @@ function PANEL:Init()
 		if (m == MOUSE_RIGHT) then
 			self:SetInfo()
 		elseif (m == MOUSE_LEFT and self.Modifiable) then
-			self.Selector = CurrencySelect(function(data)
+			self.Selector = CurrencySelect(self, function(data)
 				if (not IsValid(self)) then
 					return
 				end
@@ -299,9 +310,13 @@ function PANEL:SetInfo(cur, amt, upd)
 	end
 
 	if (self.Modifiable and not upd) then
-		SendUpdate()
+		self:OnUpdate()
 	end
 	self:Reset()
+end
+
+function PANEL:OnUpdate()
+	SendUpdate()
 end
 
 function PANEL:PerformLayout(w, h)

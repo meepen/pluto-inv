@@ -39,6 +39,8 @@ SWEP.Offset = {
 	}
 }
 
+SWEP.Ortho = {-5, -1}
+
 SWEP.DrawCrosshair = true
 SWEP.PrintName = "PPSh"
 SWEP.CSMuzzleFlashes = true

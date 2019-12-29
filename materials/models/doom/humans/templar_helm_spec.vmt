@@ -1,0 +1,26 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models\doom\humans\night_sentinel\helm_e"
+	"$bumpmap" "models\doom\humans\night_sentinel\helm_n"
+
+		"$phong" "1"
+	"$phongexponent" "35"
+	"$phongboost" "2"
+	"$phongfresnelranges" "[1 0.5 1]"
+
+	$rimlight               1
+	$rimlightexponent       2
+	$rimlightboost          2
+
+
+	$blendtintbybasealpha 1
+
+	Proxies
+	{
+		PlayerColor
+		{
+			resultVar	$color2
+		}
+	}
+
+}

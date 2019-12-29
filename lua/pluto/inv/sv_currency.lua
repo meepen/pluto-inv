@@ -1,5 +1,7 @@
 pluto.currency.shares = 0
 
+local tospawn_amt = CreateConVar("pluto_currency_spawnrate", "2.7")
+
 local function UpdateAndDecrement(ply, item, currency)
 	local trans = pluto.weapons.update(item, function(id)
 		if (not IsValid(ply)) then
@@ -13,66 +15,6 @@ local function UpdateAndDecrement(ply, item, currency)
 	end, true)
 	trans:addQuery(pluto.inv.addcurrency(ply, currency, -1, function() end, true))
 	trans:start()
-end
-
-local function getnewmod(item, prefix_max, suffix_max, ignoretier)
-	prefix_max = prefix_max or 3
-	suffix_max = suffix_max or 3
-
-	if (not item.Mods) then
-		return false
-	end
-
-	local prefixes = #item.Mods.prefix
-	local suffixes = #item.Mods.suffix
-
-	if (not ignoretier and prefixes + suffixes == item.Tier.affixes) then
-		return false
-	end
-
-	local have = {}
-
-	for _, Mods in pairs(item.Mods) do
-		for _, mod in pairs(Mods) do
-			have[mod.Mod] = true
-		end
-	end
-
-	local allowed = {}
-
-	if (prefixes < prefix_max) then
-		local t = {}
-		for _, item in pairs(pluto.mods.prefix) do
-			if (not have[item.InternalName]) then
-				t[#t + 1] = item
-			end
-		end
-		if (#t > 0) then
-			allowed.prefix = t
-		end
-	end
-
-	if (suffixes < suffix_max) then
-		local t = {}
-		for _, item in pairs(pluto.mods.suffix) do
-			if (not have[item.InternalName]) then
-				t[#t + 1] = item
-			end
-		end
-		if (#t > 0) then
-			allowed.suffix = t
-		end
-	end
-
-	local mods, type = table.Random(allowed)
-
-	local toadd = pluto.mods.bias(weapons.GetStored(item.ClassName), mods, tagbiases)[1]
-	
-	local newmod = pluto.mods.rollmod(toadd, item.Tier.rolltier, item.Tier.roll)
-	
-	table.insert(item.Mods[type], newmod)
-
-	return true
 end
 
 local crate0_contents = {
@@ -92,6 +34,58 @@ local crate0_contents = {
 	weapon_ttt_ak47_u = 0.5,
 	weapon_ttt_deagle_u = 0.5,
 }
+
+local fill = 750 / (5 + 6 + 9)
+local crate1_contents = {
+	model_osrsbob = 50,
+	model_puggamax = 40,
+	model_santa = 5,
+	model_weebshit = 1,
+	model_tomb = 20,
+	model_warmor = 100,
+	model_cayde6 = 20,
+	model_nigt1 = 100,
+	model_nigt2 = 100,
+
+	model_metro_female_5 = fill,
+	model_metro_female_4 = fill,
+	model_metro_female_3 = fill,
+	model_metro_female_2 = fill,
+	model_metro_female_1 = fill,
+
+	model_metro6 = fill,
+	model_metro5 = fill,
+	model_metro4 = fill,
+	model_metro3 = fill,
+	model_metro2 = fill,
+	model_metro1 = fill,
+
+	model_metro_male_9 = fill,
+	model_metro_male_8 = fill,
+	model_metro_male_7 = fill,
+	model_metro_male_6 = fill,
+	model_metro_male_5 = fill,
+	model_metro_male_4 = fill,
+	model_metro_male_3 = fill,
+	model_metro_male_2 = fill,
+	model_metro_male_1 = fill,
+
+	model_hansolo = 30,
+	model_zerosamus = 2,
+}
+
+local function process_percents(contents)
+	local shares = 0
+	for k, n in pairs(contents) do
+		shares = shares + n
+	end
+
+	for k, n in SortedPairsByValue(contents) do
+		pprintf("%.02f%% - %s", (n / shares) * 100, k)
+	end
+end
+
+process_percents(crate1_contents)
 
 local function rollcrate(crate)
 	local m = math.random()
@@ -132,36 +126,58 @@ for name, values in pairs {
 			end
 		end,
 		Types = "Weapon",
+		Crafted = {
+			Chance = 1 / 3,
+			Mod = "diced",
+		},
 	},
 	droplet = {
 		Shares = 3000,
 		Use = function(ply, item)
-			local new_mods = pluto.weapons.generatetier(item.Tier.InternalName, item.ClassName, nil, nil, function(mod, tier)
+			local affixes = item:GetMaxAffixes()
+
+			if (affixes >= 4 and not item:GetMod "dropletted") then
+				affixes = affixes - 1
+			end
+
+			local new_mods = pluto.weapons.generatetier(item.Tier, item.ClassName, nil, nil, function(mod, tier)
 				local needed = #mod.Tiers[tier] / 2
-			
+
 				local retn = {}
 				for i = 1, needed do
 					retn[i] = math.random() * 2 / 3
 				end
-			
-				return retn
-			end, item.Tier.affixes == 2 and 2 or item.Tier.affixes - 1).Mods
 
-			print "a"
+				return retn
+			end, affixes).Mods
 
 			item.Mods.prefix = new_mods.prefix
 			item.Mods.suffix = new_mods.suffix
-			
+
+			for _, mods in pairs(new_mods) do
+				for _, mod in pairs(mods) do
+					pluto.weapons.onrollmod(item, mod)
+				end
+			end
+
 			UpdateAndDecrement(ply, item, "droplet")
 		end,
 		Types = "Weapon",
+		Crafted = {
+			Chance = 1 / 3,
+			Mod = "dropletted",
+		},
 	},
 	hand = {
 		Shares = 400,
 		Use = function(ply, item)
 			local possible = {}
 			local incr_possible = {}
-			for _, Mods in pairs(item.Mods) do
+			for typ, Mods in pairs(item.Mods) do
+				if (typ == "implicit") then
+					continue
+				end
+
 				for i = 1, #Mods do
 					local mod = Mods[i]
 					local incr
@@ -196,16 +212,20 @@ for name, values in pairs {
 			UpdateAndDecrement(ply, item, "hand")
 		end,
 		Types = "Weapon",
+		Crafted = {
+			Chance = 1 / 3,
+			Mod = "handed",
+		},
 	},
 	tome = {
 		Shares = 20,
 		Use = function(ply, item)
 			local rand = math.floor(math.random(1, 12) / 2) + 1
 			if (rand == 1) then     -- 2 mods
-				getnewmod(item, 5, 3, true)
-				getnewmod(item, 5, 3, true)
+				pluto.weapons.generatemod(item, 5, 3, true)
+				pluto.weapons.generatemod(item, 5, 3, true)
 			elseif (rand == 2) then -- 1 mod
-				getnewmod(item, 5, 3, true)
+				pluto.weapons.generatemod(item, 5, 3, true)
 			elseif (rand == 3) then -- nothing
 			elseif (rand == 4) then -- base gun change
 				item.ClassName = pluto.weapons.randomgun()
@@ -218,36 +238,50 @@ for name, values in pairs {
 
 				item.Mods.prefix = new_mods.prefix
 				item.Mods.suffix = new_mods.suffix
+
+				for _, mods in pairs(new_mods) do
+					for _, mod in pairs(mods) do
+						pluto.weapons.onrollmod(item, mod)
+					end
+				end
 			else
 				return
 			end
 
 			item.Mods.implicit = item.Mods.implicit or {}
 
-			table.insert(item.Mods.implicit, {
-				Roll = {},
-				Tier = 1,
-				Mod = "unchanging"
-			})
+			pluto.weapons.addmod(item, "unchanging")
 
 			UpdateAndDecrement(ply, item, "tome")
 		end,
 		Types = "Weapon",
+		Crafted = {
+			Chance = 0,
+			Mod = "tomeded",
+		},
 	},
 	mirror = {
 		Shares = 0.1,
 		Use = function(item)
 		end,
 		Types = "Weapon",
+		Crafted = {
+			Chance = 0,
+			Mod = "mirrorered",
+		},
 	},
 	heart = {
 		Shares = 8.5,
 		Use = function(ply, item)
-			if (getnewmod(item)) then
+			if (pluto.weapons.generatemod(item)) then
 				UpdateAndDecrement(ply, item, "heart")
 			end
 		end,
 		Types = "Weapon",
+		Crafted = {
+			Chance = 0.95,
+			Mod = "hearted",
+		},
 	},
 	coin = {
 		Shares = 0.7,
@@ -276,6 +310,10 @@ for name, values in pairs {
 			trans:start()
 		end,
 		Types = "None",
+		Crafted = {
+			Chance = 0.5,
+			Mod = "coined",
+		},
 	},
 	crate0 = {
 		Shares = 39,
@@ -299,7 +337,40 @@ for name, values in pairs {
 
 			pluto.inv.addcurrency(ply, "crate0", -1, function() end)
 		end,
-		Types = "None"
+		Types = "None",
+		Crafted = {
+			Chance = 0,
+			Mod = "crated",
+		},
+	},
+	crate1 = {
+		Shares = 90,
+		Use = function(ply)
+			local gotten = rollcrate(crate1_contents)
+			local type = pluto.inv.itemtype(gotten)
+			print(gotten, type)
+
+			if (type == "Model") then -- model
+				local id = pluto.inv.generatebuffermodel(ply, gotten:match "^model_(.+)$")
+
+				pluto.inv.message(ply)
+					:write("crate_id", id)
+					:send()
+			elseif (type == "Weapon") then -- unique
+				local id = pluto.inv.generatebufferweapon(ply, "unique", gotten)
+
+				pluto.inv.message(ply)
+					:write("crate_id", id)
+					:send()
+			end
+
+			pluto.inv.addcurrency(ply, "crate1", -1, function() end)
+		end,
+		Types = "None",
+		Crafted = {
+			Chance = 0,
+			Mod = "crated",
+		},
 	},
 } do
 	table.Merge(pluto.currency.byname[name], values)
@@ -410,28 +481,22 @@ end
 pluto.currency.tospawn = pluto.currency.tospawn or {}
 pluto.currency.spawned = pluto.currency.spawned or {}
 
-function pluto.currency.addpoints(ply, points)
-	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or 1) + points
-end
-
-hook.Add("DoPlayerDeath", function(vic, damager, dmg)
+hook.Add("DoPlayerDeath", "pluto_currency_add", function(vic, damager, dmg)
 	local atk = dmg:GetAttacker()
 
 	if (not IsValid(atk) or not atk:IsPlayer()) then
 		return
 	end
 
-	local points = 1
+	local points = 0.3
 
-	if (atk:GetTeam() == vic:GetTeam()) then
+	if (atk:GetRoleTeam() == vic:GetRoleTeam()) then
 		-- base on karma
-		points = -vic:GetKarma() / atk:GetKarma()
+		--points = -vic:GetKarma() / atk:GetKarma()
 	end
 
-	pluto.currency.addpoints(atk, points)
+	pluto.currency.givespawns(atk, points)
 end)
-
-local tospawn_amt = 2.7
 
 function pluto.currency.givespawns(ply, amt)
 	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or 0) + amt
@@ -444,7 +509,7 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 			continue
 		end
 
-		local points = (pluto.currency.tospawn[item.Player] or 1) * tospawn_amt
+		local points = (pluto.currency.tospawn[item.Player] or 1) * tospawn_amt:GetFloat()
 
 		for i = 1, points do
 			local e = pluto.currency.spawnfor(item.Player)

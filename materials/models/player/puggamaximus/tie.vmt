@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\player\puggamaximus\tie"
+	"$bumpmap" "models\player\puggamaximus\normalmap_flat"
+}

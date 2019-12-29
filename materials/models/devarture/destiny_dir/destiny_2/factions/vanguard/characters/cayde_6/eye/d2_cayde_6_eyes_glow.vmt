@@ -1,0 +1,7 @@
+"UnlitGeneric"
+{
+"$basetexture" 			"models\Devarture\destiny_dir\destiny_2\factions\vanguard\characters\cayde_6\eye\CaydeEye_Glow"
+$selfillum 1
+$selfillummask 			"models\Devarture\destiny_dir\destiny_2\factions\vanguard\characters\cayde_6\eye\CaydeEye_Glow"
+$selfillummaskscale 5
+}

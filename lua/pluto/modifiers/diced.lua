@@ -16,15 +16,15 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
-MOD.Description = "Doubles currency rewards"
+MOD.Description = "Rolls better numbers on modifiers"
 
 MOD.Tiers = {
 	{ 1, 1 },
 }
 
-function MOD:OnKill(wep, atk, vic, rolls)
-	if (IsValid(atk)) then
-		pluto.currency.givespawns(atk, 1)
+function MOD:OnRollMod(item, mod)
+	for i = 1, #mod.Roll do
+		mod.Roll[i] = math.min(1, mod.Roll[i] + 0.15)
 	end
 end
 

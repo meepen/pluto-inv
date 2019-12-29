@@ -13,6 +13,8 @@ pluto.files.load {
 		"models/cl_models.lua",
 		"mapvote/cl_mapvote.lua",
 		"cl/workshop.lua",
+		"tools/cl_tools.lua",
+		"craft/cl.lua",
 	},
 	Shared = {
 		"co_net.lua",

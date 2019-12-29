@@ -29,11 +29,11 @@ function pluto.inv.generatebufferweapon(ply, ...)
 end
 
 function pluto.inv.generatebuffershard(ply, tier)
-	local i = {
+	local i = setmetatable({
 		ClassName = "shard",
 		Tier = pluto.tiers[tier],
 		Type = "Shard",
-	}
+	}, pluto.inv.item_mt)
 
 	sql.Query("INSERT INTO pluto_items (tier, class, owner) VALUES (" .. SQLStr(tier) .. ", 'shard', " .. ply:SteamID64() .. ")")
 	local id = sql.QueryValue "SELECT last_insert_rowid() as id"
@@ -44,7 +44,7 @@ function pluto.inv.generatebuffershard(ply, tier)
 	return i.BufferID
 end
 
-concommand.Add("pluto_generate_weapon", function(ply, cmd, arg, args)
+concommand.Add("pluto_spawn_weapon", function(ply, cmd, arg, args)
 	if (not pluto.cancheat(ply)) then
 		return
 	end
@@ -53,10 +53,10 @@ concommand.Add("pluto_generate_weapon", function(ply, cmd, arg, args)
 end)
 
 function pluto.inv.generatebuffermodel(ply, mdl)
-	local i = {
+	local i = setmetatable({
 		ClassName = "model_" .. mdl,
 		Model = pluto.models[mdl]
-	}
+	}, pluto.inv.item_mt)
 
 	if (not i.Model) then
 		return false
@@ -69,6 +69,14 @@ function pluto.inv.generatebuffermodel(ply, mdl)
 	pluto.inv.notifybufferitem(ply, i)
 	return i.BufferID
 end
+
+concommand.Add("pluto_spawn_model", function(ply, cmd, arg, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+
+	pluto.inv.generatebuffermodel(ply, unpack(arg))
+end)
 
 function pluto.inv.notifybufferitem(ply, i)
 	local items = sql.Query("SELECT idx FROM pluto_items WHERE owner = " .. ply:SteamID64() .. " ORDER BY idx DESC")

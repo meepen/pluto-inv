@@ -47,6 +47,16 @@ pluto.tabs = {
 		size = 3,
 		element = "pluto_inventory_equip",
 	},
+	craft = {
+		canaccept = function(tabindex, item)
+			return item.TabID ~= 0
+		end,
+		canremove = function(tabindex, item)
+			return true
+		end,
+		size = 6,
+		element = "pluto_craft",
+	},
 	trade = {
 		canaccept = function(tabindex, item)
 			return item.TabID ~= 0

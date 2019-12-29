@@ -3,7 +3,7 @@ pluto.inv = pluto.inv or {
 	weapons = {}
 }
 
-pluto.itemids = pluto.itemids or {}
+pluto.itemids = pluto.inv.items or pluto.itemids or {}
 
 local PLAYER = FindMetaTable "Player"
 PLAYER.RealSteamID64 = PLAYER.RealSteamID64 or PLAYER.SteamID64
@@ -127,13 +127,33 @@ end
 
 function pluto.inv.switchtab(steamid, tabid1, tabindex1, tabid2, tabindex2, cb)
 	steamid = pluto.db.steamid64(steamid)
+
+	local affected = 0
+
+	local function addaffected(e, q)
+		if (e) then
+			return
+		end
+
+		affected = affected + q:affectedRows()
+	end
+
+	if (tabid1 == tabid2 and tabindex1 == tabindex2) then
+		return cb(true)
+	end
+
 	pluto.db.transact({
-		{ "SELECT 1 FROM pluto_items WHERE tab_id IN (?, ?) FOR UPDATE", {tabid1, tabid2}},
-		{ "UPDATE pluto_items SET tab_id = ?, tab_idx = 0 WHERE tab_id = ? AND tab_idx = ?", {tabid1, tabid2, tabindex2} },
-		{ "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE tab_id = ? AND tab_idx = ?", {tabid2, tabindex2, tabid1, tabindex1} },
-		{ "UPDATE pluto_items SET tab_idx = ? WHERE tab_id = ? AND tab_idx = 0", {tabindex1, tabid1} },
-	}, function(err)
+		{ "SELECT 1 FROM pluto_items WHERE tab_id IN (?, ?) FOR UPDATE", {tabid1, tabid2} },
+		{ "UPDATE pluto_items SET tab_id = ?, tab_idx = 0 WHERE tab_id = ? AND tab_idx = ?", {tabid1, tabid2, tabindex2}, addaffected },
+		{ "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE tab_id = ? AND tab_idx = ?", {tabid2, tabindex2, tabid1, tabindex1}, addaffected },
+		{ "UPDATE pluto_items SET tab_idx = ? WHERE tab_id = ? AND tab_idx = 0", {tabindex1, tabid1}, addaffected },
+	}, function(err, q)
 		if (err) then
+			cb(false)
+			return
+		end
+
+		if (affected ~= 1 and affected ~= 3) then
 			cb(false)
 			return
 		end
@@ -205,17 +225,16 @@ function pluto.inv.retrieveitems(steamid, cb)
 				it.Model = pluto.models[it.ClassName:match"model_(.+)"]
 			end
 
-			if (item.tier == "crafted" and item.tier1 ~= nil) then
+			if (item.tier == "crafted") then
 				it.Tier = pluto.craft.tier {
-					item.tier1,
-					item.tier2,
-					item.tier3
+					item.tier1 or "unique",
+					item.tier2 or "unique",
+					item.tier3 or "unique",
 				}
 			end
 
 			weapons[item.idx] = it
 			pluto.itemids[it.RowID] = it
-
 		end
 
 		pluto.db.query([[
@@ -235,6 +254,10 @@ function pluto.inv.retrieveitems(steamid, cb)
 
 				wpn.Mods[mod.Type] = wpn.Mods[mod.Type] or {}
 
+				if (not item.tier) then
+					error "wtf"
+				end
+
 				table.insert(wpn.Mods[mod.Type], {
 					Roll = { item.roll1, item.roll2, item.roll3 },
 					Mod = item.modname,
@@ -248,20 +271,59 @@ function pluto.inv.retrieveitems(steamid, cb)
 	end)
 end
 
-function pluto.inv.deleteitem(steamid, itemid, cb)
+function pluto.inv.deleteitem(steamid, itemid, cb, nostart)
 	steamid = pluto.db.steamid64(steamid)
 
-	pluto.db.query("DELETE pluto_items FROM pluto_items INNER JOIN pluto_tabs ON pluto_items.tab_id = pluto_tabs.idx WHERE pluto_tabs.owner = ? AND pluto_items.idx = ?", {steamid, itemid}, function(err, q)
+	local i = pluto.itemids[itemid]
+
+	local cl = player.GetBySteamID64(steamid)
+	if (i) then
+		if (IsValid(cl)) then
+			local tabs = pluto.inv.invs[cl]
+			if (tabs and tabs[i.TabID] and tabs[i.TabID].Items[i.TabIndex] == i) then
+				tabs[i.TabID].Items[i.TabIndex] = nil
+			end
+		end
+		i.Invalid = true
+		i.RowID = nil
+	end
+
+	return pluto.db.query("delete pluto_items from pluto_items inner join pluto_tabs on pluto_tabs.idx = pluto_items.tab_id where pluto_items.idx = ? and pluto_tabs.owner = ?", {itemid, steamid}, function(err, q)
 		if (err) then
+			if (IsValid(cl)) then
+				pluto.inv.sendfullupdate(cl)
+			end
 			return cb(false)
 		end
 
 		if (q:affectedRows() ~= 1) then
+			if (IsValid(cl)) then
+				pluto.inv.sendfullupdate(cl)
+			end
+
 			pwarnf("Affected rows: %i", q:affectedRows())
 			return cb(false)
 		end
 
+		pluto.itemids[itemid] = nil
+
 		cb(true)
+	end, nil, nostart)
+end
+
+function pluto.inv.addexperience(id, exp) -- should not need cb :shrug:
+	local item = pluto.itemids[id]
+	if (item) then -- notify exp
+		item.Experience = (item.Experience or 0) +exp
+		local cl = player.GetBySteamID64(item.Owner)
+		if (IsValid(cl)) then
+			pluto.inv.message(cl)
+				:write("expupdate", item)
+				:send()
+		end
+	end
+
+	pluto.db.query("UPDATE pluto_items SET exp = exp + ? WHERE idx = ?", {exp, id}, function(e, q)
 	end)
 end
 
@@ -281,11 +343,11 @@ function pluto.inv.getbufferitem(id)
 		return
 	end
 
-	local wpn = {
+	local wpn = setmetatable({
 		BufferID = id,
 		ClassName = data.class,
 		Owner = data.owner
-	}
+	}, pluto.inv.item_mt)
 
 	wpn.Type = pluto.inv.itemtype(wpn)
 

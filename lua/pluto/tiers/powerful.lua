@@ -11,7 +11,8 @@ return {
 	rolltier = function(mod)
 		if (mod.Tags and mod.Tags.damage) then
 			local bias = 1.5
-			return math.floor(math.random(1, (#mod.Tiers) ^ (1 / bias)) ^ bias)
+
+			return math.ceil(math.random() ^ (1 / bias) * #mod.Tiers)
 		end
 		return math.random(1, #mod.Tiers)
 	end,

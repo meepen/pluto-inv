@@ -4,11 +4,11 @@ pluto.currency = pluto.currency or {
 
 pluto.currency.list = {
 	{
-		InternalName = "dice",
-		Name = "Reflective Die",
-		Icon = "pluto/currencies/dice.png",
-		Description = "Randomizes all the rolls on modifiers",
-		SubDescription = "Arizor lost this die in a bet with a farmer long ago. That farmer won a bet with Yaari later, and gave him the power to create these at will",
+		InternalName = "hand",
+		Name = "Yaari's Taking",
+		Icon = "pluto/currencies/goldenhand.png",
+		Description = "Removes a random modifier and enhances the tier of another",
+		SubDescription = "One of the many hands of Yaari's victims",
 		Color = Color(255, 208, 86),
 	},
 	{
@@ -20,11 +20,11 @@ pluto.currency.list = {
 		Color = Color(24, 125, 216),
 	},
 	{
-		InternalName = "hand",
-		Name = "Yaari's Taking",
-		Icon = "pluto/currencies/goldenhand.png",
-		Description = "Removes a random modifier and enhances the tier of another",
-		SubDescription = "One of the many hands of Yaari's victims",
+		InternalName = "dice",
+		Name = "Reflective Die",
+		Icon = "pluto/currencies/dice.png",
+		Description = "Randomizes all the rolls on modifiers",
+		SubDescription = "Arizor lost this die in a bet with a farmer long ago. That farmer won a bet with Yaari later, and gave him the power to create these at will",
 		Color = Color(255, 208, 86),
 	},
 	{
@@ -34,14 +34,7 @@ pluto.currency.list = {
 		Description = "Corrupts an item unpredictably",
 		SubDescription = "Arizor hands these out to ruthless gunsmiths to augment their weapons and further themselves in life",
 		Color = Color(142, 94, 166),
-	},
-	{
-		InternalName = "mirror",
-		Name = "Mara's Mirror",
-		Icon = "pluto/currencies/brokenmirror.png",
-		Description = "Creates a mirror image of an item (unmodifiable)",
-		SubDescription = "Mara threw this mirror out after seeing what she had become",
-		Color = Color(177, 173, 205),
+		CanCraft = false,
 	},
 	{
 		InternalName = "heart",
@@ -50,6 +43,15 @@ pluto.currency.list = {
 		Description = "Adds a random modifier",
 		SubDescription = "Mara gives her heart to people who have shown compassion in their time of need",
 		Color = Color(204, 43, 75),
+	},
+	{
+		InternalName = "mirror",
+		Name = "Mara's Mirror",
+		Icon = "pluto/currencies/brokenmirror.png",
+		Description = "Creates a mirror image of an item (unmodifiable)",
+		SubDescription = "Mara threw this mirror out after seeing what she had become",
+		Color = Color(177, 173, 205),
+		CanCraft = false,
 	},
 	{
 		InternalName = "coin",
@@ -68,6 +70,7 @@ pluto.currency.list = {
 		SubDescription = "Who's there? It's been so long... please don't open me... I want to live...",
 		NoTarget = true,
 		Color = Color(240, 192, 71),
+		CanCraft = false,
 		Use = function()
 			if (IsValid(pluto.opener)) then
 				pluto.opener:Remove()
@@ -75,7 +78,30 @@ pluto.currency.list = {
 
 			pluto.opener = vgui.Create "tttrw_base"
 
-			pluto.opener:AddTab("Open Box", vgui.Create "pluto_box_open")
+			pluto.opener:AddTab("Open Box", vgui.Create "pluto_box_open" :SetCurrency "crate0")
+
+			pluto.opener:SetSize(640, 400)
+			pluto.opener:Center()
+			pluto.opener:MakePopup()
+		end,
+	},
+	{
+		InternalName = "crate1",
+		Name = "Present",
+		Icon = "pluto/currencies/crate1.png",
+		Description = "Contains a 2019 Holiday Item",
+		SubDescription = "Is that... it couldn't be... and what is he holding?",
+		NoTarget = true,
+		Color = Color(188, 2, 1),
+		CanCraft = false,
+		Use = function()
+			if (IsValid(pluto.opener)) then
+				pluto.opener:Remove()
+			end
+
+			pluto.opener = vgui.Create "tttrw_base"
+
+			pluto.opener:AddTab("Open Present", vgui.Create "pluto_box_open" :SetCurrency "crate1")
 
 			pluto.opener:SetSize(640, 400)
 			pluto.opener:Center()
@@ -92,13 +118,19 @@ if (SERVER) then
 	include "sv_currency.lua"
 else
 	local PANEL = {}
+	function PANEL:SetCurrency(cur)
+		self.Image:SetImage(pluto.currency.byname[cur].Icon)
+
+		self.Currency = cur
+
+		return self
+	end
+
 	function PANEL:Init()
 		local main = self
 		self:SetTall(310)
 		self:Dock(TOP)
 		self.Image = self:Add "DImage"
-
-		self.Image:SetImage(pluto.currency.byname.crate0.Icon)
 
 		function self.Image:PerformLayout(w, h)
 			self:SetSize(self:GetParent():GetTall() - 20, self:GetParent():GetTall() - 20)
@@ -108,6 +140,7 @@ else
 		self.Image.Start = RealTime()
 		self.Image.Ends = RealTime() + 3
 
+		local s = self
 		function self.Image:Think()
 			local x, y = self:GetParent():GetWide() / 2 - self:GetWide() / 2, self:GetParent():GetTall() / 2 - self:GetTall() / 2
 
@@ -118,7 +151,7 @@ else
 			if (pct == 1 and not self.Sent) then
 				self.Sent = true
 				pluto.inv.message()
-					:write("currencyuse", "crate0")
+					:write("currencyuse", s.Currency)
 					:send()
 			end
 		end

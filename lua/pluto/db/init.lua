@@ -62,9 +62,6 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 					tier2 VARCHAR(16) NOT NULL,
 					tier3 VARCHAR(16) NOT NULL,
 
-					currency1 VARCHAR(16),
-					currency2 VARCHAR(16),
-
 					PRIMARY KEY(gun_index),
 
 					FOREIGN KEY (gun_index) REFERENCES pluto_items(idx) ON DELETE CASCADE
@@ -99,6 +96,28 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 					amount INT UNSIGNED NOT NULL DEFAULT 0,
 					PRIMARY KEY(owner, currency),
 					INDEX USING HASH(owner)
+				)
+			]]
+		},
+		{
+			[[
+				CREATE TABLE IF NOT EXISTS pluto_map_vote (
+					voter BIGINT UNSIGNED NOT NULL,
+					liked BOOLEAN NOT NULL,
+					mapname VARCHAR(32) NOT NULL,
+
+					PRIMARY KEY(voter, mapname),
+					INDEX USING HASH(mapname)
+				)
+			]]
+		},
+		{
+			[[
+				CREATE TABLE IF NOT EXISTS pluto_map_info (
+					mapname VARCHAR(32) NOT NULL,
+					played INT UNSIGNED NOT NULL DEFAULT 0,
+
+					PRIMARY KEY(mapname)
 				)
 			]]
 		},

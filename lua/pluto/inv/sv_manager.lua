@@ -1,5 +1,5 @@
 pluto.inv.invs = pluto.inv.invs or {}
-pluto.inv.items = pluto.inv.items or {}
+pluto.inv.items = pluto.inv.items or pluto.itemids or {}
 --[[
 	{
 		[ply] = {
@@ -24,7 +24,7 @@ function pluto.inv.writemod(ply, item, gun)
 
 	local name = pluto.mods.formataffix(mod.Type, mod.Name)
 	local tier = item.Tier
-	local tierroll = mod.Tiers[item.Tier]
+	local tierroll = mod.Tiers[item.Tier] or mod.Tiers[#mod.Tiers]
 
 	net.WriteUInt(#rolls, 2)
 	for i, roll in ipairs(rolls) do
@@ -61,41 +61,8 @@ function pluto.inv.writeitem(ply, item)
 	if (not data or data ~= item.LastUpdate) then
 		sent[item.RowID] = item.LastUpdate
 		net.WriteBool(true)
-		net.WriteString(item.ClassName)
-		net.WriteUInt(item.Experience, 32)
 
-		if (item.SpecialName) then
-			net.WriteBool(true)
-			net.WriteString(item.SpecialName)
-		else
-			net.WriteBool(false)
-		end
-
-		if (item.Nickname) then
-			net.WriteBool(true)
-			net.WriteString(item.Nickname)
-		else
-			net.WriteBool(false)
-		end
-
-		if (item.Type == "Shard" or item.Type == "Weapon") then
-			net.WriteString(item.Tier.Name)
-			net.WriteString(item.Tier:GetSubDescription())
-			net.WriteColor(item.Tier.Color or color_white)
-			net.WriteUInt(item.Tier.affixes, 3)
-		end
-
-		if (item.Type == "Weapon") then
-			net.WriteUInt(table.Count(item.Mods), 8)
-			for type, mods in pairs(item.Mods) do
-				net.WriteString(type)
-				net.WriteUInt(#mods, 8)
-
-				for ind, mod in ipairs(mods) do
-					pluto.inv.writemod(ply, mod, item)
-				end
-			end
-		end
+		pluto.inv.writebaseitem(ply, item)
 	else
 		net.WriteBool(false)
 	end
@@ -194,39 +161,50 @@ function pluto.inv.writecurrencyupdate(ply, currency)
 	net.WriteUInt(pluto.inv.currencies[ply][currency], 32)
 end
 
-function pluto.inv.writebufferitem(ply, item)
-	net.WriteInt(item.BufferID, 32)
+function pluto.inv.writebaseitem(ply, item)
+	item.Type = item.Type or pluto.inv.itemtype(item)
 
 	net.WriteString(item.ClassName)
+	net.WriteUInt(item.Experience or 0, 32)
 
-	local tp = pluto.inv.itemtype(item)
+	if (item.SpecialName) then
+		net.WriteBool(true)
+		net.WriteString(string.format(item.SpecialName, item:GetRawName()))
+	else
+		net.WriteBool(false)
+	end
 
-	if (tp == "Shard" or tp == "Weapon") then
+	if (item.Nickname) then
+		net.WriteBool(true)
+		net.WriteString(item.Nickname)
+	else
+		net.WriteBool(false)
+	end
+
+	if (item.Type == "Shard" or item.Type == "Weapon") then
 		net.WriteString(item.Tier.Name)
 		net.WriteString(item.Tier:GetSubDescription())
 		net.WriteColor(item.Tier.Color or color_white)
-		net.WriteUInt(item.Tier.affixes, 3)
+		net.WriteUInt(item:GetMaxAffixes(), 3)
 	end
 
-	if (tp == "Weapon") then
-		if (item.Mods.prefix) then
-			net.WriteUInt(#item.Mods.prefix, 8)
-			for ind, mod in ipairs(item.Mods.prefix) do
-				pluto.inv.writemod(ply, mod, item)
-			end
-		else
-			net.WriteUInt(0, 8)
-		end
+	if (item.Type == "Weapon") then
+		net.WriteUInt(table.Count(item.Mods), 8)
+		for type, mods in pairs(item.Mods) do
+			net.WriteString(type)
+			net.WriteUInt(#mods, 8)
 
-		if (item.Mods.suffix) then
-			net.WriteUInt(#item.Mods.suffix, 8)
-			for ind, mod in ipairs(item.Mods.suffix) do
+			for ind, mod in ipairs(mods) do
 				pluto.inv.writemod(ply, mod, item)
 			end
-		else
-			net.WriteUInt(0, 8)
 		end
 	end
+end
+
+function pluto.inv.writebufferitem(ply, item)
+	net.WriteInt(item.BufferID, 32)
+
+	pluto.inv.writebaseitem(ply, item)
 end
 
 local function noop() end
@@ -331,6 +309,11 @@ function pluto.inv.readtabswitch(ply)
 	local tab1 = pluto.inv.invs[ply][tabid1]
 	local tab2 = pluto.inv.invs[ply][tabid2]
 
+	if (not tab1 or not tab2) then
+		pluto.inv.sendfullupdate(ply)
+		return
+	end
+
 	local canswitch, fail = pluto.canswitchtabs(tab1, tab2, tabindex1, tabindex2)
 
 	if (not canswitch) then
@@ -338,7 +321,22 @@ function pluto.inv.readtabswitch(ply)
 		return
 	end
 
-	tab1.Items[tabindex1], tab2.Items[tabindex2] = tab2.Items[tabindex2], tab1.Items[tabindex1]
+	local i1, i2 = tab1.Items[tabindex1], tab2.Items[tabindex2]
+
+	if (i1 and ply:SteamID64() ~= i1.Owner or i2 and i2.Owner ~= ply:SteamID64()) then
+		pluto.inv.sendfullupdate(ply)
+		return
+	end
+
+	tab1.Items[tabindex1], tab2.Items[tabindex2] = i2, i1
+
+	if (i1) then
+		i1.TabID, i1.TabIndex = tabid2, tabindex2
+	end
+
+	if (i2) then
+		i2.TabID, i2.TabIndex = tabid1, tabindex1
+	end
 
 	pluto.inv.switchtab(ply, tabid1, tabindex1, tabid2, tabindex2, function(succ)
 		if (succ or not IsValid(ply)) then
@@ -378,7 +376,7 @@ function pluto.inv.readitemdelete(ply)
 	pluto.inv.deleteitem(ply, itemid, function(succ)
 		if (succ) then
 			if (IsValid(ply)) then
-				if (i.Type == "Weapon" and math.random() < 1 / 3) then
+				if (i.Type == "Weapon" and i.Tier.InternalName ~= "crafted" and math.random() < 2 / 3) then
 					pluto.inv.generatebuffershard(ply, i.Tier.InternalName)
 				end
 			end
@@ -388,7 +386,6 @@ function pluto.inv.readitemdelete(ply)
 		pluto.inv.sendfullupdate(ply)
 	end)
 end
-
 
 local function allowed(types, wpn)
 	local type = wpn and wpn.Type or "None"
@@ -516,6 +513,11 @@ end
 
 function pluto.inv.writecrate_id(ply, id)
 	net.WriteInt(id, 32)
+end
+
+function pluto.inv.writeexpupdate(cl, item)
+	net.WriteUInt(item.RowID, 32)
+	net.WriteUInt(item.Experience, 32)
 end
 
 hook.Add("PlayerAuthed", "pluto_init_inventory", pluto.inv.sendfullupdate)

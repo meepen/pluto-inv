@@ -1,0 +1,7 @@
+"VertexlitGeneric"
+{
+	$basetexture "models/kuma96/winterizedarmor/sleeves_d"
+	$bumpmap "models/kuma96/winterizedarmor/sleeves_n"
+	$halflambert 1
+	$nocull 1
+}

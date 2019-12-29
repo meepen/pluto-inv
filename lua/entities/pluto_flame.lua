@@ -54,7 +54,7 @@ function ENT:PlayerTick(ply)
 end
 
 function ENT:GetDelay()
-	return 0.1
+	return 0.05
 end
 
 function ENT:DoDamage(damages)
