@@ -53,7 +53,7 @@ function pluto.craft.tier(tiers)
 	pluto.craft.tiers[name] = tier
 
 	tier.SubDescription = {
-		string.format("Crafted from %s, %s and %s shards", t1.Name, t2.Name, t3.Name)
+		string.format("Crafted from %s, %s, and %s shards", t1.Name, t2.Name, t3.Name)
 	}
 
 	if (t2.tags) then
