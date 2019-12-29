@@ -16,6 +16,7 @@ SWEP.Kind                  = WEAPON_HEAVY
 SWEP.WeaponID              = AMMO_RIFLE
 SWEP.ViewModelFOV          = 85
 SWEP.UseHands = true
+SWEP.NoPlayerModelHands = false
 
 SWEP.Bullets = {
 	HullSize = 0,

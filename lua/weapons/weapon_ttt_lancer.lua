@@ -13,20 +13,20 @@ SWEP.SlotPos                = 73
 
 SWEP.Ortho = {-7, 9}
 
-SWEP.Primary.Sound = "sound/weapons/cog-lancer/cogriflefire-1.ogg	"
-SWEP.Primary.Damage = 14
+SWEP.Primary.Sound = Sound "Weapon_AUG.Single"  --needs fixed "sound/weapons/cog-lancer/cogriflefire-1.ogg"
+SWEP.Primary.Damage = 19
 SWEP.Primary.Automatic = true
-SWEP.Primary.Delay = 0.083
+SWEP.Primary.Delay = 0.129
 
-SWEP.HeadshotMultiplier = 1.5
+SWEP.HeadshotMultiplier = 1.6
 
 SWEP.CanBeSilenced = false
 SWEP.Silenced = false
 
 SWEP.FireSoundAffectedByClipSize = true
 
-SWEP.Primary.ClipSize = 35
-SWEP.Primary.DefaultClip = 35 * 2
+SWEP.Primary.ClipSize = 30
+SWEP.Primary.DefaultClip = 30 * 2
 SWEP.Primary.Ammo = "pistol"
 SWEP.AmmoEnt = "item_ammo_pistol_ttt"
 SWEP.Primary.Recoil = 1
@@ -43,15 +43,15 @@ SWEP.HoldType = "ar2"
 SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
-	DamageDropoffRange = 650,
-	DamageDropoffRangeMax = 4200,
+	DamageDropoffRange = 750,
+	DamageDropoffRangeMax = 5200,
 	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.02, 0.025)
+	Spread = Vector(0.02, 0.02)
 }
 
 SWEP.Ironsights = {
 	Pos = Vector(0, 0, 0),
-	Angle = Vector(0, 0, 0),
+	Angle = Vector(0, 0, 0), --fix this
 	TimeTo = 0.23,
 	TimeFrom = 0.22,
 	SlowDown = 0.3,
