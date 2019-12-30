@@ -1,6 +1,6 @@
 local packs =  {
 	pluto = {
-		remote = "https://pluto.gg/datastore/server/content.gma",
+		remote = "https://cdn.pluto.gg/content.gma",
 		versions = {
 			"20191121",
 			"20191119",
@@ -11,58 +11,58 @@ local packs =  {
 		}
 	},
 	shotguns = {
-		remote = "https://pluto.gg/datastore/server/shotguns.gma",
+		remote = "https://cdn.pluto.gg/shotguns.gma",
 		versions = {
 			"20191115",
 		}
 	},
 	m21 = {
-		remote = "https://pluto.gg/datastore/server/m21.gma",
+		remote = "https://cdn.pluto.gg/m21.gma",
 		versions = {
 			"20191205",
 		}
 	},
 	mp7 = {
-		remote = "https://pluto.gg/datastore/server/mp7.gma",
+		remote = "https://cdn.pluto.gg/mp7.gma",
 		versions = {
 			"20191117",
 			"20191115",
 		}
 	},
 	tec9 = {
-		remote = "https://pluto.gg/datastore/server/tec9.gma",
+		remote = "https://cdn.pluto.gg/tec9.gma",
 		versions = {
 			"20191116",
 			"20191115",
 		}
 	},
 	ump45 = {
-		remote = "https://pluto.gg/datastore/server/ump45.gma",
+		remote = "https://cdn.pluto.gg/ump45.gma",
 		versions = {
 			"20191116",
 			"20191115",
 		}
 	},
 	["2b"] = {
-		remote = "https://pluto.gg/datastore/server/2b.gma",
+		remote = "https://cdn.pluto.gg/2b.gma",
 		versions = {
 			"20191121",
 		}
 	},
 	a2 = {
-		remote = "https://pluto.gg/datastore/server/a2.gma",
+		remote = "https://cdn.pluto.gg/a2.gma",
 		versions = {
 			"20191121",
 		}
 	},
 	doom = {
-		remote = "https://pluto.gg/datastore/server/doom.gma",
+		remote = "https://cdn.pluto.gg/doom.gma",
 		versions = {
 			"20191121",
 		}
 	},
 	wick = {
-		remote = "https://pluto.gg/datastore/server/wick.gma",
+		remote = "https://cdn.pluto.gg/wick.gma",
 		versions = {
 			"20191123_3",
 			"20191123_2",
@@ -71,102 +71,102 @@ local packs =  {
 		}
 	},
 	lilith = {
-		remote = "https://pluto.gg/datastore/server/lilith.gma",
+		remote = "https://cdn.pluto.gg/lilith.gma",
 		versions = {
 			"20191211",
 			"20191122",
 		}
 	},
 	odst = {
-		remote = "https://pluto.gg/datastore/server/odst.gma",
+		remote = "https://cdn.pluto.gg/odst.gma",
 		versions = {
 			"20191122",
 		}
 	},
 	bigboss = {
-		remote = "https://pluto.gg/datastore/server/bigboss.gma",
+		remote = "https://cdn.pluto.gg/bigboss.gma",
 		versions = {
 			"20191122",
 		}
 	},
 	hevsuit = {
-		remote = "https://pluto.gg/datastore/server/hevsuit.gma",
+		remote = "https://cdn.pluto.gg/hevsuit.gma",
 		versions = {
 			"20191123",
 			"20191122",
 		}
 	},
 	jacket = {
-		remote = "https://pluto.gg/datastore/server/jacket.gma",
+		remote = "https://cdn.pluto.gg/jacket.gma",
 		versions = {
 			"20191122",
 		}
 	},
 	unique0 = {
-		remote = "https://pluto.gg/datastore/server/unique0.gma",
+		remote = "https://cdn.pluto.gg/unique0.gma",
 		versions = {
 			"20191123",
 			"20191122",
 		}
 	},
 	maya = {
-		remote = "https://pluto.gg/datastore/server/maya.gma",
+		remote = "https://cdn.pluto.gg/maya.gma",
 		versions = {
 			"20191122",
 			"20191123",
 		}
 	},
 	metro = {
-		remote = "https://pluto.gg/datastore/server/metro.gma",
+		remote = "https://cdn.pluto.gg/metro.gma",
 		versions = {
 			"20191225",
 		}
 	},
 	tomb = {
-		remote = "https://pluto.gg/datastore/server/tomb.gma",
+		remote = "https://cdn.pluto.gg/tomb.gma",
 		versions = {
 			"20191225",
 		}
 	},
 	cayde6 = {
-		remote = "https://pluto.gg/datastore/server/cayde6.gma",
+		remote = "https://cdn.pluto.gg/cayde6.gma",
 		versions = {
 			"20191225",
 		}
 	},
 	nigt = {
-		remote = "https://pluto.gg/datastore/server/nigt.gma",
+		remote = "https://cdn.pluto.gg/nigt.gma",
 		versions = {
 			"20191225_1",
 			"20191225",
 		}
 	},
 	warmor = {
-		remote = "https://pluto.gg/datastore/server/warmor.gma",
+		remote = "https://cdn.pluto.gg/warmor.gma",
 		versions = {
 			"20191225",
 		}
 	},
 	osrsbob = {
-		remote = "https://pluto.gg/datastore/server/osrsbob.gma",
+		remote = "https://cdn.pluto.gg/osrsbob.gma",
 		versions = {
 			"20191225",
 		}
 	},
 	puggamaximus = {
-		remote = "https://pluto.gg/datastore/server/puggamaximus.gma",
+		remote = "https://cdn.pluto.gg/puggamaximus.gma",
 		versions = {
 			"20191225",
 		}
 	},
 	santa = {
-		remote = "https://pluto.gg/datastore/server/santa.gma",
+		remote = "https://cdn.pluto.gg/santa.gma",
 		versions = {
 			"20191225",
 		}
 	},
 	weebshit = {
-		remote = "https://pluto.gg/datastore/server/weebshit.gma",
+		remote = "https://cdn.pluto.gg/weebshit.gma",
 		versions = {
 			"20191225",
 		}
@@ -179,7 +179,7 @@ local packs =  {
 	},]]
 	--[[
 	moxxi = {
-		remote = "https://pluto.gg/datastore/server/moxxi.gma",
+		remote = "https://cdn.pluto.gg/moxxi.gma",
 		versions = {
 			"20191121",
 		}
