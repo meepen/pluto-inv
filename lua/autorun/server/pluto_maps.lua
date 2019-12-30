@@ -52,7 +52,7 @@ local changes = {
 	}
 }
 
-local dat = changes[game.GetMap()]
+local dat = changes[game.GetMap():lower()]
 
 
 if (not dat) then
