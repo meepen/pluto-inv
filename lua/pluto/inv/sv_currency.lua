@@ -348,7 +348,6 @@ for name, values in pairs {
 		Use = function(ply)
 			local gotten = rollcrate(crate1_contents)
 			local type = pluto.inv.itemtype(gotten)
-			print(gotten, type)
 
 			if (type == "Model") then -- model
 				local id = pluto.inv.generatebuffermodel(ply, gotten:match "^model_(.+)$")
@@ -514,7 +513,6 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 		end
 
 		local points = (pluto.currency.tospawn[item.Player] or 1) * tospawn_amt:GetFloat() * pluto.currency.navs.total / 70000
-		print(tospawn_amt:GetFloat() * pluto.currency.navs.total / 70000)
 
 		for i = 1, points do
 			local e = pluto.currency.spawnfor(item.Player)

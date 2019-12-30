@@ -15,6 +15,8 @@ pluto.files.load {
 		"models/sv_models.lua",
 		"craft/sv.lua",
 		"inv/sv_exp.lua",
+
+		"roles/regenerative/sv_regenerative.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty
