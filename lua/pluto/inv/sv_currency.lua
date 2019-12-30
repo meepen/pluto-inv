@@ -415,22 +415,24 @@ end
 
 pluto.currency.navs = {
 	total = 0,
+	start = function()
+		if (pluto.currency.navs.total == 0) then
+			for _, nav in pairs(navmesh.GetAllNavAreas()) do
+				local dist = nav:GetCorner(2):Distance(nav:GetCorner(0))
+		
+				table.insert(pluto.currency.navs, {
+					Size = dist,
+					Nav = nav
+				})
+		
+				pluto.currency.navs.total = pluto.currency.navs.total + dist
+			end
+		end
+	end
 }
 
 function pluto.currency.randompos()
-	if (pluto.currency.navs.total == 0) then
-		for _, nav in pairs(navmesh.GetAllNavAreas()) do
-			local dist = nav:GetCorner(2):Distance(nav:GetCorner(0))
-	
-			table.insert(pluto.currency.navs, {
-				Size = dist,
-				Nav = nav
-			})
-	
-			pluto.currency.navs.total = pluto.currency.navs.total + dist
-		end
-	end
-
+	pluto.currency.navs.start()
 	local rand = math.random() * pluto.currency.navs.total
 	local initial = rand
 
@@ -504,12 +506,15 @@ end
 
 
 hook.Add("TTTBeginRound", "pluto_currency", function()
+	pluto.currency.navs.start()
+
 	for _, item in pairs(round.GetStartingPlayers()) do
 		if (item.Player.WasAFK or item.Player:GetRoleTeam() ~= "innocent") then
 			continue
 		end
 
-		local points = (pluto.currency.tospawn[item.Player] or 1) * tospawn_amt:GetFloat()
+		local points = (pluto.currency.tospawn[item.Player] or 1) * tospawn_amt:GetFloat() * pluto.currency.navs.total / 70000
+		print(tospawn_amt:GetFloat() * pluto.currency.navs.total / 70000)
 
 		for i = 1, points do
 			local e = pluto.currency.spawnfor(item.Player)
