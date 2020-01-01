@@ -363,9 +363,22 @@ function pluto.weapons.generatemod(item, prefix_max, suffix_max, ignoretier)
 		end
 	end
 
+	local biases
+	if (item.Tier.tags) then
+		biases = table.Copy(item.Tier.tags)
+	else
+		biases = {}
+	end
+
+	if (tagbiases) then
+		for k, v in pairs(tagbiases) do
+			biases[k] = (biases[k] or 1) * v
+		end
+	end
+
 	local mods, type = table.Random(allowed)
 
-	local toadd = pluto.mods.bias(weapons.GetStored(item.ClassName), mods, tagbiases)[1]
+	local toadd = pluto.mods.bias(weapons.GetStored(item.ClassName), mods, biases)[1]
 
 	pluto.weapons.addmod(item, toadd.InternalName)
 
