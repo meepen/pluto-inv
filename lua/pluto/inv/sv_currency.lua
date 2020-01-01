@@ -164,7 +164,7 @@ for name, values in pairs {
 		end,
 		Types = "Weapon",
 		Crafted = {
-			Chance = 1 / 3,
+			Chance = 1 / 4,
 			Mod = "dropletted",
 		},
 	},
@@ -213,7 +213,7 @@ for name, values in pairs {
 		end,
 		Types = "Weapon",
 		Crafted = {
-			Chance = 1 / 3,
+			Chance = 1 / 4,
 			Mod = "handed",
 		},
 	},
@@ -279,7 +279,7 @@ for name, values in pairs {
 		end,
 		Types = "Weapon",
 		Crafted = {
-			Chance = 0.95,
+			Chance = 0.5,
 			Mod = "hearted",
 		},
 	},
