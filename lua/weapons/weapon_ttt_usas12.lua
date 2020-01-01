@@ -23,7 +23,7 @@ SWEP.HoldType = "ar2"
 
 SWEP.Primary.Sound = Sound "Weapon_USAS.Single"
 SWEP.Primary.Recoil = 1.2
-SWEP.Primary.Damage = 6.3
+SWEP.Primary.Damage = 5.3
 SWEP.Primary.RecoilTiming  = 0.06
 SWEP.Primary.Cone = 0.04
 SWEP.Primary.Delay = 60 / 150
