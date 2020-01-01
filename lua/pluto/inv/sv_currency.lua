@@ -85,7 +85,7 @@ local function process_percents(contents)
 	end
 end
 
-process_percents(crate1_contents)
+process_percents(crate0_contents)
 
 local function rollcrate(crate)
 	local m = math.random()
