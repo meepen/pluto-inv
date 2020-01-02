@@ -13,7 +13,7 @@ local function GetImageMaterial(mapname, cb)
 		return cb(Material("data/" .. mapname .. ".png"))
 	end
 
-	http.Fetch("https://pluto.gg/datastore/server/" .. mapname .. ".png", function(dat, len, head, res)
+	http.Fetch("https://cdn.pluto.gg/maps/" .. mapname .. ".png", function(dat, len, head, res)
 		if (res == 200) then
 			file.Write(mapname .. ".png", dat)
 			GetImageMaterial(mapname, cb)
