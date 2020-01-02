@@ -171,12 +171,12 @@ local packs =  {
 			"20191225",
 		}
 	},
-	--[[lancer = {
-		remote = "soon:tm:",
+	lancer = {
+		remote = "https://cdn.pluto.gg/lancer.gma",
 		versions = {
 			"20191225",
 		}
-	},]]
+	},
 	--[[
 	moxxi = {
 		remote = "https://cdn.pluto.gg/moxxi.gma",
