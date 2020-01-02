@@ -32,9 +32,9 @@ SWEP.Primary.ClipSize = 30
 SWEP.Primary.DefaultClip = 30 * 3
 SWEP.Primary.Ammo = "pistol"
 SWEP.AmmoEnt = "item_ammo_pistol_ttt"
-SWEP.Primary.Recoil = 1
-SWEP.HeadshotMultiplier = 1.25
-SWEP.Primary.Delay = 0.129
+SWEP.Primary.Recoil = 1.5
+SWEP.HeadshotMultiplier = 1.3
+SWEP.Primary.Delay = 0.126
 
 SWEP.Bullets = {
 	HullSize = 0,
@@ -42,7 +42,7 @@ SWEP.Bullets = {
 	DamageDropoffRange = 750,
 	DamageDropoffRangeMax = 5200,
 	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.02, 0.02)
+	Spread = Vector(0.01, 0.02)
 }
 
 SWEP.Ironsights = {
@@ -54,13 +54,13 @@ SWEP.Ironsights = {
 	Zoom = 0.9,
 }
 
--- sound.Add {
--- 	name = "Weapon_lancer.cogriflefire-1",
--- 	channel = CHAN_WEAPON,
--- 	volume = 1.0,
+--  sound.Add {
+--  	name = "Weapon_cog-lancer.cogriflefire-1",
+--  	channel = CHAN_WEAPON,
+--  	volume = 1.0,
 -- 	soundlevel = 135,
 -- 	sound = "sound/weapons/cog-lancer/cogriflefire-1.ogg"
--- }
+--  }
 
 
 -- 	reload = {

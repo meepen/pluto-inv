@@ -57,12 +57,11 @@ SWEP.Ironsights = {
 SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
-	DamageDropoffRange = 700,
-	DamageDropoffRangeMax = 5500,
+	DamageDropoffRange = 650,
+	DamageDropoffRangeMax = 4200,
 	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.04, 0.035)
+	Spread = Vector(0.03, 0.035)
 }
-
 
 DEFINE_BASECLASS "weapon_tttbase"
 
@@ -83,5 +82,5 @@ function SWEP:Initialize()
 end
 
 function SWEP:GetDelay()
-	return math.max(0.09009009009, 0.16 - self:GetKills() * 0.005)
+	return math.max(0.135, 0.1249 - self:GetKills() * 0.0009)
 end
