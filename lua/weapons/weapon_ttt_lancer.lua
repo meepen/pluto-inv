@@ -5,20 +5,20 @@ SWEP.Purpose                = ""
 SWEP.Instructions               = ""
 SWEP.AutoSpawnable         = true
 SWEP.Spawnable             = true
-SWEP.AdminSpawnable         = false
+SWEP.AdminSpawnable         = true
+SWEP.PlutoSpawnable = true
 SWEP.DrawCrosshair          = true
 SWEP.PrintName              = "Lancer"
 SWEP.Slot               = 2
 SWEP.SlotPos                = 73
 
-SWEP.Ortho = {-4,5 , 1, size = 0.8, angle = Angle(-18, 39, -45)}
+SWEP.Ortho = {-3,5 , 6, size = 0.8, angle = Angle(-18, 21, -45)}
 
-SWEP.Primary.Sound = Sound "Weapon_AUG.Single"   --needs fixed "Weapon_COG.Single"
+SWEP.Primary.Sound = Sound "Weapon_AUG.Single"  --needs fixed "sound/weapons/cog-lancer/cogriflefire-1.ogg"
 SWEP.Primary.Automatic = true
 SWEP.FireSoundAffectedByClipSize = true
 SWEP.CanBeSilenced = false
 SWEP.Silenced = false
-SWEP.PlutoSpawnable = true
 
 SWEP.ViewModel = "models/weapons/gow2/lancer/c_gow_assaultrifle.mdl"
 SWEP.WorldModel = "models/weapons/gow2/lancer/w_gow_assaultrifle.mdl"
@@ -31,9 +31,9 @@ SWEP.HoldType = "ar2"
 SWEP.Primary.Damage = 19
 SWEP.Primary.ClipSize = 30
 SWEP.Primary.DefaultClip = 30 * 3
-SWEP.Primary.Ammo = "SMG1"
-SWEP.AmmoEnt = "item_ammo_smg1_ttt"
-SWEP.Primary.Recoil = 1
+SWEP.Primary.Ammo = "pistol"
+SWEP.AmmoEnt = "item_ammo_pistol_ttt"
+SWEP.Primary.Recoil = 1.5
 SWEP.HeadshotMultiplier = 1.3
 SWEP.Primary.Delay = 0.126
 
@@ -66,3 +66,10 @@ sound.Add {
         "weapons/cog-lancer/cogriflefire-3.ogg",
     },
 }
+
+-- 	reload = {
+-- 		{time = 0.58, sound = "Weapon_cod4m21.clipout"},
+-- 		{time = 1.48, sound = "Weapon_cod4m21_clipin"},
+-- 		{time = 2.6, sound = "Weapon_cod4m21.Boltpull"},
+-- 	},
+-- }
