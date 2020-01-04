@@ -126,7 +126,7 @@ function ITEM:GetPrintName()
 	end
 
 	if (self.SpecialName) then
-		return self.SpecialName
+		return string.format(self.SpecialName, self:GetRawName())
 	end
 
 	return self:GetDefaultName()

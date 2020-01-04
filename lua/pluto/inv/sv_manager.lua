@@ -169,7 +169,7 @@ function pluto.inv.writebaseitem(ply, item)
 
 	if (item.SpecialName) then
 		net.WriteBool(true)
-		net.WriteString(string.format(item.SpecialName, item:GetRawName()))
+		net.WriteString(item:GetPrintName())
 	else
 		net.WriteBool(false)
 	end
