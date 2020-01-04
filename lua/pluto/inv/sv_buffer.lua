@@ -25,7 +25,7 @@ function pluto.inv.generatebufferweapon(ply, ...)
 
 	pluto.inv.notifybufferitem(ply, i)
 
-	return i.BufferID
+	return i
 end
 
 function pluto.inv.generatebuffershard(ply, tier)

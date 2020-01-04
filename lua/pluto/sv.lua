@@ -16,6 +16,8 @@ pluto.files.load {
 		"craft/sv.lua",
 		"inv/sv_exp.lua",
 
+		"discord/discord.lua",
+
 		"roles/regenerative/sv_regenerative.lua",
 	},
 	Client = {}, -- keep empty

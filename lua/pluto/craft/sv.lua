@@ -234,6 +234,13 @@ function pluto.inv.readcraft(cl)
 		end
 	end
 
+	if (wpn:GetMaxAffixes() >= 4) then
+		discord.Message():AddEmbed(
+			wpn:GetDiscordEmbed()
+				:SetAuthor(cl:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. cl:SteamID64())
+		):Send "drops"
+	end
+
 	local transact = pluto.weapons.save(wpn, cl, function(id) end, true)
 
 	transact:addQuery(pluto.inv.deleteitem(cl, i2.RowID, print, true))

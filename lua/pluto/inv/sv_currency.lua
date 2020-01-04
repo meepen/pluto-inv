@@ -328,7 +328,7 @@ for name, values in pairs {
 					:write("crate_id", id)
 					:send()
 			elseif (type == "Weapon") then -- unique
-				local id = pluto.inv.generatebufferweapon(ply, "unique", gotten)
+				local id = pluto.inv.generatebufferweapon(ply, "unique", gotten).BufferID
 
 				pluto.inv.message(ply)
 					:write("crate_id", id)
@@ -356,7 +356,7 @@ for name, values in pairs {
 					:write("crate_id", id)
 					:send()
 			elseif (type == "Weapon") then -- unique
-				local id = pluto.inv.generatebufferweapon(ply, "unique", gotten)
+				local id = pluto.inv.generatebufferweapon(ply, "unique", gotten).BufferID
 
 				pluto.inv.message(ply)
 					:write("crate_id", id)
@@ -512,7 +512,7 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 			continue
 		end
 
-		local points = (pluto.currency.tospawn[item.Player] or 1) * tospawn_amt:GetFloat() * pluto.currency.navs.total / 70000
+		local points = (pluto.currency.tospawn[item.Player] or 1) * tospawn_amt:GetFloat() * math.min(3, pluto.currency.navs.total / 70000)
 
 		for i = 1, points do
 			local e = pluto.currency.spawnfor(item.Player)

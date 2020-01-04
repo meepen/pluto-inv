@@ -202,3 +202,74 @@ function ITEM:GetRawName()
 
 	return "Unknown type: " .. self.Type
 end
+
+-- https://gist.github.com/efrederickson/4080372
+local numbers = { 1, 5, 10, 50, 100, 500, 1000 }
+local chars = { "I", "V", "X", "L", "C", "D", "M" }
+
+local function ToRomanNumerals(s)
+    --s = tostring(s)
+    s = tonumber(s)
+    if not s or s ~= s then error"Unable to convert to number" end
+    if s == math.huge then error"Unable to convert infinity" end
+    s = math.floor(s)
+    if s <= 0 then return s end
+	local ret = ""
+        for i = #numbers, 1, -1 do
+        local num = numbers[i]
+        while s - num >= 0 and s > 0 do
+            ret = ret .. chars[i]
+            s = s - num
+        end
+        --for j = i - 1, 1, -1 do
+        for j = 1, i - 1 do
+            local n2 = numbers[j]
+            if s - (num - n2) >= 0 and s < num and s > 0 and num - n2 ~= n2 then
+                ret = ret .. chars[j] .. chars[i]
+                s = s - (num - n2)
+                break
+            end
+        end
+    end
+    return ret
+end
+
+function ITEM:GetDiscordEmbed()
+	local embed = discord.Embed()
+		:SetColor(self.Tier.Color)
+		:SetTitle(self:GetPrintName())
+
+	if (self.Tier) then
+		local desc = self.Tier:GetSubDescription()
+
+		if (self:GetMaxAffixes() > 0) then
+			desc = desc .. (desc:len() > 0 and "\n" or "") .. "You can get up to " .. self:GetMaxAffixes() .. " modifiers on this item."
+		end
+
+		if (desc:len() > 0) then
+			embed:SetDescription(desc)
+		end
+	end
+	
+	if (self.Mods) then
+		for type, mods in pairs(self.Mods) do
+			for ind, moditem in ipairs(mods) do
+				local mod = pluto.mods.byname[moditem.Mod]
+				local rolls = pluto.mods.getrolls(mod, moditem.Tier, moditem.Roll)
+				local name = pluto.mods.formataffix(mod.Type, mod.Name)
+				local tier = moditem.Tier
+				local tierroll = mod.Tiers[moditem.Tier] or mod.Tiers[#mod.Tiers]
+
+				local desc_fmt = {}
+
+				for i, roll in ipairs(rolls) do
+					desc_fmt[i] = "[" .. mod:FormatModifier(i, math.abs(roll), self.ClassName) .. "](https://pluto.gg)"
+				end
+
+				embed:AddField(name .. " " .. ToRomanNumerals(tier), string.format(mod.Description or mod:GetDescription(rolls), unpack(desc_fmt)))
+			end
+		end
+	end
+
+	return embed
+end

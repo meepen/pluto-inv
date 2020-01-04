@@ -102,6 +102,10 @@ end)
 
 hook.Add("TTTEndRound", "pluto_endround", function()
 	timer.Remove "pluto_afkcheck"
+
+	local msg = discord.Message()
+	local send = false
+
 	sql.Begin()
 	for _, obj in pairs(round.GetStartingPlayers()) do
 		local ply = obj.Player
@@ -119,11 +123,22 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 		if (not IsValid(ply) or math.random() > pluto_weapon_droprate:GetFloat()) then
 			continue
 		end
+		local item = pluto.inv.generatebufferweapon(ply)
 
-		pluto.inv.generatebufferweapon(ply)
+		if (item:GetMaxAffixes() >= 5) then
+			msg:AddEmbed(item:GetDiscordEmbed()
+				:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
+			)
+			send = true
+		end
 
 		ply:ChatPrint("You have received a weapon! Check your inventory.")
 	end
+
+	if (send) then
+		msg:Send "drops"
+	end
+
 	sql.Commit()
 end)
 
