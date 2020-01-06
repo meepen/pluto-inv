@@ -261,7 +261,7 @@ for name, values in pairs {
 		},
 	},
 	mirror = {
-		Shares = 0.1,
+		Shares = 0.01,
 		Use = function(item)
 		end,
 		Types = "Weapon",
