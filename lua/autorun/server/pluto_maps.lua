@@ -20,6 +20,7 @@ local map_lookup = {
 	ttt_innocentmotel_v1 = "285372790",
 	ttt_island_2013 = "183797802",
 	ttt_kakariko_v4a = "238575181",
+	ttt_pluto_stacks = "1935601426",
 	ttt_lego = "295897079",
 	ttt_lifetheroof = "487551759",
 	ttt_lost_temple_v2 = "106527577",
