@@ -1,7 +1,7 @@
 local map_lookup = {
 	de_dolls = "630780616",
 	ttt_67thway_v14 = "298470515",
-	ttt_aircraft_v1b = "154177743",
+	--ttt_aircraft_v1b = "154177743",
 	ttt_atlantis = "301247622",
 	--ttt_avalon = "284613511",
 	ttt_bb_teenroom_b2 = "141103402",
