@@ -82,5 +82,5 @@ function SWEP:Initialize()
 end
 
 function SWEP:GetDelay()
-	return math.max(0.135, 0.1249 - self:GetKills() * 0.0009)
+	return math.max(0.03, 0.13 - self:GetKills() * 0.01)
 end
