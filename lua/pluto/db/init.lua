@@ -25,6 +25,8 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 	
 					tab_id INT UNSIGNED NOT NULL,
 					tab_idx TINYINT UNSIGNED NOT NULL,
+
+					locked tinyint(1) NOT NULL DEFAULT 0,
 	
 					FOREIGN KEY(tab_id) REFERENCES pluto_tabs(idx) ON DELETE CASCADE,
 					PRIMARY KEY(tab_id, tab_idx),
