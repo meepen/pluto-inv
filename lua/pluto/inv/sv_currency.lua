@@ -328,7 +328,13 @@ for name, values in pairs {
 					:write("crate_id", id)
 					:send()
 			elseif (type == "Weapon") then -- unique
-				local id = pluto.inv.generatebufferweapon(ply, "unique", gotten).BufferID
+				local wpn = pluto.inv.generatebufferweapon(ply, "unique", gotten)
+				local id = wpn.BufferID
+
+				discord.Message():AddEmbed(
+					wpn:GetDiscordEmbed()
+						:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
+				):Send "drops"
 
 				pluto.inv.message(ply)
 					:write("crate_id", id)
