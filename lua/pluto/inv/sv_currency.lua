@@ -7,12 +7,12 @@ local function UpdateAndDecrement(ply, item, currency)
 		if (not IsValid(ply)) then
 			return
 		end
-
-		pluto.inv.message(ply)
-			:write("item", item)
-			:send()
-
 	end, true)
+
+	pluto.inv.message(ply)
+		:write("item", item)
+		:send()
+
 	trans:addQuery(pluto.inv.addcurrency(ply, currency, -1, function() end, true))
 	trans:start()
 end
