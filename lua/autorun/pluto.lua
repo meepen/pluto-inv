@@ -24,7 +24,7 @@ pluto.files.load {
 		"inv/sh_tabs.lua",
 		"inv/sh_currency.lua",
 
-		"roles/regenerative/sh_regenerative.lua",
+		"roles/ttc.lua",
 	},
 	Server = {
 		"sv.lua",
