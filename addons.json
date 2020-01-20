@@ -1221,7 +1221,8 @@
 		"materials/pluto/currencies/crate0.png",
 		"materials/pluto/currencies/crate1.png",
 		"materials/pluto/shard128.png", 
-		"materials/pluto/shard128outline.png"
+		"materials/pluto/shard128outline.png",
+		"materials/pluto/roles/jester.png"
 	],
 	"cayde6": [
 		"materials/models/devarture/destiny_dir/destiny_2/factions/vanguard/characters/cayde_6/aceofspades/aceofspades_diff.vtf",

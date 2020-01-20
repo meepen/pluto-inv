@@ -7,6 +7,7 @@ hook.Add("TTTPrepareRoles", RoleName, function(Team, Role)
 		:SetModifyTicketsFunc(function(tickets)
 			return tickets / 2
 		end)
+		:SetDeathIcon "materials/pluto/roles/jester.png"
 
 	Role(RoleName, "jester")
 		:SetCalculateAmountFunc(function(total_players)

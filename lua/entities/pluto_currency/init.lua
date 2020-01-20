@@ -23,8 +23,9 @@ function ENT:Touch(e)
 				return
 			end
 
-			e:ChatPrint("You received a " .. cur.Name)
 		end)
+		e:ChatPrint(cur.Color, "+ ", white_text, "You received a ", cur.Color, cur.Name)
+
 		self.Got = true
 		self:Remove()
 	end

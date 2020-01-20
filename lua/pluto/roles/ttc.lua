@@ -29,5 +29,7 @@ pluto.files.load {
 		"roles/regenerative/sv_regenerative.lua",
 		"roles/jester/sv_jester.lua",
 	},
-	Resources = {},
+	Resources = {
+		"materials/pluto/roles/jester.png",
+	},
 }

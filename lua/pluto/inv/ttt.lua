@@ -76,14 +76,31 @@ hook.Add("DoPlayerDeath", "pluto_info", function(vic, atk, dmg)
 	local wep = dmg:GetInflictor()
 	local atk = dmg:GetAttacker()
 
-	local text = damagedesc(dmg:GetDamageType())
+	local text = {white_text, damagedesc(dmg:GetDamageType())}
 
 	if (IsValid(atk)) then
-		if (atk:IsPlayer()) then
-			text = text .. " by " .. atk:Nick() .. " who was a" .. (atk:GetRole():match "^[aeiouAEIOU]" and "n" or "") .. " " .. atk:GetRole()
+		if (atk == vic) then
+			text = {white_text, "You have ", atk:GetRoleData().Color, "suicided", white_text, "."}
+		elseif (atk:IsPlayer()) then
+			local next_text = {
+				" by ", atk:GetRoleData().Color, atk:Nick(), white_text, " who was a", (atk:GetRole():match "^[aeiouAEIOU]" and "n" or ""), " ", atk:GetRoleData().Color, atk:GetRole(), white_text, "."
+			}
 
-			if (IsValid(wep)) then
-				text = text .. ". They used their " .. name(wep)
+			for i, v in ipairs(next_text) do
+				text[#text + 1] = v
+			end
+
+			if (IsValid(wep) and wep:IsWeapon()) then
+				if (wep.PlutoGun) then
+					local gun = wep.PlutoGun
+					for i, v in ipairs {" They used their ", gun.Tier.Color, gun:GetPrintName()} do
+						text[#text + 1] = v
+					end
+				else
+					for i, v in ipairs {" They used their ", name(wep)} do
+						text[#text + 1] = v
+					end
+				end
 			end
 		elseif (game.GetWorld() == atk) then
 			text = text .. " by the world"
@@ -96,8 +113,15 @@ hook.Add("DoPlayerDeath", "pluto_info", function(vic, atk, dmg)
 		end
 	end
 
-	print(text)
-	vic:ChatPrint(text)
+	local filtered = {}
+	for _, v in ipairs(text) do
+		if (isstring(v)) then
+			filtered[#filtered + 1] = v
+		end
+	end
+
+	print(table.concat(filtered))
+	vic:ChatPrint(color_black, "- ", unpack(text))
 end)
 
 hook.Add("TTTEndRound", "pluto_endround", function()
