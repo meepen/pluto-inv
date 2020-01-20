@@ -12,7 +12,7 @@ SWEP.PrintName              = "Lancer"
 SWEP.Slot               = 2
 SWEP.SlotPos                = 73
 
-SWEP.Ortho = {-3,5 , 6, size = 0.8, angle = Angle(-18, 21, -45)}
+SWEP.Ortho = {-6, 5 , 6, size = 0.8, angle = Angle(-50, 21, -42)}
 
 SWEP.Primary.Sound = Sound "Weapon_AUG.Single"  --needs fixed "sound/weapons/cog-lancer/cogriflefire-1.ogg"
 SWEP.Primary.Automatic = true
