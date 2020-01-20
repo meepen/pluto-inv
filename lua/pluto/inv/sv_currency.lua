@@ -518,7 +518,7 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 			continue
 		end
 
-		local points = (pluto.currency.tospawn[item.Player] or 1) * tospawn_amt:GetFloat() * math.min(3, pluto.currency.navs.total / 70000)
+		local points = (pluto.currency.tospawn[item.Player] or 1) * tospawn_amt:GetFloat() * math.min(2, pluto.currency.navs.total / 70000 * 1.3)
 
 		for i = 1, points do
 			local e = pluto.currency.spawnfor(item.Player)

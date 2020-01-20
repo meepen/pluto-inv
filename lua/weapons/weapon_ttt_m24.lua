@@ -27,7 +27,7 @@ SWEP.Bullets = {
 	Spread = vector_origin
 }
 
-SWEP.Primary.Damage        = 47
+SWEP.Primary.Damage        = 33
 SWEP.Primary.Delay         = 1.35
 SWEP.Primary.Recoil        = 6
 SWEP.Primary.RecoilTiming  = 0.09
@@ -39,7 +39,8 @@ SWEP.Primary.Sound         = "Weapon_M4A1.Silenced"
 
 SWEP.Secondary.Sound       = Sound "Default.Zoom"
 
-SWEP.HeadshotMultiplier    = 4
+SWEP.IsSilent = true
+SWEP.HeadshotMultiplier    = 5
 SWEP.DeploySpeed = 1.3
 SWEP.ReloadSpeed = 1.66
 
