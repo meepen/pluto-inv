@@ -1,6 +1,6 @@
 local sprite = "particles/balloon_bit"
-local spread = 45
-local count = 100
+local spread = 75
+local count = 500
 
 local function RandVector()
     for i = 1, 1000 do
