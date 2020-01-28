@@ -11,8 +11,8 @@ SWEP.AllowDrop = false
 sound.Add {
 	name = "pluto_confetti",
 	channel = CHAN_WEAPON,
-	volume = 1,
-	level = 100,
+	volume = 0.8,
+	level = 65,
 	pitch = { 95, 110 },
 	sound = {
 		"weapons/confetti/noise4-01.ogg",
@@ -55,9 +55,18 @@ SWEP.Bullets = {
 	DamageDropoffRangeMax = 5500,
 	DamageMinimumPercent = 0.3,
 	Spread = Vector(0.01, 0.01),
-	TracerName = "pluto_confetti"
+	TracerName = "pluto_confetti",
+	Distance = 0,
 }
 SWEP.Ironsights = false
+
+function SWEP:DoFireBullets()
+	local data = EffectData()
+	local owner = self:GetOwner()
+	data:SetStart(owner:GetShootPos())
+	data:SetOrigin(data:GetStart() + owner:GetAimVector())
+	util.Effect("pluto_confetti", data)
+end
 
 function SWEP:Deploy()
 	if SERVER and IsValid(self:GetOwner()) then
