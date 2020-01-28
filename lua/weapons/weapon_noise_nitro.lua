@@ -1,6 +1,6 @@
 SWEP.Base = "weapon_tttbase"
 SWEP.PrintName = "Noise Maker"
-SWEP.Slot = 6
+SWEP.Slot = 5
 
 SWEP.ViewModelFlip      = false
 SWEP.ViewModelFOV       = -100
@@ -46,7 +46,7 @@ SWEP.Spawnable             = true
 SWEP.ViewModel             = "models/weapons/v_crowbar.mdl"
 SWEP.WorldModel            = "models/weapons/w_crowbar.mdl"
 
-SWEP.Icon                  = "vgui/entities/confetti.png"
+SWEP.PlutoIcon             = "vgui/entities/confetti.png"
 
 SWEP.Bullets = {
 	HullSize = 0,

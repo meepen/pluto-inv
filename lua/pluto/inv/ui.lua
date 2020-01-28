@@ -147,6 +147,8 @@ function PANEL:SetItem(item)
 		self.Model:Remove()
 	end
 
+	self.RealImage = nil
+
 	if (not item) then
 		self.MaterialColor = nil
 		self.Type = nil
@@ -160,8 +162,6 @@ function PANEL:SetItem(item)
 	self:SetColor(maincol)
 
 	self.MaterialColor = matcol:ToVector()
-
-	self.RealImage = nil
 
 	if (self.Type == "Weapon") then
 		self:SetWeapon(item)
@@ -181,8 +181,14 @@ function PANEL:SetWeapon(item)
 		return
 	end
 
-	self.Model = ClientsideModel(w.WorldModel, RENDERGROUP_OTHER)
-	self.Model:SetNoDraw(true)
+	if (w.PlutoIcon) then
+		self.RealImage = Material(w.PlutoIcon)
+		self.RealColor = color_white
+	else
+		self.Model = ClientsideModel(w.WorldModel, RENDERGROUP_OTHER)
+		self.Model:SetNoDraw(true)
+	end
+
 	self.Class = w.ClassName
 end
 
@@ -203,12 +209,16 @@ function PANEL:Paint(w, h)
 
 	if (self.RealImage) then
 		self.RealImage:SetVector("$color", self.RealColor:ToVector())
-		self.RealImageAdd:SetVector("$color", self.AddColor:ToVector())
+		if (self.RealImageAdd) then
+			self.RealImageAdd:SetVector("$color", self.AddColor:ToVector())
+		end
 		surface.SetDrawColor(255, 255, 255, 255)
 		surface.SetMaterial(self.RealImage)
 		surface.DrawTexturedRect(0, 0, w, h)
-		surface.SetMaterial(self.RealImageAdd)
-		surface.DrawTexturedRect(0, 0, w, h)
+		if (self.RealImageAdd) then
+			surface.SetMaterial(self.RealImageAdd)
+			surface.DrawTexturedRect(0, 0, w, h)
+		end
 		return
 	end
 
@@ -813,6 +823,7 @@ function PANEL:Init()
 	self.Items[1]:SetDefault "weapon_ttt_m4a1"
 	self.Items[2]:SetDefault "weapon_ttt_pistol"
 	self.Items[3]:SetDefault "model_default"
+	self.Items[6]:SetDefault "weapon_ttt_unarmed"
 
 	self.Items[1].OnSetItem = function(s, i)
 		self.PlayerModel:SetPlutoWeapon(i)

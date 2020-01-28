@@ -34,6 +34,8 @@ pluto.tabs = {
 					return wep.Slot == 2
 				elseif (tabindex == 2) then -- secondary
 					return wep.Slot == 1
+				elseif (tabindex == 6) then -- unarmed
+					return wep.Slot == 5
 				end
 			elseif (item.ClassName:StartWith "model_" and tabindex == 3) then
 				return true
@@ -44,7 +46,7 @@ pluto.tabs = {
 		canremove = function(tabindex, item)
 			return true
 		end,
-		size = 3,
+		size = 6,
 		element = "pluto_inventory_equip",
 	},
 	craft = {
