@@ -1,8 +1,7 @@
 MOD.Type = "suffix"
 MOD.Name = "Marksmanship"
 MOD.Tags = {
-	"precise",
-	"damage",
+	"precise", "damage",
 }
 
 function MOD:IsNegative(roll)
