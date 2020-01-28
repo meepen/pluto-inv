@@ -61,6 +61,10 @@ SWEP.Bullets = {
 SWEP.Ironsights = false
 
 function SWEP:DoFireBullets()
+	if (CLIENT and not IsFirstTimePredicted()) then
+		return
+	end
+
 	local data = EffectData()
 	local owner = self:GetOwner()
 	data:SetStart(owner:GetShootPos())
