@@ -177,6 +177,12 @@ local packs =  {
 			"20191225",
 		}
 	},
+	confetti = {
+		remote = "https://cdn.pluto.gg/confetti.gma",
+		versions = {
+			"20200128_4",
+		}
+	},
 	--[[
 	moxxi = {
 		remote = "https://cdn.pluto.gg/moxxi.gma",
