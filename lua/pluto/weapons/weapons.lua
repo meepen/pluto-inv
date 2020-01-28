@@ -214,7 +214,7 @@ function pluto.weapons.save(item, owner, cb, nostart, statementsonly)
 	tab.Items[item.TabIndex] = tmp
 
 	local inserts = {
-		{ "REPLACE INTO pluto_items (tier, class, tab_id, tab_idx, nick, special_name) VALUES(?, ?, ?, ?, ?, ?)", {type(item.Tier) == "string" and item.Tier or item.Tier and item.Tier.InternalName or "", item.ClassName, item.TabID, item.TabIndex, item.Nickname, item.SpecialName}, function(err, q)
+		{ "REPLACE INTO pluto_items (tier, class, tab_id, tab_idx, nick, special_name, original_owner) VALUES(?, ?, ?, ?, ?, ?, ?)", {type(item.Tier) == "string" and item.Tier or item.Tier and item.Tier.InternalName or "", item.ClassName, item.TabID, item.TabIndex, item.Nickname, item.SpecialName, item.Owner}, function(err, q)
 			local insert = q:lastInsert()
 
 			item.RowID = insert
