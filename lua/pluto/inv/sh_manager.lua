@@ -133,6 +133,29 @@ function ITEM:GetPrintName()
 	return self:GetDefaultName()
 end
 
+function ITEM:ShouldPreventChange()
+	if (self.Type ~= "Weapon") then
+		return true
+	end
+	
+	if (self.Tier and self.Tier.NoChange) then
+		return true
+	end
+
+	if (wpn and wpn.Mods) then
+		for _, mods in pairs(wpn.Mods) do
+			for _, mod in pairs(mods) do
+				local m = pluto.mods.byname[mod.Mod]
+				if (m and m.PreventChange == true) then
+					return true
+				end
+			end
+		end
+	end
+
+	return false
+end
+
 function ITEM:GetMod(name)
 	local real = pluto.mods.byname[name]
 
