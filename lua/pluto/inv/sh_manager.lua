@@ -35,6 +35,7 @@ pluto.inv.messages = {
 		[14] = "mapvotes",
 		[15] = "craftresults",
 		[16] = "expupdate",
+		[17] = "nitro",
 	}
 }
 

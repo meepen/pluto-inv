@@ -69,6 +69,8 @@ function SWEP:DoFireBullets()
 	local owner = self:GetOwner()
 	data:SetStart(owner:GetShootPos())
 	data:SetOrigin(data:GetStart() + owner:GetAimVector())
+	data:SetMagnitude(5)
+	data:SetRadius(75)
 	util.Effect("pluto_confetti", data)
 end
 

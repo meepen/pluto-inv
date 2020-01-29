@@ -1,3 +1,5 @@
+color_nitro = Color(238, 148, 238)
+
 local NitroRewards = {
 	{
 		Since = os.time {
@@ -9,6 +11,29 @@ local NitroRewards = {
 		},
 		Reward = function(ply)
 			pluto.inv.generatebufferweapon(ply, "unique", "weapon_noise_nitro")
+			ttt.chat(color_nitro, ply:Nick(), white_text, " has received the original ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Noise Maker!")
+			hook.Add("PlayerSpawn", "confetti_" .. ply:SteamID64(), function(p)
+				if (p ~= ply) then
+					return
+				end
+
+				hook.Remove("PlayerSpawn", "confetti_" .. ply:SteamID64())
+				local ang = ply:EyeAngles()
+				ang.p = 0
+		
+				for i = 0, 360, 30 do
+					ang:RotateAroundAxis(ang:Up(), 30)
+		
+					local data = EffectData()
+					data:SetStart(ply:GetShootPos())
+					data:SetOrigin(data:GetStart() + ang:Forward())
+					data:SetMagnitude(1)
+					data:SetRadius(50)
+					util.Effect("pluto_confetti", data)
+				end
+		
+				sound.Play("pluto_confetti", ply:GetPos())
+			end)
 		end
 	}
 }
@@ -63,6 +88,12 @@ hook.Add("PlayerInitialSpawn", "pluto_admin", function(p)
 				end
 
 				reward.Reward(p)
+
+				for _, ply in pairs(player.GetAll()) do
+					pluto.inv.message(ply)
+						:write("nitro", reward_num, p)
+						:send()
+				end
 				
 				pluto.db.query("INSERT INTO pluto_nitro_rewards (steamid, reward_num, assoc_discordid) VALUES(?, ?, ?)", {sid, reward_num, boost.discordid}, function(err, q)
 					if (err) then
@@ -98,3 +129,8 @@ hook.Add("PlayerInitialSpawn", "pluto_admin", function(p)
 		try_finish(nil, q:getData() or false)
 	end)
 end)
+
+function pluto.inv.writenitro(cl, reward_num, ply)
+	net.WriteEntity(ply)
+	net.WriteUInt(reward_num, 16)
+end

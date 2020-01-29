@@ -1,8 +1,6 @@
 local sprite = "particles/balloon_bit"
-local spread = 75
-local count = 500
 
-local function RandVector()
+local function RandVector(spread)
     for i = 1, 1000 do
         local v = Vector(math.random(-spread, spread), math.random(-spread, spread), math.random(-spread, spread))
         if (v:LengthSqr() < spread * spread) then
@@ -21,7 +19,7 @@ function EFFECT:Init(data)
     
     local endPoint = Vector(pos + dir * 250)
 
-    for i = 1, count do
+    for i = 1, data:GetMagnitude() * 100 do
         local particle = emitter:Add(sprite, pos)
 
         if particle then
@@ -40,7 +38,7 @@ function EFFECT:Init(data)
             particle:SetColor(colour.r, colour.g, colour.b)
             particle:SetLighting(false)
             particle:SetCollide(true)
-            particle:SetVelocity(endPoint + RandVector() - pos)
+            particle:SetVelocity(endPoint + RandVector(data:GetRadius()) - pos)
         end
     end
 
