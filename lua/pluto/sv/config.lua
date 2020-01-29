@@ -22,17 +22,17 @@ if (not pluto.db_init) then
 
 			connects = connects + 1
 			if (connects == 1) then
-				pprintf "Main database connected"
+				pprintf("%s database connected", info.name)
 				hook.Run("PlutoDatabaseInitialize", db)
 			elseif (connects > 1) then
-				pprintf "Main database reconnected"
+				pprintf("%s database reconnected", info.name)
 			end
 
 			hook.Run("PlutoDatabaseConnected", db, connects)
 		end
 
 		function db:onConnectionFailed(err)
-			pwarnf("Database disconnected: %s. Reconnecting.", err)
+			pwarnf("%s Database disconnected: %s. Reconnecting.", info.name, err)
 		end
 
 		db:connect()

@@ -112,7 +112,7 @@ function pluto.inv.writefullupdate(ply)
 	for currency in pairs(pluto.inv.currencies[ply]) do
 		pluto.inv.writecurrencyupdate(ply, currency)
 	end
-	
+
 	local buffer = pluto.inv.getbufferitems(ply)
 
 	net.WriteUInt(#buffer, 8)
