@@ -142,8 +142,8 @@ function ITEM:ShouldPreventChange()
 		return true
 	end
 
-	if (wpn and wpn.Mods) then
-		for _, mods in pairs(wpn.Mods) do
+	if (self and self.Mods) then
+		for _, mods in pairs(self.Mods) do
 			for _, mod in pairs(mods) do
 				local m = pluto.mods.byname[mod.Mod]
 				if (m and m.PreventChange == true) then

@@ -425,9 +425,11 @@ function pluto.inv.readcurrencyuse(ply)
 
 	local cur = pluto.currency.byname[currency]
 
-	if (not allowed(cur.Types, wpn) or wpn and not wpn:ShouldPreventChange()) then
+	if (not allowed(cur.Types, wpn) or wpn and wpn:ShouldPreventChange()) then
 		return
 	end
+
+	print "hi"
 
 	cur.Use(ply, wpn)
 end
