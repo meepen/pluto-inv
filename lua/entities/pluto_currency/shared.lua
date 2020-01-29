@@ -19,6 +19,8 @@ function ENT:Initialize()
 	self.random = math.random()
 	hook.Add("ShouldCollide", self, self.ShouldCollide)
 	self:CollisionRulesChanged()
+
+	self:SetMoveType(MOVETYPE_NONE)
 end
 
 function ENT:ShouldCollide(e1, e2)

@@ -81,6 +81,18 @@ local changes = {
 			1551,
 			1550,
 		}
+	},
+	ttt_atlantis = {
+		Block = {
+			{
+				Mins = Vector(558.402344, 2395.761475, -63.968750),
+				Maxs = Vector(16.495560, 2371.931885, 124.112534),
+			},
+			{
+				Mins = Vector(1789.020630, 1531.800293, -15.968746),
+				Maxs = Vector(1605.661987, 1422.622803, 223.968750),
+			}
+		}
 	}
 }
 
@@ -98,6 +110,18 @@ hook.Add("InitPostEntity", "pluto_maps", function()
 			if (IsValid(e)) then
 				e:Remove()
 			end
+		end
+	end
+
+	if (dat.Block) then
+		for _, data in pairs(dat.Block) do
+			local e = ents.Create "pluto_block"
+			local mn, mx = data.Mins, data.Maxs
+			local real_mins = Vector(math.min(mn.x, mx.x), math.min(mn.y, mx.y), math.min(mn.z, mx.z))
+			local real_maxs = Vector(math.max(mn.x, mx.x), math.max(mn.y, mx.y), math.max(mn.z, mx.z))
+			e:SetMins(real_mins)
+			e:SetMaxs(real_maxs)
+			e:Spawn()
 		end
 	end
 end)

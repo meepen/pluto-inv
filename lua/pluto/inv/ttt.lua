@@ -103,13 +103,13 @@ hook.Add("DoPlayerDeath", "pluto_info", function(vic, atk, dmg)
 				end
 			end
 		elseif (game.GetWorld() == atk) then
-			text = text .. " by the world"
+			text[#text + 1] = " by the world"
 		elseif (atk:IsWeapon()) then
-			text = text .. " by " .. atk:GetPrintName()
+			text[#text + 1] = " by " .. atk:GetPrintName()
 		elseif (atk.PrintName) then
-			text = text .. " by " .. atk.PrintName
+			text[#text + 1] = " by " .. atk.PrintName
 		else
-			text = text .. " by " .. atk:GetClass()
+			text[#text + 1] = " by " .. atk:GetClass()
 		end
 	end
 
