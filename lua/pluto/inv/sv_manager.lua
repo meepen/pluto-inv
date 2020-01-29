@@ -116,7 +116,8 @@ function pluto.inv.writefullupdate(ply)
 	local buffer = pluto.inv.getbufferitems(ply)
 
 	net.WriteUInt(#buffer, 8)
-	for _, item in ipairs(buffer) do
+	for i = #buffer, 1, -1 do
+		local item = buffer[i]
 		pluto.inv.writebufferitem(ply, item)
 	end
 	
