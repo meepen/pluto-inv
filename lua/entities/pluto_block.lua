@@ -16,6 +16,7 @@ function ENT:Initialize()
 	self:SetCollisionBounds(self:GetMins(), self:GetMaxs())
 	self:SetCustomCollisionCheck(true)
 	self:PhysicsInitBox(self:GetMins(), self:GetMaxs())
+
     local physobj = self:GetPhysicsObject()
     if (IsValid(physobj)) then
 		physobj:EnableMotion(false)

@@ -3,7 +3,7 @@ color_nitro = Color(238, 148, 238)
 local NitroRewards = {
 	{
 		Since = os.time {
-			day = 30,
+			day = 31,
 			hour = 0,
 			year = 2020,
 			month = 1,
