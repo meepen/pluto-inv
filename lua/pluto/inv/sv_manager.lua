@@ -63,6 +63,8 @@ function pluto.inv.writeitem(ply, item)
 		net.WriteBool(true)
 
 		pluto.inv.writebaseitem(ply, item)
+
+		net.WriteBool(item.Locked or false)
 	else
 		net.WriteBool(false)
 	end
