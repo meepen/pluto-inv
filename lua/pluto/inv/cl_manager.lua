@@ -118,6 +118,8 @@ function pluto.inv.readitem()
 
 	pluto.inv.readbaseitem(item)
 
+	item.Locked = net.ReadBool()
+
 	pluto.received.item[id] = item
 
 	hook.Run("PlutoItemUpdate", item)
