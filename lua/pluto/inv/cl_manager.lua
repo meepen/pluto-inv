@@ -299,3 +299,21 @@ function pluto.inv.readexpupdate()
 
 	item.Experience = exp
 end
+
+function pluto.inv.writeitemlock(itemid)
+	net.WriteUInt(itemid, 32)
+end
+
+function pluto.inv.readitemlock()
+	local itemid = net.ReadUInt(32)
+	local locked = net.ReadBool()
+
+	local item = pluto.received.item[itemid]
+
+	if (not item) then
+		pwarnf("Item ID not found for itemlock: %i", itemid)
+		return
+	end
+
+	item.Locked = locked
+end
