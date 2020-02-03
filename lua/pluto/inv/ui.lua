@@ -482,7 +482,14 @@ function PANEL:OnMousePressed(code)
 					OVERRIDE_DETAILED = false
 					cam.Start2D()
 					render.PushRenderTarget(StatsRT)
-					show:PaintManual()
+					if (not pcall(show.PaintManual, show)) then
+						Derma_Message("Encountered an error while generating the image! Please try again.", "Upload failed", "Thanks")
+
+						render.Clear(0, 0, 0, 0)
+						render.PopRenderTarget(StatsRT)
+						cam.End2D()
+						show:Remove()
+					return end
 					local data = render.Capture {
 						format = "png",
 						quality = 100,
