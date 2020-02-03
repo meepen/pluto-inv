@@ -420,6 +420,10 @@ function pluto.inv.readcurrencyuse(ply)
 		end
 	end
 
+	if (wpn.Locked) then
+		return
+	end
+
 	if (not pluto.inv.currencies[ply] or pluto.inv.currencies[ply][currency] < 1) then
 		return
 	end
