@@ -477,77 +477,79 @@ function PANEL:OnMousePressed(code)
 				local show = pluto.ui.showcase(self.Item)
 				show:SetPaintedManually(true)
 				local item_name = self.Item:GetPrintName()
-				hook.Add("PreRender", "Upload", function()
-					hook.Remove("PreRender", "Upload")
-					OVERRIDE_DETAILED = false
-					cam.Start2D()
-					render.PushRenderTarget(StatsRT)
-					if (not pcall(show.PaintManual, show)) then
-						Derma_Message("Encountered an error while generating the image! Please try again.", "Upload failed", "Thanks")
+				timer.Simple(0, function()
+					hook.Add("PostRender", "Upload", function()
+						hook.Remove("PostRender", "Upload")
+						OVERRIDE_DETAILED = false
+						cam.Start2D()
+						render.PushRenderTarget(StatsRT)
+						if (not pcall(show.PaintManual, show)) then
+							Derma_Message("Encountered an error while generating the image! Please try again.", "Upload failed", "Thanks")
 
+							render.Clear(0, 0, 0, 0)
+							render.PopRenderTarget(StatsRT)
+							cam.End2D()
+							show:Remove()
+						return end
+						local data = render.Capture {
+							format = "png",
+							quality = 100,
+							h = show:GetTall(),
+							w = show:GetWide(),
+							x = 0,
+							y = 0,
+							alpha = false,
+						}
 						render.Clear(0, 0, 0, 0)
 						render.PopRenderTarget(StatsRT)
 						cam.End2D()
 						show:Remove()
-					return end
-					local data = render.Capture {
-						format = "png",
-						quality = 100,
-						h = show:GetTall(),
-						w = show:GetWide(),
-						x = 0,
-						y = 0,
-						alpha = false,
-					}
-					render.Clear(0, 0, 0, 0)
-					render.PopRenderTarget(StatsRT)
-					cam.End2D()
-					show:Remove()
-					HTTP {
-						url = "https://api.imgur.com/3/album",
-						method = "post",
-						headers = {
-							Authorization = "Client-ID 3693fd6ea039830",
-						},
-						success = function(_, c, _, _)
-							local album = util.JSONToTable(c)
-							if (not album.success) then
-								Derma_Message("Your upload was not successful! Please try again.", "Upload failed", ":(")
-								return
-							end
+						HTTP {
+							url = "https://api.imgur.com/3/album",
+							method = "post",
+							headers = {
+								Authorization = "Client-ID 3693fd6ea039830",
+							},
+							success = function(_, c, _, _)
+								local album = util.JSONToTable(c)
+								if (not album.success) then
+									Derma_Message("Your upload was not successful! Please try again.", "Upload failed", ":(")
+									return
+								end
 
-							HTTP {
-								url = "https://api.imgur.com/3/image",
-								method = "post",
-								headers = {
-									Authorization = "Client-ID 3693fd6ea039830"
-								},
-								success = function(_, b, _, _)
-									b = util.JSONToTable(b)
-									if (b.success) then
-										Derma_Message("Your picture of your stats has been uploaded and copied to your clipboard!\nYou can now simply paste it anywhere, like our Discord! discord.gg/pluto", "Upload success", "Thanks!")
-										SetClipboardText("https://imgur.com/a/" .. album.data.id)
-									else
-										Derma_Message("Your upload was not successful! Please try again.", "Upload failed", "Thanks")
-									end
-								end,
-								failed = function(a) 
-									Derma_Message("Imgur appears to be having some issues, please wait and try again!", "Upload failed", "Ok")
-								end,
-								parameters = {
-									image = util.Base64Encode(data),
-									album = album.data.deletehash
-								},
-							}
-						end,
-						failed = function(a)
-							Derma_Message("Your upload was not successful! Please try again.", "Upload failed", "Ok")
-						end,
-						parameters = {
-							title = string.format("%s's %s", LocalPlayer():Nick(), item_name),
-							description = string.format("Taken by %s https://steamcommunity.com/profiles/%s\nDiscord: https://discord.gg/pluto\nWebsite: https://pluto.gg", LocalPlayer():Nick(), LocalPlayer():SteamID64()), 
-						},
-					}
+								HTTP {
+									url = "https://api.imgur.com/3/image",
+									method = "post",
+									headers = {
+										Authorization = "Client-ID 3693fd6ea039830"
+									},
+									success = function(_, b, _, _)
+										b = util.JSONToTable(b)
+										if (b.success) then
+											Derma_Message("Your picture of your stats has been uploaded and copied to your clipboard!\nYou can now simply paste it anywhere, like our Discord! discord.gg/pluto", "Upload success", "Thanks!")
+											SetClipboardText("https://imgur.com/a/" .. album.data.id)
+										else
+											Derma_Message("Your upload was not successful! Please try again.", "Upload failed", "Thanks")
+										end
+									end,
+									failed = function(a) 
+										Derma_Message("Imgur appears to be having some issues, please wait and try again!", "Upload failed", "Ok")
+									end,
+									parameters = {
+										image = util.Base64Encode(data),
+										album = album.data.deletehash
+									},
+								}
+							end,
+							failed = function(a)
+								Derma_Message("Your upload was not successful! Please try again.", "Upload failed", "Ok")
+							end,
+							parameters = {
+								title = string.format("%s's %s", LocalPlayer():Nick(), item_name),
+								description = string.format("Taken by %s https://steamcommunity.com/profiles/%s\nDiscord: https://discord.gg/pluto\nWebsite: https://pluto.gg", LocalPlayer():Nick(), LocalPlayer():SteamID64()), 
+							},
+						}
+					end)
 				end)
 			end):SetIcon("icon16/camera.png")
 
