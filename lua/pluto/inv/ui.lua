@@ -475,6 +475,7 @@ function PANEL:OnMousePressed(code)
 				local StatsRT = GetRenderTarget("ItemStatsRT" .. ScrW() .. "_" ..  ScrH(), ScrW(), ScrH())
 				OVERRIDE_DETAILED = true
 				local show = pluto.ui.showcase(self.Item)
+				pluto.ui.showcasepnl = nil
 				show:SetPaintedManually(true)
 				local item_name = self.Item:GetPrintName()
 				timer.Simple(0, function()
