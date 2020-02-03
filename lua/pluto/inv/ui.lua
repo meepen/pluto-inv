@@ -536,6 +536,12 @@ function PANEL:OnMousePressed(code)
 				end)
 			end):SetIcon("icon16/camera.png")
 
+			rightclick_menu:AddOption("Toggle locked", function()
+				pluto.inv.message()
+				:write("itemlock", self.Item.ID)
+				:send()
+			end):SetIcon("icon16/lock.png")
+
 			rightclick_menu:Open()
 			rightclick_menu:SetPos(input.GetCursorPos())--s
 		end
