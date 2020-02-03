@@ -383,3 +383,31 @@ function pluto.inv.getbufferitem(id)
 
 	return wpn
 end
+
+function pluto.inv.lockitem(steamid, itemid, locked, cb, nostart)
+	steamid = pluto.db.steamid64(steamid)
+
+	print(locked)
+
+	return pluto.db.query("UPDATE pluto_items SET locked = ? WHERE idx = ?", {locked, itemid}, function(err, q)
+		if (err) then
+			if (IsValid(cl)) then
+				pluto.inv.sendfullupdate(cl)
+			end
+			return cb(false)
+		end
+
+		if (q:affectedRows() ~= 1) then
+			if (IsValid(cl)) then
+				pluto.inv.sendfullupdate(cl)
+			end
+
+			pwarnf("Affected rows: %i", q:affectedRows())
+			return cb(false)
+		end
+
+		pluto.itemids[itemid].Locked = locked
+
+		cb(true)
+	end, nil, nostart)
+end
