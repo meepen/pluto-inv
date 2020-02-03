@@ -472,12 +472,17 @@ function PANEL:OnMousePressed(code)
 			end
 
 			rightclick_menu:AddOption("Upload item stats", function()
+				local StatsRT = GetRenderTarget("ItemStatsRT" .. ScrW() .. "_" ..  ScrH(), ScrW(), ScrH())
 				OVERRIDE_DETAILED = true
 				local show = pluto.ui.showcase(self.Item)
+				show:SetPaintedManually(true)
 				local item_name = self.Item:GetPrintName()
-				hook.Add("PostRender", "Upload", function()
-					hook.Remove("PostRender", "Upload")
+				hook.Add("PreRender", "Upload", function()
+					hook.Remove("PreRender", "Upload")
 					OVERRIDE_DETAILED = false
+					cam.Start2D()
+					render.PushRenderTarget(StatsRT)
+					show:PaintManual()
 					local data = render.Capture {
 						format = "png",
 						quality = 100,
@@ -487,6 +492,9 @@ function PANEL:OnMousePressed(code)
 						y = 0,
 						alpha = false,
 					}
+					render.Clear(0, 0, 0, 0)
+					render.PopRenderTarget(StatsRT)
+					cam.End2D()
 					show:Remove()
 					HTTP {
 						url = "https://api.imgur.com/3/album",
