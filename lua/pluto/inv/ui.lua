@@ -18,6 +18,7 @@ local count = 6
 
 local PANEL = {}
 
+local lock = Material "icon16/lock.png"
 local colour = Material "models/debug/debugwhite"
 DEFINE_BASECLASS "DImage"
 
@@ -293,6 +294,12 @@ function PANEL:Paint(w, h)
 		render.SetColorModulation(r, g, b)
 		render.SetBlend(1)
 	render.SetStencilEnable(false)
+
+	if (self.Item.Locked) then
+		surface.SetDrawColor(color_white)
+		surface.SetMaterial(lock)
+		surface.DrawTexturedRect(w - 15, 5, 10, 10)
+	end
 end
 
 function PANEL:SetDefault(class)
