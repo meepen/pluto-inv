@@ -190,7 +190,7 @@ end
 function pluto.inv.retrieveitems(steamid, cb)
 	steamid = pluto.db.steamid64(steamid)
 
-	pluto.db.query("SELECT pluto_items.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2 FROM pluto_items LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = pluto_items.idx JOIN pluto_tabs ON pluto_tabs.idx = pluto_items.tab_id WHERE owner = ?", {steamid}, function(err, q)
+	pluto.db.query("SELECT pluto_items.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked FROM pluto_items LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = pluto_items.idx JOIN pluto_tabs ON pluto_tabs.idx = pluto_items.tab_id WHERE owner = ?", {steamid}, function(err, q)
 		if (err) then
 			pwarnf("sql error: %s\n%s", err, debug.traceback())
 			return
@@ -211,6 +211,7 @@ function pluto.inv.retrieveitems(steamid, cb)
 				SpecialName = item.special_name,
 				Experience = item.exp,
 				Nickname = item.nick,
+				Locked = tobool(item.locked),
 			}, pluto.inv.item_mt)
 
 			it.Type = pluto.inv.itemtype(it)
