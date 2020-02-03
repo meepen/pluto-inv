@@ -387,8 +387,6 @@ end
 function pluto.inv.lockitem(steamid, itemid, locked, cb, nostart)
 	steamid = pluto.db.steamid64(steamid)
 
-	print(locked)
-
 	return pluto.db.query("UPDATE pluto_items SET locked = ? WHERE idx = ?", {locked, itemid}, function(err, q)
 		if (err) then
 			if (IsValid(cl)) then

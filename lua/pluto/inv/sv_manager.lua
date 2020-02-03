@@ -540,7 +540,7 @@ function pluto.inv.readitemlock(ply)
 		pluto.inv.sendfullupdate(ply)
 		return
 	end
-	print(wpn.Locked)
+
 	wpn.Locked = not wpn.Locked
 
 	pluto.inv.lockitem(ply, itemid, wpn.Locked, function(succ)
