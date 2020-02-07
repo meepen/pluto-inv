@@ -289,7 +289,7 @@ function pluto.inv.deleteitem(steamid, itemid, cb, nostart)
 		i.RowID = nil
 	end
 
-	return pluto.db.query("delete pluto_items from pluto_items inner join pluto_tabs on pluto_tabs.idx = pluto_items.tab_id where pluto_items.idx = ? and pluto_tabs.owner = ?", {itemid, steamid}, function(err, q)
+	return pluto.db.query("delete pluto_items from pluto_items inner join pluto_tabs on pluto_tabs.idx = pluto_items.tab_id where pluto_items.idx = ? and pluto_tabs.owner = ? and locked = false", {itemid, steamid}, function(err, q)
 		if (err) then
 			if (IsValid(cl)) then
 				pluto.inv.sendfullupdate(cl)
@@ -387,7 +387,9 @@ end
 function pluto.inv.lockitem(steamid, itemid, locked, cb, nostart)
 	steamid = pluto.db.steamid64(steamid)
 
-	return pluto.db.query("UPDATE pluto_items SET locked = ? WHERE idx = ?", {locked, itemid}, function(err, q)
+	print(locked)
+
+	return pluto.db.query("UPDATE pluto_items SET locked = ? WHERE idx = ? and locked = ?", {locked, itemid, not locked}, function(err, q)
 		if (err) then
 			if (IsValid(cl)) then
 				pluto.inv.sendfullupdate(cl)

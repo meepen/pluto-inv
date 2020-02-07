@@ -1397,6 +1397,13 @@ DEFINE_BASECLASS "DImage"
 
 function PANEL:OnMousePressed(mouse)
 	if (IsValid(pluto.ui.ghost)) then
+		if (pluto.ui.ghost.Item and pluto.ui.ghost.Item.Locked) then
+			local p = vgui.Create "pluto_falling_text"
+			p:SetText "That item is locked!"
+			p:SetPos(gui.MousePos())
+			return
+		end
+
 		-- assume is inventory item
 		self.Deleting = {
 			TabID = pluto.ui.ghost.TabID,
