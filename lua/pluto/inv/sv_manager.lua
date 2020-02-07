@@ -63,6 +63,8 @@ function pluto.inv.writeitem(ply, item)
 		net.WriteBool(true)
 
 		pluto.inv.writebaseitem(ply, item)
+
+		net.WriteBool(item.Locked or false)
 	else
 		net.WriteBool(false)
 	end
@@ -419,6 +421,10 @@ function pluto.inv.readcurrencyuse(ply)
 		end
 	end
 
+	if (wpn.Locked) then
+		return
+	end
+
 	if (not pluto.inv.currencies[ply] or pluto.inv.currencies[ply][currency] < 1) then
 		return
 	end
@@ -510,6 +516,37 @@ end
 function pluto.inv.writeexpupdate(cl, item)
 	net.WriteUInt(item.RowID, 32)
 	net.WriteUInt(item.Experience, 32)
+end
+
+function pluto.inv.writeitemlock(ply, itemid, locked)
+	net.WriteUInt(itemid, 32)
+	net.WriteBool(locked)
+end
+
+function pluto.inv.readitemlock(ply)
+	local itemid = net.ReadUInt(32)
+
+	local wpn = pluto.inv.items[itemid]
+
+	if (not wpn) then
+		pluto.inv.sendfullupdate(ply)
+		return
+	end
+
+	wpn.Locked = not wpn.Locked
+
+	pluto.inv.lockitem(ply, itemid, wpn.Locked, function(succ)
+		if (IsValid(ply)) then
+			if (succ) then
+				pluto.inv.message(ply)
+					:write("itemlock", itemid, wpn.Locked)
+					:send()
+				return
+			end
+
+			pluto.inv.sendfullupdate(ply)
+		end
+	end)
 end
 
 hook.Add("PlayerAuthed", "pluto_init_inventory", pluto.inv.sendfullupdate)

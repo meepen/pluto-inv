@@ -16,6 +16,7 @@ pluto.inv.messages = {
 		[11] = "likemap",
 		[12] = "requestcraftresults",
 		[13] = "craft",
+		[14] = "itemlock",
 	},
 	sv2cl = {
 		[0] = "end",
@@ -35,7 +36,8 @@ pluto.inv.messages = {
 		[14] = "mapvotes",
 		[15] = "craftresults",
 		[16] = "expupdate",
-		[17] = "nitro",
+		[17] = "itemlock",
+		[18] = "nitro",
 	}
 }
 
