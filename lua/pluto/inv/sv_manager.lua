@@ -114,11 +114,12 @@ function pluto.inv.writefullupdate(ply)
 	for currency in pairs(pluto.inv.currencies[ply]) do
 		pluto.inv.writecurrencyupdate(ply, currency)
 	end
-	
+
 	local buffer = pluto.inv.getbufferitems(ply)
 
 	net.WriteUInt(#buffer, 8)
-	for _, item in ipairs(buffer) do
+	for i = #buffer, 1, -1 do
+		local item = buffer[i]
 		pluto.inv.writebufferitem(ply, item)
 	end
 	
@@ -430,20 +431,11 @@ function pluto.inv.readcurrencyuse(ply)
 
 	local cur = pluto.currency.byname[currency]
 
-	if (not allowed(cur.Types, wpn)) then
+	if (not allowed(cur.Types, wpn) or wpn and wpn:ShouldPreventChange()) then
 		return
 	end
 
-	if (wpn and wpn.Mods) then
-		for _, mods in pairs(wpn.Mods) do
-			for _, mod in pairs(mods) do
-				local m = pluto.mods.byname[mod.Mod]
-				if (m and m.PreventChange == true) then
-					return
-				end
-			end
-		end
-	end
+	print "hi"
 
 	cur.Use(ply, wpn)
 end

@@ -1970,5 +1970,15 @@
 		"sound/weapons/cog-lancer/cogriflefire-2.ogg",
 		"sound/weapons/cog-lancer/cogriflefire-3.ogg",
 		"sound/weapons/cog-lancer/hand.ogg"
+	],
+	"confetti": [
+		"sound/weapons/confetti/noise4-01.ogg",
+		"sound/weapons/confetti/noise4-02.ogg",
+		"sound/weapons/confetti/noise4-03.ogg",
+		"sound/weapons/confetti/noise4-04.ogg",
+		"sound/weapons/confetti/noise4-05.ogg",
+		"sound/weapons/confetti/noise4-06.ogg",
+		"sound/weapons/confetti/noise4-07.ogg",
+		"materials/vgui/entities/confetti.png"
 	]
 }

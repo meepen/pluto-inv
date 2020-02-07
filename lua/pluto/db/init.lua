@@ -27,6 +27,8 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 					tab_idx TINYINT UNSIGNED NOT NULL,
 
 					locked tinyint(1) NOT NULL DEFAULT 0,
+
+					original_owner BIGINT UNSIGNED NOT NULL,
 	
 					FOREIGN KEY(tab_id) REFERENCES pluto_tabs(idx) ON DELETE CASCADE,
 					PRIMARY KEY(tab_id, tab_idx),
@@ -123,6 +125,18 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 				)
 			]]
 		},
+		{
+			[[
+				CREATE TABLE IF NOT EXISTS pluto_nitro_rewards (
+					steamid BIGINT UNSIGNED NOT NULL,
+					reward_num SMALLINT UNSIGNED NOT NULL,
+					assoc_discordid BIGINT UNSIGNED NOT NULL,
+
+					PRIMARY KEY(steamid, reward_num),
+					INDEX USING HASH(steamid)
+				)
+			]]
+		}
 	}:wait(true)
 
 	local queries = {
