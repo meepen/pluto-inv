@@ -54,6 +54,15 @@ function ENT:SetCurrency(currency)
 	self:SetIcon(currency.Icon)
 end
 
+function pluto.statuses.greed(ply, dist, time)
+	ply:SetCurrencyTime(time + CurTime())
+	ply:SetCurrencyDistance(dist)
+end
+
+hook.Add("PlayerSpawn", "pluto_currency", function(p)
+	p:SetCurrencyTime(-math.huge)
+end)
+
 hook.Add("TTTAddPermanentEntities", "pluto_currency", function(list)
 	table.insert(list, "pluto_currency")
 end)

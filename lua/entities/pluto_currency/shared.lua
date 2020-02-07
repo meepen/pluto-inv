@@ -32,3 +32,8 @@ function ENT:ShouldCollide(e1, e2)
 
 	return other == self:GetOwner()
 end
+
+hook.Add("SetupPlayerNetworking", "pluto_currency", function(ply)
+	ply:NetworkVar("CurrencyTime", "Float")
+	ply:NetworkVar("CurrencyDistance", "Float")
+end)

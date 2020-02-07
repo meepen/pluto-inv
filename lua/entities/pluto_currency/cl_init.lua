@@ -15,6 +15,11 @@ function ENT:GetImage()
 end
 
 function ENT:DrawTranslucent()
+	local throughwalls = LocalPlayer():GetCurrencyTime() > CurTime() and LocalPlayer():GetCurrencyDistance() > self:GetPos():Distance(LocalPlayer():GetPos())
+	if (throughwalls) then
+		cam.IgnoreZ(true)
+	end
+	
 	render.SetMaterial(self:GetImage())
 	local pos = self:GetPos()
 	local size = self.Size * 0.75
@@ -25,4 +30,19 @@ function ENT:DrawTranslucent()
 	pos = pos + vector_up * (math.sin(timing * math.pi) + 1) / 2 * self.Size * 0.25
 
 	render.DrawSprite(pos, size, size, color_white)
+
+	if (throughwalls) then
+		cam.IgnoreZ(false)
+	end
+end
+
+function ENT:Think()
+	local dist = math.min(16000, LocalPlayer():GetCurrencyDistance())
+	local was = self.ThroughWalls
+	self.ThroughWalls = LocalPlayer():GetCurrencyTime() > CurTime() and dist > self:GetPos():Distance(LocalPlayer():GetPos())
+	if (self.ThroughWalls) then
+		self:SetRenderBounds(Vector(1, 1, 1), Vector(1, 1, 1), Vector(dist, dist, dist))
+	elseif (was) then
+		self:SetRenderBounds(Vector(1, 1, 1), Vector(1, 1, 1), Vector(1, 1, 1))
+	end
 end

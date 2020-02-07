@@ -22,6 +22,7 @@ for _, modname in pairs {
 	"dropletted",
 	"fire",
 	"firerate",
+	"greed",
 	"handed",
 	"hearted",
 	"limp",
@@ -166,7 +167,7 @@ end
 
 function pluto.mods.generateaffixes(wpn, affixcount, prefixmax, suffixmax, guaranteed, tagbiases, rolltier, roll)
 	local allowed = {
-		prefix = prefixmax or 3,
+		prefix = prefixmax or math.max(affixcount - 3, 3),
 		suffix = suffixmax or 3
 	}
 
