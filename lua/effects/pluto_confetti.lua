@@ -13,6 +13,7 @@ end
 function EFFECT:Init(data)
     local pos = data:GetStart()
     local dir = data:GetOrigin() - pos
+    local start_size = data:GetScale()
     dir:Normalize()
     local emitter = ParticleEmitter(pos, false)
     if not IsValid(emitter) then return end
@@ -27,7 +28,7 @@ function EFFECT:Init(data)
             particle:SetDieTime(4)
             particle:SetStartAlpha(255)
             particle:SetEndAlpha(50)
-            particle:SetStartSize(2)
+            particle:SetStartSize(start_size)
             particle:SetEndSize(0)
             particle:SetCollide(false)
             particle:SetRoll(math.Rand(0, 360))

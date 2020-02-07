@@ -71,6 +71,7 @@ function SWEP:DoFireBullets()
 	data:SetOrigin(data:GetStart() + owner:GetAimVector())
 	data:SetMagnitude(5)
 	data:SetRadius(75)
+	data:SetScale(2)
 	util.Effect("pluto_confetti", data)
 end
 

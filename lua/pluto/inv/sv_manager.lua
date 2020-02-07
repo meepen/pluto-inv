@@ -391,6 +391,10 @@ function pluto.inv.readitemdelete(ply)
 end
 
 local function allowed(types, wpn)
+	if (wpn and wpn.Locked) then
+		return false
+	end
+
 	local type = wpn and wpn.Type or "None"
 	if (isstring(types)) then
 		return types == type
@@ -419,10 +423,6 @@ function pluto.inv.readcurrencyuse(ply)
 		if (not wpn or wpn.Owner ~= ply:SteamID64()) then
 			return
 		end
-	end
-
-	if (wpn.Locked) then
-		return
 	end
 
 	if (not pluto.inv.currencies[ply] or pluto.inv.currencies[ply][currency] < 1) then

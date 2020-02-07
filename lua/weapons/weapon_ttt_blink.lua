@@ -207,6 +207,7 @@ function SWEP:Move(ply, mv)
 		self:SetBlinking(false)
 		self:SetToPos(none)
 		self:PreventFallDamage(self:GetOwner())
+		self:GetOwner():SetMoveType(MOVETYPE_WALK)
 	else
 		local ang = (topos - now)
 		ang:Normalize()
