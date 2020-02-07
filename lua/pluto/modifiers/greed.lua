@@ -17,7 +17,7 @@ function MOD:FormatModifier(index, roll)
 end
 
 -- 39.37 units = 1 meter
-MOD.Description = "After a rightful kill, will highlight currencies within %s meters for %s seconds"
+MOD.Description = "[Limited] After a rightful kill, will show currencies within %s meters for %s seconds"
 
 MOD.Tiers = {
 	{ 10, 20, 5, 10 },
