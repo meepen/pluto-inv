@@ -65,7 +65,7 @@ function pluto.statuses.bleed(ply, damage)
 		flame:Spawn()
 	end
 
-	damage.Left = math.ceil(damage.Damage / 2)
+	damage.Left = damage.Damage
 	damage.Damage = 2
 
 	table.insert(flame.Damages, damage)
