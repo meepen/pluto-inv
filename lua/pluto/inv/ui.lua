@@ -203,7 +203,7 @@ end
 
 DEFINE_BASECLASS "ttt_curved_panel"
 
-function PANEL:Paint(w, h)
+function PANEL:FullPaint(w, h)
 	if (self.norender or pluto.ui.ghost == self:GetParent() and not pluto.ui.ghost.paintover) then
 		return
 	end
@@ -304,8 +304,12 @@ function PANEL:Paint(w, h)
 		render.SetColorModulation(r, g, b)
 		render.SetBlend(1)
 	render.SetStencilEnable(false)
+end
 
-	if (self.Item.Locked) then
+function PANEL:Paint(w, h)
+	self:FullPaint(w, h)
+
+	if (self.Item and self.Item.Locked) then
 		surface.SetDrawColor(color_white)
 		surface.SetMaterial(lock)
 		surface.DrawTexturedRect(w - 15, 5, 10, 10)
