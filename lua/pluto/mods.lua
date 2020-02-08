@@ -31,6 +31,7 @@ for _, modname in pairs {
 	"min_range",
 	"poison",
 	"postheal",
+	"protec",
 	"recoil",
 	"reload",
 	"recycle",
