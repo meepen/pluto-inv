@@ -20,9 +20,9 @@ end
 MOD.Description = "[Limited] After a rightful kill, will show currencies within %s meters for %s seconds"
 
 MOD.Tiers = {
-	{ 10, 20, 5, 10 },
-	{ 5, 10, 5, 10 },
-	{ 2, 5, 5, 10 },
+	{ 40, 50, 5, 10 },
+	{ 20, 30, 3, 8 },
+	{ 10, 20, 1, 5 },
 }
 
 function MOD:OnKill(wep, rolls, atk, vic)
