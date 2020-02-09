@@ -309,7 +309,7 @@ end
 function PANEL:Paint(w, h)
 	self:FullPaint(w, h)
 
-	if (self.Item and self.Item.Locked) then
+	if (self.Item and self.Item.Locked and (pluto.ui.ghost == self:GetParent() and pluto.ui.ghost.paintover or pluto.ui.ghost ~= self:GetParent())) then
 		surface.SetDrawColor(color_white)
 		surface.SetMaterial(lock)
 		surface.DrawTexturedRect(w - 15, 5, 10, 10)
