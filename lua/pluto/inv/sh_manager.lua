@@ -210,7 +210,7 @@ function ITEM:GetDefaultName()
 		end
 		return tier .. " " .. (w and w.PrintName or "N/A")
 	elseif (self.Type == "Model") then
-		return self.Name
+		return self.Model.Name .. " Model"
 	end
 
 	return "Unknown type: " .. self.Type
@@ -223,7 +223,7 @@ function ITEM:GetRawName()
 		local w = weapons.GetStored(self.ClassName)
 		return w and w.PrintName or "N/A"
 	elseif (self.Type == "Model") then
-		return self.Name
+		return self.Model.Name .. " Model"
 	end
 
 	return "Unknown type: " .. self.Type
