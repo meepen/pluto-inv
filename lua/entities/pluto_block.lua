@@ -12,28 +12,58 @@ end
 
 function ENT:Initialize()
     self:AddEFlags(EFL_FORCE_CHECK_TRANSMIT)
-	self:SetMoveType(MOVETYPE_NONE)
 	self:SetCollisionBounds(self:GetMins(), self:GetMaxs())
-	self:SetCustomCollisionCheck(true)
-	self:PhysicsInitBox(self:GetMins(), self:GetMaxs())
 
-    local physobj = self:GetPhysicsObject()
-    if (IsValid(physobj)) then
-		physobj:EnableMotion(false)
+    if (SERVER) then
+        self:PhysicsInitBox(self:GetMins(), self:GetMaxs())
+        self:SetSolid(SOLID_VPHYSICS)
+        self:PhysWake()
+	else
+        self:SetRenderBounds(self:GetMins(), self:GetMaxs())
+    end
+
+	self:CollisionRulesChanged()
+
+    self:EnableCustomCollisions(true)
+	self:DrawShadow(false)
+
+	local p = self:GetPhysicsObject()
+	if (IsValid(p)) then
+		p:EnableMotion(false)
 	end
 
-	hook.Add("ShouldCollide", self, self.ShouldCollide)
-	self:CollisionRulesChanged()
+	self.Collide = CreatePhysCollideBox(self:GetMins(), self:GetMaxs())
 end
 
-function ENT:ShouldCollide(e1, e2)
-	if (e1 == self or e2 == self) then
-		return true
+function ENT:TestCollision(spos, delta, isbox, extents, mask)
+	if (not IsValid(self.Collide)) then
+		return
+	end
+
+    local max = extents
+    local min = -extents
+    max.z = max.z - min.z
+	min.z = 0
+
+	local hit, norm, frac = self.Collide:TraceBox(vector_origin, angle_zero, spos, spos + delta, min, max)
+
+	if (hit) then
+		return {
+			HitPos = hit,
+			Normal = norm,
+			Fraction = frac
+		}
 	end
 end
 
 function ENT:UpdateTransmitState()
 	return TRANSMIT_ALWAYS
+end
+
+function ENT:Draw()
+	if (GetConVar "developer":GetInt() > 0) then
+		render.DrawWireframeBox(vector_origin, self:GetAngles(), self:GetMins(), self:GetMaxs(), Color(255, 0, 0), true)
+	end
 end
 
 hook.Add("TTTAddPermanentEntities", "pluto_block", function(list)

@@ -89,10 +89,13 @@ function SWEP:Trace()
 	local first = {
 		start = own:GetShootPos(),
 		endpos = own:GetShootPos() + own:GetAimVector() * self.Distance,
+		mins = Vector(-1, -1, -1),
+		maxs = Vector(1, 1, 1),
 		filter = own,
 		mask = MASK_PLAYERSOLID,
+		collisiongroup = own:GetCollisionGroup()
 	}
-	local tr = util.TraceLine(first)
+	local tr = util.TraceHull(first)
 
 	local test = {
 		mins = own:OBBMins(),

@@ -73,6 +73,8 @@ for map, wsid in pairs(map_lookup) do
 end
 
 
+local max_range = 12800
+
 local changes = {
 	ttt_innocentmotel_v1 = {
 		Remove = {
@@ -83,14 +85,56 @@ local changes = {
 		}
 	},
 	ttt_atlantis = {
-		Block = {
-			{
-				Mins = Vector(558.402344, 2395.761475, -63.968750),
-				Maxs = Vector(16.495560, 2371.931885, 124.112534),
+		Entities = {
+			pluto_block = {
+				{
+					Mins = Vector(558.402344, 2395.761475, -127.968750),
+					Maxs = Vector(16.495560, 2320.931885, 124.112534),
+				},
+				{
+					Mins = Vector(1789.020630, 1531.800293, -15.968746),
+					Maxs = Vector(1605.661987, 1422.622803, 223.968750),
+				},
+
+				-- skybox
+				{
+					Mins = Vector(-max_range, -max_range, 165),
+					Maxs = Vector(max_range, max_range, 1000),
+				},
 			},
-			{
-				Mins = Vector(1789.020630, 1531.800293, -15.968746),
-				Maxs = Vector(1605.661987, 1422.622803, 223.968750),
+		},
+	},
+	ttt_christmastown = {
+		Entities = {
+			pluto_block = {
+				{
+					Mins = Vector(-max_range, -max_range, 270),
+					Maxs = Vector(max_range, max_range, 1000),
+				},
+				{
+					Mins = Vector(-1495.567505, -1424.272339, -125.968750),
+					Maxs = Vector(-1430.498779, -1354.031250, -0.635281)
+				},
+			},
+		},
+	},
+	ttt_casino_b2 = {
+		Entities = {
+			pluto_block = {
+				{
+					Mins = Vector(-max_range, -max_range, 0),
+					Maxs = Vector(max_range, max_range, 1000),
+				},
+			},
+		},
+	},
+	ttt_mw2_highrise = {
+		Entities = {
+			pluto_kill = {
+				{
+					Mins = Vector(-max_range, -max_range, -810),
+					Maxs = Vector(max_range, max_range, -1010),
+				}
 			}
 		}
 	}
@@ -113,15 +157,17 @@ hook.Add("InitPostEntity", "pluto_maps", function()
 		end
 	end
 
-	if (dat.Block) then
-		for _, data in pairs(dat.Block) do
-			local e = ents.Create "pluto_block"
-			local mn, mx = data.Mins, data.Maxs
-			local real_mins = Vector(math.min(mn.x, mx.x), math.min(mn.y, mx.y), math.min(mn.z, mx.z))
-			local real_maxs = Vector(math.max(mn.x, mx.x), math.max(mn.y, mx.y), math.max(mn.z, mx.z))
-			e:SetMins(real_mins)
-			e:SetMaxs(real_maxs)
-			e:Spawn()
+	if (dat.Entities) then
+		for enttype, datas in pairs(dat.Entities) do
+			for _, data in pairs(datas) do
+				local e = ents.Create(enttype)
+				local mn, mx = data.Mins, data.Maxs
+				local real_mins = Vector(math.min(mn.x, mx.x), math.min(mn.y, mx.y), math.min(mn.z, mx.z))
+				local real_maxs = Vector(math.max(mn.x, mx.x), math.max(mn.y, mx.y), math.max(mn.z, mx.z))
+				e:SetMins(real_mins)
+				e:SetMaxs(real_maxs)
+				e:Spawn()
+			end
 		end
 	end
 end)
