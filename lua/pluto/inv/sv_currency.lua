@@ -7,12 +7,12 @@ local function UpdateAndDecrement(ply, item, currency)
 		if (not IsValid(ply)) then
 			return
 		end
-
-		pluto.inv.message(ply)
-			:write("item", item)
-			:send()
-
 	end, true)
+
+	pluto.inv.message(ply)
+		:write("item", item)
+		:send()
+
 	trans:addQuery(pluto.inv.addcurrency(ply, currency, -1, function() end, true))
 	trans:start()
 end
@@ -328,7 +328,13 @@ for name, values in pairs {
 					:write("crate_id", id)
 					:send()
 			elseif (type == "Weapon") then -- unique
-				local id = pluto.inv.generatebufferweapon(ply, "unique", gotten).BufferID
+				local wpn = pluto.inv.generatebufferweapon(ply, "unique", gotten)
+				local id = wpn.BufferID
+
+				discord.Message():AddEmbed(
+					wpn:GetDiscordEmbed()
+						:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
+				):Send "drops"
 
 				pluto.inv.message(ply)
 					:write("crate_id", id)
@@ -512,7 +518,7 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 			continue
 		end
 
-		local points = (pluto.currency.tospawn[item.Player] or 1) * tospawn_amt:GetFloat() * math.min(3, pluto.currency.navs.total / 70000)
+		local points = (pluto.currency.tospawn[item.Player] or 1) * tospawn_amt:GetFloat() * math.min(2, pluto.currency.navs.total / 70000 * 1.3)
 
 		for i = 1, points do
 			local e = pluto.currency.spawnfor(item.Player)

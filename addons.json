@@ -1221,7 +1221,8 @@
 		"materials/pluto/currencies/crate0.png",
 		"materials/pluto/currencies/crate1.png",
 		"materials/pluto/shard128.png", 
-		"materials/pluto/shard128outline.png"
+		"materials/pluto/shard128outline.png",
+		"materials/pluto/roles/jester.png"
 	],
 	"cayde6": [
 		"materials/models/devarture/destiny_dir/destiny_2/factions/vanguard/characters/cayde_6/aceofspades/aceofspades_diff.vtf",
@@ -1969,5 +1970,15 @@
 		"sound/weapons/cog-lancer/cogriflefire-2.ogg",
 		"sound/weapons/cog-lancer/cogriflefire-3.ogg",
 		"sound/weapons/cog-lancer/hand.ogg"
+	],
+	"confetti": [
+		"sound/weapons/confetti/noise4-01.ogg",
+		"sound/weapons/confetti/noise4-02.ogg",
+		"sound/weapons/confetti/noise4-03.ogg",
+		"sound/weapons/confetti/noise4-04.ogg",
+		"sound/weapons/confetti/noise4-05.ogg",
+		"sound/weapons/confetti/noise4-06.ogg",
+		"sound/weapons/confetti/noise4-07.ogg",
+		"materials/vgui/entities/confetti.png"
 	]
 }

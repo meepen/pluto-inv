@@ -23,8 +23,9 @@ function ENT:Touch(e)
 				return
 			end
 
-			e:ChatPrint("You received a " .. cur.Name)
 		end)
+		e:ChatPrint(cur.Color, "+ ", white_text, "You received a ", cur.Color, cur.Name)
+
 		self.Got = true
 		self:Remove()
 	end
@@ -52,6 +53,15 @@ function ENT:SetCurrency(currency)
 
 	self:SetIcon(currency.Icon)
 end
+
+function pluto.statuses.greed(ply, dist, time)
+	ply:SetCurrencyTime(time + CurTime())
+	ply:SetCurrencyDistance(dist)
+end
+
+hook.Add("PlayerSpawn", "pluto_currency", function(p)
+	p:SetCurrencyTime(-math.huge)
+end)
 
 hook.Add("TTTAddPermanentEntities", "pluto_currency", function(list)
 	table.insert(list, "pluto_currency")

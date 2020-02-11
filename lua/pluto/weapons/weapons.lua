@@ -132,7 +132,7 @@ function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll, affixm
 		ClassName = wep.ClassName,
 		Tier = tier,
 		Type = "Weapon",
-		Mods = pluto.mods.generateaffixes(
+		Mods = tier.affixes < 1 and {} or pluto.mods.generateaffixes(
 			wep,
 			math.random(1, affixmax or tier.affixes or 0),
 			nil,
@@ -214,7 +214,7 @@ function pluto.weapons.save(item, owner, cb, nostart, statementsonly)
 	tab.Items[item.TabIndex] = tmp
 
 	local inserts = {
-		{ "REPLACE INTO pluto_items (tier, class, tab_id, tab_idx, nick, special_name) VALUES(?, ?, ?, ?, ?, ?)", {type(item.Tier) == "string" and item.Tier or item.Tier and item.Tier.InternalName or "", item.ClassName, item.TabID, item.TabIndex, item.Nickname, item.SpecialName}, function(err, q)
+		{ "REPLACE INTO pluto_items (tier, class, tab_id, tab_idx, nick, special_name, original_owner) VALUES(?, ?, ?, ?, ?, ?, ?)", {type(item.Tier) == "string" and item.Tier or item.Tier and item.Tier.InternalName or "", item.ClassName, item.TabID, item.TabIndex, item.Nickname, item.SpecialName, item.Owner}, function(err, q)
 			local insert = q:lastInsert()
 
 			item.RowID = insert

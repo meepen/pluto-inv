@@ -18,6 +18,7 @@ local count = 6
 
 local PANEL = {}
 
+local lock = Material "icon16/lock.png"
 local colour = Material "models/debug/debugwhite"
 DEFINE_BASECLASS "DImage"
 
@@ -147,6 +148,8 @@ function PANEL:SetItem(item)
 		self.Model:Remove()
 	end
 
+	self.RealImage = nil
+
 	if (not item) then
 		self.MaterialColor = nil
 		self.Type = nil
@@ -160,8 +163,6 @@ function PANEL:SetItem(item)
 	self:SetColor(maincol)
 
 	self.MaterialColor = matcol:ToVector()
-
-	self.RealImage = nil
 
 	if (self.Type == "Weapon") then
 		self:SetWeapon(item)
@@ -181,8 +182,14 @@ function PANEL:SetWeapon(item)
 		return
 	end
 
-	self.Model = ClientsideModel(w.WorldModel, RENDERGROUP_OTHER)
-	self.Model:SetNoDraw(true)
+	if (w.PlutoIcon) then
+		self.RealImage = Material(w.PlutoIcon)
+		self.RealColor = color_white
+	else
+		self.Model = ClientsideModel(w.WorldModel, RENDERGROUP_OTHER)
+		self.Model:SetNoDraw(true)
+	end
+
 	self.Class = w.ClassName
 end
 
@@ -196,19 +203,23 @@ end
 
 DEFINE_BASECLASS "ttt_curved_panel"
 
-function PANEL:Paint(w, h)
+function PANEL:FullPaint(w, h)
 	if (self.norender or pluto.ui.ghost == self:GetParent() and not pluto.ui.ghost.paintover) then
 		return
 	end
 
 	if (self.RealImage) then
 		self.RealImage:SetVector("$color", self.RealColor:ToVector())
-		self.RealImageAdd:SetVector("$color", self.AddColor:ToVector())
+		if (self.RealImageAdd) then
+			self.RealImageAdd:SetVector("$color", self.AddColor:ToVector())
+		end
 		surface.SetDrawColor(255, 255, 255, 255)
 		surface.SetMaterial(self.RealImage)
 		surface.DrawTexturedRect(0, 0, w, h)
-		surface.SetMaterial(self.RealImageAdd)
-		surface.DrawTexturedRect(0, 0, w, h)
+		if (self.RealImageAdd) then
+			surface.SetMaterial(self.RealImageAdd)
+			surface.DrawTexturedRect(0, 0, w, h)
+		end
 		return
 	end
 
@@ -293,6 +304,16 @@ function PANEL:Paint(w, h)
 		render.SetColorModulation(r, g, b)
 		render.SetBlend(1)
 	render.SetStencilEnable(false)
+end
+
+function PANEL:Paint(w, h)
+	self:FullPaint(w, h)
+
+	if (self.Item and self.Item.Locked and (pluto.ui.ghost == self:GetParent() and pluto.ui.ghost.paintover or pluto.ui.ghost ~= self:GetParent())) then
+		surface.SetDrawColor(color_white)
+		surface.SetMaterial(lock)
+		surface.DrawTexturedRect(w - 15, 5, 10, 10)
+	end
 end
 
 function PANEL:SetDefault(class)
@@ -465,69 +486,95 @@ function PANEL:OnMousePressed(code)
 			end
 
 			rightclick_menu:AddOption("Upload item stats", function()
+				local StatsRT = GetRenderTarget("ItemStatsRT" .. ScrW() .. "_" ..  ScrH(), ScrW(), ScrH())
 				OVERRIDE_DETAILED = true
 				local show = pluto.ui.showcase(self.Item)
+				pluto.ui.showcasepnl = nil
+				show:SetPaintedManually(true)
 				local item_name = self.Item:GetPrintName()
-				hook.Add("PostRender", "Upload", function()
-					hook.Remove("PostRender", "Upload")
-					OVERRIDE_DETAILED = false
-					local data = render.Capture {
-						format = "png",
-						quality = 100,
-						h = show:GetTall(),
-						w = show:GetWide(),
-						x = 0,
-						y = 0,
-						alpha = false,
-					}
-					show:Remove()
-					HTTP {
-						url = "https://api.imgur.com/3/album",
-						method = "post",
-						headers = {
-							Authorization = "Client-ID 3693fd6ea039830",
-						},
-						success = function(_, c, _, _)
-							local album = util.JSONToTable(c)
-							if (not album.success) then
-								Derma_Message("Your upload was not successful! Please try again.", "Upload failed", ":(")
-								return
-							end
+				timer.Simple(0, function()
+					hook.Add("PostRender", "Upload", function()
+						hook.Remove("PostRender", "Upload")
+						OVERRIDE_DETAILED = false
+						cam.Start2D()
+						render.PushRenderTarget(StatsRT)
+						if (not pcall(show.PaintManual, show)) then
+							Derma_Message("Encountered an error while generating the image! Please try again.", "Upload failed", "Thanks")
 
-							HTTP {
-								url = "https://api.imgur.com/3/image",
-								method = "post",
-								headers = {
-									Authorization = "Client-ID 3693fd6ea039830"
-								},
-								success = function(_, b, _, _)
-									b = util.JSONToTable(b)
-									if (b.success) then
-										Derma_Message("Your picture of your stats has been uploaded and copied to your clipboard!\nYou can now simply paste it anywhere, like our Discord! discord.gg/pluto", "Upload success", "Thanks!")
-										SetClipboardText("https://imgur.com/a/" .. album.data.id)
-									else
-										Derma_Message("Your upload was not successful! Please try again.", "Upload failed", "Thanks")
-									end
-								end,
-								failed = function(a) 
-									Derma_Message("Imgur appears to be having some issues, please wait and try again!", "Upload failed", "Ok")
-								end,
-								parameters = {
-									image = util.Base64Encode(data),
-									album = album.data.deletehash
-								},
-							}
-						end,
-						failed = function(a)
-							Derma_Message("Your upload was not successful! Please try again.", "Upload failed", "Ok")
-						end,
-						parameters = {
-							title = string.format("%s's %s", LocalPlayer():Nick(), item_name),
-							description = string.format("Taken by %s https://steamcommunity.com/profiles/%s\nDiscord: https://discord.gg/pluto\nWebsite: https://pluto.gg", LocalPlayer():Nick(), LocalPlayer():SteamID64()), 
-						},
-					}
+							render.Clear(0, 0, 0, 0)
+							render.PopRenderTarget(StatsRT)
+							cam.End2D()
+							show:Remove()
+						return end
+						local data = render.Capture {
+							format = "png",
+							quality = 100,
+							h = show:GetTall(),
+							w = show:GetWide(),
+							x = 0,
+							y = 0,
+							alpha = false,
+						}
+						render.Clear(0, 0, 0, 0)
+						render.PopRenderTarget(StatsRT)
+						cam.End2D()
+						show:Remove()
+						HTTP {
+							url = "https://api.imgur.com/3/album",
+							method = "post",
+							headers = {
+								Authorization = "Client-ID 3693fd6ea039830",
+							},
+							success = function(_, c, _, _)
+								local album = util.JSONToTable(c)
+								if (not album.success) then
+									Derma_Message("Your upload was not successful! Please try again.", "Upload failed", ":(")
+									return
+								end
+
+								HTTP {
+									url = "https://api.imgur.com/3/image",
+									method = "post",
+									headers = {
+										Authorization = "Client-ID 3693fd6ea039830"
+									},
+									success = function(_, b, _, _)
+										b = util.JSONToTable(b)
+										if (b.success) then
+											Derma_Message("Your picture of your stats has been uploaded and copied to your clipboard!\nYou can now simply paste it anywhere, like our Discord! discord.gg/pluto", "Upload success", "Thanks!")
+											SetClipboardText("https://imgur.com/a/" .. album.data.id)
+										else
+											Derma_Message("Your upload was not successful! Please try again.", "Upload failed", "Thanks")
+										end
+									end,
+									failed = function(a) 
+										Derma_Message("Imgur appears to be having some issues, please wait and try again!", "Upload failed", "Ok")
+									end,
+									parameters = {
+										image = util.Base64Encode(data),
+										album = album.data.deletehash
+									},
+								}
+							end,
+							failed = function(a)
+								Derma_Message("Your upload was not successful! Please try again.", "Upload failed", "Ok")
+							end,
+							parameters = {
+								title = string.format("%s's %s", LocalPlayer():Nick(), item_name),
+								description = string.format("Taken by %s https://steamcommunity.com/profiles/%s\nDiscord: https://discord.gg/pluto\nWebsite: https://pluto.gg", LocalPlayer():Nick(), LocalPlayer():SteamID64()), 
+							},
+						}
+					end)
 				end)
 			end):SetIcon("icon16/camera.png")
+
+			if (self.Item.Type == "Weapon") then
+				rightclick_menu:AddOption("Toggle locked", function()
+					pluto.inv.message()
+					:write("itemlock", self.Item.ID)
+					:send()
+				end):SetIcon("icon16/lock.png")
+			end
 
 			rightclick_menu:Open()
 			rightclick_menu:SetPos(input.GetCursorPos())--s
@@ -813,6 +860,7 @@ function PANEL:Init()
 	self.Items[1]:SetDefault "weapon_ttt_m4a1"
 	self.Items[2]:SetDefault "weapon_ttt_pistol"
 	self.Items[3]:SetDefault "model_default"
+	self.Items[6]:SetDefault "weapon_ttt_unarmed"
 
 	self.Items[1].OnSetItem = function(s, i)
 		self.PlayerModel:SetPlutoWeapon(i)
@@ -1364,6 +1412,13 @@ DEFINE_BASECLASS "DImage"
 
 function PANEL:OnMousePressed(mouse)
 	if (IsValid(pluto.ui.ghost)) then
+		if (pluto.ui.ghost.Item and pluto.ui.ghost.Item.Locked) then
+			local p = vgui.Create "pluto_falling_text"
+			p:SetText "That item is locked!"
+			p:SetPos(gui.MousePos())
+			return
+		end
+
 		-- assume is inventory item
 		self.Deleting = {
 			TabID = pluto.ui.ghost.TabID,

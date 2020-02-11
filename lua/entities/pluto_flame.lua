@@ -64,7 +64,7 @@ function ENT:DoDamage(damages)
 		start = p:GetPos(),
 		endpos = p:GetPos() + vector_up * 20000,
 		filter = function() return false end,
-	}.MatType == MAT_DEFAULT and 2 or 1
+	}.MatType == MAT_DEFAULT and 2.5 or 1
 
 	local dmg = DamageInfo()
 	dmg:SetDamage(damages.Damage * outside)
@@ -96,7 +96,7 @@ function pluto.statuses.fire(ply, damage)
 		flame:Spawn()
 	end
 
-	damage.Damage = math.ceil(damage.Damage / 4)
+	damage.Damage = damage.Damage / 4
 	damage.Left = 4
 
 	table.insert(flame.Damages, damage)

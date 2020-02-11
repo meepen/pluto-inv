@@ -63,6 +63,8 @@ function pluto.inv.writeitem(ply, item)
 		net.WriteBool(true)
 
 		pluto.inv.writebaseitem(ply, item)
+
+		net.WriteBool(item.Locked or false)
 	else
 		net.WriteBool(false)
 	end
@@ -112,11 +114,12 @@ function pluto.inv.writefullupdate(ply)
 	for currency in pairs(pluto.inv.currencies[ply]) do
 		pluto.inv.writecurrencyupdate(ply, currency)
 	end
-	
+
 	local buffer = pluto.inv.getbufferitems(ply)
 
 	net.WriteUInt(#buffer, 8)
-	for _, item in ipairs(buffer) do
+	for i = #buffer, 1, -1 do
+		local item = buffer[i]
 		pluto.inv.writebufferitem(ply, item)
 	end
 	
@@ -376,7 +379,7 @@ function pluto.inv.readitemdelete(ply)
 	pluto.inv.deleteitem(ply, itemid, function(succ)
 		if (succ) then
 			if (IsValid(ply)) then
-				if (i.Type == "Weapon" and i.Tier.InternalName ~= "crafted" and math.random() < 2 / 3) then
+				if (i.Type == "Weapon" and i.Tier.InternalName ~= "crafted" and math.random() < 1 / 2) then
 					pluto.inv.generatebuffershard(ply, i.Tier.InternalName)
 				end
 			end
@@ -388,6 +391,10 @@ function pluto.inv.readitemdelete(ply)
 end
 
 local function allowed(types, wpn)
+	if (wpn and wpn.Locked) then
+		return false
+	end
+
 	local type = wpn and wpn.Type or "None"
 	if (isstring(types)) then
 		return types == type
@@ -424,20 +431,11 @@ function pluto.inv.readcurrencyuse(ply)
 
 	local cur = pluto.currency.byname[currency]
 
-	if (not allowed(cur.Types, wpn)) then
+	if (not allowed(cur.Types, wpn) or wpn and wpn:ShouldPreventChange()) then
 		return
 	end
 
-	if (wpn and wpn.Mods) then
-		for _, mods in pairs(wpn.Mods) do
-			for _, mod in pairs(mods) do
-				local m = pluto.mods.byname[mod.Mod]
-				if (m and m.PreventChange == true) then
-					return
-				end
-			end
-		end
-	end
+	print "hi"
 
 	cur.Use(ply, wpn)
 end
@@ -518,6 +516,37 @@ end
 function pluto.inv.writeexpupdate(cl, item)
 	net.WriteUInt(item.RowID, 32)
 	net.WriteUInt(item.Experience, 32)
+end
+
+function pluto.inv.writeitemlock(ply, itemid, locked)
+	net.WriteUInt(itemid, 32)
+	net.WriteBool(locked)
+end
+
+function pluto.inv.readitemlock(ply)
+	local itemid = net.ReadUInt(32)
+
+	local wpn = pluto.inv.items[itemid]
+
+	if (not wpn) then
+		pluto.inv.sendfullupdate(ply)
+		return
+	end
+
+	wpn.Locked = not wpn.Locked
+
+	pluto.inv.lockitem(ply, itemid, wpn.Locked, function(succ)
+		if (IsValid(ply)) then
+			if (succ) then
+				pluto.inv.message(ply)
+					:write("itemlock", itemid, wpn.Locked)
+					:send()
+				return
+			end
+
+			pluto.inv.sendfullupdate(ply)
+		end
+	end)
 end
 
 hook.Add("PlayerAuthed", "pluto_init_inventory", pluto.inv.sendfullupdate)

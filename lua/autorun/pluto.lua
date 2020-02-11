@@ -15,6 +15,7 @@ pluto.files.load {
 		"cl/workshop.lua",
 		"tools/cl_tools.lua",
 		"craft/cl.lua",
+		"nitro/cl_nitro.lua",
 	},
 	Shared = {
 		"co_net.lua",
@@ -24,7 +25,7 @@ pluto.files.load {
 		"inv/sh_tabs.lua",
 		"inv/sh_currency.lua",
 
-		"roles/regenerative/sh_regenerative.lua",
+		"roles/ttc.lua",
 	},
 	Server = {
 		"sv.lua",

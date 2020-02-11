@@ -190,7 +190,7 @@ end
 function pluto.inv.retrieveitems(steamid, cb)
 	steamid = pluto.db.steamid64(steamid)
 
-	pluto.db.query("SELECT pluto_items.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2 FROM pluto_items LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = pluto_items.idx JOIN pluto_tabs ON pluto_tabs.idx = pluto_items.tab_id WHERE owner = ?", {steamid}, function(err, q)
+	pluto.db.query("SELECT pluto_items.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked FROM pluto_items LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = pluto_items.idx JOIN pluto_tabs ON pluto_tabs.idx = pluto_items.tab_id WHERE owner = ?", {steamid}, function(err, q)
 		if (err) then
 			pwarnf("sql error: %s\n%s", err, debug.traceback())
 			return
@@ -211,6 +211,7 @@ function pluto.inv.retrieveitems(steamid, cb)
 				SpecialName = item.special_name,
 				Experience = item.exp,
 				Nickname = item.nick,
+				Locked = tobool(item.locked),
 			}, pluto.inv.item_mt)
 
 			it.Type = pluto.inv.itemtype(it)
@@ -288,7 +289,7 @@ function pluto.inv.deleteitem(steamid, itemid, cb, nostart)
 		i.RowID = nil
 	end
 
-	return pluto.db.query("delete pluto_items from pluto_items inner join pluto_tabs on pluto_tabs.idx = pluto_items.tab_id where pluto_items.idx = ? and pluto_tabs.owner = ?", {itemid, steamid}, function(err, q)
+	return pluto.db.query("delete pluto_items from pluto_items inner join pluto_tabs on pluto_tabs.idx = pluto_items.tab_id where pluto_items.idx = ? and pluto_tabs.owner = ? and locked = false", {itemid, steamid}, function(err, q)
 		if (err) then
 			if (IsValid(cl)) then
 				pluto.inv.sendfullupdate(cl)
@@ -381,4 +382,32 @@ function pluto.inv.getbufferitem(id)
 	end
 
 	return wpn
+end
+
+function pluto.inv.lockitem(steamid, itemid, locked, cb, nostart)
+	steamid = pluto.db.steamid64(steamid)
+
+	print(locked)
+
+	return pluto.db.query("UPDATE pluto_items SET locked = ? WHERE idx = ? and locked = ?", {locked, itemid, not locked}, function(err, q)
+		if (err) then
+			if (IsValid(cl)) then
+				pluto.inv.sendfullupdate(cl)
+			end
+			return cb(false)
+		end
+
+		if (q:affectedRows() ~= 1) then
+			if (IsValid(cl)) then
+				pluto.inv.sendfullupdate(cl)
+			end
+
+			pwarnf("Affected rows: %i", q:affectedRows())
+			return cb(false)
+		end
+
+		pluto.itemids[itemid].Locked = locked
+
+		cb(true)
+	end, nil, nostart)
 end

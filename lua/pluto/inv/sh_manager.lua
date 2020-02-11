@@ -16,6 +16,7 @@ pluto.inv.messages = {
 		[11] = "likemap",
 		[12] = "requestcraftresults",
 		[13] = "craft",
+		[14] = "itemlock",
 	},
 	sv2cl = {
 		[0] = "end",
@@ -35,6 +36,8 @@ pluto.inv.messages = {
 		[14] = "mapvotes",
 		[15] = "craftresults",
 		[16] = "expupdate",
+		[17] = "itemlock",
+		[18] = "nitro",
 	}
 }
 
@@ -132,6 +135,29 @@ function ITEM:GetPrintName()
 	return self:GetDefaultName()
 end
 
+function ITEM:ShouldPreventChange()
+	if (self.Type ~= "Weapon") then
+		return true
+	end
+	
+	if (self.Tier and self.Tier.NoChange) then
+		return true
+	end
+
+	if (self and self.Mods) then
+		for _, mods in pairs(self.Mods) do
+			for _, mod in pairs(mods) do
+				local m = pluto.mods.byname[mod.Mod]
+				if (m and m.PreventChange == true) then
+					return true
+				end
+			end
+		end
+	end
+
+	return false
+end
+
 function ITEM:GetMod(name)
 	local real = pluto.mods.byname[name]
 
@@ -184,7 +210,7 @@ function ITEM:GetDefaultName()
 		end
 		return tier .. " " .. (w and w.PrintName or "N/A")
 	elseif (self.Type == "Model") then
-		return self.Name
+		return self.Model.Name .. " Model"
 	end
 
 	return "Unknown type: " .. self.Type
@@ -197,7 +223,7 @@ function ITEM:GetRawName()
 		local w = weapons.GetStored(self.ClassName)
 		return w and w.PrintName or "N/A"
 	elseif (self.Type == "Model") then
-		return self.Name
+		return self.Model.Name .. " Model"
 	end
 
 	return "Unknown type: " .. self.Type

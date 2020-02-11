@@ -1,7 +1,7 @@
 MOD.Type = "prefix"
 MOD.Name = "Capacity"
 MOD.Tags = {
-	"clip"
+	"mag"
 }
 
 function MOD:IsNegative(roll)
