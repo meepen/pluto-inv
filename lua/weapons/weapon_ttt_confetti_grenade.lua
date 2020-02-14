@@ -13,5 +13,3 @@ SWEP.ViewModelFlip = false
 SWEP.UseHands = true
 SWEP.ViewModel          = "models/weapons/cstrike/c_eq_smokegrenade.mdl"
 SWEP.WorldModel         = "models/weapons/w_eq_smokegrenade.mdl"
-
-SWEP.TTTCompat = {"weapon_ttt_smokegrenade"}
