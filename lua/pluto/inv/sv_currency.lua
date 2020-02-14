@@ -271,7 +271,7 @@ for name, values in pairs {
 		},
 	},
 	heart = {
-		Shares = 8.5,
+		Shares = 12.5,
 		Use = function(ply, item)
 			if (pluto.weapons.generatemod(item)) then
 				UpdateAndDecrement(ply, item, "heart")
