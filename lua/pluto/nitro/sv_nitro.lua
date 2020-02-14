@@ -29,6 +29,7 @@ local NitroRewards = {
 					data:SetOrigin(data:GetStart() + ang:Forward())
 					data:SetMagnitude(1)
 					data:SetRadius(50)
+					data:SetFlags(0)
 					util.Effect("pluto_confetti", data)
 				end
 		

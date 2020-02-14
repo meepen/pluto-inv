@@ -1,3 +1,8 @@
+-- HACK: effect flags here
+
+CONFETTI_GRENADE = 1
+
+
 SWEP.Base = "weapon_tttbase"
 SWEP.PrintName = "Noise Maker"
 SWEP.Slot = 5
@@ -72,6 +77,7 @@ function SWEP:DoFireBullets()
 	data:SetMagnitude(5)
 	data:SetRadius(75)
 	data:SetScale(2)
+	data:SetFlags(0)
 	util.Effect("pluto_confetti", data)
 end
 
