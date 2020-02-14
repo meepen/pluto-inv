@@ -26,6 +26,8 @@ pluto.files.load {
 		"inv/sh_currency.lua",
 
 		"roles/ttc.lua",
+
+		"math.lua",
 	},
 	Server = {
 		"sv.lua",

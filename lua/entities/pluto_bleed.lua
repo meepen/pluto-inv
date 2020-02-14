@@ -22,7 +22,7 @@ end
 function ENT:DoDamage(damages)
 	local p = self:GetParent()
 
-	local d = 2
+	local d = 1
 
 	local dmg = DamageInfo()
 
@@ -66,7 +66,7 @@ function pluto.statuses.bleed(ply, damage)
 	end
 
 	damage.Left = damage.Damage
-	damage.Damage = 2
+	damage.Damage = 1
 
 	table.insert(flame.Damages, damage)
 end
