@@ -180,6 +180,7 @@ local packs =  {
 	confetti = {
 		remote = "https://cdn.pluto.gg/confetti.gma",
 		versions = {
+			"20200215",
 			"20200128_4",
 		}
 	},

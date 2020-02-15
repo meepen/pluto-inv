@@ -15,9 +15,11 @@ function ENT:Explode()
 
 	data:SetStart(self:GetPos())
 	data:SetOrigin(data:GetStart() + vector_up)
-	data:SetMagnitude(15)
-	data:SetRadius(600)
+	data:SetMagnitude(13)
+	data:SetRadius(400)
 	data:SetScale(12)
 	data:SetFlags(CONFETTI_GRENADE)
 	util.Effect("pluto_confetti", data, true, true)
+
+	sound.Play("weapons/confetti_nade/sound.ogg", self:GetPos(), 75, 100, 1)
 end

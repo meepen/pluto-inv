@@ -28,7 +28,7 @@ function EFFECT:Init(data)
 
     local is_grenade = bit.band(flags, CONFETTI_GRENADE) == CONFETTI_GRENADE
     
-    local endPoint = Vector(pos + dir * 250)
+    local endPoint = Vector(pos + dir * (is_grenade and 100 or 250))
 
     for i = 1, data:GetMagnitude() * 100 do
         local particle = emitter:Add(sprite, pos)
@@ -42,19 +42,23 @@ function EFFECT:Init(data)
             end
             particle:SetStartAlpha(255)
             particle:SetEndAlpha(50)
-            particle:SetStartSize(start_size)
+            if (is_grenade) then
+                particle:SetStartSize(math.random() * start_size / 2 + start_size / 2)
+            else
+                particle:SetStartSize(start_size)
+            end
             particle:SetEndSize(0)
             particle:SetCollide(false)
             particle:SetRoll(math.Rand(0, 360))
             particle:SetRollDelta(rand() * 2)
             if (is_grenade) then
-                particle:SetAirResistance(200)
+                particle:SetAirResistance(50)
             else
                 particle:SetAirResistance(50)
             end
 
             if (is_grenade) then
-                particle:SetGravity(Vector(0, 0, -5))
+                particle:SetGravity(Vector(0, 0, -20))
             else
                 particle:SetGravity(Vector(0, 0, -222))
             end
@@ -62,7 +66,11 @@ function EFFECT:Init(data)
             particle:SetColor(colour.r, colour.g, colour.b)
             particle:SetLighting(false)
             particle:SetCollide(true)
-            particle:SetVelocity(endPoint + RandVector(data:GetRadius()) - pos)
+            local r = RandVector(data:GetRadius())
+            if (is_grenade) then
+                r.z = r.z * 0.25
+            end
+            particle:SetVelocity(endPoint + r - pos)
         end
     end
 
