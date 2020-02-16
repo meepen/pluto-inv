@@ -145,21 +145,23 @@ function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll, affixm
 	}, pluto.inv.item_mt)
 end
 
-function pluto.weapons.update(item, cb, nostart)
+function pluto.weapons.update(item, cb, transact)
 	assert(item.RowID, "no rowid")
 	assert(item.Owner, "no owner")
 	assert(item.TabID, "no tabid")
 	assert(item.TabIndex, "no tabindex")
 
-	local inserts = {
-		{ "UPDATE pluto_items SET tier = ?, class = ?, special_name = ?, nick = ? WHERE idx = ?", {item.Tier.InternalName, item.ClassName, item.SpecialName, item.Nickname, item.RowID} },
-		{ "UPDATE pluto_mods SET deleted = TRUE WHERE gun_index = ?", {item.RowID} },
-	}
+	if (not transact) then
+		transact = pluto.db.transact()
+	end
+
+	transact:AddQuery("UPDATE pluto_items SET tier = ?, class = ?, special_name = ?, nick = ? WHERE idx = ?", {item.Tier.InternalName, item.ClassName, item.SpecialName, item.Nickname, item.RowID})
+	transact:AddQuery("UPDATE pluto_mods SET deleted = TRUE WHERE gun_index = ?", {item.RowID})
 
 	if (item.Mods) then
 		for type, list in pairs(item.Mods) do
 			for _, mod in ipairs(list) do
-				table.insert(inserts, {
+				transact:AddQuery(
 					"INSERT INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3, deleted) VALUES (?, ?, ?, ?, ?, ?, FALSE) ON DUPLICATE KEY UPDATE deleted = FALSE, tier = VALUE(tier), roll1 = VALUE(roll1), roll2 = VALUE(roll2), roll3 = VALUE(roll3)",
 					{ item.RowID, mod.Mod, mod.Tier, mod.Roll[1], mod.Roll[2], mod.Roll[3] },
 					function(err, q)
@@ -169,14 +171,14 @@ function pluto.weapons.update(item, cb, nostart)
 							return
 						end
 					end
-				})
+				)
 			end
 		end
 	end
 
-	table.insert(inserts, { "DELETE FROM pluto_mods WHERE gun_index = ? and deleted = TRUE", {item.RowID} })
+	transact:AddQuery("DELETE FROM pluto_mods WHERE gun_index = ? and deleted = TRUE", {item.RowID})
 
-	return pluto.db.transact(inserts, function(err, t)
+	transact:AddCallback(function(err, t)
 		if (err) then
 			cb(nil)
 			return
@@ -184,10 +186,12 @@ function pluto.weapons.update(item, cb, nostart)
 
 		item.LastUpdate = (item.LastUpdate or 0) + 1
 		cb(item.RowID)
-	end, nostart)
+	end)
+
+	return transact
 end
 
-function pluto.weapons.save(item, owner, cb, nostart, statementsonly)
+function pluto.weapons.save(item, owner, cb, transact)
 	if (item.Invalid) then
 		error "invalid item"
 	end
@@ -213,31 +217,43 @@ function pluto.weapons.save(item, owner, cb, nostart, statementsonly)
 	tmp.Invalid = true
 	tab.Items[item.TabIndex] = tmp
 
-	local inserts = {
-		{ "REPLACE INTO pluto_items (tier, class, tab_id, tab_idx, nick, special_name, original_owner) VALUES(?, ?, ?, ?, ?, ?, ?)", {type(item.Tier) == "string" and item.Tier or item.Tier and item.Tier.InternalName or "", item.ClassName, item.TabID, item.TabIndex, item.Nickname, item.SpecialName, item.Owner}, function(err, q)
+	if (not transact) then
+		transact = pluto.db.transact()
+	end
+
+	transact:AddQuery("REPLACE INTO pluto_items (tier, class, tab_id, tab_idx, nick, special_name, original_owner) VALUES(?, ?, ?, ?, ?, ?, ?)", 
+		{
+			type(item.Tier) == "string" and item.Tier or item.Tier and item.Tier.InternalName or "",
+			item.ClassName,
+			item.TabID,
+			item.TabIndex,
+			item.Nickname,
+			item.SpecialName,
+			item.Owner
+		},
+		function(err, q)
 			local insert = q:lastInsert()
 
 			item.RowID = insert
-		end },
-		{ "SET @gun = LAST_INSERT_ID()" },
-	}
+		end
+	)
+	transact:AddQuery "SET @gun = LAST_INSERT_ID()"
 
 	if (item.Tier and item.Tier.InternalName == "crafted") then
-		inserts[#inserts + 1] = {
+		transact:AddQuery(
 			"INSERT INTO pluto_craft_data (gun_index, tier1, tier2, tier3) VALUES (@gun, ?, ?, ?) ON DUPLICATE KEY UPDATE tier1 = tier1",
 			{
 				item.Tier.Tiers[1],
 				item.Tier.Tiers[2],
 				item.Tier.Tiers[3],
-			},
-			function() end,
-		}
+			}
+		)
 	end
 
 	if (item.Type == "Weapon") then
 		for type, list in pairs(item.Mods) do
 			for _, mod in ipairs(list) do
-				table.insert(inserts, {
+				transact:AddQuery(
 					"INSERT INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3) VALUES (@gun, ?, ?, ?, ?, ?)",
 					{ mod.Mod, mod.Tier, mod.Roll[1], mod.Roll[2], mod.Roll[3] },
 					function(err, q)
@@ -248,17 +264,19 @@ function pluto.weapons.save(item, owner, cb, nostart, statementsonly)
 						end
 						mod.RowID = q:lastInsert()
 					end
-				})
+				)
 			end
 		end
 	end
 
-	return pluto.db.transact(inserts, function(err, t)
+	transact:AddCallback(function(err, t)
 		if (err) then
 			item.RowID = nil
 			item.Owner = nil
 			tab.Items[item.TabIndex] = old
-			cb(nil, err)
+			if (cb) then
+				cb(nil, err)
+			end
 			return
 		end
 
@@ -282,8 +300,12 @@ function pluto.weapons.save(item, owner, cb, nostart, statementsonly)
 		item.LastUpdate = (item.LastUpdate or 0) + 1
 
 		pluto.itemids[item.RowID] = item
-		cb(item.RowID)
-	end, nostart)
+		if (cb) then
+			cb(item.RowID)
+		end
+	end)
+
+	return transact
 end
 
 function pluto.weapons.generateunique(unique)
@@ -384,29 +406,6 @@ function pluto.weapons.generatemod(item, prefix_max, suffix_max, ignoretier)
 
 	return true
 end
-
-concommand.Add("pluto_cheat_weapon", function(ply, cmd, args)
-	if (not pluto.cancheat(ply)) then
-		return
-	end
-
-	if (not pluto.inv.invs[ply]) then
-		return
-	end
-
-	local i = pluto.weapons.generatetier(args[1])
-
-	i.TabID, i.TabIndex = pluto.inv.getfreespace(ply, i)
-
-	if (not i.TabID) then
-		pwarnf("no tabid")
-		return
-	end
-
-	print "saving"
-
-	pluto.weapons.save(i, ply, print)
-end)
 
 concommand.Add("pluto_cheat_currency", function(ply, cmd, args)
 	if (not pluto.cancheat(ply)) then

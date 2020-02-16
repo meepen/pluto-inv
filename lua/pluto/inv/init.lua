@@ -15,13 +15,13 @@ function PLAYER:SteamID64()
 end
 
 function pluto.inv.defaulttabs(steamid, cb)
-	pluto.inv.addtabs(steamid, {"equip", "currency", "normal"}, function(tabs)
+	pluto.inv.addtabs(steamid, {"equip", "currency", "normal", "buffer"}, function(tabs)
 		if (not tabs) then
 			return cb(false)
 		end
 
 		cb(tabs)
-	end)
+	end):Run()
 end
 
 function pluto.inv.retrievecurrency(steamid, cb)
@@ -41,12 +41,18 @@ function pluto.inv.retrievecurrency(steamid, cb)
 	end)
 end
 
-function pluto.inv.addcurrency(steamid, currency, amt, cb, nostart)
+function pluto.inv.addcurrency(steamid, currency, amt, cb, transact)
 	steamid = pluto.db.steamid64(steamid)
 
-	return pluto.db.query("INSERT INTO pluto_currency_tab (owner, currency, amount) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE amount = amount + ?", {steamid, currency, math.max(0, amt), amt}, function(err, q)
+	pluto.db.transact_or_query(transact, "INSERT INTO pluto_currency_tab (owner, currency, amount) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE amount = amount + ?", {steamid, currency, math.max(0, amt), amt}, function(err, q)
 		if (err) then
-			return cb(false)
+			if (not cb) then
+				return
+			end
+
+			cb(false)
+
+			return
 		end
 
 		local ply = player.GetBySteamID64(steamid)
@@ -57,9 +63,13 @@ function pluto.inv.addcurrency(steamid, currency, amt, cb, nostart)
 				:send()
 		end
 
-		cb(true)
-	end, nil, nostart)
+		if (cb) then
+			cb(true)
+		end
+	end)
 end
+
+local added_types = {"buffer"}
 
 function pluto.inv.retrievetabs(steamid, cb)
 	steamid = pluto.db.steamid64(steamid)
@@ -69,7 +79,14 @@ function pluto.inv.retrievetabs(steamid, cb)
 			return cb(false)
 		end
 		local tabs = {}
+	
+		local need_add = {}
+		for _, v in pairs(added_types) do
+			need_add[v] = true
+		end
+
 		for _, tab in pairs(q:getData()) do
+			need_add[tab.tab_type] = nil
 			table.insert(tabs, {
 				RowID = tab.idx,
 				Color = tab.color,
@@ -83,49 +100,70 @@ function pluto.inv.retrievetabs(steamid, cb)
 			return pluto.inv.defaulttabs(steamid, cb)
 		end
 
+		if (next(need_add, nil) ~= nil) then
+			local adding = {}
+			for type in pairs(need_add) do
+				adding[#adding + 1] = type
+			end
+
+			pluto.inv.addtabs(steamid, adding, function()
+				pluto.inv.retrievetabs(steamid, cb)
+			end):Run()
+			return
+		end
+
 		cb(tabs)
 	end)
 end
 
-function pluto.inv.addtabs(steamid, types, cb, nostart)
+function pluto.inv.addtabs(steamid, types, cb, transact)
 	if (#types == 0) then
 		return cb {}
 	end
 
+	if (not transact) then
+		transact = pluto.db.transact()
+	end
+
 	steamid = pluto.db.steamid64(steamid)
-	local queries = {}
 
 	local tabs = {}
 	for i = 1, #types do
 		local type = types[i]
-		queries[i * 2 - 1] = { "INSERT INTO pluto_tabs (name, owner, tab_type) SELECT CAST(COUNT(*) + 1 as CHAR), ?, ? FROM pluto_tabs WHERE owner = ?", {steamid, type or "normal", steamid} }
-		queries[i * 2]     = { "SELECT idx, color, name, tab_type FROM pluto_tabs WHERE idx = LAST_INSERT_ID()", nil, function(err, q)
-			if (err) then
-				return
+		transact:AddQuery("INSERT INTO pluto_tabs (name, owner, tab_type) SELECT CAST(COUNT(*) + 1 as CHAR), ?, ? FROM pluto_tabs WHERE owner = ?", {steamid, type or "normal", steamid})
+		transact:AddQuery(
+			"SELECT idx, color, name, tab_type FROM pluto_tabs WHERE idx = LAST_INSERT_ID()",
+			nil,
+			function(err, q)
+				if (err) then
+					return
+				end
+
+				local tab = q:getData()[1]
+
+				tabs[i] = {
+					RowID = tab.idx,
+					Color = tab.color,
+					Name = tab.name,
+					Owner = steamid,
+					Type = tab.tab_type,
+				}
 			end
-
-			local tab = q:getData()[1]
-
-			tabs[i] = {
-				RowID = tab.idx,
-				Color = tab.color,
-				Name = tab.name,
-				Owner = steamid,
-				Type = tab.tab_type,
-			}
-		end }
+		)
 	end
 
-	return pluto.db.transact(queries, function(err)
+	transact:AddCallback(function(err)
 		if (err) then
 			cb(false)
 		else
 			cb(tabs)
 		end
-	end, nil, nostart)
+	end)
+	
+	return transact
 end
 
-function pluto.inv.switchtab(steamid, tabid1, tabindex1, tabid2, tabindex2, cb)
+function pluto.inv.switchtab(steamid, tabid1, tabindex1, tabid2, tabindex2, cb, transact)
 	steamid = pluto.db.steamid64(steamid)
 
 	local affected = 0
@@ -138,16 +176,17 @@ function pluto.inv.switchtab(steamid, tabid1, tabindex1, tabid2, tabindex2, cb)
 		affected = affected + q:affectedRows()
 	end
 
-	if (tabid1 == tabid2 and tabindex1 == tabindex2) then
-		return cb(true)
+	if (not transact) then
+		transact = pluto.db.transact()
 	end
 
-	pluto.db.transact({
-		{ "SELECT 1 FROM pluto_items WHERE tab_id IN (?, ?) FOR UPDATE", {tabid1, tabid2} },
-		{ "UPDATE pluto_items SET tab_id = ?, tab_idx = 0 WHERE tab_id = ? AND tab_idx = ?", {tabid1, tabid2, tabindex2}, addaffected },
-		{ "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE tab_id = ? AND tab_idx = ?", {tabid2, tabindex2, tabid1, tabindex1}, addaffected },
-		{ "UPDATE pluto_items SET tab_idx = ? WHERE tab_id = ? AND tab_idx = 0", {tabindex1, tabid1}, addaffected },
-	}, function(err, q)
+	transact
+		:AddQuery("SELECT 1 FROM pluto_items WHERE tab_id IN (?, ?) FOR UPDATE", {tabid1, tabid2})
+		:AddQuery("UPDATE pluto_items SET tab_id = ?, tab_idx = 0 WHERE tab_id = ? AND tab_idx = ?", {tabid1, tabid2, tabindex2}, addaffected)
+		:AddQuery("UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE tab_id = ? AND tab_idx = ?", {tabid2, tabindex2, tabid1, tabindex1}, addaffected)
+		:AddQuery("UPDATE pluto_items SET tab_idx = ? WHERE tab_id = ? AND tab_idx = 0", {tabindex1, tabid1}, addaffected)
+	
+	transact:AddCallback(function(err, q)
 		if (err) then
 			cb(false)
 			return
@@ -160,6 +199,8 @@ function pluto.inv.switchtab(steamid, tabid1, tabindex1, tabid2, tabindex2, cb)
 
 		cb(true)
 	end)
+
+	return transact
 end
 
 function pluto.inv.renametab(tab, cb)
@@ -272,7 +313,7 @@ function pluto.inv.retrieveitems(steamid, cb)
 	end)
 end
 
-function pluto.inv.deleteitem(steamid, itemid, cb, nostart)
+function pluto.inv.deleteitem(steamid, itemid, cb, transact)
 	steamid = pluto.db.steamid64(steamid)
 
 	local i = pluto.itemids[itemid]
@@ -289,7 +330,7 @@ function pluto.inv.deleteitem(steamid, itemid, cb, nostart)
 		i.RowID = nil
 	end
 
-	return pluto.db.query("delete pluto_items from pluto_items inner join pluto_tabs on pluto_tabs.idx = pluto_items.tab_id where pluto_items.idx = ? and pluto_tabs.owner = ? and locked = false", {itemid, steamid}, function(err, q)
+	pluto.db.transact_or_query(transact, "delete pluto_items from pluto_items inner join pluto_tabs on pluto_tabs.idx = pluto_items.tab_id where pluto_items.idx = ? and pluto_tabs.owner = ? and locked = false", {itemid, steamid}, function(err, q)
 		if (err) then
 			if (IsValid(cl)) then
 				pluto.inv.sendfullupdate(cl)
@@ -309,7 +350,7 @@ function pluto.inv.deleteitem(steamid, itemid, cb, nostart)
 		pluto.itemids[itemid] = nil
 
 		cb(true)
-	end, nil, nostart)
+	end)
 end
 
 function pluto.inv.addexperience(id, exp) -- should not need cb :shrug:

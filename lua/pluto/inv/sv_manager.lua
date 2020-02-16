@@ -104,11 +104,20 @@ function pluto.inv.writetab(ply, tab)
 end
 
 function pluto.inv.writefullupdate(ply)
-	net.WriteUInt(table.Count(pluto.inv.invs[ply]), 32)
-		
-	for _, tab in pairs(pluto.inv.invs[ply]) do
+	for key, tab in pairs(pluto.inv.invs[ply]) do
+		if (not isnumber(key)) then
+			continue
+		end
+
+		local tabtype = pluto.tabs[tab.Type]
+
+		if (not tabtype or not tabtype.element) then
+			continue
+		end
+
 		pluto.inv.writetab(ply, tab)
 	end
+	net.WriteUInt(0, 32)
 
 	net.WriteUInt(table.Count(pluto.inv.currencies[ply]), 32)
 	for currency in pairs(pluto.inv.currencies[ply]) do
@@ -247,11 +256,15 @@ function pluto.inv.init(ply, cb2)
 			return
 		end
 
-		local inv = {}
+		local inv = {
+			tabs = {},
+		}
 
 		for _, tab in pairs(tabs) do
 			inv[tab.RowID] = tab
 			tab.Items = {}
+
+			inv.tabs[tab.Type] = tab
 		end
 
 		for _, item in pairs(items) do
@@ -309,6 +322,10 @@ function pluto.inv.readtabswitch(ply)
 	local tabid2 = net.ReadUInt(32)
 	local tabindex2 = net.ReadUInt(8)
 
+	if (tabid1 == tabid2 and tabindex1 == tabindex2) then
+		return
+	end
+
 	local tab1 = pluto.inv.invs[ply][tabid1]
 	local tab2 = pluto.inv.invs[ply][tabid2]
 
@@ -347,7 +364,7 @@ function pluto.inv.readtabswitch(ply)
 		end
 
 		pluto.inv.sendfullupdate(ply)
-	end)
+	end):Run()
 end
 
 function pluto.inv.readitemdelete(ply)

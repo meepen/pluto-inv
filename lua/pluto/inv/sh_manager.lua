@@ -299,3 +299,19 @@ function ITEM:GetDiscordEmbed()
 
 	return embed
 end
+
+function ITEM:Duplicate()
+	local ret = setmetatable({}, pluto.inv.item_mt)
+
+	for k, v in pairs(self) do
+		ret[k] = v
+	end
+
+	ret.Owner = nil
+	ret.TabID = nil
+	ret.TabIndex = nil
+	ret.RowID = nil
+	ret.ID = nil
+
+	return ret
+end

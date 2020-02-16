@@ -2,7 +2,23 @@ local function ornull(n)
 	return n and SQLStr(n) or "NULL"
 end
 
+function pluto.inv.pushbuffer(ply, transaction)
+	local tab = pluto.inv.invs[ply].tabs.buffer
+
+	if (not tab) then
+		return false
+	end
+
+	transaction:AddQuery([[DELETE FROM pluto_items where tab_id = ? and tab_idx = 5]], {tab.RowID})
+	transaction:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 4]], {tab.RowID})
+	transaction:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 3]], {tab.RowID})
+	transaction:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 2]], {tab.RowID})
+	transaction:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 1]], {tab.RowID})
+end
+
 function pluto.inv.generatebufferweapon(ply, ...)
+	local t = pluto.db.transact()
+
 	local i = pluto.weapons.generatetier(...)
 	sql.Query("INSERT INTO pluto_items (tier, class, owner) VALUES (" .. SQLStr(i.Tier.InternalName) .. ", " .. SQLStr(i.ClassName) .. ", " .. ply:SteamID64() .. ")")
 	local id = sql.QueryValue "SELECT last_insert_rowid() as id"

@@ -141,8 +141,8 @@ function pluto.inv.readfullupdate()
 		pluto.ui.pnl:Remove()
 	end
 
-	for i = 1, net.ReadUInt(32) do
-		pluto.inv.readtab()
+	while (pluto.inv.readtab()) do
+		print "read tab"
 	end
 
 	for i = 1, net.ReadUInt(32) do
@@ -158,6 +158,10 @@ end
 
 function pluto.inv.readtab()
 	local id = net.ReadUInt(32)
+	if (id == 0) then
+		return false
+	end
+
 	local tab = pluto.cl_inv[id]
 	if (not tab) then		
 		tab = {
@@ -182,6 +186,8 @@ function pluto.inv.readtab()
 		local item = pluto.inv.readitem()
 		tab.Items[tabindex] = item
 	end
+
+	return true
 end
 
 function pluto.inv.readcurrencyupdate(ply)

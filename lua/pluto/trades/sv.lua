@@ -212,17 +212,17 @@ function pluto.trades.accept(ply)
 			ids[i] = pluto.db.steamid64(trade.Players[i])
 		end
 
-		local queries = {
-			{ "SELECT * from pluto_items INNER JOIN pluto_tabs ON pluto_items.tab_id = pluto_tabs.idx WHERE OWNER IN (?, ?) FOR UPDATE", ids }
-		}
+		local transact = pluto.db.transact()
+
+		transact:AddQuery("SELECT * from pluto_items INNER JOIN pluto_tabs ON pluto_items.tab_id = pluto_tabs.idx WHERE OWNER IN (?, ?) FOR UPDATE", ids)
 
 		for i1, i2 in pairs(toswap) do
 			local tabid1, tabindex1 = i1.TabID, i1.TabIndex
 			local tabid2, tabindex2 = i2.TabID, i2.TabIndex
 
-			queries[#queries + 1] = { "UPDATE pluto_items SET tab_id = ?, tab_idx = 0 WHERE idx = ?", {i1.TabID, i2.RowID} }
-			queries[#queries + 1] = { "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE idx = ?", {i2.TabID, i2.TabIndex, i1.RowID} }
-			queries[#queries + 1] = { "UPDATE pluto_items SET tab_idx = ? WHERE idx = ?", {i1.TabIndex, i2.RowID} }
+			transact:AddQuery("UPDATE pluto_items SET tab_id = ?, tab_idx = 0 WHERE idx = ?", {i1.TabID, i2.RowID})
+			transact:AddQuery("UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE idx = ?", {i2.TabID, i2.TabIndex, i1.RowID})
+			transact:AddQuery("UPDATE pluto_items SET tab_idx = ? WHERE idx = ?", {i1.TabIndex, i2.RowID})
 		end
 
 		for i = 1, 2 do
@@ -231,7 +231,7 @@ function pluto.trades.accept(ply)
 					continue
 				end
 
-				queries[#queries + 1] = { "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE idx = ?", {dst.TabID, dst.TabIndex, item.RowID} }
+				transact:AddQuery("UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE idx = ?", {dst.TabID, dst.TabIndex, item.RowID})
 			end
 		end
 
@@ -242,12 +242,12 @@ function pluto.trades.accept(ply)
 					return
 				end
 
-				queries[#queries + 1] = {"INSERT INTO pluto_currency_tab (owner, currency, amount) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE amount = amount - ?", {pluto.db.steamid64(ply), cur, amt, amt} }
-				queries[#queries + 1] = {"INSERT INTO pluto_currency_tab (owner, currency, amount) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE amount = amount + ?", {pluto.db.steamid64(otherply), cur, amt, amt} }
+				transact:AddQuery("INSERT INTO pluto_currency_tab (owner, currency, amount) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE amount = amount - VALUE(amount)", {pluto.db.steamid64(ply), cur, amt})
+				transact:AddQuery("INSERT INTO pluto_currency_tab (owner, currency, amount) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE amount = amount + VALUE(amount)", {pluto.db.steamid64(otherply), cur, amt})
 			end
 		end
 
-		pluto.db.transact(queries, function(err, q)
+		transact:Run(function(err, q)
 			for i = 1, 2 do
 				local ply = trade.Players[i]
 

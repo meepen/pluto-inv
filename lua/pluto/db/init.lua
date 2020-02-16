@@ -1,7 +1,6 @@
 hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
-	pluto.db.transact {
-		{
-			[[
+	pluto.db.transact()
+		:AddQuery [[
 				CREATE TABLE IF NOT EXISTS pluto_tabs (
 					idx int UNSIGNED NOT NULL AUTO_INCREMENT,
 					owner BIGINT UNSIGNED NOT NULL,
@@ -12,9 +11,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 					INDEX USING HASH(owner)
 				)
 			]]
-		},
-		{
-			[[
+		:AddQuery [[
 				CREATE TABLE IF NOT EXISTS pluto_items (
 					idx INT UNSIGNED NOT NULL AUTO_INCREMENT,
 					tier VARCHAR(16) NOT NULL,
@@ -37,9 +34,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 					INDEX USING HASH(idx)
 				)
 			]]
-		},
-		{
-			[[
+		:AddQuery [[
 				CREATE TABLE IF NOT EXISTS pluto_mods (
 					idx INT UNSIGNED NOT NULL AUTO_INCREMENT,
 					gun_index INT UNSIGNED NOT NULL,
@@ -56,9 +51,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 					FOREIGN KEY (gun_index) REFERENCES pluto_items(idx) ON DELETE CASCADE
 				)
 			]]
-		},
-		{
-			[[
+		:AddQuery [[
 				CREATE TABLE IF NOT EXISTS pluto_craft_data (
 					gun_index INT UNSIGNED NOT NULL,
 
@@ -71,9 +64,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 					FOREIGN KEY (gun_index) REFERENCES pluto_items(idx) ON DELETE CASCADE
 				)
 			]]
-		},
-		{
-			[[
+		:AddQuery [[
 				CREATE TABLE IF NOT EXISTS pluto_weapon_stats (
 					gun_index INT UNSIGNED NOT NULL AUTO_INCREMENT,
 					stat VARCHAR(16) NOT NULL,
@@ -82,18 +73,14 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 					INDEX USING HASH(gun_index)
 				)
 			]]
-		},
-		{
-			[[
+		:AddQuery [[
 				CREATE TABLE IF NOT EXISTS pluto_stats (
 					stat VARCHAR(16) NOT NULL,
 					val BIGINT UNSIGNED NOT NULL,
 					INDEX USING HASH(stat)
 				)
 			]]
-		},
-		{
-			[[
+		:AddQuery [[
 				CREATE TABLE IF NOT EXISTS pluto_currency_tab (
 					owner BIGINT UNSIGNED NOT NULL,
 					currency VARCHAR(8) NOT NULL,
@@ -102,9 +89,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 					INDEX USING HASH(owner)
 				)
 			]]
-		},
-		{
-			[[
+		:AddQuery [[
 				CREATE TABLE IF NOT EXISTS pluto_map_vote (
 					voter BIGINT UNSIGNED NOT NULL,
 					liked BOOLEAN NOT NULL,
@@ -114,9 +99,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 					INDEX USING HASH(mapname)
 				)
 			]]
-		},
-		{
-			[[
+		:AddQuery [[
 				CREATE TABLE IF NOT EXISTS pluto_map_info (
 					mapname VARCHAR(32) NOT NULL,
 					played INT UNSIGNED NOT NULL DEFAULT 0,
@@ -124,9 +107,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 					PRIMARY KEY(mapname)
 				)
 			]]
-		},
-		{
-			[[
+		:AddQuery [[
 				CREATE TABLE IF NOT EXISTS pluto_nitro_rewards (
 					steamid BIGINT UNSIGNED NOT NULL,
 					reward_num SMALLINT UNSIGNED NOT NULL,
@@ -136,8 +117,8 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 					INDEX USING HASH(steamid)
 				)
 			]]
-		}
-	}:wait(true)
+		:Halt()
+		:Run()
 
 	local queries = {
 		[[

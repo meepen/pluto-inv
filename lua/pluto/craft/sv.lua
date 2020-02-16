@@ -241,12 +241,13 @@ function pluto.inv.readcraft(cl)
 		):Send "drops"
 	end
 
-	local transact = pluto.weapons.save(wpn, cl, function(id) end, true)
+	local transact = pluto.db.transact()
+	pluto.weapons.save(wpn, cl, nil, transact)
 
-	transact:addQuery(pluto.inv.deleteitem(cl, i2.RowID, print, true))
-	transact:addQuery(pluto.inv.deleteitem(cl, i3.RowID, print, true))
+	pluto.inv.deleteitem(cl, i2.RowID, print, transact)
+	pluto.inv.deleteitem(cl, i3.RowID, print, transact)
 	if (cur) then
-		transact:addQuery(pluto.inv.addcurrency(cl, cur.Currency, -cur.Amount, print, true))
+		pluto.inv.addcurrency(cl, cur.Currency, -cur.Amount, nil, transact)
 	end
 
 	transact:start()

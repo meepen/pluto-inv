@@ -76,6 +76,16 @@ pluto.tabs = {
 		size = 12,
 		element = "pluto_trade",
 	},
+	buffer = {
+		canaccept = function()
+			return false
+		end,
+		canremove = function()
+			return true
+		end,
+		size = 5,
+		-- no element = no send
+	}
 }
 
 function pluto.canswitchtabs(tab1, tab2, tabindex1, tabindex2)

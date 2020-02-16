@@ -1,3 +1,58 @@
+local TRANSACT = {}
+local transact_mt = {
+	__index = TRANSACT
+}
+
+function TRANSACT:AddQuery(query, args, cb, data)
+	return self, self.transaction:addQuery(self.db.query(query, args, cb, data, true))
+end
+
+function TRANSACT:Halt()
+	self.halt = true
+	return self
+end
+
+function TRANSACT:AddCallback(cb)
+	self.callbacks = self.callbacks or {}
+	self.callbacks[#self.callbacks + 1] = cb
+end
+
+function TRANSACT:Run(_cb)
+	local function cb(err, q)
+		for _, fn in ipairs(self.callbacks or {}) do
+			fn(err, q)
+		end
+
+		if (_cb) then
+			_cb(err, q)
+		end
+	end
+
+	function self.transaction:onSuccess(...)
+		if (not cb) then
+			return
+		end
+
+		cb(nil)
+	end
+
+	function self.transaction:onError(e)
+		self.err("%s", e)
+		if (not cb) then
+			return
+		end
+
+		cb(e)
+	end
+
+	self.transaction:start()
+
+	if (self.halt) then
+		self.transaction:wait(true)
+	end
+	return self
+end
+
 return function(obj)
 	local db = {
 		queries = {},
@@ -80,51 +135,21 @@ return function(obj)
 		return q
 	end
 
-	function db.transact(queries, cb, nostart)
-		local transact = db.db:createTransaction()
+	function db.transact()
+		return setmetatable({
+			transaction = db.db:createTransaction(),
+			db = db,
+			err = err
+		}, transact_mt)
+	end
 
-		local start
-
-		for i, query in ipairs(queries) do
-			if (type(query) == "table") then
-				query[5] = true -- nostart
-				queries[i] = db.query(unpack(query, 1, 5))
-			elseif (type(query) == "string") then
-				queries[i] = db.query(query, nil, nil, nil, true)
-			end
-
-			transact:addQuery(queries[i])
-			if (type(query) == "table" and query[2]) then
-				for ind in pairs(query[2]) do
-					queries[i]:setNull(ind)
-				end
-			end
+	function db.transact_or_query(transact, ...)
+		if (transact) then
+			local _, q = transact:AddQuery(...)
+			return q
+		else
+			return pluto.db.query(...)
 		end
-
-		function transact:onSuccess(...)
-			if (not cb) then
-				return
-			end
-
-			cb(nil, self)
-		end
-
-		function transact:onError(e)
-			err("%s", e)
-			if (not cb) then
-				return
-			end
-
-			cb(e, self)
-		end
-
-		start = SysTime()
-
-		if (not nostart) then
-			transact:start()
-		end
-
-		return transact, queries
 	end
 
 	function db.steamid64(obj)

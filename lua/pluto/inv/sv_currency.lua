@@ -3,18 +3,24 @@ pluto.currency.shares = 0
 local tospawn_amt = CreateConVar("pluto_currency_spawnrate", "2.7")
 
 local function UpdateAndDecrement(ply, item, currency)
-	local trans = pluto.weapons.update(item, function(id)
+	local transact = pluto.db.transact()
+	pluto.weapons.update(item, function(id)
 		if (not IsValid(ply)) then
 			return
 		end
-	end, true)
+
+		if (not id) then
+			ply:ChatPrint("Error modifying gun!")
+		end
+	end, transact)
 
 	pluto.inv.message(ply)
 		:write("item", item)
 		:send()
 
-	trans:addQuery(pluto.inv.addcurrency(ply, currency, -1, function() end, true))
-	trans:start()
+	pluto.inv.addcurrency(ply, currency, -1, nil, transact)
+
+	transact:Run()
 end
 
 local crate0_contents = {
@@ -263,6 +269,7 @@ for name, values in pairs {
 	mirror = {
 		Shares = 0.01,
 		Use = function(item)
+			local new_item = item:Duplicate()
 		end,
 		Types = "Weapon",
 		Crafted = {
@@ -303,11 +310,11 @@ for name, values in pairs {
 				pluto.inv.message(ply)
 					:write("tab", tab)
 					:send()
+			end)
 
-			end, true)
+			pluto.inv.addcurrency(ply, "coin", -1, function() end, trans)
 
-			trans:addQuery(pluto.inv.addcurrency(ply, "coin", -1, function() end, true))
-			trans:start()
+			trans:Run()
 		end,
 		Types = "None",
 		Crafted = {
