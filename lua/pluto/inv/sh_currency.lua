@@ -108,6 +108,15 @@ pluto.currency.list = {
 			pluto.opener:MakePopup()
 		end,
 	},
+	{
+		InternalName = "aciddrop",
+		Name = "Acidic Droplet",
+		Icon = "pluto/currencies/green_droplet.lua",
+		Description = "Rerolls prefix modifiers on an item",
+		SubDescription = "What have Yaari done to you, my children?",
+		Color = Color(200, 200, 200),
+		CanCraft = false
+	},
 }
 
 for _, item in pairs(pluto.currency.list) do

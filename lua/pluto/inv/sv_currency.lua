@@ -271,7 +271,7 @@ for name, values in pairs {
 		},
 	},
 	heart = {
-		Shares = 12.5,
+		Shares = 8.5,
 		Use = function(ply, item)
 			if (pluto.weapons.generatemod(item)) then
 				UpdateAndDecrement(ply, item, "heart")
@@ -377,6 +377,36 @@ for name, values in pairs {
 			Mod = "crated",
 		},
 	},
+	aciddrop = {
+		Shares = 30,
+		Use = function(ply, item)
+			local affixes = item:GetMaxAffixes()
+
+			local new_mods = pluto.weapons.generatetier(item.Tier, item.ClassName, nil, nil, function(mod, tier)
+				local needed = #mod.Tiers[tier] / 2
+
+				local retn = {}
+				for i = 1, needed do
+					retn[i] = math.random() * 2 / 3
+				end
+
+				return retn
+			end, affixes).Mods
+
+			item.Mods.prefix = new_mods.prefix
+			-- item.Mods.suffix = new_mods.suffix
+
+			for _, mods in pairs(new_mods) do
+				for _, mod in pairs(mods) do
+					pluto.weapons.onrollmod(item, mod)
+				end
+			end
+
+			UpdateAndDecrement(ply, item, "aciddrop")
+		end,
+		Types = "Weapon",
+		Crafted = false,
+	}
 } do
 	table.Merge(pluto.currency.byname[name], values)
 end
