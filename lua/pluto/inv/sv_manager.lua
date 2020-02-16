@@ -435,8 +435,6 @@ function pluto.inv.readcurrencyuse(ply)
 		return
 	end
 
-	print "hi"
-
 	cur.Use(ply, wpn)
 end
 

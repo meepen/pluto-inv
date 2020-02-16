@@ -391,10 +391,9 @@ for name, values in pairs {
 				end
 
 				return retn
-			end, affixes).Mods
+			end, 3, math.min(3, affixes - #(item.Mods.suffix or {})), 0).Mods
 
 			item.Mods.prefix = new_mods.prefix
-			-- item.Mods.suffix = new_mods.suffix
 
 			for _, mods in pairs(new_mods) do
 				for _, mod in pairs(mods) do
@@ -403,6 +402,35 @@ for name, values in pairs {
 			end
 
 			UpdateAndDecrement(ply, item, "aciddrop")
+		end,
+		Types = "Weapon",
+		Crafted = false,
+	},
+	pdrop = {
+		Shares = 20,
+		Use = function(ply, item)
+			local affixes = item:GetMaxAffixes()
+
+			local new_mods = pluto.weapons.generatetier(item.Tier, item.ClassName, nil, nil, function(mod, tier)
+				local needed = #mod.Tiers[tier] / 2
+
+				local retn = {}
+				for i = 1, needed do
+					retn[i] = math.random() * 2 / 3
+				end
+
+				return retn
+			end, 3, 0, math.min(3, affixes - #(item.Mods.prefix or {}))).Mods
+
+			item.Mods.suffix = new_mods.suffix
+
+			for _, mods in pairs(new_mods) do
+				for _, mod in pairs(mods) do
+					pluto.weapons.onrollmod(item, mod)
+				end
+			end
+
+			UpdateAndDecrement(ply, item, "pdrop")
 		end,
 		Types = "Weapon",
 		Crafted = false,

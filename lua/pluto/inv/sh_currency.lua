@@ -48,7 +48,7 @@ pluto.currency.list = {
 		InternalName = "mirror",
 		Name = "Mara's Mirror",
 		Icon = "pluto/currencies/brokenmirror.png",
-		Description = "Creates a mirror image of an item (unmodifiable)",
+		Description = "Creates a mirror image of an item which is unmodifiable",
 		SubDescription = "Mara threw this mirror out after seeing what she had become",
 		Color = Color(177, 173, 205),
 		CanCraft = false,
@@ -111,10 +111,19 @@ pluto.currency.list = {
 	{
 		InternalName = "aciddrop",
 		Name = "Acidic Droplet",
-		Icon = "pluto/currencies/green_droplet.lua",
+		Icon = "pluto/currencies/green_droplet.png",
 		Description = "Rerolls prefix modifiers on an item",
-		SubDescription = "What have Yaari done to you, my children?",
-		Color = Color(200, 200, 200),
+		SubDescription = "What have Yaari done to you, my children?!",
+		Color = Color(11, 84, 51),
+		CanCraft = false
+	},
+	{
+		InternalName = "pdrop",
+		Name = "Plutonic Droplet",
+		Icon = "pluto/currencies/purple_droplet.png",
+		Description = "Rerolls suffix modifiers on an item",
+		SubDescription = "Back when these things first were created, the military bought them straight from the man himself... paid upwards to a million for a single liter. Nowadays they are shot straight up to the skies",
+		Color = Color(117, 28, 178),
 		CanCraft = false
 	},
 }

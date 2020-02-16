@@ -214,7 +214,6 @@ function pluto.mods.generateaffixes(wpn, affixcount, prefixmax, suffixmax, guara
 			chosenaffix = chosenaffix == "suffix" and "prefix" or "suffix"
 
 			if (allowed[chosenaffix] <= 0 or potential.current[chosenaffix] > #potential[chosenaffix]) then
-				pwarnf("Couldn't generate another mod.\n%s", debug.traceback())
 				break
 			end
 		end
