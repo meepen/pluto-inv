@@ -20,7 +20,8 @@ local NitroRewards = {
 				hook.Remove("PlayerSpawn", "confetti_" .. ply:SteamID64())
 				local ang = ply:EyeAngles()
 				ang.p = 0
-		
+
+		--[[
 				for i = 0, 360, 30 do
 					ang:RotateAroundAxis(ang:Up(), 30)
 		
@@ -30,9 +31,8 @@ local NitroRewards = {
 					data:SetMagnitude(1)
 					data:SetRadius(50)
 					data:SetFlags(0)
-					util.Effect("pluto_confetti", data)
-				end
-		
+					util.Effect("pluto_confetti", data, true, true)
+				end]]
 				sound.Play("pluto_confetti", ply:GetPos())
 			end)
 		end
@@ -56,7 +56,7 @@ local NitroRewards = {
 				hook.Remove("PlayerSpawn", "nade_" .. ply:SteamID64())
 				local ang = ply:EyeAngles()
 				ang.p = 0
-		
+		--[[
 				for i = 0, 360, 30 do
 					ang:RotateAroundAxis(ang:Up(), 30)
 		
@@ -67,7 +67,7 @@ local NitroRewards = {
 					data:SetRadius(50)
 					data:SetFlags(0)
 					util.Effect("pluto_confetti", data, true, true)
-				end
+				end]]
 		
 				sound.Play("pluto_confetti", ply:GetPos())
 			end)
