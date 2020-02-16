@@ -13,3 +13,7 @@ SWEP.ViewModelFlip = false
 SWEP.UseHands = true
 SWEP.ViewModel          = "models/weapons/cstrike/c_eq_smokegrenade.mdl"
 SWEP.WorldModel         = "models/weapons/w_eq_smokegrenade.mdl"
+
+SWEP.Ortho = {2, 2.6}
+
+SWEP.PlutoIcon             = "vgui/entities/confetti.png"

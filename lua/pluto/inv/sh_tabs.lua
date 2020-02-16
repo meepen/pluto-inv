@@ -30,13 +30,20 @@ pluto.tabs = {
 				if (not wep) then
 					return false
 				end
+
 				if (tabindex == 1) then -- primary
 					return wep.Slot == 2
 				elseif (tabindex == 2) then -- secondary
 					return wep.Slot == 1
+				elseif (tabindex == 4) then -- melee
+					return wep.Slot == 0
+				elseif (tabindex == 5) then -- grenade
+					print(wep.Slot)
+					return wep.Slot == 3
 				elseif (tabindex == 6) then -- unarmed
 					return wep.Slot == 5
 				end
+
 			elseif (item.ClassName:StartWith "model_" and tabindex == 3) then
 				return true
 			end

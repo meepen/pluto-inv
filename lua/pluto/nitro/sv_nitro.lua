@@ -36,6 +36,42 @@ local NitroRewards = {
 				sound.Play("pluto_confetti", ply:GetPos())
 			end)
 		end
+	},
+	{
+		Since = os.time {
+			day = 11,
+			hour = 0,
+			year = 2020,
+			month = 2,
+			min = 0,
+		},
+		Reward = function(ply)
+			pluto.inv.generatebufferweapon(ply, "unique", "weapon_ttt_confetti_grenade")
+			ttt.chat(color_nitro, ply:Nick(), white_text, " has received the second ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Confetti Grenade!")
+			hook.Add("PlayerSpawn", "nade_" .. ply:SteamID64(), function(p)
+				if (p ~= ply) then
+					return
+				end
+
+				hook.Remove("PlayerSpawn", "nade_" .. ply:SteamID64())
+				local ang = ply:EyeAngles()
+				ang.p = 0
+		
+				for i = 0, 360, 30 do
+					ang:RotateAroundAxis(ang:Up(), 30)
+		
+					local data = EffectData()
+					data:SetStart(ply:GetShootPos())
+					data:SetOrigin(data:GetStart() + ang:Forward())
+					data:SetMagnitude(1)
+					data:SetRadius(50)
+					data:SetFlags(0)
+					util.Effect("pluto_confetti", data, true, true)
+				end
+		
+				sound.Play("pluto_confetti", ply:GetPos())
+			end)
+		end
 	}
 }
 

@@ -860,6 +860,8 @@ function PANEL:Init()
 	self.Items[1]:SetDefault "weapon_ttt_m4a1"
 	self.Items[2]:SetDefault "weapon_ttt_pistol"
 	self.Items[3]:SetDefault "model_default"
+	self.Items[4]:SetDefault "weapon_ttt_crowbar"
+	self.Items[5]:SetDefault "weapon_ttt_sticky_grenade"
 	self.Items[6]:SetDefault "weapon_ttt_unarmed"
 
 	self.Items[1].OnSetItem = function(s, i)

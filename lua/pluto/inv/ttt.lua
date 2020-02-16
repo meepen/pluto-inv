@@ -199,6 +199,12 @@ hook.Add("TTTPlayerGiveWeapons", "pluto_loadout", function(ply)
 		ply:Give(i2.ClassName)
 	end
 	
+	local i5 = equip_tab.Items[5]
+	if (i5) then
+		pluto.NextWeaponSpawn = i5
+		ply:Give(i5.ClassName)
+	end
+	
 	local i6 = equip_tab.Items[6]
 	if (i6) then
 		pluto.NextWeaponSpawn = i6
