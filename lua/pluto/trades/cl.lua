@@ -593,7 +593,6 @@ function PANEL:Init()
 
 	for i = 1, 12 do
 		local p = self.BottomLayout:Add "pluto_inventory_item"
-		p.NoGhost = true
 		p.TabIndex = i
 		self.Items[i] = p
 		p.TradeItems = self.TradeItems
@@ -628,7 +627,6 @@ function PANEL:Init()
 		local p = self.TopLayout:Add "pluto_inventory_item"
 		function p:SwitchWith()
 		end
-		p.NoGhost = true
 		p.TabIndex = i
 		self.Items[i] = p
 	end

@@ -75,7 +75,6 @@ function PANEL:Init()
 		local p = self.MainElements:Add "pluto_inventory_item"
 		p:Dock(LEFT)
 		p.Used = self.Used
-		p.NoGhost = true
 		p.TabIndex = i
 		function p:SwitchWith(other)
 			if (other.Tab.ID == 0) then
@@ -245,7 +244,7 @@ function PANEL:PlutoCraftResults(outcomes)
 
 		local p = self.OutcomeLayer:Add "pluto_inventory_item"
 		p:SetItem(i, self.Tab)
-		p:SetNoGhost()
+		p:SetNoMove()
 
 		self.Outcomes[n] = p
 	end
