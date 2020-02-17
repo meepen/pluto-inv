@@ -730,6 +730,7 @@ vgui.Register("pluto_inventory_items", PANEL, "pluto_inventory_base")
 local PANEL = {}
 
 function PANEL:SetPlutoModel(m, i)
+	self:RemoveWeapon()
 	self:SetModel(m.Model)
 
 	pluto.updatemodel(self:GetEntity(), i)
@@ -826,6 +827,18 @@ function PANEL:DragMouseRelease()
 		self.OverrideRotate = false
 		self.LastX = nil
 	end
+end
+
+function PANEL:RemoveWeapon()
+	if (IsValid(self.Weapon)) then
+		self.Weapon:Remove()
+	end
+end
+
+DEFINE_BASECLASS "DModelPanel"
+function PANEL:OnRemove()
+	self:RemoveWeapon()
+	BaseClass.OnRemove(self)
 end
 
 vgui.Register("PlutoPlayerModel", PANEL, "DModelPanel")
