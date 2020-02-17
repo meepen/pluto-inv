@@ -289,7 +289,7 @@ function pluto.weapons.save(item, owner, cb, transact)
 		tab.Items[item.TabIndex] = item
 
 		local ply = player.GetBySteamID64(item.Owner)
-		if (IsValid(ply)) then
+		if (IsValid(ply) and pluto.tabs[tab.Type] and pluto.tabs[tab.Type].element) then
 			pluto.inv.message(ply)
 				:write("tabupdate", item.TabID, item.TabIndex)
 				:send()

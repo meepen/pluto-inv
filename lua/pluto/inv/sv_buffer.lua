@@ -2,62 +2,85 @@ local function ornull(n)
 	return n and SQLStr(n) or "NULL"
 end
 
-function pluto.inv.pushbuffer(ply, transaction)
+function pluto.inv.pushbuffer(ply, transact)
 	local tab = pluto.inv.invs[ply].tabs.buffer
 
 	if (not tab) then
 		return false
 	end
 
-	transaction:AddQuery([[DELETE FROM pluto_items where tab_id = ? and tab_idx = 5]], {tab.RowID})
-	transaction:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 4]], {tab.RowID})
-	transaction:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 3]], {tab.RowID})
-	transaction:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 2]], {tab.RowID})
-	transaction:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 1]], {tab.RowID})
+	if (not transact) then
+		transact = pluto.db.transact()
+	end
+
+	transact:AddQuery([[DELETE FROM pluto_items where tab_id = ? and tab_idx = 5]], {tab.RowID})
+	transact:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 4]], {tab.RowID})
+	transact:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 3]], {tab.RowID})
+	transact:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 2]], {tab.RowID})
+	transact:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 1]], {tab.RowID})
+
+	return transact
+end
+
+function pluto.inv.popbuffer(ply, index, transact)
+	local tab = pluto.inv.invs[ply].tabs.buffer
+
+	if (not tab) then
+		return false
+	end
+
+	if (not transact) then
+		transact = pluto.db.transact()
+	end
+
+	print(index)
+	for i = index + 1, 5 do
+		print("pop", i)
+		transact:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx - 1 where tab_id = ? and tab_idx = ?]], {tab.RowID, i})
+	end
+
+	return transact
 end
 
 function pluto.inv.generatebufferweapon(ply, ...)
-	local t = pluto.db.transact()
+	local transact = pluto.inv.pushbuffer(ply)
+	local tab = pluto.inv.invs[ply].tabs.buffer
 
-	local i = pluto.weapons.generatetier(...)
-	sql.Query("INSERT INTO pluto_items (tier, class, owner) VALUES (" .. SQLStr(i.Tier.InternalName) .. ", " .. SQLStr(i.ClassName) .. ", " .. ply:SteamID64() .. ")")
-	local id = sql.QueryValue "SELECT last_insert_rowid() as id"
-	i.BufferID = id
+	local new_item = pluto.weapons.generatetier(...)
+	new_item.TabID = tab.RowID
+	new_item.TabIndex = 1
+	new_item.Owner = ply:SteamID64()
 
-	if (i.Mods) then
-		for type, list in pairs(i.Mods) do
-			for _, mod in ipairs(list) do
-				sql.Query("INSERT INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3) VALUES (" .. 
-					id .. ", " ..
-					ornull(mod.Mod) .. ", " ..
-					ornull(mod.Tier) .. ", " ..
-					ornull(mod.Roll[1]) .. ", " ..
-					ornull(mod.Roll[2]) .. ", " ..
-					ornull(mod.Roll[3]) ..
-				")")
-			end
-		end
-	end
+	pluto.weapons.save(new_item, ply, nil, transact)
 
-	pluto.inv.notifybufferitem(ply, i)
+	transact:AddCallback(function()
+		pluto.inv.notifybufferitem(ply, new_item)
+	end)
 
-	return i
+	return transact, new_item
 end
 
 function pluto.inv.generatebuffershard(ply, tier)
-	local i = setmetatable({
+	local transact = pluto.inv.pushbuffer(ply)
+	local tab = pluto.inv.invs[ply].tabs.buffer
+
+	local new_item = setmetatable({
 		ClassName = "shard",
 		Tier = pluto.tiers[tier],
 		Type = "Shard",
 	}, pluto.inv.item_mt)
 
-	sql.Query("INSERT INTO pluto_items (tier, class, owner) VALUES (" .. SQLStr(tier) .. ", 'shard', " .. ply:SteamID64() .. ")")
-	local id = sql.QueryValue "SELECT last_insert_rowid() as id"
-	i.BufferID = id
+	new_item.TabID = tab.RowID
+	new_item.TabIndex = 1
+	new_item.Owner = ply:SteamID64()
 
-	pluto.inv.notifybufferitem(ply, i)
+	pluto.weapons.save(new_item, ply, nil, transact)
 
-	return i.BufferID
+	transact:AddCallback(function()
+		pluto.inv.notifybufferitem(ply, new_item)
+	end)
+
+	return transact, new_item
 end
 
 concommand.Add("pluto_spawn_weapon", function(ply, cmd, arg, args)
@@ -69,21 +92,29 @@ concommand.Add("pluto_spawn_weapon", function(ply, cmd, arg, args)
 end)
 
 function pluto.inv.generatebuffermodel(ply, mdl)
-	local i = setmetatable({
+	local transact = pluto.inv.pushbuffer(ply)
+	local tab = pluto.inv.invs[ply].tabs.buffer
+
+	local new_item = setmetatable({
 		ClassName = "model_" .. mdl,
 		Model = pluto.models[mdl]
 	}, pluto.inv.item_mt)
 
-	if (not i.Model) then
+	if (not new_item.Model) then
 		return false
 	end
 
-	sql.Query("INSERT INTO pluto_items (tier, class, owner) VALUES ('', " .. SQLStr("model_" .. mdl) .. ", " .. ply:SteamID64() .. ")")
-	local id = sql.QueryValue "SELECT last_insert_rowid() as id"
-	i.BufferID = id
+	new_item.TabID = tab.RowID
+	new_item.TabIndex = 1
+	new_item.Owner = ply:SteamID64()
 
-	pluto.inv.notifybufferitem(ply, i)
-	return i.BufferID
+	pluto.weapons.save(new_item, ply, nil, transact)
+
+	transact:AddCallback(function()
+		pluto.inv.notifybufferitem(ply, new_item)
+	end)
+
+	return transact, new_item
 end
 
 concommand.Add("pluto_spawn_model", function(ply, cmd, arg, args)
@@ -95,17 +126,20 @@ concommand.Add("pluto_spawn_model", function(ply, cmd, arg, args)
 end)
 
 function pluto.inv.notifybufferitem(ply, i)
-	local items = sql.Query("SELECT idx FROM pluto_items WHERE owner = " .. ply:SteamID64() .. " ORDER BY idx DESC")
-
-	if (#items > 5) then
-		for i = 6, #items do
-			items[i] = items[i].idx
-		end
-
-		sql.Query("DELETE FROM pluto_items WHERE idx IN (" .. table.concat(items, ", ", 6) .. ")")
-	end
-
 	pluto.inv.message(ply)
 		:write("bufferitem", i)
 		:send()
+end
+
+function pluto.inv.getbufferitems(owner)
+	return pluto.inv.invs[owner].tabs.buffer.Items
+end
+
+function pluto.inv.getbufferitem(ply, id)
+	local items = pluto.inv.invs[ply].tabs.buffer.Items
+	for _, item in pairs(items) do
+		if (item.RowID == id) then
+			return item
+		end
+	end
 end

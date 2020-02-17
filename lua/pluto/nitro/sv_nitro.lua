@@ -10,7 +10,7 @@ local NitroRewards = {
 			min = 0,
 		},
 		Reward = function(ply)
-			pluto.inv.generatebufferweapon(ply, "unique", "weapon_noise_nitro")
+			pluto.inv.generatebufferweapon(ply, "unique", "weapon_noise_nitro"):Run()
 			ttt.chat(color_nitro, ply:Nick(), white_text, " has received the original ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Noise Maker!")
 			hook.Add("PlayerSpawn", "confetti_" .. ply:SteamID64(), function(p)
 				if (p ~= ply) then
@@ -46,7 +46,7 @@ local NitroRewards = {
 			min = 0,
 		},
 		Reward = function(ply)
-			pluto.inv.generatebufferweapon(ply, "unique", "weapon_ttt_confetti_grenade")
+			pluto.inv.generatebufferweapon(ply, "unique", "weapon_ttt_confetti_grenade"):Run()
 			ttt.chat(color_nitro, ply:Nick(), white_text, " has received the second ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Confetti Grenade!")
 			hook.Add("PlayerSpawn", "nade_" .. ply:SteamID64(), function(p)
 				if (p ~= ply) then

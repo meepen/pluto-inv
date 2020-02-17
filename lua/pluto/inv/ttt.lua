@@ -147,7 +147,8 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 		if (not IsValid(ply) or math.random() > pluto_weapon_droprate:GetFloat()) then
 			continue
 		end
-		local item = pluto.inv.generatebufferweapon(ply)
+		local transact, item = pluto.inv.generatebufferweapon(ply)
+		transact:Run()
 
 		if (item:GetMaxAffixes() >= 5) then
 			msg:AddEmbed(item:GetDiscordEmbed()

@@ -210,7 +210,7 @@ function pluto.inv.readtabupdate()
 end
 
 function pluto.inv.readbufferitem()
-	local id = net.ReadInt(32)
+	local id = net.ReadUInt(32)
 
 	local item = setmetatable({
 		BufferID = id,
@@ -261,7 +261,7 @@ function pluto.inv.writetabrename(tabid, text)
 end
 
 function pluto.inv.writeclaimbuffer(bufferid, tabid, tabindex)
-	net.WriteInt(bufferid, 32)
+	net.WriteUInt(bufferid, 32)
 	net.WriteUInt(tabid, 32)
 	net.WriteUInt(tabindex, 8)
 end

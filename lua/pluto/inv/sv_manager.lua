@@ -214,7 +214,7 @@ function pluto.inv.writebaseitem(ply, item)
 end
 
 function pluto.inv.writebufferitem(ply, item)
-	net.WriteInt(item.BufferID, 32)
+	net.WriteUInt(item.RowID, 32)
 
 	pluto.inv.writebaseitem(ply, item)
 end
@@ -480,11 +480,11 @@ function pluto.inv.readtabrename(ply)
 end
 
 function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
-	local bufferid = net.ReadInt(32)
+	local bufferid = net.ReadUInt(32)
 	local tabid = net.ReadUInt(32)
 	local tabindex = net.ReadUInt(8)
 
-	local i = pluto.inv.getbufferitem(bufferid)
+	local i = pluto.inv.getbufferitem(ply, bufferid)
 
 	if (not i) then
 		pluto.inv.sendfullupdate(ply)
@@ -506,18 +506,27 @@ function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
 		return
 	end
 
-	i.Experience = 0
-	i.TabID, i.TabIndex = tabid, tabindex
-	setmetatable(i, pluto.inv.item_mt)
+	local pop_from = i.TabIndex
 
-	sql.Query("DELETE FROM pluto_items WHERE idx = " .. SQLStr(i.BufferID))
-	pluto.weapons.save(i, ply, function(id)
-		if (id or not IsValid(ply)) then
+	local transact = pluto.inv.setitemplacement(ply, i, tabid, tabindex, function(succ)
+		if (succ or not IsValid(ply)) then
+			if (IsValid(ply)) then
+				pluto.inv.message(ply)
+					:write("tabupdate", i.TabID, i.TabIndex)
+					:send()
+			end
 			return
 		end
 
 		pluto.inv.sendfullupdate(ply)
 	end)
+
+	if (not pluto.inv.popbuffer(ply, pop_from, transact)) then
+		pluto.inv.sendfullupdate(ply)
+		return
+	end
+
+	transact:Run()
 end
 
 function pluto.inv.readend()

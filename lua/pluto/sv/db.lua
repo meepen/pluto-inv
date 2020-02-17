@@ -1,5 +1,5 @@
 local TRANSACT = {}
-local transact_mt = {
+transact_mt = transact_mt or {
 	__index = TRANSACT
 }
 
@@ -36,7 +36,7 @@ function TRANSACT:Run(_cb)
 		cb(nil)
 	end
 
-	function self.transaction:onError(e)
+	function self.transaction.onError(_, e)
 		self.err("%s", e)
 		if (not cb) then
 			return

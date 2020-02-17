@@ -328,27 +328,30 @@ for name, values in pairs {
 			local gotten = rollcrate(crate0_contents)
 			local type = pluto.inv.itemtype(gotten)
 
+			local transact, wpn
 			if (type == "Model") then -- model
-				local id = pluto.inv.generatebuffermodel(ply, gotten:match "^model_(.+)$")
-
-				pluto.inv.message(ply)
-					:write("crate_id", id)
-					:send()
+				transact, wpn = pluto.inv.generatebuffermodel(ply, gotten:match "^model_(.+)$")
 			elseif (type == "Weapon") then -- unique
-				local wpn = pluto.inv.generatebufferweapon(ply, "unique", gotten)
-				local id = wpn.BufferID
+				transact, wpn = pluto.inv.generatebufferweapon(ply, "unique", gotten)
 
 				discord.Message():AddEmbed(
 					wpn:GetDiscordEmbed()
 						:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
 				):Send "drops"
-
-				pluto.inv.message(ply)
-					:write("crate_id", id)
-					:send()
 			end
 
-			pluto.inv.addcurrency(ply, "crate0", -1, function() end)
+			if (transact) then
+				pluto.inv.addcurrency(ply, "crate0", -1, nil, transact)
+				transact:Run(function(err)
+					if (err) then
+						return
+					end
+
+					pluto.inv.message(ply)
+						:write("crate_id", wpn.RowID)
+						:send()
+				end)
+			end
 		end,
 		Types = "None",
 		Crafted = {
@@ -362,21 +365,25 @@ for name, values in pairs {
 			local gotten = rollcrate(crate1_contents)
 			local type = pluto.inv.itemtype(gotten)
 
+			local transact, wpn
 			if (type == "Model") then -- model
-				local id = pluto.inv.generatebuffermodel(ply, gotten:match "^model_(.+)$")
-
-				pluto.inv.message(ply)
-					:write("crate_id", id)
-					:send()
+				transact, wpn = pluto.inv.generatebuffermodel(ply, gotten:match "^model_(.+)$")
 			elseif (type == "Weapon") then -- unique
-				local id = pluto.inv.generatebufferweapon(ply, "unique", gotten).BufferID
-
-				pluto.inv.message(ply)
-					:write("crate_id", id)
-					:send()
+				transact, wpn = pluto.inv.generatebufferweapon(ply, "unique", gotten)
 			end
 
-			pluto.inv.addcurrency(ply, "crate1", -1, function() end)
+			if (transact) then
+				pluto.inv.addcurrency(ply, "crate1", -1, nil, transact)
+				transact:Run(function(err)
+					if (err) then
+						return
+					end
+
+					pluto.inv.message(ply)
+						:write("crate_id", wpn.RowID)
+						:send()
+				end)
+			end
 		end,
 		Types = "None",
 		Crafted = {

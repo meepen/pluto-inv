@@ -203,6 +203,36 @@ function pluto.inv.switchtab(steamid, tabid1, tabindex1, tabid2, tabindex2, cb, 
 	return transact
 end
 
+function pluto.inv.setitemplacement(ply, item, tabid, tabindex, cb, transact)
+	if (not transact) then
+		transact = pluto.db.transact()
+	end
+
+	local tab = pluto.inv.invs[ply][tabid]
+
+	if (not tab) then
+		return
+	end
+
+	tab.Items[tabindex] = item
+	item.TabID = tabid
+	item.TabIndex = tabindex
+
+	transact
+		:AddQuery("UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE idx = ?", {tabid, tabindex, item.RowID})
+
+	transact:AddCallback(function(err, q)
+		if (err) then
+			cb(false)
+			return
+		end
+
+		cb(true)
+	end)
+
+	return transact
+end
+
 function pluto.inv.renametab(tab, cb)
 	assert(tab.RowID, "no rowid")
 	assert(tab.Name, "no name")
@@ -367,62 +397,6 @@ function pluto.inv.addexperience(id, exp) -- should not need cb :shrug:
 
 	pluto.db.query("UPDATE pluto_items SET exp = exp + ? WHERE idx = ?", {exp, id}, function(e, q)
 	end)
-end
-
-function pluto.inv.getbufferitems(owner)
-	local retn = {}
-	for _, item in ipairs(sql.Query("SELECT idx FROM pluto_items WHERE owner = " .. pluto.db.steamid64(owner) .. " ORDER BY idx DESC") or {}) do
-		table.insert(retn, pluto.inv.getbufferitem(item.idx))
-	end
-
-	return retn
-end
-
-function pluto.inv.getbufferitem(id)
-	local data = sql.QueryRow("SELECT tier, class, owner FROM pluto_items WHERE idx = " .. SQLStr(id))
-
-	if (not data) then
-		return
-	end
-
-	local wpn = setmetatable({
-		BufferID = id,
-		ClassName = data.class,
-		Owner = data.owner
-	}, pluto.inv.item_mt)
-
-	wpn.Type = pluto.inv.itemtype(wpn)
-
-	if (wpn.Type == "Shard" or wpn.Type == "Weapon") then
-		wpn.Tier = pluto.tiers[data.tier]
-	end
-
-	if (wpn.Type == "Weapon") then
-		wpn.Mods = {
-			implicit = {},
-			prefix = {},
-			suffix = {},
-		}
-
-		for _, item in pairs(sql.Query([[SELECT modname, pluto_mods.tier as tier, roll1, roll2, roll3 FROM pluto_mods
-			JOIN pluto_items ON pluto_mods.gun_index = pluto_items.idx
-			WHERE gun_index = ]] .. SQLStr(id)) or {}) do
-			local mod = pluto.mods.byname[item.modname]
-
-			wpn.Mods[mod.Type] = wpn.Mods[mod.Type] or {}
-
-			table.insert(wpn.Mods[mod.Type], {
-				Roll = { tonumber(item.roll1), tonumber(item.roll2), tonumber(item.roll3) },
-				Mod = item.modname,
-				Tier = tonumber(item.tier),
-				RowID = tonumber(item.idx),
-			})
-		end
-	elseif (wpn.Type == "Model") then
-		wpn.Model = pluto.models[wpn.ClassName:match "^model_(.+)$"]
-	end
-
-	return wpn
 end
 
 function pluto.inv.lockitem(steamid, itemid, locked, cb, nostart)

@@ -119,33 +119,6 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 			]]
 		:Halt()
 		:Run()
-
-	local queries = {
-		[[
-			CREATE TABLE IF NOT EXISTS pluto_items (
-				idx INTEGER PRIMARY KEY AUTOINCREMENT,
-				tier VARCHAR(16) NOT NULL,
-				class VARCHAR(32) NOT NULL,
-				owner BIGINT UNSIGNED NOT NULL
-			)
-		]],
-		[[CREATE INDEX IF NOT EXISTS item_index ON pluto_items (owner)]],
-		[[
-			CREATE TABLE IF NOT EXISTS pluto_mods (
-				gun_index INT UNSIGNED NOT NULL,
-				modname VARCHAR(16) NOT NULL,
-				tier TINYINT UNSIGNED NOT NULL,
-				roll1 FLOAT,
-				roll2 FLOAT,
-				roll3 FLOAT,
-				FOREIGN KEY (gun_index) REFERENCES pluto_items(idx) ON DELETE CASCADE
-			)
-		]],
-		[[CREATE INDEX IF NOT EXISTS mod_index ON pluto_mods (gun_index)]]
-	}
-	for _, query in ipairs(queries) do
-		sql.Query(query)
-	end
 end)
 
 hook.Add("CheckPassword", "pluto_db", function()
