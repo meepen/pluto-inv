@@ -10,31 +10,38 @@ local NitroRewards = {
 			min = 0,
 		},
 		Reward = function(ply)
-			pluto.inv.generatebufferweapon(ply, "unique", "weapon_noise_nitro"):Run()
-			ttt.chat(color_nitro, ply:Nick(), white_text, " has received the original ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Noise Maker!")
-			hook.Add("PlayerSpawn", "confetti_" .. ply:SteamID64(), function(p)
-				if (p ~= ply) then
+			local transact = pluto.inv.generatebufferweapon(ply, "unique", "weapon_noise_nitro")
+			transact:AddCallback(function(e)
+				if (e) then
 					return
 				end
+				ttt.chat(color_nitro, ply:Nick(), white_text, " has received the original ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Noise Maker!")
+				hook.Add("PlayerSpawn", "confetti_" .. ply:SteamID64(), function(p)
+					if (p ~= ply) then
+						return
+					end
 
-				hook.Remove("PlayerSpawn", "confetti_" .. ply:SteamID64())
-				local ang = ply:EyeAngles()
-				ang.p = 0
+					hook.Remove("PlayerSpawn", "confetti_" .. ply:SteamID64())
+					local ang = ply:EyeAngles()
+					ang.p = 0
 
-		--[[
-				for i = 0, 360, 30 do
-					ang:RotateAroundAxis(ang:Up(), 30)
-		
-					local data = EffectData()
-					data:SetStart(ply:GetShootPos())
-					data:SetOrigin(data:GetStart() + ang:Forward())
-					data:SetMagnitude(1)
-					data:SetRadius(50)
-					data:SetFlags(0)
-					util.Effect("pluto_confetti", data, true, true)
-				end]]
-				sound.Play("pluto_confetti", ply:GetPos())
+			--[[
+					for i = 0, 360, 30 do
+						ang:RotateAroundAxis(ang:Up(), 30)
+			
+						local data = EffectData()
+						data:SetStart(ply:GetShootPos())
+						data:SetOrigin(data:GetStart() + ang:Forward())
+						data:SetMagnitude(1)
+						data:SetRadius(50)
+						data:SetFlags(0)
+						util.Effect("pluto_confetti", data, true, true)
+					end]]
+					sound.Play("pluto_confetti", ply:GetPos())
+				end)
 			end)
+
+			return transact
 		end
 	},
 	{
@@ -46,37 +53,45 @@ local NitroRewards = {
 			min = 0,
 		},
 		Reward = function(ply)
-			pluto.inv.generatebufferweapon(ply, "unique", "weapon_ttt_confetti_grenade"):Run()
-			ttt.chat(color_nitro, ply:Nick(), white_text, " has received the second ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Confetti Grenade!")
-			hook.Add("PlayerSpawn", "nade_" .. ply:SteamID64(), function(p)
-				if (p ~= ply) then
+			local transact = pluto.inv.generatebufferweapon(ply, "unique", "weapon_ttt_confetti_grenade")
+			transact:AddCallback(function(err)
+				if (err) then
 					return
 				end
 
-				hook.Remove("PlayerSpawn", "nade_" .. ply:SteamID64())
-				local ang = ply:EyeAngles()
-				ang.p = 0
-		--[[
-				for i = 0, 360, 30 do
-					ang:RotateAroundAxis(ang:Up(), 30)
-		
-					local data = EffectData()
-					data:SetStart(ply:GetShootPos())
-					data:SetOrigin(data:GetStart() + ang:Forward())
-					data:SetMagnitude(1)
-					data:SetRadius(50)
-					data:SetFlags(0)
-					util.Effect("pluto_confetti", data, true, true)
-				end]]
-		
-				sound.Play("pluto_confetti", ply:GetPos())
+				ttt.chat(color_nitro, ply:Nick(), white_text, " has received the second ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Confetti Grenade!")
+				hook.Add("PlayerSpawn", "nade_" .. ply:SteamID64(), function(p)
+					if (p ~= ply) then
+						return
+					end
+
+					hook.Remove("PlayerSpawn", "nade_" .. ply:SteamID64())
+					local ang = ply:EyeAngles()
+					ang.p = 0
+			--[[
+					for i = 0, 360, 30 do
+						ang:RotateAroundAxis(ang:Up(), 30)
+			
+						local data = EffectData()
+						data:SetStart(ply:GetShootPos())
+						data:SetOrigin(data:GetStart() + ang:Forward())
+						data:SetMagnitude(1)
+						data:SetRadius(50)
+						data:SetFlags(0)
+						util.Effect("pluto_confetti", data, true, true)
+					end]]
+
+					sound.Play("pluto_confetti", ply:GetPos())
+				end)
 			end)
+
+			return transact
 		end
 	}
 }
 
 
-hook.Add("PlayerInitialSpawn", "pluto_admin", function(p)
+hook.Add("PlutoInventoryLoad", "pluto_admin", function(p)
 	local sid = pluto.db.steamid64(p)
 
 	local boost, rewards
@@ -124,7 +139,7 @@ hook.Add("PlayerInitialSpawn", "pluto_admin", function(p)
 					continue
 				end
 
-				reward.Reward(p)
+				local transact = reward.Reward(p)
 
 				for _, ply in pairs(player.GetAll()) do
 					pluto.inv.message(ply)
@@ -132,11 +147,15 @@ hook.Add("PlayerInitialSpawn", "pluto_admin", function(p)
 						:send()
 				end
 				
-				pluto.db.query("INSERT INTO pluto_nitro_rewards (steamid, reward_num, assoc_discordid) VALUES(?, ?, ?)", {sid, reward_num, boost.discordid}, function(err, q)
+				pluto.db.transact_or_query(transact, "INSERT INTO pluto_nitro_rewards (steamid, reward_num, assoc_discordid) VALUES(?, ?, ?)", {sid, reward_num, boost.discordid}, function(err, q)
 					if (err) then
 						pwarnf("Error inserting nitro reward data for %s", sid)
 					end
 				end)
+
+				if (transact) then
+					transact:Run()
+				end
 			end
 		end
 

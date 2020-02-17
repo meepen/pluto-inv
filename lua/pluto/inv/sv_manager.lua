@@ -143,6 +143,7 @@ function pluto.inv.sendfullupdate(ply)
 	pluto.inv.invs[ply] = nil
 
 	pluto.inv.init(ply, function()
+		hook.Run("PlutoInventoryLoad", ply)
 		if (ply:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE) then
 			ply:StripWeapons()
 			ply:StripAmmo()
