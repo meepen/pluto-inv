@@ -356,7 +356,6 @@ function pluto.inv.deleteitem(steamid, itemid, cb, transact)
 				tabs[i.TabID].Items[i.TabIndex] = nil
 			end
 		end
-		i.Invalid = true
 		i.RowID = nil
 	end
 
