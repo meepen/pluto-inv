@@ -250,5 +250,5 @@ function pluto.inv.readcraft(cl)
 		pluto.inv.addcurrency(cl, cur.Currency, -cur.Amount, nil, transact)
 	end
 
-	transact:start()
+	transact:Run()
 end
