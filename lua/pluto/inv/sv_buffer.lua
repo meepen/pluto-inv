@@ -33,9 +33,7 @@ function pluto.inv.popbuffer(ply, index, transact)
 		transact = pluto.db.transact()
 	end
 
-	print(index)
 	for i = index + 1, 5 do
-		print("pop", i)
 		transact:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx - 1 where tab_id = ? and tab_idx = ?]], {tab.RowID, i})
 	end
 
@@ -88,7 +86,7 @@ concommand.Add("pluto_spawn_weapon", function(ply, cmd, arg, args)
 		return
 	end
 
-	pluto.inv.generatebufferweapon(ply, unpack(arg))
+	pluto.inv.generatebufferweapon(ply, unpack(arg)):Run()
 end)
 
 function pluto.inv.generatebuffermodel(ply, mdl)

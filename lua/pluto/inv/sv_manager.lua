@@ -397,7 +397,7 @@ function pluto.inv.readitemdelete(ply)
 		if (succ) then
 			if (IsValid(ply)) then
 				if (i.Type == "Weapon" and i.Tier.InternalName ~= "crafted" and math.random() < 1 / 2) then
-					pluto.inv.generatebuffershard(ply, i.Tier.InternalName)
+					pluto.inv.generatebuffershard(ply, i.Tier.InternalName):Run()
 				end
 			end
 			return
