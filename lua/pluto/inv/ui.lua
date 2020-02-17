@@ -449,6 +449,10 @@ function PANEL:OnCursorExited()
 end
 
 function PANEL:OnMousePressed(code)
+	if (self.NoGhost) then
+		return
+	end
+
 	if (self.Item and not IsValid(pluto.ui.ghost)) then
 		if (code == MOUSE_LEFT and not self.NoGhost) then
 			pluto.ui.ghost = self
@@ -676,6 +680,10 @@ function PANEL:Think()
 	if (self.Item and self.Item.Version ~= self.showcase_version and IsValid(self.showcasepnl)) then
 		self:Showcase(self.Item)
 	end
+end
+
+function PANEL:SetNoGhost()
+	self.NoGhost = true
 end
 
 vgui.Register("pluto_inventory_item", PANEL, "ttt_curved_panel")
@@ -2316,7 +2324,7 @@ hook.Add("VGUIMousePressAllowed", "pluto_ghost", function(mouse)
 
 		local hover = vgui.GetHoveredPanel()
 
-		if (g.GhostClick and hover.ClassName ~= "pluto_inventory_tab") then
+		if (g.GhostClick and hover.ClassName ~= "pluto_inventory_tab" and not hover.NoGhost) then
 			return not g:GhostClick(hover, mouse)
 		end
 	end

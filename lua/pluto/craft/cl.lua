@@ -245,6 +245,7 @@ function PANEL:PlutoCraftResults(outcomes)
 
 		local p = self.OutcomeLayer:Add "pluto_inventory_item"
 		p:SetItem(i, self.Tab)
+		p:SetNoGhost()
 
 		self.Outcomes[n] = p
 	end
