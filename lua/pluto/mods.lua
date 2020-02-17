@@ -29,6 +29,7 @@ for _, modname in pairs {
 	"mag",
 	"max_range",
 	"min_range",
+	"mirror",
 	"poison",
 	"postheal",
 	"protec",

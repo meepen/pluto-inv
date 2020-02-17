@@ -268,8 +268,17 @@ for name, values in pairs {
 	},
 	mirror = {
 		Shares = 0.01,
-		Use = function(item)
+		Use = function(ply, item)
 			local new_item = item:Duplicate()
+			pluto.weapons.addmod(new_item, "mirror")
+
+			local transact = pluto.db.transact()
+
+			pluto.inv.savebufferitem(ply, new_item, transact)
+
+			pluto.inv.addcurrency(ply, "mirror", -1, nil, transact)
+
+			transact:Run()
 		end,
 		Types = "Weapon",
 		Crafted = {

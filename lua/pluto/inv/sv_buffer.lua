@@ -49,11 +49,15 @@ function pluto.inv.popbuffer(ply, index, transact)
 	return transact
 end
 
-function pluto.inv.generatebufferweapon(ply, ...)
-	local transact = pluto.inv.pushbuffer(ply)
+function pluto.inv.savebufferitem(ply, new_item, transact)
 	local tab = pluto.inv.invs[ply].tabs.buffer
 
-	local new_item = pluto.weapons.generatetier(...)
+	if (not transact) then
+		transact = pluto.db.transact()
+	end
+
+	pluto.inv.pushbuffer(ply, transact)
+
 	new_item.TabID = tab.RowID
 	new_item.TabIndex = 1
 	new_item.Owner = ply:SteamID64()
@@ -67,27 +71,20 @@ function pluto.inv.generatebufferweapon(ply, ...)
 	return transact, new_item
 end
 
-function pluto.inv.generatebuffershard(ply, tier)
-	local transact = pluto.inv.pushbuffer(ply)
-	local tab = pluto.inv.invs[ply].tabs.buffer
+function pluto.inv.generatebufferweapon(ply, ...)
+	local new_item = pluto.weapons.generatetier(...)
 
+	return pluto.inv.savebufferitem(ply, new_item)
+end
+
+function pluto.inv.generatebuffershard(ply, tier)
 	local new_item = setmetatable({
 		ClassName = "shard",
 		Tier = pluto.tiers[tier],
 		Type = "Shard",
 	}, pluto.inv.item_mt)
 
-	new_item.TabID = tab.RowID
-	new_item.TabIndex = 1
-	new_item.Owner = ply:SteamID64()
-
-	pluto.weapons.save(new_item, ply, nil, transact)
-
-	transact:AddCallback(function()
-		pluto.inv.notifybufferitem(ply, new_item)
-	end)
-
-	return transact, new_item
+	return pluto.inv.savebufferitem(ply, new_item)
 end
 
 concommand.Add("pluto_spawn_weapon", function(ply, cmd, arg, args)
@@ -99,9 +96,6 @@ concommand.Add("pluto_spawn_weapon", function(ply, cmd, arg, args)
 end)
 
 function pluto.inv.generatebuffermodel(ply, mdl)
-	local transact = pluto.inv.pushbuffer(ply)
-	local tab = pluto.inv.invs[ply].tabs.buffer
-
 	local new_item = setmetatable({
 		ClassName = "model_" .. mdl,
 		Model = pluto.models[mdl]
@@ -111,17 +105,7 @@ function pluto.inv.generatebuffermodel(ply, mdl)
 		return false
 	end
 
-	new_item.TabID = tab.RowID
-	new_item.TabIndex = 1
-	new_item.Owner = ply:SteamID64()
-
-	pluto.weapons.save(new_item, ply, nil, transact)
-
-	transact:AddCallback(function()
-		pluto.inv.notifybufferitem(ply, new_item)
-	end)
-
-	return transact, new_item
+	return pluto.inv.savebufferitem(ply, new_item)
 end
 
 concommand.Add("pluto_spawn_model", function(ply, cmd, arg, args)
