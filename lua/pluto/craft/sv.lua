@@ -242,10 +242,11 @@ function pluto.inv.readcraft(cl)
 	end
 
 	local transact = pluto.db.transact()
-	pluto.weapons.save(wpn, cl, nil, transact)
-
+	pluto.inv.deleteitem(cl, i1.RowID, print, transact)
 	pluto.inv.deleteitem(cl, i2.RowID, print, transact)
 	pluto.inv.deleteitem(cl, i3.RowID, print, transact)
+	pluto.weapons.save(wpn, cl, nil, transact)
+
 	if (cur) then
 		pluto.inv.addcurrency(cl, cur.Currency, -cur.Amount, nil, transact)
 	end
