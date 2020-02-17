@@ -527,6 +527,17 @@ function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
 	end
 
 	transact:Run()
+	transact:AddCallback(function(err)
+		if (err) then
+			return
+		end
+
+		for i, item in pairs(pluto.inv.invs[ply].tabs.buffer.Items) do
+			if (item == i) then
+				table.remove(pluto.inv.invs[ply].tabs.buffer.Items, i)
+			end
+		end
+	end)
 end
 
 function pluto.inv.readend()

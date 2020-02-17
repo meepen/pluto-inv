@@ -192,10 +192,6 @@ function pluto.weapons.update(item, cb, transact)
 end
 
 function pluto.weapons.save(item, owner, cb, transact)
-	if (item.Invalid) then
-		error "invalid item"
-	end
-
 	if (item.RowID) then
 		error "rowid already set"
 	end
@@ -213,15 +209,13 @@ function pluto.weapons.save(item, owner, cb, transact)
 
 	local old = tab.Items[item.TabIndex]
 
-	local tmp = table.Copy(item)
-	tmp.Invalid = true
-	tab.Items[item.TabIndex] = tmp
+	tab.Items[item.TabIndex] = item
 
 	if (not transact) then
 		transact = pluto.db.transact()
 	end
 
-	transact:AddQuery("REPLACE INTO pluto_items (tier, class, tab_id, tab_idx, nick, special_name, original_owner) VALUES(?, ?, ?, ?, ?, ?, ?)", 
+	transact:AddQuery("INSERT INTO pluto_items (tier, class, tab_id, tab_idx, nick, special_name, original_owner) VALUES(?, ?, ?, ?, ?, ?, ?)", 
 		{
 			type(item.Tier) == "string" and item.Tier or item.Tier and item.Tier.InternalName or "",
 			item.ClassName,
@@ -232,11 +226,10 @@ function pluto.weapons.save(item, owner, cb, transact)
 			item.Owner
 		},
 		function(err, q)
-			local insert = q:lastInsert()
-
-			item.RowID = insert
+			item.RowID = q:lastInsert()
 		end
 	)
+
 	transact:AddQuery "SET @gun = LAST_INSERT_ID()"
 
 	if (item.Tier and item.Tier.InternalName == "crafted") then
@@ -282,7 +275,7 @@ function pluto.weapons.save(item, owner, cb, transact)
 
 		local old = tab.Items[item.TabIndex]
 
-		if (old and not old.Invalid) then
+		if (old and old.RowID) then
 			pluto.itemids[old.RowID] = nil
 		end
 
