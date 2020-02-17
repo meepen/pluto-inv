@@ -34,7 +34,7 @@ SWEP.Primary.RecoilTiming  = 0.09
 SWEP.Primary.Automatic     = true
 SWEP.Primary.Ammo          = "357"
 SWEP.Primary.ClipSize      = 5
-SWEP.Primary.DefaultClip   = 21
+SWEP.Primary.DefaultClip   = 20
 SWEP.Primary.Sound         = "Weapon_M4A1.Silenced"
 
 SWEP.Secondary.Sound       = Sound "Default.Zoom"

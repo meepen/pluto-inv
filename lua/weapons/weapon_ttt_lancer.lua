@@ -30,7 +30,7 @@ SWEP.HoldType = "ar2"
 
 SWEP.Primary.Damage = 19
 SWEP.Primary.ClipSize = 30
-SWEP.Primary.DefaultClip = 30 * 3
+SWEP.Primary.DefaultClip = 60
 SWEP.Primary.Ammo = "pistol"
 SWEP.AmmoEnt = "item_ammo_pistol_ttt"
 SWEP.Primary.Recoil = 1.5
