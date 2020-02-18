@@ -115,7 +115,7 @@ pluto.currency.list = {
 		Description = "Rerolls prefix modifiers on an item",
 		SubDescription = "What have Yaari done to you, my children?!",
 		Color = Color(11, 84, 51),
-		CanCraft = false
+		CanCraft = false,
 	},
 	{
 		InternalName = "pdrop",
@@ -124,7 +124,16 @@ pluto.currency.list = {
 		Description = "Rerolls suffix modifiers on an item",
 		SubDescription = "Back when these things first were created, the military bought them straight from the man himself... paid upwards to a million for a single liter. Nowadays they are shot straight up to the skies",
 		Color = Color(117, 28, 178),
-		CanCraft = false
+		CanCraft = false,
+	},
+	{
+		InternalName = "quill",
+		Name = "Glass Quill",
+		Icon = "pluto/currencies/quill.png",
+		Description = "(tba)",
+		SubDescription = "(not out yet sry)",
+		Color = Color(23, 127, 105),
+		CanCraft = false,
 	},
 }
 
