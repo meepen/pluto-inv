@@ -8,6 +8,28 @@ function pluto.weapons.randommelee()
 	return table.Random(pluto.weapons.melees)
 end
 
+function pluto.weapons.randomgrenade()
+	return table.Random(pluto.weapons.grenades)
+end
+
+function pluto.weapons.type(gun)
+	if (not gun) then
+		return
+	end
+
+	if (gun.Slot == 1 or gun.Slot == 2) then
+		return "Weapon"
+	end
+
+	if (gun.Slot == 3) then
+		return "Grenade"
+	end
+
+	if (gun.Slot == 0) then
+		return "Melee"
+	end
+end
+
 function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll, affixmax, prefix_count, suffix_count)
 	if (type(wep) == "string") then
 		wep = weapons.GetStored(wep)
@@ -240,6 +262,10 @@ function pluto.weapons.addmod(item, modname)
 end
 
 function pluto.weapons.generatemod(item, prefix_max, suffix_max, ignoretier)
+	local wep = baseclass.Get(item.ClassName)
+	local itemtype = pluto.weapons.type(wep)
+	local typemods = pluto.mods.byitem[itemtype]
+
 	suffix_max = suffix_max or 3
 	prefix_max = prefix_max or math.max(item:GetMaxAffixes() - suffix_max, 3)
 
@@ -264,9 +290,9 @@ function pluto.weapons.generatemod(item, prefix_max, suffix_max, ignoretier)
 
 	local allowed = {}
 
-	if (prefixes < prefix_max) then
+	if (prefixes < prefix_max and typemods.prefix) then
 		local t = {}
-		for _, item in pairs(pluto.mods.prefix) do
+		for _, item in pairs(typemods.prefix) do
 			if (not have[item.InternalName]) then
 				t[#t + 1] = item
 			end
@@ -276,9 +302,9 @@ function pluto.weapons.generatemod(item, prefix_max, suffix_max, ignoretier)
 		end
 	end
 
-	if (suffixes < suffix_max) then
+	if (suffixes < suffix_max and typemods.suffix) then
 		local t = {}
-		for _, item in pairs(pluto.mods.suffix) do
+		for _, item in pairs(typemods.suffix) do
 			if (not have[item.InternalName]) then
 				t[#t + 1] = item
 			end
@@ -303,7 +329,7 @@ function pluto.weapons.generatemod(item, prefix_max, suffix_max, ignoretier)
 
 	local mods, type = table.Random(allowed)
 
-	local toadd = pluto.mods.bias(weapons.GetStored(item.ClassName), mods, biases)[1]
+	local toadd = pluto.mods.bias(wep, mods, biases)[1]
 
 	pluto.weapons.addmod(item, toadd.InternalName)
 

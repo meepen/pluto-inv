@@ -1,8 +1,15 @@
 pluto.mods = pluto.mods or {
 	byname   = {},
-	suffix   = {},
-	prefix   = {},
-	implicit = {},
+
+	byitem   = {
+		--[[
+		[type] = {
+			suffix = {},
+			prefix = {},
+			implcit = {}
+		}
+		]]
+	},
 }
 
 function pluto.mods.formataffix(affixtype, name)
@@ -61,9 +68,22 @@ for _, modname in pairs {
 		end
 	end
 
-	pluto.mods[mod.Type] = pluto.mods[mod.Type] or {}
+	local itemtype = mod.ItemType or "Weapon"
 
-	pluto.mods[mod.Type][modname] = mod
+	if (not pluto.mods.byitem[itemtype]) then
+		pluto.mods.byitem[itemtype] = {
+			byname = {}
+		}
+	end
+
+	local typeinfo = pluto.mods.byitem[itemtype]
+
+	if (not typeinfo[mod.Type]) then
+		typeinfo[mod.Type] = {}
+	end
+
+	typeinfo[mod.Type][modname] = mod
+
 	pluto.mods.byname[modname] = mod
 end
 
@@ -168,19 +188,25 @@ function pluto.mods.bias(wpn, list, biases)
 end
 
 function pluto.mods.generateaffixes(wpn, affixcount, prefixmax, suffixmax, guaranteed, tagbiases, rolltier, roll)
-	local allowed = {
-		prefix = prefixmax or math.max(affixcount - 3, 3),
-		suffix = suffixmax or 3
-	}
+	local typedmods = pluto.mods.byitem[pluto.weapons.type(wpn)]
 
 	local retn = {
 		suffix = {},
 		prefix = {}
 	}
 
+	if (not typedmods) then
+		return retn
+	end
+
+	local allowed = {
+		prefix = prefixmax or math.max(affixcount - 3, 3),
+		suffix = suffixmax or 3
+	}
+
 	if (guaranteed) then
 		for modname, data in pairs(guaranteed) do
-			local mod = pluto.mods.byname[modname]
+			local mod = typedmods.byname[modname]
 			if (not mod) then
 				pwarnf("Mod %s doesn't exist.\n%s", modname, debug.traceback())
 				continue
@@ -200,8 +226,8 @@ function pluto.mods.generateaffixes(wpn, affixcount, prefixmax, suffixmax, guara
 
 
 	local potential = {
-		suffix = pluto.mods.bias(wpn, pluto.mods.suffix, tagbiases),
-		prefix = pluto.mods.bias(wpn, pluto.mods.prefix, tagbiases),
+		suffix = pluto.mods.bias(wpn, typedmods.suffix, tagbiases),
+		prefix = pluto.mods.bias(wpn, typedmods.prefix, tagbiases),
 		current = {
 			suffix = 1,
 			prefix = 1,

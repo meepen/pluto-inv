@@ -25,27 +25,8 @@ function TIER:GetSubDescription()
 	return desc or ""
 end
 
-function pluto.tiers.type(gun)
-	if (not gun) then
-		return
-	end
-
-	if (gun.Slot == 1 or gun.Slot == 2) then
-		return "Weapon"
-	end
-
-	if (gun.Slot == 3) then
-		print "yes"
-		return "Grenade"
-	end
-
-	if (gun.Slot == 0) then
-		return "Melee"
-	end
-end
-
 function pluto.tiers.random(gun)
-	local type = pluto.tiers.type(gun)
+	local type = pluto.weapons.type(gun)
 
 	if (not type) then
 		return
