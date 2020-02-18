@@ -2,7 +2,7 @@ pluto.weapons = pluto.weapons or {}
 
 pluto.weapons.guns = pluto.weapons.guns or {}
 pluto.weapons.melees = pluto.weapons.melees or {}
-pluto.weapons.valid = {}
+pluto.weapons.grenades = pluto.weapons.grenades or {}
 
 local weapons_OnLoaded = weapons.OnLoaded
 
@@ -20,12 +20,12 @@ function weapons.OnLoaded()
 			continue
 		end
 
-		if (wep.Slot == 2 or wep.Slot == 1) then
+		if (wep.Slot == 3) then
+			table.insert(pluto.weapons.grenades, wep.ClassName)
+		elseif (wep.Slot == 2 or wep.Slot == 1) then
 			table.insert(pluto.weapons.guns, wep.ClassName)
-			pluto.weapons.valid[wep.ClassName] = true
-		elseif (wep.Slot == 1) then
+		elseif (wep.Slot == 0) then
 			table.insert(pluto.weapons.melees, wep.ClassName)
-			pluto.weapons.valid[wep.ClassName] = true
 		end
 	end
 end

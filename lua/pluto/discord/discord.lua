@@ -96,16 +96,10 @@ function MSG:Send(where)
 		return
 	end
 
-	print(util.TableToJSON(self))
-
 	HTTP {
 		success = function(code, body, headers)
-			print(code)
-			PrintTable(headers)
-			print(body)
 		end,
 		failed = function(reason)
-			print(reason)
 		end,
 
 		method = "POST",

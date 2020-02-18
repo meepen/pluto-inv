@@ -9,5 +9,6 @@ return {
 	},
 	Shares = 100,
 	Color = Color(128, 128, 128),
+
 	Type = "Grenade",
 }

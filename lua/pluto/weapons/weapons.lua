@@ -9,7 +9,7 @@ function pluto.weapons.randommelee()
 end
 
 function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll, affixmax, prefix_count, suffix_count)
-	if (wep) then
+	if (type(wep) == "string") then
 		wep = weapons.GetStored(wep)
 	end
 

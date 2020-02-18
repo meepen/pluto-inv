@@ -18,7 +18,6 @@ local function GetImageMaterial(mapname, cb)
 			file.Write(mapname .. ".png", dat)
 			GetImageMaterial(mapname, cb)
 		end
-		print(mapname, res)
 	end)
 end
 

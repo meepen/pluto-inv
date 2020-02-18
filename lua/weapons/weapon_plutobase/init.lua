@@ -21,9 +21,9 @@ function SWEP:Initialize()
 		return
 	end
 
-	if (pluto.weapons.valid[self:GetClass()]) then
+	if (pluto.tiers.bytype[pluto.tiers.type(self)]) then
 		if (not item) then
-			item = pluto.weapons.generatetier(nil, self:GetClass())
+			item = pluto.weapons.generatetier(nil, self)
 			item.Type = "Weapon"
 		end
 		self:SetInventoryItem(item)

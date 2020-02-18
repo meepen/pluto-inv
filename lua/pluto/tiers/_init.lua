@@ -35,6 +35,7 @@ function pluto.tiers.type(gun)
 	end
 
 	if (gun.Slot == 3) then
+		print "yes"
 		return "Grenade"
 	end
 
@@ -150,6 +151,8 @@ for _, name in pairs {
 	"uncommon",
 	"unique",
 	"vintage",
+
+	"unstable",
 } do
 	local item = include("pluto/tiers/" .. name .. ".lua")
 	if (not item) then
@@ -176,6 +179,7 @@ for _, name in pairs {
 	pluto.tiers.byname[name] = item
 
 	local type = item.Type or "Weapon"
+
 	if (not pluto.tiers.bytype[type]) then
 		pluto.tiers.bytype[type] = {
 			list = {},
