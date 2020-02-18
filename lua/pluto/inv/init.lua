@@ -276,7 +276,7 @@ function pluto.inv.retrieveitems(steamid, cb)
 				RowID = item.idx,
 				TabIndex = item.tab_idx,
 				TabID = item.tab_id,
-				Tier = pluto.tiers[item.tier],
+				Tier = pluto.tiers.byname[item.tier],
 				ClassName = item.class,
 				Owner = steamid,
 				SpecialName = item.special_name,
@@ -298,7 +298,7 @@ function pluto.inv.retrieveitems(steamid, cb)
 			end
 
 			if (item.tier == "crafted") then
-				it.Tier = pluto.craft.tier {
+				it.Tier = pluto.tiers.craft {
 					item.tier1 or "unique",
 					item.tier2 or "unique",
 					item.tier3 or "unique",

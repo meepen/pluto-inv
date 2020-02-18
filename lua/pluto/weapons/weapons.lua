@@ -1,94 +1,4 @@
 pluto.weapons = pluto.weapons or {}
-pluto.tiers = pluto.tiers or setmetatable({}, {
-	__index = {
-		random = function()
-			local rand = math.random()
-		
-			for _, item in ipairs(pluto.tiers_pct) do
-				if (item.Percent >= rand) then
-					return item.Tier
-				end
-			end
-		
-			pwarnf("Reached end of loop in pluto.tiers.random, rand: %f", rand)
-		
-			return pluto.tiers.junk
-		end
-	}
-})
-
-local TIER = {}
-pluto.tier_mt = pluto.tier_mt or {}
-pluto.tier_mt.__index = TIER
-
-function TIER:GetSubDescription()
-	local desc = self.SubDescription
-
-	if (type(desc) == "table") then
-		local r = {}
-
-		for k, v in SortedPairs(desc) do
-			r[#r + 1] = v
-		end
-
-		return table.concat(r, "\n")
-	end
-
-	return desc or ""
-end
-
-local total_shares = 0
-for _, name in pairs {
-	"common",
-	"confused",
-	"junk",
-	"mystical",
-	"otherworldly",
-	"powerful",
-	"shadowy",
-	"stable",
-	"uncommon",
-	"unique",
-	"vintage",
-} do
-	local item = include("pluto/tiers/" .. name .. ".lua")
-	if (not item) then
-		pwarnf("Tier %s didn't return a value", name)
-		continue
-	end
-
-	setmetatable(item, pluto.tier_mt)
-
-	if (not item.Shares) then
-		pwarnf("Tier %s doesn't have shares", name)
-		continue
-	end
-
-	local prev = pluto.tiers[name]
-	if (prev) then
-		table.Merge(prev, item)
-		item = prev
-	end
-
-	item.InternalName = name
-
-	pluto.tiers[name] = item
-	total_shares = total_shares + item.Shares
-end
-
-pluto.tiers_pct = {}
-
-local pct = 0
-for name, item in pairs(pluto.tiers) do
-	pct = pct + item.Shares / total_shares
-
-	item.SharePercent = item.Shares / total_shares
-
-	table.insert(pluto.tiers_pct, {
-		Percent = pct,
-		Tier = item
-	})
-end
 
 function pluto.weapons.randomgun()
 	return table.Random(pluto.weapons.guns)
@@ -108,11 +18,11 @@ function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll, affixm
 	end
 
 	if (type(tier) == "string") then
-		tier = pluto.tiers[tier]
+		tier = pluto.tiers.byname[tier]
 	end
 
 	if (not tier) then
-		tier = pluto.tiers.random()
+		tier = pluto.tiers.random(wep)
 	end
 
 	local biases

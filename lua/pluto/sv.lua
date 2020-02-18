@@ -16,6 +16,8 @@ pluto.files.load {
 		"craft/sv.lua",
 		"inv/sv_exp.lua",
 
+		"tiers/_init.lua",
+
 		"discord/discord.lua",
 		"nitro/sv_nitro.lua",
 	},

@@ -2,82 +2,12 @@ pluto.craft = pluto.craft or {
 	tiers = {}
 }
 
-local function CombineColors(...)
-	local cols = {
-		h = 0,
-		s = 0,
-		v = 0,
-		a = 255
-	}
-
-	local num = select("#", ...)
-	for i = 1, num do
-		local h, s, v = ColorToHSV((select(i, ...)))
-
-		cols.h = cols.h + h / num
-		cols.s = cols.s + s / num
-		cols.v = cols.v + v / num
-	end
-
-	local c = HSVToColor(cols.h, cols.s, cols.v, cols.a)
-	return Color(c.r, c.g, c.b, c.a)
-end
-
-function pluto.craft.tier(tiers)
-	for i, t in pairs(tiers) do
-		tiers[i] = pluto.tiers[tiers[i]]
-	end
-
-	local t1, t2, t3 = tiers[1], tiers[2], tiers[3]
-
-	if (t1 == t2 and t2 == t3) then
-		return t1
-	end
-
-	local name = t1.InternalName .. "-" .. t2.InternalName .. "-" .. t3.InternalName
-
-	if (pluto.craft.tiers[name]) then
-		return pluto.craft.tiers[name]
-	end
-
-	local tier = setmetatable({
-		Name = "Crafted",
-		InternalName = "crafted",
-		Tiers = {
-			t1.InternalName,
-			t2.InternalName,
-			t3.InternalName,
-		},
-	}, pluto.tier_mt)
-
-	pluto.craft.tiers[name] = tier
-
-	tier.SubDescription = {
-		string.format("Crafted from %s, %s and %s shards", t1.Name, t2.Name, t3.Name)
-	}
-
-	if (t2.tags) then
-		table.insert(tier.SubDescription, t2.SubDescription.tags)
-		tier.tags = t2.tags
-	end
-
-	if (t3.rolltier) then
-		table.insert(tier.SubDescription, t3.SubDescription.rolltier)
-		tier.rolltier = t3.rolltier
-	end
-
-	tier.affixes = t1.affixes or 0
-	tier.Color = CombineColors(t1.Color, t1.Color, t1.Color, t1.Color, t1.Color, t1.Color, t1.Color, t2.Color, t2.Color, t3.Color)
-
-	return tier
-end
-
 function pluto.craft.alloutcomes(tiers)
 	local out = {}
 	local got = {}
 
 	local function insert(t1, t2, t3)
-		local t = pluto.craft.tier {
+		local t = pluto.tiers.craft {
 			t1,
 			t2,
 			t3
@@ -205,7 +135,7 @@ function pluto.inv.readcraft(cl)
 		tiers[i] = tier.tier
 	end
 
-	local wpn = pluto.weapons.generatetier(pluto.craft.tier(tiers))
+	local wpn = pluto.weapons.generatetier(pluto.tiers.craft(tiers))
 
 	wpn.TabID = i1.TabID
 	wpn.TabIndex = i1.TabIndex

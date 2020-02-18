@@ -80,7 +80,7 @@ end
 function pluto.inv.generatebuffershard(ply, tier)
 	local new_item = setmetatable({
 		ClassName = "shard",
-		Tier = pluto.tiers[tier],
+		Tier = pluto.tiers.byname[tier],
 		Type = "Shard",
 	}, pluto.inv.item_mt)
 
