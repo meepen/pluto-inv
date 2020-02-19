@@ -48,8 +48,9 @@ for _, filename in pairs {
 	"unchanging",
 	"zoomies",
 
-	"grenades/throwspeed",
+	"grenades/grendelay",
 	"grenades/elasticity",
+	"grenades/throwspeed",
 } do
 	local modname = filename:match "[_%w]+$"
 	MOD = pluto.mods.byname[modname] or {}
