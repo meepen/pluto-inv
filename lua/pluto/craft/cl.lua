@@ -58,6 +58,7 @@ function PANEL:Init()
 	self.CurrencyElements = self:Add "EditablePanel"
 
 	function self.CurrencyElements.PerformLayout(s, w, h)
+		h = h - self.Currency.Percent:GetTall()
 		self.Currency:SetSize(h, h)
 		self.Currency:Center()
 	end
