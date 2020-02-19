@@ -1,10 +1,3 @@
-let json = {
-	"title":    "pluto.gg content",
-	"type":     "ServerContent",
-	"tags":     [ ],
-	"ignore":   [ ".gitignore", "*.gma", "icon.jpg", "*.bat", ".git/*", "lua/*", "node_modules/*", "*.js", "package.json", "package-lock.json" ]
-};
-
 const { buf } = require("crc-32");
 const addons = require("./addons")
 const { readdir, readFile, writeFile } = require('fs').promises;
@@ -21,7 +14,21 @@ async function* getFiles(dir) {
 	}
 }
 
+async function add_file(file_datas, gma_header, filenum, f) {
+	let content = await readFile(f);
 
+	let num = Buffer.alloc(4);
+	num.writeUInt32LE(filenum);
+
+	gma_header.push(num);
+	gma_header.push(Buffer.from(f.toLowerCase()));
+	let size = Buffer.alloc(13);
+	size.writeUInt32LE(content.length, 1);
+	size.writeInt32LE(buf(content), 9);
+	gma_header.push(size);
+
+	file_datas.push(content);
+}
 
 async function make_gma(all_files, list) {
 	let gma_header = [
@@ -30,7 +37,12 @@ async function make_gma(all_files, list) {
 		Buffer.alloc(8),
 		Buffer.alloc(8),
 		Buffer.alloc(1),
-		Buffer.alloc(3),
+		Buffer.from("pluto.gg content"),
+		Buffer.alloc(1),
+		await readFile("./addon.json"),
+		Buffer.alloc(1),
+		Buffer.from("Meepen"),
+		Buffer.alloc(1),
 		Buffer.from("\x01\x00\x00\x00"),
 	];
 
@@ -44,19 +56,7 @@ async function make_gma(all_files, list) {
 		}
 		all_files[idx] = null;
 
-		let content = await readFile(f);
-
-		let num = Buffer.alloc(4);
-		num.writeUInt32LE(++filenum);
-
-		gma_header.push(num);
-		gma_header.push(Buffer.from(f.toLowerCase()));
-		let size = Buffer.alloc(13);
-		size.writeUInt32LE(content.length, 1);
-		size.writeInt32LE(buf(content), 9);
-		gma_header.push(size);
-
-		file_datas.push(content);
+		await add_file(file_datas, gma_header, ++filenum, f);
 	}
 
 	gma_header.push(Buffer.alloc(4));

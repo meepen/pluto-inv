@@ -139,9 +139,25 @@ function PANEL:Init()
 	
 	self.Currency = self.CurrencyElements:Add "pluto_trade_currency"
 	self.Currency:SetModifiable()
+	self.Currency.Percent = self.CurrencyElements:Add "DLabel"
+	self.Currency.Percent:Dock(TOP)
+	self.Currency.Percent:SetContentAlignment(5)
+	self.Currency.Percent:SetFont "pluto_craft_outcome"
+	self.Currency.Percent:SizeToContentsY()
+	self.Currency.Percent:SetText ""
 	function self.Currency:OnUpdate()
-		if (self.Info and self.Info.Amount >= 10) then
-			self.Info.Amount = 10
+		self.Percent:SetText ""
+
+		if (self.Info) then
+			self.Info.Amount = math.min(self.Info.Amount or 0, 10, pluto.cl_currency[self.Info.Currency or ""] or 0)
+
+			local crafted = pluto.currency.byname[self.Info.Currency].Crafted
+
+			if (not crafted) then
+				return
+			end
+
+			self.Percent:SetText(string.format("Chance to get %s modifier: %.2f%%", crafted.Mod, pluto.mods.chance(crafted, self.Info.Amount) * 100))
 		end
 	end
 

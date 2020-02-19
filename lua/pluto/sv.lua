@@ -3,7 +3,7 @@ pluto.files.load {
 		"sv/config.lua",
 		"weapons/weapons.lua",
 		"weapons/random_spawns.lua",
-		"mods.lua",
+		"mods/sv_mods.lua",
 		"sv/hacks.lua",
 		"db/init.lua",
 		"inv/init.lua",

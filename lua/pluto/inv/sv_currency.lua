@@ -132,10 +132,6 @@ for name, values in pairs {
 			end
 		end,
 		Types = "Weapon",
-		Crafted = {
-			Chance = 1 / 3,
-			Mod = "diced",
-		},
 	},
 	droplet = {
 		Shares = 3000,
@@ -169,10 +165,6 @@ for name, values in pairs {
 			UpdateAndDecrement(ply, item, "droplet")
 		end,
 		Types = "Weapon",
-		Crafted = {
-			Chance = 1 / 4,
-			Mod = "dropletted",
-		},
 	},
 	hand = {
 		Shares = 400,
@@ -218,10 +210,6 @@ for name, values in pairs {
 			UpdateAndDecrement(ply, item, "hand")
 		end,
 		Types = "Weapon",
-		Crafted = {
-			Chance = 1 / 4,
-			Mod = "handed",
-		},
 	},
 	tome = {
 		Shares = 20,
@@ -261,10 +249,6 @@ for name, values in pairs {
 			UpdateAndDecrement(ply, item, "tome")
 		end,
 		Types = "Weapon",
-		Crafted = {
-			Chance = 0,
-			Mod = "tomeded",
-		},
 	},
 	mirror = {
 		Shares = 0.01,
@@ -281,10 +265,6 @@ for name, values in pairs {
 			transact:Run()
 		end,
 		Types = "Weapon",
-		Crafted = {
-			Chance = 0,
-			Mod = "mirrorered",
-		},
 	},
 	heart = {
 		Shares = 8.5,
@@ -294,10 +274,6 @@ for name, values in pairs {
 			end
 		end,
 		Types = "Weapon",
-		Crafted = {
-			Chance = 0.5,
-			Mod = "hearted",
-		},
 	},
 	coin = {
 		Shares = 0.7,
@@ -326,10 +302,6 @@ for name, values in pairs {
 			trans:Run()
 		end,
 		Types = "None",
-		Crafted = {
-			Chance = 0.5,
-			Mod = "coined",
-		},
 	},
 	crate0 = {
 		Shares = 39,
@@ -363,10 +335,6 @@ for name, values in pairs {
 			end
 		end,
 		Types = "None",
-		Crafted = {
-			Chance = 0,
-			Mod = "crated",
-		},
 	},
 	crate1 = {
 		Shares = 0,
@@ -395,10 +363,6 @@ for name, values in pairs {
 			end
 		end,
 		Types = "None",
-		Crafted = {
-			Chance = 0,
-			Mod = "crated",
-		},
 	},
 	aciddrop = {
 		Shares = 30,
@@ -427,7 +391,6 @@ for name, values in pairs {
 			UpdateAndDecrement(ply, item, "aciddrop")
 		end,
 		Types = "Weapon",
-		Crafted = false,
 	},
 	pdrop = {
 		Shares = 20,
@@ -456,14 +419,12 @@ for name, values in pairs {
 			UpdateAndDecrement(ply, item, "pdrop")
 		end,
 		Types = "Weapon",
-		Crafted = false,
 	},
 	quill = {
 		Shares = 0,
 		Use = function(ply, item)
 		end,
 		Types = "Weapon",
-		Crafted = false,
 	}
 } do
 	table.Merge(pluto.currency.byname[name], values)

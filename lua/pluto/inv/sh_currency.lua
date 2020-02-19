@@ -10,6 +10,10 @@ pluto.currency.list = {
 		Description = "Removes a random modifier and enhances the tier of another",
 		SubDescription = "One of the many hands of Yaari's victims",
 		Color = Color(255, 208, 86),
+		Crafted = {
+			Chance = 1 / 4,
+			Mod = "handed",
+		},
 	},
 	{
 		InternalName = "droplet",
@@ -18,6 +22,10 @@ pluto.currency.list = {
 		Description = "Removes all modifiers and rolls new ones",
 		SubDescription = "It's said this magic droplet was formed from one of Yaari's many former lovers",
 		Color = Color(24, 125, 216),
+		Crafted = {
+			Chance = 1 / 4,
+			Mod = "dropletted",
+		},
 	},
 	{
 		InternalName = "dice",
@@ -26,6 +34,10 @@ pluto.currency.list = {
 		Description = "Randomizes all the rolls on modifiers",
 		SubDescription = "Arizor lost this die in a bet with a farmer long ago. That farmer won a bet with Yaari later, and gave him the power to create these at will",
 		Color = Color(255, 208, 86),
+		Crafted = {
+			Chance = 1 / 3,
+			Mod = "diced",
+		},
 	},
 	{
 		InternalName = "tome",
@@ -34,7 +46,6 @@ pluto.currency.list = {
 		Description = "Corrupts an item unpredictably",
 		SubDescription = "Arizor hands these out to ruthless gunsmiths to augment their weapons and further themselves in life",
 		Color = Color(142, 94, 166),
-		CanCraft = false,
 	},
 	{
 		InternalName = "heart",
@@ -43,6 +54,10 @@ pluto.currency.list = {
 		Description = "Adds a random modifier",
 		SubDescription = "Mara gives her heart to people who have shown compassion in their time of need",
 		Color = Color(204, 43, 75),
+		Crafted = {
+			Chance = 0.5,
+			Mod = "hearted",
+		},
 	},
 	{
 		InternalName = "mirror",
@@ -51,7 +66,6 @@ pluto.currency.list = {
 		Description = "Creates a mirror image of an item which is unmodifiable",
 		SubDescription = "Mara threw this mirror out after seeing what she had become",
 		Color = Color(177, 173, 205),
-		CanCraft = false,
 	},
 	{
 		InternalName = "coin",
@@ -61,6 +75,10 @@ pluto.currency.list = {
 		SubDescription = "$$$",
 		Color = Color(254, 233, 105),
 		NoTarget = true,
+		Crafted = {
+			Chance = 0.5,
+			Mod = "coined",
+		},
 	},
 	{
 		InternalName = "crate0",
@@ -70,7 +88,6 @@ pluto.currency.list = {
 		SubDescription = "Who's there? It's been so long... please don't open me... I want to live...",
 		NoTarget = true,
 		Color = Color(240, 192, 71),
-		CanCraft = false,
 		Use = function()
 			if (IsValid(pluto.opener)) then
 				pluto.opener:Remove()
@@ -93,7 +110,6 @@ pluto.currency.list = {
 		SubDescription = "Is that... it couldn't be... and what is he holding?",
 		NoTarget = true,
 		Color = Color(188, 2, 1),
-		CanCraft = false,
 		Use = function()
 			if (IsValid(pluto.opener)) then
 				pluto.opener:Remove()
@@ -115,7 +131,6 @@ pluto.currency.list = {
 		Description = "Rerolls prefix modifiers on an item",
 		SubDescription = "What have Yaari done to you, my children?!",
 		Color = Color(11, 84, 51),
-		CanCraft = false,
 	},
 	{
 		InternalName = "pdrop",
@@ -124,7 +139,6 @@ pluto.currency.list = {
 		Description = "Rerolls suffix modifiers on an item",
 		SubDescription = "Back when these things first were created, the military bought them straight from the man himself... paid upwards to a million for a single liter. Nowadays they are shot straight up to the skies",
 		Color = Color(117, 28, 178),
-		CanCraft = false,
 	},
 	{
 		InternalName = "quill",
@@ -133,7 +147,6 @@ pluto.currency.list = {
 		Description = "(tba)",
 		SubDescription = "(not out yet sry)",
 		Color = Color(23, 127, 105),
-		CanCraft = false,
 	},
 }
 

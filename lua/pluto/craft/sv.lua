@@ -88,7 +88,7 @@ function pluto.inv.readcraft(cl)
 
 		local cur = pluto.currency.byname[cur.Currency]
 
-		if (cur.CanCraft == false) then
+		if (not cur.Crafted) then
 			pluto.inv.sendfullupdate(cl)
 			return
 		end
@@ -149,13 +149,7 @@ function pluto.inv.readcraft(cl)
 			return
 		end
 
-		if (not pluto.inv.currencies[cl] or not pluto.inv.currencies[cl][cur.Currency] or pluto.inv.currencies[cl][cur.Currency] < cur.Amount) then
-			pluto.inv.sendfullupdate(cl)
-			return
-		end
-
-		local chance = crafted.Chance
-		chance = chance * (1 + cur.Amount / 10)
+		local chance = pluto.mods.chance(crafted, cur.Amount)
 
 		if (math.random() < chance) then
 			pluto.weapons.addmod(wpn, crafted.Mod)

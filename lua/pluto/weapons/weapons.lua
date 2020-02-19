@@ -32,11 +32,11 @@ end
 
 function pluto.weapons.generatetier(tier, wep, tagbiases, rolltier, roll, affixmax, prefix_count, suffix_count)
 	if (type(wep) == "string") then
-		wep = weapons.GetStored(wep)
+		wep = baseclass.Get(wep)
 	end
 
 	if (not wep) then
-		wep = weapons.GetStored(pluto.weapons.randomgun())
+		wep = baseclass.Get(pluto.weapons.randomgun())
 	end
 
 	if (type(tier) == "string") then

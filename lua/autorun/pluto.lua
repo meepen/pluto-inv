@@ -24,6 +24,7 @@ pluto.files.load {
 		"inv/sh_manager.lua",
 		"inv/sh_tabs.lua",
 		"inv/sh_currency.lua",
+		"mods/sh_mods.lua",
 
 		"roles/ttc.lua",
 
