@@ -18,7 +18,7 @@ end)
 
 local function name(x)
 	if (not IsValid(x)) then
-		return nil
+		return "INVALID ENTITY"
 	elseif (x:IsPlayer()) then
 		return x:Nick()
 	elseif (IsValid(x)) then
