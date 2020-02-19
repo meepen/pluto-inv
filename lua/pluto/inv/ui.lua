@@ -944,14 +944,16 @@ end
 function PANEL:OnMousePressed(mouse)
 	if (pluto.cl_currency[self.Currency] > 0) then
 		local curtype = pluto.currency.byname[self.Currency]
-		if (curtype.Use) then
-			curtype.Use()
-		elseif (curtype and curtype.NoTarget) then
-			Derma_Query("Really use " .. curtype.Name .. "? " .. curtype.Description, "Confirm use", "Yes", function()
-				pluto.inv.message()
-					:write("currencyuse", self.Currency)
-					:send()
-			end, "No", function() end)
+		if (curtype and curtype.NoTarget) then
+			if (curtype.Use) then
+				curtype.Use()
+			else
+				Derma_Query("Really use " .. curtype.Name .. "? " .. curtype.Description, "Confirm use", "Yes", function()
+					pluto.inv.message()
+						:write("currencyuse", self.Currency)
+						:send()
+				end, "No", function() end)
+			end
 		else
 			pluto.ui.ghost = self
 		end
@@ -1005,9 +1007,15 @@ function PANEL:GhostClick(p)
 			-- TODO(meep): popup thingy
 			return
 		end
-		pluto.inv.message()
-			:write("currencyuse", self.Currency, p.Item)
-			:send()
+		local currency = pluto.currency.byname[self.Currency]
+
+		if (currency and currency.Use) then
+			currency.Use(p.Item)
+		else
+			pluto.inv.message()
+				:write("currencyuse", self.Currency, p.Item)
+				:send()
+		end
 	end
 	if (not input.IsKeyDown(KEY_LSHIFT)) then
 		pluto.ui.unsetghost()

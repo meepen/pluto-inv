@@ -78,6 +78,13 @@ end)
 
 DEFINE_BASECLASS "weapon_tttbase_old"
 
+function SWEP:GetPlutoPrintName()
+	local item = self:GetInventoryItem()
+	if (item) then
+		return item.PrintName
+	end
+end
+
 function SWEP:Initialize()
 	BaseClass.Initialize(self)
 	self:PlutoInitialize()

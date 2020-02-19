@@ -3,41 +3,42 @@ pluto.inv = pluto.inv or {}
 pluto.inv.messages = {
 	cl2sv = {
 		[0]  = "end",
-		[1]  = "tabswitch",
-		[2]  = "itemdelete",
-		[3]  = "currencyuse",
-		[4]  = "tabrename",
-		[5]  = "claimbuffer",
-		[6]  = "tradeupdate",
-		[7]  = "trademessage",
-		[8]  = "traderequest",
-		[9]  = "tradeaccept",
-		[10] = "votemap",
-		[11] = "likemap",
-		[12] = "requestcraftresults",
-		[13] = "craft",
-		[14] = "itemlock",
+		"tabswitch",
+		"itemdelete",
+		"currencyuse",
+		"tabrename",
+		"claimbuffer",
+		"tradeupdate",
+		"trademessage",
+		"traderequest",
+		"tradeaccept",
+		"votemap",
+		"likemap",
+		"requestcraftresults",
+		"craft",
+		"itemlock",
+		"rename",
 	},
 	sv2cl = {
 		[0] = "end",
-		[1] = "item",
-		[2] = "mod",
-		[3] = "tab",
-		[4] = "status",
-		[5] = "tabupdate",
-		[6] = "currencyupdate",
-		[7] = "bufferitem",
-		[8] = "tradeupdate",
-		[9] = "trademessage",
-		[10] = "tradeaccept",
-		[11] = "fullupdate",
-		[12] = "crate_id",
-		[13] = "mapvote",
-		[14] = "mapvotes",
-		[15] = "craftresults",
-		[16] = "expupdate",
-		[17] = "itemlock",
-		[18] = "nitro",
+		"item",
+		"mod",
+		"tab",
+		"status",
+		"tabupdate",
+		"currencyupdate",
+		"bufferitem",
+		"tradeupdate",
+		"trademessage",
+		 "tradeaccept",
+		 "fullupdate",
+		 "crate_id",
+		 "mapvote",
+		 "mapvotes",
+		 "craftresults",
+		 "expupdate",
+		 "itemlock",
+		 "nitro",
 	}
 }
 
@@ -125,11 +126,11 @@ pluto.inv.item_mt.__index = ITEM
 
 function ITEM:GetPrintName()
 	if (self.Nickname) then
-		return "\"" .. self.Nickname .. "\""
+		return "\"" .. string.formatsafe(self.Nickname, self:GetDefaultName()) .. "\""
 	end
 
 	if (self.SpecialName) then
-		return string.format(self.SpecialName, self:GetRawName())
+		return string.format(self.SpecialName, self:GetDefaultName())
 	end
 
 	return self:GetDefaultName()

@@ -1,7 +1,21 @@
 SWEP.Base = "weapon_tttbase_old"
 DEFINE_BASECLASS "weapon_tttbase_old"
 
+local WEAPON = FindMetaTable "Weapon"
+
+function WEAPON:GetPrintName()
+	if (self:GetTable().GetPlutoPrintName) then
+		return self:GetTable().GetPlutoPrintName(self) or self.PrintName
+	end
+
+	return self.PrintName
+end
+
 pluto.wpn_db = pluto.wpn_db or {}
+
+function SWEP:GetPlutoPrintName()
+	return "yes"
+end
 
 function SWEP:GetInventoryItem()
 	return pluto.wpn_db[self:GetPlutoID()]

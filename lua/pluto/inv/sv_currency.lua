@@ -558,6 +558,34 @@ function pluto.currency.givespawns(ply, amt)
 	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or 0) + amt
 end
 
+function pluto.inv.readrename(cl)
+	local id = net.ReadUInt(32)
+	local name = net.ReadString()
+
+	local gun = pluto.itemids[id]
+
+	local sid = pluto.db.steamid64(cl)
+
+	if (not gun or gun.Owner ~= sid) then
+		pluto.inv.sendfullupdate(cl)
+		return
+	end
+
+	gun.LastUpdate = (gun.LastUpdate or 0) + 1
+	gun.Nickname = name
+
+	pluto.inv.message(cl)
+		:write("item", gun)
+		:send()
+
+	pluto.db.query("UPDATE pluto_items set nick = ? WHERE idx = ?", {name, id}, function(err, q)
+		if (err) then
+			pluto.inv.sendfullupdate(cl)
+			return
+		end
+	end)
+end
+
 
 hook.Add("TTTBeginRound", "pluto_currency", function()
 	pluto.currency.navs.start()

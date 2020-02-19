@@ -10,6 +10,13 @@ local function _hook(name, self, fn)
 	end)
 end
 
+function SWEP:GetPlutoPrintName()
+	local p = self.PlutoGun
+	if (p) then
+		return p:GetPrintName()
+	end
+end
+
 function SWEP:Initialize()
 	BaseClass.Initialize(self)
 	self:PlutoInitialize()

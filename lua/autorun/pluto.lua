@@ -28,7 +28,7 @@ pluto.files.load {
 
 		"roles/ttc.lua",
 
-		"math.lua",
+		"util.lua",
 	},
 	Server = {
 		"sv.lua",

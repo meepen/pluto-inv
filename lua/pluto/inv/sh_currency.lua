@@ -144,9 +144,50 @@ pluto.currency.list = {
 		InternalName = "quill",
 		Name = "Glass Quill",
 		Icon = "pluto/currencies/quill.png",
-		Description = "(tba)",
+		Description = "Gives an item a nickname",
 		SubDescription = "(not out yet sry)",
 		Color = Color(23, 127, 105),
+		Use = function(item)
+			if (IsValid(pluto.opener)) then
+				pluto.opener:Remove()
+			end
+
+			pluto.opener = vgui.Create "tttrw_base"
+
+			local cat = vgui.Create "ttt_settings_category"
+			local text = cat:AddTextEntry("What will this item's new name be?", true)
+			local seent = cat:AddTextEntry("This will be seen as")
+			local accept = cat:AddLabelButton "Rename!"
+			cat:InvalidateLayout(true)
+			cat:SizeToContents()
+
+			function text:OnChange()
+				seent:SetText('"' .. string.formatsafe(self:GetText(), item:GetDefaultName()) .. '"')
+			end
+
+			function text:AllowInput(c)
+				if (self:GetText():len() + c:len() > 32) then
+					return true
+				end
+			end
+
+			function accept:DoClick()
+				if (IsValid(pluto.opener)) then
+					pluto.opener:Remove()
+				end
+
+				pluto.inv.message()
+					:write("rename", item.ID, text:GetText())
+					:send()
+			end
+
+
+			pluto.opener:AddTab("Rename!", cat)
+
+			pluto.opener:SetSize(640, 400)
+			pluto.opener:Center()
+			pluto.opener:MakePopup()
+		end
 	},
 }
 
@@ -228,4 +269,11 @@ else
 	end
 	
 	vgui.Register("pluto_box_open", PANEL, "EditablePanel")
+end
+
+if (CLIENT) then
+	function pluto.inv.writerename(itemid, name)
+		net.WriteUInt(itemid, 32)
+		net.WriteString(name)
+	end
 end
