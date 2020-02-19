@@ -15,7 +15,7 @@ end
 MOD.Description = "Converts %s of your damage to Bleed on hit"
 
 MOD.Tiers = {
-	{ 25, 33 },
+	{ 25, 30 },
 	{ 10, 25 },
 	{ 5,  10 },
 }

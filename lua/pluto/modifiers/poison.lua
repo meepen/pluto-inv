@@ -15,9 +15,9 @@ end
 MOD.Description = "Converts %s of your damage and amplifies it by %s to Poison on hit"
 
 MOD.Tiers = {
-	{ 25, 33, 30, 45 },
-	{ 10, 25, 30, 45 },
-	{ 5,  10, 30, 45 },
+	{ 25, 33, 30, 50 },
+	{ 10, 25, 30, 50 },
+	{ 5,  10, 30, 50 },
 }
 
 function MOD:OnDamage(wep, rolls, vic, dmginfo, state)
