@@ -2,7 +2,7 @@ _net = _net or net
 
 co_net = co_net or {
 	coroutines = {},
-	max_packet = 0xfe00 * 8,
+	max_packet = 0xfe00 * 8
 }
 
 for _, index in pairs {

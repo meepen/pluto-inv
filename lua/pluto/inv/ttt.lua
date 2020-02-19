@@ -172,14 +172,7 @@ hook.Add("TTTPlayerGiveWeapons", "pluto_loadout", function(ply)
 		return
 	end
 
-	local equip_tab
-
-	for _, tab in pairs(pluto.inv.invs[ply]) do
-		if (tab.Type == "equip") then
-			equip_tab = tab
-			break
-		end
-	end
+	local equip_tab = pluto.inv.invs[ply].tabs.equip
 
 	if (not equip_tab) then
 		pwarnf("Player doesn't have equip tab!")

@@ -359,6 +359,23 @@ function pluto.inv.readtabswitch(ply)
 		i2.TabID, i2.TabIndex = tabid1, tabindex1
 	end
 
+	local equip
+	if (tab1.Type == "equip") then
+		equip = tab1
+	elseif (tab2.Type == "equip") then
+		equip = tab2
+	end
+
+	if (equip) then
+		timer.Simple(0, function()
+			if (IsValid(ply) and ply:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE) then
+				ply:StripWeapons()
+				ply:StripAmmo()
+				hook.Run("PlayerLoadout", ply)
+			end
+		end)
+	end
+
 	pluto.inv.switchtab(ply, tabid1, tabindex1, tabid2, tabindex2, function(succ)
 		if (succ or not IsValid(ply)) then
 			return
