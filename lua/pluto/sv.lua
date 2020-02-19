@@ -37,7 +37,9 @@ pluto.files.load {
 		"materials/pluto/newshard.png",
 		"materials/pluto/newshardbg.png",
 	},
-	Workshop = {},
+	Workshop = {
+		"2001929342",
+	},
 }
 
 concommand.Add("pluto_reload", function(ply)
