@@ -117,13 +117,13 @@ SWEP.Primary.Ammo          = "smg1"
 SWEP.AmmoEnt               = "item_ammo_smg1_ttt"
 
 SWEP.Primary.Sound = "CW_PPS_FIRE"
-SWEP.Primary.Recoil = 2
-SWEP.Primary.Delay = 60 / 1000
-SWEP.Primary.Damage = 11.4
+SWEP.Primary.Recoil = 2.3
+SWEP.Primary.Delay = 90 / 1000
+SWEP.Primary.Damage = 12
 SWEP.ReloadSpeed = 1.3
 SWEP.DeploySpeed = 1.4
 
-SWEP.HeadshotMultiplier = 1.6
+SWEP.HeadshotMultiplier = 1.4
 
 SWEP.AutoSpawnable         = true
 SWEP.Spawnable             = true
@@ -132,7 +132,7 @@ SWEP.AdminSpawnable		= true
 SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
-	DamageDropoffRange = 250,
+	DamageDropoffRange = 200,
 	DamageDropoffRangeMax = 2200,
 	DamageMinimumPercent = 0.1,
 	Spread = Vector(0.05, 0.045)
