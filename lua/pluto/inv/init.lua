@@ -208,12 +208,15 @@ function pluto.inv.setitemplacement(ply, item, tabid, tabindex, cb, transact)
 		transact = pluto.db.transact()
 	end
 
-	local tab = pluto.inv.invs[ply][tabid]
+	local inv = pluto.inv.invs[ply]
+
+	local tab = inv[tabid]
 
 	if (not tab) then
 		return
 	end
 
+	inv[item.TabID].Items[item.TabIndex] = nil
 	tab.Items[tabindex] = item
 	item.TabID = tabid
 	item.TabIndex = tabindex

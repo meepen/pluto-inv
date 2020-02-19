@@ -488,11 +488,13 @@ function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
 	local i = pluto.inv.getbufferitem(ply, bufferid)
 
 	if (not i) then
+		pprintf "ERROR: no i"
 		pluto.inv.sendfullupdate(ply)
 		return
 	end
 
 	if (i.Owner ~= ply:SteamID64()) then
+		pprintf "ERROR: Owner not equal"
 		pluto.inv.sendfullupdate(ply)
 		return
 	end
@@ -503,6 +505,7 @@ function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
 	}, pluto.inv.invs[ply][tabid], 1, tabindex)
 
 	if (not can) then
+		pprintf "ERROR: not can"
 		pluto.inv.sendfullupdate(ply)
 		return
 	end
@@ -519,10 +522,12 @@ function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
 			return
 		end
 
+		pprintf "ERROR: bad err"
 		pluto.inv.sendfullupdate(ply)
 	end)
 
 	if (not pluto.inv.popbuffer(ply, pop_from, transact)) then
+		pprintf "ERROR: no pop"
 		pluto.inv.sendfullupdate(ply)
 		return
 	end

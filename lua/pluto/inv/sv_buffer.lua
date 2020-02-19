@@ -44,7 +44,9 @@ function pluto.inv.popbuffer(ply, index, transact)
 	for i = index + 1, 5 do
 		transact:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx - 1 where tab_id = ? and tab_idx = ?]], {tab.RowID, i})
 		tab.Items[i - 1] = tab.Items[i]
+		tab.Items[i - 1].TabIndex = i - 1
 	end
+	tab.Items[5] = nil
 
 	return transact
 end
