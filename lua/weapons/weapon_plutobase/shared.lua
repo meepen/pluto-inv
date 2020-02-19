@@ -13,10 +13,6 @@ end
 
 pluto.wpn_db = pluto.wpn_db or {}
 
-function SWEP:GetPlutoPrintName()
-	return "yes"
-end
-
 function SWEP:GetInventoryItem()
 	return pluto.wpn_db[self:GetPlutoID()]
 end

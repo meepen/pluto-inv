@@ -129,10 +129,6 @@ function ITEM:GetPrintName()
 		return "\"" .. string.formatsafe(self.Nickname, self:GetDefaultName()) .. "\""
 	end
 
-	if (self.SpecialName) then
-		return string.format(self.SpecialName, self:GetDefaultName())
-	end
-
 	return self:GetDefaultName()
 end
 
@@ -197,6 +193,14 @@ function ITEM:GetMaxAffixes()
 end
 
 function ITEM:GetDefaultName()
+	if (self.SpecialName) then
+		return string.format(self.SpecialName, self:GetRawName(true))
+	end
+
+	return self:GetRawName()
+end
+
+function ITEM:GetRawName(ignoretier)
 	if (self.Type == "Shard") then
 		local tier = self.Tier
 		if (istable(tier)) then
@@ -209,20 +213,7 @@ function ITEM:GetDefaultName()
 		if (istable(tier)) then
 			tier = tier.Name
 		end
-		return tier .. " " .. (w and w.PrintName or "N/A")
-	elseif (self.Type == "Model") then
-		return self.Model.Name .. " Model"
-	end
-
-	return "Unknown type: " .. self.Type
-end
-
-function ITEM:GetRawName()
-	if (self.Type == "Shard") then
-		return "Tier Shard"
-	elseif (self.Type == "Weapon") then -- item
-		local w = weapons.GetStored(self.ClassName)
-		return w and w.PrintName or "N/A"
+		return (ignoretier and "" or tier .. " ") .. (w and w.PrintName or "N/A")
 	elseif (self.Type == "Model") then
 		return self.Model.Name .. " Model"
 	end
