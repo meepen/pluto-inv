@@ -421,7 +421,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	quill = {
-		Shares = 0,
+		Shares = 0.9,
 		Use = function(ply, item)
 		end,
 		Types = "Weapon",
@@ -577,13 +577,19 @@ function pluto.inv.readrename(cl)
 	pluto.inv.message(cl)
 		:write("item", gun)
 		:send()
+	
+	local transact = pluto.db.transact()
 
-	pluto.db.query("UPDATE pluto_items set nick = ? WHERE idx = ?", {name, id}, function(err, q)
+	transact:AddQuery("UPDATE pluto_items set nick = ? WHERE idx = ?", {name, id}, function(err, q)
 		if (err) then
 			pluto.inv.sendfullupdate(cl)
 			return
 		end
 	end)
+
+	pluto.inv.addcurrency(cl, "quill", -1, nil, transact)
+
+	transact:Run()
 end
 
 

@@ -144,8 +144,8 @@ pluto.currency.list = {
 		InternalName = "quill",
 		Name = "Glass Quill",
 		Icon = "pluto/currencies/quill.png",
-		Description = "Gives an item a nickname",
-		SubDescription = "(not out yet sry)",
+		Description = "Set an item's nickname",
+		SubDescription = "This glass quill was used by the inscribers to write history before it was even made, what will you do with it?",
 		Color = Color(23, 127, 105),
 		Use = function(item)
 			if (IsValid(pluto.opener)) then
