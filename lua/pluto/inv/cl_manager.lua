@@ -142,7 +142,7 @@ function pluto.inv.readfullupdate()
 	end
 
 	while (pluto.inv.readtab()) do
-		print "read tab"
+
 	end
 
 	for i = 1, net.ReadUInt(32) do

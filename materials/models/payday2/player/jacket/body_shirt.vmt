@@ -4,21 +4,18 @@
 	"$bumpmap" "models\payday2\player\jacket\jacket_body_n"
 
 
-	 $model "1"
+	$model "1"
 	"$halflambert" "0"
-	$diffuseexp 1.5
 	"$phong" "1"
-//	$phongboost "0.4"
+
 	$phongexponent 12
 	$phongtint "[.85 1 .85]"
 	$phongfresnelranges "[.2 .5 5]"
 	$ambientocclusion 1
-//	$PhongAlbedoTint 1
 
-
-	"$rimlight" "1"												// To enable rim lighting (requires phong)
-	"$rimlightexponent" "33"										// Exponent for phong component of rim lighting	
-	"$rimlightboost" "1"										// Boost for ambient cube component of rim lighting
+	"$rimlight" "1"
+	"$rimlightexponent" "33"
+	"$rimlightboost" "1"
 	$rimmask 1
 	"$diffuseexp" "1.5"
 
