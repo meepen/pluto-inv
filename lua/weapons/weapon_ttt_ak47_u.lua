@@ -60,7 +60,7 @@ SWEP.Bullets = {
 	DamageDropoffRange = 650,
 	DamageDropoffRangeMax = 4200,
 	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.03, 0.035)
+	Spread = Vector(0.025, 0.025)
 }
 
 DEFINE_BASECLASS "weapon_tttbase"
@@ -82,5 +82,7 @@ function SWEP:Initialize()
 end
 
 function SWEP:GetDelay()
-	return math.max(0.08, 0.17 - self:GetKills() * 0.008)
+	local base_rpm = 350
+	local per_kill = 40
+	return 60 / (base_rpm + self:GetKills() * per_kill)
 end
