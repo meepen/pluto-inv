@@ -282,6 +282,8 @@ local function check_mount()
 			for _, match in pairs(queue) do
 				LocalPlayer():ConCommand("mat_reloadtexture \"" .. match .. "\"")
 			end
+
+			timer.Remove "pluto_workshop"
 		end)
 	end
 end
