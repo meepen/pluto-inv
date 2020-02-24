@@ -116,9 +116,10 @@ function pluto.weapons.update(item, cb, transact)
 			return
 		end
 
-		item.LastUpdate = (item.LastUpdate or 0) + 1
 		cb(item.RowID)
 	end)
+
+	item.LastUpdate = (item.LastUpdate or 0) + 1
 
 	return transact
 end
@@ -222,13 +223,13 @@ function pluto.weapons.save(item, owner, cb, transact)
 
 		pluto.inv.items[item.RowID] = item
 
-		item.LastUpdate = (item.LastUpdate or 0) + 1
-
 		pluto.itemids[item.RowID] = item
 		if (cb) then
 			cb(item.RowID)
 		end
 	end)
+
+	item.LastUpdate = (item.LastUpdate or 0) + 1
 
 	return transact
 end
