@@ -14,9 +14,8 @@ function pwarnf(...)
 end
 
 local allowed = {
-	["76561198050165746"] = true,
-	["76561198154133184"] = true,
-	["76561198055769267"] = true,
+	["76561198050165746"] = true, -- Meepen
+	["76561198055769267"] = true, -- Jared
 }
 
 function pluto.cancheat(ply)
