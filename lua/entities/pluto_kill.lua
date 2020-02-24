@@ -6,7 +6,7 @@ ENT.Base = "pluto_block"
 DEFINE_BASECLASS "pluto_block"
 
 function ENT:Initialize()
-	Baseclass.Initialize(self)
+	BaseClass.Initialize(self)
 	self:SetTrigger(true)
 end
 
