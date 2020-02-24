@@ -221,7 +221,6 @@ local packs =  {
 	},]]
 }
 
-local queue = {}
 local to_mount = {}
 local status = {}
 local font = "BudgetLabel"
@@ -249,32 +248,40 @@ end)
 
 local function check_mount()
 	if (table.Count(to_mount) == table.Count(packs)) then
-		hook.Add("HUDPaint", "workshop_mount", function()
-			for pack, fname in pairs(to_mount) do
-				if (not fname) then
-					continue
-				end
-
-				local succ, fs = game.MountGMA("data/" .. fname)
-
-				if (not succ) then
-					status[pack] = "Couldn't mount."
-					return
-				end
-
-				for _, file in pairs(fs) do
-					local match = file:match "materials/(.+)%.vtf"
-					if (match) then
-						LocalPlayer():ConCommand("mat_reloadtexture \"" .. match .. "\"")
-					end
-				end
-
-				status[pack] = "Mounted."
-				to_mount[pack] = nil
+		local queue = {}
+		for pack, fname in pairs(to_mount) do
+			if (not fname) then
+				continue
 			end
-			hook.Remove("HUDPaint", "workshop_mount")
-			RunConsoleCommand "snd_restart"
-			done = true
+
+			local succ, fs = game.MountGMA("data/" .. fname)
+
+			if (not succ) then
+				status[pack] = "Couldn't mount."
+				return
+			end
+
+			for _, file in pairs(fs) do
+				local match = file:match "materials/(.+)%.vtf"
+				if (match) then
+					queue[#queue + 1] = match
+				end
+			end
+
+			status[pack] = "Mounted."
+			to_mount[pack] = nil
+		end
+		RunConsoleCommand "snd_restart"
+		done = true
+		timer.Create("pluto_workshop", 1, 0, function()
+			if (not IsValid(LocalPlayer())) then
+				pwarnf("no localplayer yet")
+				return
+			end
+
+			for _, match in pairs(queue) do
+				LocalPlayer():ConCommand("mat_reloadtexture \"" .. match .. "\"")
+			end
 		end)
 	end
 end
