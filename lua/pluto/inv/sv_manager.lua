@@ -265,6 +265,7 @@ function pluto.inv.init(ply, cb2)
 			inv[tab.RowID] = tab
 			tab.Items = {}
 
+			print(tab.Type)
 			inv.tabs[tab.Type] = tab
 		end
 
@@ -448,11 +449,6 @@ function pluto.inv.readcurrencyuse(ply)
 	if (net.ReadBool()) then
 		local id = net.ReadUInt(32)
 
-		local amount = pluto.inv.currencies[ply][currency]
-		if (not amount or amount <= 0) then
-			return
-		end
-
 		wpn = pluto.inv.items[id]
 
 		if (not wpn or wpn.Owner ~= ply:SteamID64()) then
@@ -460,7 +456,14 @@ function pluto.inv.readcurrencyuse(ply)
 		end
 	end
 
-	if (not pluto.inv.currencies[ply] or pluto.inv.currencies[ply][currency] < 1) then
+	local amount = pluto.inv.currencies[ply]
+	if (not amount) then
+		return
+	end
+
+	amount = amount[currency]
+
+	if (not amount or amount < 1) then
 		return
 	end
 

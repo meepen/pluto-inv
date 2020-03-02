@@ -130,7 +130,6 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 	local msg = discord.Message()
 	local send = false
 
-	sql.Begin()
 	for _, obj in pairs(round.GetStartingPlayers()) do
 		local ply = obj.Player
 		if (not IsValid(ply)) then
@@ -157,14 +156,12 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 			send = true
 		end
 
-		ply:ChatPrint("You have received a weapon! Check your inventory.")
+		ply:ChatPrint("You have received a ", item.Tier.Color, item:GetPrintName(), white_text, "! Check your inventory.")
 	end
 
 	if (send) then
 		msg:Send "drops"
 	end
-
-	sql.Commit()
 end)
 
 hook.Add("TTTPlayerGiveWeapons", "pluto_loadout", function(ply)
@@ -187,12 +184,17 @@ hook.Add("TTTPlayerGiveWeapons", "pluto_loadout", function(ply)
 	end
 
 	local i2 = equip_tab.Items[2]
-
 	if (i2) then
 		pluto.NextWeaponSpawn = i2
 		ply:Give(i2.ClassName)
 	end
-	
+
+	local i4 = equip_tab.Items[4]
+	if (i4) then
+		pluto.NextWeaponSpawn = i4
+		ply:Give(i4.ClassName)
+	end
+
 	local i5 = equip_tab.Items[5]
 	if (i5) then
 		pluto.NextWeaponSpawn = i5

@@ -212,6 +212,15 @@ local packs =  {
 			"20200128_4",
 		}
 	},
+	goldpan = {
+		remote = "https://cdn.pluto.gg/goldpan.gma",
+		versions = {
+			"20200301_4",
+			"20200301_3",
+			"20200301_2",
+			"20200301",
+		}
+	}
 	--[[
 	moxxi = {
 		remote = "https://cdn.pluto.gg/moxxi.gma",

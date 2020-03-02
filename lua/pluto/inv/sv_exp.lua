@@ -7,7 +7,7 @@ hook.Add("DoPlayerDeath", "pluto_model_exp", function(vic, damager, dmg)
 		return
 	end
 
-	local equip_tab = pluto.inv.invs[atk].equip
+	local equip_tab = pluto.inv.invs[atk].tabs.equip
 
 	if (not equip_tab) then
 		pwarnf("Player doesn't have equip tab!")
@@ -17,6 +17,7 @@ hook.Add("DoPlayerDeath", "pluto_model_exp", function(vic, damager, dmg)
 
 	local mdl = equip_tab.Items[3]
 	if (not mdl or mdl.Type ~= "Model") then
+		pwarnf("Item not model!!!")
 		return
 	end
 

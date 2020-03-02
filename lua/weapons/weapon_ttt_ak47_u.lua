@@ -60,7 +60,8 @@ SWEP.Bullets = {
 	DamageDropoffRange = 650,
 	DamageDropoffRangeMax = 4200,
 	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.025, 0.025)
+	Spread = Vector(0.025, 0.025),
+	TracerName = "AR2Tracer",
 }
 
 DEFINE_BASECLASS "weapon_tttbase"

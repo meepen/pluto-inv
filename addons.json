@@ -1,5 +1,10 @@
 {
 	"workshop": [
+		"models/weapons/c_models/c_frying_pan/c_frying_pan.dx80.vtx",
+        "models/weapons/c_models/c_frying_pan/c_frying_pan.dx90.vtx",
+        "models/weapons/c_models/c_frying_pan/c_frying_pan.mdl",
+        "models/weapons/c_models/c_frying_pan/c_frying_pan.phy",
+        "models/weapons/c_models/c_frying_pan/c_frying_pan.vvd",
 		"models/weapons/mac/v_smg_mac19.dx80.vtx",
 		"models/weapons/mac/v_smg_mac19.dx90.vtx",
 		"models/weapons/mac/v_smg_mac19.mdl",
@@ -495,6 +500,11 @@
 		"models/player/runescape/player_bob.mdl",
 		"models/player/runescape/player_bob.phy",
 		"models/player/runescape/player_bob.vvd",
+        "models/weapons/quentindylanp/c_crowbar_nohands.dx80.vtx",
+        "models/weapons/quentindylanp/c_crowbar_nohands.dx90.vtx",
+        "models/weapons/quentindylanp/c_crowbar_nohands.mdl",
+        "models/weapons/quentindylanp/c_crowbar_nohands.sw.vtx",
+        "models/weapons/quentindylanp/c_crowbar_nohands.vvd",
 		"materials/models/weapons/v_models/cr45h_mac/base.vmt",
 		"materials/models/weapons/v_models/cr45h_mac/butt.vmt",
 		"materials/models/weapons/v_models/cr45h_mac/silmag.vmt",
@@ -953,7 +963,11 @@
 		"materials/models/gow2/weapons/gow2_blurringblades.vmt",
 		"materials/models/gow2/weapons/emit.vmt",
 		"materials/models/kuma96/borderlands3/characters/lilith/lilith_upperbody_tattoos_low.vmt",
-		"materials/vgui/entities/sentinel_good.vmt"
+		"materials/vgui/entities/sentinel_good.vmt",
+        "materials/models/weapons/c_items/c_frying_pan_gold.vmt",
+        "materials/models/weapons/v_scoutsbat/v_scoutsbat_diffuse.vmt",
+		"materials/models/player/shared/gold_player.vmt",
+        "materials/vgui/entities/goldenpan.vmt"
 	],
 	"mac19_and_friends": [
 		"materials/models/weapons/v_models/cr45h_mac/base.vtf",
@@ -1870,5 +1884,17 @@
 		"sound/weapons/confetti/noise4-07.ogg",
 		"materials/vgui/entities/confetti.png",
 		"sound/weapons/confetti_nade/sound.ogg"
+	],
+	"goldpan": [ 
+		"materials/cubemaps/cubemap_gold001.vtf",
+        "materials/cubemaps/cubemap_sheen001.vtf",
+        "materials/effects/animatedsheen/animatedsheen0.vtf",
+        "materials/models/lightwarps/weapon_lightwarp.vtf",
+        "materials/models/weapons/c_items/c_frying_pan_gold.vtf",
+        "materials/models/weapons/v_scoutsbat/v_scoutsbat_diffuse.vtf",
+        "materials/models/weapons/v_scoutsbat/v_scoutsbat_normal.vtf",
+		"materials/vgui/entities/goldenpan.vtf",
+        "materials/models/player/shared/gold_player.vtf",
+		"sound/weapons/gpan/hitsound.ogg"
 	]
 }

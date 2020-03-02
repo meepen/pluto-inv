@@ -60,7 +60,7 @@ SWEP.Bullets = {
 	DamageDropoffRange = 550,
 	DamageDropoffRangeMax = 3500,
 	DamageMinimumPercent = 0.2,
-	Spread = Vector(0.03, 0.02),
+	Spread = Vector(0.015, 0.02),
 	Tracer = 0,
 }
 
@@ -113,4 +113,19 @@ sound.Add {
 	name = "CW_UMP9_MAGIN",
 	channel = CHAN_WEAPON,
 	sound = "weapons/ump9/clipin.ogg"
+}
+
+local power = 1
+SWEP.RecoilInstructions = {
+	Interval = 2,
+	Angle(-power, -power * 0.6),
+	Angle(-power, -power * 0.48),
+	Angle(-power, -power * 0.2),
+	Angle(-power, power * 0.4),
+	Angle(-power, power * 0.2),
+	Angle(-power, power * 0.6),
+	Angle(-power, power * 0.35),
+	Angle(-power, power * 0.2),
+	Angle(-power, -power * 0.2),
+	Angle(-power, -power * 0.4),
 }

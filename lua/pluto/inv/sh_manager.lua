@@ -30,15 +30,15 @@ pluto.inv.messages = {
 		"bufferitem",
 		"tradeupdate",
 		"trademessage",
-		 "tradeaccept",
-		 "fullupdate",
-		 "crate_id",
-		 "mapvote",
-		 "mapvotes",
-		 "craftresults",
-		 "expupdate",
-		 "itemlock",
-		 "nitro",
+		"tradeaccept",
+		"fullupdate",
+		"crate_id",
+		"mapvote",
+		"mapvotes",
+		"craftresults",
+		"expupdate",
+		"itemlock",
+		"nitro",
 	}
 }
 
@@ -296,7 +296,7 @@ function ITEM:Duplicate()
 	local ret = setmetatable({}, pluto.inv.item_mt)
 
 	for k, v in pairs(self) do
-		ret[k] = v
+		ret[k] = type(v) == "table" and table.Copy(v) or v
 	end
 
 	ret.Owner = nil

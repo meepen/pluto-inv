@@ -106,3 +106,9 @@ function SWEP:DrawWorldModel()
 	end
 	self:DrawModel()
 end
+
+
+SWEP.RecoilInstructions = {
+	Interval = 1,
+	Angle(-20),
+}

@@ -42,7 +42,7 @@ SWEP.HeadshotMultiplier = 5
 
 SWEP.MeleeRange 	= 50
 SWEP.MeleeDamage 	= 62
-SWEP.MeleeDuration	= 1.5
+SWEP.MeleeDuration	= 1.2
 SWEP.DeployDuration	= 0
 SWEP.MeleeAttack 	= 0.165
 SWEP.MuzzleScale	= 1.3
@@ -54,6 +54,11 @@ SWEP.Bullets = {
 	DamageDropoffRangeMax = 3600,
 	DamageMinimumPercent = 0.1,
 	Spread = Vector(0.02, 0.02)
+}
+
+SWEP.RecoilInstructions = {
+	Interval = 1,
+	Angle(-50),
 }
 
 SWEP.NoPlayerModelHands = true
@@ -171,4 +176,12 @@ function SWEP:Think()
 	end
 
 	return BaseClass.Think(self)
+end
+
+function SWEP:Holster(w)
+	if (self:GetMeleeTime() ~= math.huge) then
+		return false
+	end
+
+	return BaseClass.Holster(self)
 end

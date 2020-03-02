@@ -111,7 +111,7 @@ SWEP.Bullets = {
 	DamageDropoffRange = 650,
 	DamageDropoffRangeMax = 4200,
 	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.02, 0.025)
+	Spread = Vector(0.015, 0.015)
 }
 
 SWEP.Ironsights = {
@@ -140,4 +140,18 @@ SWEP.Offset = {
 SWEP.VElements = {
 	["ironholo"] = { type = "Model", model = "models/hunter/plates/plate025.mdl", bone = "def_c_base", rel = "", pos = Vector(-0.06, -5.85, 20), angle = Angle(0, -30, 0), size = Vector(0.017, 0.017, 0.009), color = Color(255, 107, 0, 137), surpresslightning = false, material = "lights/white", skin = 0, bodygroup = {} },
 	["ironholo+"] = { type = "Model", model = "models/hunter/plates/plate025.mdl", bone = "def_c_base", rel = "", pos = Vector(0.059, -5.85, 20), angle = Angle(0, 30, 0), size = Vector(0.017, 0.017, 0.009), color = Color(255, 107, 0, 137), surpresslightning = false, material = "lights/white", skin = 0, bodygroup = {} }
+}
+
+local pow = 0.6
+SWEP.RecoilInstructions = {
+	Interval = 1,
+	pow * Angle(-6, -2),
+	pow * Angle(-4, -1),
+	pow * Angle(-2, 3),
+	pow * Angle(-1, 0),
+	pow * Angle(-1, 0),
+	pow * Angle(-3, 2),
+	pow * Angle(-3, 1),
+	pow * Angle(-2, 0),
+	pow * Angle(-3, -3),
 }
