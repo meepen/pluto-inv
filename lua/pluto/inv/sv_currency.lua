@@ -550,14 +550,14 @@ hook.Add("DoPlayerDeath", "pluto_currency_add", function(vic, damager, dmg)
 		-- base on karma
 		points = -vic:GetKarma() / atk:GetKarma()
 	elseif (atk:GetRoleData().IsEvil) then
-		points = points / 2
+		points = points * 0.8
 	end
 
 	pluto.currency.givespawns(atk, points)
 end)
 
 function pluto.currency.givespawns(ply, amt)
-	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or 0.5) + amt * pluto_currency_spawnrate:GetFloat() * math.min(2, pluto.currency.navs.total / 70000 * 1.3)
+	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or 1) + amt * pluto_currency_spawnrate:GetFloat() * math.min(2, pluto.currency.navs.total / 70000 * 1.3)
 end
 
 function pluto.inv.readrename(cl)
@@ -603,14 +603,14 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 			continue
 		end
 
-		local points = pluto.currency.tospawn[item.Player] or 0.5
+		local points = pluto.currency.tospawn[item.Player] or 1
 
 		for i = 1, math.floor(points) do
 			local e = pluto.currency.spawnfor(item.Player)
 			pluto.currency.spawned[e] = item.Player
 		end
 
-		pluto.currency.tospawn[item.Player] = 0.5 + points - math.floor(points)
+		pluto.currency.tospawn[item.Player] = 1 + points - math.floor(points)
 	end
 
 	-- ghosts
