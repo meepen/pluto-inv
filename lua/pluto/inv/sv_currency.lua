@@ -1,6 +1,6 @@
 pluto.currency.shares = 0
 
-local tospawn_amt = CreateConVar("pluto_currency_spawnrate", "2.7")
+local pluto_currency_spawnrate = CreateConVar("pluto_currency_spawnrate", "0.9")
 
 local function UpdateAndDecrement(ply, item, currency)
 	local transact = pluto.db.transact()
@@ -544,18 +544,20 @@ hook.Add("DoPlayerDeath", "pluto_currency_add", function(vic, damager, dmg)
 		return
 	end
 
-	local points = 0.3
+	local points = 1
 
 	if (atk:GetRoleTeam() == vic:GetRoleTeam()) then
 		-- base on karma
-		--points = -vic:GetKarma() / atk:GetKarma()
+		points = -vic:GetKarma() / atk:GetKarma()
+	elseif (atk:GetRoleData().IsEvil) then
+		points = points / 2
 	end
 
 	pluto.currency.givespawns(atk, points)
 end)
 
 function pluto.currency.givespawns(ply, amt)
-	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or 0) + amt
+	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or 0.5) + amt * pluto_currency_spawnrate:GetFloat() * math.min(2, pluto.currency.navs.total / 70000 * 1.3)
 end
 
 function pluto.inv.readrename(cl)
@@ -601,16 +603,14 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 			continue
 		end
 
-		local points = (pluto.currency.tospawn[item.Player] or 1) * tospawn_amt:GetFloat() * math.min(2, pluto.currency.navs.total / 70000 * 1.3)
+		local points = pluto.currency.tospawn[item.Player] or 0.5
 
-		for i = 1, points do
+		for i = 1, math.floor(points) do
 			local e = pluto.currency.spawnfor(item.Player)
 			pluto.currency.spawned[e] = item.Player
 		end
 
-		if (points >= 0) then
-			pluto.currency.tospawn[item.Player] = 1 + points - math.floor(points)
-		end
+		pluto.currency.tospawn[item.Player] = 0.5 + points - math.floor(points)
 	end
 
 	-- ghosts
