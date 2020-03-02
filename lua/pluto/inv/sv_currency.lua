@@ -540,11 +540,15 @@ pluto.currency.spawned = pluto.currency.spawned or {}
 hook.Add("DoPlayerDeath", "pluto_currency_add", function(vic, damager, dmg)
 	local atk = dmg:GetAttacker()
 
+	if (ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE) then
+		return
+	end
+
 	if (not IsValid(atk) or not atk:IsPlayer()) then
 		return
 	end
 
-	local points = 1.2
+	local points = 2
 
 	if (atk:GetRoleTeam() == vic:GetRoleTeam()) then
 		-- base on karma
