@@ -60,7 +60,7 @@ SWEP.Bullets = {
 	DamageDropoffRange = 650,
 	DamageDropoffRangeMax = 4200,
 	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.025, 0.025),
+	Spread = Vector(0.015, 0.015),
 	TracerName = "AR2Tracer",
 }
 
@@ -87,3 +87,15 @@ function SWEP:GetDelay()
 	local per_kill = 40
 	return 60 / (base_rpm + self:GetKills() * per_kill)
 end
+
+local pow = 1
+SWEP.RecoilInstructions = {
+	Interval = 1,
+	pow * Angle(-6, -2),
+	pow * Angle(-4, -1),
+	pow * Angle(-2, 3),
+	pow * Angle(-1, 2.5),
+	pow * Angle(-3, 0),
+	pow * Angle(-3, 1),
+	pow * Angle(-3, -3),
+}
