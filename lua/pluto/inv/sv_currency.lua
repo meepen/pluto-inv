@@ -1,5 +1,7 @@
 pluto.currency.shares = 0
 
+local currency_per_round = 3
+
 local pluto_currency_spawnrate = CreateConVar("pluto_currency_spawnrate", "0.9")
 
 local function UpdateAndDecrement(ply, item, currency)
@@ -561,7 +563,7 @@ hook.Add("DoPlayerDeath", "pluto_currency_add", function(vic, damager, dmg)
 end)
 
 function pluto.currency.givespawns(ply, amt)
-	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or 1) + amt * pluto_currency_spawnrate:GetFloat() * math.min(2, pluto.currency.navs.total / 70000 * 1.3)
+	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or currency_per_round) + amt * pluto_currency_spawnrate:GetFloat() * math.min(2, pluto.currency.navs.total / 70000 * 1.3)
 end
 
 function pluto.inv.readrename(cl)
@@ -607,14 +609,14 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 			continue
 		end
 
-		local points = pluto.currency.tospawn[item.Player] or 1
+		local points = pluto.currency.tospawn[item.Player] or currency_per_round
 
 		for i = 1, math.floor(points) do
 			local e = pluto.currency.spawnfor(item.Player)
 			pluto.currency.spawned[e] = item.Player
 		end
 
-		pluto.currency.tospawn[item.Player] = 1 + points - math.floor(points)
+		pluto.currency.tospawn[item.Player] = currency_per_round + points - math.floor(points)
 	end
 
 	-- ghosts
