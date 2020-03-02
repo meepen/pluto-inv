@@ -73,3 +73,9 @@ sound.Add {
 -- 		{time = 2.6, sound = "Weapon_cod4m21.Boltpull"},
 -- 	},
 -- }
+
+
+SWEP.RecoilInstructions = {
+	Interval = 1,
+	Angle(-10),
+}
