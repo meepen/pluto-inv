@@ -17,11 +17,11 @@ function MOD:GetDescription(rolls)
 end
 
 MOD.Tiers = {
-	{ 10, 15 },
-	{ 7.5, 10 },
-	{ 5, 7.5 },
-	{ 2.5, 5 },
-	{ -2.5, 2.5 },
+	{ 20, 33 },
+	{ 13, 20 },
+	{ 7, 13 },
+	{ 4, 7 },
+	{ 4, 4 },
 }
 
 function MOD:ModifyWeapon(wep, roll)
