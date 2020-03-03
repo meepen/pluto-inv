@@ -263,6 +263,12 @@ function PANEL:Init()
 		end
 	end
 
+	self.Text = self:Add "DLabel"
+	self.Text:SetFont "pluto_craft_outcome"
+	self.Text:SetContentAlignment(8)
+	self.Text:SetText ""
+	self.Text:Dock(FILL)
+
 	hook.Add("PlutoCraftResults", self, self.PlutoCraftResults)
 	hook.Add("PlutoDeleteItem", self, self.PlutoDeleteItem)
 end
@@ -271,12 +277,13 @@ function PANEL:PlutoDeleteItem(item)
 	for _, panel in pairs(self.Items) do
 		if (panel.Item and panel.Item.ID == item) then
 			panel:SetItem()
+			panel.Tab.Items[panel.TabIndex] = nil
 		end
 	end
 end
 
 function PANEL:UpdateText(why)
-	self.Text = self.Text or {}
+	self.TextData = self.TextData or {}
 	local text
 	if (why == "currency") then
 		local info = self.Currency.Info
@@ -287,8 +294,15 @@ function PANEL:UpdateText(why)
 			end
 		end
 	end
-	print(why, text)
-	self.Text[why] = text
+
+	self.TextData[why] = text
+
+	local text = {}
+	for k, v in SortedPairs(self.TextData) do
+		text[#text + 1] = v
+	end
+
+	self.Text:SetText(table.concat(text, "\n"))
 end
 
 function PANEL:OnSetItem(id, item)
@@ -314,11 +328,15 @@ function PANEL:PerformLayout(w, h)
 end
 
 function PANEL:PlutoCraftResults(outcomes)
+	self.TextData = outcomes.Info
+	PrintTable(outcomes.Info)
+	self:UpdateText "currency"
+
 	for _, child in pairs(self.Outcomes) do
 		child:Remove()
 	end
 
-	for _, i in pairs(outcomes) do
+	for _, i in ipairs(outcomes) do
 		i.rand = math.random()
 	end
 
@@ -357,13 +375,20 @@ function pluto.inv.writerequestcraftresults(items)
 end
 
 function pluto.inv.readcraftresults(cl)
-	local outcomes = {}
+	local outcomes = {
+		Info = {}
+	}
+
 	for i = 1, net.ReadUInt(8) do
 		local item = pluto.received.item[id] or setmetatable({
 			ID = "fake",
 		}, pluto.inv.item_mt)
 		outcomes[i] = item
 		pluto.inv.readbaseitem(item)
+	end
+
+	while (net.ReadBool()) do
+		outcomes.Info[net.ReadString()] = net.ReadString()
 	end
 
 	hook.Run("PlutoCraftResults", outcomes)

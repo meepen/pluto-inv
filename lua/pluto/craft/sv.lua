@@ -2,8 +2,51 @@ pluto.craft = pluto.craft or {
 	tiers = {}
 }
 
-function pluto.craft.alloutcomes(tiers)
+function pluto.craft.getworth(item)
+	if (not item) then
+		return {}
+	end
+
+	if (item.Type == "Weapon") then
+		local tier = item.Tier.Shares / pluto.tiers.bytype.Weapon.shares
+		local junk = pluto.tiers.byname.junk.Shares / pluto.tiers.bytype.Weapon.shares
+		return {
+			[item.ClassName] = junk / tier
+		}
+	end
+	return {}
+end
+
+function pluto.craft.totalpercent(total)
+	return math.min(0.95, total / 3000)
+end
+
+function pluto.craft.translateworth(worth)
 	local out = {}
+	local total = 0
+
+	for _, amount in pairs(worth) do
+		total = total + amount
+	end
+
+	local totalpercent = pluto.craft.totalpercent(total)
+
+	for class, amount in pairs(worth) do
+		out[class] = string.format("Chance to get %s: %.02f%%", baseclass.Get(class).PrintName, totalpercent * amount / total * 100)
+	end
+	return out
+end
+
+function pluto.craft.alloutcomes(items)
+	local tiers = {
+		items[1].Tier.InternalName,
+		items[2].Tier.InternalName,
+		items[3].Tier.InternalName,
+	}
+
+	local out = {
+		Info = {}
+	}
 	local got = {}
 
 	local function insert(t1, t2, t3)
@@ -28,6 +71,26 @@ function pluto.craft.alloutcomes(tiers)
 	insert(tiers[2], tiers[3], tiers[1])
 	insert(tiers[3], tiers[1], tiers[2])
 	insert(tiers[3], tiers[2], tiers[1])
+
+	local count = {}
+	for i = 4, 7 do
+		local item = items[i]
+
+		if (item and item.Type == "Weapon") then
+			count[item.ClassName] = (count[item.ClassName] or 0) + 1
+		end
+
+		for k, v in pairs(pluto.craft.getworth(item)) do
+			out.Info[k] = (out.Info[k] or 0) + v
+		end
+	end
+
+	for class, amount in pairs(count) do
+		out.Info[class] = out.Info[class] ^ (1 + 0.025 * (amount - 1))
+	end
+
+
+	out.Info = pluto.craft.translateworth(out.Info)
 
 	return out
 end
@@ -64,11 +127,7 @@ function pluto.inv.readrequestcraftresults(cl)
 		return 
 	end
 
-	local outcomes = pluto.craft.alloutcomes {
-		items[1].Tier.InternalName,
-		items[2].Tier.InternalName,
-		items[3].Tier.InternalName,
-	}
+	local outcomes = pluto.craft.alloutcomes(items)
 
 	for i = 1, #outcomes do
 		outcomes[i] = setmetatable({
@@ -89,6 +148,13 @@ function pluto.inv.writecraftresults(cl, outcomes)
 	for i = 1, #outcomes do
 		pluto.inv.writebaseitem(cl, outcomes[i])
 	end
+
+	for k, v in pairs(outcomes.Info) do
+		net.WriteBool(true)
+		net.WriteString(k)
+		net.WriteString(v)
+	end
+	net.WriteBool(false)
 end
 
 function pluto.inv.readcraft(cl)
