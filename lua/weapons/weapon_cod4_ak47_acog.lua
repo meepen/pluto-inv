@@ -1,0 +1,12 @@
+SWEP.PrintName = "AK-47-ACOG"
+
+SWEP.ViewModel = "models/cod4/weapons/v_ak47_acog.mdl"
+
+SWEP.Base = "weapon_cod4_ak47"
+
+SWEP.Ironsights = {
+	TimeTo = 0.25,
+	TimeFrom = 0.15,
+	SlowDown = 0.4,
+	Zoom = 0.5,
+}

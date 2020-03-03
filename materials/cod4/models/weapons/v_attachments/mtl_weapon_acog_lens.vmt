@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+"$basetexture" "cod4/models/weapons/v_attachments/mtl_weapon_acog_lens"
+"$envmapmask" "cod4/models/weapons/v_attachments/mtl_weapon_acog_lens_spc"
+"$envmap" "env_cubemap"
+"$halflambert" "1"
+"$translucent" "1"
+}

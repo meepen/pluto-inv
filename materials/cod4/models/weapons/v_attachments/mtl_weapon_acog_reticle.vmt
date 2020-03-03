@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+"$basetexture" "cod4/models/weapons/v_attachments/mtl_weapon_acog_reticle"
+"$translucent" "1"
+}

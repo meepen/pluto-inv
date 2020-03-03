@@ -26,7 +26,7 @@ pluto.tabs = {
 			end
 
 			if (item.ClassName:StartWith "weapon_") then
-				local wep = weapons.GetStored(item.ClassName)
+				local wep = baseclass.Get(item.ClassName)
 				if (not wep) then
 					return false
 				end

@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+"$basetexture" "cod4/models/weapons/v_attachments/mtl_weapon_reflex_lens"
+"$halflambert" "1"
+"$translucent" "1"
+}

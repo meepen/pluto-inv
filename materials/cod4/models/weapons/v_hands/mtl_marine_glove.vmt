@@ -1,0 +1,10 @@
+"VertexLitGeneric"
+{
+"$basetexture" "cod4/models/weapons/v_hands/mtl_marine_glovesleeve"
+"$bumpmap" "cod4/models/weapons/v_hands/mtl_marine_glovesleeve_nml"
+"$phongexponenttexture" "cod4/models/weapons/v_hands/mtl_marine_glovesleeve_spc"
+"$phong" "1"
+"$phongboost" "0.25"
+"$phongfresnelranges" "[ 1 2 4 ]"
+"$halflambert" "1"
+}

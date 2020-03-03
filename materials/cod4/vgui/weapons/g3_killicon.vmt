@@ -1,0 +1,8 @@
+"UnlitGeneric"
+{
+"$basetexture" "cod4/vgui/weapons/g3_killicon"
+"$vertexalpha" "1"
+"$vertexcolor" "1"
+"$ignorez" "1"
+"$translucent" "1"
+}

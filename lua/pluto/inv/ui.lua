@@ -177,7 +177,7 @@ function PANEL:SetItem(item)
 end
 
 function PANEL:SetWeapon(item)
-	local w = weapons.GetStored(item.ClassName)
+	local w = baseclass.Get(item.ClassName)
 	if (not w) then
 		return
 	end
@@ -261,11 +261,7 @@ function PANEL:FullPaint(w, h)
 
 		if (IsValid(err)) then
 			if (typ == "Weapon") then
-				if (not IsValid(err)) then
-					return
-				end
-
-				local lookup = weapons.GetStored(class).Ortho or {0, 0}
+				local lookup = baseclass.Get(class).Ortho or {0, 0}
 
 				local x, y = self:LocalToScreen(0, 0)
 				local mins, maxs = err:GetModelBounds()
@@ -299,6 +295,14 @@ function PANEL:FullPaint(w, h)
 					render.SuppressEngineLighting(false)
 				cam.End3D()
 			end
+		elseif (typ == "Shard") then
+			local shard = self.DefaultMaterial
+			shard:SetVector("$color", Vector(0.2, 0.2, 0.2))
+
+			surface.DrawTexturedRect(0, 0, w, h)
+			surface.SetDrawColor(255, 255, 255, 128)
+			surface.SetMaterial(shard)
+			surface.DrawTexturedRect(0, 0, w, h)
 		end
 
 		render.SetColorModulation(r, g, b)
@@ -320,16 +324,20 @@ function PANEL:SetDefault(class)
 	local str
 	local type = pluto.inv.itemtype(class)
 	if (type == "Weapon") then
-		str = weapons.GetStored(class).WorldModel
+		str = baseclass.Get(class).WorldModel
 	elseif (type == "Model") then
 		str = pluto.models[class:match"model_(.+)"].Model
+	elseif (type == "Shard") then
+		self.DefaultMaterial = Material "pluto/newshard.png"
 	end
 
-	self.DefaultModel = ClientsideModel(str)
-	self.DefaultModel:SetNoDraw(true)
+	if (str) then
+		self.DefaultModel = ClientsideModel(str)
+		self.DefaultModel:SetNoDraw(true)
 
-	if (IsValid(self.DefaultModel) and type == "Model") then
-		self.DefaultModel:ResetSequence(self.DefaultModel:LookupSequence "idle_all_01")
+		if (IsValid(self.DefaultModel) and type == "Model") then
+			self.DefaultModel:ResetSequence(self.DefaultModel:LookupSequence "idle_all_01")
+		end
 	end
 
 	self.DefaultType = type
@@ -420,7 +428,7 @@ function PANEL:SetItem(item, tab)
 
 	if (not item) then
 		self:SetCursor "arrow"
-		self.Image:SetVisible(self.Image.DefaultModel)
+		self.Image:SetVisible(self.Image.DefaultType)
 		return
 	end
 

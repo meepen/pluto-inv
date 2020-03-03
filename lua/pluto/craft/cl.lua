@@ -25,58 +25,115 @@ function PANEL:SetTab(tab)
 	self.Tab = tab
 end
 
+hook.Remove("DrawOverlay", "cancer", function()
+	local p = vgui.GetHoveredPanel()
+	if (IsValid(p)) then
+		local x0, y0 = p:LocalToScreen(0, 0)
+		local x1, y1 = p:LocalToScreen(p:GetSize())
+
+		surface.SetTextColor(white_text)
+		surface.SetDrawColor(100, 50, 50, 50)
+		surface.SetFont "BudgetLabel"
+
+		surface.SetTextPos(x0, y1)
+		surface.DrawText(tostring(p))
+
+		surface.DrawRect(x0, y0, x1 - x0, y1 - y0)
+	end
+
+end)
+
 function PANEL:Init()
 	self:DockPadding(20, 16, 20, 10)
 
-	self.MainElements = self:Add "EditablePanel"
+	self.Lines = {}
 
-	function self.MainElements.PerformLayout(s, w, h)
-		local padleftright = 30
-		s:DockPadding(padleftright, 10, padleftright, 10)
+	for i = 1, 3 do
+		self.Lines[i] = self:Add "EditablePanel"
+		self.Lines[i]:Dock(TOP)
+	end
 
-		w = w - padleftright * 2
+	self.MainElements = self.Lines[1]
+	self.MainElements:DockMargin(0, 10, 0, 10)
+	self.Lines[2]:DockMargin(0, 0, 0, 10)
 
-		for i = 1, 3 do
-			self.Items[i]:SetWide(h - 20)
+	for _, line in ipairs(self.Lines) do
+		line:DockMargin(0, 0, 0, 10)
+		function line.PerformLayout(s, w, h)
+			local children = s:GetChildren()
+			table.sort(children, function(a, b)
+				return a:GetZPos() < b:GetZPos()
+			end)
+
+			local count = #children
+
+			w = w - h * count
+
+			local w_div = 10
+
+			for _, item in ipairs(children) do
+				item:SetWide(h)
+			end
+
+			children[1]:DockMargin((w - w_div * (count - 1)) / 2, 0, w_div, 0)
+			for i = 2, count - 1 do
+				children[i]:DockMargin(0, 0, w_div, 0)
+			end
 		end
-
-		w = w - (h - 20) * 3 - 24 * 2 -- pluses
-
-		self.Items[1]:DockMargin(0, 0, w / 4, 0)
-		self.Items[2]:DockMargin(w / 4, 0, w / 4, 0)
-		self.Items[3]:DockMargin(w / 4, 0, 0, 0)
 	end
 
-	self.Plus = self:Add "EditablePanel"
-	function self.Plus:PerformLayout(w, h)
-		self.Plus:SetSize(h, h)
-		self.Plus:Center()
-	end
-	self.Plus.Plus = self.Plus:Add "DImage"
-	self.Plus.Plus:SetImage "pluto/plus.png"
+	self.Lines[2].PerformLayout = function(s, w, h)
+		local children = s:GetChildren()
+		table.sort(children, function(a, b)
+			return a:GetZPos() < b:GetZPos()
+		end)
 
-	self.CurrencyElements = self:Add "EditablePanel"
+		local count = #children
+		local w_div = 10
 
-	function self.CurrencyElements.PerformLayout(s, w, h)
-		h = h - self.Currency.Percent:GetTall()
-		self.Currency:SetSize(h, h)
-		self.Currency:Center()
+		w = w - h * (count + 1)
+
+		for _, item in ipairs(children) do
+			item:SetWide(h)
+		end
+		children[2]:SetWide(h * 2)
+
+		children[1]:DockMargin((w - w_div * (count - 1)) / 2, 0, w_div, 0)
+		for i = 2, count - 1 do
+			children[i]:DockMargin(0, 0, w_div, 0)
+		end
 	end
 
 	self.MainElements:Dock(TOP)
-	self.Plus:Dock(TOP)
-	self.Plus:SetTall(24)
-	self.CurrencyElements:Dock(TOP)
 
 	self.Items = {}
 
 	self.Used = {}
 
-	for i = 1, 3 do
-		local p = self.MainElements:Add "pluto_inventory_item"
+	for i = 1, 7 do
+		local parent
+		if (i <= 3) then
+			parent = self.Lines[1]
+		elseif (i <= 5) then
+			parent = self.Lines[2]
+		elseif (i <= 7) then
+			parent = self.Lines[3]
+		end
+		local p = parent:Add "pluto_inventory_item"
 		p:Dock(LEFT)
 		p.Used = self.Used
 		p.TabIndex = i
+
+		if (i <= 3) then
+			function p:Filter(x)
+				return x.Type == "Shard"
+			end
+		else
+			function p:Filter(x)
+				return x.Type == "Weapon"
+			end
+		end
+
 		function p:SwitchWith(other)
 			if (other.Tab.ID == 0) then
 				return
@@ -86,7 +143,7 @@ function PANEL:Init()
 				self.Used[self.Item.ID] = nil
 			end
 
-			if (other.Item and not self.Used[other.Item.ID] and other.Item.Type == "Shard") then
+			if (other.Item and not self.Used[other.Item.ID] and self:Filter(other.Item)) then
 				self:SetItem(other.Item)
 				self.Tab.Items[i] = other.Item
 
@@ -108,59 +165,34 @@ function PANEL:Init()
 			self:OnSetItem(s.TabIndex, item)
 		end
 
+		if (i <= 3) then
+			p:SetDefault "shard"
+		end
 		self.Items[i] = p
+		p:SetZPos(i * 2)
 	end
 
-	self.Plus1 = self.MainElements:Add "EditablePanel"
-	self.Plus1.Plus = self.Plus1:Add "DImage"
-	self.Plus1.Plus:SetImage "pluto/plus.png"
-	self.Plus1:SetWide(24)
-	self.Plus1:Dock(LEFT)
-
-	self.Plus2 = self.MainElements:Add "EditablePanel"
-	self.Plus2.Plus = self.Plus2:Add "DImage"
-	self.Plus2.Plus:SetImage "pluto/plus.png"
-	self.Plus2:SetWide(24)
-	self.Plus2:Dock(LEFT)
-
-	function self.Plus1:PerformLayout(w, h)
-		self.Plus:SetSize(w, w)
-		self.Plus:Center()
-	end
-	function self.Plus2:PerformLayout(w, h)
-		self.Plus:SetSize(w, w)
-		self.Plus:Center()
-	end
-
-	self.Items[1]:SetZPos(0)
-	self.Plus1:SetZPos(1)
-	self.Items[2]:SetZPos(2)
-	self.Plus2:SetZPos(3)
-	self.Items[3]:SetZPos(4)
-	
-	self.Currency = self.CurrencyElements:Add "pluto_trade_currency"
+	self.Currency = self.Lines[3]:Add "pluto_trade_currency"
 	self.Currency:SetModifiable()
-	self.Currency.Percent = self.CurrencyElements:Add "DLabel"
-	self.Currency.Percent:Dock(TOP)
-	self.Currency.Percent:SetContentAlignment(5)
-	self.Currency.Percent:SetFont "pluto_craft_outcome"
-	self.Currency.Percent:SizeToContentsY()
-	self.Currency.Percent:SetText ""
 	function self.Currency:OnUpdate()
-		self.Percent:SetText ""
-
 		if (self.Info) then
 			self.Info.Amount = math.min(self.Info.Amount or 0, 10, pluto.cl_currency[self.Info.Currency or ""] or 0)
 
 			local crafted = pluto.currency.byname[self.Info.Currency].Crafted
 
 			if (not crafted) then
-				return
+				self.Info = nil
 			end
-
-			self.Percent:SetText(string.format("Chance to get %s modifier: %.2f%%", crafted.Mod, pluto.mods.chance(crafted, self.Info.Amount) * 100))
 		end
+		self:UpdateText()
 	end
+
+	function self.Currency.UpdateText()
+		self:UpdateText "currency"
+	end
+
+	self.Currency:SetZPos(6 * 2 + 1)
+	self.Currency:Dock(LEFT)
 
 	self.Outcomes = {}
 
@@ -175,13 +207,15 @@ function PANEL:Init()
 	self.OutcomeLayerText:SetText "Possible Tier Outcomes"
 	self.OutcomeLayerText:SetFont "pluto_craft_outcome"
 
-	self.CraftButton = self:Add "ttt_curved_button"
-	self.CraftButton:Dock(FILL)
+	self.CraftButton = self.Lines[2]:Add "ttt_curved_button"
+
+	self.CraftButton:SetZPos(9)
+	self.CraftButton:Dock(LEFT)
 	self.CraftButton:SetCurve(4)
 	self.CraftButton:SetColor(Color(50,51,52))
 	self.CraftButton:SetFont "pluto_craft_combine"
 	self.CraftButton:SetText "Combine!"
-	self.CraftButton:DockMargin(50, 10, 50, 10)
+	self.CraftButton:DockMargin(0, 10, 0, 10)
 
 	function self.CraftButton.DoClick(s)
 		pluto.inv.message()
@@ -220,27 +254,42 @@ function PANEL:Init()
 	hook.Add("PlutoCraftResults", self, self.PlutoCraftResults)
 end
 
-function PANEL:OnSetItem(id, item)
-	local i1 = self.Items[1].Item
-	local i2 = self.Items[2].Item
-	local i3 = self.Items[3].Item
-
-	if (i1 and i2 and i3) then
-		pluto.inv.message()
-			:write("requestcraftresults", i1, i2, i3)
-			:send()
-	else
-		for _, child in pairs(self.Outcomes) do
-			child:Remove()
+function PANEL:UpdateText(why)
+	self.Text = self.Text or {}
+	local text
+	if (why == "currency") then
+		local info = self.Currency.Info
+		if (info) then
+			local crafted = pluto.currency.byname[info.Currency].Crafted
+			if (crafted) then
+				text = string.format("Chance to get %s modifier: %.2f%%", crafted.Mod, pluto.mods.chance(crafted, info.Amount) * 100)
+			end
 		end
-		self.Outcomes = {}
 	end
+	print(why, text)
+	self.Text[why] = text
+end
+
+function PANEL:OnSetItem(id, item)
+	local items = {}
+	for i, panel in ipairs(self.Items) do
+		items[i] = panel.Item
+	end
+
+	pluto.inv.message()
+		:write("requestcraftresults", items)
+		:send()
+
+	for _, child in pairs(self.Outcomes) do
+		child:Remove()
+	end
+	self.Outcomes = {}
 end
 
 function PANEL:PerformLayout(w, h)
-	self.MainElements:SetTall(w / 4)
-
-	self.CurrencyElements:SetTall(w / 6)
+	for _, line in ipairs(self.Lines) do
+		line:SetTall(w / 8)
+	end
 end
 
 function PANEL:PlutoCraftResults(outcomes)
@@ -274,10 +323,16 @@ end
 vgui.Register("pluto_craft", PANEL, "pluto_inventory_base")
 
 
-function pluto.inv.writerequestcraftresults(i1, i2, i3)
-	net.WriteUInt(i1.ID, 32)
-	net.WriteUInt(i2.ID, 32)
-	net.WriteUInt(i3.ID, 32)
+function pluto.inv.writerequestcraftresults(items)
+	for i = 1, 7 do
+		local item = items[i]
+		if (item) then
+			net.WriteBool(true)
+			net.WriteUInt(item.ID, 32)
+		else
+			net.WriteBool(false)
+		end
+	end
 end
 
 function pluto.inv.readcraftresults(cl)

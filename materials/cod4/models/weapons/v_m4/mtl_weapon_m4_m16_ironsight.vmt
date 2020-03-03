@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+"$basetexture" "cod4/models/weapons/v_m4/mtl_weapon_m4_m16"
+"$envmapmask" "cod4/models/weapons/v_m4/mtl_weapon_m4_m16_spc"
+"$envmap" "env_cubemap"
+"$envmapcontrast" "1"
+"$halflambert" "1"
+}

@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+"$basetexture" "cod4/models/weapons/v_ak47/mtl_weapon_ak47"
+"$bumpmap" "cod4/models/weapons/v_ak47/mtl_weapon_ak47_nml"
+"$halflambert" "1"
+}

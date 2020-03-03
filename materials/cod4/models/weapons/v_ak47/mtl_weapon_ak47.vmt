@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+"$basetexture" "cod4/models/weapons/v_ak47/mtl_weapon_ak47"
+"$envmapmask" "cod4/models/weapons/v_ak47/mtl_weapon_ak47_s"
+"$envmap" "env_cubemap"
+"$envmapcontrast" "1"
+"$halflambert" "1"
+}

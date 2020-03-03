@@ -208,7 +208,7 @@ function ITEM:GetRawName(ignoretier)
 		end
 		return tier .. " Tier Shard"
 	elseif (self.Type == "Weapon") then -- item
-		local w = weapons.GetStored(self.ClassName)
+		local w = baseclass.Get(self.ClassName)
 		local tier = self.Tier
 		if (istable(tier)) then
 			tier = tier.Name

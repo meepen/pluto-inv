@@ -33,34 +33,55 @@ function pluto.craft.alloutcomes(tiers)
 end
 
 function pluto.inv.readrequestcraftresults(cl)
-	local i1 = net.ReadUInt(32)
-	local i2 = net.ReadUInt(32)
-	local i3 = net.ReadUInt(32)
+	local items = {}
 
-	i1 = pluto.inv.items[i1]
-	i2 = pluto.inv.items[i2]
-	i3 = pluto.inv.items[i3]
+	local failed = false
+	local notcomplete = false
+	for i = 1, 7 do
+		local item
+		if (net.ReadBool()) then
+			item = pluto.inv.items[net.ReadUInt(32)]
+			if (not item or item.Owner ~= cl:SteamID64()) then
+				failed = true
+				continue
+			end
 
-	if (i1 and i2 and i3 and i1.Type == "Shard" and i2.Type == "Shard" and i3.Type == "Shard") then
-		local outcomes = pluto.craft.alloutcomes {
-			i1.Tier.InternalName,
-			i2.Tier.InternalName,
-			i3.Tier.InternalName,
-		}
-
-		for i = 1, #outcomes do
-			outcomes[i] = setmetatable({
-				Type = "Shard",
-				ClassName = "shard",
-				SpecialName = "Random Crafted Weapon",
-				Tier = outcomes[i]
-			}, pluto.inv.item_mt)
+			items[i] = item
 		end
-
-		pluto.inv.message(cl)
-			:write("craftresults", outcomes)
-			:send()
+		
+		if (i <= 3 and (not item or item.Type ~= "Shard")) then
+			notcomplete = true
+			continue
+		end
 	end
+
+	if (notcomplete) then
+		return
+	end
+
+	if (failed) then
+		pluto.inv.sendfullupdate(cl)
+		return 
+	end
+
+	local outcomes = pluto.craft.alloutcomes {
+		items[1].Tier.InternalName,
+		items[2].Tier.InternalName,
+		items[3].Tier.InternalName,
+	}
+
+	for i = 1, #outcomes do
+		outcomes[i] = setmetatable({
+			Type = "Shard",
+			ClassName = "shard",
+			SpecialName = "Random Crafted Weapon",
+			Tier = outcomes[i]
+		}, pluto.inv.item_mt)
+	end
+
+	pluto.inv.message(cl)
+		:write("craftresults", outcomes)
+		:send()
 end
 
 function pluto.inv.writecraftresults(cl, outcomes)

@@ -11,7 +11,7 @@ concommand.Add("pluto_generate_weapon", function(ply, cmd, args)
 			end
 		end
 	else
-		local wep = weapons.GetStored(arg)
+		local wep = baseclass.Get(arg)
 
 		if (not wep) then
 			pwarnf("No weapon %s", args[1])

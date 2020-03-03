@@ -1,0 +1,10 @@
+"VertexLitGeneric"
+{
+"$basetexture" "cod4/models/weapons/v_ak47/mtl_weapon_ak47"
+"$bumpmap" "cod4/models/weapons/v_ak47/mtl_weapon_ak47_nml"
+"$phongexponenttexture" "cod4/models/weapons/v_ak47/mtl_weapon_ak47_s"
+"$phong" "1"
+"$phongboost" "0.1"
+"$phongfresnelranges" "[ 3 6 9 ]"
+"$halflambert" "1"
+}

@@ -1,0 +1,8 @@
+"UnlitGeneric"
+{
+"$basetexture" "cod4/vgui/weapons/m4_selecticon"
+"$vertexalpha" "1"
+"$vertexcolor" "1"
+"$ignorez" "1"
+"$translucent" "1"
+}
