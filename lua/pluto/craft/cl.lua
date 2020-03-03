@@ -60,6 +60,10 @@ function PANEL:Init()
 	for _, line in ipairs(self.Lines) do
 		line:DockMargin(0, 0, 0, 10)
 		function line.PerformLayout(s, w, h)
+			if (s.LastWidth == w and s.LastHeight == h) then
+				return
+			end
+			s.LastWidth, s.LastHeight = w, h
 			local children = s:GetChildren()
 			table.sort(children, function(a, b)
 				return a:GetZPos() < b:GetZPos()
@@ -83,9 +87,13 @@ function PANEL:Init()
 	end
 
 	self.Lines[2].PerformLayout = function(s, w, h)
+		if (s.LastWidth == w and s.LastHeight == h) then
+			return
+		end
+		s.LastWidth, s.LastHeight = w, h
 		local children = s:GetChildren()
 		table.sort(children, function(a, b)
-			return a:GetZPos() < b:GetZPos()
+			return a:GetZPos() <= b:GetZPos()
 		end)
 
 		local count = #children
@@ -112,12 +120,16 @@ function PANEL:Init()
 
 	for i = 1, 7 do
 		local parent
+		local zpos
 		if (i <= 3) then
 			parent = self.Lines[1]
+			zpos = i - 1
 		elseif (i <= 5) then
 			parent = self.Lines[2]
+			zpos = i - 4
 		elseif (i <= 7) then
 			parent = self.Lines[3]
+			zpos = i - 6
 		end
 		local p = parent:Add "pluto_inventory_item"
 		p:Dock(LEFT)
@@ -169,7 +181,7 @@ function PANEL:Init()
 			p:SetDefault "shard"
 		end
 		self.Items[i] = p
-		p:SetZPos(i * 2)
+		p:SetZPos(zpos * 2)
 	end
 
 	self.Currency = self.Lines[3]:Add "pluto_trade_currency"
@@ -191,7 +203,7 @@ function PANEL:Init()
 		self:UpdateText "currency"
 	end
 
-	self.Currency:SetZPos(6 * 2 + 1)
+	self.Currency:SetZPos(1)
 	self.Currency:Dock(LEFT)
 
 	self.Outcomes = {}
@@ -209,7 +221,7 @@ function PANEL:Init()
 
 	self.CraftButton = self.Lines[2]:Add "ttt_curved_button"
 
-	self.CraftButton:SetZPos(9)
+	self.CraftButton:SetZPos(1)
 	self.CraftButton:Dock(LEFT)
 	self.CraftButton:SetCurve(4)
 	self.CraftButton:SetColor(Color(50,51,52))
@@ -252,6 +264,15 @@ function PANEL:Init()
 	end
 
 	hook.Add("PlutoCraftResults", self, self.PlutoCraftResults)
+	hook.Add("PlutoDeleteItem", self, self.PlutoDeleteItem)
+end
+
+function PANEL:PlutoDeleteItem(item)
+	for _, panel in pairs(self.Items) do
+		if (panel.Item and panel.Item.ID == item) then
+			panel:SetItem()
+		end
+	end
 end
 
 function PANEL:UpdateText(why)

@@ -1485,6 +1485,8 @@ function PANEL:Think()
 
 			pluto.ui.ghost:SetItem(nil)
 
+			hook.Run("PlutoDeleteItem", self.Deleting.Item)
+
 			self:StopIfDeleting()
 		end
 	end
