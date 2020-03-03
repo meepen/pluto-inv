@@ -233,16 +233,11 @@ function pluto.inv.readcraft(cl)
 		rand = rand - data.Percent
 		if (rand < 0) then
 			class = data.ClassName
-			print("GOT", class)
 			break
 		end
 	end
 
 	local wpn = pluto.weapons.generatetier(pluto.tiers.craft(tiers), class)
-
-	wpn.TabID = items[1].TabID
-	wpn.TabIndex = items[1].TabIndex
-	wpn.Owner = items[1].Owner
 
 	if (cur) then
 		local crafted = pluto.currency.byname[cur.Currency].Crafted
@@ -272,7 +267,7 @@ function pluto.inv.readcraft(cl)
 	for _, item in pairs(items) do
 		pluto.inv.deleteitem(cl, item.RowID, print, transact)
 	end
-	pluto.weapons.save(wpn, cl, nil, transact)
+	pluto.inv.savebufferitem(cl, wpn, transact)
 
 	if (cur) then
 		pluto.inv.addcurrency(cl, cur.Currency, -cur.Amount, nil, transact)
