@@ -18,7 +18,7 @@ SWEP.Primary.DefaultClip = 90
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "AR2"
 SWEP.Primary.Damage = 21
-SWEP.Primary.Delay = 0.075
+SWEP.Primary.Delay = 0.09
 
 SWEP.HeadshotMultiplier = 27 / SWEP.Primary.Damage
 

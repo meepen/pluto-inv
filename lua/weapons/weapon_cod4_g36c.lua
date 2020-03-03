@@ -17,12 +17,12 @@ SWEP.Primary.ClipSize = 30
 SWEP.Primary.DefaultClip = 90
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "AR2"
-SWEP.Primary.Damage = 12.5
+SWEP.Primary.Damage = 14
 SWEP.Primary.Delay = 0.08
 
 SWEP.ReloadSpeed = 1.3
 
-SWEP.HeadshotMultiplier = 15 / SWEP.Primary.Damage
+SWEP.HeadshotMultiplier = 18 / SWEP.Primary.Damage
 
 SWEP.Sights = true
 
@@ -57,18 +57,18 @@ sound.Add {
 	sound = "cod4/weapons/g36c/wpfoly_g36_reload_lift_v1.wav"
 }
 
-local pow = 2.5
+local pow = 3
 SWEP.RecoilInstructions = {
 	Interval = 1,
-	pow * Angle(-6, -2),
-	pow * Angle(-4, -1),
-	pow * Angle(-2, 3),
-	pow * Angle(-1, 0),
-	pow * Angle(-1, 0),
+	pow * Angle(-4, -3),
+	pow * Angle(-4, -2),
+	pow * Angle(-2, 1),
+	pow * Angle(-1, -1),
+	pow * Angle(-1, 2),
+	pow * Angle(-3, 3),
 	pow * Angle(-3, 2),
-	pow * Angle(-3, 1),
-	pow * Angle(-2, 0),
-	pow * Angle(-3, -3),
+	pow * Angle(-2, 2),
+	pow * Angle(-3, -1),
 }
 
 SWEP.Bullets = {

@@ -17,8 +17,8 @@ SWEP.Primary.ClipSize = 30
 SWEP.Primary.DefaultClip = 90
 SWEP.Primary.Automatic = true
 SWEP.Primary.Delay = 0.1
-SWEP.Primary.Damage = 15
-SWEP.HeadshotMultiplier = 23 / 15
+SWEP.Primary.Damage = 17
+SWEP.HeadshotMultiplier = 24 / 15
 
 SWEP.Sights = false
 

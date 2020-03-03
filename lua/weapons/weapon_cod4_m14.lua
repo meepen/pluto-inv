@@ -18,8 +18,10 @@ SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo          = "357"
 SWEP.AmmoEnt               = "item_ammo_357_ttt"
 SWEP.Primary.Damage = 23
-SWEP.Primary.Delay = 0.24
+SWEP.Primary.Delay = 0.33
 SWEP.HeadshotMultiplier = 37 / SWEP.Primary.Damage
+
+SWEP.Primary.RecoilTiming = 0.1
 
 SWEP.Sights = true
 
@@ -64,4 +66,28 @@ sound.Add {
 	channel = CHAN_ITEM,
 	volume = 0.5,
 	sound = "cod4/weapons/m14/wpfoly_m14_reload_lift_v1.wav"
+}
+
+SWEP.RecoilInstructions = {
+	Interval = 1,
+	Angle(-25, -4),
+	Angle(-25, -3),
+	Angle(-25, 4),
+	Angle(-25, 2),
+}
+
+SWEP.Ironsights = {
+	TimeTo = 0.1,
+	TimeFrom = 0.15,
+	SlowDown = 0.6,
+	Zoom = 0.8,
+}
+
+SWEP.Bullets = {
+	HullSize = 0,
+	Num = 1,
+	DamageDropoffRange = 650,
+	DamageDropoffRangeMax = 3500,
+	DamageMinimumPercent = 0.2,
+	Spread = Vector(0.01, 0.01),
 }
