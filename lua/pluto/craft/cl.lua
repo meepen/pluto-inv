@@ -230,22 +230,21 @@ function PANEL:Init()
 	self.CraftButton:DockMargin(0, 10, 0, 10)
 
 	function self.CraftButton.DoClick(s)
+		local items = self:GetItems()
 		pluto.inv.message()
-			:write("craft", {
-				Shards = {
-					self.Items[1].Item,
-					self.Items[2].Item,
-					self.Items[3].Item,
-				},
-				Currency = self.Currency.Info,
-			})
+			:write("craft", items, self.Currency.Info)
 			:send()
-		self.Items[1]:SetItem()
-		self.Items[2]:SetItem()
-		self.Items[3]:SetItem()
-		self.Tab.Items[1] = nil
-		self.Tab.Items[2] = nil
-		self.Tab.Items[3] = nil
+
+		for i, panel in pairs(self.Items) do
+			panel:SetItem()
+			self.Tab.Items[i] = nil
+		end
+
+		for _, item in pairs(items) do
+			if (item) then
+				hook.Run("PlutoItemDelete", item.ID)
+			end
+		end
 	end
 
 	function self.OutcomeLayer.PerformLayout(s, w, h)
@@ -270,10 +269,19 @@ function PANEL:Init()
 	self.Text:Dock(FILL)
 
 	hook.Add("PlutoCraftResults", self, self.PlutoCraftResults)
-	hook.Add("PlutoDeleteItem", self, self.PlutoDeleteItem)
+	hook.Add("PlutoItemDelete", self, self.PlutoItemDelete)
 end
 
-function PANEL:PlutoDeleteItem(item)
+function PANEL:GetItems()
+	local items = {}
+	for i, panel in ipairs(self.Items) do
+		items[i] = panel.Item
+	end
+
+	return items
+end
+
+function PANEL:PlutoItemDelete(item)
 	for _, panel in pairs(self.Items) do
 		if (panel.Item and panel.Item.ID == item) then
 			panel:SetItem()
@@ -306,13 +314,8 @@ function PANEL:UpdateText(why)
 end
 
 function PANEL:OnSetItem(id, item)
-	local items = {}
-	for i, panel in ipairs(self.Items) do
-		items[i] = panel.Item
-	end
-
 	pluto.inv.message()
-		:write("requestcraftresults", items)
+		:write("requestcraftresults", self:GetItems())
 		:send()
 
 	for _, child in pairs(self.Outcomes) do
@@ -361,8 +364,7 @@ end
 
 vgui.Register("pluto_craft", PANEL, "pluto_inventory_base")
 
-
-function pluto.inv.writerequestcraftresults(items)
+function pluto.inv.writecraftheader(items)
 	for i = 1, 7 do
 		local item = items[i]
 		if (item) then
@@ -372,6 +374,10 @@ function pluto.inv.writerequestcraftresults(items)
 			net.WriteBool(false)
 		end
 	end
+end
+
+function pluto.inv.writerequestcraftresults(items)
+	pluto.inv.writecraftheader(items)
 end
 
 function pluto.inv.readcraftresults(cl)
@@ -394,29 +400,12 @@ function pluto.inv.readcraftresults(cl)
 	hook.Run("PlutoCraftResults", outcomes)
 end
 
-function pluto.inv.writecraft(info)
-	local i1, i2, i3 = info.Shards[1], info.Shards[2], info.Shards[3]
-
-	if (i1 and i2 and i3) then
-		for _, tab in pairs(pluto.cl_inv) do
-			for idx, item in pairs(tab.Items or {}) do
-				if (i1 and item.ID == i1.ID or i2 and item.ID == i2.ID or i3 and item.ID == i3.ID) then
-					tab.Items[idx] = nil
-
-					hook.Run("PlutoTabUpdate", tab.ID, idx, nil)
-				end
-			end
-		end
-	end
-
-	net.WriteUInt(i1 and i1.ID or 0, 32)
-	net.WriteUInt(i2 and i2.ID or 0, 32)
-	net.WriteUInt(i3 and i3.ID or 0, 32)
-
-	if (info.Currency) then
+function pluto.inv.writecraft(items, currency)
+	pluto.inv.writecraftheader(items)
+	if (currency) then
 		net.WriteBool(true)
-		net.WriteString(info.Currency.Currency)
-		net.WriteUInt(info.Currency.Amount, 32)
+		net.WriteString(currency.Currency)
+		net.WriteUInt(currency.Amount, 32)
 	else
 		net.WriteBool(false)
 	end

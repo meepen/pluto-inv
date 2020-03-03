@@ -2,7 +2,7 @@ pluto.craft = pluto.craft or {
 	tiers = {}
 }
 
-function pluto.craft.getworth(item)
+function pluto.craft.itemworth(item)
 	if (not item) then
 		return {}
 	end
@@ -21,8 +21,8 @@ function pluto.craft.totalpercent(total)
 	return math.min(0.95, total / 3000)
 end
 
-function pluto.craft.translateworth(worth)
-	local out = {}
+function pluto.craft.translateworths(worth)
+	local out_text, out_percents = {}, {}
 	local total = 0
 
 	for _, amount in pairs(worth) do
@@ -32,9 +32,38 @@ function pluto.craft.translateworth(worth)
 	local totalpercent = pluto.craft.totalpercent(total)
 
 	for class, amount in pairs(worth) do
-		out[class] = string.format("Chance to get %s: %.02f%%", baseclass.Get(class).PrintName, totalpercent * amount / total * 100)
+		out_text[class] = string.format("Chance to get %s: %.02f%%", baseclass.Get(class).PrintName, totalpercent * amount / total * 100)
+		out_percents[#out_percents + 1] = {
+			ClassName = class,
+			Percent = totalpercent * amount / total
+		}
 	end
-	return out
+
+	return out_text, out_percents
+end
+
+function pluto.craft.itemsworth(items)
+	local count = {}
+	local info = {}
+
+	for i = 4, 7 do
+		local item = items[i]
+
+		if (item and item.Type == "Weapon") then
+			count[item.ClassName] = (count[item.ClassName] or 0) + 1
+		end
+
+		for k, v in pairs(pluto.craft.itemworth(item)) do
+			info[k] = (info[k] or 0) + v
+		end
+	end
+
+	for class, amount in pairs(count) do
+		info[class] = info[class] ^ (1 + 0.025 * (amount - 1))
+	end
+
+
+	return info
 end
 
 function pluto.craft.alloutcomes(items)
@@ -44,9 +73,7 @@ function pluto.craft.alloutcomes(items)
 		items[3].Tier.InternalName,
 	}
 
-	local out = {
-		Info = {}
-	}
+	local out = {}
 	local got = {}
 
 	local function insert(t1, t2, t3)
@@ -72,31 +99,14 @@ function pluto.craft.alloutcomes(items)
 	insert(tiers[3], tiers[1], tiers[2])
 	insert(tiers[3], tiers[2], tiers[1])
 
-	local count = {}
-	for i = 4, 7 do
-		local item = items[i]
-
-		if (item and item.Type == "Weapon") then
-			count[item.ClassName] = (count[item.ClassName] or 0) + 1
-		end
-
-		for k, v in pairs(pluto.craft.getworth(item)) do
-			out.Info[k] = (out.Info[k] or 0) + v
-		end
-	end
-
-	for class, amount in pairs(count) do
-		out.Info[class] = out.Info[class] ^ (1 + 0.025 * (amount - 1))
-	end
-
-
-	out.Info = pluto.craft.translateworth(out.Info)
+	out.Info = pluto.craft.translateworths(pluto.craft.itemsworth(items))
 
 	return out
 end
 
-function pluto.inv.readrequestcraftresults(cl)
+function pluto.craft.readheader(cl)
 	local items = {}
+	local got = {}
 
 	local failed = false
 	local notcomplete = false
@@ -104,11 +114,12 @@ function pluto.inv.readrequestcraftresults(cl)
 		local item
 		if (net.ReadBool()) then
 			item = pluto.inv.items[net.ReadUInt(32)]
-			if (not item or item.Owner ~= cl:SteamID64()) then
+			if (not item or item.Owner ~= cl:SteamID64() or got[item]) then
 				failed = true
 				continue
 			end
 
+			got[item] = true
 			items[i] = item
 		end
 		
@@ -125,6 +136,16 @@ function pluto.inv.readrequestcraftresults(cl)
 	if (failed) then
 		pluto.inv.sendfullupdate(cl)
 		return 
+	end
+
+	return items
+end
+
+function pluto.inv.readrequestcraftresults(cl)
+	local items = pluto.craft.readheader(cl)
+
+	if (not items) then
+		return
 	end
 
 	local outcomes = pluto.craft.alloutcomes(items)
@@ -158,10 +179,9 @@ function pluto.inv.writecraftresults(cl, outcomes)
 end
 
 function pluto.inv.readcraft(cl)
-	local i1, i2, i3 = net.ReadUInt(32), net.ReadUInt(32), net.ReadUInt(32)
+	local items = pluto.craft.readheader(cl)
 
-	if (i1 == i2 or i1 == i3 or i1 == i2) then
-		pluto.inv.sendfullupdate(cl)
+	if (not items) then
 		return
 	end
 
@@ -180,36 +200,18 @@ function pluto.inv.readcraft(cl)
 			return
 		end
 	end
-	
-	i1 = pluto.inv.items[i1]
-	i2 = pluto.inv.items[i2]
-	i3 = pluto.inv.items[i3]
-
-	if (not i1 or not i2 or not i3) then
-		return
-	end
-
-	if (i1.Owner ~= i2.Owner or i3.Owner ~= i1.Owner or i1.Owner ~= cl:SteamID64()) then
-		pluto.inv.sendfullupdate(cl)
-		return
-	end
-
-	if (i1.Type ~= "Shard" and i2.Type ~= "Shard" and i3.Type ~= "Shard") then
-		pluto.inv.sendfullupdate(cl)
-		return
-	end
 
 	local tiers = {
 		{
-			tier = i1.Tier.InternalName,
+			tier = items[1].Tier.InternalName,
 			r = math.random(),
 		},
 		{
-			tier = i2.Tier.InternalName,
+			tier = items[2].Tier.InternalName,
 			r = math.random(),
 		},
 		{
-			tier = i3.Tier.InternalName,
+			tier = items[3].Tier.InternalName,
 			r = math.random(),
 		},
 	}
@@ -222,11 +224,25 @@ function pluto.inv.readcraft(cl)
 		tiers[i] = tier.tier
 	end
 
-	local wpn = pluto.weapons.generatetier(pluto.tiers.craft(tiers))
+	local class
 
-	wpn.TabID = i1.TabID
-	wpn.TabIndex = i1.TabIndex
-	wpn.Owner = i1.Owner
+	local out_text, out_percents = pluto.craft.translateworths(pluto.craft.itemsworth(items))
+
+	local rand = math.random()
+	for _, data in pairs(out_percents) do
+		rand = rand - data.Percent
+		if (rand < 0) then
+			class = data.ClassName
+			print("GOT", class)
+			break
+		end
+	end
+
+	local wpn = pluto.weapons.generatetier(pluto.tiers.craft(tiers), class)
+
+	wpn.TabID = items[1].TabID
+	wpn.TabIndex = items[1].TabIndex
+	wpn.Owner = items[1].Owner
 
 	if (cur) then
 		local crafted = pluto.currency.byname[cur.Currency].Crafted
@@ -253,9 +269,9 @@ function pluto.inv.readcraft(cl)
 	end
 
 	local transact = pluto.db.transact()
-	pluto.inv.deleteitem(cl, i1.RowID, print, transact)
-	pluto.inv.deleteitem(cl, i2.RowID, print, transact)
-	pluto.inv.deleteitem(cl, i3.RowID, print, transact)
+	for _, item in pairs(items) do
+		pluto.inv.deleteitem(cl, item.RowID, print, transact)
+	end
 	pluto.weapons.save(wpn, cl, nil, transact)
 
 	if (cur) then

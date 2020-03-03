@@ -374,6 +374,13 @@ function PANEL:Init()
 
 	hook.Add("PlutoTabUpdate", self, self.PlutoTabUpdate)
 	hook.Add("PlutoItemUpdate", self, self.PlutoItemUpdate)
+	hook.Add("PlutoItemDelete", self, self.PlutoItemDelete)
+end
+
+function PANEL:PlutoItemDelete(item)
+	if (self.Item and self.Item.ID == item) then
+		self:SetItem()
+	end
 end
 
 function PANEL:SetDefault(c)
@@ -1483,9 +1490,7 @@ function PANEL:Think()
 
 			pluto.cl_inv[self.Deleting.TabID].Items[self.Deleting.TabIndex] = nil
 
-			pluto.ui.ghost:SetItem(nil)
-
-			hook.Run("PlutoDeleteItem", self.Deleting.Item)
+			hook.Run("PlutoItemDelete", self.Deleting.Item)
 
 			self:StopIfDeleting()
 		end
