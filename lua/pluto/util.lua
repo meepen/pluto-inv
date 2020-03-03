@@ -2,6 +2,18 @@ function math.fact(x)
 	return math.Round(math.sqrt(2 * math.pi / x) * ((x + 1 / ((12 * x) - 1 / (10 * x))) / math.exp(1)) ^ x)
 end
 
+function math.circularmean(...)
+	local x, y = 0, 0
+	for i = 1, select("#", ...) do
+		local num = select(i, ...)
+
+		x = x + math.cos(num * math.pi * 2 - math.pi)
+		y = y + math.sin(num * math.pi * 2 - math.pi)
+	end
+
+	return (math.atan2(y, x) + math.pi) / (math.pi * 2)
+end
+
 function string.formatsafe_table(str, ...)
 	local cur_arg = 1
 	local retn = {}

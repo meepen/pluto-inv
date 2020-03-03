@@ -52,22 +52,22 @@ end
 
 local function CombineColors(...)
 	local cols = {
-		h = 0,
 		s = 0,
 		v = 0,
 		a = 255
 	}
+	local hues = {}
 
 	local num = select("#", ...)
 	for i = 1, num do
 		local h, s, v = ColorToHSV((select(i, ...)))
 
-		cols.h = cols.h + h / num
+		hues[i] = h / 360
 		cols.s = cols.s + s / num
 		cols.v = cols.v + v / num
 	end
 
-	local c = HSVToColor(cols.h, cols.s, cols.v, cols.a)
+	local c = HSVToColor(math.circularmean(unpack(hues)) * 360, cols.s, cols.v, cols.a)
 	return Color(c.r, c.g, c.b, c.a)
 end
 
@@ -115,7 +115,7 @@ function pluto.tiers.craft(tiers)
 	end
 
 	tier.affixes = t1.affixes or 0
-	tier.Color = CombineColors(t1.Color, t1.Color, t1.Color, t1.Color, t1.Color, t1.Color, t1.Color, t2.Color, t2.Color, t3.Color)
+	tier.Color = CombineColors(t1.Color, t1.Color, t1.Color, t2.Color, t2.Color, t3.Color)
 
 	return tier
 end
