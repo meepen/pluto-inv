@@ -380,6 +380,7 @@ end
 function PANEL:PlutoItemDelete(item)
 	if (self.Item and self.Item.ID == item) then
 		self:SetItem()
+		self.Tab[self.TabIndex] = nil
 	end
 end
 
