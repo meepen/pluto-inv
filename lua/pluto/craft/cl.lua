@@ -151,11 +151,12 @@ function PANEL:Init()
 				return
 			end
 
-			if (self.Item) then
-				self.Used[self.Item.ID] = nil
-			end
 
 			if (other.Item and not self.Used[other.Item.ID] and self:Filter(other.Item)) then
+				if (self.Item) then
+					self.Used[self.Item.ID] = nil
+				end
+
 				self:SetItem(other.Item)
 				self.Tab.Items[i] = other.Item
 

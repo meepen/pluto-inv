@@ -82,14 +82,14 @@ function pluto.inv.generatebufferweapon(ply, ...)
 	return pluto.inv.savebufferitem(ply, new_item)
 end
 
-function pluto.inv.generatebuffershard(ply, tier)
+function pluto.inv.generatebuffershard(ply, tier, transact)
 	local new_item = setmetatable({
 		ClassName = "shard",
 		Tier = pluto.tiers.byname[tier],
 		Type = "Shard",
 	}, pluto.inv.item_mt)
 
-	return pluto.inv.savebufferitem(ply, new_item)
+	return pluto.inv.savebufferitem(ply, new_item, transact)
 end
 
 concommand.Add("pluto_spawn_weapon", function(ply, cmd, arg, args)
@@ -98,6 +98,14 @@ concommand.Add("pluto_spawn_weapon", function(ply, cmd, arg, args)
 	end
 
 	pluto.inv.generatebufferweapon(ply, unpack(arg)):Run()
+end)
+
+concommand.Add("pluto_spawn_shard", function(ply, cmd, arg, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+
+	pluto.inv.generatebuffershard(ply, arg[1]):Run()
 end)
 
 function pluto.inv.generatebuffermodel(ply, mdl)

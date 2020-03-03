@@ -379,8 +379,9 @@ end
 
 function PANEL:PlutoItemDelete(item)
 	if (self.Item and self.Item.ID == item) then
+		print "DELETE"
+		self.Tab.Items[self.TabIndex] = nil
 		self:SetItem()
-		self.Tab[self.TabIndex] = nil
 	end
 end
 
@@ -2337,23 +2338,28 @@ hook.Add("PostRenderVGUI", "pluto_ghost", function()
 	end
 end)
 
-pluto.tradetab = {
-	Type = "trade",
-	Name = "Trade",
-	ID = 0,
-	Items = {},
-	Currency = {},
-	FakeID = 2,
-}
 
-pluto.crafttab = {
-	Type = "craft",
-	Name = "Craft",
-	ID = 0,
-	Items = {},
-	Currency = {},
-	FakeID = 1,
-}
+function pluto.inv.remakefake()
+	pluto.tradetab = {
+		Type = "trade",
+		Name = "Trade",
+		ID = 0,
+		Items = {},
+		Currency = {},
+		FakeID = 2,
+	}
+
+	pluto.crafttab = {
+		Type = "craft",
+		Name = "Craft",
+		ID = 0,
+		Items = {},
+		Currency = {},
+		FakeID = 1,
+	}
+end
+
+pluto.inv.remakefake()
 
 hook.Add("VGUIMousePressAllowed", "pluto_ghost", function(mouse)
 	if (IsValid(pluto.ui.ghost)) then
