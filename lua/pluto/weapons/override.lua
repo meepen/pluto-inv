@@ -4,7 +4,7 @@ pluto.weapons.guns = pluto.weapons.guns or {}
 pluto.weapons.melees = pluto.weapons.melees or {}
 pluto.weapons.grenades = pluto.weapons.grenades or {}
 
-local weapons_OnLoaded = weapons.OnLoaded
+weapons.RealOnLoaded = weapons.RealOnLoaded or weapons.OnLoaded
 
 function weapons.OnLoaded()
 	weapons.Register(weapons.GetStored "weapon_tttbase", "weapon_tttbase_old")
@@ -12,10 +12,11 @@ function weapons.OnLoaded()
 		Base = "weapon_plutobase"
 	}, "weapon_tttbase")
 	weapons.GetStored "weapon_ttt_crowbar".PlutoSpawnable = true
-	weapons_OnLoaded()
+	weapons.RealOnLoaded()
 
 
 	for _, wep in pairs(weapons.GetList()) do
+		wep = baseclass.Get(wep.ClassName)
 		if (not wep.AutoSpawnable and not wep.PlutoSpawnable) then
 			continue
 		end

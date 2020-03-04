@@ -19,3 +19,5 @@ SWEP.Bullets = {
 	DamageMinimumPercent = 0.1,
 	Spread = Vector(0.015, 0.015),
 }
+
+SWEP.AutoSpawnable = false

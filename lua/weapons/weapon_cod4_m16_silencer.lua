@@ -8,3 +8,5 @@ SWEP.Slot = 2
 SWEP.Base = "weapon_cod4_m16"
 
 SWEP.Primary.Sound = "Weapon_CoD4_M4.Silenced"
+
+SWEP.AutoSpawnable = false

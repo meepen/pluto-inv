@@ -10,3 +10,5 @@ SWEP.Ironsights = {
 	SlowDown = 0.4,
 	Zoom = 0.5,
 }
+
+SWEP.AutoSpawnable = false

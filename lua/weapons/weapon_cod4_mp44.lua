@@ -75,3 +75,7 @@ SWEP.RecoilInstructions = {
 	pow * Angle(-2, 0),
 	pow * Angle(-3, -3),
 }
+
+SWEP.AutoSpawnable = false
+
+SWEP.Ortho = {2.5, -3.5}

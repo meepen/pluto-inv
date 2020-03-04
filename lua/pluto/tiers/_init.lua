@@ -124,6 +124,7 @@ end
 for _, name in pairs {
 	"common",
 	"confused",
+	"gamer",
 	"junk",
 	"mystical",
 	"otherworldly",

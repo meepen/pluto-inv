@@ -93,3 +93,7 @@ SWEP.Ironsights = {
 	SlowDown = 0.6,
 	Zoom = 0.8,
 }
+
+SWEP.AutoSpawnable = true
+
+SWEP.Ortho = {3, -4}

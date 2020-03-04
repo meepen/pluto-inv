@@ -19,3 +19,5 @@ SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "AR2"
 SWEP.Primary.Damage = 40
 SWEP.Primary.Delay = 0.065
+
+SWEP.AutoSpawnable = false
