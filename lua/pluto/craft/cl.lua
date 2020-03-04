@@ -232,6 +232,10 @@ function PANEL:Init()
 
 	function self.CraftButton.DoClick(s)
 		local items = self:GetItems()
+		if (pluto.craft.valid(items)) then
+			return
+		end
+
 		pluto.inv.message()
 			:write("craft", items, self.Currency.Info)
 			:send()

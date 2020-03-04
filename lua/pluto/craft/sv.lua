@@ -138,6 +138,10 @@ function pluto.craft.readheader(cl)
 		return 
 	end
 
+	if (pluto.craft.valid(items)) then
+		return
+	end
+
 	return items
 end
 
