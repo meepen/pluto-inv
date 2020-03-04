@@ -14,7 +14,7 @@ SWEP.Base = "weapon_ttt_cod4_base"
 
 SWEP.Primary.Sound = "Weapon_CoD4_G36C.Single"
 SWEP.Primary.ClipSize = 30
-SWEP.Primary.DefaultClip = 90
+SWEP.Primary.DefaultClip = 60
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "AR2"
 SWEP.Primary.Damage = 14
@@ -90,3 +90,6 @@ SWEP.Ironsights = {
 SWEP.AutoSpawnable = true
 
 SWEP.Ortho = {5.5, -7}
+
+SWEP.Primary.Ammo          = "smg1"
+SWEP.AmmoEnt               = "item_ammo_smg1_ttt"

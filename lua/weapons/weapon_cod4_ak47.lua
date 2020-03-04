@@ -13,7 +13,7 @@ SWEP.Base = "weapon_ttt_cod4_base"
 
 SWEP.Primary.Sound = "Weapon_CoD4_AK47.Single"
 SWEP.Primary.ClipSize = 30
-SWEP.Primary.DefaultClip = 90
+SWEP.Primary.DefaultClip = 60
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "AR2"
 SWEP.Primary.Damage = 21
