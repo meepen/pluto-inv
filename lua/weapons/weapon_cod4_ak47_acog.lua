@@ -1,4 +1,4 @@
-SWEP.PrintName = "AK-47-ACOG"
+SWEP.PrintName = "TAK-47-ACOG"
 
 SWEP.ViewModel = "models/cod4/weapons/v_ak47_acog.mdl"
 

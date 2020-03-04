@@ -1,5 +1,4 @@
-SWEP.PrintName = "AK-47"
-SWEP.Category = "Call of Duty 4: Modern Warfare"
+SWEP.PrintName = "TAK-47"
 
 SWEP.ViewModelFOV = 70
 SWEP.ViewModel = "models/cod4/weapons/v_ak47.mdl"
