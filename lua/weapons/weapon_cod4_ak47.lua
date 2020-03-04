@@ -25,31 +25,31 @@ sound.Add {
 	name = "Weapon_CoD4_AK47.Single",
 	channel = CHAN_WEAPON,
 	level = 80,
-	sound = "cod4/weapons/ak47/weap_ak47_slst_3.wav"
+	sound = "cod4/weapons/ak47/weap_ak47_slst_3.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_AK47.Chamber",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/ak47/wpfoly_ak47_reload_chamber_v4.wav"
+	sound = "cod4/weapons/ak47/wpfoly_ak47_reload_chamber_v4.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_AK47.ClipIn",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/ak47/wpfoly_ak47_reload_clipin_v4.wav"
+	sound = "cod4/weapons/ak47/wpfoly_ak47_reload_clipin_v4.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_AK47.ClipOut",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/ak47/wpfoly_ak47_reload_clipout_v5.wav"
+	sound = "cod4/weapons/ak47/wpfoly_ak47_reload_clipout_v5.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_AK47.Lift",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/ak47/wpfoly_ak47_reload_lift_v4.wav"
+	sound = "cod4/weapons/ak47/wpfoly_ak47_reload_lift_v4.ogg"
 }
 
 

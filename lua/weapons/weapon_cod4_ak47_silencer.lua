@@ -11,7 +11,7 @@ sound.Add {
 	name = "Weapon_CoD4_AK47.Silenced",
 	channel = CHAN_WEAPON,
 	volume = 0.5,
-	sound = "cod4/weapons/ak47/weap_m4_silencer_slst_1x.wav"
+	sound = "cod4/weapons/ak47/weap_m4_silencer_slst_1x.ogg"
 }
 
 SWEP.AutoSpawnable = false

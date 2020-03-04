@@ -30,42 +30,42 @@ sound.Add {
 	channel = CHAN_WEAPON,
 	level = 80,
 	volume = 0.5,
-	sound = "cod4/weapons/m14/weap_m14_slst_5.wav"
+	sound = "cod4/weapons/m14/weap_m14_slst_5.ogg"
 }
 
 sound.Add {
 	name = "Weapon_CoD4_M14.Chamber",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/m14/wpfoly_m14_reload_chamber_v1.wav"
+	sound = "cod4/weapons/m14/wpfoly_m14_reload_chamber_v1.ogg"
 }
 
 sound.Add {
 	name = "Weapon_CoD4_M14.ClipIn",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/m14/wpfoly_m14_reload_clipin_v1.wav"
+	sound = "cod4/weapons/m14/wpfoly_m14_reload_clipin_v1.ogg"
 }
 
 sound.Add {
 	name = "Weapon_CoD4_M14.ClipInTac",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/m14/wpfoly_m14_reload_clipin_tac_v1.wav"
+	sound = "cod4/weapons/m14/wpfoly_m14_reload_clipin_tac_v1.ogg"
 }
 
 sound.Add {
 	name = "Weapon_CoD4_M14.ClipOut",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/m14/wpfoly_m14_reload_clipout_v1.wav"
+	sound = "cod4/weapons/m14/wpfoly_m14_reload_clipout_v1.ogg"
 }
 
 sound.Add {
 	name = "Weapon_CoD4_M14.Lift",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/m14/wpfoly_m14_reload_lift_v1.wav"
+	sound = "cod4/weapons/m14/wpfoly_m14_reload_lift_v1.ogg"
 }
 
 SWEP.RecoilInstructions = {

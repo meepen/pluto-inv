@@ -30,31 +30,31 @@ sound.Add {
 	name = "Weapon_CoD4_G36C.Single",
 	channel = CHAN_WEAPON,
 	level = 80,
-	sound = "cod4/weapons/g36c/weap_g36_slst_1.wav"
+	sound = "cod4/weapons/g36c/weap_g36_slst_1.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_G36C.Chamber",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/g36c/wpfoly_g36_reload_chamber_v1.wav"
+	sound = "cod4/weapons/g36c/wpfoly_g36_reload_chamber_v1.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_G36C.ClipIn",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/g36c/wpfoly_g36_reload_clipin_v1.wav"
+	sound = "cod4/weapons/g36c/wpfoly_g36_reload_clipin_v1.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_G36C.ClipOut",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/g36c/wpfoly_g36_reload_clipout_v1.wav"
+	sound = "cod4/weapons/g36c/wpfoly_g36_reload_clipout_v1.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_G36C.Lift",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/g36c/wpfoly_g36_reload_lift_v1.wav"
+	sound = "cod4/weapons/g36c/wpfoly_g36_reload_lift_v1.ogg"
 }
 
 local pow = 3

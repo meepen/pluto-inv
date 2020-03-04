@@ -1,4 +1,4 @@
-SWEP.PrintName = "MP44"
+SWEP.PrintName = "STG44"
 SWEP.Category = "Call of Duty 4: Modern Warfare"
 
 SWEP.ViewModelFOV = 70
@@ -26,31 +26,31 @@ sound.Add {
 	name = "Weapon_CoD4_MP44.Single",
 	channel = CHAN_WEAPON,
 	level = 80,
-	sound = "cod4/weapons/mp44/weap_ak47_slst_3.wav"
+	sound = "cod4/weapons/mp44/weap_ak47_slst_3.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_MP44.Chamber",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/mp44/wpfoly_m44_reload_chamber_v1.wav"
+	sound = "cod4/weapons/mp44/wpfoly_m44_reload_chamber_v1.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_MP44.ClipIn",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/mp44/wpfoly_m44_reload_clipin_v1.wav"
+	sound = "cod4/weapons/mp44/wpfoly_m44_reload_clipin_v1.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_MP44.ClipOut",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/mp44/wpfoly_m44_reload_clipout_v1.wav"
+	sound = "cod4/weapons/mp44/wpfoly_m44_reload_clipout_v1.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_MP44.Lift",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/mp44/wpfoly_m44_reload_lift_v1.wav"
+	sound = "cod4/weapons/mp44/wpfoly_m44_reload_lift_v1.ogg"
 }
 
 SWEP.Bullets = {

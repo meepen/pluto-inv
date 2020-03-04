@@ -30,37 +30,37 @@ sound.Add {
 	name = "Weapon_CoD4_M4.Single",
 	channel = CHAN_WEAPON,
 	level = 80,
-	sound = "cod4/weapons/m4/weap_m4_slst_1c4.wav"
+	sound = "cod4/weapons/m4/weap_m4_slst_1c4.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_M4.Chamber",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/m4/wpfoly_ak47_reload_chamber_v4.wav"
+	sound = "cod4/weapons/m4/wpfoly_ak47_reload_chamber_v4.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_M4.ReloadChamber",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/m4/wpfoly_m4_reload_chamber.wav"
+	sound = "cod4/weapons/m4/wpfoly_m4_reload_chamber.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_M4.ClipIn",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/m4/wpfoly_m4_reload_clipin.wav"
+	sound = "cod4/weapons/m4/wpfoly_m4_reload_clipin.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_M4.ClipOut",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/m4/wpfoly_m4_reload_clipout.wav"
+	sound = "cod4/weapons/m4/wpfoly_m4_reload_clipout.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_M4.Lift",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/m4/wpfoly_m4_reload_lift.wav"
+	sound = "cod4/weapons/m4/wpfoly_m4_reload_lift.ogg"
 }
 
 

@@ -27,31 +27,31 @@ sound.Add {
 	name = "Weapon_CoD4_G3.Single",
 	channel = CHAN_WEAPON,
 	level = 80,
-	sound = "cod4/weapons/g3/weap_g3_slst_2.wav"
+	sound = "cod4/weapons/g3/weap_g3_slst_2.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_G3.Chamber",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/g3/wpfoly_g3_reload_chamber_v1.wav"
+	sound = "cod4/weapons/g3/wpfoly_g3_reload_chamber_v1.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_G3.ClipIn",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/g3/wpfoly_g3_reload_clipin_v1.wav"
+	sound = "cod4/weapons/g3/wpfoly_g3_reload_clipin_v1.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_G3.ClipOut",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/g3/wpfoly_g3_reload_clipout_v2.wav"
+	sound = "cod4/weapons/g3/wpfoly_g3_reload_clipout_v2.ogg"
 }
 sound.Add {
 	name = "Weapon_CoD4_G3.Lift",
 	channel = CHAN_ITEM,
 	volume = 0.5,
-	sound = "cod4/weapons/g3/wpfoly_g3_reload_lift_v1.wav"
+	sound = "cod4/weapons/g3/wpfoly_g3_reload_lift_v1.ogg"
 }
 
 SWEP.RecoilInstructions = {

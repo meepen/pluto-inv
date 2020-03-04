@@ -220,6 +220,12 @@ local packs =  {
 			"20200301_2",
 			"20200301",
 		}
+	},
+	cod4 = {
+		remote = "https://cdn.pluto.gg/cod4.gma",
+		versions = {
+			"20200303"
+		}
 	}
 	--[[
 	moxxi = {

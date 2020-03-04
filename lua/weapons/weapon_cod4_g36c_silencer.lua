@@ -11,7 +11,7 @@ sound.Add {
 	name = "Weapon_CoD4_G36C.Silenced",
 	channel = CHAN_WEAPON,
 	volume = 0.5,
-	sound = "cod4/weapons/g36c/weap_m4_silencer_slst_1x.wav"
+	sound = "cod4/weapons/g36c/weap_m4_silencer_slst_1x.ogg"
 }
 
 SWEP.Bullets = {
