@@ -533,7 +533,7 @@ function pluto.currency.spawnfor(ply, currency, pos)
 	e:SetCurrency(currency)
 	e:Spawn()
 
-	if (currency.Shares and currency.Shares >= pluto.currency.byname.heart.Shares) then
+	if (currency.Shares and currency.Shares <= pluto.currency.byname.heart.Shares) then
 		ply:ChatPrint(currency.Color, "... ", white_text, "You feel the essence of a ", currency.Color, "rare currency ", white_text, "vibrate your soul")
 	end
 
