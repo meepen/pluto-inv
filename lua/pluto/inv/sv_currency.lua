@@ -423,7 +423,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	quill = {
-		Shares = 0.9,
+		Shares = 0.3,
 		Use = function(ply, item)
 		end,
 		Types = "Weapon",
