@@ -1,5 +1,7 @@
 pluto.currency.shares = 0
 
+local global_multiplier = 2
+
 local currency_per_round = 3
 
 local pluto_currency_spawnrate = CreateConVar("pluto_currency_spawnrate", "0.9")
@@ -554,7 +556,7 @@ hook.Add("DoPlayerDeath", "pluto_currency_add", function(vic, damager, dmg)
 		return
 	end
 
-	local points = 2
+	local points = 1
 
 	if (atk:GetRoleTeam() == vic:GetRoleTeam()) then
 		-- base on karma
@@ -563,11 +565,21 @@ hook.Add("DoPlayerDeath", "pluto_currency_add", function(vic, damager, dmg)
 		points = points * 0.8
 	end
 
+	local gun = dmg:GetInflictor()
+
+	if (gun.RunModFunctionSequence) then
+		local state = {
+			Points = points
+		}
+		gun:RunModFunctionSequence("UpdateSpawnPoints", state, atk, vic)
+		points = state.Points
+	end
+
 	pluto.currency.givespawns(atk, points)
 end)
 
 function pluto.currency.givespawns(ply, amt)
-	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or currency_per_round) + amt * pluto_currency_spawnrate:GetFloat() * math.min(2, pluto.currency.navs.total / 70000 * 1.3)
+	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or currency_per_round) + amt * pluto_currency_spawnrate:GetFloat() * math.min(2, pluto.currency.navs.total / 70000 * 1.3) * global_multiplier
 end
 
 function pluto.inv.readrename(cl)

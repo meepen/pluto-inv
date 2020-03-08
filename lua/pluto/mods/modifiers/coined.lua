@@ -22,9 +22,9 @@ MOD.Tiers = {
 	{ 1, 1 },
 }
 
-function MOD:OnKill(wep, rolls, atk, vic)
-	if (IsValid(atk)) then
-		pluto.currency.givespawns(atk, 0.3)
+function MOD:OnUpdateSpawnPoints(wep, rolls, atk, vic, state)
+	if (IsValid(atk) and state.Points > 0) then
+		state.Points = state.Points * 1.5
 	end
 end
 
