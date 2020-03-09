@@ -8,7 +8,7 @@ SWEP.ViewModelFlip = false
 SWEP.Slot = 2
 
 SWEP.UseHands = false
-SWEP.HoldType = "ar2"
+SWEP.HoldType = "smg"
 
 SWEP.Base = "weapon_ttt_cod4_base"
 
