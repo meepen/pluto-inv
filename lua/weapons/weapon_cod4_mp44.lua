@@ -20,7 +20,7 @@ SWEP.Primary.Delay = 0.1
 SWEP.Primary.Damage = 17
 SWEP.HeadshotMultiplier = 24 / 15
 
-SWEP.Sights = false
+SWEP.Sights = true
 
 sound.Add {
 	name = "Weapon_CoD4_MP44.Single",
