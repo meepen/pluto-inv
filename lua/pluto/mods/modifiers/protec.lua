@@ -22,11 +22,11 @@ MOD.Tiers = {
 
 function MOD:OnKill(wep, rolls, atk, vic)
 	if (atk:GetRoleTeam() ~= vic:GetRoleTeam()) then
-		if (atk:Armor() > 100) then
+		if (atk:Armor() > 30) then
 			return
 		end
 
-		atk:SetArmor(math.min(100, atk:Armor() + math.Round(rolls[1])))
+		atk:SetArmor(math.min(30, atk:Armor() + math.Round(rolls[1])))
 	end
 end
 
