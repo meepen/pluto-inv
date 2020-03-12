@@ -35,3 +35,26 @@ function pluto.inv.readquests()
 
 	hook.Run("PlutoUpdateQuests", quests)
 end
+
+local PANEL = {}
+DEFINE_BASECLASS "pluto_inventory_base"
+
+function PANEL:Init()
+	BaseClass.Init(self)
+
+	self.List = self:Add "DScrollPanel"
+	self.List:Dock(FILL)
+
+	for i = 1, 100 do
+		local lbl = self.List:Add "DLabel"
+		lbl:SetText "a"
+		lbl:Dock(TOP)
+	end
+
+	self:DockPadding(16, 20, 16, 20)
+end
+
+function PANEL:SetTab()
+end
+
+vgui.Register("pluto_quest", PANEL, "pluto_inventory_base")

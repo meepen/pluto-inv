@@ -783,7 +783,6 @@ function PANEL:OnRemove()
 end
 
 function PANEL:MakeInner()
-
 	local class = pluto.trade == nil and "pluto_trade_players" or "pluto_in_trade"
 
 	if (IsValid(self.Inner)) then
