@@ -142,6 +142,7 @@ function pluto.quests.init(ply, cb)
 
 			table.insert(quests[quest_type.Name], setmetatable({
 				RowID = data.idx,
+				Type = data.type,
 				QuestID = data.quest_id,
 				ProgressLeft = data.progress_needed,
 				TotalProgress = data.total_progress,
@@ -175,16 +176,18 @@ function pluto.quests.init(ply, cb)
 				table.remove(oftype, 1)
 
 				local progress_needed = new:GetProgressNeeded(type)
+				local seed = math.random()
 
 				adder:AddQuery(
-					"INSERT INTO pluto_quests (steamid, quest_id, type, progress_needed, total_progress, expiry_time, rand) VALUES (?, ?, ?, ?, ?, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP), RAND())",
+					"INSERT INTO pluto_quests (steamid, quest_id, type, progress_needed, total_progress, expiry_time, rand) VALUES (?, ?, ?, ?, ?, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP), ?)",
 					{
 						sid,
 						new.ID,
 						type,
 						progress_needed,
 						progress_needed,
-						type_data.Time
+						type_data.Time,
+						seed,
 					},
 					function(err, q)
 						table.insert(type_quests, setmetatable({
@@ -193,7 +196,9 @@ function pluto.quests.init(ply, cb)
 							ProgressLeft = progress_needed,
 							TotalProgress = progress_needed,
 							EndTime = os.time() + type_data.Time,
+							Seed = seed,
 							Player = ply,
+							Type = type,
 							QUEST = new,
 							TYPE = type_data,
 						}, pluto.quests.quest_mt))
@@ -216,11 +221,26 @@ function pluto.quests.init(ply, cb)
 	transact:Run()
 end
 
+--[[
+			Name = "Die",
+			Description = "Die at least 2 times",
+			Color = Color(204, 61, 5),
+			Tier = 2,
+			Reward = "Big Gay",
+			EndTime = os.time() + 10,
+			TotalProgress = 2,
+			ProgressLeft = 1,
+]]
+
 function pluto.inv.writequest(ply, quest)
 	net.WriteUInt(quest.RowID, 32)
 
 	net.WriteString(quest.QUEST.Name)
 	net.WriteString(quest.QUEST.Description)
+	net.WriteColor(quest.QUEST.Color)
+	net.WriteUInt(quest.Type, 8)
+
+	net.WriteString(quest.QUEST:GetRewardText(quest.Seed))
 
 	net.WriteInt(quest.EndTime - os.time(), 32)
 	net.WriteUInt(quest.ProgressLeft, 32)
@@ -238,7 +258,6 @@ function pluto.inv.writequests(ply)
 
 	for quest_type, quest_list in pairs(quests) do
 		net.WriteBool(true)
-		net.WriteString(quest_type)
 		net.WriteUInt(#quest_list, 8)
 
 		for _, quest in ipairs(quest_list) do

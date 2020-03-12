@@ -9,7 +9,14 @@ function pluto.inv.readquest()
 	pluto.quests.cache[id] = quest
 
 	quest.ID = id
+
 	quest.Name = net.ReadString()
+	quest.Description = net.ReadString()
+	quest.Color = net.ReadColor()
+	quest.Tier = net.ReadUInt(8)
+
+	quest.Reward = net.ReadString()
+
 	quest.EndTime = os.time() + net.ReadInt(32)
 	quest.ProgressLeft = net.ReadUInt(32)
 	quest.TotalProgress = net.ReadUInt(32)
@@ -24,11 +31,8 @@ function pluto.inv.readquests()
 
 	local quests = {}
 	while (net.ReadBool()) do
-		local cur_type = {}
-		quests[net.ReadString()] = cur_type
-
 		for i = 1, net.ReadUInt(8) do
-			cur_type[#cur_type + 1] = pluto.inv.readquest()
+			quests[#quests + 1] = pluto.inv.readquest()
 		end
 	end
 
@@ -201,22 +205,36 @@ function PANEL:Init()
 	self.List = self:Add "DScrollPanel"
 	self.List:Dock(FILL)
 
-	for i = 1, 1 do
-		local quest = self.List:Add "pluto_quest_item"
-		quest:SetQuest {
-			Name = "Die",
-			Description = "Die at least 2 times",
-			Tier = 2,
-			EndTime = os.time() + 10,
-			TotalProgress = 2,
-			ProgressLeft = 1,
-			Reward = "Big Gay",
-			Color = Color(204, 61, 5),
-		}
-		quest:Dock(TOP)
-	end
+
+	self.Quests = {}
+	self:RefreshQuests()
 
 	self:DockPadding(16, 20, 16, 20)
+
+	hook.Add("PlutoUpdateQuests", self, self.RefreshQuests)
+end
+
+function PANEL:RefreshQuests()
+	local needed = {}
+
+	for _, quest in pairs(pluto.quests.current) do
+		needed[quest.ID] = quest
+	end
+
+	for _, pnl in pairs(self.Quests) do
+		local quest = pnl.Quest
+		if (not needed[quest.ID]) then
+			pnl:Remove()
+		else
+			needed[quest.ID] = false
+		end
+	end
+
+	for _, quest in pairs(needed) do
+		local pnl = self:Add "pluto_quest_item"
+		pnl:Dock(TOP)
+		pnl:SetQuest(quest)
+	end
 end
 
 function PANEL:SetTab()

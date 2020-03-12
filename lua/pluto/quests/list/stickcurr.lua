@@ -1,13 +1,17 @@
-QUEST.Name = "Game Player"
-QUEST.Description = "Play %s rounds"
+QUEST.Name = "Currency Revealer"
+QUEST.Description = "Work with other people to stick %s of their currency with a sticky grenade"
+QUEST.Color = Color(255, 0, 0)
 
 function QUEST:GetRewardText(seed)
-	return string.format("%i Droplets", 8 + math.floor(seed * 3))
+	return "random grenade"
 end
 
 function QUEST:Init(data)
-	data:Hook("TTTEndRound", function(data)
-		data:UpdateProgress(1)
+	data:Hook("TTTGrenadeStuck", function(data, gren)
+		if (gren:GetOwner() == data.Player and gren:GetParent():GetClass() == "pluto_currency") then
+			print "PROGRESSO"
+			data:UpdateProgress(1)
+		end
 	end)
 end
 
