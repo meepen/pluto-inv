@@ -126,6 +126,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 
 				expiry_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				progress_needed INT UNSIGNED NOT NULL,
+				total_progress INT UNSIGNED NOT NULL,
 
 				rand FLOAT NOT NULL,
 

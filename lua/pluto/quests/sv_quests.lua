@@ -119,7 +119,7 @@ function pluto.quests.init(ply, cb)
 	transact:AddQuery("DELETE FROM pluto_quests WHERE steamid = ? AND expiry_time < CURRENT_TIMESTAMP", {sid}, function(err, q)
 	end)
 
-	transact:AddQuery("SELECT idx, quest_id, type, progress_needed, TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, expiry_time) as expire_diff FROM pluto_quests WHERE steamid = ?", {sid}, function(err, q)
+	transact:AddQuery("SELECT idx, quest_id, type, progress_needed, total_progress, TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, expiry_time) as expire_diff FROM pluto_quests WHERE steamid = ?", {sid}, function(err, q)
 		local quests = {}
 		local have = {}
 
@@ -144,6 +144,7 @@ function pluto.quests.init(ply, cb)
 				RowID = data.idx,
 				QuestID = data.quest_id,
 				ProgressLeft = data.progress_needed,
+				TotalProgress = data.total_progress,
 				EndTime = os.time() + data.expire_diff,
 				Player = ply,
 				QUEST = quest_data,
@@ -176,11 +177,12 @@ function pluto.quests.init(ply, cb)
 				local progress_needed = new:GetProgressNeeded(type)
 
 				adder:AddQuery(
-					"INSERT INTO pluto_quests (steamid, quest_id, type, progress_needed, expiry_time, rand) VALUES (?, ?, ?, ?, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP), RAND())",
+					"INSERT INTO pluto_quests (steamid, quest_id, type, progress_needed, total_progress, expiry_time, rand) VALUES (?, ?, ?, ?, ?, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP), RAND())",
 					{
 						sid,
 						new.ID,
 						type,
+						progress_needed,
 						progress_needed,
 						type_data.Time
 					},
@@ -189,6 +191,7 @@ function pluto.quests.init(ply, cb)
 							RowID = q:lastInsert(),
 							QuestID = new.ID,
 							ProgressLeft = progress_needed,
+							TotalProgress = progress_needed,
 							EndTime = os.time() + type_data.Time,
 							Player = ply,
 							QUEST = new,
@@ -202,7 +205,7 @@ function pluto.quests.init(ply, cb)
 
 		if (needs_run) then
 			adder:AddCallback(function()
-				cb(quests)
+				pluto.quests.init(ply, cb)
 			end)
 			adder:Run()
 		else
@@ -215,9 +218,13 @@ end
 
 function pluto.inv.writequest(ply, quest)
 	net.WriteUInt(quest.RowID, 32)
+
 	net.WriteString(quest.QUEST.Name)
+	net.WriteString(quest.QUEST.Description)
+
 	net.WriteInt(quest.EndTime - os.time(), 32)
 	net.WriteUInt(quest.ProgressLeft, 32)
+	net.WriteUInt(quest.TotalProgress, 32)
 end
 
 function pluto.inv.writequests(ply)
