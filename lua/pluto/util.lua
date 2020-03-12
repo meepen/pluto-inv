@@ -49,3 +49,24 @@ end
 function string.formatsafe(str, ...)
 	return table.concat(string.formatsafe_table(str, ...))
 end
+
+local function shuffler(a, b)
+	return a.rand < b.rand
+end
+
+function table.shuffle(tbl)
+	for i, dat in ipairs(tbl) do
+		tbl[i] = {
+			dat = dat,
+			rand = math.random()
+		}
+	end
+
+	table.sort(tbl, shuffler)
+
+	for i, dat in ipairs(tbl) do
+		tbl[i] = dat.dat
+	end
+
+	return tbl
+end

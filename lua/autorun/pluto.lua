@@ -16,6 +16,7 @@ pluto.files.load {
 		"tools/cl_tools.lua",
 		"craft/cl.lua",
 		"nitro/cl_nitro.lua",
+		"quests/cl_quests.lua",
 	},
 	Shared = {
 		"co_net.lua",

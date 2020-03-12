@@ -20,6 +20,8 @@ pluto.files.load {
 
 		"discord/discord.lua",
 		"nitro/sv_nitro.lua",
+
+		"quests/sv_quests.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty

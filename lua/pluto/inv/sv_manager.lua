@@ -247,7 +247,7 @@ function pluto.inv.init(ply, cb2)
 			return cb(false, "disconnected")
 		end
 
-		if (success == 2) then
+		if (success == 3) then
 			cb(pluto.inv.invs[ply])
 		end
 	end
@@ -265,7 +265,6 @@ function pluto.inv.init(ply, cb2)
 			inv[tab.RowID] = tab
 			tab.Items = {}
 
-			print(tab.Type)
 			inv.tabs[tab.Type] = tab
 		end
 
@@ -314,6 +313,10 @@ function pluto.inv.init(ply, cb2)
 
 		pluto.inv.currencies[ply] = currencies
 
+		TrySucceed()
+	end)
+
+	pluto.quests.init(ply, function(_quests)
 		TrySucceed()
 	end)
 end

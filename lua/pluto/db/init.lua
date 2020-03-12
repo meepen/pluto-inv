@@ -117,6 +117,23 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 					INDEX USING HASH(steamid)
 				)
 			]]
+		:AddQuery [[
+			CREATE TABLE IF NOT EXISTS pluto_quests (
+				idx INT UNSIGNED NOT NULL AUTO_INCREMENT,
+				steamid BIGINT UNSIGNED NOT NULL,
+				quest_id VARCHAR(16) NOT NULL,
+				type TINYINT UNSIGNED NOT NULL,
+
+				expiry_time TIMESTAMP NOT NULL,
+				progress_needed INT UNSIGNED NOT NULL,
+
+				rand FLOAT NOT NULL,
+
+				PRIMARY KEY(idx),
+				UNIQUE(steamid, quest_id),
+				INDEX USING HASH(steamid)
+			)
+		]]
 		:Halt()
 		:Run()
 end)

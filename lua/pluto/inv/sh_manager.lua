@@ -39,6 +39,7 @@ pluto.inv.messages = {
 		"expupdate",
 		"itemlock",
 		"nitro",
+		"quests",
 	}
 }
 
