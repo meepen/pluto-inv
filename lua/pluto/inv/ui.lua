@@ -1272,10 +1272,12 @@ function PANEL:SetTab(tab)
 	pprintf("Creating tab %s (%s)...", tab.Type, tabtype.element)
 
 	self.Items = self:Add(tabtype.element)
-	self.Items:SetVisible(false)
+
 	if (not IsValid(self.Items)) then
 		self.Items = self:Add "pluto_invalid_tab"
 	end
+
+	self.Items:SetVisible(false)
 	self.Items:Dock(TOP)
 	self.Items:SetZPos(1)
 	self.Items:SetTab(tab)
@@ -1680,6 +1682,7 @@ function PANEL:SetTabs(tabs, addtrade)
 	if (addtrade) then
 		table.insert(t, pluto.tradetab)
 		table.insert(t, pluto.crafttab)
+		table.insert(t, pluto.questtab)
 	end
 
 	self.Tabs:SetTabs(t)
@@ -2356,6 +2359,15 @@ function pluto.inv.remakefake()
 		Items = {},
 		Currency = {},
 		FakeID = 1,
+	}
+
+	pluto.questtab = {
+		Type = "quest",
+		Name = "Quests",
+		ID = 0,
+		Items = {},
+		Currency = {},
+		FakeID = 3,
 	}
 end
 

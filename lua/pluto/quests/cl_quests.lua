@@ -31,5 +31,7 @@ function pluto.inv.readquests()
 		end
 	end
 
-	PrintTable(quests)
+	pluto.quests.current = quests
+
+	hook.Run("PlutoUpdateQuests", quests)
 end

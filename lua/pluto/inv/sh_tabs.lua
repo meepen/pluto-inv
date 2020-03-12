@@ -85,6 +85,16 @@ pluto.tabs = {
 		end,
 		size = 5,
 		-- no element = no send
+	},
+	quest = {
+		element = "pluto_quest",
+		size = 0,
+		canremove = function()
+			return false
+		end,
+		canaccept = function()
+			return false
+		end,
 	}
 }
 
