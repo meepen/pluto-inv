@@ -3,6 +3,7 @@ QUEST.Description = "Play %s rounds"
 
 function QUEST:Init(data)
 	data:Hook("TTTEndRound", function(data)
+		print "updato"
 		data:UpdateProgress(1)
 	end)
 end

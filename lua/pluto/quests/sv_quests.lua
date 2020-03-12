@@ -113,7 +113,7 @@ function pluto.quests.init(ply, cb)
 	transact:AddQuery("DELETE FROM pluto_quests WHERE steamid = ? AND expiry_time < CURRENT_TIMESTAMP", {sid}, function(err, q)
 	end)
 
-	transact:AddQuery("SELECT idx, quest_id, type, progress_needed, TIMESTAMPDIFF(SECOND, expiry_time, CURRENT_TIMESTAMP) as expire_diff FROM pluto_quests WHERE steamid = ?", {sid}, function(err, q)
+	transact:AddQuery("SELECT idx, quest_id, type, progress_needed, TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, expiry_time) as expire_diff FROM pluto_quests WHERE steamid = ?", {sid}, function(err, q)
 		local quests = {}
 		local have = {}
 
@@ -210,7 +210,7 @@ end
 function pluto.inv.writequest(ply, quest)
 	net.WriteUInt(quest.RowID, 32)
 	net.WriteString(quest.QUEST.Name)
-	net.WriteUInt(quest.EndTime - os.time(), 32)
+	net.WriteInt(quest.EndTime - os.time(), 32)
 	net.WriteUInt(quest.ProgressLeft, 32)
 end
 

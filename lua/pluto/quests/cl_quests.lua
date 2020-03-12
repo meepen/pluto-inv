@@ -10,7 +10,7 @@ function pluto.inv.readquest()
 
 	quest.ID = id
 	quest.Name = net.ReadString()
-	quest.EndTime = os.time() + net.ReadUInt(32)
+	quest.EndTime = os.time() + net.ReadInt(32)
 	quest.ProgressLeft = net.ReadUInt(32)
 
 	return quest
