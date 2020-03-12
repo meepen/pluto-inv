@@ -36,6 +36,7 @@ function QUEST:IsValid()
 end
 
 function QUEST:Hook(event, fn)
+	pprintf("HOOKED %s to %s", self.RowID, event)
 	hook.Add(event, self, fn)
 end
 
@@ -44,7 +45,7 @@ function QUEST:UpdateProgress(amount)
 	local transact = pluto.db.transact()
 
 	transact:AddQuery(
-		"UPDATE pluto_quests SET progress_needed = IF(progress_needed < ?, 0, progress_needed - ?) WHERE progress_needed > 0 AND idx",
+		"UPDATE pluto_quests SET progress_needed = IF(progress_needed < ?, 0, progress_needed - ?) WHERE progress_needed > 0 AND idx = ?",
 		{
 			amount,
 			amount,
@@ -54,7 +55,7 @@ function QUEST:UpdateProgress(amount)
 		end
 	)
 
-	transact:AddQuery("SELECT progress_needed FROM pluto_quests WHERE ROW_COUNT() == 1 AND progress_needed = 0 AND idx = ?", {self.RowID}, function(err, q)
+	transact:AddQuery("SELECT progress_needed FROM pluto_quests WHERE ROW_COUNT() = 1 AND progress_needed = 0 AND idx = ?", {self.RowID}, function(err, q)
 		if (q:getData()[1]) then
 			self:Complete()
 		end
@@ -65,7 +66,6 @@ end
 
 function QUEST:Complete()
 	pluto.db.query("UPDATE pluto_quests SET expiry_time = TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP) WHERE idx = ?", {self.TYPE.Cooldown, self.RowID}, function(err, q)
-		pprintf "COMPLETO"
 		if (self.QUEST.Reward) then
 			self.QUEST:Reward(self)
 		end
@@ -98,6 +98,12 @@ function pluto.quests.init(ply, cb)
 
 	local cb = function(dat)
 		pluto.quests.byperson[ply] = dat
+
+		for type, questlist in pairs(dat) do
+			for _, quest in pairs(questlist) do
+				quest.QUEST:Init(quest)
+			end
+		end
 
 		pluto.inv.message(ply)
 			:write "quests"
