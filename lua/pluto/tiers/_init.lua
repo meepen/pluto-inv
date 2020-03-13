@@ -25,6 +25,40 @@ function TIER:GetSubDescription()
 	return desc or ""
 end
 
+function pluto.tiers.randomfilter(gun, filter)
+	local type = pluto.weapons.type(gun)
+	print(type)
+
+	if (not type) then
+		return
+	end
+
+	local typelist = pluto.tiers.bytype[type]
+
+	if (not typelist) then
+		return
+	end
+
+	local shares = 0
+	local newlist = {}
+
+	for _, tier in pairs(typelist.list) do
+		if (filter(tier)) then
+			shares = shares + tier.Shares
+			newlist[#newlist + 1] = tier
+		end
+	end
+
+	local rand = math.random() * shares
+
+	for _, tier in pairs(newlist) do
+		rand = rand - tier.Shares
+		if (rand < 0) then
+			return tier
+		end
+	end
+end
+
 function pluto.tiers.random(gun)
 	local type = pluto.weapons.type(gun)
 

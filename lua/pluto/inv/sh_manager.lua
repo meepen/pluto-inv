@@ -40,6 +40,7 @@ pluto.inv.messages = {
 		"itemlock",
 		"nitro",
 		"quests",
+		"quest",
 	}
 }
 

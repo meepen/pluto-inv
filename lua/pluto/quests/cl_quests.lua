@@ -168,6 +168,8 @@ function PANEL:Init()
 	self.Description.OnSizeChanged = function()
 		self:Resize()
 	end
+
+	self:DockMargin(0, 0, 0, 10)
 end
 
 function PANEL:Resize()

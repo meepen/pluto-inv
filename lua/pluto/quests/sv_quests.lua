@@ -8,7 +8,7 @@ pluto.quests.types = {
 	[1] = {
 		Name = "Hourly",
 		Time = 60 * 60,
-		Amount = 1,
+		Amount = 2,
 		Cooldown = 60 * 5,
 	},
 }
@@ -17,6 +17,7 @@ pluto.quests.list = pluto.quests.list or {}
 
 for _, id in pairs {
 	"stickcurr",
+	"oneshot",
 } do
 	QUEST = pluto.quests.list[id] or {}
 	QUEST.ID = id
@@ -41,7 +42,7 @@ function QUEST:Hook(event, fn)
 end
 
 function QUEST:UpdateProgress(amount)
-	self.ProgressLeft = self.ProgressLeft - amount
+	self.ProgressLeft = math.max(0, self.ProgressLeft - amount)
 	local transact = pluto.db.transact()
 
 	transact:AddQuery(
@@ -60,6 +61,10 @@ function QUEST:UpdateProgress(amount)
 			self:Complete()
 		end
 	end)
+
+	pluto.inv.message(self.Player)
+		:write("quest", self)
+		:send()
 
 	transact:Run()
 end
@@ -91,9 +96,9 @@ function pluto.quests.oftype(type, ignore)
 	return available
 end
 
-function pluto.quests.init(ply, cb)
+function pluto.quests.init(ply, _cb)
 	if (pluto.quests.byperson[ply]) then
-		return cb(pluto.quests.byperson[ply])
+		return _cb(pluto.quests.byperson[ply])
 	end
 
 	local cb = function(dat)
@@ -109,7 +114,7 @@ function pluto.quests.init(ply, cb)
 			:write "quests"
 			:send()
 
-		cb(dat)
+		_cb(dat)
 	end
 
 	local sid = pluto.db.steamid64(ply)
@@ -171,9 +176,11 @@ function pluto.quests.init(ply, cb)
 			-- add quests
 			local oftype = table.shuffle(pluto.quests.oftype(type, have))
 
-			for i = quests[type] and #quests[type] or 1, type_data.Amount do
+			for i = type_quests and #type_quests + 1 or 1, type_data.Amount do
 				local new = oftype[1]
 				table.remove(oftype, 1)
+
+				print(i)
 
 				local progress_needed = new:GetProgressNeeded(type)
 				local seed = math.random()
@@ -210,7 +217,7 @@ function pluto.quests.init(ply, cb)
 
 		if (needs_run) then
 			adder:AddCallback(function()
-				pluto.quests.init(ply, cb)
+				pluto.quests.init(ply, _cb)
 			end)
 			adder:Run()
 		else
