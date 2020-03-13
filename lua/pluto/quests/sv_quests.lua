@@ -37,7 +37,6 @@ function QUEST:IsValid()
 end
 
 function QUEST:Hook(event, fn)
-	pprintf("HOOKED %s to %s", self.RowID, event)
 	hook.Add(event, self, fn)
 end
 
@@ -179,8 +178,6 @@ function pluto.quests.init(ply, _cb)
 			for i = type_quests and #type_quests + 1 or 1, type_data.Amount do
 				local new = oftype[1]
 				table.remove(oftype, 1)
-
-				print(i)
 
 				local progress_needed = new:GetProgressNeeded(type)
 				local seed = math.random()

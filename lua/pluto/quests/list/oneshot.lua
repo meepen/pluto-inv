@@ -16,7 +16,6 @@ function QUEST:Init(data)
 		if (vic.DamageTaken == 1 and atk == data.Player and atk:GetRoleTeam() ~= vic:GetRoleTeam()) then
 			current = current + 1
 
-			print(current, data.ProgressLeft)
 			if (current == data.ProgressLeft) then
 				data:UpdateProgress(data.ProgressLeft)
 			end
