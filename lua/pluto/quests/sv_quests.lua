@@ -73,8 +73,13 @@ function QUEST:Complete()
 		if (self.QUEST.Reward) then
 			self.QUEST:Reward(self)
 		end
-		timer.Simple(self.TYPE.Cooldown, function()
-			-- TODO(meep): refresh
+		quest.EndTime = os.time() + self.TYPE.Cooldown
+		pluto.inv.message(self.Player)
+			:write("quest", quest)
+			:send()
+
+		timer.Simple(self.TYPE.Cooldown + 3, function()
+			-- TODO(meep): refresh during round
 		end)
 	end)
 end

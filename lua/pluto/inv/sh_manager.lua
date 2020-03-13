@@ -41,6 +41,7 @@ pluto.inv.messages = {
 		"nitro",
 		"quests",
 		"quest",
+		"questdone",
 	}
 }
 
