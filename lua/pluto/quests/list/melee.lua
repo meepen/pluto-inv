@@ -22,7 +22,7 @@ function QUEST:Init(data)
 	end)
 
 	data:Hook("PlayerDeath", function(data, vic, inf, atk)
-		if (IsValid(inf) and atk == data.Player and inf.Slot == 0 and atk:GetRoleTeam() ~= vic:GetRoleTeam() and meleed[vic]) then
+		if (atk == data.Player and atk:GetRoleTeam() ~= vic:GetRoleTeam() and meleed[vic]) then
 
 			data:UpdateProgress(1)
 		end

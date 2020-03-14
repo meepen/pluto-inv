@@ -1,5 +1,5 @@
 QUEST.Name = "Hitman"
-QUEST.Description = "Rightfully one shot players in one round."
+QUEST.Description = "Rightfully one shot players in one round"
 QUEST.Credits = "zeBaconcake"
 QUEST.Color = Color(204, 61, 5)
 
@@ -14,6 +14,7 @@ function QUEST:Init(data)
 	end)
 
 	data:Hook("PlayerDeath", function(data, vic, inf, atk)
+		vic.DamageTakens = vic.DamageTakens or {}
 		if (vic.DamageTakens[atk] == 1 and atk == data.Player and atk:GetRoleTeam() ~= vic:GetRoleTeam()) then
 			current = current + 1
 
