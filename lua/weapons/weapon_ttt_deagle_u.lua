@@ -62,8 +62,8 @@ SWEP.RecoilInstructions = {
 }
 
 SWEP.NoPlayerModelHands = true
-SWEP.DeploySequence = 3
 SWEP.MeleeSequence = 12
+SWEP.DeployAnim = ACT_VM_DEPLOY
 
 SWEP.Ironsights = false
 

@@ -25,9 +25,8 @@ function TIER:GetSubDescription()
 	return desc or ""
 end
 
-function pluto.tiers.randomfilter(gun, filter)
+function pluto.tiers.filter(gun, filter)
 	local type = pluto.weapons.type(gun)
-	print(type)
 
 	if (not type) then
 		return

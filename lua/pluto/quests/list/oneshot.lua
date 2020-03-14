@@ -2,7 +2,7 @@ QUEST.Name = "Hitman"
 QUEST.Description = "Rightfully one shot players in one round."
 QUEST.Color = Color(204, 61, 5)
 
-function QUEST:GetRewardText(seed)
+function QUEST:GetRewardText(seed)l
 	return "random gun with at least 4 mods"
 end
 
@@ -36,14 +36,14 @@ end)
 
 function QUEST:Reward(data)
 	local gun = baseclass.Get(pluto.weapons.randomgun())
-	local tier = pluto.tiers.randomfilter(gun, function(t)
+	local tier = pluto.tiers.filter(gun, function(t)
 		return t.affixes >= 4
 	end)
 
 	local trans, gun = pluto.inv.generatebufferweapon(data.Player, tier, gun)
 	trans:Run()
 
-	data.Player:ChatPrint("You have received a ", tier.Color, gun:GetPrintName(), white_text, " for completing ", self.Color, "Hitman", white_text, "! Check your inventory.")
+	data.Player:ChatPrint("You have received a ", tier.Color, gun:GetPrintName(), white_text, " for completing ", self.Color, self.Name, white_text, "! Check your inventory.")
 end
 
 function QUEST:IsType(type)
