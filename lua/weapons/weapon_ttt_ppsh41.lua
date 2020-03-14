@@ -138,17 +138,15 @@ SWEP.Bullets = {
 	Spread = Vector(0.035, 0.045)
 }
 
-local power = 7
+local power = 10
 SWEP.RecoilInstructions = {
 	Interval = 2,
 	Angle(-power, -power * 0.6),
 	Angle(-power, -power * 0.48),
-	Angle(-power, -power * 0.2),
 	Angle(-power, power * 0.5),
 	Angle(-power, power * 1),
 	Angle(-power, power * 1.5),
 	Angle(-power, power * 0.75),
-	Angle(-power, power * 0.5),
 	Angle(-power, -power * 0.5),
 	Angle(-power, -power * 0.75),
 }

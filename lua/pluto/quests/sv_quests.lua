@@ -80,7 +80,7 @@ function QUEST:Complete()
 			:write("quest", self)
 			:send()
 
-		timer.Simple(self.TYPE.Cooldown + 3, function()
+		timer.Simple(self.TYPE.Cooldown + 5, function()
 			pluto.quests.delete(self.RowID)
 		end)
 	end)
@@ -228,7 +228,7 @@ function pluto.quests.init(ply, _cb)
 		else
 			for type, quests in pairs(quests) do
 				for _, quest in pairs(quests) do
-					timer.Simple(quest.EndTime - os.time(), function()
+					timer.Simple(quest.EndTime - os.time() + 5, function()
 						pluto.quests.delete(quest.RowID)
 					end)
 				end
