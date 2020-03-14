@@ -14,7 +14,7 @@ function QUEST:Init(data)
 	end)
 
 	data:Hook("PlayerDeath", function(data, vic, inf, atk)
-		if (vic.DamageTaken == 1 and atk == data.Player and atk:GetRoleTeam() ~= vic:GetRoleTeam()) then
+		if (vic.DamageTakens[atk] == 1 and atk == data.Player and atk:GetRoleTeam() ~= vic:GetRoleTeam()) then
 			current = current + 1
 
 			if (current == data.ProgressLeft) then
@@ -26,12 +26,13 @@ end
 
 hook.Add("EntityTakeDamage", "oneshot_quest", function(e, dmg)
 	if (IsValid(e) and e:IsPlayer() and dmg:GetDamage() > 0) then
-		e.DamageTaken = (e.DamageTaken or 0) + 1
+		e.DamageTakens = e.DamageTakens or {}
+		e.DamageTakens[dmg:GetAttacker()] = (e.DamageTakens[dmg:GetAttacker()] or 0) + 1
 	end
 end)
 hook.Add("TTTBeginRound", "oneshot_quest", function(e, dmg)
 	for _, ply in pairs(player.GetAll()) do
-		ply.DamageTaken = 0
+		ply.DamageTakens = {}
 	end
 end)
 
