@@ -1,5 +1,5 @@
 QUEST.Name = "Clubber"
-QUEST.Description = "Hit people rightfully with a melee in one round"
+QUEST.Description = "Hit people rightfully with a melee, then kill them"
 QUEST.Credits = "Phrot"
 QUEST.Color = Color(204, 61, 5)
 
@@ -8,20 +8,23 @@ function QUEST:GetRewardText(seed)
 end
 
 function QUEST:Init(data)
-	local current = {}
+	local meleed = {}
 	data:Hook("TTTBeginRound", function(data, gren)
-		current = {}
+		meleed = {}
 	end)
 
 	data:Hook("EntityTakeDamage", function(data, vic, dmg)
 		local inf, atk = dmg:GetInflictor(), dmg:GetAttacker()
 
 		if (IsValid(inf) and atk == data.Player and inf.Slot == 0 and atk:GetRoleTeam() ~= vic:GetRoleTeam()) then
-			current[vic] = true
+			meleed[vic] = true
+		end
+	end)
 
-			if (table.Count(current) == data.ProgressLeft) then
-				data:UpdateProgress(data.ProgressLeft)
-			end
+	data:Hook("PlayerDeath", function(data, vic, inf, atk)
+		if (IsValid(inf) and atk == data.Player and inf.Slot == 0 and atk:GetRoleTeam() ~= vic:GetRoleTeam() and meleed[vic]) then
+
+			data:UpdateProgress(1)
 		end
 	end)
 end
@@ -38,5 +41,5 @@ function QUEST:IsType(type)
 end
 
 function QUEST:GetProgressNeeded(type)
-	return math.random(3, 4)
+	return math.random(4, 5)
 end
