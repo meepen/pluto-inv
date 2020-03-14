@@ -110,6 +110,8 @@ function pluto.craft.readheader(cl)
 
 	local failed = false
 	local notcomplete = false
+	local shard_type
+
 	for i = 1, 7 do
 		local item
 		if (net.ReadBool()) then
@@ -117,6 +119,15 @@ function pluto.craft.readheader(cl)
 			if (not item or item.Owner ~= cl:SteamID64() or got[item]) then
 				failed = true
 				continue
+			end
+
+			if (i == 1) then
+				shard_type = item.Tier.Type
+			elseif (i <= 3 and shard_type ~= item.Tier.Type) then
+				failed = true
+				continue
+			elseif (i >= 4 and pluto.weapons.type(item) ~= shard_type) then
+				failed = true	
 			end
 
 			got[item] = true

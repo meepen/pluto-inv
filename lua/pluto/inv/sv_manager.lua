@@ -13,6 +13,7 @@ pluto.inv.items = pluto.inv.items or pluto.itemids or {}
 ]]
 
 pluto.inv.currencies = pluto.inv.currencies or {}
+pluto.inv.loading = pluto.inv.loading or {}
 
 pluto.inv.sent = pluto.inv.sent or {}
 
@@ -136,13 +137,19 @@ function pluto.inv.writefullupdate(ply)
 end
 
 function pluto.inv.sendfullupdate(ply)
+	if (pluto.inv.loading[ply]) then
+		return
+	end
+
 	pluto.inv.message(ply)
 		:write("status", "retrieving")
 		:send()
 
 	pluto.inv.invs[ply] = nil
+	pluto.inv.loading[ply] = true
 
 	pluto.inv.init(ply, function()
+		pluto.inv.loading[ply] = nil
 		hook.Run("PlutoInventoryLoad", ply)
 		if (ply:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE) then
 			ply:StripWeapons()
@@ -195,6 +202,10 @@ function pluto.inv.writebaseitem(ply, item)
 	end
 
 	if (item.Type == "Shard" or item.Type == "Weapon") then
+		if (not item.Tier) then
+			PrintTable(item)
+		end
+
 		net.WriteString(item.Tier.Name)
 		net.WriteString(item.Tier:GetSubDescription())
 		net.WriteColor(item.Tier.Color or color_white)
