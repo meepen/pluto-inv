@@ -104,19 +104,16 @@ function PANEL:Init()
 		render.SetScissorRect(x0, y0, x0 + w, y1, true)
 	end
 
-	self.OverlayText = self.Overlay:Add "DLabel"
+	self.OverlayText = self.Overlay:Add "EditablePanel"
 	self.OverlayText:Dock(FILL)
-	self.OverlayText:SetContentAlignment(5)
-	self.OverlayText:SetFont "pluto_quest_reward"
-	self.OverlayText:SetTextColor(white_text)
 
-	self.OverlayText.Think = function(s)
+	self.OverlayText.Paint = function(s, w, h)
 		local q = self.Quest
 		local t = ""
 		if (q) then
 			t = string.format("%.1f%% (%i remaining)", (q.TotalProgress - q.ProgressLeft) / q.TotalProgress * 100, q.ProgressLeft)
 		end
-		s:SetText(t)
+		draw.SimpleTextOutlined(t, "pluto_quest_reward", w / 2, h / 2, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, color_black)
 	end
 
 	self.RewardText = self:Add "DLabel"
