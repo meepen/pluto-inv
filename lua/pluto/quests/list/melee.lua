@@ -28,7 +28,7 @@ end
 
 function QUEST:Reward(data)
 	pluto.inv.addcurrency(e, seed < 0.5 and "aciddrop" or "pdrop", 1, function(succ)
-		data.Player:ChatPrint("You have received a ", tier.Color, gun:GetPrintName(), white_text, " for completing ", self.Color, self.Name, white_text, "! Check your inventory.")
+		data.Player:ChatPrint("You have received a ", seed < 0.5 and "Acidic Droplet" or "Plutonic Droplet", white_text, " for completing ", self.Color, self.Name, white_text, "! Check your inventory.")
 	end)
 end
 

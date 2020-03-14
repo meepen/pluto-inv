@@ -276,3 +276,24 @@ function pluto.mods.getrolls(mod, tier, rolls)
 
 	return retn
 end
+
+function pluto.mods.getfor(gun, filter)
+	local list = {}
+	local typedmods = pluto.mods.byitem[pluto.weapons.type(gun)]
+
+	for _, modlist in pairs(typedmods) do
+		for _, mod in pairs(modlist) do
+			if (wpn and item.CanRollOn and not item:CanRollOn(gun)) then
+				continue
+			end
+		
+			if (filter and not filter(mod)) then
+				continue
+			end
+
+			table.insert(list, mod)
+		end
+	end
+
+	return list
+end

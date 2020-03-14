@@ -19,6 +19,7 @@ for _, id in pairs {
 	"stickcurr",
 	"oneshot",
 	"melee",
+	"nojump",
 } do
 	QUEST = pluto.quests.list[id] or {}
 	QUEST.ID = id

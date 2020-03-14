@@ -3,7 +3,7 @@ QUEST.Description = "Rightfully one shot players in one round."
 QUEST.Credits = "zeBaconcake"
 QUEST.Color = Color(204, 61, 5)
 
-function QUEST:GetRewardText(seed)l
+function QUEST:GetRewardText(seed)
 	return "random gun with at least 4 mods"
 end
 
