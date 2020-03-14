@@ -1,5 +1,5 @@
 QUEST.Name = "Currency Revealer"
-QUEST.Description = "Work with other people to stick their currency with a sticky grenade"
+QUEST.Description = "Reveal any currency to everyone by throwing a sticky grenade on them"
 QUEST.Color = Color(254, 233, 105)
 
 function QUEST:GetRewardText(seed)
@@ -22,7 +22,7 @@ function QUEST:Init(data)
 			return
 		end
 
-		if (parent:GetOwner() == data.Player or done[parent]) then
+		if (done[parent]) then
 			return
 		end
 
