@@ -1,15 +1,15 @@
 pluto.weapons = pluto.weapons or {}
 
 function pluto.weapons.randomgun()
-	return table.Random(pluto.weapons.guns)
+	return (table.Random(pluto.weapons.guns))
 end
 
 function pluto.weapons.randommelee()
-	return table.Random(pluto.weapons.melees)
+	return (table.Random(pluto.weapons.melees))
 end
 
 function pluto.weapons.randomgrenade()
-	return table.Random(pluto.weapons.grenades)
+	return (table.Random(pluto.weapons.grenades))
 end
 
 function pluto.weapons.type(gun)

@@ -29,7 +29,11 @@ function QUEST:Init(data)
 end
 
 function QUEST:Reward(data)
-	-- 8 + math.floor(seed * 3) droplets
+	print(pluto.weapons.randomgrenade())
+	local trans, new_item = pluto.inv.generatebufferweapon(data.Player, nil, pluto.weapons.randomgrenade())
+	trans:Run()
+
+	data.Player:ChatPrint("You have received a ", new_item.Tier.Color, new_item:GetPrintName(), white_text, " for completing ", self.Color, self.Name, white_text, "!")
 end
 
 function QUEST:IsType(type)
