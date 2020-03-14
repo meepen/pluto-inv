@@ -9,7 +9,7 @@ pluto.quests.types = {
 		Name = "Hourly",
 		Time = 60 * 60,
 		Amount = 2,
-		Cooldown = 5,
+		Cooldown = 60 * 5,
 	},
 }
 
