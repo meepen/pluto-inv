@@ -1,5 +1,6 @@
 QUEST.Name = "Hitman"
 QUEST.Description = "Rightfully one shot players in one round."
+QUEST.Credits = "zeBaconcake"
 QUEST.Color = Color(204, 61, 5)
 
 function QUEST:GetRewardText(seed)l

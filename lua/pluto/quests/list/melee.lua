@@ -1,5 +1,6 @@
 QUEST.Name = "Clubber"
 QUEST.Description = "Hit people rightfully with a melee in one round"
+QUEST.Credits = "Phrot"
 QUEST.Color = Color(204, 61, 5)
 
 function QUEST:GetRewardText(seed)
