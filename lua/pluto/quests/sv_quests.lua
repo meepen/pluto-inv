@@ -9,7 +9,7 @@ pluto.quests.types = {
 		Name = "Hourly",
 		Time = 60 * 60,
 		Amount = 2,
-		Cooldown = 60 * 5,
+		Cooldown = 5,
 	},
 }
 
@@ -35,7 +35,7 @@ local QUEST = {}
 pluto.quests.quest_mt.__index = QUEST
 
 function QUEST:IsValid()
-	return self.EndTime > os.time() and IsValid(self.Player) and self.ProgressLeft > 0 and self.RowID
+	return self.EndTime > os.time() and IsValid(self.Player) and self.ProgressLeft > 0 and self.RowID and not self.Dead
 end
 
 function QUEST:Hook(event, fn)
@@ -75,13 +75,13 @@ function QUEST:Complete()
 		if (self.QUEST.Reward) then
 			self.QUEST:Reward(self)
 		end
-		quest.EndTime = os.time() + self.TYPE.Cooldown
+		self.EndTime = os.time() + self.TYPE.Cooldown
 		pluto.inv.message(self.Player)
-			:write("quest", quest)
+			:write("quest", self)
 			:send()
 
 		timer.Simple(self.TYPE.Cooldown + 3, function()
-			-- TODO(meep): refresh during round
+			pluto.quests.delete(self.RowID)
 		end)
 	end)
 end
@@ -130,7 +130,7 @@ function pluto.quests.init(ply, _cb)
 	transact:AddQuery("DELETE FROM pluto_quests WHERE steamid = ? AND expiry_time < CURRENT_TIMESTAMP", {sid}, function(err, q)
 	end)
 
-	transact:AddQuery("SELECT idx, quest_id, type, progress_needed, total_progress, TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, expiry_time) as expire_diff FROM pluto_quests WHERE steamid = ?", {sid}, function(err, q)
+	transact:AddQuery("SELECT idx, quest_id, type, progress_needed, total_progress, TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, expiry_time) as expire_diff, rand as seed FROM pluto_quests WHERE steamid = ?", {sid}, function(err, q)
 		local quests = {}
 		local have = {}
 
@@ -161,6 +161,7 @@ function pluto.quests.init(ply, _cb)
 				Player = ply,
 				QUEST = quest_data,
 				TYPE = quest_type,
+				Seed = data.seed,
 			}, pluto.quests.quest_mt))
 			have[data.quest_id] = true
 		end
@@ -225,6 +226,13 @@ function pluto.quests.init(ply, _cb)
 			end)
 			adder:Run()
 		else
+			for type, quests in pairs(quests) do
+				for _, quest in pairs(quests) do
+					timer.Simple(quest.EndTime - os.time(), function()
+						pluto.quests.delete(quest.RowID)
+					end)
+				end
+			end
 			cb(quests)
 		end
 	end)
@@ -277,3 +285,46 @@ function pluto.inv.writequests(ply)
 	end
 	net.WriteBool(false)
 end
+
+function pluto.quests.delete(idx)
+	local update_for
+	
+	for ply, questlist in pairs(pluto.quests.byperson) do
+		for type, quests in pairs(questlist) do
+			for _, quest in pairs(quests) do
+				if (quest.RowID == idx) then
+					update_for = ply
+					break
+				end
+			end
+		end
+	end
+
+
+	if (IsValid(update_for)) then
+		pluto.quests.reloadfor(update_for)
+	end
+end
+
+function pluto.quests.reloadfor(ply)
+	ply:ChatPrint "reloading quests"
+	for type, quests in pairs(pluto.quests.byperson[ply] or {}) do
+		for _, quest in pairs(quests) do
+			quest.Dead = true
+		end
+	end
+
+	pluto.quests.byperson[ply] = nil
+
+	pluto.quests.init(ply, function()
+		ply:ChatPrint "reloaded"
+	end)
+end
+
+function pluto.quests.reload()
+	for k,v in pairs(player.GetHumans()) do
+		pluto.quests.reloadfor(v)
+	end
+end
+
+pluto.quests.reload()

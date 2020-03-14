@@ -8,18 +8,22 @@ function QUEST:GetRewardText(seed)
 end
 
 function QUEST:Init(data)
-	local current = {}
+	local current = 0
 	data:Hook("TTTBeginRound", function(data, gren)
-		current = {}
+		current = 0
 	end)
 
-	data:Hook("EntityTakeDamage", function(data, vic, dmg)
-		local inf, atk = dmg:GetInflictor(), dmg:GetAttacker()
+	data:Hook("KeyPress", function(data, ply, key)
+		if (ply == data.Player and key == IN_JUMP and ply:IsOnGround()) then
+			current = 0
+		end
+	end)
 
-		if (IsValid(inf) and atk == data.Player and inf.Slot == 0 and atk:GetRoleTeam() ~= vic:GetRoleTeam()) then
-			current[vic] = true
+	data:Hook("PlayerDeath", function(data, vic, inf, atk)
+		if (atk == data.Player and atk:GetRoleTeam() ~= vic:GetRoleTeam()) then
+			current = current + 1
 
-			if (table.Count(current) == data.ProgressLeft) then
+			if (current == data.ProgressLeft) then
 				data:UpdateProgress(data.ProgressLeft)
 			end
 		end
@@ -37,7 +41,7 @@ function QUEST:Reward(data)
 
 	pluto.inv.savebufferitem(data.Player, new_item):Run()
 
-	data.Player:ChatPrint("You have received a ", new_item.Tier.Color, new_item:GetPrintName(), white_text, " with the ", mod.Color or white_text, mod.Name, white_text, " modifier for completeing ", self.Color, self.Name, white_text, "!")
+	data.Player:ChatPrint("You have received a ", new_item.Tier.Color, new_item:GetPrintName(), white_text, " with the ", mod.Color or white_text, mod.Name, white_text, " modifier for completing ", self.Color, self.Name, white_text, "!")
 end
 
 function QUEST:IsType(type)
