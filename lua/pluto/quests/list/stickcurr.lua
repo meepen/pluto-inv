@@ -10,6 +10,10 @@ function QUEST:Init(data)
 	local done = {}
 	data:Hook("TTTGrenadeStuck", function(data, gren)
 		local parent = gren:GetParent()
+		if (gren:GetOwner() ~= data.Player) then
+			return
+		end
+
 		if (not IsValid(parent)) then
 			return
 		end
