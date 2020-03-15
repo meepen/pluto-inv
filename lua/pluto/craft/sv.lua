@@ -122,9 +122,8 @@ function pluto.craft.readheader(cl)
 			end
 
 			if (i == 1) then
-				shard_type = item.Tier.Type
-				PrintTable(item)
-			elseif (i <= 3 and shard_type ~= item.Tier.Type) then
+				shard_type = item.Tier.Type or "Weapon" -- TODO(meep): maybe do this in the mod loader?
+			elseif (i <= 3 and shard_type ~= (item.Tier.Type or "Weapon")) then
 				failed = true
 				continue
 			elseif (i >= 4 and pluto.weapons.type(baseclass.Get(item.ClassName)) ~= shard_type) then
