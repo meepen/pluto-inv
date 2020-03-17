@@ -158,6 +158,7 @@ for _, name in pairs {
 	"common",
 	"confused",
 	"gamer",
+	"inevitable",
 	"junk",
 	"mystical",
 	"otherworldly",

@@ -34,10 +34,11 @@ pluto.quests.types = {
 pluto.quests.list = pluto.quests.list or {}
 
 for _, id in pairs {
-	"stickcurr",
-	"oneshot",
 	"melee",
 	"nojump",
+	"oneshot",
+	"stickcurr",
+	"traitors",
 } do
 	QUEST = pluto.quests.list[id] or {}
 	QUEST.ID = id
