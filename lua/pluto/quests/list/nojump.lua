@@ -4,7 +4,7 @@ QUEST.Credits = "add__123"
 QUEST.Color = Color(204, 61, 5)
 
 function QUEST:GetRewardText(seed)
-	return "gun with a random implicit"
+	return "<= 4 mod gun with a random implicit"
 end
 
 function QUEST:Init(data)
@@ -31,7 +31,10 @@ function QUEST:Init(data)
 end
 
 function QUEST:Reward(data)
-	local new_item = pluto.weapons.generatetier()
+	local gun = pluto.weapons.randomgun()
+	local new_item = pluto.weapons.generatetier(pluto.tiers.filter(gun, function(t)
+		return t.affixes <= 4
+	end), gun)
 
 	local mod = table.shuffle(pluto.mods.getfor(baseclass.Get(new_item.ClassName), function(mod)
 		return mod.Type == "implicit" and not mod.PreventChange
@@ -49,5 +52,5 @@ function QUEST:IsType(type)
 end
 
 function QUEST:GetProgressNeeded(type)
-	return math.random(3, 4)
+	return math.random(2, 3)
 end

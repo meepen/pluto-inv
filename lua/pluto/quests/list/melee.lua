@@ -4,7 +4,7 @@ QUEST.Credits = "Phrot"
 QUEST.Color = Color(204, 61, 5)
 
 function QUEST:GetReward(seed)
-	return pluto.currency.byname[data.Seed < 0.5 and "aciddrop" or "pdrop"]
+	return pluto.currency.byname[seed < 0.5 and "aciddrop" or "pdrop"]
 end
 
 function QUEST:GetRewardText(seed)

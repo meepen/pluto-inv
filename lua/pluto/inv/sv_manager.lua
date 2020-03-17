@@ -138,6 +138,7 @@ end
 
 function pluto.inv.sendfullupdate(ply)
 	if (pluto.inv.loading[ply]) then
+		pwarnf("Player inventory already loading: %s", ply:Nick())
 		return
 	end
 
@@ -148,8 +149,11 @@ function pluto.inv.sendfullupdate(ply)
 	pluto.inv.invs[ply] = nil
 	pluto.inv.loading[ply] = true
 
+	pprintf("Loading %s's inventory", ply:Nick())
+
 	pluto.inv.init(ply, function()
 		pluto.inv.loading[ply] = nil
+		pprintf("Loaded %s's inventory", ply:Nick())
 		hook.Run("PlutoInventoryLoad", ply)
 		if (ply:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE) then
 			ply:StripWeapons()
@@ -252,8 +256,9 @@ function pluto.inv.init(ply, cb2)
 	local tabs, items
 
 	local success = 0
-	local function TrySucceed()
+	local function TrySucceed(where)
 		success = success + 1
+		print(ply, where, success)
 		if (not IsValid(ply)) then
 			return cb(false, "disconnected")
 		end
@@ -288,7 +293,7 @@ function pluto.inv.init(ply, cb2)
 
 		pluto.inv.invs[ply] = inv
 
-		TrySucceed()
+		TrySucceed "tabs"
 	end
 
 	pluto.inv.retrievetabs(ply, function(_tabs)
@@ -324,11 +329,11 @@ function pluto.inv.init(ply, cb2)
 
 		pluto.inv.currencies[ply] = currencies
 
-		TrySucceed()
+		TrySucceed "currency"
 	end)
 
 	pluto.quests.init(ply, function(_quests)
-		TrySucceed()
+		TrySucceed "quests"
 	end)
 end
 

@@ -4,7 +4,7 @@ QUEST.Credits = "zeBaconcake"
 QUEST.Color = Color(204, 61, 5)
 
 function QUEST:GetRewardText(seed)
-	return "random gun with at least 4 mods"
+	return "random gun with at least 3 mods"
 end
 
 function QUEST:Init(data)
@@ -40,7 +40,7 @@ end)
 function QUEST:Reward(data)
 	local gun = baseclass.Get(pluto.weapons.randomgun())
 	local tier = pluto.tiers.filter(gun, function(t)
-		return t.affixes >= 4
+		return t.affixes >= 3
 	end)
 
 	local trans, gun = pluto.inv.generatebufferweapon(data.Player, tier, gun)
@@ -54,5 +54,5 @@ function QUEST:IsType(type)
 end
 
 function QUEST:GetProgressNeeded(type)
-	return math.random(3, 4)
+	return math.random(2, 3)
 end

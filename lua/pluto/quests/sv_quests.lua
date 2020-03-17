@@ -5,11 +5,29 @@ pluto.quests.byperson = pluto.quests.byperson or {}
 pluto.quests.current = pluto.quests.current or {}
 
 pluto.quests.types = {
+	[0] = {
+		Name = "Special",
+		Time = 60 * 60 * 24, -- day
+		Amount = 0,
+		Cooldown = 0,
+	},
 	[1] = {
 		Name = "Hourly",
 		Time = 60 * 60,
 		Amount = 2,
 		Cooldown = 60 * 7.5,
+	},
+	[2] = {
+		Name = "Daily",
+		Time = 60 * 60 * 24, -- day
+		Amount = 0,
+		Cooldown = 0,
+	},
+	[3] = {
+		Name = "Weekly",
+		Time = 60 * 60 * 24 * 7, -- week
+		Amount = 0,
+		Cooldown = 0,
 	},
 }
 
@@ -171,7 +189,7 @@ function pluto.quests.init(ply, _cb)
 
 		for type, type_data in pairs(pluto.quests.types) do
 			local type_quests = quests[type_data.Name]
-			if (type_quests and #type_quests >= type_data.Amount) then
+			if ((type_quests and #type_quests or 0) >= type_data.Amount) then
 				continue
 			end
 
@@ -217,6 +235,7 @@ function pluto.quests.init(ply, _cb)
 					end
 				)
 			end
+
 			needs_run = true
 		end
 
