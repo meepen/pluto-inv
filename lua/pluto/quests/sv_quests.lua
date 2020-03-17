@@ -71,11 +71,11 @@ function QUEST:UpdateProgress(amount)
 end
 
 function QUEST:Complete()
-	pluto.db.query("UPDATE pluto_quests SET expiry_time = TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP) WHERE idx = ?", {self.TYPE.Cooldown, self.RowID}, function(err, q)
+	pluto.db.query("UPDATE pluto_quests SET expiry_time = MIN(expiry_time, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP)) WHERE idx = ?", {self.TYPE.Cooldown, self.RowID}, function(err, q)
 		if (self.QUEST.Reward) then
 			self.QUEST:Reward(self)
 		end
-		self.EndTime = os.time() + self.TYPE.Cooldown
+		self.EndTime = math.min(self.EndTime, os.time() + self.TYPE.Cooldown)
 		pluto.inv.message(self.Player)
 			:write("quest", self)
 			:send()
