@@ -1,5 +1,5 @@
 MOD.Type = "suffix"
-MOD.Name = "Rejuvenation"
+MOD.Name = "Rejuv"
 MOD.Tags = {
 	"healing",
 }
