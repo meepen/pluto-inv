@@ -16,7 +16,7 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
-MOD.Description = "Doubles currency rewards"
+MOD.Description = "Gives 50% more currency rewards"
 
 MOD.Tiers = {
 	{ 1, 1 },
