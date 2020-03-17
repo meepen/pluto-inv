@@ -26,7 +26,7 @@ function QUEST:Init(data)
 end
 
 hook.Add("EntityTakeDamage", "oneshot_quest", function(e, dmg)
-	if (IsValid(e) and e:IsPlayer() and dmg:GetDamage() > 0) then
+	if (IsValid(e) and e:IsPlayer() and dmg:GetDamage() > 0 and not dmg:IsDamageType(DMG_DIRECT)) then
 		e.DamageTakens = e.DamageTakens or {}
 		e.DamageTakens[dmg:GetAttacker()] = (e.DamageTakens[dmg:GetAttacker()] or 0) + 1
 	end
