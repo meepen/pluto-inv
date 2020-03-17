@@ -93,6 +93,7 @@ for _, filename in pairs {
 	typeinfo[mod.Type][modname] = mod
 
 	pluto.mods.byname[modname] = mod
+	pluto.mods.byitem[itemtype].byname[modname] = mod
 end
 
 local function defaulttierbias(mod)
@@ -225,7 +226,9 @@ function pluto.mods.generateaffixes(wpn, affixcount, prefixmax, suffixmax, guara
 				continue
 			end
 
-			table.insert(retn[mod.Type], pluto.mods.rollmod(mod, rolltier, roll))
+			local tierroll = data == true and rolltier or function() return data end
+
+			table.insert(retn[mod.Type], pluto.mods.rollmod(mod, tierroll, roll))
 			affixcount = affixcount - 1
 
 			allowed[mod.Type] = allowed[mod.Type] - 1

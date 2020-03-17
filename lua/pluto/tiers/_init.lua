@@ -141,6 +141,7 @@ function pluto.tiers.craft(tiers)
 	if (t2.tags) then
 		table.insert(tier.SubDescription, t2.SubDescription.tags)
 		tier.tags = t2.tags
+		tier.guaranteed = t2.guaranteed
 	end
 
 	if (t3.rolltier) then
@@ -184,8 +185,9 @@ for _, name in pairs {
 		continue
 	end
 
-	local prev = pluto.tiers[name]
+	local prev = pluto.tiers.byname[name]
 	if (prev) then
+		pprintf("Merging %s", name)
 		table.Merge(prev, item)
 		item = prev
 	end

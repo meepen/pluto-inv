@@ -1,6 +1,6 @@
 QUEST.Name = "The Inevitable"
 QUEST.Description = "Win as a group of 3 or more traitors without anyone dying"
-QUEST.Color = Color(254, 233, 105)
+QUEST.Color = Color(175, 47, 36)
 
 function QUEST:GetRewardText(seed)
 	return "Inevitable gun"

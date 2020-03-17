@@ -348,3 +348,23 @@ function pluto.quests.reload()
 end
 
 pluto.quests.reload()
+
+concommand.Add("pluto_test_quest", function(ply, cmd, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+
+	local quest = pluto.quests.list[args[1]]
+
+	if (not quest) then
+		ply:ChatPrint("No quest found for id ", tostring(args[1]))
+		return
+	end
+
+	quest:Reward {
+		Player = ply,
+		Seed = math.random()
+	}
+
+	ply:ChatPrint("Rewarded for quest ", quest.Color, quest.Name)
+end)

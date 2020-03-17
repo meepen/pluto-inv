@@ -415,7 +415,9 @@ end
 
 function PANEL:Showcase(item)
 	self.showcasepnl = pluto.ui.showcase(item)
-	self.showcasepnl:SetPos(self:LocalToScreen(self:GetWide() + 3, 0))
+	local x, y = self:LocalToScreen(0, self:GetTall())
+	x = math.min(ScrW() - self.showcasepnl:GetWide(), x)
+	self.showcasepnl:SetPos(x, y)
 	self.showcase_version = item.Version
 end
 
