@@ -3,8 +3,13 @@ QUEST.Description = "Hit people rightfully with a melee, then kill them"
 QUEST.Credits = "Phrot"
 QUEST.Color = Color(204, 61, 5)
 
+function QUEST:GetReward(seed)
+	return pluto.currency.byname[data.Seed < 0.5 and "aciddrop" or "pdrop"]
+end
+
 function QUEST:GetRewardText(seed)
-	return seed < 0.5 and "Acidic Droplet" or "Plutonic Droplet"
+	local cur = self:GetReward(seed)
+	return cur.Name
 end
 
 function QUEST:Init(data)
@@ -23,14 +28,13 @@ function QUEST:Init(data)
 
 	data:Hook("PlayerDeath", function(data, vic, inf, atk)
 		if (atk == data.Player and atk:GetRoleTeam() ~= vic:GetRoleTeam() and meleed[vic]) then
-
 			data:UpdateProgress(1)
 		end
 	end)
 end
 
 function QUEST:Reward(data)
-	local cur = pluto.currency.byname[data.Seed < 0.5 and "aciddrop" or "pdrop"]
+	local cur = self:GetReward(seed)
 	pluto.inv.addcurrency(data.Player, cur.InternalName, 1, function(succ)
 		data.Player:ChatPrint("You have received a ", cur.Color, cur.Name, white_text, " for completing ", self.Color, self.Name)
 	end)
