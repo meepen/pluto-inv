@@ -34,7 +34,7 @@ function QUEST:Init(data)
 end
 
 function QUEST:Reward(data)
-	local cur = self:GetReward(seed)
+	local cur = self:GetReward(data.Seed)
 	pluto.inv.addcurrency(data.Player, cur.InternalName, 1, function(succ)
 		data.Player:ChatPrint("You have received a ", cur.Color, cur.Name, white_text, " for completing ", self.Color, self.Name)
 	end)
