@@ -230,7 +230,7 @@ function PANEL:RefreshQuests()
 	end
 
 	for _, quest in pairs(needed) do
-		local pnl = self:Add "pluto_quest_item"
+		local pnl = self.List:Add "pluto_quest_item"
 		pnl:Dock(TOP)
 		pnl:SetQuest(quest)
 	end
