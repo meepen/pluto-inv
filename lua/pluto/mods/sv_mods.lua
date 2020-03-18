@@ -196,7 +196,7 @@ function pluto.mods.bias(wpn, list, biases)
 	return retn
 end
 
-function pluto.mods.generateaffixes(wpn, affixcount, prefixmax, suffixmax, guaranteed, tagbiases, rolltier, roll)
+function pluto.mods.generateaffixes(wpn, affixcount, prefixmax, suffixmax, guaranteed, tagbiases, rolltier, roll, notallowed)
 	local typedmods = pluto.mods.byitem[pluto.weapons.type(wpn)]
 
 	local retn = {
@@ -212,6 +212,8 @@ function pluto.mods.generateaffixes(wpn, affixcount, prefixmax, suffixmax, guara
 		prefix = prefixmax or math.max(affixcount - 3, 3),
 		suffix = suffixmax or 3
 	}
+
+	notallowed = notallowed or {}
 
 	if (guaranteed) then
 		for modname, data in pairs(guaranteed) do
@@ -232,6 +234,8 @@ function pluto.mods.generateaffixes(wpn, affixcount, prefixmax, suffixmax, guara
 			affixcount = affixcount - 1
 
 			allowed[mod.Type] = allowed[mod.Type] - 1
+
+			notallowed[mod.InternalName] = true
 		end
 	end
 
@@ -244,7 +248,21 @@ function pluto.mods.generateaffixes(wpn, affixcount, prefixmax, suffixmax, guara
 			prefix = 1,
 		}
 	}
-	
+
+	for i = #potential.suffix, 1, -1 do
+		local mod = potential.suffix[i]
+		if (notallowed[mod.InternalName]) then
+			table.remove(potential.suffix, i)
+		end
+	end
+
+	for i = #potential.prefix, 1, -1 do
+		local mod = potential.prefix[i]
+		if (notallowed[mod.InternalName]) then
+			table.remove(potential.prefix, i)
+		end
+	end
+
 	for i = 1, affixcount do
 		local chosenaffix = math.random(1, 2) == 1 and "suffix" or "prefix"
 

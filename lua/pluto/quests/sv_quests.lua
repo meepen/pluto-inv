@@ -94,6 +94,7 @@ function QUEST:Complete()
 			self.QUEST:Reward(self)
 		end
 		self.EndTime = math.min(self.EndTime, os.time() + self.TYPE.Cooldown)
+
 		pluto.inv.message(self.Player)
 			:write("quest", self)
 			:send()
