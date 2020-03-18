@@ -111,7 +111,11 @@ function PANEL:Init()
 		local q = self.Quest
 		local t = ""
 		if (q) then
-			t = string.format("%.1f%% (%i remaining)", (q.TotalProgress - q.ProgressLeft) / q.TotalProgress * 100, q.ProgressLeft)
+			if (q.ProgressLeft == 0) then
+				t = "100.0% (complete)"
+			else
+				t = string.format("%.1f%% (%i remaining)", (q.TotalProgress - q.ProgressLeft) / q.TotalProgress * 100, q.ProgressLeft)
+			end
 		end
 		draw.SimpleTextOutlined(t, "pluto_quest_reward", w / 2, h / 2, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, color_black)
 	end
@@ -203,7 +207,6 @@ function PANEL:Init()
 
 	self.List = self:Add "DScrollPanel"
 	self.List:Dock(FILL)
-
 
 	self.Quests = {}
 	self:RefreshQuests()

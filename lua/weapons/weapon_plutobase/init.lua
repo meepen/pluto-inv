@@ -32,6 +32,7 @@ function SWEP:Initialize()
 		if (not item) then
 			item = pluto.weapons.generatetier(nil, self)
 			item.Type = "Weapon"
+			self.FloorWeapon = true
 		end
 		self:SetInventoryItem(item)
 	end

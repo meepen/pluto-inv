@@ -4,7 +4,7 @@ QUEST.Credits = "add__123"
 QUEST.Color = Color(204, 61, 5)
 
 function QUEST:GetRewardText(seed)
-	return "<= 4 mod gun with a random implicit"
+	return "gun with at most 4 mods and a random implicit"
 end
 
 function QUEST:Init(data)
@@ -32,7 +32,7 @@ end
 
 function QUEST:Reward(data)
 	local gun = pluto.weapons.randomgun()
-	local new_item = pluto.weapons.generatetier(pluto.tiers.filter(gun, function(t)
+	local new_item = pluto.weapons.generatetier(pluto.tiers.filter(baseclass.Get(gun), function(t)
 		return t.affixes <= 4
 	end), gun)
 
