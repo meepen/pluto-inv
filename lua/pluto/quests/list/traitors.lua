@@ -7,7 +7,7 @@ function QUEST:GetRewardText(seed)
 end
 
 function QUEST:Init(data)
-	local good = true
+	local good = false
 	data:Hook("TTTBeginRound", function(data)
 		good = data.Player:Alive() and data.Player:GetRoleTeam() == "traitor" and #round.GetActivePlayersByRole "traitor" >= 3
 	end)
