@@ -9,7 +9,7 @@ end
 function QUEST:Init(data)
 	local good = true
 	data:Hook("TTTBeginRound", function(data)
-		good = data.Player:GetRoleTeam() == "traitor" and #round.GetActivePlayersByRole "traitor" >= 3
+		good = data.Player:Alive() and data.Player:GetRoleTeam() == "traitor" and #round.GetActivePlayersByRole "traitor" >= 3
 	end)
 
 	data:Hook("DoPlayerDeath", function(data, ply)
