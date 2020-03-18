@@ -9,5 +9,6 @@ return {
 		guaranteed = "This always rolls Cycle I.",
 		why = "Everything is a mystery. Except this gun."
 	},
-	Color = Color(175, 47, 36)
+	Color = Color(175, 47, 36),
+	CraftChance = 0.2, -- 20%
 }

@@ -5,4 +5,5 @@ return {
 	Shares = 0,
 	Color = Color(59, 30, 117),
 	NoChange = true,
+	CraftChance = 0,
 }

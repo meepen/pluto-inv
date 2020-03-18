@@ -2,9 +2,17 @@ pluto.craft = pluto.craft or {
 	tiers = {}
 }
 
+pluto.craft.max_shares = 3000
+
 function pluto.craft.itemworth(item)
 	if (not item) then
 		return {}
+	end
+
+	if (item.Tier and item.Tier.CraftChance) then
+		return {
+			[item.ClassName] = pluto.craft.max_shares * item.Tier.CraftChance
+		}
 	end
 
 	if (item.Type == "Weapon") then
@@ -18,7 +26,7 @@ function pluto.craft.itemworth(item)
 end
 
 function pluto.craft.totalpercent(total)
-	return math.min(0.95, total / 3000)
+	return math.min(0.95, total / pluto.craft.max_shares)
 end
 
 function pluto.craft.translateworths(worth)
