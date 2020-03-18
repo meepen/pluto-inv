@@ -227,7 +227,6 @@ for name, values in pairs {
 			elseif (rand == 3) then -- nothing
 			elseif (rand == 4) then -- base gun change
 				item.ClassName = pluto.weapons.randomoftype(pluto.weapons.type(baseclass.Get(item.ClassName)))
-				print(item.ClassName)
 			elseif (rand == 5) then -- tier change
 				local newitem = pluto.weapons.generatetier(nil, item.ClassName)
 				item.Tier = newitem.Tier
