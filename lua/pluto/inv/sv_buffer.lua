@@ -82,6 +82,10 @@ function pluto.inv.generatebufferweapon(ply, ...)
 	return pluto.inv.savebufferitem(ply, new_item)
 end
 
+function pluto.inv.generatebuffergrenade(ply, tier, grenade, ...)
+	return pluto.inv.generatebufferweapon(ply, tier, grenade or pluto.weapons.randomgrenade(), ...)
+end
+
 function pluto.inv.generatebuffershard(ply, tier, transact)
 	local new_item = setmetatable({
 		ClassName = "shard",

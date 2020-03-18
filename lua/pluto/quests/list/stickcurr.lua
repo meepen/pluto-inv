@@ -33,8 +33,7 @@ function QUEST:Init(data)
 end
 
 function QUEST:Reward(data)
-	print(pluto.weapons.randomgrenade())
-	local trans, new_item = pluto.inv.generatebufferweapon(data.Player, nil, pluto.weapons.randomgrenade())
+	local trans, new_item = pluto.inv.generatebuffergrenade(data.Player)
 	trans:Run()
 
 	data.Player:ChatPrint("You have received a ", new_item.Tier.Color, new_item:GetPrintName(), white_text, " for completing ", self.Color, self.Name, white_text, "!")

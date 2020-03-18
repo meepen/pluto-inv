@@ -12,6 +12,18 @@ function pluto.weapons.randomgrenade()
 	return (table.Random(pluto.weapons.grenades))
 end
 
+function pluto.weapons.randomoftype(type)
+	if (type == "Weapon") then
+		return pluto.weapons.randomgun()
+	elseif (type == "Grenade") then
+		return pluto.weapons.randomgrenade()
+	elseif (type == "Melee") then
+		return pluto.weapons.randommelee()
+	end
+
+	error("unknown random of type: " .. type)
+end
+
 function pluto.weapons.type(gun)
 	if (not gun) then
 		return
@@ -331,6 +343,10 @@ function pluto.weapons.generatemod(item, prefix_max, suffix_max, ignoretier)
 	local mods, type = table.Random(allowed)
 
 	local toadd = pluto.mods.bias(wep, mods, biases)[1]
+
+	if (not toadd) then
+		return false
+	end
 
 	pluto.weapons.addmod(item, toadd.InternalName)
 
