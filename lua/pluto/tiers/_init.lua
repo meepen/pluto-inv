@@ -141,6 +141,10 @@ function pluto.tiers.craft(tiers)
 	if (t2.tags) then
 		table.insert(tier.SubDescription, t2.SubDescription.tags)
 		tier.tags = t2.tags
+	end
+
+	if (t2.guaranteed) then
+		table.insert(tier.SubDescription, t2.SubDescription.guaranteed)
 		tier.guaranteed = t2.guaranteed
 	end
 
