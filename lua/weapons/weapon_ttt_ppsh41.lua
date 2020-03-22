@@ -83,8 +83,8 @@ SWEP.AmmoEnt               = "item_ammo_smg1_ttt"
 
 SWEP.Primary.Sound = "CW_PPS_FIRE"
 SWEP.Primary.Recoil = 2
-SWEP.Primary.Delay = 60 / 1000
-SWEP.Primary.Damage = 11.4
+SWEP.Primary.Delay = 75 / 1000
+SWEP.Primary.Damage = 10.5
 SWEP.ReloadSpeed = 1.3
 SWEP.DeploySpeed = 1.4
 
