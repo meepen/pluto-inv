@@ -4,6 +4,8 @@ pluto.quests.byperson = pluto.quests.byperson or {}
 
 pluto.quests.current = pluto.quests.current or {}
 
+pluto.quests.loading = pluto.quests.loading or {}
+
 pluto.quests.types = {
 	[0] = {
 		Name = "Special",
@@ -122,24 +124,37 @@ function pluto.quests.oftype(type, ignore)
 end
 
 function pluto.quests.init(ply, _cb)
-	if (pluto.quests.byperson[ply]) then
-		return _cb(pluto.quests.byperson[ply])
+	if (pluto.quests.loading[ply]) then
+		table.insert(pluto.quests.loading[ply], _cb)
+		return
 	end
+
+	pluto.quests.loading[ply] = {_cb}
+	print("loading", ply)
 
 	local cb = function(dat)
 		pluto.quests.byperson[ply] = dat
 
 		for type, questlist in pairs(dat) do
 			for _, quest in pairs(questlist) do
+				if (quest.HasInit) then
+					continue
+				end
 				quest.QUEST:Init(quest)
+				quest.HasInit = true
 			end
 		end
 
 		pluto.inv.message(ply)
 			:write "quests"
 			:send()
+	
+		local list = pluto.quests.loading[ply]
+		pluto.quests.loading[ply] = nil
 
-		_cb(dat)
+		for _, _cb in pairs(list) do
+			_cb(dat)
+		end
 	end
 
 	local sid = pluto.db.steamid64(ply)
@@ -150,7 +165,10 @@ function pluto.quests.init(ply, _cb)
 	end)
 
 	transact:AddQuery("SELECT idx, quest_id, type, progress_needed, total_progress, TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, expiry_time) as expire_diff, rand as seed FROM pluto_quests WHERE steamid = ?", {sid}, function(err, q)
-		local quests = {}
+		local quests = pluto.quests.byperson[ply] or {
+			byid = {},
+		}
+
 		local have = {}
 
 		for _, data in pairs(q:getData() or {}) do
@@ -170,18 +188,24 @@ function pluto.quests.init(ply, _cb)
 				quests[quest_type.Name] = {}
 			end
 
-			table.insert(quests[quest_type.Name], setmetatable({
+			local quest = quests.byid[data.idx] or setmetatable({
 				RowID = data.idx,
-				Type = data.type,
-				QuestID = data.quest_id,
-				ProgressLeft = data.progress_needed,
-				TotalProgress = data.total_progress,
-				EndTime = os.time() + data.expire_diff,
-				Player = ply,
-				QUEST = quest_data,
-				TYPE = quest_type,
-				Seed = data.seed,
-			}, pluto.quests.quest_mt))
+			}, pluto.quests.quest_mt)
+			
+			quest.Type = data.type
+			quest.QuestID = data.quest_id
+			quest.ProgressLeft = data.progress_needed
+			quest.TotalProgress = data.total_progress
+			quest.EndTime = os.time() + data.expire_diff
+			quest.Player = ply
+			quest.QUEST = quest_data
+			quest.TYPE = quest_type
+			quest.Seed = data.seed
+			quest.Dead = false
+
+			quests.byid[quest.RowID] = quest
+
+			table.insert(quests[quest_type.Name], quest)
 			have[data.quest_id] = true
 		end
 
@@ -221,7 +245,7 @@ function pluto.quests.init(ply, _cb)
 						seed,
 					},
 					function(err, q)
-						table.insert(type_quests, setmetatable({
+						local quest = setmetatable({
 							RowID = q:lastInsert(),
 							QuestID = new.ID,
 							ProgressLeft = progress_needed,
@@ -232,7 +256,11 @@ function pluto.quests.init(ply, _cb)
 							Type = type,
 							QUEST = new,
 							TYPE = type_data,
-						}, pluto.quests.quest_mt))
+						}, pluto.quests.quest_mt)
+
+						quests.byid[quest.RowID] = quest
+
+						table.insert(type_quests, quest)
 					end
 				)
 			end
@@ -333,8 +361,6 @@ function pluto.quests.reloadfor(ply)
 			quest.Dead = true
 		end
 	end
-
-	pluto.quests.byperson[ply] = nil
 
 	pluto.quests.init(ply, function()
 		ply:ChatPrint "reloaded"
