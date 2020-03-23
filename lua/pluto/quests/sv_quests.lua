@@ -339,15 +339,17 @@ function pluto.quests.delete(idx)
 	
 	for ply, questlist in pairs(pluto.quests.byperson) do
 		for type, quests in pairs(questlist) do
-			for _, quest in pairs(quests) do
-				if (quest.RowID == idx) then
+			for index, quest in pairs(quests) do
+				if (quest.RowID == idx and quest:IsValid()) then
+					local byperson = pluto.quests.byperson[ply]
+					byperson.byid[quest.RowID] = nil
+					quests[index] = nil
 					update_for = ply
 					break
 				end
 			end
 		end
 	end
-
 
 	if (IsValid(update_for)) then
 		pluto.quests.reloadfor(update_for)
