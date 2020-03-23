@@ -80,6 +80,10 @@ function SWEP:RunModFunctionSequence(funcname, state, ...)
 	self:RunModFunctionSingle("Pre" .. funcname, unpack(args, 1, args.n))
 	self:RunModFunctionSingle("On" .. funcname, unpack(args, 1, args.n))
 	self:RunModFunctionSingle("Post" .. funcname, unpack(args, 1, args.n))
+
+	if (self[funcname]) then
+		self[funcname](self, state, ...)
+	end
 end
 
 function SWEP:DoFireBullets()

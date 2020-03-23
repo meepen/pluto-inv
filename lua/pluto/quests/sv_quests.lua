@@ -336,7 +336,7 @@ end
 
 function pluto.quests.delete(idx)
 	local update_for
-	
+
 	for ply, questlist in pairs(pluto.quests.byperson) do
 		for type, quests in pairs(questlist) do
 			for index, quest in pairs(quests) do

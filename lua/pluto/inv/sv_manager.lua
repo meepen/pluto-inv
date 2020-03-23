@@ -388,10 +388,12 @@ function pluto.inv.readtabswitch(ply)
 
 	if (equip) then
 		timer.Simple(0, function()
-			if (IsValid(ply) and ply:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE) then
+			if (IsValid(ply) and ply:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE and ply.LastLoadout ~= ttt.GetRoundNumber()) then
 				ply:StripWeapons()
 				ply:StripAmmo()
 				hook.Run("PlayerLoadout", ply)
+
+				ply.LastLoadout = ttt.GetRoundNumber()
 			end
 		end)
 	end

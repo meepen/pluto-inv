@@ -85,6 +85,9 @@ async function make_gma(all_files, list) {
 	for await (const f of getFiles("sound")) {
 		list.push(f);
 	}
+	for await (const f of getFiles("particles")) {
+		list.push(f);
+	}
 	for (let pack in addons) {
 		if (pack !== "workshop") {
 			for (let i = addons[pack].length - 1; i >= 0; i--) {

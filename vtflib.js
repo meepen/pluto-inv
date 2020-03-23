@@ -272,6 +272,7 @@ const VTFImageData = exports.VTFImageData = class VTFImageData {
 
 				return data;
 
+			case "BGRX8888":
 			case "BGRA8888":
 				data = Buffer.from(from);
 				for (let i = 0; i < data.length; i += 4) {

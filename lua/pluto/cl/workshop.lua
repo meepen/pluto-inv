@@ -233,14 +233,13 @@ local packs =  {
 			"20200323_2",
 			"20200322",
 		}
-	}
-	--[[
-	moxxi = {
-		remote = "https://cdn.pluto.gg/moxxi.gma",
+	},
+	unique3 = {
+		remote = "https://cdn.pluto.gg/unique3.gma",
 		versions = {
-			"20191121",
+			"20200323",
 		}
-	},]]
+	}
 }
 
 local to_mount = {}
