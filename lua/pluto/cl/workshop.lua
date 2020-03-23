@@ -226,6 +226,13 @@ local packs =  {
 		versions = {
 			"20200303"
 		}
+	},
+	box2 = {
+		remote = "https://cdn.pluto.gg/box2.gma",
+		versions = {
+			"20200323_2",
+			"20200322",
+		}
 	}
 	--[[
 	moxxi = {

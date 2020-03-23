@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/auditor/r6s/tachanka/chr_gign_tank_head_diffusemap_chrtm"
+	"$bumpmap" "models/auditor/r6s/tachanka/chr_gign_tank_head_normalmap_chrtm"
+}

@@ -130,7 +130,7 @@ concommand.Add("pluto_spawn_model", function(ply, cmd, arg, args)
 		return
 	end
 
-	pluto.inv.generatebuffermodel(ply, unpack(arg))
+	pluto.inv.generatebuffermodel(ply, unpack(arg)):Run()
 end)
 
 function pluto.inv.notifybufferitem(ply, i)

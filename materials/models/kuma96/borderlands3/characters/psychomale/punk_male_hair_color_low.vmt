@@ -1,0 +1,14 @@
+"VertexlitGeneric"
+{
+	$basetexture "models/kuma96/borderlands3/characters/psychomale/punk_male_hair_d"
+	$halflambert 1
+	
+	Proxies
+	{
+		PlayerColor
+		{
+			resultVar $color2
+			default 1 1 1
+		}
+	}
+}

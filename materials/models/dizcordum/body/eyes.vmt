@@ -1,0 +1,14 @@
+"VertexLitGeneric"
+{
+	$basetexture "models/dizcordum/body/CHAR_eyes_d"
+	$bumpmap "models/dizcordum/body/CHAR_eyes_n"
+	$halflambert 0
+
+	
+	$envmap			"models/dizcordum/body/environment2"
+	$envmapmask		"models/dizcordum/body/NOO_SKIN_A_m"
+	
+	$selfillum 1
+    $selfillummask		"models/dizcordum/body/CHAR_eyes_e"
+
+}

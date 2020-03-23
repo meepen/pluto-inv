@@ -89,7 +89,8 @@ async function make_gma(all_files, list) {
 		if (pack !== "workshop") {
 			for (let i = addons[pack].length - 1; i >= 0; i--) {
 				let file = addons[pack][i];
-				if (file.indexOf(".vmt") !== -1 || file.indexOf(".mdl") !== -1 || file.indexOf(".vtx") !== -1 || file.indexOf(".phy") !== -1 || file.indexOf(".vvd") !== -1) {
+				if (file.indexOf("models/") === 0 || file.indexOf(".vmt") !== -1) {
+					console.log(`${file} being sent to workshop`);
 					addons.workshop.push(addons[pack].splice(i, 1)[0]);
 				}
 			}

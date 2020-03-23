@@ -1,0 +1,21 @@
+"VertexLitGeneric"
+{
+"$baseTexture" "models\raincoat\2"
+  "$bumpmap"   "models\raincoat\2b"
+
+	"$phongexponenttexture" "models\raincoat\2n"
+
+"$phong" "1"
+   "$phongboost" "1"
+   "$phongexponent" "50"
+   "$phongfresnelranges" "[0.02 0.02 0.02]"
+
+
+$detail        "models\raincoat\2d"
+$detailscale    "5"
+$detailblendfactor   "1"
+$detailblendmode   "0"
+"$nocull" "1"
+
+}
+

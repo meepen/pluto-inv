@@ -1,0 +1,26 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/deadpool/body_d"
+	"$bumpmap" "models/deadpool/body_n"
+                "$phongexponenttexture" "models/deadpool/body_s"
+
+"$phong" "1"
+"$phongboost" "5"
+"$phongfresnelranges" "[0.15 0.5 1]"
+
+"$color2" "[0.9 0.9 0.9]"
+"$detail" "models/deadpool/body_l"
+"$detailscale" "1"	
+"$detailblendmode" "0"
+"$detailblendfactor" "0.4"
+
+"$model" "1"
+"$ambientocclusion" "1"
+"$ambientoccltexture" "models/deadpool/body_l"
+"$ambientocclusiontexture" "models/deadpool/body_l"
+
+"$rimlight" "1" 
+"$rimlightexponent" "1" 
+"$rimlightboost" "1" 
+"$rimmask" "1"
+}

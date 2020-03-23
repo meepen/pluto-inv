@@ -1,0 +1,11 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/Ciri_TW3/CIRI_EYE_COLOR"
+	"$bumpmap" "models/Ciri_TW3/EYES_015"
+$phong 1
+$phongboost ".1"
+$phongexponent 5
+$phongtint "[.85 .85 1]"
+$halflambert 0
+$phongfresnelranges "[.3 .65 30]"
+}

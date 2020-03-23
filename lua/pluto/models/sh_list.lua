@@ -564,6 +564,336 @@ c "tomb" {
 	SubDescription = "\nSuggested by Squibble",
 }
 
+-- BOX 2 (2020 March)
+
+c "violet_spa" {
+	Name = "Violet Spartan",
+	Model = "models/halo2/spartan_violet.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Violet Spartan"
+}
+
+c "gold_spart" {
+	Name = "Gold Spartan",
+	Model = "models/halo2/spartan_gold.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Gold Spartan"
+}
+
+c "pink_spart" {
+	Name = "Pink Spartan",
+	Model = "models/halo2/spartan_pink.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Pink Spartan"
+}
+
+c "captain" {
+	Name = "captain",
+	Model = "models/player/red/captain.mdl",
+	Color = ColorRand(),
+	SubDescription = "captain"
+}
+
+c "green_spar" {
+	Name = "Green Spartan",
+	Model = "models/halo2/spartan_green.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Green Spartan"
+}
+
+c "sergeant" {
+	Name = "sergeant",
+	Model = "models/player/green/sergeant.mdl",
+	Color = ColorRand(),
+	SubDescription = "sergeant"
+}
+
+c "orange_spa" {
+	Name = "Orange Spartan",
+	Model = "models/halo2/spartan_orange.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Orange Spartan"
+}
+
+c "steel_spar" {
+	Name = "Steel Spartan",
+	Model = "models/halo2/spartan_steel.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Steel Spartan"
+}
+
+c "tan_sparta" {
+	Name = "Tan Spartan",
+	Model = "models/halo2/spartan_tan.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Tan Spartan"
+}
+
+c "wolffe" {
+	Name = "wolffe",
+	Model = "models/player/104th/wolffe.mdl",
+	Color = ColorRand(),
+	SubDescription = "wolffe"
+}
+
+c "tron_anon" {
+	Name = "Tron Anon",
+	Model = "models/player/anon/anon.mdl",
+	Hands = "models/weapons/arms/anon_arms.mdl",
+	Color = ColorRand(),
+	SubDescription = "Tron Anon"
+}
+
+c "blue_spart" {
+	Name = "Blue Spartan",
+	Model = "models/halo2/spartan_blue.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Blue Spartan"
+}
+
+c "master_chi" {
+	Name = "Master Chief Spartan",
+	Model = "models/halo2/spartan_mc.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Master Chief Spartan"
+}
+
+c "sage_spart" {
+	Name = "Sage Spartan",
+	Model = "models/halo2/spartan_sage.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Sage Spartan"
+}
+
+c "crimson_sp" {
+	Name = "Crimson Spartan",
+	Model = "models/halo2/spartan_crimson.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Crimson Spartan"
+}
+
+c "general" {
+	Name = "general",
+	Model = "models/player/black/general.mdl",
+	Color = ColorRand(),
+	SubDescription = "general"
+}
+
+c "cobalt_spa" {
+	Name = "Cobalt Spartan",
+	Model = "models/halo2/spartan_cobalt.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Cobalt Spartan"
+}
+
+c "b3_psycho_" {
+	Name = "B3 Psycho (Male)",
+	Model = "models/kuma96/borderlands3/characters/psychomale/psychomale_pm.mdl",
+	Hands = "models/kuma96/borderlands3/characters/psychomale/c_arms_psychomale.mdl",
+	Color = ColorRand(),
+	SubDescription = "B3 Psycho (Male)"
+}
+
+c "cyan_spart" {
+	Name = "Cyan Spartan",
+	Model = "models/halo2/spartan_cyan.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Cyan Spartan"
+}
+
+c "commander" {
+	Name = "commander",
+	Model = "models/player/yellow/commander.mdl",
+	Color = ColorRand(),
+	SubDescription = "commander"
+}
+
+c "spy" {
+	Name = "Spy",
+	Model = "models/player/spyplayer/spy.mdl",
+	Hands = "models/player/spyplayer/spy_hands.mdl",
+	Color = ColorRand(),
+	SubDescription = "Spy"
+}
+
+c "clone" {
+	Name = "clone",
+	Model = "models/player/swrcc/new clone.mdl",
+	Color = ColorRand(),
+	SubDescription = "clone"
+}
+
+c "risk_of_ra" {
+	Name = "Risk Of Rain 2 - Commando",
+	Model = "models/player/RiskOfRain2/Survivors/Commando/Commando_pm.mdl",
+	Hands = "models/player/RiskOfRain2/Survivors/Commando/Commando_hands.mdl",
+	Color = ColorRand(),
+	SubDescription = "Risk Of Rain 2 - Commando"
+}
+
+c "olive_spar" {
+	Name = "Olive Spartan",
+	Model = "models/halo2/spartan_olive.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Olive Spartan"
+}
+
+c "purple_spa" {
+	Name = "Purple Spartan",
+	Model = "models/halo2/spartan_purple.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Purple Spartan"
+}
+
+c "lieutenant" {
+	Name = "lieutenant",
+	Model = "models/player/blue/lieutenant.mdl",
+	Color = ColorRand(),
+	SubDescription = "lieutenant"
+}
+
+c "red_sparta" {
+	Name = "Red Spartan",
+	Model = "models/halo2/spartan_red.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Red Spartan"
+}
+
+c "raincoat" {
+	Name = "raincoat",
+	Model = "models/human/raincoat.mdl",
+	Hands = "models/human/c_hands.mdl",
+	Color = ColorRand(),
+	SubDescription = "raincoat"
+}
+
+c "teal_spart" {
+	Name = "Teal Spartan",
+	Model = "models/halo2/spartan_teal.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Teal Spartan"
+}
+
+c "white_spar" {
+	Name = "White Spartan",
+	Model = "models/halo2/spartan_white.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "White Spartan"
+}
+
+c "noob_saibo" {
+	Name = "Noob Saibot",
+	Model = "models/dizcordum/mk11/nub.mdl",
+	Hands = "models/dizcordum/mk11/nub_hands.mdl",
+	Color = ColorRand(),
+	SubDescription = "Noob Saibot"
+}
+
+c "brown_spar" {
+	Name = "Brown Spartan",
+	Model = "models/halo2/spartan_brown.mdl",
+	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Brown Spartan"
+}
+
+c "bomb_squad" {
+	Name = "bomb squad",
+	Model = "models/player/orange/bomb squad.mdl",
+	Color = ColorRand(),
+	SubDescription = "bomb squad"
+}
+
+c "zer0" {
+	Name = "B3 Zero Resized",
+	Model = "models/kuma96/borderlands3/characters/zero/zero_resized_pm.mdl",
+	Hands = "models/kuma96/borderlands3/characters/zero/c_arms_zero.mdl",
+	Color = ColorRand(),
+	SubDescription = "B3 Zero Resized"
+}
+
+c "tachanka" {
+	Name = "R6S - Tachanka",
+	Model = "models/auditor/r6s/spetsnaz/tachanka/chr_spetsnaz_turret3.mdl",
+	Hands = "models/auditor/r6s/spetsnaz/tachanka/chr_spetsnaz_turret3_arms.mdl",
+	Color = ColorRand(),
+	SubDescription = "R6S - Tachanka"
+}
+
+c "phoenix_lo" {
+	Name = "Phoenix_Low",
+	Model = "models/player/phoenix_low.mdl",
+	Hands = "models/weapons/c_arms_leet_low.mdl",
+	Color = ColorRand(),
+	SubDescription = "Phoenix_Low"
+}
+
+c "yuno_gasai" {
+	Name = "Yuno Gasai",
+	Model = "models/player/yuno_gasai.mdl",
+	Hands = "models/arms/yuno_gasai_arms.mdl",
+	Color = ColorRand(),
+	SubDescription = "Yuno Gasai"
+}
+
+c "leet_low" {
+	Name = "Leet_Low",
+	Model = "models/player/zurdo.mdl",
+	Hands = "models/weapons/c_arms_leet_low.mdl",
+	Color = ColorRand(),
+	SubDescription = "Leet_Low"
+}
+
+c "guerilla_l" {
+	Name = "Guerilla_Low",
+	Model = "models/player/guerilla_low.mdl",
+	Hands = "models/weapons/c_arms_leet_low.mdl",
+	Color = ColorRand(),
+	SubDescription = "Guerilla_Low"
+}
+
+c "arctic_low" {
+	Name = "Arctic_Low",
+	Model = "models/player/arctic_low.mdl",
+	Hands = "models/weapons/c_arms_leet_low.mdl",
+	Color = ColorRand(),
+	SubDescription = "Arctic_Low"
+}
+
+-- needs hitbox fixer
+c "deadpool" {
+	Name = "Deadpool",
+	Model = "models/player/valley/deadpool.mdl",
+	Color = ColorRand(),
+	SubDescription = "Deadpool"
+}
+
+c "ciri" {
+	Name = "Ciri_TW3",
+	Model = "models/player/RatedR4Ryan/Ciri_TW3.mdl",
+	Hands = "models/player/RatedR4Ryan/Ciri_hands.mdl",
+	Color = ColorRand(),
+	SubDescription = "Ciri_TW3"
+}
+
 function pluto.updatemodel(ent, item)
 	if (not item or not item.Model) then
 		return

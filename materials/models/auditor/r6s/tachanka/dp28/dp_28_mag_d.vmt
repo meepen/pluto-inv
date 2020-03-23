@@ -1,0 +1,36 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/auditor/r6s/tachanka/DP28/DP_28_MAG_D"
+	"$bumpmap" "models/auditor/r6s/tachanka/DP28/DP_28_MAG_N"
+	//$color2 0.0.0
+	"$blendTintByBaseAlpha"	"1"
+
+
+	$normalmapalphaenvmapmask 1
+	
+	"$envmap" "env_cubemap"					
+	"$envmaptint" "[ .01 .01 .01 ]"					
+ 	"$envmapFresnel" "5 7 8"	
+
+
+	"$phong" "1"						
+	"$phongboost"	"0.2"
+	"$phongexponent" 3
+	//"$phongwarptexture"		"models/auditor/mwr/fp/softsilver"
+	//$lightwarptexture "models/auditor/r6s/navy/blackbeard/lightwarp_elchulus"
+	//$phongexponenttexture "models/auditor/r6s/navy/blackbeard/CHR_NAVY_Ricochet_Helmet_SpecularMap_CHRTM"
+
+
+	"$phongfresnelranges"	"[5 7 8]"
+	"$phongtint" 			"[1.2 1.2 1.31]"
+	"$PhongAlbedoTint" "1"
+
+	//$rimlight 1
+
+
+	"$detail" "models/auditor\r6s\tachanka/detail_scratches2"
+	$detailscale 17
+	$detailblendfactor 15
+	$detailblendmode 0
+	$nocull 1
+}

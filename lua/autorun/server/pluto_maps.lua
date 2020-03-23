@@ -109,7 +109,7 @@ local changes = {
 			pluto_block = {
 				{
 					Mins = Vector(-max_range, -max_range, 270),
-					Maxs = Vector(max_range, max_range, 1000),
+					Maxs = Vector(max_range, max_range, 6000),
 				},
 				{
 					Mins = Vector(-1495.567505, -1424.272339, -125.968750),
@@ -118,7 +118,7 @@ local changes = {
 
 				{
 					Mins = Vector(-1730.570190, -1264.604492, 141.011841),
-					Maxs = 	Vector(-1578.748535, -1265.876343, 500.436188)
+					Maxs = 	Vector(-1578.748535, -1265.876343, 6000.436188)
 				}
 			},
 		},

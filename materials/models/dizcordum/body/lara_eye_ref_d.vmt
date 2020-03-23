@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/dizcordum/body/Lara_eye_ref_d"
+	"$translucent" 1
+}

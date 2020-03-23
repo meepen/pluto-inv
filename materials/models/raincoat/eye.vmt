@@ -1,0 +1,13 @@
+"VertexLitGeneric"
+{
+"$baseTexture" "models\raincoat\2"
+  "$bumpmap"   "models\raincoat\2b"
+
+"$AlphaTest" "1"
+"$additive" "1"
+$selfillum "1"
+	"$selfillumtint" "[70 70 70]"
+
+	"$ambientocclusion" "1"
+}
+

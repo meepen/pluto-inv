@@ -153,7 +153,7 @@ function pluto.quests.init(ply, _cb)
 		local quests = {}
 		local have = {}
 
-		for _, data in pairs(q:getData()) do
+		for _, data in pairs(q:getData() or {}) do
 			local quest_type = pluto.quests.types[data.type]
 			if (not quest_type) then
 				pwarnf("Unknown quest type %s for %s", tostring(data.type), sid)

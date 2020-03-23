@@ -38,6 +38,8 @@ pluto.files.load {
 
 		"materials/pluto/newshard.png",
 		"materials/pluto/newshardbg.png",
+
+		"materials/pluto/item_bg_mech.png",
 	},
 	Workshop = {
 		"2001929342",

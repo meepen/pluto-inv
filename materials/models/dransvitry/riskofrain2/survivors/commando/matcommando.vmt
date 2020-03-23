@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/Dransvitry/RiskOfRain2/Survivors/Commando/texCommandoPaletteDiffuse"
+	"$lightwarptexture" "models/Dransvitry/RiskOfRain2/Survivors/Commando/lightwarp"
+	"$nocull" "1"
+
+	"$selfillum" "1"
+   	"$selfillummask" "models/Dransvitry/RiskOfRain2/Survivors/Commando/texCommandoPaletteEmission2"
+	"$selfillummaskscale" "1"
+	"$selfillumtint" "[1 1 1]"
+}

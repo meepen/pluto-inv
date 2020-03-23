@@ -1,0 +1,8 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models\yuno_gasai\face_misc"
+	"$bumpmap" "models\yuno_gasai\normal"
+	"$translucent" "1"
+    
+	"$lightwarptexture" "models\yuno_gasai\lightwarp"
+}

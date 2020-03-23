@@ -5,6 +5,7 @@ AddCSLuaFile "pluto/files.lua"
 
 pluto.files.load {
 	Client = {
+		"cl/richtextformat.lua",
 		"cl/hacks.lua",
 		"cl/settings.lua",
 		"inv/ui.lua",
@@ -17,6 +18,7 @@ pluto.files.load {
 		"craft/cl.lua",
 		"nitro/cl_nitro.lua",
 		"quests/cl_quests.lua",
+		"models/cl_showhitgroups.lua",
 	},
 	Shared = {
 		"co_net.lua",

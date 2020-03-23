@@ -1,0 +1,20 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/halo2/masterchief"
+	"$bumpmap" "models/halo2/masterchief_bump"
+
+	"$detail" "models/halo2/metal_dirty"
+	"$detailscale" 9
+
+	"$normalmapalphaenvmapmask" 1
+	"$envmap" "models/halo2/masterchief_armor"
+	"$envmaptint" "[0.25 0.25 0.25]"
+	"$nodecal" 1
+
+	"$phong" 1
+	"$phongexponent" 5
+	"$phongexponenttexture" "models/halo2/phongexp"
+	"$phongboost" 5
+	"$phongfresnelranges" "[1 1 1]"
+	"$phongalbedotint" 1
+}

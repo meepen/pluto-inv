@@ -1,0 +1,18 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/yuno_gasai/skirt"
+	"$bumpmap" "models\yuno_gasai\normal"
+	"$nocull" "1"
+	
+	"$lightwarptexture" "models/yuno_gasai/lightwarp"
+	
+	"$phong" "1"
+	"$phongboost"	"24"
+	"$phongalbedotint" "1"
+	"$phongexponenttexture" "models\yuno_gasai\phong_exp"
+	"$phongfresnelranges"	"[0 0 1]"
+	
+	"$rimlight"               "1"
+	"$rimlightexponent"       "3"
+	"$rimlightboost"          "4"
+}
