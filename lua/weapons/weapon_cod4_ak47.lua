@@ -16,8 +16,8 @@ SWEP.Primary.ClipSize = 30
 SWEP.Primary.DefaultClip = 60
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "AR2"
-SWEP.Primary.Damage = 18
-SWEP.Primary.Delay = 0.095
+SWEP.Primary.Damage = 19
+SWEP.Primary.Delay = 0.1
 
 SWEP.HeadshotMultiplier = 27 / SWEP.Primary.Damage
 
@@ -57,7 +57,7 @@ SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
 	DamageDropoffRange = 650,
-	DamageDropoffRangeMax = 1800,
+	DamageDropoffRangeMax = 3500,
 	DamageMinimumPercent = 0.2,
 	Spread = Vector(0.015, 0.015),
 }

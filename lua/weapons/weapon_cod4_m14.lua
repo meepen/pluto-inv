@@ -17,9 +17,9 @@ SWEP.Primary.DefaultClip = 40
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo          = "357"
 SWEP.AmmoEnt               = "item_ammo_357_ttt"
-SWEP.Primary.Damage = 23
+SWEP.Primary.Damage = 25
 SWEP.Primary.Delay = 0.33
-SWEP.HeadshotMultiplier = 37 / SWEP.Primary.Damage
+SWEP.HeadshotMultiplier = 50 / SWEP.Primary.Damage
 
 SWEP.Primary.RecoilTiming = 0.1
 
