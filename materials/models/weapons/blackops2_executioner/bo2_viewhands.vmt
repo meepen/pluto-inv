@@ -1,0 +1,9 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/weapons/blackops2_executioner/bo2_viewhands"
+	"$phong" "1"
+		"$bumpmap" "models/weapons/blackops2_executioner/bo2_viewhands_n"
+	$phongexponent	5
+	$phongboost				1.0
+	$phongfresnelranges		"[0 0.5 1]"
+}

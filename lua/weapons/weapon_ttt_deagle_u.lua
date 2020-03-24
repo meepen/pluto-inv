@@ -64,6 +64,7 @@ SWEP.RecoilInstructions = {
 SWEP.NoPlayerModelHands = true
 SWEP.MeleeSequence = 12
 SWEP.DeployAnim = ACT_VM_DEPLOY
+SWEP.DeploySpeed = 2
 
 SWEP.Ironsights = false
 
@@ -104,7 +105,6 @@ end
 
 local maxs = Vector(5, 5, 5)
 
-local base = BaseClass
 function SWEP:Think()
 	if (self:GetMeleeTime() < CurTime()) then
 		self:SetMeleeTime(math.huge)

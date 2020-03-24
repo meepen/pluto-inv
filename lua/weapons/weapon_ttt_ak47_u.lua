@@ -45,6 +45,7 @@ SWEP.NoPlayerModelHands = true
 SWEP.UseHands = true
 
 SWEP.DeployAnim = ACT_VM_DEPLOY
+SWEP.DeploySpeed = 1.5
 
 SWEP.Ironsights = {
 	Pos = Vector(-6, 0, 1.2),

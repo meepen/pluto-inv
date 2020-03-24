@@ -239,7 +239,13 @@ local packs =  {
 		versions = {
 			"20200323",
 		}
-	}
+	},--[[
+	bo2 = {
+		remote = "https://cdn.pluto.gg/bo2.gma",
+		versions = {
+			"20200323",
+		}
+	}]]
 }
 
 local to_mount = {}
