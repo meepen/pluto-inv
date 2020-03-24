@@ -60,7 +60,7 @@ SWEP.ViewModelFlip				= false
 -------------------
 SWEP.Slot         				= 1							
 SWEP.SlotPos					= 1	
-SWEP.AutoSpawnable				= true
+SWEP.AutoSpawnable				= false
 SWEP.Kind						= WEAPON_PISTOL
 SWEP.AmmoEnt 					= "item_ammo_buckshot_ttt"
 SWEP.AllowDrop 					= true

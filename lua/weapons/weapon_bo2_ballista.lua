@@ -67,7 +67,7 @@ SWEP.ViewModelFlip				= false
 -------------------
 SWEP.Slot         				= 2						
 SWEP.SlotPos					= 2
-SWEP.AutoSpawnable				= true
+SWEP.AutoSpawnable				= false
 SWEP.Kind						= WEAPON_HEAVY
 SWEP.AmmoEnt 					= "item_ammo_357_ttt"
 SWEP.AllowDrop 					= true
