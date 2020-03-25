@@ -346,7 +346,7 @@ function pluto.inv.retrieveitems(steamid, cb)
 	end)
 end
 
-function pluto.inv.deleteitem(steamid, itemid, cb, transact)
+function pluto.inv.deleteitem(steamid, itemid, cb, transact, ignorelock)
 	steamid = pluto.db.steamid64(steamid)
 
 	local i = pluto.itemids[itemid]
@@ -362,7 +362,12 @@ function pluto.inv.deleteitem(steamid, itemid, cb, transact)
 		i.RowID = nil
 	end
 
-	pluto.db.transact_or_query(transact, "delete pluto_items from pluto_items inner join pluto_tabs on pluto_tabs.idx = pluto_items.tab_id where pluto_items.idx = ? and pluto_tabs.owner = ? and locked = false", {itemid, steamid}, function(err, q)
+	local query = "delete pluto_items from pluto_items inner join pluto_tabs on pluto_tabs.idx = pluto_items.tab_id where pluto_items.idx = ? and pluto_tabs.owner = ? and locked = false"
+	if (ignorelock) then
+		query = "delete pluto_items from pluto_items inner join pluto_tabs on pluto_tabs.idx = pluto_items.tab_id where pluto_items.idx = ? and pluto_tabs.owner = ?"
+	end
+
+	pluto.db.transact_or_query(transact, query, {itemid, steamid}, function(err, q)
 		if (err) then
 			if (IsValid(cl)) then
 				pluto.inv.sendfullupdate(cl)

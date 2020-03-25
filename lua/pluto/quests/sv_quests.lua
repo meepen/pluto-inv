@@ -266,6 +266,7 @@ function pluto.quests.init(ply, _cb)
 	print("loading", ply)
 
 	pluto.quests.init_nocache(ply, function(dat)
+		print("init callback for", ply)
 		pluto.quests.byperson[ply] = dat
 
 		for type, questlist in pairs(dat) do
