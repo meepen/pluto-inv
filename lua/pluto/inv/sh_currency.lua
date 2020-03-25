@@ -195,81 +195,77 @@ for _, item in pairs(pluto.currency.list) do
 	pluto.currency.byname[item.InternalName] = item
 end
 
-if (SERVER) then
-	include "sv_currency.lua"
-else
-	local PANEL = {}
-	function PANEL:SetCurrency(cur)
-		self.Image:SetImage(pluto.currency.byname[cur].Icon)
+local PANEL = {}
+function PANEL:SetCurrency(cur)
+	self.Image:SetImage(pluto.currency.byname[cur].Icon)
 
-		self.Currency = cur
+	self.Currency = cur
 
-		return self
+	return self
+end
+
+function PANEL:Init()
+	local main = self
+	self:SetTall(310)
+	self:Dock(TOP)
+	self.Image = self:Add "DImage"
+
+	function self.Image:PerformLayout(w, h)
+		self:SetSize(self:GetParent():GetTall() - 20, self:GetParent():GetTall() - 20)
+		self:Center()
 	end
 
-	function PANEL:Init()
-		local main = self
-		self:SetTall(310)
-		self:Dock(TOP)
-		self.Image = self:Add "DImage"
+	self.Image.Start = RealTime()
+	self.Image.Ends = RealTime() + 3
 
-		function self.Image:PerformLayout(w, h)
-			self:SetSize(self:GetParent():GetTall() - 20, self:GetParent():GetTall() - 20)
-			self:Center()
+	local s = self
+	function self.Image:Think()
+		local x, y = self:GetParent():GetWide() / 2 - self:GetWide() / 2, self:GetParent():GetTall() / 2 - self:GetTall() / 2
+
+		local pct = math.min(1, (RealTime() - self.Start) / (self.Ends - self.Start))
+
+		self:SetPos(x + (math.random() - 0.5) * 40 * pct, y + (math.random() - 0.5) * 40 * pct)
+
+		if (pct == 1 and not self.Sent) then
+			self.Sent = true
+			pluto.inv.message()
+				:write("currencyuse", s.Currency)
+				:send()
 		end
+	end
 
-		self.Image.Start = RealTime()
-		self.Image.Ends = RealTime() + 3
+	hook.Add("CrateOpenResponse", self, function(self, id)
+		for _, item in pairs(pluto.buffer) do
+			if (item.BufferID == id) then
+				self.Image:Remove()
 
-		local s = self
-		function self.Image:Think()
-			local x, y = self:GetParent():GetWide() / 2 - self:GetWide() / 2, self:GetParent():GetTall() / 2 - self:GetTall() / 2
+				if (item.Type == "Model") then
+					self.Image = self:Add "PlutoPlayerModel"
 
-			local pct = math.min(1, (RealTime() - self.Start) / (self.Ends - self.Start))
+					self.Image:SetPlutoModel(item.Model)
+				elseif (item.Type == "Weapon") then
+					self.Image = self:Add "pluto_item"
 
-			self:SetPos(x + (math.random() - 0.5) * 40 * pct, y + (math.random() - 0.5) * 40 * pct)
+					self.Image:SetItem(item)
 
-			if (pct == 1 and not self.Sent) then
-				self.Sent = true
-				pluto.inv.message()
-					:write("currencyuse", s.Currency)
-					:send()
-			end
-		end
-
-		hook.Add("CrateOpenResponse", self, function(self, id)
-			for _, item in pairs(pluto.buffer) do
-				if (item.BufferID == id) then
-					self.Image:Remove()
-
-					if (item.Type == "Model") then
-						self.Image = self:Add "PlutoPlayerModel"
-
-						self.Image:SetPlutoModel(item.Model)
-					elseif (item.Type == "Weapon") then
-						self.Image = self:Add "pluto_item"
-
-						self.Image:SetItem(item)
-
-						function self:GetScissor() return false end
+					function self:GetScissor() return false end
+				end
+				
+				sound.PlayFile("sound/garrysmod/balloon_pop_cute.wav", "mono", function(s)
+					if (IsValid(s)) then
+						s:Play()
 					end
-					
-					sound.PlayFile("sound/garrysmod/balloon_pop_cute.wav", "mono", function(s)
-						if (IsValid(s)) then
-							s:Play()
-						end
-					end)
-					function self.Image:PerformLayout(w, h)
-						self:SetSize(self:GetParent():GetTall() - 20, self:GetParent():GetTall() - 20)
-						self:Center()
-					end
+				end)
+				function self.Image:PerformLayout(w, h)
+					self:SetSize(self:GetParent():GetTall() - 20, self:GetParent():GetTall() - 20)
+					self:Center()
 				end
 			end
-		end)
-	end
-	
-	vgui.Register("pluto_box_open", PANEL, "EditablePanel")
+		end
+	end)
 end
+
+vgui.Register("pluto_box_open", PANEL, "EditablePanel")
 
 if (CLIENT) then
 	function pluto.inv.writerename(itemid, name)

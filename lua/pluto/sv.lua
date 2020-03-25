@@ -22,6 +22,8 @@ pluto.files.load {
 		"nitro/sv_nitro.lua",
 
 		"quests/sv_quests.lua",
+
+		"inv/currency/sv_currency.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty
