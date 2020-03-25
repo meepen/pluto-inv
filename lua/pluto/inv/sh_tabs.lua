@@ -38,7 +38,6 @@ pluto.tabs = {
 				elseif (tabindex == 4) then -- melee
 					return wep.Slot == 0
 				elseif (tabindex == 5) then -- grenade
-					print(wep.Slot)
 					return wep.Slot == 3
 				elseif (tabindex == 6) then -- unarmed
 					return wep.Slot == 5

@@ -1,3 +1,10 @@
+sql.Query "CREATE TABLE IF NOT EXISTS pluto_map_plays (mapname VARCHAR(32) NOT NULL PRIMARY KEY, last_played INT UNSIGNED NOT NULL)"
+local last_played = sql.Query("SELECT * from pluto_map_plays ORDER BY last_played desc limit 3") or {}
+
+sql.Query("INSERT INTO pluto_map_plays (mapname, last_played) VALUES (" .. sql.SQLStr(game.GetMap()) .. ", CAST(strftime('%s', 'now') AS INT UNSIGNED)) ON CONFLICT(mapname) DO UPDATE SET last_played = CAST(strftime('%s', 'now') AS INT UNSIGNED)")
+
+PrintTable(last_played)
+
 pluto.mapvote = pluto.mapvote or {}
 
 function pluto.mapvote.broadcast()
@@ -109,6 +116,22 @@ function pluto.mapvote.start()
 		if (map == game.GetMap()) then
 			table.remove(valid, i)
 			break
+		end
+	end
+
+	for _, data in pairs(last_played) do
+		if (#valid <= 8) then
+			break
+		end
+
+		local maptoremove = data.mapname
+
+		for i, map in pairs(valid) do
+			if (map == maptoremove) then
+				table.remove(valid, i)
+				print("REMOVE", map)
+				break
+			end
 		end
 	end
 
