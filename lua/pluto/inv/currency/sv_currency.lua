@@ -539,6 +539,8 @@ function pluto.currency.spawnfor(ply, currency, pos)
 		ply:ChatPrint(currency.Color, "... ", white_text, "You feel the essence of a ", currency.Color, "rare currency ", white_text, "vibrate your soul")
 	end
 
+	pluto.currency.spawned[e] = ply
+
 	return e
 end
 
@@ -629,7 +631,6 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 
 		for i = 1, math.floor(points) do
 			local e = pluto.currency.spawnfor(item.Player)
-			pluto.currency.spawned[e] = item.Player
 		end
 
 		pluto.currency.tospawn[item.Player] = currency_per_round + points - math.floor(points)

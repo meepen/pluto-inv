@@ -195,6 +195,10 @@ for _, item in pairs(pluto.currency.list) do
 	pluto.currency.byname[item.InternalName] = item
 end
 
+if (not CLIENT) then
+	return
+end
+
 local PANEL = {}
 function PANEL:SetCurrency(cur)
 	self.Image:SetImage(pluto.currency.byname[cur].Icon)
@@ -267,9 +271,7 @@ end
 
 vgui.Register("pluto_box_open", PANEL, "EditablePanel")
 
-if (CLIENT) then
-	function pluto.inv.writerename(itemid, name)
-		net.WriteUInt(itemid, 32)
-		net.WriteString(name)
-	end
+function pluto.inv.writerename(itemid, name)
+	net.WriteUInt(itemid, 32)
+	net.WriteString(name)
 end

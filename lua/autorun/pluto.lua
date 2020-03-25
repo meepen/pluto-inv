@@ -24,9 +24,11 @@ pluto.files.load {
 		"co_net.lua",
 		"init.lua",
 		"weapons/override.lua",
+
 		"inv/sh_manager.lua",
 		"inv/sh_tabs.lua",
-		"inv/sh_currency.lua",
+		"inv/currency/sh_currency.lua",
+	
 		"mods/sh_mods.lua",
 
 		"craft/sh.lua",
