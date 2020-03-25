@@ -123,40 +123,8 @@ function pluto.quests.oftype(type, ignore)
 	return available
 end
 
-function pluto.quests.init(ply, _cb)
-	if (pluto.quests.loading[ply]) then
-		table.insert(pluto.quests.loading[ply], _cb)
-		return
-	end
-
-	pluto.quests.loading[ply] = {_cb}
-	print("loading", ply)
-
-	local cb = function(dat)
-		pluto.quests.byperson[ply] = dat
-
-		for type, questlist in pairs(dat) do
-			for _, quest in pairs(questlist) do
-				if (quest.HasInit) then
-					continue
-				end
-				quest.QUEST:Init(quest)
-				quest.HasInit = true
-			end
-		end
-
-		pluto.inv.message(ply)
-			:write "quests"
-			:send()
-	
-		local list = pluto.quests.loading[ply]
-		pluto.quests.loading[ply] = nil
-
-		for _, _cb in pairs(list) do
-			_cb(dat)
-		end
-	end
-
+function pluto.quests.init_nocache(ply, cb)
+	print("loading - no cache", ply)
 	local sid = pluto.db.steamid64(ply)
 
 	local transact = pluto.db.transact()
@@ -270,7 +238,7 @@ function pluto.quests.init(ply, _cb)
 
 		if (needs_run) then
 			adder:AddCallback(function()
-				pluto.quests.init(ply, _cb)
+				pluto.quests.init_nocache(ply, cb)
 			end)
 			adder:Run()
 		else
@@ -286,6 +254,41 @@ function pluto.quests.init(ply, _cb)
 	end)
 
 	transact:Run()
+end
+
+function pluto.quests.init(ply, _cb)
+	if (pluto.quests.loading[ply]) then
+		table.insert(pluto.quests.loading[ply], _cb)
+		return
+	end
+
+	pluto.quests.loading[ply] = {_cb}
+	print("loading", ply)
+
+	pluto.quests.init_nocache(ply, function(dat)
+		pluto.quests.byperson[ply] = dat
+
+		for type, questlist in pairs(dat) do
+			for _, quest in pairs(questlist) do
+				if (quest.HasInit) then
+					continue
+				end
+				quest.QUEST:Init(quest)
+				quest.HasInit = true
+			end
+		end
+
+		pluto.inv.message(ply)
+			:write "quests"
+			:send()
+	
+		local list = pluto.quests.loading[ply]
+		pluto.quests.loading[ply] = nil
+
+		for _, _cb in pairs(list) do
+			_cb(dat)
+		end
+	end)
 end
 
 --[[
