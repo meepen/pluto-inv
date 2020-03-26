@@ -3344,5 +3344,13 @@
         "sound/weapons/tac45/magout.ogg",
         "sound/weapons/tac45/slide.ogg",
         "sound/weapons/type95/fire.ogg"
+	],
+	"spacesuit": [
+		"models/player/pluto_spacesuit.dx80.vtx",
+        "models/player/pluto_spacesuit.dx90.vtx",
+        "models/player/pluto_spacesuit.mdl",
+        "models/player/pluto_spacesuit.phy",
+        "models/player/pluto_spacesuit.sw.vtx",
+        "models/player/pluto_spacesuit.vvd"
 	]
 }

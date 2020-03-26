@@ -239,6 +239,12 @@ local packs =  {
 		versions = {
 			"20200323",
 		}
+	},
+	spacesuit = {
+		remote = "https://cdn.pluto.gg/spacesuit.gma",
+		versions = {
+			"20200326",
+		}
 	},--[[
 	bo2 = {
 		remote = "https://cdn.pluto.gg/bo2.gma",

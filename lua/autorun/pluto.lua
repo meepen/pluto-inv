@@ -36,6 +36,8 @@ pluto.files.load {
 		"roles/ttc.lua",
 
 		"util.lua",
+
+		"mods/shared/limp.lua",
 	},
 	Server = {
 		"sv.lua",

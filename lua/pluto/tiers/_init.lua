@@ -170,6 +170,7 @@ for _, name in pairs {
 	"powerful",
 	"shadowy",
 	"stable",
+	"tester",
 	"uncommon",
 	"unique",
 	"vintage",

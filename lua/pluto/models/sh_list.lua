@@ -887,11 +887,18 @@ c "deadpool" {
 }
 
 c "ciri" {
-	Name = "Ciri_TW3",
+	Name = "Ciri",
 	Model = "models/player/RatedR4Ryan/Ciri_TW3.mdl",
 	Hands = "models/player/RatedR4Ryan/Ciri_hands.mdl",
 	Color = ColorRand(),
 	SubDescription = "Ciri_TW3"
+}
+
+c "spacesuit" {
+	Name = "Spacesuit",
+	Model = "models/player/pluto_spacesuit.mdl",
+	Color = ColorRand(),
+	SubDescription = "spec"
 }
 
 function pluto.updatemodel(ent, item)

@@ -99,40 +99,6 @@ sound.Add {
 
 game.AddParticles "particles/smoke_trail.pcf"
 
-local function MakeGold(what)
-    if (not IsValid(what)) then
-        return
-	end
-
-	for bone = 0, what:GetPhysicsObjectCount() - 1 do
-		constraint.Weld(what, what, 0, bone, 0)
-
-		local boneparent = what:GetBoneParent(what:TranslatePhysBoneToBone(bone))
-
-		if (boneparent ~= -1) then
-			constraint.Weld(what, what, what:TranslateBoneToPhysBone(boneparent), bone, 0)
-		end
-
-		local phys = what:GetPhysicsObjectNum(bone)
-
-		phys:SetMass(200)
-		phys:AddGameFlag(FVPHYSICS_NO_SELF_COLLISIONS)
-		phys:AddGameFlag(FVPHYSICS_CONSTRAINT_STATIC)
-		phys:SetMaterial "metal"
-		phys:Sleep()
-	end
-
-	for bone = 0, what:GetPhysicsObjectCount() - 1 do
-		what:GetPhysicsObjectNum(bone):RecheckCollisionFilter()
-	end
-
-	what:SetMaterial "models/player/shared/gold_player"
-
-	what:SetPos(what:GetPos() + vector_up * 100)
-
-	return what
-end
-
 DEFINE_BASECLASS(SWEP.Base)
 
 function SWEP:Initialize()

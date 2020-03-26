@@ -153,15 +153,13 @@ end
 concommand.Add("pluto_update_hitgroups", function(ply, cmd, args, arg)
 	local model = ply:GetModel()
 
-	local update = ReadFileToTable(arg)
-
+	local update = ReadFileToTable(arg) or {}
 
 	if (not update) then
 		pwarnf("Couldn't read update file %q", arg)
-		return
 	end
 
-	local current = file.Read(model, "GAME")
+	local current = file.Open(model, "rb", "GAME")
 
 	if (not current) then
 		pwarnf("Cannot open model file %s!", model)
@@ -177,36 +175,55 @@ concommand.Add("pluto_update_hitgroups", function(ply, cmd, args, arg)
 		file.CreateDir(cur_path:sub(1, -2))
 	end
 
-	local f = file.Open(model .. ".dat", "wb", "DATA")
+	local new = file.Open(model .. ".dat", "wb", "DATA")
 
-	if (not f) then
+	if (not new) then
 		pwarnf("Cannot open write file data/" .. model .. ".dat")
 		return
 	end
 
-	f:Write(current)
+	new:Write(current:Read(current:Size()))
 
-	local offset = StringToLong(current:sub(177))
+	current:Seek(176)
+	local offset = current:ReadLong()
 
 	for group = 0, ply:GetHitboxSetCount() - 1 do
-		local new_offset = offset + StringToLong(current:sub(offset + 12 * group + 8 + 1))
+		current:Seek(offset + 12 * group + 8)
+		local new_offset = offset + current:ReadLong()
 		for hitbox = 0, ply:GetHitBoxCount(group) - 1 do
-			if (not update[hitbox]) then
-				continue
+			if (update[hitbox]) then
+				new:Seek(new_offset + hitbox * 68 + 4 + 4)
+				new:WriteLong(update[hitbox])
 			end
-			f:Seek(new_offset + hitbox * 68 + 4 + 4)
 
-			f:WriteLong(update[hitbox])
+			new:Seek(new_offset + hitbox * 68 + 4 + 8)
+			current:Seek(new_offset + hitbox * 68 + 4 + 8)
 
-			if (delete and delete[hitbox]) then
-				for i = 1, 6 do
-					--f:WriteFloat(0.000001)
-				end
+			local maxs, mins = Vector(), Vector()
+			for i = 1, 3 do
+				mins[i] = current:ReadFloat()
 			end
+			for i = 1, 3 do
+				maxs[i] = current:ReadFloat()
+			end
+
+			if (hitbox == 16) then
+				mins.z = mins.z - 4
+			end
+
+			for i = 1, 3 do
+				new:WriteFloat(mins[i])
+			end
+			for i = 1, 3 do
+				new:WriteFloat(maxs[i])
+			end
+
+			print(hitbox, mins, maxs)
 		end
 	end
 
-	f:Close()
+	new:Close()
+	current:Close()
 
 	pprintf("File written to %s", util.RelativePathToFull("data/" .. model .. ".dat"))
 end)
