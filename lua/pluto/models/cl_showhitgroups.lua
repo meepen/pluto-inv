@@ -207,8 +207,13 @@ concommand.Add("pluto_update_hitgroups", function(ply, cmd, args, arg)
 				maxs[i] = current:ReadFloat()
 			end
 
-			if (hitbox == 16) then
-				mins.z = mins.z - 4
+			if (hitbox == 14) then
+				mins.z = mins.z + 3
+				maxs.z = maxs.z - 3
+				mins.y = mins.y - 3
+				maxs.y = maxs.y + 3
+				mins.x = mins.x - 3
+				maxs.x = maxs.x + 3
 			end
 
 			for i = 1, 3 do
