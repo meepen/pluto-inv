@@ -37,10 +37,6 @@ function MakeGold(what)
 		what:GetPhysicsObjectNum(bone):RecheckCollisionFilter()
 	end
 
-	for bone = 0, what:GetBoneCount() - 1 do
-		what:ManipulateBoneJiggle(bone, 0)
-	end
-
 	what:SetMaterial "models/player/shared/gold_player"
 
 	what:SetPos(what:GetPos() + vector_up * 100)
