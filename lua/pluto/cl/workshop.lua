@@ -336,9 +336,8 @@ local function check_mount()
 			end
 
 			timer.Remove "pluto_workshop"
+			hook.Run "PlutoWorkshopFinish"
 		end)
-
-		hook.Run "PlutoWorkshopFinish"
 	end
 end
 

@@ -4,18 +4,6 @@ pluto.currency = pluto.currency or {
 
 pluto.currency.list = {
 	{
-		InternalName = "hand",
-		Name = "Yaari's Taking",
-		Icon = "pluto/currencies/goldenhand.png",
-		Description = "Removes a random modifier and enhances the tier of another",
-		SubDescription = "One of the many hands of Yaari's victims",
-		Color = Color(255, 208, 86),
-		Crafted = {
-			Chance = 1 / 4,
-			Mod = "handed",
-		},
-	},
-	{
 		InternalName = "droplet",
 		Name = "Magic Droplet",
 		Icon = "pluto/currencies/droplet.png",
@@ -25,6 +13,34 @@ pluto.currency.list = {
 		Crafted = {
 			Chance = 1 / 4,
 			Mod = "dropletted",
+		},
+	},
+	{
+		InternalName = "aciddrop",
+		Name = "Acidic Droplet",
+		Icon = "pluto/currencies/green_droplet.png",
+		Description = "Rerolls prefix modifiers on an item",
+		SubDescription = "What have Yaari done to you, my children?!",
+		Color = Color(11, 84, 51),
+	},
+	{
+		InternalName = "pdrop",
+		Name = "Plutonic Droplet",
+		Icon = "pluto/currencies/purple_droplet.png",
+		Description = "Rerolls suffix modifiers on an item",
+		SubDescription = "Back when these things first were created, the military bought them straight from the man himself... paid upwards to a million for a single liter. Nowadays they are shot straight up to the skies",
+		Color = Color(117, 28, 178),
+	},
+	{
+		InternalName = "hand",
+		Name = "Yaari's Taking",
+		Icon = "pluto/currencies/goldenhand.png",
+		Description = "Removes a random modifier and enhances the tier of another",
+		SubDescription = "One of the many hands of Yaari's victims",
+		Color = Color(255, 208, 86),
+		Crafted = {
+			Chance = 1 / 4,
+			Mod = "handed",
 		},
 	},
 	{
@@ -48,39 +64,6 @@ pluto.currency.list = {
 		Color = Color(142, 94, 166),
 	},
 	{
-		InternalName = "heart",
-		Name = "Mara's Heart",
-		Icon = "pluto/currencies/heart.png",
-		Description = "Adds a random modifier",
-		SubDescription = "Mara gives her heart to people who have shown compassion in their time of need",
-		Color = Color(204, 43, 75),
-		Crafted = {
-			Chance = 0.5,
-			Mod = "hearted",
-		},
-	},
-	{
-		InternalName = "mirror",
-		Name = "Mara's Mirror",
-		Icon = "pluto/currencies/brokenmirror.png",
-		Description = "Creates a mirror image of an item which is unmodifiable",
-		SubDescription = "Mara threw this mirror out after seeing what she had become",
-		Color = Color(177, 173, 205),
-	},
-	{
-		InternalName = "coin",
-		Name = "Coin",
-		Icon = "pluto/currencies/coin.png",
-		Description = "Adds a storage tab",
-		SubDescription = "$$$",
-		Color = Color(254, 233, 105),
-		NoTarget = true,
-		Crafted = {
-			Chance = 0.5,
-			Mod = "coined",
-		},
-	},
-	{
 		InternalName = "crate0",
 		Name = "Blue Egg",
 		Icon = "pluto/currencies/crate0_new.png",
@@ -88,6 +71,28 @@ pluto.currency.list = {
 		SubDescription = "Who's there? It's been so long... please don't open me... I want to live...",
 		NoTarget = true,
 		Color = Color(71, 170, 222),
+		ClientsideUse = function()
+			if (IsValid(pluto.opener)) then
+				pluto.opener:Remove()
+			end
+
+			pluto.opener = vgui.Create "tttrw_base"
+
+			pluto.opener:AddTab("Open Box", vgui.Create "pluto_box_open" :SetCurrency "crate0")
+
+			pluto.opener:SetSize(640, 400)
+			pluto.opener:Center()
+			pluto.opener:MakePopup()
+		end,
+	},
+	{
+		InternalName = "crate2",
+		Name = "Orange Egg",
+		Icon = "pluto/currencies/crate2.png",
+		Description = "Contains a model or a very rare weapon",
+		SubDescription = "Hi! I missed you!! How have you been?!",
+		NoTarget = true,
+		Color = Color(242, 132, 57),
 		ClientsideUse = function()
 			if (IsValid(pluto.opener)) then
 				pluto.opener:Remove()
@@ -125,20 +130,37 @@ pluto.currency.list = {
 		end,
 	},
 	{
-		InternalName = "aciddrop",
-		Name = "Acidic Droplet",
-		Icon = "pluto/currencies/green_droplet.png",
-		Description = "Rerolls prefix modifiers on an item",
-		SubDescription = "What have Yaari done to you, my children?!",
-		Color = Color(11, 84, 51),
+		InternalName = "heart",
+		Name = "Mara's Heart",
+		Icon = "pluto/currencies/heart.png",
+		Description = "Adds a random modifier",
+		SubDescription = "Mara gives her heart to people who have shown compassion in their time of need",
+		Color = Color(204, 43, 75),
+		Crafted = {
+			Chance = 0.5,
+			Mod = "hearted",
+		},
 	},
 	{
-		InternalName = "pdrop",
-		Name = "Plutonic Droplet",
-		Icon = "pluto/currencies/purple_droplet.png",
-		Description = "Rerolls suffix modifiers on an item",
-		SubDescription = "Back when these things first were created, the military bought them straight from the man himself... paid upwards to a million for a single liter. Nowadays they are shot straight up to the skies",
-		Color = Color(117, 28, 178),
+		InternalName = "coin",
+		Name = "Coin",
+		Icon = "pluto/currencies/coin.png",
+		Description = "Adds a storage tab",
+		SubDescription = "$$$",
+		Color = Color(254, 233, 105),
+		NoTarget = true,
+		Crafted = {
+			Chance = 0.5,
+			Mod = "coined",
+		},
+	},
+	{
+		InternalName = "mirror",
+		Name = "Mara's Mirror",
+		Icon = "pluto/currencies/brokenmirror.png",
+		Description = "Creates a mirror image of an item which is unmodifiable",
+		SubDescription = "Mara threw this mirror out after seeing what she had become",
+		Color = Color(177, 173, 205),
 	},
 	{
 		InternalName = "quill",
@@ -188,28 +210,6 @@ pluto.currency.list = {
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
 		end
-	},
-	{
-		InternalName = "crate2",
-		Name = "Orange Egg",
-		Icon = "pluto/currencies/crate2.png",
-		Description = "Contains a model or a very rare weapon",
-		SubDescription = "Hi! I missed you!! How have you been?!",
-		NoTarget = true,
-		Color = Color(242, 132, 57),
-		ClientsideUse = function()
-			if (IsValid(pluto.opener)) then
-				pluto.opener:Remove()
-			end
-
-			pluto.opener = vgui.Create "tttrw_base"
-
-			pluto.opener:AddTab("Open Box", vgui.Create "pluto_box_open" :SetCurrency "crate0")
-
-			pluto.opener:SetSize(640, 400)
-			pluto.opener:Center()
-			pluto.opener:MakePopup()
-		end,
 	},
 }
 

@@ -154,6 +154,7 @@ concommand.Add("pluto_update_hitgroups", function(ply, cmd, args, arg)
 	local model = ply:GetModel()
 
 	local update = ReadFileToTable(arg) or {}
+	PrintTable(update)
 
 	if (not update) then
 		pwarnf("Couldn't read update file %q", arg)
@@ -192,6 +193,8 @@ concommand.Add("pluto_update_hitgroups", function(ply, cmd, args, arg)
 		local new_offset = offset + current:ReadLong()
 		for hitbox = 0, ply:GetHitBoxCount(group) - 1 do
 			if (update[hitbox]) then
+				current:Seek(new_offset + hitbox * 68 + 4 + 4)
+				print("update", hitbox, update[hitbox], "OLD", current:ReadLong())
 				new:Seek(new_offset + hitbox * 68 + 4 + 4)
 				new:WriteLong(update[hitbox])
 			end
@@ -205,15 +208,6 @@ concommand.Add("pluto_update_hitgroups", function(ply, cmd, args, arg)
 			end
 			for i = 1, 3 do
 				maxs[i] = current:ReadFloat()
-			end
-
-			if (hitbox == 14) then
-				mins.z = mins.z + 3
-				maxs.z = maxs.z - 3
-				mins.y = mins.y - 3
-				maxs.y = maxs.y + 3
-				mins.x = mins.x - 3
-				maxs.x = maxs.x + 3
 			end
 
 			for i = 1, 3 do

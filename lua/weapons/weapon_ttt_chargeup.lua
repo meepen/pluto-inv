@@ -26,7 +26,7 @@ SWEP.Bullets = {
 	TracerName = "tfa_tracer_awp_ss"
 }
 
-SWEP.Primary.Damage        = 95
+SWEP.Primary.Damage        = 80
 SWEP.Primary.Delay         = 1
 SWEP.Primary.HoldTime      = 0.8
 SWEP.Primary.Recoil        = 5.2
@@ -39,7 +39,7 @@ SWEP.Primary.Sound         = Sound "tfa_cso2_awmgauss.1"
 
 SWEP.Secondary.Sound       = Sound "Default.Zoom"
 
-SWEP.HeadshotMultiplier    = 2
+SWEP.HeadshotMultiplier    = 1.5
 SWEP.DeploySpeed = 1
 
 SWEP.Spawnable = false
@@ -138,7 +138,7 @@ function SWEP:GetCharge()
 end
 
 function SWEP:GetDamage()
-	return 20 --BaseClass.GetDamage(self) * self:GetCharge()
+	return BaseClass.GetDamage(self) * self:GetCharge()
 end
 
 function SWEP:DrawHUD()
