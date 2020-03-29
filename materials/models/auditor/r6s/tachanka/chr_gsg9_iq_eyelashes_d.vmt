@@ -1,0 +1,7 @@
+"Vertexlitgeneric"
+{
+	$baseTexture "models\auditor\r6s\tachanka/CHR_GSG9_IQ_eyelashes_d"
+
+	"$translucent" 	   "1"
+
+}

@@ -1,0 +1,6 @@
+"VertexlitGeneric"
+{
+	$basetexture "models/kuma96/borderlands3/characters/psychomale/psycho_male_bandit_tattoos_d"
+	$halflambert 1
+	$selfillum 1
+}

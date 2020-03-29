@@ -1,0 +1,32 @@
+"VertexLitGeneric"
+{
+	$basetexture	"models\tfa_cso2/v/snip_awp_tan\v_awp_s_gold2"
+	$bumpmap	  "models\tfa_cso2/v/snip_awp_tan\v_awp_s_gold2_normal"
+	$envmap	   "environment maps\cs_militia"
+	$normalmapalphaenvmapmask 1
+	$envmaptint		"[ 1 0.600000 0.100000 ]"
+		$envmapfresnel "0.5"
+
+
+		$surfaceprop metal
+
+		$phong 		 1		// [빛에 의한 실시간 빛 반사]
+		$phongexponent 	50		// [퐁의 양?]
+	$phongboost		   1	// [명도효과]
+	$phongFresnelboost	1.000000	 //시선에 따른 광택
+	$phongFresnelexponent	1.000000	 //범위 
+	$phongtint "[ 0.1 0.1 0.1 ]"  //  [1(빨강).1(녹색).1(파랑)] 퐁의 반사색조를 조절한다.
+
+		$diffusecontrast  0.25
+		 $UseModelLight   1
+	
+	Proxies
+	{
+		cso2_blink
+		{
+		}
+	}
+	$usecharacterfog	1
+
+	
+}

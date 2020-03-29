@@ -1,0 +1,12 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/Ciri_TW3/CIRI_BODY_COLOR"
+	"$bumpmap" "models/Ciri_TW3/CIRI_BODY_BUMP"
+	"$envmapmask" "models/Ciri_TW3/CIRI_BODY_SPEC"
+$phong 1
+$phongboost ".1"
+$phongexponent 5
+$phongtint "[.85 .85 1]"
+$halflambert 0
+$phongfresnelranges "[.3 .65 30]"
+}

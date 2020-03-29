@@ -14,6 +14,46 @@ function math.circularmean(...)
 	return (math.atan2(y, x) + math.pi) / (math.pi * 2)
 end
 
+local function replace(replacer, str)
+	if (isfunction(replacer)) then
+		return replacer(str:sub(2, -2)) or str
+	elseif (istable(replacer)) then
+		return replacer[str:sub(2, -2)] or str
+	elseif (replacer == nil) then
+		return str
+	else
+		return replacer
+	end
+end
+
+function table.formatsplit(str, replacer)
+	local retn = {}
+
+	local i = 1
+	local last_cut = 1
+
+	while (i <= str:len()) do
+		local c = str:sub(i, i)
+
+		if (c == "%") then
+			retn[#retn + 1] = str:sub(last_cut, i - 1)
+			local match, next = str:match("(%%[%w_]+%%)()", i)
+			if (match) then
+				retn[#retn + 1] = replace(replacer, match)
+				i, last_cut = next, next
+			end
+		end
+
+		i = i + 1
+	end
+
+	if (last_cut <= str:len()) then
+		retn[#retn + 1] = str:sub(last_cut)
+	end
+
+	return retn
+end
+
 function string.formatsafe_table(str, ...)
 	local cur_arg = 1
 	local retn = {}

@@ -228,7 +228,7 @@ function PANEL:RefreshQuests()
 		if (not needed[quest.ID]) then
 			pnl:Remove()
 		else
-			needed[quest.ID] = false
+			needed[quest.ID] = nil
 		end
 	end
 
@@ -236,6 +236,7 @@ function PANEL:RefreshQuests()
 		local pnl = self.List:Add "pluto_quest_item"
 		pnl:Dock(TOP)
 		pnl:SetQuest(quest)
+		self.Quests[quest.ID] = pnl
 	end
 end
 

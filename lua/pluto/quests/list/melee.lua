@@ -21,7 +21,7 @@ function QUEST:Init(data)
 	data:Hook("EntityTakeDamage", function(data, vic, dmg)
 		local inf, atk = dmg:GetInflictor(), dmg:GetAttacker()
 
-		if (IsValid(inf) and atk == data.Player and inf.Slot == 0 and atk:GetRoleTeam() ~= vic:GetRoleTeam()) then
+		if (IsValid(inf) and atk == data.Player and vic:IsPlayer() and inf.Slot == 0 and atk:GetRoleTeam() ~= vic:GetRoleTeam()) then
 			meleed[vic] = true
 		end
 	end)

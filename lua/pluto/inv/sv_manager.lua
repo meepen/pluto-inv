@@ -388,10 +388,12 @@ function pluto.inv.readtabswitch(ply)
 
 	if (equip) then
 		timer.Simple(0, function()
-			if (IsValid(ply) and ply:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE) then
+			if (IsValid(ply) and ply:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE and ply.LastLoadout ~= ttt.GetRoundNumber()) then
 				ply:StripWeapons()
 				ply:StripAmmo()
 				hook.Run("PlayerLoadout", ply)
+
+				ply.LastLoadout = ttt.GetRoundNumber()
 			end
 		end)
 	end
@@ -492,7 +494,43 @@ function pluto.inv.readcurrencyuse(ply)
 		return
 	end
 
-	cur.Use(ply, wpn)
+	if (cur.Use) then
+		cur.Use(ply, wpn)
+	elseif (cur.Contents) then
+		local gotten, data = pluto.currency.rollcrate(cur.Contents)
+		local type = pluto.inv.itemtype(gotten)
+
+		local transact, wpn
+		if (type == "Model") then -- model
+			transact, wpn = pluto.inv.generatebuffermodel(ply, gotten:match "^model_(.+)$")
+		elseif (type == "Weapon") then -- unique
+			transact, wpn = pluto.inv.generatebufferweapon(ply, istable(data) and data.Tier or "unique", gotten)
+		end
+
+		if (not wpn) then
+			print(gotten)
+		end
+
+		if (istable(data) and data.Rare) then
+			discord.Message():AddEmbed(
+				wpn:GetDiscordEmbed()
+					:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
+			):Send "drops"
+		end
+
+		if (transact) then
+			pluto.inv.addcurrency(ply, currency, -1, nil, transact)
+			transact:Run(function(err)
+				if (err) then
+					return
+				end
+
+				pluto.inv.message(ply)
+					:write("crate_id", wpn.RowID)
+					:send()
+			end)
+		end
+	end
 end
 
 function pluto.inv.readtabrename(ply)

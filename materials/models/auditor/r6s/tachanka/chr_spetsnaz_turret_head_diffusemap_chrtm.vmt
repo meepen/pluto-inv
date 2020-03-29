@@ -1,0 +1,16 @@
+"Vertexlitgeneric"
+{
+	"$basetexture"  "models\auditor\r6s\tachanka/chr_gign_tank_head_diffusemap_chrtm"
+	"$bumpmap" "models\auditor\r6s\tachanka/chr_gign_tank_head_normalmap_chrtm"
+
+	"$phong" "1"						
+	"$phongboost"	"0.2"
+	"$phongboost"	"0.2"
+		//"$phongexponent: "22"
+		$phongexponenttexture "models/auditor/r6s/tachanka/chr_spetsnaz_turret_head_specularmap_chrtm"
+//	"$phongfresnelranges"	"[0.8 4 22.5]"
+	"$phongfresnelranges"	"[0.5 2.5 22.5]"
+	"$phongtint" 			"[1.2 1.2 1.31]"
+	"$PhongAlbedoTint" "1"	
+		
+}

@@ -120,6 +120,7 @@ local packs =  {
 	unique0 = {
 		remote = "https://cdn.pluto.gg/unique0.gma",
 		versions = {
+			"20200329",
 			"20200223_222",
 			"20191123",
 			"20191122",
@@ -226,15 +227,48 @@ local packs =  {
 		versions = {
 			"20200303"
 		}
-	}
-	--[[
-	moxxi = {
-		remote = "https://cdn.pluto.gg/moxxi.gma",
+	},
+	box2 = {
+		remote = "https://cdn.pluto.gg/box2.gma",
 		versions = {
-			"20191121",
+			"20200323_2",
+			"20200322",
 		}
-	},]]
+	},
+	unique3 = {
+		remote = "https://cdn.pluto.gg/unique3.gma",
+		versions = {
+			"20200323",
+		}
+	},
+	spacesuit = {
+		remote = "https://cdn.pluto.gg/spacesuit.gma",
+		versions = {
+			"20200326",
+		}
+	},
+	tfa_cso2 = {
+		remote = "https://cdn.pluto.gg/tfa_cso2.gma",
+		versions = {
+			"20200329",
+			"20200328_5",
+			"20200328_4",
+			"20200328_3",
+			"20200328_2",
+			"20200328_1",
+		}
+	},--[[
+	bo2 = {
+		remote = "https://cdn.pluto.gg/bo2.gma",
+		versions = {
+			"20200323",
+		}
+	}]]
 }
+
+local good_col = Color(0, 255, 0)
+local error_col = Color(255, 0, 0)
+local ok_col = Color(255, 255, 0)
 
 local to_mount = {}
 local status = {}
@@ -257,7 +291,10 @@ hook.Add("DrawOverlay", "pluto_workshop", function()
 	for pack, status in SortedPairs(status) do
 		surface.SetTextPos(2, y)
 		y = y + h
-		surface.DrawText(pack .. ": " .. status)
+		surface.SetTextColor(white_text)
+		surface.DrawText(pack .. ": ")
+		surface.SetTextColor(status[1])
+		surface.DrawText(status[2])
 	end
 end)
 
@@ -272,7 +309,7 @@ local function check_mount()
 			local succ, fs = game.MountGMA("data/" .. fname)
 
 			if (not succ) then
-				status[pack] = "Couldn't mount."
+				status[pack] = {error_col, "Couldn't mount"}
 				return
 			end
 
@@ -283,7 +320,7 @@ local function check_mount()
 				end
 			end
 
-			status[pack] = "Mounted."
+			status[pack] = {good_col, "Mounted."}
 			to_mount[pack] = nil
 		end
 		RunConsoleCommand "snd_restart"
@@ -299,6 +336,7 @@ local function check_mount()
 			end
 
 			timer.Remove "pluto_workshop"
+			hook.Run "PlutoWorkshopFinish"
 		end)
 	end
 end
@@ -311,18 +349,18 @@ for pack, data in SortedPairs(packs) do
 	end
 
 	local function fail(err)
-		status[pack] = "ERROR: " .. err
+		status[pack] = {error_col, "ERROR: " .. err}
 		to_mount[pack] = false
 		file.Delete("data/" .. fname)
 	end
 
 	local function update(msg)
-		status[pack] = msg
+		status[pack] = {ok_col, msg}
 	end
 
 	local function mount()
 		to_mount[pack] = fname
-		status[pack] = "Ready to mount."
+		status[pack] = {good_col, "Ready to mount."}
 		check_mount()
 	end
 

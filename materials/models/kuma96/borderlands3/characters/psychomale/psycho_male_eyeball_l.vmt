@@ -1,0 +1,17 @@
+"EyeRefract"
+{
+	$iris "models/kuma96/borderlands3/characters/psychomale/psycho_male_left_eye_d"
+	$corneatexture "models/kuma96/borderlands3/characters/common/human_left_eye_n"
+	$ambientoccltexture "engine/eyeball_l_ambient"
+	$envmap "engine/eye-reflection-cubemap-"
+	
+	$eyeballradius 0.7617
+	$corneabumpstrength 1
+	$glossiness 0.5
+	$parallaxstrength 0
+	$dilation 0.5
+	
+	$halflambert 1
+	$nodecal 1
+	$spheretexkillcombo 0
+}

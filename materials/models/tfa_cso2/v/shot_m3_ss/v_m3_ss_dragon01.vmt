@@ -1,0 +1,17 @@
+"VertexLitGeneric"
+{
+	$basetexture	"models\tfa_cso2/v/shot_m3_ss\v_m3_ss_dragon01"
+	$bumpmap	  "models\tfa_cso2/v/shot_m3_ss\v_m3_ss_dragon01_normal"
+	$phongexponenttexture 	"models\tfa_cso2/v/g"
+
+	$phong "1"
+	$phongboost "128"
+	$phongexponent "16"
+	$phongfresnelranges "[0.5 0.75 1.0]"
+	$phongalbedotint "1"
+
+	$envmap "env_cubemap"
+	$envmaptint "[0.3 0.2 0.1]"
+	$normalmapalphaenvmapmask "1"
+	$envmapfresnel "1"
+}

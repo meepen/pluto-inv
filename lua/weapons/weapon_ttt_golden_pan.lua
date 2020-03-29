@@ -7,7 +7,10 @@ SWEP.ViewModel  = "models/weapons/quentindylanp/c_crowbar_nohands.mdl"
 
 --SWEP.Primary.Sound = "weapons/bat_draw_swoosh1.ogg"
 
-local function MakeGold(what)
+
+local mass = 12000
+
+function MakeGold(what)
     if (not IsValid(what)) then
         return
 	end
@@ -23,7 +26,7 @@ local function MakeGold(what)
 
 		local phys = what:GetPhysicsObjectNum(bone)
 
-		phys:SetMass(200)
+		phys:SetMass(mass / what:GetPhysicsObjectCount())
 		phys:AddGameFlag(FVPHYSICS_NO_SELF_COLLISIONS)
 		phys:AddGameFlag(FVPHYSICS_CONSTRAINT_STATIC)
 		phys:SetMaterial "metal"

@@ -1,0 +1,21 @@
+"VertexLitGeneric"
+{
+	$basetexture "models/dizcordum/body/NOO_FACE_d"
+	$bumpmap "models/dizcordum/body/NOO_FACE_n"
+	
+	$AmbientOcclusion" 1
+	$AmbientOcclTexture "models/dizcordum/body/NOO_FACE_aoc"
+	
+	$halflambert 0
+	
+	$phong		1
+	$phongexponent		30		
+	$phongexponenttexture	"models/dizcordum/body/NOO_FACE_sss"
+	$phongwarptexture	"models/dizcordum/body/environment1"
+	$phongboost		1
+	$phongfresnelranges	"[0 0.5 1]"
+	
+	"$detail" "models/dizcordum/body/NOO_FACE_r"
+	"$detailscale" "1"
+	"$detailblendfactor" "1"
+	"$detailblendmode" "0"

@@ -7,7 +7,9 @@ DEFINE_BASECLASS "pluto_block"
 
 function ENT:Initialize()
 	BaseClass.Initialize(self)
-	self:SetTrigger(true)
+	if (SERVER) then
+		self:SetTrigger(true)
+	end
 end
 
 function ENT:StartTouch(e)

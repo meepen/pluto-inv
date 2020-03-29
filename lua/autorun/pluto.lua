@@ -5,6 +5,7 @@ AddCSLuaFile "pluto/files.lua"
 
 pluto.files.load {
 	Client = {
+		"cl/richtextformat.lua",
 		"cl/hacks.lua",
 		"cl/settings.lua",
 		"inv/ui.lua",
@@ -17,14 +18,18 @@ pluto.files.load {
 		"craft/cl.lua",
 		"nitro/cl_nitro.lua",
 		"quests/cl_quests.lua",
+		"models/cl_showhitgroups.lua",
+		"tfa/external/tfa_cso2_snd_heavy.lua",
 	},
 	Shared = {
 		"co_net.lua",
 		"init.lua",
 		"weapons/override.lua",
+
 		"inv/sh_manager.lua",
 		"inv/sh_tabs.lua",
-		"inv/sh_currency.lua",
+		"inv/currency/sh_currency.lua",
+	
 		"mods/sh_mods.lua",
 
 		"craft/sh.lua",
@@ -32,6 +37,8 @@ pluto.files.load {
 		"roles/ttc.lua",
 
 		"util.lua",
+
+		"mods/shared/limp.lua",
 	},
 	Server = {
 		"sv.lua",

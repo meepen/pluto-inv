@@ -96,9 +96,16 @@ function pluto.inv.readbaseitem(item)
 		end
 	elseif (item.Type == "Model") then
 		item.Model = pluto.models[item.ClassName:match "^model_(.+)$"]
-		item.Color = item.Model.Color or Color(255, 255, 255)
-		item.Name = item.Model.Name .. " Model"
-		item.SubDescription = item.Model.SubDescription
+		if (item.Model) then
+			item.Color = item.Model.Color or Color(255, 255, 255)
+			item.Name = item.Model.Name .. " Model"
+			item.SubDescription = item.Model.SubDescription
+		else
+			item.Model = pluto.models.default
+			item.Color = color_white
+			item.Name = "Unknown Model: " .. item.ClassName
+			item.SubDescription = "unknown"
+		end
 	end
 end
 

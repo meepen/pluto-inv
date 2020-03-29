@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/dizcordum/body/NOO_GEAR_B_001_d1"
+	"$translucent" 1
+	$nocull 1
+}

@@ -1,0 +1,18 @@
+"VertexLitGeneric"
+{
+	$basetexture "models/dizcordum/body/NOO_GEAR_A_015_d"
+	$bumpmap "models/dizcordum/body/NOO_GEAR_A_015_n"
+	$halflambert 0
+	
+	$envmap			"models/dizcordum/body/environment2"
+	$envmapmask		"models/dizcordum/body/NOO_GEAR_A_015_m"
+	
+	$phong		1
+	$phongexponent		100	
+	$phongexponenttexture	"models/dizcordum/body/NOO_GEAR_A_015_s"
+	$phongwarptexture	"models/dizcordum/body/environment1"
+	$phongboost		1
+	$phongfresnelranges	"[0 0.5 1]"
+	
+
+}

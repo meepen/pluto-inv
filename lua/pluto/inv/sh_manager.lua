@@ -221,7 +221,7 @@ function ITEM:GetRawName(ignoretier)
 		return self.Model.Name .. " Model"
 	end
 
-	return "Unknown type: " .. self.Type
+	return "Unknown type: " .. tostring(self.Type)
 end
 
 -- https://gist.github.com/efrederickson/4080372
@@ -255,9 +255,19 @@ local function ToRomanNumerals(s)
     return ret
 end
 
+function ITEM:GetColor()
+	if (self.Type == "Weapon") then
+		return self.Tier.Color
+	elseif (self.Type == "Model") then
+		return self.Model.Color
+	else
+		return Color(0, 0, 0)
+	end
+end
+
 function ITEM:GetDiscordEmbed()
 	local embed = discord.Embed()
-		:SetColor(self.Tier.Color)
+		:SetColor(self:GetColor())
 		:SetTitle(self:GetPrintName())
 
 	if (self.Tier) then
@@ -290,6 +300,10 @@ function ITEM:GetDiscordEmbed()
 				embed:AddField(name .. " " .. ToRomanNumerals(tier), string.format(mod.Description or mod:GetDescription(rolls), unpack(desc_fmt)))
 			end
 		end
+	end
+
+	if (self.Model) then
+		embed:AddField("Description", self.Model.SubDescription)
 	end
 
 	return embed

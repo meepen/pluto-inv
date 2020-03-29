@@ -1,0 +1,14 @@
+"VertexlitGeneric"
+{
+	$basetexture "models/kuma96/borderlands3/characters/psychomale/psycho_male_bandit_tattoos_d"
+	$bumpmap "models/kuma96/borderlands3/characters/psychomale/psycho_male_bandit_n"
+	$selfillum 1
+	
+	$phong 1
+	$phongexponenttexture "models/kuma96/borderlands3/characters/psychomale/psycho_male_bandit_e"
+	$phongboost 10
+	$phongfresnelranges "[.1 .23 .945]"
+	
+	$envmap env_cubemap
+	$envmaptint "[.4 .4 .4]"
+}

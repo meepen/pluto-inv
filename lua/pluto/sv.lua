@@ -22,6 +22,9 @@ pluto.files.load {
 		"nitro/sv_nitro.lua",
 
 		"quests/sv_quests.lua",
+
+		"inv/currency/sv_currency.lua",
+		"inv/currency/sv_crossmap.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty
@@ -40,6 +43,7 @@ pluto.files.load {
 		"materials/pluto/newshardbg.png",
 
 		"materials/pluto/pluto-logo-header.png",
+		"materials/pluto/item_bg_mech.png",
 	},
 	Workshop = {
 		"2001929342",

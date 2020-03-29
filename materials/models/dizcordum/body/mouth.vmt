@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/dizcordum/body/CHAR_EyesMouth_d"
+	$nocull 1
+}

@@ -1,0 +1,27 @@
+"UnlitGeneric"
+{
+	$basetexture "models/kuma96/borderlands3/characters/zero/zero_emote_speak"
+	$color2 "[3 0 0]"
+	$translucent 1
+	$nocull 1
+	$additive 1
+	$nodecal 1
+	
+	$detail "models/kuma96/borderlands3/common/effects/tech/scanlines"
+	$detailblendmode 8
+	$detailscale 20
+	
+	Proxies
+	{
+		TextureScroll
+		{
+			textureScrollVar "$detailtexturetransform"
+			textureScrollRate 0.04
+			textureScrollAngle 90
+		}
+		B3ZeroEmotes
+		{
+			resultVar $color2
+		}
+	}
+}

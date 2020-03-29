@@ -1,0 +1,35 @@
+"VertexLitGeneric"
+{
+"$baseTexture" "models\raincoat\2"
+  "$bumpmap"   "models\raincoat\2b"
+
+"$phongexponenttexture" "models\raincoat\2n"
+
+"$phong" "1"
+   "$phongboost" "0.3"
+   "$phongexponent" "20"
+   "$phongfresnelranges" "[0.2 0.2 0.2]"
+   "$phongtint" "0.2 0.1 0"
+   "$phongalbedotint" "0"
+$ssbump bumpmap
+$detail        "models\raincoat\2d"
+$detailscale    "5"
+$detailblendfactor   "-10"
+$detailblendmode   "0"
+"$nocull" "1"
+
+	"$blendtintbybasealpha" "1" 
+ 	"$blendtintcoloroverbase" "0"
+
+Proxies
+	{
+		PlayerColor
+		{
+			resultVar	$color2
+			default		0 0 0
+		}
+	}
+
+
+}
+

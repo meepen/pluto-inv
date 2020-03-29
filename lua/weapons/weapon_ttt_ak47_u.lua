@@ -1,7 +1,9 @@
-local tbl = {"AK47.SlideBack","weapons/ak47_beast/rifle_slideback.ogg",
-"AK47.ClipIn","weapons/ak47_beast/rifle_clip_in_1.ogg",
-"AK47.SlideForward","weapons/ak47_beast/rifle_slideforward.ogg",
-"AK47.Deploy","weapons/ak47_beast/rifle_deploy_1.ogg"
+local tbl = {
+	"AK47.SlideBack","weapons/ak47_beast/rifle_slideback.ogg",
+	"AK47.ClipIn","weapons/ak47_beast/rifle_clip_in_1.ogg",
+	"AK47.SlideForward","weapons/ak47_beast/rifle_slideforward.ogg",
+	"AK47.Deploy","weapons/ak47_beast/rifle_deploy_1.ogg",
+	"AK47.Shoot", "weapons/ak47_beast/rifle_fire_1.ogg",
 }
 for i = 1,#tbl,2 do
 	sound.Add(
@@ -29,7 +31,7 @@ SWEP.Ortho = {0, 7, size = 0.7, angle = Angle(45, 180, -60)}
 SWEP.ViewModel 	= "models/cf/c_ak47_beast.mdl"
 SWEP.WorldModel = "models/cf/w_ak47_beast.mdl"
 
-SWEP.Primary.Sound 		= Sound "weapons/ak47_beast/rifle_fire_1.ogg"
+SWEP.Primary.Sound 		= "AK47.Shoot"
 SWEP.Primary.Damage 	= 29
 SWEP.Primary.Recoil = 1.4
 SWEP.Primary.ClipSize 	= 40
@@ -45,6 +47,7 @@ SWEP.NoPlayerModelHands = true
 SWEP.UseHands = true
 
 SWEP.DeployAnim = ACT_VM_DEPLOY
+SWEP.DeploySpeed = 1.5
 
 SWEP.Ironsights = {
 	Pos = Vector(-6, 0, 1.2),

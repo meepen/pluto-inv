@@ -41,6 +41,15 @@ sound.Add {
 	level = 80,
 	sound = "weapons/r301/gunother/r301_bolt_forward.ogg"
 }
+sound.Add {
+	name = "R301.Shoot",
+	channel = CHAN_WEAPON,
+	volume = 1.0,
+	level = 80,
+	sound = "weapons/r301/gunfire/r301_fire.ogg"
+}
+
+
 
 -- Copyright (c) 2018-2019 TFA Base Devs
 
@@ -77,7 +86,7 @@ SWEP.SlotPos                = 73
 
 SWEP.Ortho = {-7, 9}
 
-SWEP.Primary.Sound = "weapons/r301/gunfire/r301_fire.ogg"
+SWEP.Primary.Sound = "R301.Shoot"
 SWEP.Primary.Damage = 14
 SWEP.Primary.Automatic = true
 SWEP.Primary.Delay = 0.083

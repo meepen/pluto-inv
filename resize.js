@@ -57,7 +57,10 @@ const hack_resize = function hack_resize(channels, data, width, height, div) {
 const resize_to = 512;
 (async () => {
 	for await (const f of getFiles("materials")) {
-		if (f.substr(-4) === ".vtf" && statSync(f).size > 1000000) {
+		if (f.substr(-4) === ".vmt") {
+			// another time lol
+		}
+		else if (f.substr(-4) === ".vtf" && statSync(f).size > 1000000) {
 
 			let img = new VTFFile(readFileSync(f));
 			img.Flags |= 0x100 | 0x200; // NOMIP | NOLOD

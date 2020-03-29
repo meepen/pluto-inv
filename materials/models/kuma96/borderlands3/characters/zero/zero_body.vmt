@@ -1,0 +1,11 @@
+"VertexlitGeneric"
+{
+	$basetexture "models/kuma96/borderlands3/characters/zero/zero_body_d"
+	$bumpmap "models/kuma96/borderlands3/characters/zero/zero_body_n"
+	$selfillum 1
+	
+	$phong 1
+	$phongexponenttexture "models/kuma96/borderlands3/characters/zero/zero_body_e"
+	$phongboost 10
+	$phongfresnelranges "[.1 .23 .945]"
+}

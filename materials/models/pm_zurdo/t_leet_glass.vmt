@@ -1,0 +1,15 @@
+"vertexlitgeneric"
+{
+	"$baseTexture" "models/pm_zurdo/t_leet_glass"
+	
+
+// Specularity
+	"$envmap" 			"env_cubemap"
+	"$envmapmask" "models/pm_zurdo/t_leet_glass_spec"
+
+
+// Transparency
+	"$translucent" 1
+	"$nocull" 1
+	
+}

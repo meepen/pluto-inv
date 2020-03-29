@@ -1,0 +1,22 @@
+"SpriteCard"
+{
+	"$basetexture" "particle\cso2_electro_04"
+	$vertexcolor 1
+	$vertexalpha 1
+	$translucent 1
+	$Additive 1
+	//$depthblend 1
+	
+	Proxies
+	{
+	AnimatedTexture
+	{
+	animatedTextureVar $basetexture
+	animatedTextureFrameNumVar $frame
+	animatedTextureFrameRate 10
+	}
+	}
+}
+
+
+

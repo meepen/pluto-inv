@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/auditor/r6s/tachanka/CHR_NAVY_Ricochet_Mouth_DiffuseMap_CHRTM"
+	"$bumpmap" "models/auditor/r6s/tachanka/CHR_NAVY_Ricochet_Mouth_NormalMap_CHRTM"
+}

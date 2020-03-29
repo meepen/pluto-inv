@@ -1,0 +1,14 @@
+"CSO2Particle"
+{
+	"$basetexture"	"particle/smokesprites0331"
+	"$bumpmap" 	    "particle/BillowNormalMap"
+	"$depthblend" "1"
+	
+	//"$emissive" "[ 0.2 0.7 0.2 ]"
+	"$specularcolor" "[ 0.5 0.5 0.5 ]"
+		
+	"$lighting" "1"
+	//"$lightdir" "[ -90 -90 -90` ]"
+	//"$lightcolor" "[ 2 2 1.2 ]"
+	//"$lightambient" "[ 0.1 0.1 0.1 ]"
+}

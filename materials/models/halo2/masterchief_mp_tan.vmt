@@ -1,0 +1,8 @@
+"Patch"
+{
+	include "materials/models/halo2/masterchief.vmt"
+	insert
+	{
+	   "$basetexture" "models/halo2/masterchief_mp_tan"
+	}
+}

@@ -80,11 +80,15 @@ function SWEP:RunModFunctionSequence(funcname, state, ...)
 	self:RunModFunctionSingle("Pre" .. funcname, unpack(args, 1, args.n))
 	self:RunModFunctionSingle("On" .. funcname, unpack(args, 1, args.n))
 	self:RunModFunctionSingle("Post" .. funcname, unpack(args, 1, args.n))
+
+	if (self[funcname]) then
+		self[funcname](self, state, ...)
+	end
 end
 
-function SWEP:DoFireBullets()
+function SWEP:DoFireBullets(...)
 	self:RunModFunctionSequence("Fire", nil, tr, dmginfo)
-	BaseClass.DoFireBullets(self)
+	BaseClass.DoFireBullets(self, ...)
 end
 
 function SWEP:FireBulletsCallback(tr, dmginfo)

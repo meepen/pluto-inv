@@ -1,0 +1,9 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/weapons/blackops2_type95/type95_d"
+	"$phong" "1"
+		"$bumpmap" "models/weapons/blackops2_type95/type95_n"
+	$phongexponent	5
+	$phongboost				1.0
+	$phongfresnelranges		"[0 0.5 1]"
+}

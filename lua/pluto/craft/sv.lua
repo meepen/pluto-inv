@@ -288,7 +288,7 @@ function pluto.inv.readcraft(cl)
 
 	local transact = pluto.db.transact()
 	for _, item in pairs(items) do
-		pluto.inv.deleteitem(cl, item.RowID, print, transact)
+		pluto.inv.deleteitem(cl, item.RowID, print, transact, true)
 	end
 	pluto.inv.savebufferitem(cl, wpn, transact)
 

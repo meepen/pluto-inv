@@ -115,7 +115,8 @@ end)
 function pluto.inv.generatebuffermodel(ply, mdl)
 	local new_item = setmetatable({
 		ClassName = "model_" .. mdl,
-		Model = pluto.models[mdl]
+		Model = pluto.models[mdl],
+		Type = "Model",
 	}, pluto.inv.item_mt)
 
 	if (not new_item.Model) then
@@ -130,7 +131,7 @@ concommand.Add("pluto_spawn_model", function(ply, cmd, arg, args)
 		return
 	end
 
-	pluto.inv.generatebuffermodel(ply, unpack(arg))
+	pluto.inv.generatebuffermodel(ply, unpack(arg)):Run()
 end)
 
 function pluto.inv.notifybufferitem(ply, i)

@@ -1,0 +1,11 @@
+"VertexlitGeneric"
+{
+	$basetexture "models/kuma96/borderlands3/characters/psychomale/psycho_male_firebrand_d"
+	$bumpmap "models/kuma96/borderlands3/characters/psychomale/psycho_male_firebrand_n"
+	$selfillum 1
+	
+	$phong 1
+	$phongexponenttexture "models/kuma96/borderlands3/characters/psychomale/psycho_male_firebrand_e"
+	$phongboost 10
+	$phongfresnelranges "[.1 .23 .945]"
+}

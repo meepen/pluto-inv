@@ -1,0 +1,6 @@
+"VertexlitGeneric"
+{
+	$basetexture "models/kuma96/borderlands3/characters/zero/zero_helmet_d"
+	$halflambert 1
+	$selfillum 1
+}

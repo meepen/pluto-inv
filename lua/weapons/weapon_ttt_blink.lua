@@ -28,6 +28,8 @@ SWEP.Equipment = {
 	Icon           = "materials/tttrw/equipment/flaregun.png"
 }
 
+SWEP.DeploySpeed = 4
+
 local none = Vector(math.huge)
 
 function SWEP:SetupDataTables()

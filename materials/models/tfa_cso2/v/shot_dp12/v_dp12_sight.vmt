@@ -1,0 +1,17 @@
+"VertexLitGeneric"
+{
+	$basetexture	"models\tfa_cso2/v/shot_dp12\v_dp12_sight"
+	$selfillum "1"
+	$additive "1"
+	$translucent	"1"
+	
+
+		   
+	Proxies
+	{
+		cso2_blink
+		{
+		}
+	}
+	$usecharacterfog	1
+}

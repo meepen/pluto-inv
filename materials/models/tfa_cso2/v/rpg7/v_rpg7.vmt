@@ -1,0 +1,15 @@
+ "VertexLitGeneric"
+{
+	$basetexture	"models\tfa_cso2/v/rpg7\v_rpg7"
+	$bumpmap "models\tfa_cso2/v/rpg7\v_rpg7_normal"
+
+	$phong "1"
+	$phongboost "24"
+	$phongexponent "16"
+	$phongfresnelranges "[0.15 0.30 1.0]"
+
+	$envmap "env_cubemap"
+	$envmaptint "[0.3 0.3 0.3]"
+	$normalmapalphaenvmapmask "1"
+	$envmapfresnel "0.4"
+}

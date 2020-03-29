@@ -9,7 +9,7 @@ function MOD:IsNegative(roll)
 end
 
 function MOD:GetModifier(roll, wep)
-	return math.min(0.3, roll * wep:GetDelay()) * 100
+	return roll * 100
 end
 
 function MOD:FormatModifier(index, roll, wep)
@@ -21,15 +21,15 @@ end
 MOD.Description = "Has a %s chance to cripple on hit"
 
 MOD.Tiers = {
-	{ 0.3, 0.4 },
-	{ 0.2, 0.3 },
-	{ 0.1, 0.2 },
-	{ 0.01, 0.1 },
+	{ 0.7, 0.9 },
+	{ 0.6, 0.7 },
+	{ 0.45, 0.6 },
+	{ 0.4, 0.45 },
 }
 
 function MOD:OnDamage(wep, rolls, vic, dmginfo, state)
-	if (SERVER and math.random() < self:GetModifier(rolls[1], wep) / wep.Bullets.Num) then
-		pluto.statuses.limp(vic, 4)
+	if (math.random() * 100 < self:GetModifier(rolls[1], wep) / wep.Bullets.Num) then
+		pluto.statuses.limp(vic, wep:GetDelay())
 	end
 end
 

@@ -15,9 +15,9 @@ function SWEP:FireAnimationEvent(_, _, event)
 end
 
 SWEP.ViewModelFlip = true
-SWEP.ViewModel = "models/weapons/v_shot_u12.mdl"
-SWEP.WorldModel = "models/weapons/w_shot_u12.mdl"
-SWEP.ViewModelFOV = 57
+SWEP.ViewModel			= "models/weapons/tfa_cso2/c_usas12.mdl" --Viewmodel path
+SWEP.WorldModel			= "models/weapons/tfa_cso2/w_usas12.mdl" -- Weapon world model path
+SWEP.ViewModelFOV = 80
 
 SWEP.HoldType = "ar2"
 
@@ -94,18 +94,19 @@ sound.Add {
 	soundlevel = 50,
 	sound = "weapons/usas12/ak47_clipin.ogg"
 }
-
-
-function SWEP:DrawWorldModel()
-	self:SetRenderAngles()
-	if (not IsValid(self:GetOwner())) then
-		local ang = self:GetAngles()
-		ang:RotateAroundAxis(ang:Forward(), 90)
-		ang:RotateAroundAxis(ang:Right(), 90)
-		self:SetRenderAngles(ang)
-	end
-	self:DrawModel()
-end
+SWEP.Offset = {
+	Pos = {
+		Up = -0.1,
+		Right = 0.5,
+		Forward = 3
+	},
+	Ang = {
+		Up = -1,
+		Right = -10,
+		Forward = 178
+	},
+	Scale = 0.8
+}
 
 
 SWEP.RecoilInstructions = {

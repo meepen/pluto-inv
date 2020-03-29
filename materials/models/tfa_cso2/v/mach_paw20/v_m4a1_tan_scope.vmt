@@ -1,0 +1,22 @@
+"VertexLitGeneric"
+{
+	$basetexture	"models\tfa_cso2/v/mach_paw20\v_m4a1_tan_scope"
+	$additive "1"
+	$translucent	"1"
+	//$model "1"
+	//$emissiveblendenabled 0
+	$selfillum	1
+	
+	//$rimlight				1
+	//$rimlightboost		   0
+
+		 $UseModelLight   1
+		   
+	Proxies
+	{
+		cso2_blink
+		{
+		}
+	}
+	$usecharacterfog	1
+}
