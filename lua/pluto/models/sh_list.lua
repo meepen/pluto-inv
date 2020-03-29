@@ -588,7 +588,7 @@ c "violet_spa" {
 	Model = "models/halo2/spartan_violet.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "Stand out in the haze of combat"
+	SubDescription = "Stand out in the haze of combat\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "gold_spart" {
@@ -596,7 +596,7 @@ c "gold_spart" {
 	Model = "models/halo2/spartan_gold.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "Deep pockets and thick armor"
+	SubDescription = "Deep pockets and thick armor\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "pink_spart" {
@@ -604,7 +604,7 @@ c "pink_spart" {
 	Model = "models/halo2/spartan_pink.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "Tough guys wear pink"
+	SubDescription = "Tough guys wear pink\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "green_spar" {
@@ -612,7 +612,7 @@ c "green_spar" {
 	Model = "models/halo2/spartan_green.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "Not quite, Chief"
+	SubDescription = "Not quite, Chief\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "orange_spa" {
@@ -620,7 +620,7 @@ c "orange_spa" {
 	Model = "models/halo2/spartan_orange.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "Are you sure it isn't tangerine?"
+	SubDescription = "Are you sure it isn't tangerine?\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "steel_spar" {
@@ -628,7 +628,7 @@ c "steel_spar" {
 	Model = "models/halo2/spartan_steel.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "Who needs armor paint?"
+	SubDescription = "Who needs armor paint?\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "tan_sparta" {
@@ -636,7 +636,7 @@ c "tan_sparta" {
 	Model = "models/halo2/spartan_tan.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "Coarse and gets everywhere"
+	SubDescription = "Coarse and gets everywhere\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "blue_spart" {
@@ -644,7 +644,7 @@ c "blue_spart" {
 	Model = "models/halo2/spartan_blue.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "I hate babies!"
+	SubDescription = "I hate babies!\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "master_chi" {
@@ -660,7 +660,7 @@ c "sage_spart" {
 	Model = "models/halo2/spartan_sage.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "It takes a wise man to discover a wise man / The fool wonders, the wise man asks"
+	SubDescription = "It takes a wise man to discover a wise man / The fool wonders, the wise man asks\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "crimson_sp" {
@@ -668,7 +668,7 @@ c "crimson_sp" {
 	Model = "models/halo2/spartan_crimson.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "Crimson, just like your blood"
+	SubDescription = "Crimson, just like your blood\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "cobalt_spa" {
@@ -676,7 +676,7 @@ c "cobalt_spa" {
 	Model = "models/halo2/spartan_cobalt.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "Decent Powertools"
+	SubDescription = "Decent Powertools\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "cyan_spart" {
@@ -684,7 +684,7 @@ c "cyan_spart" {
 	Model = "models/halo2/spartan_cyan.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "The bright color will confuse the enemy"
+	SubDescription = "The bright color will confuse the enemy\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "olive_spar" {
@@ -692,7 +692,7 @@ c "olive_spar" {
 	Model = "models/halo2/spartan_olive.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "Unlimited Breadsticks, or Bombshells?"
+	SubDescription = "Unlimited Breadsticks, or Bombshells?\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "purple_spa" {
@@ -700,7 +700,7 @@ c "purple_spa" {
 	Model = "models/halo2/spartan_purple.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "It's not violet!"
+	SubDescription = "It's not violet!\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "red_sparta" {
@@ -708,7 +708,7 @@ c "red_sparta" {
 	Model = "models/halo2/spartan_red.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "Ah, damn it, I messed up my one-liner."
+	SubDescription = "Ah, damn it, I messed up my one-liner.\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "teal_spart" {
@@ -716,7 +716,7 @@ c "teal_spart" {
 	Model = "models/halo2/spartan_teal.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "It's not cyan."
+	SubDescription = "It's not cyan.\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "white_spar" {
@@ -724,7 +724,7 @@ c "white_spar" {
 	Model = "models/halo2/spartan_white.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "Cold weather never scared me."
+	SubDescription = "Cold weather never scared me.\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "brown_spar" {
@@ -732,14 +732,14 @@ c "brown_spar" {
 	Model = "models/halo2/spartan_brown.mdl",
 	Hands = "models/weapons/c_arms_masterchief_h2.mdl",
 	Color = CRATE2_COL(0.1),
-	SubDescription = "Good to wear for jumpscares."
+	SubDescription = "Good to wear for jumpscares.\nSuggested by DarkonZZ on the March 2020 Forum Thread"
 }
 
 c "captain" {
 	Name = "Captain",
 	Model = "models/player/red/captain.mdl",
 	Color = CRATE2_COL(0.32),
-	SubDescription = "The war left its scars on all of us. "
+	SubDescription = "The war left its scars on all of us."
 }
 
 c "sergeant" {
@@ -887,7 +887,7 @@ c "psycho" {
 }
 
 c "wolffe" {
-	Name = "wolffe",
+	Name = "Wolffe",
 	Model = "models/player/104th/wolffe.mdl",
 	Color = CRATE2_COL(0.2),
 	SubDescription = "Just like the simulations.\nSuggested by Froggy on the March 2020 Forum Thread"
