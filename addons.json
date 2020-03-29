@@ -4299,6 +4299,7 @@
         "sound/tfa_cso2/weapons/xm214/xm214_draw.ogg",
         "sound/tfa_cso2/weapons/xm214/xm214_grab.ogg",
         "sound/tfa_cso2/weapons/xm214/xm214_pinpull.ogg",
-        "sound/tfa_cso2/weapons/xm214/xm214_pinpush.ogg"
+        "sound/tfa_cso2/weapons/xm214/xm214_pinpush.ogg",
+        "particles/tfa_cso2_particles.pcf"
 	]
 }

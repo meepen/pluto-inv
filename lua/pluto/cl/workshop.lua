@@ -120,6 +120,7 @@ local packs =  {
 	unique0 = {
 		remote = "https://cdn.pluto.gg/unique0.gma",
 		versions = {
+			"20200329",
 			"20200223_222",
 			"20191123",
 			"20191122",
@@ -249,7 +250,12 @@ local packs =  {
 	tfa_cso2 = {
 		remote = "https://cdn.pluto.gg/tfa_cso2.gma",
 		versions = {
+			"20200329",
 			"20200328_5",
+			"20200328_4",
+			"20200328_3",
+			"20200328_2",
+			"20200328_1",
 		}
 	},--[[
 	bo2 = {
@@ -331,6 +337,8 @@ local function check_mount()
 
 			timer.Remove "pluto_workshop"
 		end)
+
+		hook.Run "PlutoWorkshopFinish"
 	end
 end
 

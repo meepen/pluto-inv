@@ -1,9 +1,12 @@
 AddCSLuaFile()
 
-local tbl = {"Magnum.ClipOut","weapons/deagle_beast/de_clipout.ogg",
-"Magnum.ClipIn","weapons/deagle_beast/de_clipin.ogg",
-"Magnum.SlideForward","weapons/deagle_beast/de_slideback.ogg",
-"Magnum.Deploy","weapons/deagle_beast/de_deploy.ogg",
+local tbl = {
+	"Magnum.ClipOut","weapons/deagle_beast/de_clipout.ogg",
+	"Magnum.ClipIn","weapons/deagle_beast/de_clipin.ogg",
+	"Magnum.SlideForward","weapons/deagle_beast/de_slideback.ogg",
+	"Magnum.Deploy","weapons/deagle_beast/de_deploy.ogg",
+	"Magnum.Shoot", "weapons/deagle_beast/deagle-1.ogg",
+
 }
 for i = 1,#tbl,2 do
 	sound.Add(
@@ -28,7 +31,7 @@ SWEP.WorldModel = "models/cf/w_deagle_beast.mdl"
 
 SWEP.Ortho = {-3.5, 6, size = 0.7, angle = Angle(-45, 180, 145)}
 
-SWEP.Primary.Sound 		= Sound("weapons/deagle_beast/deagle-1.ogg")
+SWEP.Primary.Sound 		= "Magnum.Shoot"
 SWEP.Primary.Damage 	= 45
 SWEP.Primary.ClipSize 	= 8
 SWEP.Primary.Delay 		= 0.6
