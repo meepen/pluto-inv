@@ -964,8 +964,8 @@ function PANEL:OnMousePressed(mouse)
 	if (pluto.cl_currency[self.Currency] > 0) then
 		local curtype = pluto.currency.byname[self.Currency]
 		if (curtype and curtype.NoTarget) then
-			if (curtype.Use) then
-				curtype.Use()
+			if (curtype.ClientsideUse) then
+				curtype.ClientsideUse()
 			else
 				Derma_Query("Really use " .. curtype.Name .. "? " .. curtype.Description, "Confirm use", "Yes", function()
 					pluto.inv.message()
@@ -1028,8 +1028,8 @@ function PANEL:GhostClick(p)
 		end
 		local currency = pluto.currency.byname[self.Currency]
 
-		if (currency and currency.Use) then
-			currency.Use(p.Item)
+		if (currency and currency.ClientsideUse) then
+			currency.ClientsideUse(p.Item)
 		else
 			pluto.inv.message()
 				:write("currencyuse", self.Currency, p.Item)

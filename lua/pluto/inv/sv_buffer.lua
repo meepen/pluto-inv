@@ -115,7 +115,8 @@ end)
 function pluto.inv.generatebuffermodel(ply, mdl)
 	local new_item = setmetatable({
 		ClassName = "model_" .. mdl,
-		Model = pluto.models[mdl]
+		Model = pluto.models[mdl],
+		Type = "Model",
 	}, pluto.inv.item_mt)
 
 	if (not new_item.Model) then

@@ -82,13 +82,13 @@ pluto.currency.list = {
 	},
 	{
 		InternalName = "crate0",
-		Name = "Box",
-		Icon = "pluto/currencies/crate0.png",
+		Name = "Blue Egg",
+		Icon = "pluto/currencies/crate0_new.png",
 		Description = "Contains a model or a very rare weapon",
 		SubDescription = "Who's there? It's been so long... please don't open me... I want to live...",
 		NoTarget = true,
-		Color = Color(240, 192, 71),
-		Use = function()
+		Color = Color(71, 170, 222),
+		ClientsideUse = function()
 			if (IsValid(pluto.opener)) then
 				pluto.opener:Remove()
 			end
@@ -110,7 +110,7 @@ pluto.currency.list = {
 		SubDescription = "Is that... it couldn't be... and what is he holding?",
 		NoTarget = true,
 		Color = Color(188, 2, 1),
-		Use = function()
+		ClientsideUse = function()
 			if (IsValid(pluto.opener)) then
 				pluto.opener:Remove()
 			end
@@ -147,7 +147,7 @@ pluto.currency.list = {
 		Description = "Set an item's nickname",
 		SubDescription = "This glass quill was used by the inscribers to write history before it was even made, what will you do with it?",
 		Color = Color(23, 127, 105),
-		Use = function(item)
+		ClientsideUse = function(item)
 			if (IsValid(pluto.opener)) then
 				pluto.opener:Remove()
 			end
@@ -188,6 +188,28 @@ pluto.currency.list = {
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
 		end
+	},
+	{
+		InternalName = "crate2",
+		Name = "Orange Egg",
+		Icon = "pluto/currencies/crate2.png",
+		Description = "Contains a model or a very rare weapon",
+		SubDescription = "Hi! I missed you!! How have you been?!",
+		NoTarget = true,
+		Color = Color(242, 132, 57),
+		ClientsideUse = function()
+			if (IsValid(pluto.opener)) then
+				pluto.opener:Remove()
+			end
+
+			pluto.opener = vgui.Create "tttrw_base"
+
+			pluto.opener:AddTab("Open Box", vgui.Create "pluto_box_open" :SetCurrency "crate0")
+
+			pluto.opener:SetSize(640, 400)
+			pluto.opener:Center()
+			pluto.opener:MakePopup()
+		end,
 	},
 }
 

@@ -27,62 +27,7 @@ local function UpdateAndDecrement(ply, item, currency)
 	transact:Run()
 end
 
-local crate0_contents = {
-	model_jacket = 400,
-	model_sauron = 200,
-	model_odst = 100,
-	model_helga = 100,
-	model_wonderw = 100,
-	model_plague = 70,
-	model_bigboss = 70,
-	model_daedric = 40,
-	model_chewie = 30,
-	model_lilith = 25,
-	model_a2lh = 15,
-	model_a2 = 15,
-	model_wick2 = 3,
-	weapon_ttt_ak47_u = 0.5,
-	weapon_ttt_deagle_u = 0.5,
-}
-
-local fill = 750 / (5 + 6 + 9)
-local crate1_contents = {
-	model_osrsbob = 50,
-	model_puggamax = 40,
-	model_santa = 5,
-	model_weebshit = 1,
-	model_tomb = 20,
-	model_warmor = 100,
-	model_cayde6 = 20,
-	model_nigt1 = 100,
-	model_nigt2 = 100,
-
-	model_metro_female_5 = fill,
-	model_metro_female_4 = fill,
-	model_metro_female_3 = fill,
-	model_metro_female_2 = fill,
-	model_metro_female_1 = fill,
-
-	model_metro6 = fill,
-	model_metro5 = fill,
-	model_metro4 = fill,
-	model_metro3 = fill,
-	model_metro2 = fill,
-	model_metro1 = fill,
-
-	model_metro_male_9 = fill,
-	model_metro_male_8 = fill,
-	model_metro_male_7 = fill,
-	model_metro_male_6 = fill,
-	model_metro_male_5 = fill,
-	model_metro_male_4 = fill,
-	model_metro_male_3 = fill,
-	model_metro_male_2 = fill,
-	model_metro_male_1 = fill,
-
-	model_hansolo = 30,
-	model_zerosamus = 2,
-}
+local crate1_fill = 750 / (5 + 6 + 9)
 
 local function process_percents(contents)
 	local shares = 0
@@ -95,22 +40,25 @@ local function process_percents(contents)
 	end
 end
 
-process_percents(crate0_contents)
-
-local function rollcrate(crate)
+function pluto.currency.rollcrate(crate)
 	local m = math.random()
 
 	local total = 0
 	for _, v in pairs(crate) do
-		total = total + v
+		total = total + (istable(v) and v.Shares or v)
 	end
 
 	m = m * total
 
 	for itemname, val in pairs(crate) do
-		m = m - val
+		if (istable(val)) then
+			m = m - val.Shares
+		else
+			m = m - val
+		end
+
 		if (m <= 0) then
-			return itemname, val / total
+			return itemname, val
 		end
 	end
 end
@@ -309,63 +257,103 @@ for name, values in pairs {
 	},
 	crate0 = {
 		Shares = 39,
-		Use = function(ply)
-			local gotten = rollcrate(crate0_contents)
-			local type = pluto.inv.itemtype(gotten)
-
-			local transact, wpn
-			if (type == "Model") then -- model
-				transact, wpn = pluto.inv.generatebuffermodel(ply, gotten:match "^model_(.+)$")
-			elseif (type == "Weapon") then -- unique
-				transact, wpn = pluto.inv.generatebufferweapon(ply, "unique", gotten)
-
-				discord.Message():AddEmbed(
-					wpn:GetDiscordEmbed()
-						:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
-				):Send "drops"
-			end
-
-			if (transact) then
-				pluto.inv.addcurrency(ply, "crate0", -1, nil, transact)
-				transact:Run(function(err)
-					if (err) then
-						return
-					end
-
-					pluto.inv.message(ply)
-						:write("crate_id", wpn.RowID)
-						:send()
-				end)
-			end
-		end,
+		Contents = {
+			model_jacket = 400,
+			model_sauron = 200,
+			model_odst = 100,
+			model_helga = 100,
+			model_wonderw = 100,
+			model_plague = 70,
+			model_bigboss = 70,
+			model_daedric = 40,
+			model_chewie = 30,
+			model_lilith = 25,
+			model_a2lh = {
+				Rare = true,
+				Shares = 15,
+			},
+			model_a2 = {
+				Rare = true,
+				Shares = 15,
+			},
+			model_wick2 = {
+				Rare = true,
+				Shares = 3,
+			},
+			weapon_ttt_ak47_u = {
+				Rare = true,
+				Tier = "unique",
+				Shares = 0.5,
+			},
+			weapon_ttt_deagle_u = {
+				Rare = true,
+				Tier = "unique",
+				Shares = 0.5,
+			},
+		},
 		Types = "None",
 	},
 	crate1 = {
 		Shares = 0,
-		Use = function(ply)
-			local gotten = rollcrate(crate1_contents)
-			local type = pluto.inv.itemtype(gotten)
+		Contents = {
+			model_osrsbob = 50,
+			model_puggamax = 40,
+			model_warmor = 100,
+			model_nigt1 = 100,
+			model_nigt2 = 100,
 
-			local transact, wpn
-			if (type == "Model") then -- model
-				transact, wpn = pluto.inv.generatebuffermodel(ply, gotten:match "^model_(.+)$")
-			elseif (type == "Weapon") then -- unique
-				transact, wpn = pluto.inv.generatebufferweapon(ply, "unique", gotten)
-			end
+			model_metro_female_5 = crate1_fill,
+			model_metro_female_4 = crate1_fill,
+			model_metro_female_3 = crate1_fill,
+			model_metro_female_2 = crate1_fill,
+			model_metro_female_1 = crate1_fill,
 
-			if (transact) then
-				pluto.inv.addcurrency(ply, "crate1", -1, nil, transact)
-				transact:Run(function(err)
-					if (err) then
-						return
-					end
+			model_metro6 = crate1_fill,
+			model_metro5 = crate1_fill,
+			model_metro4 = crate1_fill,
+			model_metro3 = crate1_fill,
+			model_metro2 = crate1_fill,
+			model_metro1 = crate1_fill,
 
-					pluto.inv.message(ply)
-						:write("crate_id", wpn.RowID)
-						:send()
-				end)
-			end
-		end,
+			model_metro_male_9 = crate1_fill,
+			model_metro_male_8 = crate1_fill,
+			model_metro_male_7 = crate1_fill,
+			model_metro_male_6 = crate1_fill,
+			model_metro_male_5 = crate1_fill,
+			model_metro_male_4 = crate1_fill,
+			model_metro_male_3 = crate1_fill,
+			model_metro_male_2 = crate1_fill,
+			model_metro_male_1 = crate1_fill,
+
+			model_cayde6 = {
+				Rare = true,
+				Shares = 20,
+			},
+			model_hansolo = {
+				Rare = true,
+				Shares = 30,
+			},
+			model_tomb = {
+				Rare = true,
+				Shares = 20,
+			},
+			model_zerosamus = {
+				Rare = true,
+				Shares = 2,
+			},
+			model_weebshit = {
+				Rare = true,
+				Shares = 1,
+			},
+			model_santa = {
+				Rare = true,
+				Shares = 5,
+			},
+		},
+		Types = "None",
+	},
+	crate2 = {
+		Shares = 0,
 		Types = "None",
 	},
 	aciddrop = {
