@@ -354,6 +354,9 @@ for name, values in pairs {
 	},
 	crate2 = {
 		Shares = 0,
+		Contents = {
+			weapon_ttt_chargeup = 1,
+		},
 		Types = "None",
 	},
 	aciddrop = {
@@ -452,6 +455,10 @@ function pluto.currency.random(n)
 	n = n * pluto.currency.shares
 
 	for _, item in ipairs(pluto.currency.list) do
+		if (not item.Shares) then
+			PrintTable(item)
+		end
+
 		n = n - item.Shares
 		if (n <= 0) then
 			return item

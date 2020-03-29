@@ -99,6 +99,8 @@ sound.Add {
 
 game.AddParticles "particles/smoke_trail.pcf"
 
+SWEP.Ortho = {-3.5, 5.5, angle = Angle(180, 0, 130), size = 0.7}
+
 DEFINE_BASECLASS(SWEP.Base)
 
 function SWEP:Initialize()

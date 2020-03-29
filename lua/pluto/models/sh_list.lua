@@ -722,49 +722,49 @@ c "captain" {
 	Name = "captain",
 	Model = "models/player/red/captain.mdl",
 	Color = ColorRand(),
-	SubDescription = "captain"
+	SubDescription = "The war left its scars on all of us. "
 }
 
 c "sergeant" {
 	Name = "sergeant",
 	Model = "models/player/green/sergeant.mdl",
 	Color = ColorRand(),
-	SubDescription = "sergeant"
+	SubDescription = "Look around. We’re one and the same. Same heart, same blood. "
 }
 
 c "general" {
 	Name = "general",
 	Model = "models/player/black/general.mdl",
 	Color = ColorRand(),
-	SubDescription = "general"
+	SubDescription = "We’re just clones, sir. We’re meant to be expendable. "
 }
 
 c "commander" {
 	Name = "commander",
 	Model = "models/player/yellow/commander.mdl",
 	Color = ColorRand(),
-	SubDescription = "commander"
+	SubDescription = "You have to learn to make your own decisions."
 }
 
 c "clone" {
 	Name = "clone",
 	Model = "models/player/swrcc/new clone.mdl",
 	Color = ColorRand(),
-	SubDescription = "clone"
+	SubDescription = "Just like the simulations. "
 }
 
 c "lieutenant" {
 	Name = "lieutenant",
 	Model = "models/player/blue/lieutenant.mdl",
 	Color = ColorRand(),
-	SubDescription = "lieutenant"
+	SubDescription = "Today we fight for more than the Republic. Today we fight for all our brothers back home."
 }
 
 c "bomb_squad" {
 	Name = "bomb squad",
 	Model = "models/player/orange/bomb squad.mdl",
 	Color = ColorRand(),
-	SubDescription = "bomb squad"
+	SubDescription = "Well looks like the bomb room."
 }
 
 c "phoenix_lo" {

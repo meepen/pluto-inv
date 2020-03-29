@@ -10,7 +10,7 @@ SWEP.Slot               = 2
 SWEP.ViewModelFlip      = false
 SWEP.ViewModelFOV       = 64
 
-SWEP.Ortho = {2.8, 4}
+SWEP.Ortho = {-5.5, 8, angle = Angle(0, -55, 0), size = 0.9}
 
 SWEP.Base                  = "weapon_tttbase"
 
