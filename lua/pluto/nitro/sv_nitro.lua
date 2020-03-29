@@ -134,7 +134,7 @@ local NitroRewards = {
 	},
 	{
 		Since = os.time {
-			day = 29,
+			day = 30,
 			hour = 0,
 			year = 2020,
 			month = 3,
