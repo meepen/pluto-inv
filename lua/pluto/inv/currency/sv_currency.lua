@@ -32,11 +32,11 @@ local crate1_fill = 750 / (5 + 6 + 9)
 local function process_percents(contents)
 	local shares = 0
 	for k, n in pairs(contents) do
-		shares = shares + n
+		shares = shares + (istable(n) and n.Shares or n)
 	end
 
-	for k, n in SortedPairsByValue(contents) do
-		pprintf("%.02f%% - %s", (n / shares) * 100, k)
+	for k, n in pairs(contents) do
+		pprintf("%.02f%% - %s", ((istable(n) and n.Shares or n) / shares) * 100, k)
 	end
 end
 
@@ -353,7 +353,7 @@ for name, values in pairs {
 		Types = "None",
 	},
 	crate2 = {
-		Shares = 0,
+		Shares = 19,
 		Contents = {
 			weapon_ttt_chargeup = {
 				Rare = true,
@@ -363,10 +363,70 @@ for name, values in pairs {
 				Rare = true,
 				Shares = 1
 			},
-			weapon_ttt_deagle_gold = {
+
+			model_ciri = {
 				Rare = true,
-				Shares = 1
+				Shares = 4
 			},
+			model_spacesuit = {
+				Rare = true,
+				Shares = 4
+			},
+			model_zer0 = {
+				Rare = true,
+				Shares = 4
+			},
+			model_deadpool = {
+				Rare = true,
+				Shares = 4,
+			},
+
+			model_tachanka = {
+				Rare = true,
+				Shares = 12,
+			},
+			model_noob_saibo = {
+				Rare = true,
+				Shares = 12,
+			},
+			model_raincoat = {
+				Rare = true,
+				Shares = 12,
+			},
+			model_psycho = {
+				Rare = true,
+				Shares = 12,
+			},
+
+			model_tron_anon = 30,
+			model_spy = 36,
+
+			model_bomb_squad = 50,
+			model_lieutenant = 50,
+			model_clone = 50,
+			model_commander = 50,
+			model_general = 50,
+			model_sergeant = 50,
+			model_captain = 50,
+			model_brown_spar = 30,
+			model_white_spar = 30,
+			model_teal_spart = 30,
+			model_red_sparta = 30,
+			model_purple_spa = 30,
+			model_olive_spar = 30,
+			model_cyan_spart = 30,
+			model_cobalt_spa = 30,
+			model_crimson_sp = 30,
+			model_sage_spart = 30,
+			model_master_chi = 30,
+			model_blue_spart = 30,
+			model_tan_sparta = 30,
+			model_steel_spar = 30,
+			model_orange_spa = 30,
+			model_green_spar = 30,
+			model_pink_spart = 30,
+			model_gold_spart = 30,
+			model_violet_spa = 30,
 		},
 		Types = "None",
 	},
@@ -435,6 +495,8 @@ for name, values in pairs {
 } do
 	table.Merge(pluto.currency.byname[name], values)
 end
+
+process_percents(pluto.currency.byname.crate0.Contents)
 
 for _, item in pairs(pluto.currency.list) do
 	pluto.currency.shares = pluto.currency.shares + item.Shares

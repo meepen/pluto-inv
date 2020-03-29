@@ -507,6 +507,10 @@ function pluto.inv.readcurrencyuse(ply)
 			transact, wpn = pluto.inv.generatebufferweapon(ply, istable(data) and data.Tier or "unique", gotten)
 		end
 
+		if (not wpn) then
+			print(gotten)
+		end
+
 		if (istable(data) and data.Rare) then
 			discord.Message():AddEmbed(
 				wpn:GetDiscordEmbed()

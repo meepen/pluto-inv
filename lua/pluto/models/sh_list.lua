@@ -719,56 +719,56 @@ c "brown_spar" {
 }
 
 c "captain" {
-	Name = "captain",
+	Name = "Captain",
 	Model = "models/player/red/captain.mdl",
 	Color = ColorRand(),
 	SubDescription = "The war left its scars on all of us. "
 }
 
 c "sergeant" {
-	Name = "sergeant",
+	Name = "Sergeant",
 	Model = "models/player/green/sergeant.mdl",
 	Color = ColorRand(),
 	SubDescription = "Look around. We’re one and the same. Same heart, same blood. "
 }
 
 c "general" {
-	Name = "general",
+	Name = "General",
 	Model = "models/player/black/general.mdl",
 	Color = ColorRand(),
 	SubDescription = "We’re just clones, sir. We’re meant to be expendable. "
 }
 
 c "commander" {
-	Name = "commander",
+	Name = "Commander",
 	Model = "models/player/yellow/commander.mdl",
 	Color = ColorRand(),
 	SubDescription = "You have to learn to make your own decisions."
 }
 
 c "clone" {
-	Name = "clone",
+	Name = "Clone",
 	Model = "models/player/swrcc/new clone.mdl",
 	Color = ColorRand(),
 	SubDescription = "Just like the simulations. "
 }
 
 c "lieutenant" {
-	Name = "lieutenant",
+	Name = "Lieutenant",
 	Model = "models/player/blue/lieutenant.mdl",
 	Color = ColorRand(),
 	SubDescription = "Today we fight for more than the Republic. Today we fight for all our brothers back home."
 }
 
 c "bomb_squad" {
-	Name = "bomb squad",
+	Name = "Bomb Squad",
 	Model = "models/player/orange/bomb squad.mdl",
 	Color = ColorRand(),
 	SubDescription = "Well looks like the bomb room."
 }
 
 c "phoenix_lo" {
-	Name = "Phoenix_Low",
+	Name = "Low-Poly Phoenix",
 	Model = "models/player/phoenix_low.mdl",
 	Hands = "models/weapons/c_arms_leet_low.mdl",
 	Color = ColorRand(),
@@ -776,7 +776,7 @@ c "phoenix_lo" {
 }
 
 c "leet_low" {
-	Name = "Leet_Low",
+	Name = "Low-Poly Leet",
 	Model = "models/player/zurdo.mdl",
 	Hands = "models/weapons/c_arms_leet_low.mdl",
 	Color = ColorRand(),
@@ -784,7 +784,7 @@ c "leet_low" {
 }
 
 c "guerilla_l" {
-	Name = "Guerilla_Low",
+	Name = "Low-Poly Guerilla",
 	Model = "models/player/guerilla_low.mdl",
 	Hands = "models/weapons/c_arms_leet_low.mdl",
 	Color = ColorRand(),
@@ -792,7 +792,7 @@ c "guerilla_l" {
 }
 
 c "arctic_low" {
-	Name = "Arctic_Low",
+	Name = "Low-Poly Arctic",
 	Model = "models/player/arctic_low.mdl",
 	Hands = "models/weapons/c_arms_leet_low.mdl",
 	Color = ColorRand(),
