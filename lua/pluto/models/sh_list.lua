@@ -871,7 +871,7 @@ c "noob_saibo" {
 }
 
 c "raincoat" {
-	Name = "raincoat",
+	Name = "Raincoat",
 	Model = "models/human/raincoat.mdl",
 	Hands = "models/human/c_hands.mdl",
 	Color = CRATE2_COL(0.8),
