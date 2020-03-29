@@ -355,7 +355,18 @@ for name, values in pairs {
 	crate2 = {
 		Shares = 0,
 		Contents = {
-			weapon_ttt_chargeup = 1,
+			weapon_ttt_chargeup = {
+				Rare = true,
+				Shares = 1,
+			},
+			weapon_tfa_cso2_m3dragon = {
+				Rare = true,
+				Shares = 1
+			},
+			weapon_ttt_deagle_gold = {
+				Rare = true,
+				Shares = 1
+			},
 		},
 		Types = "None",
 	},

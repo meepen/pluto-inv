@@ -1,6 +1,4 @@
-
-
-SWEP.PrintName = "TRG-42"
+SWEP.PrintName = "ӜӔἮꞬʍʥȳ"
 AddCSLuaFile()
 
 SWEP.HoldType              = "ar2"
