@@ -399,8 +399,8 @@ for name, values in pairs {
 			},
 
 			model_tron_anon = 30,
-			model_spy = 36,
 
+			model_wolffe = 50,
 			model_bomb_squad = 50,
 			model_lieutenant = 50,
 			model_clone = 50,
