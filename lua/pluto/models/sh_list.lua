@@ -906,7 +906,7 @@ c "spy" {
 	Model = "models/player/spyplayer/spy.mdl",
 	Hands = "models/player/spyplayer/spy_hands.mdl",
 	Color = Color(219, 11, 181),
-	SubDescription = "Well, off to visit your mother!\nSuggested by BURNSY on the March 2020 Forum Thread"
+	SubDescription = "Well, off to visit your mother!\nSuggested by BURNSY (and Phrot) on the March 2020 Forum Thread"
 }
 
 -- needs hitbox fixer
