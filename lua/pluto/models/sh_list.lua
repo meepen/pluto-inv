@@ -898,7 +898,7 @@ c "tron_anon" {
 	Model = "models/player/anon/anon.mdl",
 	Hands = "models/weapons/arms/anon_arms.mdl",
 	Color = CRATE2_COL(0.26),
-	SubDescription = "Tron Anon\nSuggested by Sηεαкү on the March 2020 Forum Thread"
+	SubDescription = "\nSuggested by Sηεαкү on the March 2020 Forum Thread"
 }
 
 c "spy" {
