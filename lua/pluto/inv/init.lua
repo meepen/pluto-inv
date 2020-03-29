@@ -325,6 +325,11 @@ function pluto.inv.retrieveitems(steamid, cb)
 			for _, item in pairs(q:getData()) do
 				local wpn = weapons[item.gun_index]
 
+				if (not wpn) then
+					pwarnf("Mod %i doesn't associate with weapon %i", item.idx, item.gun_index)
+					continue
+				end
+
 				local mod = pluto.mods.byname[item.modname]
 
 				wpn.Mods[mod.Type] = wpn.Mods[mod.Type] or {}

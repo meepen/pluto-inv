@@ -245,6 +245,12 @@ local packs =  {
 		versions = {
 			"20200326",
 		}
+	},
+	tfa_cso2 = {
+		remote = "https://cdn.pluto.gg/tfa_cso2.gma",
+		versions = {
+			"20200328_5",
+		}
 	},--[[
 	bo2 = {
 		remote = "https://cdn.pluto.gg/bo2.gma",
@@ -253,6 +259,10 @@ local packs =  {
 		}
 	}]]
 }
+
+local good_col = Color(0, 255, 0)
+local error_col = Color(255, 0, 0)
+local ok_col = Color(255, 255, 0)
 
 local to_mount = {}
 local status = {}
@@ -275,7 +285,10 @@ hook.Add("DrawOverlay", "pluto_workshop", function()
 	for pack, status in SortedPairs(status) do
 		surface.SetTextPos(2, y)
 		y = y + h
-		surface.DrawText(pack .. ": " .. status)
+		surface.SetTextColor(white_text)
+		surface.DrawText(pack .. ": ")
+		surface.SetTextColor(status[1])
+		surface.DrawText(status[2])
 	end
 end)
 
@@ -290,7 +303,7 @@ local function check_mount()
 			local succ, fs = game.MountGMA("data/" .. fname)
 
 			if (not succ) then
-				status[pack] = "Couldn't mount."
+				status[pack] = {error_col, "Couldn't mount"}
 				return
 			end
 
@@ -301,7 +314,7 @@ local function check_mount()
 				end
 			end
 
-			status[pack] = "Mounted."
+			status[pack] = {good_col, "Mounted."}
 			to_mount[pack] = nil
 		end
 		RunConsoleCommand "snd_restart"
@@ -329,18 +342,18 @@ for pack, data in SortedPairs(packs) do
 	end
 
 	local function fail(err)
-		status[pack] = "ERROR: " .. err
+		status[pack] = {error_col, "ERROR: " .. err}
 		to_mount[pack] = false
 		file.Delete("data/" .. fname)
 	end
 
 	local function update(msg)
-		status[pack] = msg
+		status[pack] = {ok_col, msg}
 	end
 
 	local function mount()
 		to_mount[pack] = fname
-		status[pack] = "Ready to mount."
+		status[pack] = {good_col, "Ready to mount."}
 		check_mount()
 	end
 

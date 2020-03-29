@@ -129,7 +129,6 @@ function pluto.mapvote.start()
 		for i, map in pairs(valid) do
 			if (map == maptoremove) then
 				table.remove(valid, i)
-				print("REMOVE", map)
 				break
 			end
 		end

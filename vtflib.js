@@ -524,7 +524,7 @@ exports.VTFFile = class VTFFile extends BinaryEditor {
 					}
 					else if ((resource.Type & 0x02000000) == 0) {
 						let last_size = this.size;
-						this.size = obj.Data;
+						this.size = resource.Data;
 						this.Resources.push(new VTFResource(resource.Type, this.read(this.readu32())));
 						this.size = last_size;
 					}

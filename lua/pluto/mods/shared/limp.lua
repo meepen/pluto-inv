@@ -19,7 +19,7 @@ hook.Add("TTTUpdatePlayerSpeed", "pluto_limp", function(ply, data)
 	local sloweduntil = ply:GetSlowedUntil()
 
 	if (sloweduntil > CurTime() and ply:GetSlowedStart() < CurTime()) then
-		data.FinalMultiplier = data.FinalMultiplier * 0.3
+		data.FinalMultiplier = data.FinalMultiplier * 0.5
 	end
 end)
 

@@ -19,6 +19,7 @@ pluto.files.load {
 		"nitro/cl_nitro.lua",
 		"quests/cl_quests.lua",
 		"models/cl_showhitgroups.lua",
+		"tfa/external/tfa_cso2_snd_heavy.lua",
 	},
 	Shared = {
 		"co_net.lua",

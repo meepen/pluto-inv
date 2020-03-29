@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+	$basetexture	"models\tfa_cso2/v/shot_m3super90\v_M3"
+	$bumpmap "models\tfa_cso2/v/shot_m3super90\v_M3_normal"
+
+	$phong "1"
+	$phongboost "6"
+	$phongexponent "24"
+	$phongfresnelranges "[0.35 0.5 1.0]"
+
+	$envmap "env_cubemap"
+	$envmaptint "[0.1 0.1 0.1]"
+	$normalmapalphaenvmapmask "1"
+	$envmapfresnel "0.4"
+}
+

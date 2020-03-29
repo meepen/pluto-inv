@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+	$basetexture	"models/tfa_cso2/w/w_snip_cupidawp/w_cupidawp_01"
+	$bumpmap "models/tfa_cso2/w/w_snip_cupidawp/w_cupidawp_01_normal"
+
+	$phong "1"
+	$phongboost "12"
+	$phongexponent "11"
+	$phongfresnelranges "[0.1 0.35 1.0]"
+
+	$envmap "env_cubemap"
+	$envmaptint "[0.1 0.1 0.1]"
+	$normalmapalphaenvmapmask "1"
+	$envmapfresnel "0.4"
+}
