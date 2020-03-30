@@ -873,8 +873,8 @@ c "noob_saibo" {
 c "raincoat" {
 	Name = "Raincoat",
 	Model = "models/human/raincoat.mdl",
-	Hands = "models/human/c_hands.mdl",
-	Color = CRATE2_COL(0.8),
+	--Hands = "models/human/c_hands.mdl", Hand don't work on this model
+ 	Color = CRATE2_COL(0.8),
 	SubDescription = "The most dangerous enemy in the Otherworld.\nSuggested by Froggy on the March 2020 Forum Thread"
 }
 
