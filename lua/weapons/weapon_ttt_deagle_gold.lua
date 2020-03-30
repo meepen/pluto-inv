@@ -21,7 +21,7 @@ SWEP.Primary.Sound = "Golden_Deagle.Single"
 SWEP.Primary.Ammo = "AlyxGun"
 SWEP.AmmoEnt = "item_ammo_revolver_ttt"
 
-SWEP.HeadshotMultiplier = 3
+SWEP.HeadshotMultiplier = 3.5
 
 SWEP.HoldType = "pistol"
 SWEP.ViewModel = "models/weapons/zaratusa/golden_deagle/v_golden_deagle.mdl"
