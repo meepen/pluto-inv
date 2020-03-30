@@ -42,6 +42,7 @@ SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic = false 
 SWEP.Secondary.Ammo = ""
+SWEP.DeploySpeed = 1.3
 
 SWEP.PreventLowered = true
 
