@@ -18,7 +18,7 @@ SWEP.Spawnable				= false
 SWEP.AdminSpawnable			= true
 
 SWEP.Primary.Sound			= Sound("Weapon_mp7.shoot") --razorswep/mp7/mp7.ogg  ---place holder Weapon_SMG1.Double
-SWEP.Primary.Delay			= 60 / 700
+SWEP.Primary.Delay			= 60 / 750
 SWEP.Primary.ClipSize			= 30
 SWEP.Primary.DefaultClip		= 60
 SWEP.Primary.Recoil = 2
@@ -27,8 +27,11 @@ SWEP.Primary.Ammo			= "pistol"
 SWEP.AmmoEnt = "item_ammo_pistol_ttt"
 
 SWEP.Primary.NumShots	= 1
-SWEP.Primary.Damage		= 16
-SWEP.HeadshotMultiplier = 1.3
+SWEP.Primary.Damage		= 13
+SWEP.HeadshotMultiplier = 1.27
+SWEP.DeploySpeed = 1.5
+
+SWEP.Ortho = {0, 5}
 
 SWEP.Ironsights = {
 	Pos = Vector(-2.425, -2.343, 0.647),
@@ -62,18 +65,20 @@ SWEP.Bullets = {
 	Spread = Vector(0.035, 0.045)
 }
 
-local pow = 0.6
+local power = 4
+
 SWEP.RecoilInstructions = {
 	Interval = 1,
-	pow * Angle(-6, -2),
-	pow * Angle(-4, -1),
-	pow * Angle(-2, 3),
-	pow * Angle(-1, 0),
-	pow * Angle(-1, 0),
-	pow * Angle(-3, 2),
-	pow * Angle(-3, 1),
-	pow * Angle(-2, 0),
-	pow * Angle(-3, -3),
+	Angle(-power, -power * 0.6),
+	Angle(-power, -power * 0.48),
+	Angle(-power, -power * 0.2),
+	Angle(-power, power * 0.4),
+	Angle(-power, power * 0.2),
+	Angle(-power, power * 0.6),
+	Angle(-power, power * 0.35),
+	Angle(-power, power * 0.2),
+	Angle(-power, -power * 0.2),
+	Angle(-power, -power * 0.4),
 }
 
 
