@@ -3,7 +3,7 @@ local config = {
 		host = "45.76.27.165",
 		username = "pluto",
 		database = "pluto",
-		password = "M34v@g#b&TrN",
+		password = "IwE6&60b^z%h$EM9",
 		name = "Main",
 	},
 }
