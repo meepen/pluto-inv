@@ -1,20 +1,4 @@
 AddCSLuaFile()
-local path = "weapons/tfa_ins2/mp7/"
-local pref = "TFA_INS2.MP7"
-
-TFA.AddFireSound(pref .. ".1", path .. "fp.ogg", false, ")")
-TFA.AddFireSound(pref .. ".2", path .. "fp_suppressed.ogg", false, ")")
-
-TFA.AddWeaponSound("TFA_INS2.BipodSwivel", { "weapons/tfa_ins2/uni/uni_bipod_swivel_01.ogg", "weapons/tfa_ins2/uni/uni_bipod_swivel_02.ogg", "weapons/tfa_ins2/uni/uni_bipod_swivel_03.ogg", "weapons/tfa_ins2/uni/uni_bipod_swivel_04.ogg", "weapons/tfa_ins2/uni/uni_bipod_swivel_05.ogg" })
-
-TFA.AddWeaponSound(pref .. ".Empty", path .. "empty.ogg")
-TFA.AddWeaponSound(pref .. ".Boltback", path .. "boltback.ogg")
-TFA.AddWeaponSound(pref .. ".Boltrelease", path .. "boltrelease.ogg")
-TFA.AddWeaponSound(pref .. ".Magrelease", path .. "magrelease.ogg")
-TFA.AddWeaponSound(pref .. ".Magout", path .. "magout.ogg")
-TFA.AddWeaponSound(pref .. ".Magin", path .. "magin.ogg")
-TFA.AddWeaponSound(pref .. ".ROF", path .. "fireselect.ogg")
-
 
 SWEP.Base				= "weapon_tttbase"
 
@@ -27,8 +11,8 @@ SWEP.HoldType 				= "smg"
 
 SWEP.ViewModelFOV			= 65
 SWEP.ViewModelFlip			= false
-SWEP.ViewModel				= "models/weapons/tfa_ins2/c_mp7.mdl"
-SWEP.WorldModel				= "models/weapons/tfa_ins2/w_mp7.mdl"
+SWEP.ViewModel				= "models/razorswep/weapons/v_smg_mp7.mdl"
+SWEP.WorldModel				= "models/razorswep/weapons/w_smg_mp7.mdl"
 
 SWEP.Offset = {
 	Pos = {
@@ -47,7 +31,7 @@ SWEP.Offset = {
 SWEP.Spawnable				= true
 SWEP.AdminSpawnable			= true
 
-SWEP.Primary.Sound			= pref .. ".1"
+SWEP.Primary.Sound			= Sound("razorswep/mp7/mp7.wav")
 SWEP.Primary.Delay			= 60 / 950
 SWEP.Primary.ClipSize			= 30
 SWEP.Primary.DefaultClip		= 60
@@ -77,3 +61,91 @@ SWEP.Bullets = {
 	DamageMinimumPercent = 0.1,
 	Spread = Vector(0.035, 0.045)
 }
+
+local instbl = {}
+instbl["channel"] = "3"
+instbl["level"] = "75"
+instbl["volume"] = "1.0"
+instbl["CompatibilityAttenuation"] = "1"
+instbl["pitch"] = "95,105"
+instbl["sound"] = "razorswep/mp7/magout.wav"
+instbl["name"] = "MP7.magout"
+
+sound.Add(instbl)
+
+local instbl = {}
+instbl["channel"] = "3"
+instbl["level"] = "75"
+instbl["volume"] = "1.0"
+instbl["CompatibilityAttenuation"] = "1"
+instbl["pitch"] = "95,105"
+instbl["sound"] = "razorswep/mp7/magdraw.wav"
+instbl["name"] = "MP7.magdraw"
+
+sound.Add(instbl)
+
+local instbl = {}
+instbl["channel"] = "3"
+instbl["level"] = "75"
+instbl["volume"] = "1.0"
+instbl["CompatibilityAttenuation"] = "1"
+instbl["pitch"] = "95,105"
+instbl["sound"] = "razorswep/mp7/magin.wav"
+instbl["name"] = "MP7.magin"
+
+sound.Add(instbl)
+
+local instbl = {}
+instbl["channel"] = "3"
+instbl["level"] = "75"
+instbl["volume"] = "1.0"
+instbl["CompatibilityAttenuation"] = "1"
+instbl["pitch"] = "95,105"
+instbl["sound"] = "razorswep/mp7/magin2.wav"
+instbl["name"] = "MP7.magin2"
+
+sound.Add(instbl)
+
+local instbl = {}
+instbl["channel"] = "3"
+instbl["level"] = "75"
+instbl["volume"] = "1.0"
+instbl["CompatibilityAttenuation"] = "1"
+instbl["pitch"] = "95,105"
+instbl["sound"] = "razorswep/mp7/boltrelease.wav"
+instbl["name"] = "MP7.boltrelease"
+
+sound.Add(instbl)
+
+local instbl = {}
+instbl["channel"] = "3"
+instbl["level"] = "75"
+instbl["volume"] = "1.0"
+instbl["CompatibilityAttenuation"] = "1"
+instbl["pitch"] = "95,105"
+instbl["sound"] = "razorswep/mp7/handle.wav"
+instbl["name"] = "MP7.handle"
+
+sound.Add(instbl)
+
+local instbl = {}
+instbl["channel"] = "3"
+instbl["level"] = "75"
+instbl["volume"] = "1.0"
+instbl["CompatibilityAttenuation"] = "1"
+instbl["pitch"] = "95,105"
+instbl["sound"] = "razorswep/mp7/draw.wav"
+instbl["name"] = "MP7.draw"
+
+sound.Add(instbl)
+
+local instbl = {}
+instbl["channel"] = "3"
+instbl["level"] = "75"
+instbl["volume"] = "1.0"
+instbl["CompatibilityAttenuation"] = "1"
+instbl["pitch"] = "95,105"
+instbl["sound"] = "razorswep/mp7/foregrip.wav"
+instbl["name"] = "MP7.foregrip"
+
+sound.Add(instbl)

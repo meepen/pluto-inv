@@ -1,0 +1,11 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/weapons\v_models\smg_mp5\T1"	
+	"$bumpmap" "models/weapons/v_models/smg_mp5/T1_normal"
+	"$phong" "1"
+	"$phongboost" "0.05"	
+	"$phongfresnelranges"	"[1 2 6]"
+	"$halflambert" "1"
+	"$phongexponenttexture" "models\weapons\v_models\smg_mp5\T1_phong"     
+}
+
