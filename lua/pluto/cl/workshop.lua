@@ -28,6 +28,7 @@ local packs =  {
 	mp7 = {
 		remote = "https://cdn.pluto.gg/mp7.gma",
 		versions = {
+			"20200331",
 			"20200223_222",
 			"20191117",
 			"20191115",

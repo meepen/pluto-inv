@@ -2,7 +2,6 @@ AddCSLuaFile()
 
 SWEP.Base				= "weapon_tttbase"
 
-SWEP.Author				= "Trash Burglar"
 SWEP.PrintName				= "MP7"
 SWEP.Slot				= 2
 SWEP.SlotPos				= 0
@@ -13,6 +12,31 @@ SWEP.ViewModelFOV			= 65
 SWEP.ViewModelFlip			= false
 SWEP.ViewModel				= "models/razorswep/weapons/v_smg_mp7.mdl"
 SWEP.WorldModel				= "models/razorswep/weapons/w_smg_mp7.mdl"
+
+SWEP.Spawnable				= true
+SWEP.AdminSpawnable			= true
+
+SWEP.Primary.Sound			= Sound("Weapon_mp7.shoot") --razorswep/mp7/mp7.ogg  ---place holder Weapon_SMG1.Double
+SWEP.Primary.Delay			= 60 / 700
+SWEP.Primary.ClipSize			= 30
+SWEP.Primary.DefaultClip		= 60
+SWEP.Primary.Recoil = 2
+SWEP.Primary.Automatic			= true
+SWEP.Primary.Ammo			= "pistol"
+SWEP.AmmoEnt = "item_ammo_pistol_ttt"
+
+SWEP.Primary.NumShots	= 1
+SWEP.Primary.Damage		= 16
+SWEP.HeadshotMultiplier = 1.3
+
+SWEP.Ironsights = {
+	Pos = Vector(-2.425, -2.343, 0.647),
+	Angle = Vector(0.681, -0.005, 0),
+	TimeTo = 0.2,
+	TimeFrom = 0.15,
+	SlowDown = 0.3,
+	Zoom = 0.9,
+}
 
 SWEP.Offset = {
 	Pos = {
@@ -28,31 +52,6 @@ SWEP.Offset = {
 	Scale = 1
 }
 
-SWEP.Spawnable				= true
-SWEP.AdminSpawnable			= true
-
-SWEP.Primary.Sound			= Sound("razorswep/mp7/mp7.wav")
-SWEP.Primary.Delay			= 60 / 950
-SWEP.Primary.ClipSize			= 30
-SWEP.Primary.DefaultClip		= 60
-SWEP.Primary.Recoil = 1.1
-SWEP.Primary.Automatic			= true
-SWEP.Primary.Ammo			= "pistol"
-SWEP.AmmoEnt = "item_ammo_pistol_ttt"
-
-SWEP.Primary.NumShots	= 1
-SWEP.Primary.Damage		= 16
-SWEP.HeadshotMultiplier = 1.6
-
-SWEP.Ironsights = {
-	Pos = Vector(-2.425, -2.343, 0.647),
-	Angle = Vector(0.681, -0.005, 0),
-	TimeTo = 0.2,
-	TimeFrom = 0.15,
-	SlowDown = 0.3,
-	Zoom = 0.9,
-}
-
 SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
@@ -62,13 +61,34 @@ SWEP.Bullets = {
 	Spread = Vector(0.035, 0.045)
 }
 
+local pow = 0.6
+SWEP.RecoilInstructions = {
+	Interval = 1,
+	pow * Angle(-6, -2),
+	pow * Angle(-4, -1),
+	pow * Angle(-2, 3),
+	pow * Angle(-1, 0),
+	pow * Angle(-1, 0),
+	pow * Angle(-3, 2),
+	pow * Angle(-3, 1),
+	pow * Angle(-2, 0),
+	pow * Angle(-3, -3),
+}
+
+
+
+
+
+-- sounds
+
+
 local instbl = {}
 instbl["channel"] = "3"
 instbl["level"] = "75"
 instbl["volume"] = "1.0"
 instbl["CompatibilityAttenuation"] = "1"
 instbl["pitch"] = "95,105"
-instbl["sound"] = "razorswep/mp7/magout.wav"
+instbl["sound"] = "razorswep/mp7/magout.ogg"
 instbl["name"] = "MP7.magout"
 
 sound.Add(instbl)
@@ -79,7 +99,7 @@ instbl["level"] = "75"
 instbl["volume"] = "1.0"
 instbl["CompatibilityAttenuation"] = "1"
 instbl["pitch"] = "95,105"
-instbl["sound"] = "razorswep/mp7/magdraw.wav"
+instbl["sound"] = "razorswep/mp7/magdraw.ogg"
 instbl["name"] = "MP7.magdraw"
 
 sound.Add(instbl)
@@ -90,7 +110,7 @@ instbl["level"] = "75"
 instbl["volume"] = "1.0"
 instbl["CompatibilityAttenuation"] = "1"
 instbl["pitch"] = "95,105"
-instbl["sound"] = "razorswep/mp7/magin.wav"
+instbl["sound"] = "razorswep/mp7/magin.ogg"
 instbl["name"] = "MP7.magin"
 
 sound.Add(instbl)
@@ -101,7 +121,7 @@ instbl["level"] = "75"
 instbl["volume"] = "1.0"
 instbl["CompatibilityAttenuation"] = "1"
 instbl["pitch"] = "95,105"
-instbl["sound"] = "razorswep/mp7/magin2.wav"
+instbl["sound"] = "razorswep/mp7/magin2.ogg"
 instbl["name"] = "MP7.magin2"
 
 sound.Add(instbl)
@@ -112,7 +132,7 @@ instbl["level"] = "75"
 instbl["volume"] = "1.0"
 instbl["CompatibilityAttenuation"] = "1"
 instbl["pitch"] = "95,105"
-instbl["sound"] = "razorswep/mp7/boltrelease.wav"
+instbl["sound"] = "razorswep/mp7/boltrelease.ogg"
 instbl["name"] = "MP7.boltrelease"
 
 sound.Add(instbl)
@@ -123,7 +143,7 @@ instbl["level"] = "75"
 instbl["volume"] = "1.0"
 instbl["CompatibilityAttenuation"] = "1"
 instbl["pitch"] = "95,105"
-instbl["sound"] = "razorswep/mp7/handle.wav"
+instbl["sound"] = "razorswep/mp7/handle.ogg"
 instbl["name"] = "MP7.handle"
 
 sound.Add(instbl)
@@ -134,7 +154,7 @@ instbl["level"] = "75"
 instbl["volume"] = "1.0"
 instbl["CompatibilityAttenuation"] = "1"
 instbl["pitch"] = "95,105"
-instbl["sound"] = "razorswep/mp7/draw.wav"
+instbl["sound"] = "razorswep/mp7/draw.ogg"
 instbl["name"] = "MP7.draw"
 
 sound.Add(instbl)
@@ -145,7 +165,26 @@ instbl["level"] = "75"
 instbl["volume"] = "1.0"
 instbl["CompatibilityAttenuation"] = "1"
 instbl["pitch"] = "95,105"
-instbl["sound"] = "razorswep/mp7/foregrip.wav"
+instbl["sound"] = "razorswep/mp7/foregrip.ogg"
 instbl["name"] = "MP7.foregrip"
 
 sound.Add(instbl)
+
+local instbl = {}
+instbl["channel"] = "3"
+instbl["level"] = "75"
+instbl["volume"] = "1.0"
+instbl["CompatibilityAttenuation"] = "1"
+instbl["pitch"] = "95,105"
+instbl["sound"] = "razorswep/mp7/mp7.ogg"
+instbl["name"] = "MP7.fire"
+
+sound.Add(instbl)
+
+sound.Add {
+	name = "Weapon_mp7.shoot",
+	channel = CHAN_WEAPON,
+	volume = 1,
+	soundlevel = 50,
+	sound = "razorswep/mp7/mp7.ogg"
+}
