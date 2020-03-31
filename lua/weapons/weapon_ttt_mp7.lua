@@ -13,7 +13,8 @@ SWEP.ViewModelFlip			= false
 SWEP.ViewModel				= "models/razorswep/weapons/v_smg_mp7.mdl"
 SWEP.WorldModel				= "models/razorswep/weapons/w_smg_mp7.mdl"
 
-SWEP.Spawnable				= true
+SWEP.AutoSpawnable          = false
+SWEP.Spawnable				= false
 SWEP.AdminSpawnable			= true
 
 SWEP.Primary.Sound			= Sound("Weapon_mp7.shoot") --razorswep/mp7/mp7.ogg  ---place holder Weapon_SMG1.Double
