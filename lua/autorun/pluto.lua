@@ -5,7 +5,7 @@ AddCSLuaFile "pluto/files.lua"
 
 pluto.files.load {
 	Client = {
-		"cl/richtextformat.lua",
+		--"cl/richtextformat.lua",
 		"cl/hacks.lua",
 		"cl/settings.lua",
 		"inv/ui.lua",
@@ -19,7 +19,6 @@ pluto.files.load {
 		"nitro/cl_nitro.lua",
 		"quests/cl_quests.lua",
 		"models/cl_showhitgroups.lua",
-		"tfa/external/tfa_cso2_snd_heavy.lua",
 	},
 	Shared = {
 		"co_net.lua",
@@ -39,6 +38,7 @@ pluto.files.load {
 		"util.lua",
 
 		"mods/shared/limp.lua",
+		"tfa/external/tfa_cso2_snd_heavy.lua",
 
 		-- "unicode/init.lua",
 		-- "unicode/casefolding.lua",

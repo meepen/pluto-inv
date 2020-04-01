@@ -4342,5 +4342,17 @@
         "sound/tfa_cso2/weapons/xm214/xm214_pinpull.ogg",
         "sound/tfa_cso2/weapons/xm214/xm214_pinpush.ogg",
         "particles/tfa_cso2_particles.pcf"
-	]
+    ],
+    "jigglebar": [
+        "models/weapons/c_jrowbar.dx80.vtx",
+        "models/weapons/c_jrowbar.dx90.vtx",
+        "models/weapons/c_jrowbar.mdl",
+        "models/weapons/c_jrowbar.sw.vtx",
+        "models/weapons/c_jrowbar.vvd",
+        "models/weapons/w_jrowbar.dx80.vtx",
+        "models/weapons/w_jrowbar.dx90.vtx",
+        "models/weapons/w_jrowbar.mdl",
+        "models/weapons/w_jrowbar.sw.vtx",
+        "models/weapons/w_jrowbar.vvd"
+    ]
 }

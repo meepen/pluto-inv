@@ -10,8 +10,8 @@ pluto.quests.types = {
 	[0] = {
 		Name = "Special",
 		Time = 60 * 60 * 24, -- day
-		Amount = 0,
-		Cooldown = 0,
+		Amount = 1,
+		Cooldown = 60 * 60 * 24 * 7,
 	},
 	[1] = {
 		Name = "Hourly",
@@ -36,6 +36,8 @@ pluto.quests.types = {
 pluto.quests.list = pluto.quests.list or {}
 
 for _, id in pairs {
+	"april_fools",
+
 	"melee",
 	"nojump",
 	"oneshot",
