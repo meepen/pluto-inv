@@ -25,6 +25,8 @@ pluto.files.load {
 
 		"inv/currency/sv_currency.lua",
 		"inv/currency/sv_crossmap.lua",
+
+		"events/sv_aprilfools.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty
