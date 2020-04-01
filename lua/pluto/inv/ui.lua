@@ -1009,7 +1009,7 @@ end
 
 function PANEL:Think()
 	local width_biggening = self:GetWide() / 5
-	local size = self:GetWide() - width_biggening + width_biggening * (pluto.cl_currency[self.Currency] <= 0 and 0 or self:GetHoverPercent())
+	local size = self:GetWide() - width_biggening + width_biggening * ((pluto.cl_currency[self.Currency] or 0) <= 0 and 0 or self:GetHoverPercent())
 
 	self.Image:SetSize(size, size)
 	self.Image:Center()

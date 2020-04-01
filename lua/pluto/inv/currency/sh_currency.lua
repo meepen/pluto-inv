@@ -211,6 +211,14 @@ pluto.currency.list = {
 			pluto.opener:MakePopup()
 		end
 	},
+	{
+		InternalName = "tp",
+		Name = "Toilet Paper",
+		Icon = "pluto/currencies/toiletpaper.png",
+		Description = "Valuable Currency During the Quarantine",
+		SubDescription = "Toilet paper was the first to go when it started.",
+		Color = Color(235, 240, 236, 255),
+	},
 }
 
 for _, item in pairs(pluto.currency.list) do
