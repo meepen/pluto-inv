@@ -9,7 +9,7 @@ pluto.quests.loading = pluto.quests.loading or {}
 pluto.quests.types = {
 	[0] = {
 		Name = "Special",
-		Time = 60 * 60 * 24, -- day
+		Time = 60 * 60 * 24 * 7, -- day
 		Amount = 1,
 		Cooldown = 60 * 60 * 24 * 7,
 	},
