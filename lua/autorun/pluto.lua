@@ -39,6 +39,11 @@ pluto.files.load {
 		"util.lua",
 
 		"mods/shared/limp.lua",
+
+		-- "unicode/init.lua",
+		-- "unicode/casefolding.lua",
+		-- "unicode/unicodedata.lua",
+		-- "unicode/confusables.lua",
 	},
 	Server = {
 		"sv.lua",
