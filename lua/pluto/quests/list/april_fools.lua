@@ -15,7 +15,7 @@ function QUEST:Init(data)
 	end)
 
 	data:Hook("DoPlayerDeath", function(data, ply, atk)
-		if (ply:GetRoleTeam() ~= atk:GetRoleTeam() and atk == data.Player) then
+		if (IsValid(atk) and IsValid(ply) and atk:IsPlayer() and ply:GetRoleTeam() ~= atk:GetRoleTeam() and atk == data.Player) then
 			killed[ply] = true
 		end
 	end)
