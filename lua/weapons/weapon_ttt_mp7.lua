@@ -13,8 +13,8 @@ SWEP.ViewModelFlip			= false
 SWEP.ViewModel				= "models/razorswep/weapons/v_smg_mp7.mdl"
 SWEP.WorldModel				= "models/razorswep/weapons/w_smg_mp7.mdl"
 
-SWEP.AutoSpawnable          = true
-SWEP.Spawnable				= true
+SWEP.AutoSpawnable         = true	
+SWEP.Spawnable             = true
 SWEP.AdminSpawnable			= true
 
 SWEP.Primary.Sound			= Sound("Weapon_mp7.shoot") --razorswep/mp7/mp7.ogg  ---place holder Weapon_SMG1.Double
@@ -30,7 +30,7 @@ SWEP.Primary.NumShots	= 1
 SWEP.Primary.Damage		= 10
 SWEP.HeadshotMultiplier = 1.75
 SWEP.DeploySpeed = 1.78
-SWEP.ReloadSpeed = 1.3
+SWEP.ReloadSpeed = 1.06
 SWEP.Ortho = {0, 5}
 
 SWEP.Ironsights = {
