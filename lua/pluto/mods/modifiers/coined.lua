@@ -16,7 +16,7 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
-MOD.Description = "Gives 50% more currency rewards"
+MOD.Description = "Gives 15% more currency rewards per modifier"
 
 MOD.Tiers = {
 	{ 1, 1 },
@@ -24,7 +24,14 @@ MOD.Tiers = {
 
 function MOD:OnUpdateSpawnPoints(wep, rolls, atk, vic, state)
 	if (IsValid(atk) and state.Points > 0) then
-		state.Points = state.Points * 1.5
+		local gun = wep.PlutoGun
+		local mod_count = 0
+
+		for _, modlist in pairs(gun.Mods) do
+			mod_count = mod_count + #modlist
+		end
+
+		state.Points = state.Points * (1 + 0.15 * mod_count)
 	end
 end
 

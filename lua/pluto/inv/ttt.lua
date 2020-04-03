@@ -92,8 +92,7 @@ hook.Add("DoPlayerDeath", "pluto_info", function(vic, atk, dmg)
 
 			if (IsValid(wep) and wep:IsWeapon()) then
 				if (wep.PlutoGun) then
-					local gun = wep.PlutoGun
-					for i, v in ipairs {" They used their ", gun.Tier.Color, gun:GetPrintName()} do
+					for i, v in ipairs {" They used their ", gun} do
 						text[#text + 1] = v
 					end
 				else
