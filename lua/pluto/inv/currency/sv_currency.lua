@@ -493,7 +493,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	tp = {
-		Shares = 8.4,
+		Shares = 4.8,
 	}
 } do
 	table.Merge(pluto.currency.byname[name], values)
