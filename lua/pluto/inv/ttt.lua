@@ -92,7 +92,7 @@ hook.Add("DoPlayerDeath", "pluto_info", function(vic, atk, dmg)
 
 			if (IsValid(wep) and wep:IsWeapon()) then
 				if (wep.PlutoGun) then
-					for i, v in ipairs {" They used their ", gun} do
+					for i, v in ipairs {" They used their ", wep.PlutoGun} do
 						text[#text + 1] = v
 					end
 				else
