@@ -353,7 +353,7 @@ for name, values in pairs {
 		Types = "None",
 	},
 	crate2 = {
-		Shares = 40,
+		Shares = 19,
 		Contents = {
 			weapon_ttt_chargeup = {
 				Rare = true,
