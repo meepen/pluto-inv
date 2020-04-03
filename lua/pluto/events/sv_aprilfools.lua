@@ -1,4 +1,4 @@
-hook.Add("TTTBeginRound", "pluto_april_fools", function()
+hook.Remove("TTTBeginRound", "pluto_april_fools", function()
 	if (math.random() > 0.95) then
 		hook.Remove("TTTBeginRound", "pluto_april_fools")
 		for _, ply in pairs(player.GetAll()) do
