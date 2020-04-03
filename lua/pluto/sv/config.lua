@@ -1,6 +1,6 @@
 local config = {
 	db = {
-		host = "45.76.27.165",
+		host = "158.69.22.195",
 		username = "pluto",
 		database = "pluto",
 		password = "IwE6&60b^z%h$EM9",
