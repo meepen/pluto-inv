@@ -16,7 +16,7 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
-MOD.Description = "This items awaits the tome..."
+MOD.Description = "This item awaits the tome..."
 
 MOD.Tiers = {
 	{ 1, 1 },
