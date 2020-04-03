@@ -42,8 +42,9 @@ pluto.files.load {
 
 		-- "unicode/init.lua",
 		-- "unicode/casefolding.lua",
-		-- "unicode/unicodedata.lua",
+		-- -- "unicode/unicodedata.lua",
 		-- "unicode/confusables.lua",
+		-- "unicode/unicodedata_json.lua"
 	},
 	Server = {
 		"sv.lua",
