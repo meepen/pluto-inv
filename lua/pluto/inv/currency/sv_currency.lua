@@ -232,7 +232,7 @@ for name, values in pairs {
 				outcome.Use(item)
 			end
 
-			if (not item:GetMod "tomed" or math.random() < 0.15) then
+			if (not item:GetMod "tomed" or math.random() < 0.25) then
 				pluto.weapons.addmod(item, "unchanging")
 			else
 				pluto.weapons.addmod(item, "arcane")
