@@ -571,10 +571,6 @@ function pluto.currency.random(n)
 	n = n * pluto.currency.shares
 
 	for _, item in ipairs(pluto.currency.list) do
-		if (not item.Shares) then
-			PrintTable(item)
-		end
-
 		n = n - item.Shares
 		if (n <= 0) then
 			return item

@@ -175,7 +175,9 @@ function PANEL:Init()
 		end
 
 		function p.OnSetItem(s, item)
-			self:OnSetItem(s.TabIndex, item)
+			if (self.Tab) then
+				self:OnSetItem(s.TabIndex, item)
+			end
 		end
 
 		if (i <= 3) then
@@ -337,7 +339,7 @@ end
 
 function PANEL:PlutoCraftResults(outcomes)
 	self.TextData = outcomes.Info
-	PrintTable(outcomes.Info)
+
 	self:UpdateText "currency"
 
 	for _, child in pairs(self.Outcomes) do
