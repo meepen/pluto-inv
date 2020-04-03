@@ -228,7 +228,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	coin = {
-		Shares = 0.7,
+		Shares = 0.3,
 		Use = function(ply)
 			local trans = pluto.inv.addtabs(ply, {"normal"}, function(tab)
 				if (not tab or not IsValid(ply)) then

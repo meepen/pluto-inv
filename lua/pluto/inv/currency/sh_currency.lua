@@ -137,7 +137,7 @@ pluto.currency.list = {
 		SubDescription = "Mara gives her heart to people who have shown compassion in their time of need",
 		Color = Color(204, 43, 75),
 		Crafted = {
-			Chance = 0.5,
+			Chance = 1 / 3,
 			Mod = "hearted",
 		},
 	},
