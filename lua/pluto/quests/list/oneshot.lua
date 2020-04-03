@@ -46,7 +46,7 @@ function QUEST:Reward(data)
 	local trans, gun = pluto.inv.generatebufferweapon(data.Player, tier, gun)
 	trans:Run()
 
-	data.Player:ChatPrint("You have received a ", tier.Color, gun:GetPrintName(), white_text, " for completing ", self.Color, self.Name, white_text, "! Check your inventory.")
+	data.Player:ChatPrint("You have received a ", gun, white_text, " for completing ", self.Color, self.Name, white_text, "! Check your inventory.")
 end
 
 function QUEST:IsType(type)

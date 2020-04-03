@@ -127,6 +127,10 @@ local ITEM = {}
 pluto.inv.item_mt = pluto.inv.item_mt or {}
 pluto.inv.item_mt.__index = ITEM
 
+pluto.inv.item_mt.__colorprint = function(self)
+	return {self:GetColor(), self:GetPrintName()}
+end
+
 function ITEM:GetPrintName()
 	if (self.Nickname) then
 		return "\"" .. string.formatsafe(self.Nickname, self:GetDefaultName()) .. "\""

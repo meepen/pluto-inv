@@ -22,8 +22,8 @@ pluto.quests.types = {
 	[2] = {
 		Name = "Daily",
 		Time = 60 * 60 * 24, -- day
-		Amount = 0,
-		Cooldown = 0,
+		Amount = 1,
+		Cooldown = 60 * 60 * 6,
 	},
 	[3] = {
 		Name = "Weekly",
@@ -39,6 +39,7 @@ for _, id in pairs {
 	"april_fools",
 
 	"melee",
+	"nodamage",
 	"nojump",
 	"oneshot",
 	"stickcurr",

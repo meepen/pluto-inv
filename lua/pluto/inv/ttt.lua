@@ -156,7 +156,7 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 			send = true
 		end
 
-		ply:ChatPrint("You have received a ", item.Tier.Color, item:GetPrintName(), white_text, "! Check your inventory.")
+		ply:ChatPrint("You have received a ", item, white_text, "! Check your inventory.")
 	end
 
 	if (send) then

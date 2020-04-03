@@ -29,7 +29,7 @@ function QUEST:Reward(data)
 	local trans, new_item = pluto.inv.generatebufferweapon(data.Player, "inevitable")
 	trans:Run()
 
-	data.Player:ChatPrint("You have received a ", new_item.Tier.Color, new_item:GetPrintName(), white_text, " for completing ", self.Color, self.Name, white_text, "!")
+	data.Player:ChatPrint("You have received a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "!")
 end
 
 function QUEST:IsType(type)

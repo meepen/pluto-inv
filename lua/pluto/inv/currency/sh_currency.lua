@@ -221,7 +221,14 @@ pluto.currency.list = {
 	},
 }
 
+pluto.currency_mt = pluto.currency_mt or {}
+
+pluto.currency_mt.__colorprint = function(self)
+	return {self.Color, self.Name}
+end
+
 for _, item in pairs(pluto.currency.list) do
+	setmetatable(item, pluto.currency_mt)
 	pluto.currency.byname[item.InternalName] = item
 end
 

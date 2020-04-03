@@ -20,6 +20,12 @@ function pluto.mods.formataffix(affixtype, name)
 	return name
 end
 
+pluto.mods.mt = pluto.mods.mt or {}
+
+function pluto.mods.mt.__colorprint(self)
+	return self.Color or white_text, self.Name or "UNKNOWN"
+end
+
 for _, filename in pairs {
 	"accuracy",
 	"bleeding",
@@ -55,6 +61,7 @@ for _, filename in pairs {
 } do
 	local modname = filename:match "[_%w]+$"
 	MOD = pluto.mods.byname[modname] or {}
+	setmetatable(MOD, pluto.mods.mt)
 	include("modifiers/" .. filename .. ".lua")
 	local mod = MOD
 	MOD = nil
