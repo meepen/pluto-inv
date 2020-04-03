@@ -6,14 +6,13 @@ local tbl = {
 	"AK47.Shoot", "weapons/ak47_beast/rifle_fire_1.ogg",
 }
 for i = 1,#tbl,2 do
-	sound.Add(
-	{
+	sound.Add {
 		name = tbl[i],
 		channel = CHAN_WEAPON,
 		volume = 1.0,
 		soundlevel = 80,
 		sound = tbl[i+1]
-	})
+	}
 end
 
 AddCSLuaFile()
@@ -87,16 +86,16 @@ function SWEP:Initialize()
 end
 
 function SWEP:GetDelay()
-	local base_rpm = 350
-	local per_kill = 40
+	local base_rpm = 400
+	local per_kill = 50
 	return 60 / (base_rpm + self:GetKills() * per_kill)
 end
 
-local pow = 1
+local pow = 3
 SWEP.RecoilInstructions = {
 	Interval = 1,
 	pow * Angle(-6, -2),
-	pow * Angle(-4, -1),
+	pow * Angle(-4, -2),
 	pow * Angle(-2, 3),
 	pow * Angle(-1, 2.5),
 	pow * Angle(-3, 0),
