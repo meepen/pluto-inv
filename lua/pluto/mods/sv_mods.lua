@@ -28,6 +28,7 @@ end
 
 for _, filename in pairs {
 	"accuracy",
+	"arcane",
 	"bleeding",
 	"coined",
 	"damage",
@@ -51,6 +52,7 @@ for _, filename in pairs {
 	"recycle",
 	"shock",
 	-- "snipexp",
+	"tomed",
 	"unchanging",
 	"zoomies",
 
@@ -325,3 +327,87 @@ function pluto.mods.getfor(gun, filter)
 
 	return list
 end
+
+
+concommand.Add("pluto_add_mod", function(ply, cmd, arg, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+
+	local item = pluto.itemids[tonumber(arg[1])]
+
+	if (not item) then
+		ply:ChatPrint "Couldn't find itemid!"
+		return
+	end
+
+	local mod = pluto.mods.byname[arg[2]]
+
+	if (not mod) then
+		ply:ChatPrint "Couldn't find mod!"
+		return
+	end
+
+	local owner = player.GetBySteamID64(item.Owner)
+
+	if (not IsValid(owner)) then
+		ply:ChatPrint "Owner isn't on!"
+		return
+	end
+
+	pluto.weapons.addmod(item, arg[2])
+	
+	pluto.weapons.update(item, function(id)
+		if (not IsValid(ply)) then
+			return
+		end
+
+		if (not id) then
+			ply:ChatPrint("Error modifying gun!")
+		end
+	end)
+
+	pluto.inv.message(owner)
+		:write("item", item)
+		:send()
+end)
+
+
+concommand.Add("pluto_remove_mods", function(ply, cmd, arg, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+
+	local item = pluto.itemids[tonumber(arg[1])]
+
+	if (not item) then
+		ply:ChatPrint "Couldn't find itemid!"
+		return
+	end
+
+	local owner = player.GetBySteamID64(item.Owner)
+
+	if (not IsValid(owner)) then
+		ply:ChatPrint "Owner isn't on!"
+		return
+	end
+	
+	item.Mods = {
+		prefix = {},
+		suffix = {},
+	}
+	
+	pluto.weapons.update(item, function(id)
+		if (not IsValid(ply)) then
+			return
+		end
+
+		if (not id) then
+			ply:ChatPrint("Error modifying gun!")
+		end
+	end)
+
+	pluto.inv.message(owner)
+		:write("item", item)
+		:send()
+end)

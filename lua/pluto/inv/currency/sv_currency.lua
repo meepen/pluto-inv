@@ -40,29 +40,6 @@ local function process_percents(contents)
 	end
 end
 
-function pluto.currency.rollcrate(crate)
-	local m = math.random()
-
-	local total = 0
-	for _, v in pairs(crate) do
-		total = total + (istable(v) and v.Shares or v)
-	end
-
-	m = m * total
-
-	for itemname, val in pairs(crate) do
-		if (istable(val)) then
-			m = m - val.Shares
-		else
-			m = m - val
-		end
-
-		if (m <= 0) then
-			return itemname, val
-		end
-	end
-end
-
 for name, values in pairs {
 	dice = {
 		Shares = 500,
@@ -166,37 +143,100 @@ for name, values in pairs {
 	tome = {
 		Shares = 20,
 		Use = function(ply, item)
-			local rand = math.floor(math.random(1, 12) / 2) + 1
-			if (rand == 1) then     -- 2 mods
-				pluto.weapons.generatemod(item, 5, 3, true)
-				pluto.weapons.generatemod(item, 5, 3, true)
-			elseif (rand == 2) then -- 1 mod
-				pluto.weapons.generatemod(item, 5, 3, true)
-			elseif (rand == 3) then -- nothing
-			elseif (rand == 4) then -- base gun change
-				item.ClassName = pluto.weapons.randomoftype(pluto.weapons.type(baseclass.Get(item.ClassName)))
-			elseif (rand == 5) then -- tier change
-				local newitem = pluto.weapons.generatetier(nil, item.ClassName)
-				item.Tier = newitem.Tier
-				item.Mods = newitem.Mods
-			elseif (rand == 6) then -- reroll
-				local new_mods = pluto.weapons.generatetier(item.Tier.InternalName, item.ClassName).Mods
+			local outcomes = {
+				add1mod = {
+					Type = "good",
+					Shares = 2,
+					Use = function(item)
+						pluto.weapons.generatemod(item, 6, 3, true)
+					end
+				},
+				add2mod = {
+					Type = "good",
+					Shares = 1,
+					Use = function(item)
+						pluto.weapons.generatemod(item, 6, 3, true)
+						pluto.weapons.generatemod(item, 6, 3, true)
+					end
+				},
+				nothing = {
+					Type = "normal",
+					Shares = 2,
+					Use = function() end,
+				},
+				classreroll = {
+					Type = "critical",
+					Shares = 2,
+					Use = function(item)
+						item.ClassName = pluto.weapons.randomoftype(pluto.weapons.type(baseclass.Get(item.ClassName)))
+					end
+				},
+				tierreroll = {
+					Type = "critical",
+					Shares = 2,
+					Use = function(item)
+						local newitem = pluto.weapons.generatetier(nil, item.ClassName)
+						item.Tier = newitem.Tier
+						item.Mods = newitem.Mods
+					end
+				},
+				modreroll = {
+					Type = "critical",
+					Shares = 2,
+					Use = function(item)
+						local new_mods = pluto.weapons.generatetier(item.Tier.InternalName, item.ClassName).Mods
+		
+						item.Mods.prefix = new_mods.prefix
+						item.Mods.suffix = new_mods.suffix
+		
+						for _, mods in pairs(new_mods) do
+							for _, mod in pairs(mods) do
+								pluto.weapons.onrollmod(item, mod)
+							end
+						end
+					end
+				}
 
-				item.Mods.prefix = new_mods.prefix
-				item.Mods.suffix = new_mods.suffix
-
-				for _, mods in pairs(new_mods) do
-					for _, mod in pairs(mods) do
-						pluto.weapons.onrollmod(item, mod)
+			}
+			if (item:GetMod "tomed") then
+				for k,v in pairs(outcomes) do
+					if (v.Type == "good") then
+						v.Shares = v.Shares * 3
 					end
 				end
-			else
-				return
+
+				outcomes.modreroll.Shares = outcomes.modreroll.Shares / 2
+				outcomes.implicit = {
+					Shares = 2,
+					Use = function(item)
+						local notallowed = {}
+						for k, v in pairs(item.Mods.implicit or {}) do
+							notallowed[v.Mod] = true
+						end
+
+						local mod = table.shuffle(pluto.mods.getfor(baseclass.Get(item.ClassName), function(mod)
+							return mod.Type == "implicit" and not mod.PreventChange and not notallowed[mod.InternalName]
+						end))[1]
+
+						if (mod) then
+							pluto.weapons.addmod(item, mod.InternalName)
+						end
+					end
+				}
+			end
+			
+			for i = 1, 2 do
+				local outcome = outcomes[pluto.inv.roll(outcomes)]
+
+				
+				outcome.Use(item)
 			end
 
-			item.Mods.implicit = item.Mods.implicit or {}
-
-			pluto.weapons.addmod(item, "unchanging")
+			if (not item:GetMod "tomed" or math.random() < 0.15) then
+				pluto.weapons.addmod(item, "unchanging")
+			else
+				pluto.weapons.addmod(item, "arcane")
+			end
 
 			UpdateAndDecrement(ply, item, "tome")
 		end,

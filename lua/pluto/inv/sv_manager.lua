@@ -497,7 +497,7 @@ function pluto.inv.readcurrencyuse(ply)
 	if (cur.Use) then
 		cur.Use(ply, wpn)
 	elseif (cur.Contents) then
-		local gotten, data = pluto.currency.rollcrate(cur.Contents)
+		local gotten, data = pluto.inv.roll(cur.Contents)
 		local type = pluto.inv.itemtype(gotten)
 
 		local transact, wpn

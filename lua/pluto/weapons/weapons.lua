@@ -263,15 +263,23 @@ end
 function pluto.weapons.addmod(item, modname)
 	local toadd = pluto.mods.byname[modname]
 
-	local newmod = pluto.mods.rollmod(toadd, item.Tier.rolltier, item.Tier.roll)
-
 	if (not item.Mods[toadd.Type]) then
 		item.Mods[toadd.Type] = {}
 	end
 
+	for k,v in pairs(item.Mods[toadd.Type]) do
+		if (v.Mod == modname) then
+			return false
+		end
+	end
+
+	local newmod = pluto.mods.rollmod(toadd, item.Tier.rolltier, item.Tier.roll)
+
 	table.insert(item.Mods[toadd.Type], newmod)
 
 	pluto.weapons.onrollmod(item, newmod)
+
+	return newmod
 end
 
 function pluto.weapons.generatemod(item, prefix_max, suffix_max, ignoretier)
