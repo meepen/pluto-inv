@@ -63,7 +63,7 @@ pluto.currency.list = {
 		SubDescription = "Arizor hands these out to ruthless gunsmiths to augment their weapons and further themselves in life",
 		Color = Color(142, 94, 166),
 		Crafted = {
-			Chance = 1 / 4,
+			Chance = 1 / 5,
 			Mod = "tomed",
 		},
 	},
