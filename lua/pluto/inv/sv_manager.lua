@@ -258,7 +258,7 @@ function pluto.inv.init(ply, cb2)
 	local success = 0
 	local function TrySucceed(where)
 		success = success + 1
-		print(ply, where, success)
+
 		if (not IsValid(ply)) then
 			return cb(false, "disconnected")
 		end
