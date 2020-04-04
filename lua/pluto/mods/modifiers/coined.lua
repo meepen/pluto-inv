@@ -16,7 +16,7 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
-MOD.Description = "Gives 15% more currency rewards per modifier"
+MOD.Description = "Gives 12% more currency rewards per modifier"
 
 MOD.Tiers = {
 	{ 1, 1 },
@@ -31,7 +31,7 @@ function MOD:OnUpdateSpawnPoints(wep, rolls, atk, vic, state)
 			mod_count = mod_count + #modlist
 		end
 
-		state.Points = state.Points * (1 + 0.15 * mod_count)
+		state.Points = state.Points * (1 + 0.12 * mod_count)
 	end
 end
 
