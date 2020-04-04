@@ -225,7 +225,7 @@ for name, values in pairs {
 				}
 			end
 			
-			for i = 1, 2 do
+			for i = 1, 1 do
 				local outcome = outcomes[pluto.inv.roll(outcomes)]
 
 				
