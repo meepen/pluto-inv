@@ -231,6 +231,68 @@ local changes = {
 				}
 			}
 		}
+	},
+	ttt_richland_fix = {
+		Entities = {
+			pluto_block = {
+				{
+					Mins = Vector(1353.164429, -1590.968750, 120.697266),
+					Maxs = Vector(1635.450073, -1604.332764, 1204.968750)
+				}
+			}
+		}
+	},
+	ttt_mw2_terminal = {
+		Entities = {
+			pluto_block = {
+				{
+					Mins = Vector(-1891.632324, 345.634949, 323.542053),
+					Maxs = Vector(-1770.460571, 1069.968750, 720.980286),
+				},
+				{
+					Mins = Vector(-max_range, -max_range, 395),
+					Maxs = Vector(max_range, max_range, max_range),
+				},
+				{
+					Mins = Vector(1411.918579, -1151.968750, 241.407318),
+					Maxs = Vector(1536.441772, 815.766235, 370.079773),
+				},
+				{
+					Mins = Vector(-1166.165405, -1532.051270, 81.909622),
+					Maxs = Vector(-940.611450, -1532, 284.352112),
+				},
+				{
+					Mins = Vector(1204.968750, 1815.791748, 303.903412),
+					Maxs = Vector(523.714478, 2168.610840, 370.079773),
+				},
+				{
+					Mins = Vector(-2036.941528, 360.031250, 274.532471),
+					Maxs = Vector(-1560.594360, 1200.593506, 394.968750),
+				},
+				{
+					Mins = Vector(1329.889160, 827.968628, 363.187958),
+					Maxs = Vector(1401.968750, -1148.102417, 182.187347),
+				}
+			}
+		}
+	},
+	ttt_desperados_2 = {
+		Entities = {
+			pluto_block = {
+				{
+					Mins = Vector(3048.625000, -5199.309570, 240.031250),
+					Maxs = Vector(3071.722900, -5353.932617, 2303.968750),
+				},
+				{
+					Mins = Vector(3999.968750, -5329.841309, 1133.74414),
+					Maxs = Vector(3071.722900, -5353.932617, 2303.968750),
+				},
+				{
+					Mins = Vector(-max_range, -max_range, 1453.591675),
+					Maxs = Vector(max_range, max_range, max_range),
+				},
+			}
+		}
 	}
 }
 

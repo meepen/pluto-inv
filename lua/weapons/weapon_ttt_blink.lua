@@ -212,8 +212,13 @@ function SWEP:Move(ply, mv)
 		mv:SetVelocity(vector_origin)
 		self:SetBlinking(false)
 		self:SetToPos(none)
-		self:PreventFallDamage(self:GetOwner())
-		self:GetOwner():SetMoveType(MOVETYPE_WALK)
+		local ply = self:GetOwner()
+		self:PreventFallDamage(ply)
+		timer.Simple(0, function()
+			if (IsValid(ply)) then
+				ply:SetMoveType(MOVETYPE_WALK)
+			end
+		end)
 	else
 		local ang = (topos - now)
 		ang:Normalize()
