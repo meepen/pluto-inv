@@ -148,15 +148,20 @@ for name, values in pairs {
 					Type = "good",
 					Shares = 2,
 					Use = function(item)
-						pluto.weapons.generatemod(item, 6, 3, true)
+						if (item:GetModCount() < item:GetMaxAffixes() + 2) then
+							pluto.weapons.generatemod(item, 6, 3, true)
+						end
 					end
 				},
 				add2mod = {
 					Type = "good",
 					Shares = 1,
 					Use = function(item)
-						pluto.weapons.generatemod(item, 6, 3, true)
-						pluto.weapons.generatemod(item, 6, 3, true)
+						for i = 1, 2 do
+							if (item:GetModCount() < item:GetMaxAffixes() + 2) then
+								pluto.weapons.generatemod(item, 6, 3, true)
+							end
+						end
 					end
 				},
 				nothing = {
@@ -198,7 +203,9 @@ for name, values in pairs {
 				}
 
 			}
-			if (item:GetMod "tomed") then
+
+			local was_tomed = item:GetMod "tomed"
+			if (was_tomed) then
 				for k,v in pairs(outcomes) do
 					if (v.Type == "good") then
 						v.Shares = v.Shares * 3
@@ -206,9 +213,17 @@ for name, values in pairs {
 				end
 
 				outcomes.modreroll.Shares = outcomes.modreroll.Shares / 2
+				outcomes.nothing.Shares = 0
+
 				outcomes.implicit = {
 					Shares = 2,
 					Use = function(item)
+						local implicits = item:GetModCount(true) - item:GetModCount(false)
+
+						if (implicits > 5) then -- 3 max, already has 2 from tomed and touch of arcane
+							return
+						end
+
 						local notallowed = {}
 						for k, v in pairs(item.Mods.implicit or {}) do
 							notallowed[v.Mod] = true
@@ -224,18 +239,20 @@ for name, values in pairs {
 					end
 				}
 			end
-			
+
 			for i = 1, 1 do
 				local outcome = outcomes[pluto.inv.roll(outcomes)]
-
-				
+ 
 				outcome.Use(item)
 			end
 
-			if (not item:GetMod "tomed" or math.random() < 0.25) then
-				pluto.weapons.addmod(item, "unchanging")
-			else
+			if (was_tomed) then -- some outcomes can remove tomed
+				pluto.weapons.addmod(item, "tomed")
 				pluto.weapons.addmod(item, "arcane")
+			end
+
+			if (not item:GetMod "tomed" or math.random() < 0.125) then
+				pluto.weapons.addmod(item, "unchanging")
 			end
 
 			UpdateAndDecrement(ply, item, "tome")

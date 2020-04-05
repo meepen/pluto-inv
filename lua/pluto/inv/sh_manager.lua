@@ -199,6 +199,21 @@ function ITEM:GetMaxAffixes()
 	return affix
 end
 
+function ITEM:GetModCount(includeimplicit)
+	local count = 0
+
+	for type, modlist in pairs(self.Mods) do
+		print(type)
+		if (type == "implicit" and not includeimplicit) then
+			continue
+		end
+
+		count = count + #modlist
+	end
+
+	return count
+end
+
 function ITEM:GetDefaultName()
 	if (self.SpecialName) then
 		return string.format(self.SpecialName, self:GetRawName(true))
