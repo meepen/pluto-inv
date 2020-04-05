@@ -297,7 +297,7 @@ function pluto.weapons.generatemod(item, prefix_max, suffix_max, ignoretier)
 	local prefixes = #item.Mods.prefix
 	local suffixes = #item.Mods.suffix
 
-	if (not ignoretier and prefixes + suffixes == item:GetMaxAffixes()) then
+	if (not ignoretier and prefixes + suffixes >= item:GetMaxAffixes()) then
 		return false
 	end
 
