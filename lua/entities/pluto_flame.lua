@@ -8,7 +8,7 @@ ENT.PrintName = "Fire"
 
 function ENT:Initialize()
 	hook.Add("DoPlayerDeath", self, self.DoPlayerDeath)
-	hook.Add("PlayerTick", self, self.PlayerTick)
+	hook.Add("Tick", self, self.Tick)
 end
 
 function ENT:SetupDataTables()
@@ -22,8 +22,8 @@ function ENT:DoPlayerDeath(ply)
 	end
 end
 
-function ENT:PlayerTick(ply)
-	if (not SERVER or self:GetParent() ~= ply or (self.Next and self.Next > CurTime())) then
+function ENT:Tick()
+	if (not SERVER or (self.Next and self.Next > CurTime())) then
 		return
 	end
 
