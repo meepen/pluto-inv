@@ -8,10 +8,15 @@ function QUEST:GetRewardText(seed)
 end
 
 function QUEST:Init(data)
+	data:Hook("PlayerDeath", function(data, vic, inf, atk)
+		if (atk == data.Player and atk:GetRoleTeam() ~= vic:GetRoleTeam() and atk:Health() == atk:GetMaxHealth()) then
+			data:UpdateProgress(1)
+		end
+	end)
 end
 
 function QUEST:Reward(data)
-	pluto.inv.addcurrency(data.Player, "heart", 3):Run()
+	pluto.inv.addcurrency(data.Player, "heart", 3)
 
 	data.Player:ChatPrint(white_text, "You have received 3 ", pluto.currency.byname.heart, white_text, "!")
 end

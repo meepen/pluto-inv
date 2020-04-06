@@ -272,6 +272,8 @@ function unicode.unconfuse(str)
 	local list = {str}
 	local idx = 0
 
+	local done = {}
+
 	repeat
 		idx = idx + 1
 		local current_str = list[idx]
@@ -288,7 +290,8 @@ function unicode.unconfuse(str)
 				for _, item in pairs(confused_values) do
 					insert[confused_idx] = item
 					local str = unicode.fromtable(insert)
-					if (not table.HasValue(list, str)) then
+					if (not done[str]) then
+						done[str] = true
 						table.insert(list, str)
 						finished = true
 					end

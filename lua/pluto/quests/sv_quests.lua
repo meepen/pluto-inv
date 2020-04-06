@@ -38,6 +38,7 @@ pluto.quests.list = pluto.quests.list or {}
 for _, id in pairs {
 	"april_fools",
 
+	"credits",
 	"melee",
 	"nodamage",
 	"nojump",
@@ -139,6 +140,7 @@ function pluto.quests.init_nocache(ply, cb)
 		local quests = pluto.quests.byperson[ply] or {
 			byid = {},
 		}
+		pluto.quests.byperson[ply] = quests
 
 		local have = {}
 
@@ -162,6 +164,8 @@ function pluto.quests.init_nocache(ply, cb)
 			local quest = quests.byid[data.idx] or setmetatable({
 				RowID = data.idx,
 			}, pluto.quests.quest_mt)
+
+			pluto.quests.byperson[ply].byid[data.idx] = quest
 			
 			quest.Type = data.type
 			quest.QuestID = data.quest_id
