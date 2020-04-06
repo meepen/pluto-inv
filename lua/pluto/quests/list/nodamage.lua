@@ -4,7 +4,7 @@ QUEST.Credits = "Eppen"
 QUEST.Color = Color(204, 43, 75)
 
 function QUEST:GetRewardText(seed)
-	return "two hearts"
+	return "set of two hearts"
 end
 
 function QUEST:Init(data)

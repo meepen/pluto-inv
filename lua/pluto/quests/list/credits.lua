@@ -4,7 +4,7 @@ QUEST.Credits = "Eppen"
 QUEST.Color = Color(198, 201, 14)
 
 function QUEST:GetRewardText(seed)
-	return "an orange egg"
+	return "orange egg"
 end
 
 function QUEST:Init(data)
