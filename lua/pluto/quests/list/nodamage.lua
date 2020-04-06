@@ -4,7 +4,7 @@ QUEST.Credits = "Eppen"
 QUEST.Color = Color(204, 43, 75)
 
 function QUEST:GetRewardText(seed)
-	return "set of three hearts"
+	return "two hearts"
 end
 
 function QUEST:Init(data)
@@ -26,5 +26,5 @@ function QUEST:IsType(type)
 end
 
 function QUEST:GetProgressNeeded(type)
-	return math.random(30, 40)
+	return math.random(50, 60)
 end
