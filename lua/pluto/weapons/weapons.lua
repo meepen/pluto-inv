@@ -372,7 +372,6 @@ concommand.Add("pluto_cheat_currency", function(ply, cmd, args)
 	end
 end)
 
-
 concommand.Add("pluto_set_special_name", function(ply, cmd, arg, args)
 	if (not pluto.cancheat(ply)) then
 		return
@@ -397,6 +396,40 @@ concommand.Add("pluto_set_special_name", function(ply, cmd, arg, args)
 	item.SpecialName = name
 
 	pluto.weapons.updatespecialname(item)
+
+	pluto.inv.message(owner)
+		:write("item", item)
+		:send()
+end)
+
+concommand.Add("pluto_remove_nickname", function(ply, cmd, arg, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+
+	local item = pluto.itemids[tonumber(arg[1])]
+
+	if (not item) then
+		ply:ChatPrint "Couldn't find itemid!"
+		return
+	end
+
+	local owner = player.GetBySteamID64(item.Owner)
+
+	if (not IsValid(owner)) then
+		ply:ChatPrint "Owner isn't on!"
+		return
+	end
+
+	item.Nickname = nil
+
+	pluto.db.query("UPDATE pluto_items set nick = NULL WHERE idx = ?", {item.RowID}, function(err, q)
+		if (err) then
+			pluto.inv.sendfullupdate(cl)
+			return
+		end
+	end)
+	PrintTable(item)
 
 	pluto.inv.message(owner)
 		:write("item", item)

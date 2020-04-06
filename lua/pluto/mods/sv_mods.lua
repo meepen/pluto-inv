@@ -23,7 +23,7 @@ end
 pluto.mods.mt = pluto.mods.mt or {}
 
 function pluto.mods.mt.__colorprint(self)
-	return self.Color or white_text, self.Name or "UNKNOWN"
+	return {self.Color or white_text, self.Name or "UNKNOWN"}
 end
 
 for _, filename in pairs {
