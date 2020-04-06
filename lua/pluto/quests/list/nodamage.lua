@@ -16,7 +16,7 @@ function QUEST:Init(data)
 end
 
 function QUEST:Reward(data)
-	pluto.inv.addcurrency(data.Player, "heart", 3)
+	pluto.inv.addcurrency(data.Player, "heart", 2)
 
 	data.Player:ChatPrint(white_text, "You have received 3 ", pluto.currency.byname.heart, white_text, "!")
 end
