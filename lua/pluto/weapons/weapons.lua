@@ -246,7 +246,8 @@ function pluto.weapons.save(item, owner, cb, transact)
 	return transact
 end
 
-function pluto.weapons.generateunique(unique)
+function pluto.weapons.updatespecialname(item, transact)
+	pluto.db.transact_or_query(transact, "UPDATE pluto_items SET special_name = ? WHERE idx = ?", {item.SpecialName, item.RowID})
 end
 
 function pluto.weapons.onrollmod(item, newmod)
@@ -369,4 +370,35 @@ concommand.Add("pluto_cheat_currency", function(ply, cmd, args)
 	for cur in pairs(pluto.currency.byname) do
 		pluto.inv.addcurrency(ply, cur, 1000, function() end)
 	end
+end)
+
+
+concommand.Add("pluto_set_special_name", function(ply, cmd, arg, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+
+	local item = pluto.itemids[tonumber(arg[1])]
+
+	if (not item) then
+		ply:ChatPrint "Couldn't find itemid!"
+		return
+	end
+	
+	local name = arg[2]
+
+	local owner = player.GetBySteamID64(item.Owner)
+
+	if (not IsValid(owner)) then
+		ply:ChatPrint "Owner isn't on!"
+		return
+	end
+
+	item.SpecialName = name
+
+	pluto.weapons.updatespecialname(item)
+
+	pluto.inv.message(owner)
+		:write("item", item)
+		:send()
 end)
