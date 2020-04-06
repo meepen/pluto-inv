@@ -50,7 +50,12 @@ function ENT:Tick()
 	end
 
 	self.Next = CurTime() + self:GetDelay()
+
+	self:DoTick()
 	return true
+end
+
+function ENT:DoTick()
 end
 
 function ENT:GetDelay()

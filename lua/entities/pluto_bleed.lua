@@ -6,10 +6,11 @@ ENT.Base = "pluto_flame"
 function ENT:Initialize()
 	self.BaseClass.Initialize(self)
 	self.Speed = 0
-	hook.Add("Tick", self, self.Tick)
+
+	print "init"
 end
 
-function ENT:Tick()
+function ENT:DoTick()
 	local p = self:GetParent()
 	if (IsValid(p)) then
 		self.Speed = self.Speed + p:GetVelocity():Length() * engine.TickInterval() / self:GetDelay()
