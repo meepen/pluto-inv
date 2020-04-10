@@ -13,9 +13,7 @@ function MOD:GetModifier(roll, wep)
 end
 
 function MOD:FormatModifier(index, roll, wep)
-	DEFINE_BASECLASS(wep)
-
-	return string.format("%.02f%%", self:GetModifier(roll, BaseClass))
+	return string.format("%.02f%%", self:GetModifier(roll, baseclass.Get(wep)))
 end
 
 MOD.Description = "Has a %s chance to cripple on hit"

@@ -1,30 +1,15 @@
-pluto.mods = pluto.mods or {
-	byname   = {},
+pluto.mods = pluto.mods or {}
 
-	byitem   = {
-		--[[
-		[type] = {
-			suffix = {},
-			prefix = {},
-			implcit = {}
-		}
-		]]
-	},
+pluto.mods.byname = pluto.mods.byname or {}
+pluto.mods.byitem = pluto.mods.byitem or {
+	--[[
+	[type] = {
+		suffix = {},
+		prefix = {},
+		implcit = {}
+	}
+	]]
 }
-
-function pluto.mods.formataffix(affixtype, name)
-	if (affixtype == "suffix") then
-		return "of " .. name
-	end
-
-	return name
-end
-
-pluto.mods.mt = pluto.mods.mt or {}
-
-function pluto.mods.mt.__colorprint(self)
-	return {self.Color or white_text, self.Name or "UNKNOWN"}
-end
 
 for _, filename in pairs {
 	"accuracy",
@@ -290,19 +275,6 @@ function pluto.mods.generateaffixes(wpn, affixcount, prefixmax, suffixmax, guara
 		table.insert(retn[mod.Type], pluto.mods.rollmod(mod, rolltier, roll))
 	end
 
-
-	return retn
-end
-
-function pluto.mods.getrolls(mod, tier, rolls)
-	local retn = {}
-
-	tier = mod.Tiers[tier] or mod.Tiers[#mod.Tiers]
-
-	for idx = 2, #tier, 2 do
-		local min, max = tier[idx - 1], tier[idx]
-		retn[idx / 2] = (rolls[idx / 2] or 0) * (max - min) + min
-	end
 
 	return retn
 end

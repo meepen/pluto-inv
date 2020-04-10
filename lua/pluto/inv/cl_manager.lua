@@ -22,39 +22,76 @@ pluto.inv = pluto.inv or {
 	status = "uninitialized",
 }
 
+local function ReadIfExists(mod, key)
+	if (net.ReadBool()) then
+		local typ = net.ReadUInt(4)
+
+		if (typ == 0) then
+			mod[key] = net.ReadFunction()
+		elseif (typ == 1) then
+			mod[key] = net.ReadString()
+		elseif (typ == 2) then
+			mod[key] = net.ReadColor()
+		end
+	end
+end
+
 function pluto.inv.readmod(item)
 	local rolls = {}
 	local minsmaxs = {}
 
-	local amt = net.ReadUInt(2)
-
-	for i = 1, amt do
-		rolls[i] = net.ReadString()
-
-		minsmaxs[i] = {net.ReadString(), net.ReadString()}
-	end
-
-	local color
+	local InternalName = net.ReadString()
 
 	if (net.ReadBool()) then
-		color = net.ReadColor()
+		local mod = pluto.mods.byname[InternalName] or {}
+		pluto.mods.byname[InternalName] = mod
+
+		mod.InternalName = true
+
+		mod.Type = net.ReadString()
+		mod.Name = net.ReadString()
+
+		ReadIfExists(mod, "Color")
+		ReadIfExists(mod, "FormatModifier")
+		ReadIfExists(mod, "GetDescription")
+		ReadIfExists(mod, "Description")
+		ReadIfExists(mod, "IsNegative")
+		ReadIfExists(mod, "GetModifier")
+		ReadIfExists(mod, "ModifyWeapon")
+
+		mod.Tags = {}
+		while (net.ReadBool()) do
+			local tag = net.ReadString()
+			mod.Tags[#mod.Tags + 1] = tag
+			mod.Tags[tag] = true
+		end
+
+		mod.Tiers = {}
+		for i = 1, net.ReadUInt(8) do
+			mod.Tiers[i] = {}
+			for j = 1, net.ReadUInt(4) do
+				mod.Tiers[i][j] = net.ReadFloat()
+			end
+		end
+
+		setmetatable(mod, pluto.mods.mt)
 	end
 
-	local name = net.ReadString()
-	local tier = net.ReadUInt(4)
-	local desc = net.ReadString()
+	local mod = {}
+	mod.Tier = net.ReadUInt(4)
+	mod.Roll = {}
+	mod.Mod = InternalName
 
-	return {
-		Rolls = rolls,
-		MinsMaxs = minsmaxs,
-		Name = name,
-		Tier = tier,
-		Desc = desc,
-		Color = color,
-	}
+	for i = 1, net.ReadUInt(4) do
+		mod.Roll[i] = net.ReadFloat()
+	end
+
+	return mod
 end
 
 function pluto.inv.readbaseitem(item)
+	setmetatable(item, pluto.inv.item_mt)
+
 	item.ClassName = net.ReadString()
 
 	item.Experience = net.ReadUInt(32)

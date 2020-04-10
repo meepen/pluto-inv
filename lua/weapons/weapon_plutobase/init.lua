@@ -122,92 +122,29 @@ function SWEP:SendData(ply)
 		suffix   = {},
 	}
 
-	net.Start "pluto_wpn_db"
-		net.WriteInt(self:GetPlutoID(), 32)
-		net.WriteString(gun.Tier.Name)
-		net.WriteColor(gun.Tier.Color)
-
-		net.WriteString(gun:GetPrintName())
-		self.PlutoData.Tier = gun.Tier.Name
-		self.PlutoData.Mods = modifiers
-
-		if (gun.Mods.prefix) then
-			net.WriteUInt(#gun.Mods.prefix, 8)
-			for ind, item in ipairs(gun.Mods.prefix) do
-				modifiers.prefix[ind] = self:WriteMod(item, gun)
+	for _, ply in pairs(ply and {ply} or player.GetAll()) do
+		net.Start "pluto_wpn_db"
+			net.WriteInt(self:GetPlutoID(), 32)
+			if (gun.RowID) then
+				net.WriteBool(true)
+				net.WriteUInt(gun.RowID, 32)
+			else
+				net.WriteBool(false)
 			end
-		else
-			net.WriteUInt(0, 8)
-		end
+			pluto.inv.writebaseitem(ply, gun)
 
-		if (gun.Mods.suffix) then
-			net.WriteUInt(#gun.Mods.suffix, 8)
-			for ind, item in ipairs(gun.Mods.suffix) do
-				modifiers.suffix[ind] = self:WriteMod(item, gun)
-			end
-		else
-			net.WriteUInt(0, 8)
-		end
-
-	if (ply) then
 		net.Send(ply)
-	else
-		net.Broadcast()
 	end
-end
-
-function SWEP:WriteMod(item, wep)
-	local mod = pluto.mods.byname[item.Mod]
-	local rolls = pluto.mods.getrolls(mod, item.Tier, item.Roll)
-
-	local name = pluto.mods.formataffix(mod.Type, mod.Name)
-	local tier = item.Tier
-	
-	local fmt = {}
-	for i, roll in ipairs(rolls) do
-		fmt[i] = mod:FormatModifier(i, math.abs(roll), self:GetClass())
-	end
-
-	local desc = string.format(mod.Description or mod:GetDescription(rolls), unpack(fmt))
-
-	net.WriteString(name)
-	net.WriteUInt(tier, 4)
-	net.WriteString(desc)
-
-	if (mod.ModifyWeapon) then
-		net.WriteBool(true)
-		net.WriteFunction(mod.ModifyWeapon)
-		net.WriteUInt(#rolls, 8)
-		for i = 1, #rolls do
-			net.WriteDouble(rolls[i])
-		end
-	else
-		net.WriteBool(false)
-	end
-
-	return {
-		Name = name,
-		Tier = tier,
-		Description = desc,
-		Mod = mod,
-		Rolls = mod.ModifyWeapon and rolls or nil
-	}
 end
 
 function SWEP:SetInventoryItem(gun)
-	self.PlutoData = {}
 	self.PlutoGun = gun
 
 	self:SendData()
 	
-	pluto.wpn_db[self:GetPlutoID()] = self.PlutoData
+	pluto.wpn_db[self:GetPlutoID()] = gun
 
 	self:ReceivePlutoData()
-end
-
-
-function SWEP:GetInventoryItem()
-	return self.PlutoData
 end
 
 hook.Add("EntityTakeDamage", "pluto_dmg_mods", function(targ, dmg)

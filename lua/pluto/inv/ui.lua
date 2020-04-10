@@ -379,7 +379,6 @@ end
 
 function PANEL:PlutoItemDelete(item)
 	if (self.Item and self.Item.ID == item) then
-		print "DELETE"
 		self.Tab.Items[self.TabIndex] = nil
 		self:SetItem()
 	end
@@ -1920,47 +1919,20 @@ vgui.Register("pluto_centered_wrap", PANEL, "EditablePanel")
 
 local PANEL = {}
 
--- https://gist.github.com/efrederickson/4080372
-local numbers = { 1, 5, 10, 50, 100, 500, 1000 }
-local chars = { "I", "V", "X", "L", "C", "D", "M" }
 
-local function ToRomanNumerals(s)
-    --s = tostring(s)
-    s = tonumber(s)
-    if not s or s ~= s then error"Unable to convert to number" end
-    if s == math.huge then error"Unable to convert infinity" end
-    s = math.floor(s)
-    if s <= 0 then return s end
-	local ret = ""
-        for i = #numbers, 1, -1 do
-        local num = numbers[i]
-        while s - num >= 0 and s > 0 do
-            ret = ret .. chars[i]
-            s = s - num
-        end
-        --for j = i - 1, 1, -1 do
-        for j = 1, i - 1 do
-            local n2 = numbers[j]
-            if s - (num - n2) >= 0 and s < num and s > 0 and num - n2 ~= n2 then
-                ret = ret .. chars[j] .. chars[i]
-                s = s - (num - n2)
-                break
-            end
-        end
-    end
-    return ret
-end
+function PANEL:AddImplicit(mod_data, item)
+	local mod = pluto.mods.byname[mod_data.Mod]
 
-function PANEL:AddImplicit(mod)
 	local z = self.ZPos or 3
 
 	local p = self:Add "DLabel"
 	p:SetContentAlignment(5)
 	p:SetFont "pluto_item_showcase_impl"
-	p:SetTextColor(mod.Color or white_text)
 	p:SetZPos(z)
 	p:Dock(TOP)
-	p:SetText(mod.Desc)
+
+	p:SetTextColor(mod.Color or white_text)
+	p:SetText(pluto.mods.formatdescription(mod_data, item))
 
 	self.ZPos = z + 1
 	self.Last = pnl
@@ -1968,7 +1940,8 @@ function PANEL:AddImplicit(mod)
 	return p
 end
 
-function PANEL:AddMod(mod)
+function PANEL:AddMod(mod_data, item)
+	local mod = pluto.mods.byname[mod_data.Mod]
 	local z = self.ZPos or 3
 
 	local pnl = self:Add "EditablePanel"
@@ -1977,7 +1950,7 @@ function PANEL:AddMod(mod)
 
 	local p = pnl:Add "DLabel"
 	p:SetFont "pluto_item_showcase_smol"
-	p:SetText(mod.Name .. " " .. ToRomanNumerals(mod.Tier))
+	p:SetText(mod:GetTierName(mod_data.Tier))
 	p:SetTextColor(white_text)
 	p:Dock(LEFT)
 	p:SetContentAlignment(7)
@@ -1996,18 +1969,17 @@ function PANEL:AddMod(mod)
 	DEFINE_BASECLASS "DLabel"
 
 	function p:Think()
-		local desc = mod.Desc
-		local fmt = mod.Rolls
-		if ((OVERRIDE_DETAILED or LocalPlayer():KeyDown(IN_DUCK)) and mod.MinsMaxs) then
-			fmt = {}
-			for i = 1, #mod.Rolls do
-				fmt[i] = string.format("%s (%s to %s)", mod.Rolls[i], mod.MinsMaxs[i][1], mod.MinsMaxs[i][2])
+		local fmt
+		if ((OVERRIDE_DETAILED or LocalPlayer():KeyDown(IN_DUCK))) then
+			fmt = pluto.mods.format(mod_data, item)
+			local minmaxs = pluto.mods.getminmaxs(mod_data, item)
+
+			for i = 1, #fmt do
+				fmt[i] = string.format("%s (%s to %s)", fmt[i], minmaxs[i].Mins, minmaxs[i].Maxs)
 			end
 		end
 
-		if (fmt and mod.MinsMaxs) then
-			desc = string.format(mod.Desc, unpack(fmt))
-		end
+		local desc = pluto.mods.formatdescription(mod_data, item, fmt)
 
 		if (self.LastDesc ~= desc) then
 			self:SetText(desc)
@@ -2102,19 +2074,19 @@ function PANEL:SetItem(item)
 
 	if (item.Mods and item.Mods.implicit) then
 		for _, mod in ipairs(item.Mods.implicit) do
-			self:AddImplicit(mod):DockMargin(pad, pad / 2, pad, pad / 2)
+			self:AddImplicit(mod, item):DockMargin(pad, pad / 2, pad, pad / 2)
 		end
 	end
 
 	if (item.Mods and item.Mods.prefix) then
 		for _, mod in ipairs(item.Mods.prefix) do
-			self:AddMod(mod):DockMargin(pad, pad / 2, pad, pad / 2)
+			self:AddMod(mod, item):DockMargin(pad, pad / 2, pad, pad / 2)
 		end
 	end
 
 	if (item.Mods and item.Mods.suffix) then
 		for _, mod in ipairs(item.Mods.suffix) do
-			self:AddMod(mod):DockMargin(pad, pad / 2, pad, pad / 2)
+			self:AddMod(mod, item):DockMargin(pad, pad / 2, pad, pad / 2)
 		end
 	end
 

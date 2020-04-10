@@ -6,8 +6,6 @@ ENT.Base = "pluto_flame"
 function ENT:Initialize()
 	self.BaseClass.Initialize(self)
 	self.Speed = 0
-
-	print "init"
 end
 
 function ENT:DoTick()

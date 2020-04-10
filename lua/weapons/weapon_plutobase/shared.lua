@@ -31,12 +31,13 @@ function SWEP:ReceivePlutoData()
 
 	local data = self:GetInventoryItem()
 
-	local mods = data.Mods
+	print(self)
 
-	for _, list in pairs(mods) do
-		for _, mod in pairs(list) do
-			if (mod.Mod and mod.Mod.ModifyWeapon) then
-				mod.Mod:ModifyWeapon(self, mod.Rolls)
+	for _, modlist in pairs(data.Mods or {}) do
+		for _, mod_data in pairs(modlist) do
+			local mod = pluto.mods.byname[mod_data.Mod]
+			if (mod.ModifyWeapon) then
+				mod:ModifyWeapon(self, pluto.mods.getrolls(mod, mod_data.Tier, mod_data.Roll))
 			end
 		end
 	end

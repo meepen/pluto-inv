@@ -16,32 +16,87 @@ pluto.inv.currencies = pluto.inv.currencies or {}
 pluto.inv.loading = pluto.inv.loading or {}
 
 pluto.inv.sent = pluto.inv.sent or {}
+pluto.inv.mods_sent = pluto.inv.mods_sent or {}
 
 util.AddNetworkString "pluto_inv_data"
 
+local function WriteIfExists(mod, key)
+	local data = mod[key]
+	if (data) then
+		net.WriteBool(true)
+
+		local typ = type(data)
+
+		if (typ == "function") then
+			net.WriteUInt(0, 4)
+			net.WriteFunction(data)
+		elseif (typ == "string") then
+			net.WriteUInt(1, 4)
+			net.WriteString(data)
+		elseif (IsColor(data)) then
+			net.WriteUInt(2, 4)
+			net.WriteColor(data)
+		else
+			net.WriteUInt(3, 4)
+		end
+	else
+		net.WriteBool(false)
+	end
+end
+
 function pluto.inv.writemod(ply, item, gun)
 	local mod = pluto.mods.byname[item.Mod]
-	local rolls = pluto.mods.getrolls(mod, item.Tier, item.Roll)
 
-	local name = pluto.mods.formataffix(mod.Type, mod.Name)
+	-- global modifier stuff
+	net.WriteString(mod.InternalName)
+
+	if (not pluto.inv.mods_sent[ply] or not pluto.inv.mods_sent[ply][mod.InternalName]) then
+		net.WriteBool(true)
+
+		net.WriteString(mod.Type)
+		net.WriteString(mod.Name)
+
+		WriteIfExists(mod, "Color")
+		WriteIfExists(mod, "FormatModifier")
+		WriteIfExists(mod, "GetDescription")
+		WriteIfExists(mod, "Description")
+		WriteIfExists(mod, "IsNegative")
+		WriteIfExists(mod, "GetModifier")
+		WriteIfExists(mod, "ModifyWeapon")
+
+		for tag in pairs(mod.Tags or {}) do
+			if (type(tag) ~= "string") then
+				continue
+			end
+
+			net.WriteBool(true)
+			net.WriteString(tag)
+		end
+		net.WriteBool(false)
+
+		net.WriteUInt(#mod.Tiers, 8)
+		for _, data in ipairs(mod.Tiers) do
+			net.WriteUInt(#data, 4)
+			for _, roll in ipairs(data) do
+				net.WriteFloat(roll)
+			end
+		end
+
+		pluto.inv.mods_sent[ply] = pluto.inv.mods_sent[ply] or {}
+		pluto.inv.mods_sent[ply][mod.InternalName] = true
+	else
+		net.WriteBool(false)
+	end
+
+	-- current modifier stuff
 	local tier = item.Tier
-	local tierroll = mod.Tiers[item.Tier] or mod.Tiers[#mod.Tiers]
 
-	net.WriteUInt(#rolls, 2)
-	for i, roll in ipairs(rolls) do
-		net.WriteString(mod:FormatModifier(i, math.abs(roll), gun.ClassName))
-		net.WriteString(mod:FormatModifier(i, tierroll[i * 2 - 1], gun.ClassName))
-		net.WriteString(mod:FormatModifier(i, tierroll[i * 2], gun.ClassName))
+	net.WriteUInt(item.Tier, 4)
+	net.WriteUInt(#item.Roll, 4)
+
+	for _, roll in ipairs(item.Roll) do
+		net.WriteFloat(roll)
 	end
-
-	net.WriteBool(not not mod.Color)
-	if (mod.Color) then
-		net.WriteColor(mod.Color)
-	end
-
-	net.WriteString(name)
-	net.WriteUInt(tier, 4)
-	net.WriteString(mod.Description or mod:GetDescription(rolls))
 end
 
 function pluto.inv.writeitem(ply, item)

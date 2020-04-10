@@ -1,31 +1,5 @@
 include "shared.lua"
 
-local function ReadMod()
-	local name = net.ReadString()
-	local tier = net.ReadUInt(4)
-	local desc = net.ReadString()
-	local rolls
-
-	local fn
-	if (net.ReadBool()) then
-		fn = net.ReadFunction()
-		rolls = {}
-		for i = 1, net.ReadUInt(8) do
-			rolls[i] = net.ReadDouble()
-		end
-	end
-
-	return {
-		Name = name,
-		Tier = tier,
-		Desc = desc,
-		Mod = {
-			ModifyWeapon = fn
-		},
-		Rolls = rolls,
-	}
-end
-
 net.Receive("pluto_wpn_db", function(len)
 	local ent = net.ReadInt(32)
 
@@ -33,41 +7,19 @@ net.Receive("pluto_wpn_db", function(len)
 		Type = "Weapon",
 	}
 
-	local modifiers = {
-		implicit = {},
-		prefix   = {},
-		suffix   = {},
-	}
-
-	PlutoData.Tier = net.ReadString()
-	PlutoData.Color = net.ReadColor()
-	PlutoData.PrintName = net.ReadString()
-	PlutoData.Mods = modifiers
-
-	for ind = 1, net.ReadUInt(8) do
-		modifiers.prefix[ind] = ReadMod()
+	if (net.ReadBool()) then
+		PlutoData.ID = net.ReadUInt(32)
 	end
 
-	for ind = 1, net.ReadUInt(8) do
-		modifiers.suffix[ind] = ReadMod()
-	end
+	pluto.inv.readbaseitem(PlutoData)
 
 	pluto.wpn_db[ent] = PlutoData
 
-	function PlutoData:GetPrintName()
-		return self.PrintName
-	end
-
-	local found
 	for _, e in pairs(ents.GetAll()) do
 		if (e.GetPlutoID and e:GetPlutoID() == ent) then
-			found = e
+			e:ReceivePlutoData()
 			break
 		end
-	end
-
-	if (IsValid(found)) then
-		found:ReceivePlutoData()
 	end
 end)
 
@@ -88,6 +40,12 @@ end
 function SWEP:Initialize()
 	BaseClass.Initialize(self)
 	self:PlutoInitialize()
+
+	local data = pluto.wpn_db[self:GetPlutoID()]
+
+	if (data) then
+		self:ReceivePlutoData(data)
+	end
 end
 
 function SWEP:DisplayPlutoData()

@@ -303,12 +303,12 @@ function ITEM:GetDiscordEmbed()
 	
 	if (self.Mods) then
 		for type, mods in pairs(self.Mods) do
-			for ind, moditem in ipairs(mods) do
-				local mod = pluto.mods.byname[moditem.Mod]
-				local rolls = pluto.mods.getrolls(mod, moditem.Tier, moditem.Roll)
+			for ind, mod_data in ipairs(mods) do
+				local mod = pluto.mods.byname[mod_data.Mod]
+				local rolls = pluto.mods.getrolls(mod, mod_data.Tier, mod_data.Roll)
 				local name = pluto.mods.formataffix(mod.Type, mod.Name)
-				local tier = moditem.Tier
-				local tierroll = mod.Tiers[moditem.Tier] or mod.Tiers[#mod.Tiers]
+				local tier = mod_data.Tier
+				local tierroll = mod.Tiers[mod_data.Tier] or mod.Tiers[#mod.Tiers]
 
 				local desc_fmt = {}
 
@@ -316,7 +316,7 @@ function ITEM:GetDiscordEmbed()
 					desc_fmt[i] = "[" .. mod:FormatModifier(i, math.abs(roll), self.ClassName) .. "](https://pluto.gg)"
 				end
 
-				embed:AddField(name .. " " .. ToRomanNumerals(tier), string.format(mod.Description or mod:GetDescription(rolls), unpack(desc_fmt)))
+				embed:AddField(name .. " " .. ToRomanNumerals(tier), pluto.mods.getdescription(mod_data, desc_fmt))
 			end
 		end
 	end

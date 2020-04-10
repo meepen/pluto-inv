@@ -19,6 +19,8 @@ pluto.files.load {
 		"nitro/cl_nitro.lua",
 		"quests/cl_quests.lua",
 		"models/cl_showhitgroups.lua",
+
+		"chat/cl_chat.lua",
 	},
 	Shared = {
 		"co_net.lua",
