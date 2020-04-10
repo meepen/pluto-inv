@@ -31,8 +31,6 @@ function SWEP:ReceivePlutoData()
 
 	local data = self:GetInventoryItem()
 
-	print(self)
-
 	for _, modlist in pairs(data.Mods or {}) do
 		for _, mod_data in pairs(modlist) do
 			local mod = pluto.mods.byname[mod_data.Mod]
