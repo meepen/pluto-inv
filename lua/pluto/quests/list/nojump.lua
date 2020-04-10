@@ -37,7 +37,7 @@ function QUEST:Reward(data)
 	end), gun)
 
 	local mod = table.shuffle(pluto.mods.getfor(baseclass.Get(new_item.ClassName), function(mod)
-		return mod.Type == "implicit" and not mod.PreventChange
+		return mod.Type == "implicit" and not mod.PreventChange and not mod.NoCoined
 	end))[1]
 
 	pluto.weapons.addmod(new_item, mod.InternalName)

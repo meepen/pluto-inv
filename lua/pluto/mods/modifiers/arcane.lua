@@ -16,6 +16,8 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
+MOD.NoCoined = true
+
 MOD.Description = "Touch of the Arcane"
 
 MOD.Tiers = {

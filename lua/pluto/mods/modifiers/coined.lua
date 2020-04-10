@@ -18,6 +18,8 @@ end
 
 MOD.Description = "Gives 12% more currency rewards per modifier"
 
+MOD.NoCoined = true
+
 MOD.Tiers = {
 	{ 1, 1 },
 }
@@ -29,6 +31,12 @@ function MOD:OnUpdateSpawnPoints(wep, rolls, atk, vic, state)
 
 		for _, modlist in pairs(gun.Mods) do
 			mod_count = mod_count + #modlist
+
+			for _, mod in pairs(modlist) do
+				if (pluto.mods.byname[mod.Mod].NoCoined) then
+					mod_count = mod_count - 1
+				end
+			end
 		end
 
 		state.Points = state.Points * (1 + 0.12 * mod_count)

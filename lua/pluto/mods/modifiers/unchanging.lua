@@ -17,6 +17,8 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
+MOD.NoCoined = true
+
 MOD.Description = "Corrupted"
 
 MOD.Tiers = {
