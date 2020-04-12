@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\paladin_tyrant\$0b_fx01"
+	$additive		1
+	$nocull			1
+}

@@ -1,0 +1,15 @@
+"UnLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\rune_breaker_expert\eye_ef03_d3f3"
+	$additive		1
+	$nocull			1
+	"Proxies"
+	{
+	"AnimatedTexture"
+		{
+		"animatedTextureVar" "$basetexture"
+		"animatedTextureFrameNumVar" "$frame"
+		"animatedTextureFrameRate" "38"
+		}
+	}
+}

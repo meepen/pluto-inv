@@ -53,7 +53,7 @@ function SWEP:DisplayPlutoData()
 	data.ClassName = self:GetClass()
 	pprintf("%s %s", data.Tier, self.PrintName)
 
-	for type, list in pairs(data.Mods) do
+	for type, list in pairs(data.Mods or {}) do
 		if (#list == 0) then
 			continue
 		end

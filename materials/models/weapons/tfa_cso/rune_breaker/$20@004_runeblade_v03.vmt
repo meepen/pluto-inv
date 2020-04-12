@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\rune_breaker\$20@004_runeblade_v03"
+	$bumpmap "models\weapons\tfa_cso\rune_breaker\$20@004_runeblade_v03_n"
+	$phongexponenttexture "models\weapons\v_models\Request CSO\Dragon TMP S"
+	
+	$phong "1"
+	$phongexponent "10"
+	$phongfresnelranges "[1 1 1]"
+	$phongalbedotint "1"
+	$phongboost "512"
+}

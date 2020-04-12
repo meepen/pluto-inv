@@ -1,0 +1,8 @@
+"UnlitGeneric"
+{
+	"$basetexture"	"scope/sfscope_bak"
+	"$color"		"{81 202 205}"
+	"$translucent"	"1"
+	"$additive"		"1"
+	"$ignorez"		"1"
+}

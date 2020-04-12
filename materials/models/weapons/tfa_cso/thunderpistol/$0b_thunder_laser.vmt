@@ -1,0 +1,6 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\thunderpistol\$0b_thunder_laser"
+    $additive        "1"
+	$nocull          "1"
+}

@@ -1,0 +1,13 @@
+"UnlitGeneric"
+{
+	"$baseTexture" "sprites/holybomb_exp"
+	"Proxies"
+	{
+	"AnimatedTexture"
+		{
+		"animatedTextureVar" "$basetexture"
+		"animatedTextureFrameNumVar" "$frame"
+		"animatedTextureFrameRate" "1"
+		}
+	}
+}

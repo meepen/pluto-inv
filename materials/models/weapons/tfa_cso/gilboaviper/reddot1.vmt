@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\gilboaviper\reddot1"
+	$additive		"1"
+}

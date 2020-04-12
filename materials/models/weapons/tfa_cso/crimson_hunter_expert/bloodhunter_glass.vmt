@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\crimson_hunter\bloodhunter_glass"
+	$additive		"1"
+}

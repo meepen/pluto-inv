@@ -1,0 +1,6 @@
+"UnLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\rune_breaker_expert\eye_ef02_d3f3"
+	$additive		1
+	$nocull			1
+}

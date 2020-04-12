@@ -1,0 +1,15 @@
+"UnlitGeneric"
+{
+	"$basetexture" "sprites/steam1"
+	"$translucent" "1"
+	"$vertexcolor" "1"
+	"Proxies"
+	{
+	"AnimatedTexture"
+		{
+		"animatedTextureVar" "$basetexture"
+		"animatedTextureFrameNumVar" "$frame"
+		"animatedTextureFrameRate" "15"
+		}
+	}
+}

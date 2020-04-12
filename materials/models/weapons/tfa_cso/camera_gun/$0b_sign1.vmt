@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\camera_gun\$0b_sign1"
+	$additive		"1"
+}

@@ -1,0 +1,13 @@
+"VertexLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\lycanthrope\$20@004_moon"
+	$bumpmap "models\weapons\tfa_cso\lycanthrope\$20@004_moon_n"
+	$phongexponenttexture "models\weapons\v_models\Request CSO\Dragon TMP S"
+	
+	$phong "1"
+	$phongexponent "10"
+	$phongfresnelranges "[0.15 0.65 1.00]"
+	$phongalbedotint "0"
+	$phongtint "[0.5 1 1]"
+	$phongboost "64"
+}

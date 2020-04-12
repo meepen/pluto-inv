@@ -1,0 +1,6 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\darkknight_v8\$0b_ef2_6"
+    $additive       1
+	$nocull			1
+}

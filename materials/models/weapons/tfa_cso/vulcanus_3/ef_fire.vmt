@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\vulcanus_3\ef_fire"
+	$additive		"1"
+}

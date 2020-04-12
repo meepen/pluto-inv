@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\brick_piece_v2\trace"
+	$additive		"1"
+}

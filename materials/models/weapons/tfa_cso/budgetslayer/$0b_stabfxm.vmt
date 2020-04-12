@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\budgetslayer\$0b_stabfxm"
+    $additive        "1"
+}

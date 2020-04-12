@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\serpent_blade\snake-1v"
+	$bumpmap "models\weapons\tfa_cso\serpent_blade\snake-1v_n"
+	$phongexponenttexture "models\weapons\v_models\Request CSO\Dragon TMP S"
+	
+	$phong "1"
+	$phongexponent "1"
+	$phongfresnelranges "[1 1 1]"
+	$phongalbedotint "1"
+	$phongboost "4"
+}

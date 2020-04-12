@@ -1,0 +1,15 @@
+"UnlitGeneric"
+{
+	"$baseTexture" "sprites/aug_guardian_smoke"
+	"$translucent" 1
+	"$additive" 1
+	"Proxies"
+	{
+	"AnimatedTexture"
+		{
+		"animatedTextureVar" "$basetexture"
+		"animatedTextureFrameNumVar" "$frame"
+		"animatedTextureFrameRate" "27"
+		}
+	}
+}

@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\x-12\argus12_scope_effect"
+    $additive        "1"
+}

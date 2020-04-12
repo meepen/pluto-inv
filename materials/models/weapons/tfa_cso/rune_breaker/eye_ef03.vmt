@@ -1,0 +1,15 @@
+"UnLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\rune_breaker\eye_ef03"
+	$additive		1
+	$nocull			1
+	"Proxies"
+	{
+	"AnimatedTexture"
+		{
+		"animatedTextureVar" "$basetexture"
+		"animatedTextureFrameNumVar" "$frame"
+		"animatedTextureFrameRate" "38"
+		}
+	}
+}

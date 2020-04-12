@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\janus11\effect-twig"
+    $additive        "1"
+}

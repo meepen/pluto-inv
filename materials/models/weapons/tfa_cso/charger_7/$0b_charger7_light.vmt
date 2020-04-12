@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\charger_7\$0b_charger7_light"
+	$additive		"1"
+}

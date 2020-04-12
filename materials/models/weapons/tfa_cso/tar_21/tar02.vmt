@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\tar_21\tar02"
+	$additive		"1"
+}

@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\crow5\$0b_line"
+	$additive		"1"
+}

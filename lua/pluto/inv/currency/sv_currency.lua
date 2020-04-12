@@ -551,12 +551,14 @@ for name, values in pairs {
 	},
 	tp = {
 		Shares = 1,
-	}
+	},
+	crate3 = {
+		Shares = 0,
+		Types = "None",
+	},
 } do
 	table.Merge(pluto.currency.byname[name], values)
 end
-
-process_percents(pluto.currency.byname.crate0.Contents)
 
 for _, item in pairs(pluto.currency.list) do
 	pluto.currency.shares = pluto.currency.shares + item.Shares

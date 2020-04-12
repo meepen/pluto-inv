@@ -1,0 +1,6 @@
+"UnLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\magnum_drill_expert\$0b_sgdlightline_d3a3"
+	$additive		"1"
+	$nocull "1"
+}

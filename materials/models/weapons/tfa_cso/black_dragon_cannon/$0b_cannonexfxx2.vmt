@@ -1,0 +1,6 @@
+"UnLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\black_dragon_cannon\$0b_cannonexfxx2"
+	$additive "1"
+	$nocull    1
+}

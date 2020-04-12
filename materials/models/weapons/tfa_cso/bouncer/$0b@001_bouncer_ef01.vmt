@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\bouncer\$0b@001_bouncer_ef01"
+    $additive        "1"
+}

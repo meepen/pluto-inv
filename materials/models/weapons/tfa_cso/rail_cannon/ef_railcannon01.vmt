@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\rail_cannon\ef_railcannon01"
+	$additive		"1"
+}

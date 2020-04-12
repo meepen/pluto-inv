@@ -1,0 +1,6 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\jaydagger\6_4bkatafx"
+    $additive        "1"
+	$nocull "0"
+}

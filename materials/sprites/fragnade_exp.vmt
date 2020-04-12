@@ -1,0 +1,15 @@
+"UnlitGeneric"
+{
+	"$baseTexture" "sprites/fragnade_exp"
+    "$translucent" 1
+	"$additive" 1
+	"Proxies"
+	{
+	"AnimatedTexture"
+		{
+		"animatedTextureVar" "$basetexture"
+		"animatedTextureFrameNumVar" "$frame"
+		"animatedTextureFrameRate" "20"
+		}
+	}
+}

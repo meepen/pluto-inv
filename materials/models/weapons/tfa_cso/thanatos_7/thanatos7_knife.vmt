@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\thanatos_7\thanatos7_knife"
+	$additive		"1"
+}

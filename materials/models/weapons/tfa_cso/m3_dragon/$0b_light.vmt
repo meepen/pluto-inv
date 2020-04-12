@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\m3_dragon\$0b_light"
+	$additive		1
+}

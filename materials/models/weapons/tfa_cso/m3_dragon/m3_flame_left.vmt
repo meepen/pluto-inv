@@ -1,0 +1,16 @@
+"UnlitGeneric"
+{
+	"$baseTexture" "models/weapons/tfa_cso/m3_dragon/m3_flame_left"
+	"$frame" "0"
+	"$additive" "1"
+	
+	"Proxies"
+	{
+	"AnimatedTexture"
+		{
+		"animatedTextureVar" "$basetexture"
+		"animatedTextureFrameNumVar" "$frame"
+		"animatedTextureFrameRate" "16"
+		}
+	}
+}

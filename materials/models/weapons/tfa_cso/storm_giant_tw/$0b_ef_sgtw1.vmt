@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\storm_giant\$0b_ef_sgtw1"
+	$additive		1
+	$nocull			1
+}

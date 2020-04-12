@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\plasma_gun\plasma_v_alpha"
+	$additive		1
+	$nocull			1
+}

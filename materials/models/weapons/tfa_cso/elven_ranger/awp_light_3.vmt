@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\elven_ranger\awp_light_3"
+	$additive		1
+	$nocull			1
+}

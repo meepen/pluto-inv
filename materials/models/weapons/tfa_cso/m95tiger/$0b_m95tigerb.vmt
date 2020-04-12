@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\m95tiger\$0b_m95tigerb"
+    $additive        "1"
+}

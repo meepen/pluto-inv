@@ -1,0 +1,6 @@
+"UnLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\magnumlauncher_gs18\$0b_smlinefx"
+	$additive		"1"
+	$nocull         "1"
+}

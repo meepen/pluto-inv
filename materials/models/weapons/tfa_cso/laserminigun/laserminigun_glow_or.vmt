@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\laserminigun\laserminigun_glow_or"
+    $additive        "1"
+}

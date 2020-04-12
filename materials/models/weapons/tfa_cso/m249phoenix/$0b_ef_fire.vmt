@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\m249phoenix\$0b_ef_fire"
+	$additive		1
+}

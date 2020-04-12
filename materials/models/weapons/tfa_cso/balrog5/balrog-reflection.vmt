@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\balrog5\balrog-reflection"
+    $additive        "1"
+}

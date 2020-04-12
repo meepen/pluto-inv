@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+	$baseTexture 			"models/weapons/w_models/gren_ensble"
+	//$alphatest 				1
+	$bumpMap 				"models/weapons/w_models/gren_ensble_bump"
+	//$normalmapalphaenvmapmask  1
+	//$envmapcontrast  0
+	//$envmapsaturation  1
+	// $envmaptint  "[1 1 1 ]"
+	// $envmap  "env_cubemap"
+	// $selfillumtint  "[10 10 10]"
+	$phong  "1"
+	$phongexponent  "5"
+	$phongboost  "10"	
+	$phongfresnelranges 	"[0.1 0.5 1]"
+}

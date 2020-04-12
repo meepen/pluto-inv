@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\gilboaviper\gilboa_dotsight_v"
+	$additive		"1"
+}

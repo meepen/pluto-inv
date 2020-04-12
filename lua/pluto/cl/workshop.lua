@@ -1,3 +1,6 @@
+local function default(name)
+	return "https://cdn.pluto.gg/" .. name .. ".gma"
+end
 local packs =  {
 	pluto = {
 		remote = "https://cdn.pluto.gg/content.gma",
@@ -265,6 +268,18 @@ local packs =  {
 			"20200323",
 		}
 	}]]
+	tfa_cso_general = {
+		remote = "https://cdn.pluto.gg/tfa_cso_general.gma",
+		versions = {
+			"20200411",
+		}
+	},
+	starchaserar = {
+		remote = default "starchaserar",
+		versions = {
+			"20200411",
+		}
+	}
 }
 
 local good_col = Color(0, 255, 0)

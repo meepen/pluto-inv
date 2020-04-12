@@ -42,6 +42,9 @@ pluto.files.load {
 		"mods/shared/limp.lua",
 		"tfa/external/tfa_cso2_snd_heavy.lua",
 
+		"tfa/external/weaponsoundguarantee_part1.lua",
+		"tfa/external/weaponsoundguarantee_part2.lua",
+
 		-- "unicode/init.lua",
 		-- "unicode/casefolding.lua",
 		-- -- "unicode/unicodedata.lua",

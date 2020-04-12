@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\lycanthrope\$0b_redlightsg552"
+    $additive       1
+	$nocull			1
+}

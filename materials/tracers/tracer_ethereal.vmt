@@ -1,0 +1,7 @@
+"UnlitGeneric"
+{
+	"$basetexture" "tracers/tracer_ethereal"
+	"$additive" 1
+	"$vertexcolor" 1
+	"$vertexalpha" 1
+}

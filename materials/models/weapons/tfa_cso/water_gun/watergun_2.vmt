@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\water_gun\watergun_2"
+	$translucent	"1"
+}

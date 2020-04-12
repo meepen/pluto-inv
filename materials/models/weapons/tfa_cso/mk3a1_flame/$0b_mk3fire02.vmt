@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\mk3a1_flame\$0b_mk3fire02"
+	$additive		"1"
+}

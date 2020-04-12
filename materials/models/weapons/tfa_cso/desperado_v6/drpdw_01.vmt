@@ -1,0 +1,6 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\desperado_v6\drpdw_01"
+	$additive		1
+	$nocull			1
+}

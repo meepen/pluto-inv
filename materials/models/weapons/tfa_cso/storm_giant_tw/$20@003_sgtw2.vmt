@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\storm_giant_tw\$20@003_sgtw2"
+	$bumpmap "models\weapons\tfa_cso\storm_giant_tw\$20@003_sgtw2_n"
+	$phongexponenttexture "models\weapons\v_models\Request CSO\Dragon TMP S"
+	
+	$phong "1"
+	$phongexponent "10"
+	$phongfresnelranges "[0.15 0.65 1.00]"
+	$phongalbedotint "1"
+	$phongboost "256"
+}

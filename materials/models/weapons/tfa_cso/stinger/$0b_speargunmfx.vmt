@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\stinger\$0b_speargunmfx"
+    $additive        "1"
+}

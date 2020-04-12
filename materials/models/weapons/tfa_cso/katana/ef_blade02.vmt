@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\katana\ef_blade02"
+	$additive		"1"
+}

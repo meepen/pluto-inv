@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\chain_grenade\chaingren_glow"
+	$additive		"1"
+}

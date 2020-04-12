@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\holysword\$0bholy_light1"
+    $additive        "1"
+}

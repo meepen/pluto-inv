@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\guardian\$0b_buffaugshoot02"
+	$additive		1
+}

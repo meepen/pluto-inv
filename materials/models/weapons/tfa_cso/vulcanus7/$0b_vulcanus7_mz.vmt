@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\vulcanus7\$0b_vulcanus7_mz"
+    $additive        "1"
+}

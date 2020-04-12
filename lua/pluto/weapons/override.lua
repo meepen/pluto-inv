@@ -16,6 +16,15 @@ function weapons.OnLoaded()
 
 
 	for _, wep in pairs(weapons.GetList()) do
+		wep = weapons.GetStored(wep.ClassName)
+		if (wep.Base == "tfa_gun_base") then
+			pwarnf("GUN DISABLED: %s", wep.ClassName)
+			wep.AutoSpawnable = false
+			wep.Spawnable = false
+			wep.PlutoSpawnable = false
+			continue
+		end
+
 		wep = baseclass.Get(wep.ClassName)
 		if (not wep.AutoSpawnable and not wep.PlutoSpawnable) then
 			continue

@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\elven_ranger\$0b_awpfx02"
+	$additive		1
+	$nocull			1
+}

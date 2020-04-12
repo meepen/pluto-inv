@@ -1,0 +1,7 @@
+"UnlitGeneric"
+{
+	"$basetexture"	"scope/scope_square"
+	"$translucent"	"1"
+	"$additive"		"0"
+	"$ignorez"		"1"
+}

@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\star_chaser_sr\$0b_starchasersr_star"
+	$additive		1
+	$nocull			1
+}

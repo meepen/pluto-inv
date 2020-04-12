@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\ethereal\@00aarterial-alpha"
+    $additive       1
+	$nocull			1
+}

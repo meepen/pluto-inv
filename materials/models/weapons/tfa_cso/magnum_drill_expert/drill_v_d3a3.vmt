@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\magnum_drill_expert\drill_v_d3a3"
+	$bumpmap "models\weapons\tfa_cso\magnum_drill_expert\drill_v_d3a3_n"
+	$phongexponenttexture "models\weapons\v_models\Request CSO\Dragon TMP S"
+	
+	$phong "1"
+	$phongexponent "20"
+	$phongfresnelranges "[0.15 0.65 1.00]"
+	$phongalbedotint "1"
+	$phongboost "32"
+}

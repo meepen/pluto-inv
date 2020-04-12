@@ -223,6 +223,14 @@ pluto.currency.list = {
 		SubDescription = "Toilet paper was the first to go when it started.",
 		Color = Color(235, 240, 236, 255),
 	},
+	{
+		InternalName = "crate3",
+		Name = "Pink Egg",
+		Icon = "pluto/currencies/crate3.png",
+		Description = "Contains ABSOLUTELY NOTHING",
+		SubDescription = "help me",
+		Color = Color(235, 70, 150, 255),
+	},
 }
 
 pluto.currency_mt = pluto.currency_mt or {}

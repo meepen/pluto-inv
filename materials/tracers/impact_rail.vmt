@@ -1,0 +1,8 @@
+"UnlitGeneric"
+{
+	"$basetexture" "tracers/impact_rail"
+	"$additive" 1
+	"$vertexcolor" 1
+	"$nocull" 1
+	"$nooverbright" 1
+}

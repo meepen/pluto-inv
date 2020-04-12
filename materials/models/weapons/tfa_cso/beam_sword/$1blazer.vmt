@@ -1,0 +1,13 @@
+"UnlitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\beam_sword\$1blazer"
+	$additive		"1"
+
+Proxies
+	{
+		PlayerWeaponColor
+		{
+			resultVar	$color2
+		}
+	}
+}

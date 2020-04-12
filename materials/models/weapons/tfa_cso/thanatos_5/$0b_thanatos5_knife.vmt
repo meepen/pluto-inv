@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\thanatos_5\$0b_thanatos5_knife"
+	$additive		"1"
+}
