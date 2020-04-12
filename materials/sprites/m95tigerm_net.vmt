@@ -1,0 +1,7 @@
+"UnlitGeneric"
+{
+	"$baseTexture" "sprites/m95tigerm_net"
+	"$translucent" 1
+	"$additive" 1
+	"$nocull" 1
+}

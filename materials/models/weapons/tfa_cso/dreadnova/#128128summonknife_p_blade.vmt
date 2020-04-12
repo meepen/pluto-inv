@@ -1,0 +1,6 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\dreadnova\#128128summonknife_p_blade"
+    $additive        "1"
+	$nocull          "1"
+}

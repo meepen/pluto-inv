@@ -1,0 +1,14 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\m134_zhubajie\light_1"
+    $additive        "1"
+	$nocull			 "1"
+	
+Proxies
+	{
+		PlayerWeaponColor
+		{
+			resultVar	$color2
+		}
+	}
+}

@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\monkeywpset2\watertrace"
+    $additive        "1"
+}

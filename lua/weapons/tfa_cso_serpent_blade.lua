@@ -1,4 +1,4 @@
-SWEP.Base = "tfa_melee_base"
+SWEP.Base = "weapon_ttt_crowbar"
 SWEP.Category = "TFA CS:O"
 SWEP.PrintName = "Serpent Blade"
 
@@ -7,43 +7,22 @@ SWEP.WorldModel = "models/weapons/tfa_cso/w_serpent_blade.mdl"
 SWEP.ViewModelFlip = false
 SWEP.ViewModelFOV = 85
 SWEP.UseHands = true
-SWEP.HoldType = "knife"
-SWEP.DrawCrosshair = true
-
-SWEP.Primary.Directional = false
-
-SWEP.Spawnable = true
-SWEP.AdminOnly = false
-
-SWEP.DisableIdleAnimations = false
-
-SWEP.Secondary.CanBash = false
-SWEP.Secondary.MaxCombo = -1
-SWEP.Primary.MaxCombo = -1
-
-SWEP.VMPos = Vector(0,0,0) --The viewmodel positional offset, constantly.  Subtract this from any other modifications to viewmodel position.
-
--- nZombies Stuff
-SWEP.NZWonderWeapon		= false	-- Is this a Wonder-Weapon? If true, only one player can have it at a time. Cheats aren't stopped, though.
---SWEP.NZRePaPText		= "your text here"	-- When RePaPing, what should be shown? Example: Press E to your text here for 2000 points.
-SWEP.NZPaPName				= "Viper's Kiss"
---SWEP.NZPaPReplacement 	= "tfa_cso_dualinfinityfinal"	-- If Pack-a-Punched, replace this gun with the entity class shown here.
-SWEP.NZPreventBox		= false	-- If true, this gun won't be placed in random boxes GENERATED. Users can still place it in manually.
-SWEP.NZTotalBlackList	= false	-- if true, this gun can't be placed in the box, even manually, and can't be bought off a wall, even if placed manually. Only code can give this gun.
+SWEP.Secondary.Animation = ACT_VM_RELOAD
+SWEP.Secondary.Delay = 1.5
 
 
 SWEP.Offset = { --Procedural world model animation, defaulted for CS:S purposes.
-		Pos = {
+	Pos = {
 		Up = -11,
 		Right = 3,
 		Forward = 4,
-		},
-		Ang = {
+	},
+	Ang = {
 		Up = 90,
 		Right = -10,
 		Forward = 175
-		},
-		Scale = 1.35
+	},
+	Scale = 1.35
 }
 
 sound.Add({
@@ -83,63 +62,61 @@ sound.Add({
 	['pitch'] = {100,100}
 })
 
-SWEP.Primary.Attacks = {
-	{
-		['act'] = ACT_VM_PRIMARYATTACK, -- Animation; ACT_VM_THINGY, ideally something unique per-sequence
-		['len'] = 90, -- Trace source; X ( +right, -left ), Y ( +forward, -back ), Z ( +up, -down )
-		['dir'] = Vector(100,0,-55), -- Trace dir/length; X ( +right, -left ), Y ( +forward, -back ), Z ( +up, -down )
-		['dmg'] = 75, --This isn't overpowered enough, I swear!!
-		['dmgtype'] = DMG_SLASH, --DMG_SLASH,DMG_CRUSH, etc.
-		['delay'] = 0.10, --Delay
-		['spr'] = true, --Allow attack while sprinting?
-		['snd'] = "TFABaseMelee.Null", -- Sound ID
-		['snd_delay'] = 0.10,
-		["viewpunch"] = Angle(0,0,0), --viewpunch angle
-		['end'] = 0.4, --time before next attack
-		['hull'] = 32, --Hullsize
-		['direction'] = "W", --Swing dir,
-		['hitflesh'] = "SerpentBlade.HitFleshSlash1",
-		['hitworld'] = "SerpentBlade.HitWall"
-	},
-	{
-		['act'] = ACT_VM_SECONDARYATTACK, -- Animation; ACT_VM_THINGY, ideally something unique per-sequence
-		['len'] = 90, -- Trace source; X ( +right, -left ), Y ( +forward, -back ), Z ( +up, -down )
-		['dir'] = Vector(-100,0,20), -- Trace dir/length; X ( +right, -left ), Y ( +forward, -back ), Z ( +up, -down )
-		['dmg'] = 75, --This isn't overpowered enough, I swear!!
-		['dmgtype'] = DMG_SLASH, --DMG_SLASH,DMG_CRUSH, etc.
-		['delay'] = 0.1, --Delay
-		['spr'] = true, --Allow attack while sprinting?
-		['snd'] = "TFABaseMelee.Null", -- Sound ID
-		['snd_delay'] = 0.1,
-		["viewpunch"] = Angle(0,0,0), --viewpunch angle
-		['end'] = 0.4, --time before next attack
-		['hull'] = 32, --Hullsize
-		['direction'] = "W", --Swing dir,
-		['hitflesh'] = "SerpentBlade.HitFleshSlash1",
-		['hitworld'] = "SerpentBlade.HitWall"
-	}
-}
 
-SWEP.Secondary.Attacks = {
-	{
-		['act'] = ACT_VM_RELOAD, -- Animation; ACT_VM_THINGY, ideally something unique per-sequence
-		['len'] = 80, -- Trace source; X ( +right, -left ), Y ( +forward, -back ), Z ( +up, -down )
-		['dir'] = Vector(-90,0,80), -- Trace dir/length; X ( +right, -left ), Y ( +forward, -back ), Z ( +up, -down )
-		['dmg'] = 195, --This isn't overpowered enough, I swear!!
-		['dmgtype'] = bit.bor(DMG_SLASH,DMG_ALWAYSGIB), --DMG_SLASH,DMG_CRUSH, etc.
-		['delay'] = 0.5, --Delay
-		['spr'] = true, --Allow attack while sprinting?
-		['snd'] = "TFABaseMelee.Null", -- Sound ID
-		['snd_delay'] = 0.5,
-		["viewpunch"] = Angle(0,0,0), --viewpunch angle
-		['end'] = 1.2, --time before next attack
-		['hull'] = 32, --Hullsize
-		['direction'] = "S", --Swing dir,
-		['hitflesh'] = "SerpentBlade.HitFleshSlash1",
-		['hitworld'] = "SerpentBlade.HitWall"
+DEFINE_BASECLASS(SWEP.Base)
+function SWEP:PrimaryAttack()
+	BaseClass.PrimaryAttack(self)
+	self:SetBulletsShot(self:GetBulletsShot() + 1)
+end
+
+function SWEP:SetupDataTables()
+	BaseClass.SetupDataTables(self)
+	self:NetVar("Secondary", "Float", math.huge)
+end
+
+function SWEP:MeleeAnimation(tr_main)
+	local num = self:GetBulletsShot() % 2
+	local stuff = {
+		[0] = ACT_VM_PRIMARYATTACK,
+		ACT_VM_SECONDARYATTACK
 	}
-}
-if CLIENT then
-	SWEP.WepSelectIconCSO = Material("vgui/killicons/tfa_cso_serpent_blade")
-	SWEP.DrawWeaponSelection = TFA_CSO_DrawWeaponSelection
+	self:SendWeaponAnim(stuff[num])
+end
+
+function SWEP:SecondaryAttack()
+	if (self:GetNextPrimaryFire() >= CurTime()) then
+		return
+	end
+
+	self:SetNextPrimaryFire(CurTime() + self.Secondary.Delay)
+	self:SetSecondary(CurTime() + 0.58)
+	self:SendWeaponAnim(ACT_VM_RELOAD)
+	self:GetOwner():SetAnimation(PLAYER_ATTACK1)
+end
+
+function SWEP:Think()
+	BaseClass.Think(self)
+	if (self:GetSecondary() < CurTime()) then
+		-- do attack
+		self:SetSecondary(math.huge)
+		local owner = self:GetOwner()
+		owner:LagCompensation(true)
+	
+		local spos = owner:GetShootPos()
+		local sdest = spos + owner:GetAimVector() * 120
+	
+		local tr_main = util.TraceLine {
+			start = spos,
+			endpos = sdest,
+			filter = owner,
+			mask = MASK_SHOT_HULL
+		}
+
+		owner:LagCompensation(false)
+
+		self:HitEffects(tr_main)
+		if (IsValid(tr_main.Entity)) then
+			self:DoHit(tr_main.Entity, tr_main, 60)
+		end
+	end
 end

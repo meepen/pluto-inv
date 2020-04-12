@@ -1,0 +1,6 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\laserfist\$0b_y19s2_lmg_ef"
+    $additive        "1"
+	$nocull          "1"
+}

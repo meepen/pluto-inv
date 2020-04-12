@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\xtracker\$0b_lockongun_scope"
+    $additive        "1"
+}

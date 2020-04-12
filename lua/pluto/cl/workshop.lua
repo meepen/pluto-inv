@@ -269,8 +269,11 @@ local packs =  {
 		}
 	}]]
 	tfa_cso_general = {
-		remote = "https://cdn.pluto.gg/tfa_cso_general.gma",
+		remote = default "tfa_cso_general",
 		versions = {
+			"20200412_3",
+			"20200412_2",
+			"20200412",
 			"20200411",
 		}
 	},
@@ -278,6 +281,48 @@ local packs =  {
 		remote = default "starchaserar",
 		versions = {
 			"20200411",
+		}
+	},
+	brick_piece_v2 = {
+		remote = default "brick_piece_v2",
+		versions = {
+			"20200412",
+		}
+	},
+	serpent_blade = {
+		remote = default "serpent_blade",
+		versions = {
+			"20200412",
+		}
+	},
+	tfa_mp7unicorn = {
+		remote = default "tfa_mp7unicorn",
+		versions = {
+			"20200412",
+		}
+	},
+	tfa_monkeywpset3 = {
+		remote = default "tfa_monkeywpset3",
+		versions = {
+			"20200412",
+		}
+	},
+	tfa_broad = {
+		remote = default "broad",
+		versions = {
+			"20200412",
+		}
+	},
+	tfa_laserfist = {
+		remote = default "tfa_laserfist",
+		versions = {
+			"20200412",
+		}
+	},
+	tfa_dreadnova = {
+		remote = default "tfa_dreadnova",
+		versions = {
+			"20200412",
 		}
 	}
 }

@@ -6,14 +6,11 @@ SWEP.Slot				= 2
 
 SWEP.Primary.Sound 			= "StarAR.Fire"
 
-
-
 SWEP.WorldModel			= "models/weapons/tfa_cso/w_starchaserar.mdl"
 SWEP.ViewModel			= "models/weapons/tfa_cso/c_starchaserar.mdl"
 SWEP.ViewModelFOV			= 80
 SWEP.ViewModelFlip			= true
 SWEP.UseHands = true
-
 
 SWEP.HoldType 				= "smg"
 
@@ -47,7 +44,7 @@ SWEP.Ironsights = {
 	TimeTo = 0.23,
 	TimeFrom = 0.22,
 	SlowDown = 0.3,
-	Zoom = 0.7,
+	Zoom = 0.5,
 }
 
 SWEP.Bullets = {
@@ -62,3 +59,15 @@ SWEP.Bullets = {
 
 SWEP.MuzzleFlashEffect = "tfa_muzzleflash_sniper_energy"
 
+SWEP.Spawnable = false
+SWEP.AutoSpawnable = false
+SWEP.PlutoSpawnable = false
+
+DEFINE_BASECLASS(SWEP.Base)
+function SWEP:Reload()
+	if (self:GetIronsights()) then
+
+	else
+		BaseClass.Reload(self)
+	end
+end

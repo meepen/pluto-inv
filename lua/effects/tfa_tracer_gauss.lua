@@ -32,9 +32,15 @@ local function GetWeaponMuzzleData(wep, attachment)
 end
 
 function EFFECT:Init(data)
-	local angpos = GetWeaponMuzzleData(data:GetEntity(), data:GetAttachment())
+	local wep = data:GetEntity()
 
-	self.StartPos = self:GetTracerShootPos(angpos.Pos or data:GetStart(), data:GetEntity(), data:GetAttachment())
+	if (not IsValid(wep)) then
+		self.StartPos = data:GetStart()
+	else
+		local angpos = GetWeaponMuzzleData(data:GetEntity(), data:GetAttachment())
+
+		self.StartPos = self:GetTracerShootPos(angpos.Pos or data:GetStart(), data:GetEntity(), data:GetAttachment())
+	end
 	
 	self.EndPos = data:GetOrigin()
 	

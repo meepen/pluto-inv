@@ -16,6 +16,8 @@ end
 local allowed = {
 	["76561198050165746"] = true, -- Meepen
 	["76561198055769267"] = true, -- Jared
+	["76561198083846494"] = true, -- KAT
+	["76561198188070674"] = true, -- CROSSMAN
 }
 
 function pluto.cancheat(ply)

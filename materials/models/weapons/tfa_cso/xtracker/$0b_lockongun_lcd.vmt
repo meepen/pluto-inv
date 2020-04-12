@@ -1,0 +1,20 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\xtracker\$0b_lockongun_lcd"
+    //$additive        "1"
+	
+    "$angle" 0.0
+    "$translate" "[1.0 0.0]"
+    "$center" "[0 0]"
+	"$rate" "0.5"
+
+    "Proxies"
+    {
+        "TextureScroll"
+        {
+            "textureScrollVar" "$basetexturetransform" // we don't need this, but it's not optional
+            "textureScrollRate" "$rate"
+            "textureScrollAngle" "$angle"
+        }
+    } 
+}

@@ -1,0 +1,6 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\trinity\light_green"
+    $additive        "1"
+	$nocull          "1"
+}

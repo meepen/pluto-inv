@@ -553,8 +553,27 @@ for name, values in pairs {
 		Shares = 1,
 	},
 	crate3 = {
-		Shares = 0,
+		Shares = 0.5,
 		Types = "None",
+		DefaultTier = "easter_unique",
+		Contents = {
+			tfa_cso_serpent_blade = {
+				Rare = true,
+				Shares = 1
+			},
+			tfa_cso_dreadnova = {
+				Rare = true,
+				Shares = 1
+			},
+			tfa_cso_ruyi = {
+				Rare = true,
+				Shares = 1
+			},
+			tfa_cso_mp7unicorn = {
+				Rare = true,
+				Shares = 1
+			},
+		},
 	},
 } do
 	table.Merge(pluto.currency.byname[name], values)

@@ -159,7 +159,7 @@ function PANEL:SetItem(item)
 
 	self.Type = item.Type
 
-	local maincol, matcol = pluto.inv.colors(item.Color)
+	local maincol, matcol = pluto.inv.colors(item.Color or color_white)
 	self:SetColor(maincol)
 
 	self.MaterialColor = matcol:ToVector()

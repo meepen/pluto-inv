@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\monkeywpset3\trace3"
+    $additive        "1"
+}

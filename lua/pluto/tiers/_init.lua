@@ -162,6 +162,7 @@ end
 for _, name in pairs {
 	"common",
 	"confused",
+	"easter_unique",
 	"gamer",
 	"inevitable",
 	"junk",

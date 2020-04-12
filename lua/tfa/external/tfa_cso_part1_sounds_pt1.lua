@@ -883,7 +883,7 @@ sound.Add(soundData)
 local soundData = {
 	name 		= "BrickPieceV2.Fire" ,
 	channel 	= CHAN_USER_BASE+11,
-	volume 		= 1,
+	volume 		= 0.5,
 	soundlevel 	= 80,
 	pitchstart 	= 100,
 	pitchend 	= 100,

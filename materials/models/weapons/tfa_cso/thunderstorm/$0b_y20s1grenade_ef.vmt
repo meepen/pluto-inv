@@ -1,0 +1,6 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\thunderstorm\$0b_y20s1grenade_ef"
+    $additive        "1"
+	$nocull "1"
+}

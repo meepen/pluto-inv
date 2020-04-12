@@ -25,7 +25,9 @@ pluto.tabs = {
 				return false
 			end
 
-			if (item.ClassName:StartWith "weapon_") then
+			local typ = pluto.inv.itemtype(item)
+
+			if (typ == "Weapon") then
 				local wep = baseclass.Get(item.ClassName)
 				if (not wep) then
 					return false
@@ -43,7 +45,7 @@ pluto.tabs = {
 					return wep.Slot == 5
 				end
 
-			elseif (item.ClassName:StartWith "model_" and tabindex == 3) then
+			elseif (typ == "Model" and tabindex == 3) then
 				return true
 			end
 

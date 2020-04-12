@@ -49,7 +49,7 @@ function pluto.inv.itemtype(i)
 	local class = type(i) == "table" and i.ClassName or i
 	if (class == "shard") then
 		return "Shard"
-	elseif (class:StartWith "weapon_") then
+	elseif (class:StartWith "weapon_" or class:StartWith "tfa_") then
 		return "Weapon"
 	elseif (class:StartWith "model_") then
 		return "Model"

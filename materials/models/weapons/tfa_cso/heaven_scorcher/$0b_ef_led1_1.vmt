@@ -1,0 +1,6 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\heaven_scorcher\$0b_ef_led1_1"
+    $additive        "1"
+	$nocull          "1"
+}

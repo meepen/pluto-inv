@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$baseTexture"	"sprites/trinity_stun"
+	"$frame"		"0"
+	"$additive"		"1"
+}

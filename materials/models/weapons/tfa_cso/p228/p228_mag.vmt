@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	$basetexture	"models\weapons\tfa_cso\p228\p228_mag"
+	$bumpmap "models\weapons\tfa_cso\p228\p228_mag_n"
+	$phongexponenttexture "models\weapons\v_models\Request CSO\Dragon TMP S"
+	
+	$phong "1"
+	$phongexponent "20"
+	$phongfresnelranges "[0.15 0.65 1.00]"
+	$phongalbedotint "1"
+	$phongboost "16"
+}

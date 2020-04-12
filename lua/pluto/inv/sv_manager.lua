@@ -559,7 +559,7 @@ function pluto.inv.readcurrencyuse(ply)
 		if (type == "Model") then -- model
 			transact, wpn = pluto.inv.generatebuffermodel(ply, gotten:match "^model_(.+)$")
 		elseif (type == "Weapon") then -- unique
-			transact, wpn = pluto.inv.generatebufferweapon(ply, istable(data) and data.Tier or "unique", gotten)
+			transact, wpn = pluto.inv.generatebufferweapon(ply, istable(data) and data.Tier or cur.DefaultTier or "unique", gotten)
 		end
 
 		if (not wpn) then

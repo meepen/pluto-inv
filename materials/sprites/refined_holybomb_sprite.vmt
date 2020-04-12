@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$baseTexture"	"sprites/refined_holybomb_sprite"
+	"$frame"		"0"
+	"$additive"		"1"
+}

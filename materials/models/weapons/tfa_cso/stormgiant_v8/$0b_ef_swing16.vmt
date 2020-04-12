@@ -1,0 +1,6 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\stormgiant_v8\$0b_ef_swing16"
+    $additive        "1"
+	$nocull "1"
+}

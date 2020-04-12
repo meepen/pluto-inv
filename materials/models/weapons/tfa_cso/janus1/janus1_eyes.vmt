@@ -1,0 +1,5 @@
+"UnLitGeneric"
+{
+    $basetexture    "models\weapons\tfa_cso\janus1\janus1_eyes"
+    $additive        "1"
+}
