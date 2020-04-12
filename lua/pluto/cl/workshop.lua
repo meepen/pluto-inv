@@ -324,6 +324,18 @@ local packs =  {
 		versions = {
 			"20200412",
 		}
+	},
+	p90lapin = {
+		remote = default "p90lapin",
+		versions = {
+			"20200412",
+		}
+	},
+	tfa_unknown = {
+		remote = default "tfa_unknown",
+		versions = {
+			"20200412",
+		}
 	}
 }
 

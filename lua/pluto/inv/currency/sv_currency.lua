@@ -573,6 +573,10 @@ for name, values in pairs {
 				Rare = true,
 				Shares = 1
 			},
+			tfa_cso_pchan = {
+				Rare = true,
+				Shares = 1
+			}
 		},
 	},
 } do
