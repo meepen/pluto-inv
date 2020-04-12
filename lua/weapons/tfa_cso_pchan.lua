@@ -20,11 +20,9 @@ SWEP.UseHands = true --Use gmod c_arms system.
 
 SWEP.WorldModel			= "models/weapons/tfa_cso/w_p90_lapin.mdl" -- Worldmodel path
 
-SWEP.HoldType 				= "ar2"		-- This is how others view you carrying the weapon. Options include:
--- normal melee melee2 fist knife smg ar2 pistol rpg physgun grenade shotgun crossbow slam passive
--- You're mostly going to use ar2, smg, shotgun or pistol. rpg and crossbow make for good sniper rifles
+SWEP.HoldType 				= "ar2"
 
-SWEP.Offset = { --Procedural world model animation, defaulted for CS:S purposes.
+SWEP.Offset = {
 	Pos = {
         Up = 2,
         Right = 0,
