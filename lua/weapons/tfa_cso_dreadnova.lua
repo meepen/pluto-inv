@@ -10,6 +10,7 @@ SWEP.ViewModelFOV = 85
 
 SWEP.Primary.Delay = 0.25
 SWEP.Primary.Damage = 15
+SWEP.Primary.Extents = Vector(2, 2, 2)
 SWEP.Secondary.Delay = 1.4
 
 SWEP.WElements = {
@@ -30,22 +31,23 @@ SWEP.Offset = {
 	Scale = 1
 }
 
-sound.Add({
+sound.Add {
 	level = 80,
 	volume = 0.4,
 	['name'] = "Dreadnova.Charge_Start",
 	['channel'] = CHAN_WEAPON,
 	['sound'] = { "weapons/tfa_cso/dreadnova/charge_start.ogg" },
 	['pitch'] = {100,100}
-})
-sound.Add({
+}
+
+sound.Add {
 	level = 80,
 	volume = 0.4,
 	['name'] = "Dreadnova.Charge_Release",
 	['channel'] = CHAN_WEAPON,
 	['sound'] = { "weapons/tfa_cso/dreadnova/charge_release.ogg" },
 	['pitch'] = {100,100}
-})
+}
 sound.Add({
 	level = 80,
 	volume = 0.4,
@@ -213,17 +215,6 @@ SWEP.Secondary.Attacks = {
 	}
 }
 
-DEFINE_BASECLASS(SWEP.Base)
-function SWEP:PrimaryAttack()
-	BaseClass.PrimaryAttack(self)
-	self:SetBulletsShot(self:GetBulletsShot() + 1)
-end
-
-function SWEP:SetupDataTables()
-	BaseClass.SetupDataTables(self)
-	self:NetVar("Secondary", "Float", math.huge)
-end
-
 function SWEP:GetCurrentAnimation(what)
 	local t = self[what or "Primary"].Attacks
 	return t[(self:GetBulletsShot() % #t) + 1]
@@ -243,35 +234,6 @@ function SWEP:SoundEffect(tr_main)
 	end
 end
 
-
-function SWEP:Think()
-	BaseClass.Think(self)
-	if (self:GetSecondary() < CurTime()) then
-		-- do attack
-		self:SetSecondary(math.huge)
-		local owner = self:GetOwner()
-		owner:LagCompensation(true)
-	
-		local spos = owner:GetShootPos()
-		local sdest = spos + owner:GetAimVector() * 120
-	
-		local tr_main = util.TraceLine {
-			start = spos,
-			endpos = sdest,
-			filter = owner,
-			mask = MASK_SHOT_HULL
-		}
-
-		owner:LagCompensation(false)
-
-		self:HitEffects(tr_main)
-		if (IsValid(tr_main.Entity)) then
-			self:DoHit(tr_main.Entity, tr_main, 60)
-		end
-		self:EmitSound(self:GetCurrentAnimation().snd)
-	end
-end
-
 function SWEP:SecondaryAttack()
 	if (self:GetNextPrimaryFire() > CurTime()) then
 		return
@@ -285,17 +247,4 @@ function SWEP:SecondaryAttack()
 	self:SetNextPrimaryFire(CurTime() + self.Secondary.Delay)
 end
 
-local extent = Vector(2, 2, 2)
-
-function SWEP:DoTrace(mask)
-	local owner = self:GetOwner()
-
-	return util.TraceHull {
-		start = owner:GetShootPos(),
-		endpos = owner:GetShootPos() + owner:GetAimVector() * self.Primary.Range,
-		filter = owner,
-		mins = -extent,
-		maxs = extent,
-		mask = mask
-	}
-end
+SWEP.Ortho = {2.2, 3, angle = Angle(0, 0, 0), size = 0.65}

@@ -120,3 +120,5 @@ function SWEP:Think()
 		end
 	end
 end
+
+SWEP.Ortho = {-1, 1, angle = Angle(90, 0, 200), size = 0.7}

@@ -63,3 +63,5 @@ function SWEP:Move(ply, mv)
 		mv:SetVelocity(vel)
 	end
 end
+
+SWEP.Ortho = {1.1, -1.3, angle = Angle(0, 180, -45)}

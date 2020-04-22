@@ -117,3 +117,5 @@ function SWEP:Holster(...)
 	self:StopSound "Hellfire.Idle"
 	return BaseClass.Holster(self, ...)
 end
+
+SWEP.Ortho = {0, 0, angle = Angle(0, 180, 20), size = 0.9}

@@ -78,3 +78,5 @@ SWEP.RecoilInstructions = {
 SWEP.Spawnable = false
 SWEP.AutoSpawnable = false
 SWEP.PlutoSpawnable = false
+
+SWEP.Ortho = {-2, 8}
