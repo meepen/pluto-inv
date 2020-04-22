@@ -38,7 +38,7 @@ SWEP.Ironsights = {
 	Zoom = 0.9,
 }
 
-SWEP.MuzzleAttachment			= "0"
+SWEP.MuzzleAttachment = "0"
 SWEP.AutoSpawnable = false
 SWEP.Spawnable = false
 SWEP.PlutoSpawnable = false
@@ -49,18 +49,51 @@ function SWEP:Initialize()
 	hook.Add("Move", self, self.Move)
 end
 
+function SWEP:SetupDataTables()
+	BaseClass.SetupDataTables(self)
+	self:NetVar("CurrentCharge", "Float", 1)
+end
+
+SWEP.VelocityDisplace = 400
+
+function SWEP:DrawHUD()
+	BaseClass.DrawHUD(self)
+
+	local w = 15
+	local left = ScrW() / 2 - 50 - w / 2
+	local h = 60
+	local top = ScrH() / 2 - h / 2
+
+	surface.SetDrawColor(color_black)
+	surface.DrawOutlinedRect(left, top, w, h)
+
+	surface.SetDrawColor(10, 255, 20)
+
+	local real_tall = math.Round((h - 2) * self:GetCurrentCharge())
+	surface.DrawRect(left + 1, top + 1 + (h - 2) - real_tall, w - 2, real_tall)
+end
+
 function SWEP:Move(ply, mv)
-	if (ply ~= self:GetOwner() or not mv:KeyDown(IN_JUMP) or self ~= self:GetOwner():GetActiveWeapon()) then
+	if (ply ~= self:GetOwner()) then
 		return
 	end
 
-	if (not ply:IsOnGround()) then
+	local did = false
+
+	if (mv:KeyDown(IN_JUMP) and self == self:GetOwner():GetActiveWeapon() and not ply:IsOnGround()) then
 		local vel = mv:GetVelocity()
 		local min = -60
-		if (vel.z < min) then
+		if (vel.z < min and self:GetCurrentCharge() > 0) then
+			local diff = -vel.z - min
 			vel.z = min
+			self:SetCurrentCharge(math.max(0, self:GetCurrentCharge() - diff / self.VelocityDisplace * engine.TickInterval()))
+			did = true
 		end
 		mv:SetVelocity(vel)
+	end
+
+	if (not did and ply:IsOnGround()) then
+		self:SetCurrentCharge(1)
 	end
 end
 

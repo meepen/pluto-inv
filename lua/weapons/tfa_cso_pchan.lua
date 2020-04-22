@@ -1,4 +1,4 @@
-SWEP.Base				= "weapon_tttbase"
+SWEP.Base				= "weapon_ttt_p90"
 SWEP.Category				= "TFA CS:O" --The category.  Please, just choose something generic or something I've already done if you plan on only doing like one swep.
 SWEP.Author				= "Kamikaze" --Author Tooltip
 SWEP.PrintName				= "Bunny P90"
@@ -7,11 +7,6 @@ SWEP.Slot				= 2
 SWEP.Primary.Sound 			= Sound("P90.Fire")				-- This is the sound of the weapon, when you shoot.
 SWEP.Primary.Damage		= 17					-- Damage, in standard damage points.
 SWEP.Primary.Automatic			= true					-- Automatic/Semi Auto
-SWEP.Primary.Delay				= 60 / 900
-
-SWEP.Primary.ClipSize			= 50					-- This is the size of a clip
-SWEP.Primary.DefaultClip			= 150				-- This is the number of bullets the gun gives you, counting a clip as defined directly above.
-SWEP.Primary.Ammo			= "smg1"
 
 SWEP.ViewModel			= "models/weapons/tfa_cso/c_p90lapin.mdl" --Viewmodel path
 SWEP.ViewModelFOV			= 80		-- This controls how big the viewmodel looks.  Less is more.
@@ -80,3 +75,45 @@ SWEP.AutoSpawnable = false
 SWEP.PlutoSpawnable = false
 
 SWEP.Ortho = {-2, 8}
+
+DEFINE_BASECLASS(SWEP.Base)
+
+SWEP.BaseJump = 160
+SWEP.PerKill = 10
+
+function SWEP:SetupDataTables()
+	BaseClass.SetupDataTables(self)
+
+	self:NetVar("Kills", "Int", 0)
+end
+
+function SWEP:UpdateJumpPower()
+	local owner = self:GetOwner()
+
+	if (not IsValid(owner)) then
+		return
+	end
+
+	owner:SetJumpPower(self.BaseJump + self.PerKill * self:GetKills())
+end
+
+function SWEP:Damage(state, targ, dmg)
+	if (targ:Health() <= dmg:GetDamage()) then
+		self:SetKills(self:GetKills() + 1)
+		self:UpdateJumpPower()
+	end
+end
+
+function SWEP:Deploy()
+	self:UpdateJumpPower()
+	return BaseClass.Deploy(self)
+end
+
+function SWEP:Holster()
+	self:GetOwner():SetJumpPower(self.BaseJump)
+	return BaseClass.Holster(self)
+end
+
+function SWEP:PreDrop()
+	self:GetOwner():SetJumpPower(self.BaseJump)
+end
