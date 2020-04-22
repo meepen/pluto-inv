@@ -40,3 +40,41 @@ if (not pluto.db_init) then
 
 	pluto.db_init = true
 end
+
+if (not gay) then
+	---gay = true
+	return
+end
+
+require "gluamysql"
+
+local new_db = mysql.connect(
+	config.db.host,
+	config.db.username,
+	config.db.password,
+	config.db.database
+)
+
+hook.Add("MySQLConnection", "test", function(db, err)
+	print("CONNECTO STATUSO", db, err)
+end)
+
+local query = new_db:query "SELECT 1"
+
+function query:OnError(p)
+	print("QUERY ERROR", p)
+end
+
+function query:OnData(data)
+	print "QUERY DATA-O"
+	PrintTable(data)
+end
+
+function query:OnFinish(data)
+	print "QUERY FINISHO"
+	PrintTable(data)
+end
+
+query:run()
+
+print(query.OnFinish)

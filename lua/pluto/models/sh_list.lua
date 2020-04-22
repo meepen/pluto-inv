@@ -792,6 +792,7 @@ c "phoenix_lo" {
 	SubDescription = "Phoenix_Low"
 }
 
+-- reserved
 c "leet_low" {
 	Name = "Low-Poly Leet",
 	Model = "models/player/zurdo.mdl",

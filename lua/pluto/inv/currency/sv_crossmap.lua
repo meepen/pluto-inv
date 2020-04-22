@@ -36,6 +36,15 @@ hook.Add("ShutDown", "pluto_currency_crossmap", function()
 		plylist[ent.Currency.InternalName] = (plylist[ent.Currency.InternalName] or 0) + 1
 	end
 
+	for _, ply in pairs(player.GetAll()) do
+		local spawns = pluto.currency.tospawn[ply]
+		if (spawns) then
+			list[ply] = list[ply] or {}
+
+			list[ply].spawns = math.ceil(spawns)
+		end
+	end
+
 	sql.Begin()
 	for ply, list in pairs(list) do
 		for currency, amount in pairs(list) do
@@ -52,6 +61,10 @@ hook.Add("PlayerAuthed", "pluto_currency_crossmap", function(ply)
 		pluto.currency.restored[ply:SteamID64()] = nil
 
 		for currency, amount in pairs(list) do
+			if (currency == "spawns") then
+				pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or 0) + amount
+				continue
+			end
 			for i = 1, amount do
 				pluto.currency.spawnfor(ply, currency)
 			end
