@@ -6,3 +6,7 @@ hook.Add("Tick", "pluto_no_god", function()
 		end
 	end
 end)
+
+FindMetaTable "Player".GetAimVector = function(self)
+	return self:EyeAngles():Forward()
+end
