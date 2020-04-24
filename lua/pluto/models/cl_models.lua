@@ -27,7 +27,6 @@ matproxy.Add {
 		self.EmoteColor = values.resultvar
 	end,
 	bind = function(self, mat)
-		local color = util.StringToType(GetConVar("b3_zero_emote_color"):GetString(), "Vector")
 		mat:SetVector(self.EmoteColor, Vector(3, 0, 0))
 	end
 }
