@@ -50,6 +50,7 @@ local map_lookup = {
 	ttt_waterworld_remastered = "1293781407",
 	ttt_westwood_v4 = "104520719",
 	ttt_whitehouse_v9 = "1376497306",
+	ttt_pluto_winterdream_a1 = "2026893461",
 }
 
 function pluto.GetValidMaps()

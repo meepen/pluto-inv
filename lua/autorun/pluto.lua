@@ -50,6 +50,8 @@ pluto.files.load {
 		"tfa/external/tfa_cso_new_guns_sound_pack4.lua",
 		"tfa/external/tfa_cso_part1_sounds_pt1.lua",
 
+		"events/sh_init.lua",
+
 		-- "unicode/init.lua",
 		-- "unicode/casefolding.lua",
 		-- -- "unicode/unicodedata.lua",

@@ -579,6 +579,11 @@ for name, values in pairs {
 			}
 		},
 	},
+	crate3_norm = {
+		Shares = 0,
+		Types = "None",
+		Contents = {},
+	}
 } do
 	table.Merge(pluto.currency.byname[name], values)
 end

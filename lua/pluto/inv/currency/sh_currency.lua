@@ -245,6 +245,28 @@ pluto.currency.list = {
 			pluto.opener:MakePopup()
 		end,
 	},
+	{
+		InternalName = "crate3_norm",
+		Name = "Pink Egg",
+		Icon = "pluto/currencies/crate3_norm.png",
+		Description = "Contains an Easter Item",
+		SubDescription = "hi! :)",
+		Color = Color(235, 70, 150, 255),
+		NoTarget = true,
+		ClientsideUse = function()
+			if (IsValid(pluto.opener)) then
+				pluto.opener:Remove()
+			end
+
+			pluto.opener = vgui.Create "tttrw_base"
+
+			pluto.opener:AddTab("Open Pink Egg", vgui.Create "pluto_box_open" :SetCurrency "crate4")
+
+			pluto.opener:SetSize(640, 400)
+			pluto.opener:Center()
+			pluto.opener:MakePopup()
+		end,
+	},
 }
 
 pluto.currency_mt = pluto.currency_mt or {}
