@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+
+	$basetexture "pipann/rabbit/RABBITTAN_DIF"
+
+
+	 $phong "1"
+	 $nocull "1"
+	 $translucent "1"
+	 $ambientocclusion "1"
+}

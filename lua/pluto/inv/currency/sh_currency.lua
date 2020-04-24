@@ -246,7 +246,7 @@ pluto.currency.list = {
 		end,
 	},
 	{
-		InternalName = "crate3_norm",
+		InternalName = "crate3_n",
 		Name = "Pink Egg",
 		Icon = "pluto/currencies/crate3_norm.png",
 		Description = "Contains an Easter Item",

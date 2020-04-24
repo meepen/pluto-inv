@@ -1,0 +1,25 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "pacagma/miracle_girls_festival/akari_akaza/body"
+	"$bumpmap" "shared/normal"
+	//"$translucent" "1"
+	//"$model" "1"
+	//"$nodecal" "1"
+	"$nocull" "1"
+	//"$alphatest" 1
+	//"$allowalphatocoverage" 1
+	//"$halflambert" "1"
+	
+
+	"$lightwarptexture" "shared/lightwarptexture"
+
+	"$phong" "1"
+	"$phongboost"	"24"
+	"$phongalbedotint" "1"
+	"$phongexponenttexture" "shared/phong_exp"
+	"$phongfresnelranges"	"[0 0 1]"
+
+	"$rimlight"               "1"
+	"$rimlightexponent"       "3"
+	"$rimlightboost"          "4"
+}

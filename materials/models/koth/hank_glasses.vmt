@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/koth/hank_glasses"
+	"$nocull" 1
+}

@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\JoshZ\TombRaider\TR2_Laracroft\Coldwar_haterblockers"
+
+
+
+	"$nocull" "0"
+	"$model" "1"
+
+
+	"$blendtintbybasealpha" "0"
+
+	"$rimlight" "1"
+	"$rimlightexponent" "75"
+	"$rimlightboost" "0.25"
+}

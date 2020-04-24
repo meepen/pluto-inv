@@ -1,0 +1,21 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/koth/hank"
+                "$bumpmap"    "models/koth/hank_normal"
+                "$halflambert" 1
+                "$phong" "1"
+	"$phongexponent" "5"
+	"$phongboost" "1.50"
+	"$phongfresnelranges"	"[.1 1 15]"
+           
+               
+
+
+
+
+              
+	//"$rimlight" "1"												// To enable rim lighting (requires phong)
+	"$rimlightexponent" "0.50"										// Exponent for phong component of rim lighting	
+	"$rimlightboost" "0.50"
+
+}

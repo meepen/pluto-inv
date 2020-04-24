@@ -1,0 +1,17 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/doom_revenant/armor_d"
+	"$bumpmap" "models/doom_revenant/armor_n"
+	
+	"$surfaceprop" "metal"
+	 
+	"$halflambert" "1"
+	"$model" "1"
+	"$phong" "1"
+	"$phongexponent" "6"
+	"$phongboost" "0.4"
+	"$phongalbedotint" "1"
+	"$phongtint" "[1 .85 .85]"
+	"$phongfresnelranges"	"[1.3 6 13]"
+	"$selfillum" "1"
+}

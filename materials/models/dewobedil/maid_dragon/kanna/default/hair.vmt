@@ -1,0 +1,16 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/dewobedil/maid_dragon/kanna/default/hair"
+	$nodecal 1
+
+	"$lightwarptexture" "models/dewobedil/maid_dragon/kanna/default/toon_hair"
+
+	"$phong" "1"
+	"$phongboost"	"1"
+	"$phongexponent" "15"
+	"$phongfresnelranges"	"[.5 1 1]"
+
+	"$rimlight"               "1"
+	"$rimlightexponent"       "3"
+	"$rimlightboost"          "4"
+}

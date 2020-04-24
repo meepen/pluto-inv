@@ -1,0 +1,15 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/dewobedil/maid_dragon/kanna/default/tears"
+	"$ambientocclusion" "0"
+	"$halflambert" "1"
+	$nodecal 1
+
+	"$lightwarptexture" "models/dewobedil/maid_dragon/kanna/default/toon_head"
+
+	"$phong" "1"
+
+	"$rimlight"               "1"
+	"$rimlightexponent"       "3"
+	"$rimlightboost"          "4"
+}

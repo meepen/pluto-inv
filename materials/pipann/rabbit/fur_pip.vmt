@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+
+	$basetexture "pipann/rabbit/RABBITPIP_DIF"
+	$phongexponenttexture "pipann/rabbit/RABBIT_PHONG"
+	$bumpmap "pipann/rabbit/RABBIT_NORMAL"
+
+
+	 $phong "1"
+	 $nocull "1"
+}

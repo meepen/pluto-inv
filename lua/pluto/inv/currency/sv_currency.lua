@@ -579,7 +579,7 @@ for name, values in pairs {
 			}
 		},
 	},
-	crate3_norm = {
+	crate3_n = {
 		Shares = 0,
 		Types = "None",
 		Contents = {},
@@ -651,15 +651,37 @@ function pluto.currency.randompos()
 	for _, item in ipairs(pluto.currency.navs) do
 		rand = rand - item.Size
 		if (rand <= 0) then
-			return item.Nav:GetRandomPoint()
+			return item.Nav:GetRandomPoint(), item.Nav
 		end
 	end
 
 	pwarnf("Initial rand: %.5f, rand end: %.5f, total: %.5f", initial, rand, pluto.currency.navs.total)
 end
 
-function pluto.currency.spawnfor(ply, currency, pos)
-	local e = ents.Create "pluto_currency"
+function pluto.currency.navs_filter(filter)
+	pluto.currency.navs.start()
+	
+	local n = 1
+	local ret = {}
+
+	for _, item in ipairs(pluto.currency.navs) do
+		if (not filter(item.Nav)) then
+			continue
+		end
+
+		ret[n], n = item.Nav, n + 1
+	end
+
+	return ret
+end
+
+function pluto.currency.spawnfor(ply, currency, pos, global)
+	local e 
+	if (global) then
+		e = ents.Create "pluto_global_currency"
+	else
+		e = ents.Create "pluto_currency"
+	end
 
 	if (not pos) then
 		for i = 1, 100 do
@@ -818,5 +840,5 @@ concommand.Add("pluto_spawn_cur", function(ply, cmd, args)
 
 	local pos = ply:GetEyeTrace().HitPos
 
-	pluto.currency.spawnfor(ply, args[1] or "droplet", pos)
+	pluto.currency.spawnfor(ply, args[1] or "droplet", pos ,args[2])
 end)
