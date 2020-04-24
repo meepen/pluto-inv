@@ -794,6 +794,20 @@ c "phoenix_lo" {
 
 
 -- posteaster
+c "wild_rabbit" {
+	Name = "Wild Rabbit",
+	Model = "models/pipann/wild_rabbit.mdl",
+	Color = ColorRand(),
+	SubDescription = "",
+}
+
+c "dom_rabbit" {
+	Name = "Wild Rabbit",
+	Model = "models/pipann/domestic_rabbit.mdl",
+	Color = ColorRand(),
+	SubDescription = "",
+}
+
 c "miku_cupid" {
 	Name = "Miku Cupid",
 	Model = "models/player/dewobedil/vocaloid/appearance_miku/cupid_p.mdl",

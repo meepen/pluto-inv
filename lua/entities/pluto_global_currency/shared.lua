@@ -17,3 +17,7 @@ function ENT:CanPickUp(e)
 
 	return r
 end
+
+function ENT:ShouldSeeThroughWalls()
+	return true
+end

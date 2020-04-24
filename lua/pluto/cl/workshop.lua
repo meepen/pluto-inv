@@ -336,6 +336,15 @@ local packs =  {
 		versions = {
 			"20200412",
 		}
+	},
+	posteaster = {
+		remote = default "posteaster",
+		versions = {
+			"20200425_3",
+			"20200425_2",
+			"20200425",
+			"20200424",
+		}
 	}
 }
 

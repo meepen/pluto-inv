@@ -651,11 +651,34 @@ function pluto.currency.randompos()
 	for _, item in ipairs(pluto.currency.navs) do
 		rand = rand - item.Size
 		if (rand <= 0) then
-			return item.Nav:GetRandomPoint(), item.Nav
+			return pluto.currency.validpos(item.Nav), item.Nav
 		end
 	end
 
 	pwarnf("Initial rand: %.5f, rand end: %.5f, total: %.5f", initial, rand, pluto.currency.navs.total)
+end
+
+function pluto.currency.validpos(nav)
+	local tries = 0
+	while (tries < 100) do
+		tries = tries + 1
+		local pos = nav:GetRandomPoint()
+
+		local tr = util.TraceHull {
+			start = pos,
+			endpos = pos,
+			mins = Vector(-16, -16, 0),	
+			maxs = Vector(16, 16, 72),
+			filter = player.GetAll(),
+			mask = MASK_PLAYERSOLID
+		}
+
+		if (tr.Hit) then
+			continue
+		end
+
+		return pos
+	end
 end
 
 function pluto.currency.navs_filter(filter)

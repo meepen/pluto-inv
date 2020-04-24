@@ -1,7 +1,7 @@
 AddCSLuaFile()
 ENT.Base = "ttt_point_info"
 ENT.Type = "anim"
-ENT.RenderGroup = RENDERGROUP_TRANSLUCENT
+ENT.RenderGroup = RENDERGROUP_OPAQUE
 
 function ENT:SetupDataTables()
 	self:NetworkVar("String", 0, "Icon")
@@ -21,6 +21,8 @@ function ENT:Initialize()
 	self:CollisionRulesChanged()
 
 	self:SetMoveType(MOVETYPE_NONE)
+
+	hook.Add("PostDrawTranslucentRenderables", self, self.PostDrawTranslucentRenderables)
 end
 
 function ENT:ShouldCollide(e1, e2)

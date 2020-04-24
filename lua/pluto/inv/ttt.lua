@@ -164,6 +164,16 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 end)
 
 hook.Add("TTTPlayerGiveWeapons", "pluto_loadout", function(ply)
+	local event = pluto.rounds.current
+	
+	if (event) then
+		if (event.Loadout) then
+			event:Loadout(ply)
+		end
+
+		return true
+	end
+
 	if (not pluto.inv.invs[ply]) then
 		return
 	end
