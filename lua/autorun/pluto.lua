@@ -21,6 +21,7 @@ pluto.files.load {
 		"models/cl_showhitgroups.lua",
 
 		"chat/cl_chat.lua",
+		"chat/cl_filter.lua",
 	},
 	Shared = {
 		"co_net.lua",

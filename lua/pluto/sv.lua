@@ -1,6 +1,7 @@
 pluto.files.load {
 	Server = {
 		"sv/config.lua",
+		"sv/maxplayers.lua",
 		"weapons/weapons.lua",
 		"weapons/random_spawns.lua",
 		"mods/sv_mods.lua",
