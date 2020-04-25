@@ -284,6 +284,8 @@ function ROUND:Spawn(state, ply)
 		state.lives[ply] = state.lives[ply] - 1
 		ply:SetHealth(state.Data.Health)
 		ply:SetMaxHealth(state.Data.Health)
+
+		ply:ChatPrint("You have ", ply:GetRoleData().Color, state.lives[ply], white_text, " live(s) left in reserve!")
 	end
 end
 

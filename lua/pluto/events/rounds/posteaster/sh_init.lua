@@ -16,6 +16,7 @@ function ROUND:TTTPrepareRoles(Team, Role)
 			return 0
 		end)
 		:SeenByAll()
+		:SetCanUseBuyMenu(false)
 
 	Role("Child", "innocent")
 		:SetColor(Color(128, 120, 129))
