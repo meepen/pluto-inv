@@ -75,11 +75,6 @@ function EFFECT:Init(data)
 		self.Dir = localang:Forward()
 	end
 
-	-- Keep the start and end Pos - we're going to interpolate between them
-	if IsValid(owent) and self.Position:Distance(owent:GetShootPos()) > 72 then
-		self.WeaponEnt = nil
-	end
-
 	self.EndPos = data:GetOrigin()
 	self.Entity:SetRenderBoundsWS(self.StartPos, self.EndPos)
 	self.Normal = (self.EndPos - self.StartPos):GetNormalized()
