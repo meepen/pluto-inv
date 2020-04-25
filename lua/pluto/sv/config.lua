@@ -36,6 +36,18 @@ if (not pluto.db_init) then
 		end
 
 		db:connect()
+
+		hook.Add("CheckPassword", "pluto_db_" .. tostring(db), function()
+			if (player.GetCount() == 0) then
+				db:ping()
+			end
+		end)
+	
+		hook.Add("TTTPrepareRound", "pluto_db_" .. tostring(db), function()
+			if (player.GetCount() == 0) then
+				db:ping()
+			end
+		end)
 	end
 
 	pluto.db_init = true
