@@ -5,15 +5,19 @@ local base_url = "https://discord-gmod.pluto.gg/discord/"
 local config = util.JSONToTable [[{
 	"port": 3030,
 	"channels": {
-		"errors": {
-			"url": "https://discordapp.com/api/webhooks/620024553787228161/uTNaEdWP05R16ErqZ_E-upbOckm_3dkoIyfDaEE8amkCqwQtuzR5rIhGfWYnDvj7u2hJ",
-			"authentication": "4tZ#L5gyhpFk"
-		},
+			"errors": {
+					"url": "https://discordapp.com/api/webhooks/620024553787228161/uTNaEdWP05R16ErqZ_E-upbOckm_3dkoIyfDaEE8amkCqwQtuzR5rIhGfWYnDvj7u2hJ",
+					"authentication": "4tZ#L5gyhpFk"
+			},
 
-		"drops": {
-			"url": "https://discordapp.com/api/webhooks/662806193261117462/uigdPgTczbWEMVjmv0V8_8Uw27zjB-zxoJfFnvb8eZCjtzO2uvTN4u2ZxmGmDdwfsGpq",
-			"authentication": "tZ633@ydve$8"
-		}
+			"drops": {
+					"url": "https://discordapp.com/api/webhooks/662806193261117462/uigdPgTczbWEMVjmv0V8_8Uw27zjB-zxoJfFnvb8eZCjtzO2uvTN4u2ZxmGmDdwfsGpq",
+					"authentication": "tZ633@ydve$8"
+			},
+			"crafts": {
+					"url": "https://discordapp.com/api/webhooks/703593105898864660/l_fVsD63aFf7padeetiXmBLtATpVrcYJhhvXHlaTM4YrNVljegHeLV2JcJC0BreaU1Fo",
+					"authentication": "i4E4%M&j3eQ#M@IF"
+			}
 	}
 }]]
 

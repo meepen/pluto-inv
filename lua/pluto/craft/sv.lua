@@ -283,7 +283,7 @@ function pluto.inv.readcraft(cl)
 		discord.Message():AddEmbed(
 			wpn:GetDiscordEmbed()
 				:SetAuthor(cl:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. cl:SteamID64())
-		):Send "drops"
+		):Send "crafts"
 	end
 
 	local transact = pluto.db.transact()
