@@ -20,7 +20,7 @@ TFA.AddWeaponSound( "Gunkata.Hit1", "weapons/tfa_cso/gunkata/hit1.ogg" )
 TFA.AddWeaponSound( "Gunkata.Hit2", "weapons/tfa_cso/gunkata/hit2.ogg" )
 
 --Laserfist
-TFA.AddFireSound( "Laserfist.FireA", "weapons/tfa_cso/laserfist/fire_a.ogg", false, "^" )
+TFA.AddFireSound( "Laserfist.FireA", "weapons/tfa_cso/laserfist/fire_a.ogg", false, "^", 0.6 )
 TFA.AddFireSound( "Laserfist.FireB", "weapons/tfa_cso/laserfist/fire_b.ogg", false, "^" )
 TFA.AddWeaponSound( "Laserfist.ClipIn1", "weapons/tfa_cso/laserfist/clipin1.ogg" )
 TFA.AddWeaponSound( "Laserfist.ClipIn2", "weapons/tfa_cso/laserfist/clipin2.ogg" )

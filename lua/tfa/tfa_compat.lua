@@ -51,13 +51,13 @@ function TFA.PatchSound( path, kind )
 	return kindstr .. pathv
 end
 
-function TFA.AddFireSound( id, path, wrap, kindv )
+function TFA.AddFireSound( id, path, wrap, kindv, volume )
 	kindv = kindv or ")"
 	if isstring(path) then
 		sound.Add({
 			name = id,
 			channel = wrap and SoundChannels.shootwrap or SoundChannels.shoot,
-			volume = 1.0,
+			volume = volume or 1.0,
 			level = 120,
 			pitch = { 97, 103 },
 			sound = TFA.PatchSound( path, kindv )
@@ -70,7 +70,7 @@ function TFA.AddFireSound( id, path, wrap, kindv )
 		sound.Add({
 			name = id,
 			channel = wrap and SoundChannels.shootwrap or SoundChannels.shoot,
-			volume = 1.0,
+			volume = volume or 1.0,
 			level = 120,
 			pitch = { 97, 103 },
 			sound = tb

@@ -6,7 +6,7 @@ SWEP.PrintName				= "Infinity Laser Fist"
 SWEP.Slot				= 2
 
 SWEP.Primary.Sound 			= Sound "Laserfist.FireA"
-SWEP.Primary.Damage		= 10
+SWEP.Primary.Damage		= 14
 
 SWEP.Primary.Automatic			= true
 SWEP.Primary.Delay				= 60 / 1600
@@ -65,7 +65,7 @@ SWEP.Bullets = {
 	DamageDropoffRange = 0,
 	DamageDropoffRangeMax = 6200,
 	DamageMinimumPercent = 0.4,
-	Spread = Vector(0.05, 0.05),
+	Spread = Vector(0.03, 0.03),
 }
 
 SWEP.AllowDrop = false
