@@ -677,6 +677,12 @@ function pluto.currency.validpos(nav)
 			continue
 		end
 
+		local contents = util.PointContents(pos)
+
+		if (bit.band(contents, CONTENTS_WATER) == CONTENTS_WATER) then
+			continue
+		end
+
 		return pos
 	end
 end
