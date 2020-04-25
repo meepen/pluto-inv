@@ -553,7 +553,7 @@ for name, values in pairs {
 		Shares = 1,
 	},
 	crate3 = {
-		Shares = 2,
+		Shares = 0,
 		Types = "None",
 		DefaultTier = "easter_unique",
 		Contents = {
@@ -705,28 +705,25 @@ function pluto.currency.navs_filter(filter)
 end
 
 function pluto.currency.spawnfor(ply, currency, pos, global)
+	if (not pos) then
+		for i = 1, 100 do
+			pos = pluto.currency.randompos()
+			local mins, maxs = ply:GetHull()
+			if (pos) then
+				break
+			end
+		end
+	end
+
+	if (not pos) then
+		return
+	end
+
 	local e 
 	if (global) then
 		e = ents.Create "pluto_global_currency"
 	else
 		e = ents.Create "pluto_currency"
-	end
-
-	if (not pos) then
-		for i = 1, 100 do
-			pos = pluto.currency.randompos()
-			local mins, maxs = ply:GetHull()
-			if (not util.TraceHull {
-				start = pos,
-				endpos = pos,
-				mins = mins,
-				maxs = maxs,
-				collisiongroup = COLLISION_GROUP_PLAYER,
-				mask = MASK_PLAYERSOLID,
-			}.StartSolid) then
-				break
-			end
-		end
 	end
 
 	if (not currency) then
