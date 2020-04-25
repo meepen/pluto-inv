@@ -2,6 +2,7 @@ ROUND.Name = "Bunny Attack"
 ROUND.EggsPerCluster = 10
 ROUND.EggSpread = 150
 ROUND.BunnyLives = 3
+ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
 
 local badasses = {
 	"hank",
@@ -46,8 +47,11 @@ ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 	plys = table.shuffle(plys)
 
 	local roles_needed = {
-		Child = math.ceil(1, math.floor(#plys / 4)),
+		Child = math.max(1, math.floor(#plys / 4)),
 	}
+
+	PrintTable(plys)
+	PrintTable(roles_needed)
 
 	for i, ply in ipairs(plys) do
 		local role, amt = next(roles_needed)
@@ -109,12 +113,14 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 
 	for _, ply in pairs(children) do
 		ply:SetModel(GetModel(state.Data.ChildModel))
+		ply:SetCollisionGroup(self.CollisionGroup)
 	end
 	for _, ply in pairs(bunnies) do
 		ply:SetModel(GetModel(state.Data.BunnyModel))
 		ply:SetHealth(state.Data.Health)
 		ply:SetMaxHealth(state.Data.Health)
 		state.lives[ply] = self.BunnyLives
+		ply:SetCollisionGroup(self.CollisionGroup)
 	end
 
 	state.clusters = {}
@@ -196,7 +202,6 @@ ROUND:Hook("TTTEndRound", function(self, state)
 			end
 
 			for _, child in pairs(children) do
-				print(child, ent)
 				if (not IsValid(child)) then
 					continue
 				end
@@ -229,20 +234,18 @@ ROUND:Hook("PostPlayerDeath", function(self, state, ply)
 				state.lives[ply] = state.lives[ply] - 1
 				ply:SetHealth(state.Data.Health)
 				ply:SetMaxHealth(state.Data.Health)
+				ply:SetCollisionGroup(self.CollisionGroup)
 			end
 		end)
 	else
 		ttt.CheckTeamWin()
-		print "chgeck win"
 	end
 end)
 
 ROUND:Hook("TTTHasRoundBeenWon", function(self, state)
-	print "check"
 	if (not state.lives) then
 		return
 	end
-	print "lives"
 
 	local have_lives = false
 
@@ -289,6 +292,11 @@ ROUND:Hook("CanPlayerSuicide", function(self, state, ply)
 	end
 end)
 
+ROUND:Hook("PlayerShouldTakeDamage", function(self, state, ply, atk)
+	if (IsValid(ply) and IsValid(atk) and atk:IsPlayer() and ply:IsPlayer()) then
+		return ply:GetRoleTeam() ~= atk:GetRoleTeam()
+	end
+end)
 
 function ROUND:PlayerSetModel(state, ply)
 	if (ply:GetRoleTeam() == "traitor") then
