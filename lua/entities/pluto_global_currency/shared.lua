@@ -21,3 +21,9 @@ end
 function ENT:ShouldSeeThroughWalls()
 	return true
 end
+
+function ENT:OnRemove()
+	if (SERVER) then
+		timer.Simple(0, ttt.CheckTeamWin)
+	end
+end

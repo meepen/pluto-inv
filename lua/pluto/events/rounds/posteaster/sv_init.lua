@@ -1,6 +1,7 @@
 ROUND.Name = "Bunny Attack"
 ROUND.EggsPerCluster = 10
 ROUND.EggSpread = 150
+ROUND.BunnyLives = 3
 
 local badasses = {
 	"hank",
@@ -12,18 +13,21 @@ local badasses = {
 ROUND.RoundDatas = {
 	{
 		BunnyModel = "kanna",
+		Health = 50,
 		ChildModel = badasses,
 		Shares = 1,
 	},
 	{
 		BunnyModel = "miku_cupid",
+		Health = 100,
 		ChildModel = badasses,
 		Shares = 1,
 	},
 	{
 		BunnyModel = {"dom_rabbit", "wild_rabbit"},
+		Health = 50,
 		ChildModel = {"male_child", "female_child"},
-		Shares = 0,
+		Shares = 15,
 	}
 }
 
@@ -87,7 +91,6 @@ local function GetModel(model)
 		model = table.Random(model)
 	end
 
-	print(model)
 	return pluto.models[model].Model
 end
 
@@ -101,6 +104,7 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 
 	local children = round.GetActivePlayersByRole "Child"
 	state.children = table.Copy(children)
+	state.lives = {}
 	local bunnies = round.GetActivePlayersByRole "Bunny"
 
 	for _, ply in pairs(children) do
@@ -108,6 +112,9 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	end
 	for _, ply in pairs(bunnies) do
 		ply:SetModel(GetModel(state.Data.BunnyModel))
+		ply:SetHealth(state.Data.Health)
+		ply:SetMaxHealth(state.Data.Health)
+		state.lives[ply] = self.BunnyLives
 	end
 
 	state.clusters = {}
@@ -209,3 +216,86 @@ end)
 ROUND:Hook("PlayerCanPickupWeapon", function(self, state, ply, wep)
 	return wep:GetClass() == "tfa_cso_laserfist" or wep:GetClass() == "weapon_ttt_unarmed"
 end)
+
+ROUND:Hook("PostPlayerDeath", function(self, state, ply)
+	if (not state.lives) then
+		return
+	end
+
+	if (state.lives[ply] and state.lives[ply] > 0) then
+		timer.Simple(1, function()
+			if (IsValid(ply)) then
+				ttt.ForcePlayerSpawn(ply)
+				state.lives[ply] = state.lives[ply] - 1
+				ply:SetHealth(state.Data.Health)
+				ply:SetMaxHealth(state.Data.Health)
+			end
+		end)
+	else
+		ttt.CheckTeamWin()
+		print "chgeck win"
+	end
+end)
+
+ROUND:Hook("TTTHasRoundBeenWon", function(self, state)
+	print "check"
+	if (not state.lives) then
+		return
+	end
+	print "lives"
+
+	local have_lives = false
+
+	for ply, lives in pairs(state.lives) do
+		if (IsValid(ply) and (ply:Alive() or lives > 0)) then
+			have_lives = true
+			break
+		end
+	end
+
+	if (not have_lives) then
+		return true, "innocent", false
+	end
+
+	if (#round.GetActivePlayersByRole "Child" == 0) then
+		return true, "traitor", false
+	end
+
+	local alive = false
+
+	for _, cluster in pairs(state.clusters) do
+		for _, ent in pairs(cluster.Currencies) do
+			if (IsValid(ent)) then
+				alive = true
+				break
+			end
+		end
+
+		if (alive) then
+			break
+		end
+	end
+
+	if (not alive) then
+		return true, "traitor", false
+	end
+
+	return false
+end)
+
+ROUND:Hook("CanPlayerSuicide", function(self, state, ply)
+	if (ply:GetRole() == "Child") then
+		return false
+	end
+end)
+
+
+function ROUND:PlayerSetModel(state, ply)
+	if (ply:GetRoleTeam() == "traitor") then
+		ply:SetModel(GetModel(state.Data.BunnyModel))
+	else
+		ply:SetModel(GetModel(state.Data.ChildModel))
+	end
+
+	return true
+end

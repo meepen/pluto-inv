@@ -66,6 +66,12 @@ else
 	hook.Add("Initialize", "pluto_rounds", Initialize)
 end
 
+function pluto.rounds.run(hook, ...)
+	if (pluto.rounds.current and pluto.rounds.current[hook]) then
+		return pluto.rounds.current[hook](pluto.rounds.current, pluto.rounds.state, ...)
+	end
+end
+
 function pluto.rounds.prepare(name)
 	local event = pluto.rounds.byname[name]
 

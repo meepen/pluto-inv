@@ -23,6 +23,12 @@ end
 include "sh_list.lua"
 
 hook.Add("PlayerSetModel", "pluto_model", function(ply)
+	local r = pluto.rounds.run("PlayerSetModel", ply)
+
+	if (r ~= nil) then
+		return r
+	end
+
 	if (pluto.cancheat(ply)) then
 		local m = pluto.models[ply:GetInfo "pluto_model"]
 		if (m) then
