@@ -4,6 +4,8 @@ ROUND.EggSpread = 150
 ROUND.BunnyLives = 3
 ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
 
+ROUND.Boss = true
+
 local badasses = {
 	"hank",
 	"revenant",

@@ -747,6 +747,10 @@ pluto.currency.tospawn = pluto.currency.tospawn or {}
 pluto.currency.spawned = pluto.currency.spawned or {}
 
 hook.Add("DoPlayerDeath", "pluto_currency_add", function(vic, damager, dmg)
+	if (pluto.rounds.current and pluto.rounds.current.Boss) then
+		return
+	end
+
 	local atk = dmg:GetAttacker()
 
 	if (ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE) then
