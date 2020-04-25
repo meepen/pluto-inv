@@ -54,7 +54,7 @@ ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 	plys = table.shuffle(plys)
 
 	local roles_needed = {
-		Child = math.max(1, math.ceil(#plys / 4)),
+		Child = math.max(1, math.ceil(#plys / 5)),
 	}
 
 	for i, ply in ipairs(plys) do
