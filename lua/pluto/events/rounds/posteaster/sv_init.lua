@@ -1,6 +1,6 @@
 ROUND.Name = "Bunny Attack"
 ROUND.EggsPerCluster = 10
-ROUND.EggSpread = 170
+ROUND.EggSpread = 160
 ROUND.BunnyLives = 3
 ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
 
@@ -21,13 +21,13 @@ local badasses = {
 ROUND.RoundDatas = {
 	{
 		BunnyModel = "kanna",
-		Health = 40,
+		Health = 35,
 		ChildModel = badasses,
 		Shares = 0,
 	},
 	{
 		BunnyModel = "miku_cupid",
-		Health = 70,
+		Health = 50,
 		ChildModel = badasses,
 		Shares = 0,
 	},
@@ -120,7 +120,7 @@ end
 
 function ROUND:BunnySpawn(ply, state)
 	local cluster = state.cluster
-	for i = 1, 5 do
+	for i = 1, 3 do
 		local r = self:FindPosition(cluster.SpawnNavs, self.BunnySpawnDistances.Min, self.BunnySpawnDistances.Max)
 		if (r) then
 			return r
@@ -309,9 +309,10 @@ end)
 function ROUND:Spawn(state, ply)
 	ply:SetCollisionGroup(self.CollisionGroup)
 	if (state.lives and state.lives[ply]) then
+		local health = state.Data.Health + (self.BunnyLives - state.lives[ply]) * 5
 		state.lives[ply] = state.lives[ply] - 1
-		ply:SetHealth(state.Data.Health)
-		ply:SetMaxHealth(state.Data.Health)
+		ply:SetHealth(health)
+		ply:SetMaxHealth(health)
 
 		ply:ChatPrint("You have ", ply:GetRoleData().Color, state.lives[ply], white_text, " live(s) left in reserve!")
 	end

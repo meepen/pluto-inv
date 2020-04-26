@@ -69,11 +69,6 @@ function SWEP:PrimaryAttack()
 	self:SetBulletsShot(self:GetBulletsShot() + 1)
 end
 
-function SWEP:SetupDataTables()
-	BaseClass.SetupDataTables(self)
-	self:NetVar("Secondary", "Float", math.huge)
-end
-
 function SWEP:MeleeAnimation(tr_main)
 	local num = self:GetBulletsShot() % 2
 	local stuff = {
@@ -94,31 +89,10 @@ function SWEP:SecondaryAttack()
 	self:GetOwner():SetAnimation(PLAYER_ATTACK1)
 end
 
-function SWEP:Think()
-	BaseClass.Think(self)
-	if (self:GetSecondary() < CurTime()) then
-		-- do attack
-		self:SetSecondary(math.huge)
-		local owner = self:GetOwner()
-		owner:LagCompensation(true)
-	
-		local spos = owner:GetShootPos()
-		local sdest = spos + owner:GetAimVector() * 120
-	
-		local tr_main = util.TraceLine {
-			start = spos,
-			endpos = sdest,
-			filter = owner,
-			mask = MASK_SHOT_HULL
-		}
-
-		owner:LagCompensation(false)
-
-		self:HitEffects(tr_main)
-		if (IsValid(tr_main.Entity)) then
-			self:DoHit(tr_main.Entity, tr_main, 60)
-		end
-	end
+function SWEP:GetCurrentAnimation(what)
+	return {
+		snd = "SerpentBlade.Slash2"
+	}
 end
 
 SWEP.Ortho = {-1, 1, angle = Angle(90, 0, 200), size = 0.7}

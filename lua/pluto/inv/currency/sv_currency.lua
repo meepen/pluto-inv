@@ -660,7 +660,7 @@ end
 
 function pluto.currency.validpos(nav)
 	local tries = 0
-	while (tries < 100) do
+	while (tries < 20) do
 		tries = tries + 1
 		local pos = nav:GetRandomPoint()
 

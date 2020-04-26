@@ -6,11 +6,11 @@ SWEP.PrintName				= "Infinity Laser Fist"
 SWEP.Slot				= 2
 
 SWEP.Primary.Sound 			= Sound "Laserfist.FireA"
-SWEP.Primary.Damage		= 10
+SWEP.Primary.Damage		= 12.5
 
 SWEP.Primary.Automatic			= true
 SWEP.Primary.Delay				= 60 / 1000
-SWEP.Primary.ClipSize			= 500
+SWEP.Primary.ClipSize			= 150
 SWEP.Primary.AmmoConsumption = 4
 SWEP.Primary.DefaultClip			= 3000
 SWEP.Primary.Ammo			= "smg1"
