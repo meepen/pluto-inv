@@ -15,6 +15,10 @@ function ENT:GetImage()
 end
 
 function ENT:PostDrawTranslucentRenderables()
+	if (self:IsDormant()) then
+		return
+	end
+
 	local throughwalls = self:ShouldSeeThroughWalls()
 	if (throughwalls) then
 		cam.IgnoreZ(true)
