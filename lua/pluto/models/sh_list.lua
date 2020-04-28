@@ -75,7 +75,8 @@ c "2b" {
 		t["Virtuous Contract"] = 0
 		t["Beastlord"] = 0
 		return t
-	end
+	end,
+	Gender = "Female",
 }
 
 c "a2lh" {
@@ -89,6 +90,7 @@ c "a2lh" {
 			Cloth = own(item) == "76561198050165746" and rand(item.RowID or item.ID) % 2 or 0
 		}
 	end,
+	Gender = "Female",
 }
 
 c "a2" {
@@ -102,6 +104,7 @@ c "a2" {
 			Cloth = item.Owner == "76561198050165746" and rand(item.RowID or item.ID) % 2 or 0
 		}
 	end,
+	Gender = "Female",
 }
 
 c "plague" {
@@ -135,6 +138,7 @@ c "wonderw" {
 			Lasso = rand(item.RowID or item.ID) % 2
 		}
 	end,
+	Gender = "Female",
 }
 
 c "doomguy" {
@@ -163,6 +167,7 @@ c "helga" {
 	Hands = "models/weapons/tfa_cso2/arms/ct_helga.mdl",
 	SubDescription = "Any Mission, Any Time, Any Place",
 	Color = COL(0),
+	Gender = "Female",
 }
 
 c "zerosamus" {
@@ -171,6 +176,7 @@ c "zerosamus" {
 	Hands = "models/zssu_arms.mdl",
 	SubDescription = "n the vast universe, the history of humanity is but a flash of light from a lone star.",
 	Color = rare,
+	Gender = "Female",
 }
 
 c "hansolo" {
@@ -199,6 +205,7 @@ c "moxxi" {
 	Model = "models/player_moxxi.mdl",
 	Hands = "models/arms_moxxi.mdl",
 	Color = rare,
+	Gender = "Female",
 }
 
 c "wick2" {
@@ -220,6 +227,7 @@ c "lilith" {
 			Belt = rand(item.RowID or item.ID) % 2
 		}
 	end,
+	Gender = "Female",
 }
 
 c "odst" {
@@ -283,7 +291,8 @@ c "maya" {
 		return {
 			Coat = rand(item.RowID or item.ID) % 2
 		}
-	end
+	end,
+	Gender = "Female",
 }
 
 
@@ -424,6 +433,7 @@ c "metro_female_6" {
 	SubDescription = metro_desc(7),
 	Color = CHRISTMAS(0),
 	GenerateBodygroups = generic_female,
+	Gender = "Female",
 }
 c "metro_male_4" {
 	Name = "Metro Male 4",
@@ -448,6 +458,7 @@ c "metro_female_4" {
 	SubDescription = metro_desc(10),
 	Color = CHRISTMAS(0),
 	GenerateBodygroups = generic_male,
+	Gender = "Female",
 }
 c "metro3" {
 	Name = "Metro Extra 3",
@@ -472,6 +483,7 @@ c "metro_female_2" {
 	SubDescription = metro_desc(13),
 	Color = CHRISTMAS(0),
 	GenerateBodygroups = generic_female_hands,
+	Gender = "Female",
 }
 c "metro_male_8" {
 	Name = "Metro Male 8",
@@ -496,6 +508,7 @@ c "metro_female_3" {
 	SubDescription = metro_desc(16),
 	Color = CHRISTMAS(0),
 	GenerateBodygroups = generic_female,
+	Gender = "Female",
 }
 c "metro4" {
 	Name = "Metro Extra 4",
@@ -528,6 +541,7 @@ c "metro_female_1" {
 	SubDescription = metro_desc(20),
 	Color = CHRISTMAS(0),
 	GenerateBodygroups = generic_male,
+	Gender = "Female",
 }
 c "metro_female_5" {
 	Name = "Metro Female 5",
@@ -536,6 +550,7 @@ c "metro_female_5" {
 	SubDescription = metro_desc(21),
 	Color = CHRISTMAS(0),
 	GenerateBodygroups = generic_male,
+	Gender = "Female",
 }
 
 c "osrsbob" {
@@ -570,7 +585,8 @@ c "weebshit" {
 	SubDescription = "Weeb.\nSuggested by DJ Diamond Bear on the December 2019 Forum Thread",
 	GenerateSkin = function(item)
 		return rand(item.RowID or item.ID) % 3
-	end
+	end,
+	Gender = "Female",
 }
 
 c "tomb" {
@@ -579,6 +595,7 @@ c "tomb" {
 	Hands = "models/player/lara_croft_hands.mdl",
 	Color = xmas_rare,
 	SubDescription = "\nSuggested by Squibble",
+	Gender = "Female",
 }
 
 -- BOX 2 (2020 March)
@@ -814,6 +831,7 @@ c "miku_cupid" {
 	Hands = "models/player/dewobedil/vocaloid/appearance_miku/c_arms/cupid_p.mdl",
 	Color = ColorRand(),
 	SubDescription = "no",
+	Gender = "Female",
 }
 
 c "chimp" {
@@ -857,6 +875,7 @@ c "female_child" {
 	Model = "models/player/child_worker_f1.mdl",
 	Color = ColorRand(),
 	SubDescription = "",
+	Gender = "Female",
 }
 
 c "kanna" {
@@ -865,6 +884,7 @@ c "kanna" {
 	Hands = "models/player/dewobedil/maid_dragon/kanna/c_arms/default_p.mdl",
 	Color = ColorRand(),
 	SubDescription = "",
+	Gender = "Female",
 }
 
 c "lara_croft_lo" {
@@ -872,6 +892,7 @@ c "lara_croft_lo" {
 	Model = "models/tombraider2/lara_croft_classic.mdl",
 	Color = ColorRand(),
 	SubDescription = "",
+	Gender = "Female",
 }
 
 c "lara_croft_lo_anim" {
@@ -879,6 +900,7 @@ c "lara_croft_lo_anim" {
 	Model = "models/tombraider2/lara_croft_classic_anims.mdl",
 	Color = ColorRand(),
 	SubDescription = "",
+	Gender = "Female",
 }
 
 c "low_croft_lo_robe_anim" {
@@ -886,6 +908,7 @@ c "low_croft_lo_robe_anim" {
 	Model = "models/tombraider2/lara_croft_classic_home_anim.mdl",
 	Color = ColorRand(),
 	SubDescription = "",
+	Gender = "Female",
 }
 
 c "low_croft_lo_robe" {
@@ -893,6 +916,7 @@ c "low_croft_lo_robe" {
 	Model = "models/tombraider2/lara_croft_classic_home.mdl",
 	Color = ColorRand(),
 	SubDescription = "",
+	Gender = "Female",
 }
 
 
@@ -933,7 +957,8 @@ c "ciri" {
 	Model = "models/player/RatedR4Ryan/Ciri_TW3.mdl",
 	Hands = "models/player/RatedR4Ryan/Ciri_hands.mdl",
 	Color = CRATE2_COL(1),
-	SubDescription = "Well yes, but that book was horribly dull.\nSuggested by Eppen on the March 2020 Forum Thread"
+	SubDescription = "Well yes, but that book was horribly dull.\nSuggested by Eppen on the March 2020 Forum Thread",
+	Gender = "Female",
 }
 
 c "spacesuit" {
@@ -956,7 +981,8 @@ c "yuno_gasai" {
 	Model = "models/player/yuno_gasai.mdl",
 	Hands = "models/arms/yuno_gasai_arms.mdl",
 	Color = Color(131, 222, 247),
-	SubDescription = "Shootr is Omega Gay:tm:"
+	SubDescription = "Shootr is Omega Gay:tm:",
+	Gender = "Female",
 }
 
 c "tachanka" {

@@ -41,3 +41,31 @@ SWEP.Ironsights = {
 }
 
 SWEP.MuzzleAttachment			= "1"
+
+DEFINE_BASECLASS(SWEP.Base)
+
+SWEP.Sounds = {
+	default = {
+		"imhurt01",
+		"imhurt02",
+		"moan01",
+		"moan02",
+		"moan03",
+		"moan04",
+		"moan05",
+	},
+	leg = {
+		"myleg01",
+		"myleg02",
+	},
+	chest = {
+		"mygut01",
+		"mygut02",
+	}
+
+}
+
+function SWEP:FireBulletsCallback(tr, dmginfo, data)
+	
+	return BaseClass.FireBulletsCallback(self, tr, dmginfo, data)
+end
