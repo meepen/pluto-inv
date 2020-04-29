@@ -88,7 +88,7 @@ function SWEP:DoFireBullets(src, dir, data)
 		if (IsValid(other) and other:IsPlayer()) then
 			timer.Simple(0, function()
 				if (IsValid(self)) then
-					self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
+					self:Remove()
 				end
 			end)
 		end
@@ -119,7 +119,6 @@ function SWEP:DoFireBullets(src, dir, data)
 				end
 
 				vic:EmitSound(string.format(fmt, (table.Random(self.Weapon.DamageSounds[type]))))
-				self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 			end
 		end
 	end)
