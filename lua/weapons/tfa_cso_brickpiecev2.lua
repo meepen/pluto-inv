@@ -44,7 +44,7 @@ SWEP.MuzzleAttachment			= "1"
 
 DEFINE_BASECLASS(SWEP.Base)
 
-SWEP.Sounds = {
+SWEP.DamageSounds = {
 	default = {
 		"imhurt01",
 		"imhurt02",
@@ -62,10 +62,35 @@ SWEP.Sounds = {
 		"mygut01",
 		"mygut02",
 	}
-
 }
 
 function SWEP:FireBulletsCallback(tr, dmginfo, data)
+	local r = BaseClass.FireBulletsCallback(self, tr, dmginfo, data)
+
+	if (SERVER and IsValid(hit) and hit:IsPlayer() and dmginfo:GetDamage() > 0 and math.random() > 0.5) then
+		local hg = tr.HitGroup
+		local hit = tr.Entity
+
+		local fmt = "vo/npc/female01/%s.wav"
+
+		if (pluto.models.gendered[hit:GetModel()] == "Male") then
+			fmt = "vo/npc/male01/%s.wav"
+		end
+
+		local type = "default"
+
+		if (math.random() > 0.75) then
+			if (hg == HITGROUP_LEFTLEG or hg == HITGROUP_RIGHTLEG) then
+				type = "leg"
+			elseif (hg == HITGROUP_CHEST or hg == HITGROUP_STOMACH or hg == HITGROUP_GEAR) then
+				type = "chest"
+			end
+		end
+
+		local voiceline = table.Random(self.DamageSounds[type])
+
+		hit:EmitSound(string.format(fmt, voiceline), 75, 100, 1, CHAN_USER_BASE + 6)
+	end
 	
-	return BaseClass.FireBulletsCallback(self, tr, dmginfo, data)
+	return r
 end

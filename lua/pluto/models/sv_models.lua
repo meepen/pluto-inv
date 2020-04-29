@@ -1,4 +1,5 @@
 pluto.models = pluto.models or {}
+pluto.models.gendered = {}
 
 AddCSLuaFile "sh_list.lua"
 
@@ -17,6 +18,8 @@ function pluto.model(name)
 		if (d.Hands) then
 			player_manager.AddValidHands(d.Name, d.Hands, 0, "00000000")
 		end
+
+		pluto.models.gendered[d.Model] = d.Gender or "Male"
 	end
 end
 
