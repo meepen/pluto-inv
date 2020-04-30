@@ -65,7 +65,7 @@ SWEP.Bullets = {
 SWEP.Secondary.Delay = 2
 
 function SWEP:SecondaryAttack()
-	if (self:GetNextSecondaryFire() > CurTime() or not SERVER) then
+	if (self:GetNextSecondaryFire() > CurTime() or not SERVER or not self.Charges or self.Charges < 2) then
 		return
 	end
 
