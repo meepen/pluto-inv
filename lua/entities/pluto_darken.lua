@@ -84,8 +84,6 @@ function ENT:Draw()
 		return
 	end
 
-	print "hi"
-
 	render.SetColorMaterial()
 	render.DrawBox(self:GetPos(), angle_zero, -extent, extent, Color(10, 10, 10))
 end

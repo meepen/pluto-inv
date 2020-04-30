@@ -64,26 +64,25 @@ SWEP.Bullets = {
 SWEP.Secondary.Delay = 2
 
 function SWEP:SecondaryAttack()
-	if (self:GetNextSecondaryFire() > CurTime() or not SERVER or not self.Charges or self.Charges < 2) then
+	if (self:GetNextSecondaryFire() > CurTime() or not SERVER or not self.Charged) then
 		return
 	end
 
 	self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
 
-	
 	local e = ents.Create "pluto_darken"
 	e:SetPos(self:GetOwner():GetShootPos())
 	e:Spawn()
 
-	self.Charges = 0
+	self.Charged = false
 end
 
 function SWEP:Damage(state, ply, dmg)
-	if (dmg:GetDamage() < ply:Health()) then
+	if (dmg:GetDamage() < ply:Health() and ply:Alive()) then
 		return
 	end
-	
-	self.Charges = (self.Charges or 0) + 1
+
+	self.Charged = true
 end
 
 local pow = 3
