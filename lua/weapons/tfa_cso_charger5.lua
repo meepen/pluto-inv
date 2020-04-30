@@ -45,7 +45,7 @@ SWEP.Offset = {
 	Scale = 1.2
 }
 
-SWEP.AutoSpawnable = true
+SWEP.AutoSpawnable = false
 SWEP.Spawnable = true
 
 SWEP.MuzzleAttachment			= "0"
