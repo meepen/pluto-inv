@@ -7,7 +7,7 @@ SWEP.Slot				= 2
 --[[WEAPON HANDLING]]--
 
 --Firing related
-SWEP.Primary.Sound 			= Sound("Charger5.Fire")
+SWEP.Primary.Sound 			= Sound "Charger5.Fire"
 SWEP.Primary.Damage		= 16
 SWEP.HeadshotMultiplier = 1.3
 SWEP.Primary.Automatic			= true
@@ -84,3 +84,34 @@ SWEP.Bullets = {
 	DamageMinimumPercent = 0.1,
 	Spread = Vector(0.020, 0.020, 0.00)
 }
+
+DEFINE_BASECLASS(SWEP.Base)
+
+
+if (CLIENT) then
+	local last_play = -math.huge
+	net.Receive("tfa_cso_charger5", function()
+		if (CurTime() < last_play + 10) then
+			return
+		end
+
+		surface.PlaySound "hl1/fvox/shock_damage.wav"
+		last_play = CurTime()
+	end)
+end
+
+-- play hl1/fvox/shock_damage.wav
+function SWEP:FireBulletsCallback(tr, dmginfo)
+	BaseClass.FireBulletsCallback(self, tr, dmginfo)
+
+	if (IsValid(tr.Entity) and dmginfo:GetDamage() > 0 and tr.Entity:IsPlayer() and math.random() > 0.7) then
+
+		-- do electrical effect
+
+		tr.Entity:SetEyeAngles(tr.Entity:EyeAngles() + Angle(math.random(), math.random()))
+		net.Start "tfa_cso_charger5"
+		net.Send(tr.Entity)
+
+		tr.Entity:EmitSound "ambient/levels/labs/electric_explosion5.wav"
+	end
+end
