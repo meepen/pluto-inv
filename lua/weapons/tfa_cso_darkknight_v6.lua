@@ -14,8 +14,8 @@ SWEP.Primary.NumShots	= 1
 SWEP.Primary.Automatic			= true
 SWEP.Primary.Delay				= 60 / 800
 
-SWEP.Primary.ClipSize			= 50
-SWEP.Primary.DefaultClip			= 100
+SWEP.Primary.ClipSize			= 40
+SWEP.Primary.DefaultClip			= 80
 
 SWEP.ViewModel			= "models/weapons/tfa_cso/c_dark_knight_overlord.mdl"
 SWEP.ViewModelFOV			= 80

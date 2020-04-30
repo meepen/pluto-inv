@@ -2,8 +2,8 @@ ENT.Type = "anim"
 
 local DARKENED = 0
 
-ENT.Distance = 2000
-ENT.DistanceMin = 500
+ENT.Distance = 1200
+ENT.DistanceMin = 200
 
 ENT.PrintName = "Wom Cube"
 
@@ -67,13 +67,13 @@ hook.Add("PreRender", "pluto_darken", function()
 end)
 
 hook.Add("RenderScreenspaceEffects", "pluto_darken", function()
-	surface.SetDrawColor(0, 0, 0, DARKENED * 250)
+	surface.SetDrawColor(0, 0, 0, DARKENED * 240)
 
 	surface.DrawRect(0, 0, ScrW(), ScrH())
 end)
 
 function ENT:Think()
-	if (SERVER and CurTime() > self.SpawnTime + 15) then
+	if (SERVER and CurTime() > self.SpawnTime + 10) then
 		self:Remove()
 	end
 end
