@@ -529,8 +529,8 @@ sound.Add(soundData)
 local soundData = {
 	name 		= "DarkKnight.Fire" ,
 	channel 	= CHAN_USER_BASE+11,
-	volume 		= 1,
-	soundlevel 	= 80,
+	volume 		= 0.5,
+	soundlevel 	= 75,
 	pitchstart 	= 100,
 	pitchend 	= 100,
 	sound 		= "weapons/tfa_cso/darkknight/fire.ogg"

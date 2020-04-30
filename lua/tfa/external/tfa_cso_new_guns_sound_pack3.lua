@@ -93,7 +93,7 @@ TFA.AddWeaponSound( "Umbrella.Insert", "weapons/tfa_cso/umbrella/insert.ogg" )
 TFA.AddWeaponSound( "Umbrella.Finish", "weapons/tfa_cso/umbrella/finish.ogg" )
 
 --CHARGER-5
-TFA.AddFireSound( "Charger5.Fire", "weapons/tfa_cso/charger5/fire.ogg", false, "^" )
+TFA.AddFireSound( "Charger5.Fire", "weapons/tfa_cso/charger5/fire.ogg", false, "^", 0.5 )
 TFA.AddWeaponSound( "Charger5.ClipOut", "weapons/tfa_cso/charger5/clipout.ogg" )
 TFA.AddWeaponSound( "Charger5.ClipIn1", "weapons/tfa_cso/charger5/clipin1.ogg" )
 TFA.AddWeaponSound( "Charger5.ClipIn2", "weapons/tfa_cso/charger5/clipin2.ogg" )

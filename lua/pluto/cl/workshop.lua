@@ -331,6 +331,18 @@ local packs =  {
 			"20200412",
 		}
 	},
+	charger5 = {
+		remote = default "charger5",
+		versions = {
+			"20200429",
+		}
+	},
+	dark_knight_overlord = {
+		remote = default "dark_knight_overlord",
+		versions = {
+			"20200429",
+		}
+	},
 	tfa_unknown = {
 		remote = default "tfa_unknown",
 		versions = {
