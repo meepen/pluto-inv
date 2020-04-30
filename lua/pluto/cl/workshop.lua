@@ -343,6 +343,12 @@ local packs =  {
 			"20200429",
 		}
 	},
+	darkknight_v8 = {
+		remote = default "darkknight_v8",
+		versions = {
+			"20200430",
+		}
+	},
 	tfa_unknown = {
 		remote = default "tfa_unknown",
 		versions = {

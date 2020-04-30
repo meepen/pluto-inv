@@ -1,15 +1,17 @@
 ENT.Type = "anim"
 
+local DARKENED = 0
+
 ENT.Distance = 2000
 ENT.DistanceMin = 500
 
-ENT.PrintName = "Darken"
+ENT.PrintName = "Wom Cube"
 
 AddCSLuaFile()
 
 function ENT:Initialize()
 	if (CLIENT) then
-		hook.Add("RenderScreenspaceEffects", self, self.RenderScreenspaceEffects)
+		hook.Add("PreDrawEffects", self, self.RenderScreenspaceEffects)
 
 		sound.PlayFile("sound/weapons/tfa_cso/darkknight/idle.ogg", "3d", function(snd)
 			self.Sound = snd
@@ -56,10 +58,19 @@ function ENT:RenderScreenspaceEffects()
 		alpha = (max - frommin) / max
 	end
 
-	surface.SetDrawColor(0, 0, 0, alpha * 250)
+	DARKENED = math.max(DARKENED, alpha)
+end
+
+
+hook.Add("PreRender", "pluto_darken", function()
+	DARKENED = 0
+end)
+
+hook.Add("RenderScreenspaceEffects", "pluto_darken", function()
+	surface.SetDrawColor(0, 0, 0, DARKENED * 250)
 
 	surface.DrawRect(0, 0, ScrW(), ScrH())
-end
+end)
 
 function ENT:Think()
 	if (SERVER and CurTime() > self.SpawnTime + 15) then

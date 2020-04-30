@@ -3,7 +3,6 @@ SWEP.Category				= "TFA CS:O"
 SWEP.Author				= "Kamikaze"
 SWEP.PrintName				= "ₚᵣₐᵢₛₑ"
 SWEP.Slot				= 2
-SWEP.SlotPos				= 73
 
 --[[WEAPON HANDLING]]--
 
@@ -75,6 +74,8 @@ function SWEP:SecondaryAttack()
 	local e = ents.Create "pluto_darken"
 	e:SetPos(self:GetOwner():GetShootPos())
 	e:Spawn()
+
+	self.Charges = 0
 end
 
 function SWEP:Damage(state, ply, dmg)
