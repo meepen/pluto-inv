@@ -97,6 +97,8 @@ if (CLIENT) then
 
 		surface.PlaySound "hl1/fvox/shock_damage.wav"
 		last_play = CurTime()
+
+		tr.Entity:SetEyeAngles(tr.Entity:EyeAngles() + Angle(math.random(), math.random()))
 	end)
 end
 
@@ -104,11 +106,9 @@ end
 function SWEP:FireBulletsCallback(tr, dmginfo)
 	BaseClass.FireBulletsCallback(self, tr, dmginfo)
 
-	if (IsValid(tr.Entity) and dmginfo:GetDamage() > 0 and tr.Entity:IsPlayer() and math.random() > 0.7) then
+	if (IsValid(tr.Entity) and dmginfo:GetDamage() > 0 and tr.Entity:IsPlayer() and math.random() > 0.8) then
 
 		-- do electrical effect
-
-		tr.Entity:SetEyeAngles(tr.Entity:EyeAngles() + Angle(math.random(), math.random()))
 		net.Start "tfa_cso_charger5"
 		net.Send(tr.Entity)
 

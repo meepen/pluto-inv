@@ -1,7 +1,7 @@
 SWEP.Base				= "tfa_gun_base"
 SWEP.Category				= "TFA CS:O"
 SWEP.Author				= "Kamikaze"
-SWEP.PrintName				= "M4A1 Shadow Knight"
+SWEP.PrintName				= "ₚᵣₐᵢₛₑ"
 SWEP.Slot				= 2
 SWEP.SlotPos				= 73
 
@@ -65,19 +65,24 @@ SWEP.Bullets = {
 SWEP.Secondary.Delay = 2
 
 function SWEP:SecondaryAttack()
-	if (self:GetNextSecondaryFire() > CurTime()) then
+	if (self:GetNextSecondaryFire() > CurTime() or not SERVER) then
 		return
 	end
 
 	self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
 
-	local owner = self:GetOwner()
+	
+	local e = ents.Create "pluto_darken"
+	e:SetPos(self:GetOwner():GetShootPos())
+	e:Spawn()
+end
 
-	for _, e in pairs(ents.FindInCone(owner:GetShootPos(), owner:GetAimVector(), 1000, math.pi / 4)) do
-		if (e:IsPlayer() and e:Alive()) then
-			print(e)
-		end
+function SWEP:Damage(state, ply, dmg)
+	if (dmg:GetDamage() < ply:Health()) then
+		return
 	end
+	
+	self.Charges = (self.Charges or 0) + 1
 end
 
 local pow = 3
