@@ -1,7 +1,7 @@
 SWEP.Base				= "tfa_gun_base"
 SWEP.Category				= "TFA CS:O"
 SWEP.Author				= "Anri"
-SWEP.PrintName				= "Ethereal"
+SWEP.PrintName				= "Crystalized Acid"
 SWEP.Slot				= 2
 
 --[[WEAPON HANDLING]]--
