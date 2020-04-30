@@ -349,6 +349,12 @@ local packs =  {
 			"20200430",
 		}
 	},
+	ethereal = {
+		remote = default "ethereal",
+		versions = {
+			"20200430",
+		}
+	},
 	tfa_unknown = {
 		remote = default "tfa_unknown",
 		versions = {

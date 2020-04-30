@@ -127,7 +127,7 @@ sound.Add(soundData)
 local soundData = {
 	name 		= "SF Ethereal.Deploy" ,
 	channel 	= CHAN_WEAPON,
-	volume 		= 1,
+	volume 		= 0.5,
 	soundlevel 	= 80,
 	pitchstart 	= 100,
 	pitchend 	= 100,
@@ -139,7 +139,7 @@ sound.Add(soundData)
 local soundData = {
 	name 		= "SF Ethereal.Reload" ,
 	channel 	= CHAN_WEAPON,
-	volume 		= 1,
+	volume 		= 0.5,
 	soundlevel 	= 80,
 	pitchstart 	= 100,
 	pitchend 	= 100,
@@ -151,8 +151,8 @@ sound.Add(soundData)
 local soundData = {
 	name 		= "SF Ethereal.Fire" ,
 	channel 	= CHAN_USER_BASE+11,
-	volume 		= 1,
-	soundlevel 	= 80,
+	volume 		= 0.5,
+	soundlevel 	= 75,
 	pitchstart 	= 100,
 	pitchend 	= 100,
 	sound 		= "weapons/sfethereal/fire.ogg"
