@@ -98,7 +98,7 @@ if (CLIENT) then
 		surface.PlaySound "hl1/fvox/shock_damage.wav"
 		last_play = CurTime()
 
-		tr.Entity:SetEyeAngles(tr.Entity:EyeAngles() + Angle(math.random(), math.random()))
+		LocalPlayer():SetEyeAngles(LocalPlayer():EyeAngles() + Angle(math.random(), math.random()))
 	end)
 end
 
