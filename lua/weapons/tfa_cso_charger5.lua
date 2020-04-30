@@ -91,14 +91,17 @@ DEFINE_BASECLASS(SWEP.Base)
 if (CLIENT) then
 	local last_play = -math.huge
 	net.Receive("tfa_cso_charger5", function()
+		local mult = 8
+
+		local rand = Angle((math.random() - 0.5) * mult, (math.random() - 0.5) * mult)
+		LocalPlayer():SetEyeAngles(LocalPlayer():EyeAngles() + rand)
+
 		if (CurTime() < last_play + 10) then
 			return
 		end
 
 		surface.PlaySound "hl1/fvox/shock_damage.wav"
 		last_play = CurTime()
-
-		LocalPlayer():SetEyeAngles(LocalPlayer():EyeAngles() + Angle(math.random(), math.random()))
 	end)
 end
 
