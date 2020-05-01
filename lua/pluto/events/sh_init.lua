@@ -22,7 +22,11 @@ for _, event in pairs {
 				AddCSLuaFile(fname)
 			end
 			if (SERVER and extra == "sv_init" or CLIENT and extra == "cl_init" or extra == "sh_init") then
-				table.insert(pluto.rounds.files[event], CompileFile(fname))
+				local fn = CompileFile(fname)
+				if (not fn) then
+					continue
+				end
+				table.insert(pluto.rounds.files[event], fn)
 			end
 		end
 	end
@@ -67,12 +71,21 @@ else
 end
 
 function pluto.rounds.run(hook, ...)
-	if (pluto.rounds.current and pluto.rounds.current[hook]) then
-		return pluto.rounds.current[hook](pluto.rounds.current, pluto.rounds.state, ...)
+	local event = pluto.rounds.get(ttt.GetCurrentRoundEvent())
+	if (event and event[hook]) then
+		return event[hook](event, pluto.rounds.state, ...)
 	end
 end
 
+function pluto.rounds.get(name)
+	return pluto.rounds.byname[name]
+end
+
 function pluto.rounds.prepare(name)
+	if (not SERVER) then
+		return
+	end
+
 	local event = pluto.rounds.byname[name]
 
 	if (not event) then
@@ -87,35 +100,64 @@ function pluto.rounds.prepare(name)
 		return false, "Round limit"
 	end
 
-	pluto.rounds.next = event
+	ttt.SetNextRoundEvent(name)
 
 	return true
 end
 
-function pluto.rounds.cancel()
-	local event = pluto.rounds.next
-	if (event and event.Cancel) then
-		event:Cancel()
-		pluto.rounds.next = nil
-		return true
+hook.Add("TTTPrepareNetworkingVariables", "pluto_event", function(vars)
+	table.insert(vars, {
+		Name = "NextRoundEvent",
+		Type = "String",
+		Default = ""
+	})
+	table.insert(vars, {
+		Name = "CurrentRoundEvent",
+		Type = "String",
+		Default = ""
+	})
+end)
+
+hook.Add("TTTGetHiddenPlayerVariables", "pluto_event", function(vars)
+	table.insert(vars, {
+		Name = "NextEventRole",
+		Type = "String",
+		Default = nil
+	})
+end)
+
+hook.Add("OnNextRoundEventChange", "pluto_event", function(old, new)
+end)
+hook.Add("OnCurrentRoundEventChange", "pluto_event", function(old, new)
+	if (new == "" and old ~= "") then
+		local event = pluto.rounds.get(old)
+		if (event) then
+			if (event.Finish) then
+				event:Finish(pluto.rounds.state)
+			end
+	
+			for event, fn in pairs(event.Hooks or {}) do
+				hook.Remove(event, "pluto_event")
+			end
+		end
+		return
 	end
 
-	return false, "No ability to cancel"
-end
+	local event = pluto.rounds.get(new)
 
-hook.Add("TTTPrepareRound", "pluto_event_manager", function()
-	local event = pluto.rounds.next
+	if (not event) then
+		pwarnf("No event %s", new)
+		return
+	end
 
-	pluto.rounds.current = event
 	pluto.rounds.state = {}
-	pluto.rounds.next = nil
 
 	if (event) then
 		if (event.Prepare) then
 			event:Prepare(pluto.rounds.state)
 		end
 
-		for hookevent, fn in pairs(event.Hooks) do
+		for hookevent, fn in pairs(event.Hooks or {}) do
 			hook.Add(hookevent, "pluto_event", function(...)
 				return fn(event, pluto.rounds.state, ...)
 			end)
@@ -123,18 +165,13 @@ hook.Add("TTTPrepareRound", "pluto_event_manager", function()
 	end
 end)
 
+hook.Add("TTTPrepareRound", "pluto_event_manager", function()
+	local event = pluto.rounds.get(ttt.GetNextRoundEvent())
+
+	ttt.SetCurrentRoundEvent(ttt.GetNextRoundEvent())
+	ttt.SetNextRoundEvent ""
+end)
+
 hook.Add("TTTEndRound", "pluto_event_manager", function()
-	local event = pluto.rounds.current
-
-	pluto.rounds.current = nil
-
-	if (event) then
-		if (event.Finish) then
-			event:Finish(pluto.rounds.state)
-		end
-
-		for event, fn in pairs(event.Hooks) do
-			hook.Remove(event, "pluto_event")
-		end
-	end
+	ttt.SetCurrentRoundEvent ""
 end)

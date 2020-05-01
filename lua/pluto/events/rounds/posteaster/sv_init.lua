@@ -4,6 +4,8 @@ ROUND.EggSpread = 160
 ROUND.BunnyLives = 3
 ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
 
+util.AddNetworkString "posteaster_data"
+
 ROUND.BunnySpawnDistances = {
 	Min = 7000,
 	Max = 12000
@@ -40,8 +42,6 @@ ROUND.RoundDatas = {
 }
 
 function ROUND:Prepare(state)
-	net.Start "posteaster_sound"
-	net.Broadcast()
 	state.Data = self.RoundDatas[pluto.inv.roll(self.RoundDatas)]
 
 	timer.Create("pluto_event_timer", 10, 0, function()
@@ -276,6 +276,11 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		table.insert(cluster.Currencies, pluto.currency.spawnfor(children[math.ceil(i / self.EggsPerCluster)], "crate3_n", pos, true))
 	end
 
+	net.Start "posteaster_data"
+		net.WriteString "currency_left"
+		net.WriteUInt(#cluster.Currencies, 32)
+	net.Broadcast()
+
 	for _, ply in pairs(bunnies) do
 		state.lives[ply] = self.BunnyLives
 		if (ply:Alive()) then
@@ -289,6 +294,19 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		end
 	end
 end)
+
+function ROUND:UpdateLives(state)
+	local total_lives = 0
+	for ply, lives in pairs(state.lives) do
+		if (IsValid(ply) and (ply:Alive() or lives > 0)) then
+			total_lives = total_lives + lives + (ply:Alive() and 1 or 0)
+		end
+	end
+	net.Start "posteaster_data"
+		net.WriteString "total_lives_left"
+		net.WriteUInt(total_lives, 32)
+	net.Broadcast()
+end
 
 function ROUND:Initialize(state, ply)
 	self:PlayerSetModel(state, ply)
@@ -313,6 +331,13 @@ function ROUND:Spawn(state, ply)
 		state.lives[ply] = state.lives[ply] - 1
 		ply:SetHealth(health)
 		ply:SetMaxHealth(health)
+
+		net.Start "posteaster_data"
+			net.WriteString "lives_left"
+			net.WriteUInt(state.lives[ply], 32)
+		net.Send(ply)
+
+		self:UpdateLives(state)
 
 		ply:ChatPrint("You have ", ply:GetRoleData().Color, state.lives[ply], white_text, " live(s) left in reserve!")
 	end
@@ -359,7 +384,22 @@ ROUND:Hook("TTTEndRound", function(self, state)
 end)
 
 ROUND:Hook("PlutoCanPickup", function(self, state, ply, curr)
-	return ply:GetRole() == "Bunny"
+	if (ply:GetRole() == "Bunny") then
+		local left = -1
+		for _, ent in pairs(state.cluster.Currencies) do
+			if (IsValid(ent)) then
+				left = left + 1
+			end
+		end
+		net.Start "posteaster_data"
+			net.WriteString "currency_left"
+			net.WriteUInt(left, 32)
+		net.Broadcast()
+
+		return true
+	else
+		return false
+	end
 end)
 
 ROUND:Hook("PlayerCanPickupWeapon", function(self, state, ply, wep)
@@ -371,6 +411,7 @@ ROUND:Hook("PostPlayerDeath", function(self, state, ply)
 		return
 	end
 
+	self:UpdateLives(state)
 	if (not state.lives[ply] or state.lives[ply] <= 0) then
 		ttt.CheckTeamWin()
 	end
