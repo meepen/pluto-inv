@@ -67,7 +67,7 @@ hook.Add("PreRender", "pluto_darken", function()
 end)
 
 hook.Add("RenderScreenspaceEffects", "pluto_darken", function()
-	surface.SetDrawColor(0, 0, 0, DARKENED * 240)
+	surface.SetDrawColor(0, 0, 0, DARKENED * 220)
 
 	surface.DrawRect(0, 0, ScrW(), ScrH())
 end)

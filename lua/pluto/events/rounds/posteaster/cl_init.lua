@@ -106,3 +106,7 @@ ROUND:Hook("CalcView", function(self, state, ply, pos, ang, fov, znear, zfar)
 		}
 	end
 end)
+
+function ROUND:NotifyPrepare()
+	chat.AddText(ttt.roles.Bunny.Color, "Bunnies", white_text, " whispers get louder..")
+end

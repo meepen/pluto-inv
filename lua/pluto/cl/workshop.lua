@@ -369,7 +369,43 @@ local packs =  {
 			"20200425",
 			"20200424",
 		}
-	}
+	},
+	m82_v6 = {
+		remote = default "m82_v6",
+		versions = {
+			"20200501",
+		}
+	},
+	m82_v8 = {
+		remote = default "m82_v8",
+		versions = {
+			"20200501",
+		}
+	},
+	m82 = {
+		remote = default "m82",
+		versions = {
+			"20200501",
+		}
+	},
+	m95 = {
+		remote = default "m95",
+		versions = {
+			"20200501",
+		}
+	},
+	m95_v6 = {
+		remote = default "m95_v6",
+		versions = {
+			"20200501",
+		}
+	},
+	m95_v8 = {
+		remote = default "m95_v8",
+		versions = {
+			"20200501",
+		}
+	},
 }
 
 local good_col = Color(0, 255, 0)

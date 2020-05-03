@@ -260,7 +260,7 @@ pluto.currency.list = {
 
 			pluto.opener = vgui.Create "tttrw_base"
 
-			pluto.opener:AddTab("Open Pink Egg", vgui.Create "pluto_box_open" :SetCurrency "crate4")
+			pluto.opener:AddTab("Open Pink Egg", vgui.Create "pluto_box_open" :SetCurrency "crate3_n")
 
 			pluto.opener:SetSize(640, 400)
 			pluto.opener:Center()

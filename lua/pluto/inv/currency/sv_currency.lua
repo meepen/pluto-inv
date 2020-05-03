@@ -582,7 +582,34 @@ for name, values in pairs {
 	crate3_n = {
 		Shares = 0,
 		Types = "None",
-		Contents = {},
+		Contents = {
+			-- consumed versions
+			tfa_cso_serpent_blade = {
+				Rare = true,
+				Shares = 1
+			},
+			tfa_cso_dreadnova = {
+				Rare = true,
+				Shares = 1
+			},
+			tfa_cso_ruyi = {
+				Rare = true,
+				Shares = 1
+			},
+			tfa_cso_mp7unicorn = {
+				Rare = true,
+				Shares = 1
+			},
+			tfa_cso_pchan = {
+				Rare = true,
+				Shares = 1
+			},
+
+			tfa_cso_m82 = {
+				Tier = "unusual",
+				Shares = 20
+			},
+		},
 	}
 } do
 	table.Merge(pluto.currency.byname[name], values)

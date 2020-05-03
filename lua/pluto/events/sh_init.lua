@@ -127,6 +127,15 @@ hook.Add("TTTGetHiddenPlayerVariables", "pluto_event", function(vars)
 end)
 
 hook.Add("OnNextRoundEventChange", "pluto_event", function(old, new)
+	local event = pluto.rounds.get(new)
+	if (event and event.NotifyPrepare) then
+		event:NotifyPrepare()
+	end
+
+	local event = pluto.rounds.get(old)
+	if (event and event.NotifyCancel) then
+		event:NotifyCancel()
+	end
 end)
 hook.Add("OnCurrentRoundEventChange", "pluto_event", function(old, new)
 	if (new == "" and old ~= "") then

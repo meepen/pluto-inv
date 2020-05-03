@@ -174,6 +174,7 @@ for _, name in pairs {
 	"tester",
 	"uncommon",
 	"unique",
+	"unusual",
 	"vintage",
 
 	"unstable",

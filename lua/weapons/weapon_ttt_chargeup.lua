@@ -23,6 +23,12 @@ SWEP.Bullets = {
 	Spread = vector_origin,
 	TracerName = "tfa_tracer_awp_ss"
 }
+--[[
+SWEP.Secondary.ScopeTable = {
+	["ScopeMaterial"] =  Material("tfa_cso2/scope/scope_gauss_a.png", "smooth"),
+	["ScopeBorder"] = color_black,
+	["ScopeCrosshair"] = { ["r"] = 0, ["g"]  = 0, ["b"] = 0, ["a"] = 255, ["s"] = 1 }
+}]]
 
 SWEP.Primary.Damage        = 80
 SWEP.Primary.Delay         = 1

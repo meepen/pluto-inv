@@ -47,6 +47,7 @@ pluto.files.load {
 
 		"tfa/external/weaponsoundguarantee_part1.lua",
 		"tfa/external/weaponsoundguarantee_part2.lua",
+		"tfa/external/tfa_cso_part2_sounds_pt1.lua",
 		"tfa/external/tfa_cso_new_guns_sound_pack3.lua",
 		"tfa/external/tfa_cso_new_guns_sound_pack4.lua",
 		"tfa/external/tfa_cso_part1_sounds_pt1.lua",
