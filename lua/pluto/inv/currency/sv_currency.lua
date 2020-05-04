@@ -633,7 +633,7 @@ for name, values in pairs {
 			tfa_cso_darkknight_v6 = {
 				Rare = true,
 				Tier = "easter_unique",
-				Shares = 2,
+				Shares = 0.1,
 			},
 		},
 	},
