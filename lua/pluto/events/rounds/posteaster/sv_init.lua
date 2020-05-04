@@ -103,7 +103,7 @@ ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 end)
 
 local Doors = {
-    "func_door", "func_door_rotating", "prop_door_rotating", "func_breakable"
+	"func_door", "func_door_rotating", "prop_door_rotating", "func_breakable", "func_breakable_surf"
 }
 
 for _, v in pairs(Doors) do

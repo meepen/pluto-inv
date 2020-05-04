@@ -92,7 +92,7 @@ function pluto.rounds.prepare(name)
 		return false, "Event does not exist"
 	end
 
-	if (pluto.rounds.next) then
+	if (ttt.GetNextRoundEvent() ~= "") then
 		return false, "Event already prepared"
 	end
 

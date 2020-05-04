@@ -578,6 +578,14 @@ for name, values in pairs {
 				Shares = 1
 			}
 		},
+
+		Pickup = function(ply)
+			if (player.GetCount() >= 8) then
+				pluto.rounds.prepare "posteaster"
+			end
+
+			return true
+		end
 	},
 	crate3_n = {
 		Shares = 0,
