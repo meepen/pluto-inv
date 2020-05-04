@@ -12,7 +12,7 @@ function QUEST:Init(data)
 		local wep = dmg:GetInflictor()
 		if (IsValid(atk) and IsValid(ply) and atk:IsPlayer() and ply:GetRoleTeam() ~= atk:GetRoleTeam() and atk == data.Player and IsValid(wep) and wep:IsWeapon() and rb655_IsLightsaber(wep)) then
 			local gun = wep.PlutoGun
-			if (gun and gun.Owner ~= atk:SteamID64()) then
+			if (not gun) then
 				data:UpdateProgress(1)
 			end
 		end
