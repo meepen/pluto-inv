@@ -370,6 +370,8 @@ function SWEP:Initialize()
 
 		self:SetBladeWidth(thickness % 4 + 3)
 	end
+
+	hook.Add("PlayerTick", self, self.PlayerTick)
 end
 
 -- --------------------------------------------------------- NPC Weapons --------------------------------------------------------- --
@@ -786,37 +788,13 @@ function SWEP:OnForceChanged( name, old, new )
 	end
 end
 
-function SWEP:Think()
-	self.WorldModel = self:GetWorldModel()
-	self:SetModel( self:GetWorldModel() )
-
-	local selectedForcePower = self:GetActiveForcePowerType( self:GetForceType() )
-	if ( selectedForcePower && selectedForcePower.think && !self.Owner:KeyDown( IN_USE ) ) then
-		local ret = hook.Run( "CanUseLightsaberForcePower", self.Owner, selectedForcePower.name )
-		if ( ret != false && selectedForcePower.think ) then
-			selectedForcePower.think( self )
-		end
+function SWEP:PlayerTick(ply)
+	if (CLIENT or ply:GetActiveWeapon() ~= self) then
+		return
 	end
 
-	if ( CLIENT ) then return true end
-
-	if ( ( self.NextForce or 0 ) < CurTime() ) then
-		self:SetForce( math.min( self:GetForce() + 0.5, self:GetMaxForce() ) )
-	end
-
-	if ( !self:GetEnabled() && self:GetLengthAnimation() != 0 ) then
-		self:SetLengthAnimation( math.Approach( self:GetLengthAnimation(), 0, FrameTime() * 3 ) )
-	elseif ( self:GetEnabled() && self:GetLengthAnimation() != 1 ) then
-		self:SetLengthAnimation( math.Approach( self:GetLengthAnimation(), 1, FrameTime() * 10 ) )
-	end
-
-	if ( self:GetEnabled() && !self:GetWorksUnderwater() && self.Owner:WaterLevel() > 2 ) then
-		self:SetEnabled( false )
-		--self:EmitSound( self:GetOffSound() )
-	end
-
-	if ( self:GetBladeLength() <= 0 ) then return end
-
+	ply:LagCompensation(true)
+	
 	-- ------------------------------------------------- DAMAGE ------------------------------------------------- --
 
 	-- This whole system needs rework
@@ -892,6 +870,40 @@ function SWEP:Think()
 		self.SoundHit:ChangeVolume( 0, 0 )
 	end
 
+	ply:LagCompensation(false)
+end
+
+function SWEP:Think()
+	self.WorldModel = self:GetWorldModel()
+	self:SetModel( self:GetWorldModel() )
+
+	local selectedForcePower = self:GetActiveForcePowerType( self:GetForceType() )
+	if ( selectedForcePower && selectedForcePower.think && !self.Owner:KeyDown( IN_USE ) ) then
+		local ret = hook.Run( "CanUseLightsaberForcePower", self.Owner, selectedForcePower.name )
+		if ( ret != false && selectedForcePower.think ) then
+			selectedForcePower.think( self )
+		end
+	end
+
+	if ( CLIENT ) then return true end
+
+	if ( ( self.NextForce or 0 ) < CurTime() ) then
+		self:SetForce( math.min( self:GetForce() + 0.5, self:GetMaxForce() ) )
+	end
+
+	if ( !self:GetEnabled() && self:GetLengthAnimation() != 0 ) then
+		self:SetLengthAnimation( math.Approach( self:GetLengthAnimation(), 0, FrameTime() * 3 ) )
+	elseif ( self:GetEnabled() && self:GetLengthAnimation() != 1 ) then
+		self:SetLengthAnimation( math.Approach( self:GetLengthAnimation(), 1, FrameTime() * 10 ) )
+	end
+
+	if ( self:GetEnabled() && !self:GetWorksUnderwater() && self.Owner:WaterLevel() > 2 ) then
+		self:SetEnabled( false )
+		--self:EmitSound( self:GetOffSound() )
+	end
+
+	if ( self:GetBladeLength() <= 0 ) then return end
+
 	-- ------------------------------------------------- SOUNDS ------------------------------------------------- --
 
 	if ( self.SoundSwing ) then
@@ -904,6 +916,7 @@ function SWEP:Think()
 		self.LastAng = ang
 	end
 
+	local pos, ang = self:GetSaberPosAng()
 	if ( self.SoundLoop ) then
 		pos = pos + ang * self:GetBladeLength()
 
