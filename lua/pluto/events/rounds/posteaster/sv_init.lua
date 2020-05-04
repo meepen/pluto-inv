@@ -1,5 +1,5 @@
 ROUND.Name = "Bunny Attack"
-ROUND.EggsPerCluster = 10
+ROUND.EggsPerCluster = 8
 ROUND.EggSpread = 130
 ROUND.BunnyLives = 3
 ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
