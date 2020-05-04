@@ -60,3 +60,5 @@ SWEP.Ironsights = {
 	SlowDown = 0.3,
 	Zoom = 0.35,
 }
+
+SWEP.Ortho = {-4, 2.5, angle = Angle(30, 180, -60)}

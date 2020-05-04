@@ -99,3 +99,5 @@ SWEP.RecoilInstructions = {
 
 SWEP.Primary.Ammo          = "Pistol"
 SWEP.AmmoEnt               = "item_ammo_pistol_ttt"
+
+SWEP.Ortho = {3.5, 1.5, angle = Angle(-145, -180, 150), size = 1.1}

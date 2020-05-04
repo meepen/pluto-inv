@@ -118,3 +118,5 @@ function SWEP:FireBulletsCallback(tr, dmginfo)
 		tr.Entity:EmitSound "ambient/levels/labs/electric_explosion5.wav"
 	end
 end
+
+SWEP.Ortho = {-0.5, 0, angle = Angle(30, 180, -60), size = 1.1}

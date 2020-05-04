@@ -1466,3 +1466,5 @@ end
 function SWEP:TranslateFOV(fov)
 	return (hook.Run("TTTGetFOV", fov) or fov)
 end
+
+SWEP.Ortho = {-4.5, 3}

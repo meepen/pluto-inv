@@ -230,3 +230,5 @@ function SWEP:Deploy()
 
 	return BaseClass.Deploy(self)
 end
+
+SWEP.Ortho = {0, 0.5, angle = Angle(30, 180, -60)}
