@@ -612,7 +612,7 @@ for name, values in pairs {
 		},
 	},
 	_lightsaber = {
-		Shares = 100,
+		Shares = 150,
 		Global = true,
 		Pickup = function(ply)
 			for _, wep in pairs(ply:GetWeapons()) do
