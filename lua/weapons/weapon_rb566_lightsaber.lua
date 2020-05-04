@@ -51,6 +51,7 @@ SWEP.AutoSwitchFrom = false
 SWEP.DrawWeaponInfoBox = false
 
 SWEP.AutoSpawnable = false
+SWEP.PlutoSpawnable = true
 
 SWEP.ViewModel = "models/weapons/v_crowbar.mdl"
 SWEP.WorldModel = "models/sgg/starwars/weapons/w_anakin_ep2_saber_hilt.mdl"
@@ -330,6 +331,8 @@ local function rand(seed)
 end
 
 function SWEP:Initialize()
+	self.PlutoGun = pluto.NextWeaponSpawn
+	pluto.NextWeaponSpawn = nil
 	self.Slot = self:GetSlot()
 	self.LoopSound = self.LoopSound or "lightsaber/saber_loop" .. math.random( 1, 8 ) .. ".wav"
 	self.SwingSound = self.SwingSound or "lightsaber/saber_swing" .. math.random( 1, 2 ) .. ".wav"
@@ -356,7 +359,7 @@ function SWEP:Initialize()
 		end )
 	end
 
-	local wep = pluto.NextWeaponSpawn
+	local wep = self.PlutoGun
 	if (SERVER and wep) then
 		local col = rand(wep.ID or wep.RowID)
 		local color = HSVToColor((col / 100) % 360, 1, 0.3)

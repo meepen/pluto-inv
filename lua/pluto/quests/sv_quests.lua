@@ -9,8 +9,8 @@ pluto.quests.loading = pluto.quests.loading or {}
 pluto.quests.types = {
 	[0] = {
 		Name = "Special",
-		Time = 60 * 60 * 24 * 7, -- day
-		Amount = 0,
+		Time = 60 * 60 * 24 * 7, -- week
+		Amount = 1,
 		Cooldown = 60 * 60 * 24 * 7,
 	},
 	[1] = {
@@ -37,6 +37,9 @@ pluto.quests.list = pluto.quests.list or {}
 
 for _, id in pairs {
 	"april_fools",
+	"light1",
+	"light2",
+	"light3",
 
 	"credits",
 	"melee",
@@ -127,6 +130,47 @@ function pluto.quests.oftype(type, ignore)
 	return available
 end
 
+function pluto.quests.give(ply, type, new, transact)
+	local type_data = pluto.quests.types[type]
+	local progress_needed = new:GetProgressNeeded(type)
+	local seed = math.random()
+	local quests = pluto.quests.byperson[ply] or {
+		byid = {},
+	}
+	local type_quests = quests[type_data.Name]
+
+	pluto.db.transact_or_query(adder,
+		"INSERT INTO pluto_quests (steamid, quest_id, type, progress_needed, total_progress, expiry_time, rand) VALUES (?, ?, ?, ?, ?, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP), ?)",
+		{
+			ply:SteamID64(),
+			new.ID,
+			type,
+			progress_needed,
+			progress_needed,
+			type_data.Time,
+			seed,
+		},
+		function(err, q)
+			local quest = setmetatable({
+				RowID = q:lastInsert(),
+				QuestID = new.ID,
+				ProgressLeft = progress_needed,
+				TotalProgress = progress_needed,
+				EndTime = os.time() + type_data.Time,
+				Seed = seed,
+				Player = ply,
+				Type = type,
+				QUEST = new,
+				TYPE = type_data,
+			}, pluto.quests.quest_mt)
+
+			quests.byid[quest.RowID] = quest
+
+			table.insert(type_quests, quest)
+		end
+	)
+end
+
 function pluto.quests.init_nocache(ply, cb)
 	print("loading - no cache", ply)
 	local sid = pluto.db.steamid64(ply)
@@ -203,44 +247,16 @@ function pluto.quests.init_nocache(ply, cb)
 
 			for i = type_quests and #type_quests + 1 or 1, type_data.Amount do
 				local new = oftype[1]
+				if (not new) then
+					return
+				end
+
 				table.remove(oftype, 1)
+				
+				pluto.quests.give(ply, type, new, adder)
 
-				local progress_needed = new:GetProgressNeeded(type)
-				local seed = math.random()
-
-				adder:AddQuery(
-					"INSERT INTO pluto_quests (steamid, quest_id, type, progress_needed, total_progress, expiry_time, rand) VALUES (?, ?, ?, ?, ?, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP), ?)",
-					{
-						sid,
-						new.ID,
-						type,
-						progress_needed,
-						progress_needed,
-						type_data.Time,
-						seed,
-					},
-					function(err, q)
-						local quest = setmetatable({
-							RowID = q:lastInsert(),
-							QuestID = new.ID,
-							ProgressLeft = progress_needed,
-							TotalProgress = progress_needed,
-							EndTime = os.time() + type_data.Time,
-							Seed = seed,
-							Player = ply,
-							Type = type,
-							QUEST = new,
-							TYPE = type_data,
-						}, pluto.quests.quest_mt)
-
-						quests.byid[quest.RowID] = quest
-
-						table.insert(type_quests, quest)
-					end
-				)
+				needs_run = true
 			end
-
-			needs_run = true
 		end
 
 		if (needs_run) then
