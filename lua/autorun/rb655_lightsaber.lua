@@ -395,6 +395,20 @@ local rb655_ls_nodamage = {
 function rb655_LS_DoDamage( tr, wep )
 	local ent = tr.Entity
 
+	if (IsValid(ent) and ent:GetClass() == "func_breakable_surf") then
+		local owner = wep:GetOwner()
+		local dmg = DamageInfo()
+		dmg:SetDamage(25)
+		dmg:SetAttacker(owner)
+		dmg:SetInflictor(wep)
+		dmg:SetDamageForce(owner:GetAimVector() * 1500)
+		dmg:SetDamagePosition(tr.HitPos)
+		dmg:SetDamageType(DMG_CLUB)
+
+		ent:DispatchTraceAttack(dmg, tr)
+		return
+	end
+
 	if ( !IsValid( ent ) or ( ent:Health() <= 0 && ent:GetClass() != "prop_ragdoll" ) or rb655_ls_nodamage[ ent:GetClass() ] ) then return end
 
 	local dmg = hook.Run( "CanLightsaberDamageEntity", ent, wep, tr )
@@ -419,6 +433,8 @@ function rb655_LS_DoDamage( tr, wep )
 		dmginfo:SetDamageType( bit.bor( DMG_SLASH, DMG_CRUSH ) )
 		dmginfo:SetDamageForce( tr.HitNormal * 0 )
 		dmginfo:SetDamage( math.max( dmginfo:GetDamage(), 30 ) ) -- Make Zombies get cut in half
+	else
+		dmginfo:SetDamageType(DMG_CLUB)
 	end
 
 	if ( !IsValid( wep.Owner ) ) then
