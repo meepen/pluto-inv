@@ -362,7 +362,7 @@ function SWEP:Initialize()
 	local wep = self.PlutoGun
 	if (SERVER and wep) then
 		local col = rand(wep.ID or wep.RowID)
-		local color = HSVToColor((col / 100) % 360, 1, 0.3)
+		local color = HSVToColor((col / 100) % 360, 1, 0.7)
 
 		self:SetCrystalColor(Vector(color.r, color.g, color.b))
 
