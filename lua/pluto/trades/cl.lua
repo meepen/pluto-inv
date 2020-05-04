@@ -183,6 +183,10 @@ function PANEL:Init()
 	self.Layout:Dock(FILL)
 
 	for currency, data in pairs(pluto.currency.byname) do
+		if (data.Fake) then
+			continue
+		end
+
 		local p = self.Layout:Add "pluto_currency_select_currency"
 		p:SetCurrency(currency)
 		function p.DoClick(_, data)

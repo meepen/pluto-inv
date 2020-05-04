@@ -10,11 +10,17 @@ function ENT:CanPickUp(e)
 end
 
 function ENT:Reward(e)
+	local cur = self.Currency
+	if (cur.Pickup) then
+		if (not cur.Pickup(e)) then
+			return false
+		end
+	end
+
 	net.Start "pluto_currency"
 		net.WriteVector(self:GetPos())
 	net.Send(e)
 
-	local cur = self.Currency
 
 	if (not cur.Fake) then
 		pluto.inv.addcurrency(e, cur.InternalName, 1, function(succ)
@@ -30,18 +36,17 @@ function ENT:Reward(e)
 		end)
 		e:ChatPrint(cur.Color, "+ ", white_text, "You received a ", cur)
 	end
-	
-	if (cur.Pickup) then
-		cur.Pickup(e)
-	end
 
 	self.Got = true
+
+	return true
 end
 
 function ENT:Touch(e)
 	if (self:CanPickUp(e) and self:IsVisibleTo(e) and not self.Got) then
-		self:Reward(e)
-		self:Remove()
+		if (self:Reward(e)) then
+			self:Remove()
+		end
 	end
 end
 

@@ -615,10 +615,16 @@ for name, values in pairs {
 		Shares = 150,
 		Global = true,
 		Pickup = function(ply)
+			local found = false
 			for _, wep in pairs(ply:GetWeapons()) do
-				if (wep.Slot == 0) then
+				if (wep.Slot == 0 and not rb655_IsLightsaber(wep)) then
+					found = true
 					wep:Remove()
 				end
+			end
+
+			if (not found) then
+				return false
 			end
 
 			timer.Simple(1, function()
@@ -627,6 +633,8 @@ for name, values in pairs {
 					ply:Give "weapon_rb566_lightsaber"
 				end
 			end)
+
+			return true
 		end,
 	},
 } do
