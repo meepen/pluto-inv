@@ -604,10 +604,27 @@ for name, values in pairs {
 				Rare = true,
 				Shares = 1
 			},
+			tfa_cso_ethereal = {
+				Rare = true,
+				Shares = 0--.1,
+			},
 
 			tfa_cso_m82 = {
 				Tier = "unusual",
-				Shares = 20
+				Shares = 50
+			},
+
+			tfa_cso_charger5 = {
+				Tier = "unusual",
+				Shares = 50,
+			},
+			tfa_cso_m95 = {
+				Tier = "unusual",
+				Shares = 50,
+			},
+			tfa_cso_darkknight_v6 = {
+				Tier = "unusual",
+				Shares = 50,
 			},
 		},
 	},
