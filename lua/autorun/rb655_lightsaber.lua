@@ -406,7 +406,7 @@ function rb655_LS_DoDamage( tr, wep )
 	if ( dmg ) then
 		dmginfo:SetDamage( tonumber( dmg ) )
 	else
-		dmginfo:SetDamage( 1100 * engine.TickInterval() )
+		dmginfo:SetDamage( 1900 * engine.TickInterval() )
 	end
 
 	if ( ( !ent:IsPlayer() or !wep:IsWeapon() ) || IsKickbackAllowed() ) then
