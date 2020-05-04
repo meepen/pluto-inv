@@ -238,11 +238,13 @@ function SWEP:SetupDataTables()
 	self:NetworkVar( "Int", 0, "ForceType" )
 	self:NetworkVar( "Int", 1, "IncorrectPlayerModel" )
 	self:NetworkVar( "Int", 2, "MaxForce" )
+	self:NetworkVar("Int", 3, "Slot")
 
 	self:NetworkVar( "Vector", 0, "CrystalColor" )
 	self:NetworkVar( "String", 0, "WorldModel" )
 	self:NetworkVar( "String", 1, "OnSound" )
 	self:NetworkVar( "String", 2, "OffSound" )
+
 
 	if ( SERVER ) then
 		self:SetLengthAnimation( 0 )
@@ -257,7 +259,9 @@ function SWEP:SetupDataTables()
 		self:SetForce( self:GetMaxForce() )
 		self:SetOnSound( "lightsaber/saber_on" .. math.random( 1, 4 ) .. ".wav" )
 		self:SetOffSound( "lightsaber/saber_off" .. math.random( 1, 4 ) .. ".wav" )
-		self:SetCrystalColor( Vector( math.random( 0, 255 ), math.random( 0, 255 ), math.random( 0, 255 ) ) )
+		
+		local color = HSVToColor(math.random() * 360, 1, 0.3)
+		self:SetCrystalColor( Vector( color.r, color.g, color.b ) )
 
 		local _, k = table.Random( list.Get( "LightsaberModels" ) )
 		self:SetWorldModel( k or "models/sgg/starwars/weapons/w_anakin_ep2_saber_hilt.mdl" )
@@ -320,7 +324,13 @@ hook.Add( "PlayerSpawnedSWEP", "rb655_lightsaber_swep_sync", function( ply, wep 
 	wep:LoadToolValues( ply )
 end )
 
+local function rand(seed)
+	seed = (1103515245 * seed + 12345) % (2^31)
+	return seed
+end
+
 function SWEP:Initialize()
+	self.Slot = self:GetSlot()
 	self.LoopSound = self.LoopSound or "lightsaber/saber_loop" .. math.random( 1, 8 ) .. ".wav"
 	self.SwingSound = self.SwingSound or "lightsaber/saber_swing" .. math.random( 1, 2 ) .. ".wav"
 
@@ -344,6 +354,18 @@ function SWEP:Initialize()
 			self.Owner:CapabilitiesRemove( CAP_WEAPON_MELEE_ATTACK1 )
 			self.Owner:CapabilitiesRemove( CAP_INNATE_MELEE_ATTACK1 )
 		end )
+	end
+
+	local wep = pluto.NextWeaponSpawn
+	if (SERVER and wep) then
+		local col = rand(wep.ID or wep.RowID)
+		local color = HSVToColor((col / 100) % 360, 1, 0.3)
+
+		self:SetCrystalColor(Vector(color.r, color.g, color.b))
+
+		local thickness = rand(col)
+
+		self:SetBladeWidth(thickness % 4 + 3)
 	end
 end
 

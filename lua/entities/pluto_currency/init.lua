@@ -15,19 +15,26 @@ function ENT:Reward(e)
 	net.Send(e)
 
 	local cur = self.Currency
+
+	if (not cur.Fake) then
+		pluto.inv.addcurrency(e, cur.InternalName, 1, function(succ)
+			if (not IsValid(e)) then
+				return
+			end
 	
-	pluto.inv.addcurrency(e, cur.InternalName, 1, function(succ)
-		if (not IsValid(e)) then
-			return
-		end
+			if (not succ) then
+				e:ChatPrint("i tried to add currency but it didn't work, tell meepen you lost: " .. cur.InternalName)
+				return
+			end
+	
+		end)
+		e:ChatPrint(cur.Color, "+ ", white_text, "You received a ", cur)
+	end
+	
+	if (cur.Pickup) then
+		cur.Pickup(e)
+	end
 
-		if (not succ) then
-			e:ChatPrint("i tried to add currency but it didn't work, tell meepen you lost: " .. cur.InternalName)
-			return
-		end
-
-	end)
-	e:ChatPrint(cur.Color, "+ ", white_text, "You received a ", cur)
 	self.Got = true
 end
 

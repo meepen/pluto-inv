@@ -1121,6 +1121,10 @@ function PANEL:Init()
 	self.Currencies = {}
 
 	for _, item in ipairs(pluto.currency.list) do
+		if (item.Fake) then
+			continue
+		end
+
 		local p = self.Layout:Add "pluto_inventory_currency"
 		p:SetCurrency(item.InternalName)
 		self.Currencies[item.InternalName] = p

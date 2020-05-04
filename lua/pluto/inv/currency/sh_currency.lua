@@ -267,6 +267,13 @@ pluto.currency.list = {
 			pluto.opener:MakePopup()
 		end,
 	},
+	{
+		InternalName = "_lightsaber",
+		Name = "FAKE: Lightsaber",
+		Icon = "lightsaber/lightsaber_killicon.png",
+		Color = color_white,
+		Fake = true
+	},
 }
 
 pluto.currency_mt = pluto.currency_mt or {}

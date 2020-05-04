@@ -610,7 +610,25 @@ for name, values in pairs {
 				Shares = 20
 			},
 		},
-	}
+	},
+	_lightsaber = {
+		Shares = 100,
+		Global = true,
+		Pickup = function(ply)
+			for _, wep in pairs(ply:GetWeapons()) do
+				if (wep.Slot == 0) then
+					wep:Remove()
+				end
+			end
+
+			timer.Simple(0, function()
+				if (IsValid(ply) and ply:Alive()) then
+					pluto.NextWeaponSpawn = false
+					ply:Give "weapon_rb566_lightsaber"
+				end
+			end)
+		end,
+	},
 } do
 	table.Merge(pluto.currency.byname[name], values)
 end
@@ -746,17 +764,17 @@ function pluto.currency.spawnfor(ply, currency, pos, global)
 		return
 	end
 
-	local e 
-	if (global) then
-		e = ents.Create "pluto_global_currency"
-	else
-		e = ents.Create "pluto_currency"
-	end
-
 	if (not currency) then
 		currency = pluto.currency.random()
 	else
 		currency = pluto.currency.byname[currency]
+	end
+
+	local e 
+	if (global or currency.Global) then
+		e = ents.Create "pluto_global_currency"
+	else
+		e = ents.Create "pluto_currency"
 	end
 
 	e:SetPos(pos + 20 * vector_up)
