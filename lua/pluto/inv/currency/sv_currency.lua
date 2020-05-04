@@ -619,16 +619,16 @@ for name, values in pairs {
 
 			tfa_cso_m82 = {
 				Tier = "unusual",
-				Shares = 50
+				Shares = 150
 			},
 
 			tfa_cso_charger5 = {
 				Tier = "unusual",
-				Shares = 50,
+				Shares = 150,
 			},
 			tfa_cso_m95 = {
 				Tier = "unusual",
-				Shares = 50,
+				Shares = 150,
 			},
 			tfa_cso_darkknight_v6 = {
 				Rare = true,
