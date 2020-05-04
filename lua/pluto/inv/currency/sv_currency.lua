@@ -621,7 +621,7 @@ for name, values in pairs {
 				end
 			end
 
-			timer.Simple(0, function()
+			timer.Simple(1, function()
 				if (IsValid(ply) and ply:Alive()) then
 					pluto.NextWeaponSpawn = false
 					ply:Give "weapon_rb566_lightsaber"
