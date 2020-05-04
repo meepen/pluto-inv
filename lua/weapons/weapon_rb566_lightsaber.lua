@@ -793,6 +793,8 @@ function SWEP:PlayerTick(ply)
 		return
 	end
 
+	if ( self:GetBladeLength() <= 0 ) then return end
+
 	ply:LagCompensation(true)
 	
 	-- ------------------------------------------------- DAMAGE ------------------------------------------------- --
