@@ -623,8 +623,9 @@ for name, values in pairs {
 				Shares = 50,
 			},
 			tfa_cso_darkknight_v6 = {
-				Tier = "unusual",
-				Shares = 50,
+				Rare = true,
+				Tier = "easter_unique",
+				Shares = 2,
 			},
 		},
 	},
