@@ -395,6 +395,11 @@ local rb655_ls_nodamage = {
 function rb655_LS_DoDamage( tr, wep )
 	local ent = tr.Entity
 
+	-- maybe prevent lag?
+	if (ent == game.GetWorld() or not IsValid(ent)) then
+		return
+	end
+
 	if (IsValid(ent) and ent:GetClass() == "func_breakable_surf") then
 		local owner = wep:GetOwner()
 		local dmg = DamageInfo()
