@@ -276,7 +276,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	heart = {
-		Shares = 8.5,
+		Shares = 7.5,
 		Use = function(ply, item)
 			if (pluto.weapons.generatemod(item)) then
 				UpdateAndDecrement(ply, item, "heart")
@@ -553,7 +553,7 @@ for name, values in pairs {
 		Shares = 1,
 	},
 	crate3 = {
-		Shares = 0,
+		Shares = 2,
 		Types = "None",
 		DefaultTier = "easter_unique",
 		Contents = {
