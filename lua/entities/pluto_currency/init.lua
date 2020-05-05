@@ -43,7 +43,7 @@ function ENT:Reward(e)
 end
 
 function ENT:Touch(e)
-	if (self:CanPickUp(e) and self:IsVisibleTo(e) and not self.Got) then
+	if (self:IsVisibleTo(e) and not self.Got and self:CanPickUp(e)) then
 		if (self:Reward(e)) then
 			self:Remove()
 		end

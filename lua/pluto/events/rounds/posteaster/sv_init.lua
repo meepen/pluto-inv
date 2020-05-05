@@ -2,6 +2,7 @@ ROUND.Name = "Bunny Attack"
 ROUND.EggsPerCluster = 8
 ROUND.EggSpread = 50
 ROUND.BunnyLives = 3
+ROUND.CollectionsPerSpawn = 4
 ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
 
 util.AddNetworkString "posteaster_data"
@@ -356,6 +357,7 @@ ROUND:Hook("SetupMove", function(self, state, ply, mv)
 end)
 
 function ROUND:Spawn(state, ply)
+	ply.Collected = 0
 	ply:SetCollisionGroup(self.CollisionGroup)
 	if (state.lives and state.lives[ply]) then
 		local health = state.Data.Health + (self.BunnyLives - state.lives[ply]) * 5
@@ -426,6 +428,14 @@ ROUND:Hook("PlutoCanPickup", function(self, state, ply, curr)
 			net.WriteString "currency_left"
 			net.WriteUInt(left, 32)
 		net.Broadcast()
+
+		ply.Collected = (ply.Collected or 0) + 1
+		print "yes"
+
+		if (ply.Collected >= self.CollectionsPerSpawn) then
+			ply.Collected = 0
+			ply:SetPos(self:BunnySpawn(ply, state))
+		end
 
 		return true
 	else
