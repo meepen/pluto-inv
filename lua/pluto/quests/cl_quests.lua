@@ -158,7 +158,38 @@ function PANEL:Init()
 		if (q) then
 			local left = q.EndTime - os.time()
 			if (left >= 0) then
-				t = string.format("%is", q.EndTime - os.time())
+				for _, what in ipairs {
+					{
+						Abbreviation = "s",
+						Interval = 1,
+						Name = "Seconds",
+					},
+					{
+						Abbreviation = "m",
+						Interval = 60,
+						Name = "Minutes",
+					},
+					{
+						Abbreviation = "h",
+						Interval = 60 * 60,
+						Name = "Hours",
+					},
+					{
+						Abbreviation = "d",
+						Interval = 60 * 60 * 24,
+						Name = "Days",
+					},
+					{
+						Abbreviation = "w",
+						Interval = 60 * 60 * 24 * 7,
+						Name = "Weeks",
+					}
+				} do
+					local amount = left / what.Interval
+					if (amount > 1) then
+						t = string.format(amount % 1 == 0 and "%i %s" or "%.1f %s", amount, what.Name)
+					end
+				end
 			else
 				t = "Expired"
 			end
