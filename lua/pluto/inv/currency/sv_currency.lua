@@ -593,22 +593,27 @@ for name, values in pairs {
 		Contents = {
 			-- consumed versions
 			tfa_cso_serpent_blade = {
+				Tier = "easter_unique",
 				Rare = true,
 				Shares = 1
 			},
 			tfa_cso_dreadnova = {
+				Tier = "easter_unique",
 				Rare = true,
 				Shares = 1
 			},
 			tfa_cso_ruyi = {
+				Tier = "easter_unique",
 				Rare = true,
 				Shares = 1
 			},
 			tfa_cso_mp7unicorn = {
+				Tier = "easter_unique",
 				Rare = true,
 				Shares = 1
 			},
 			tfa_cso_pchan = {
+				Tier = "easter_unique",
 				Rare = true,
 				Shares = 1
 			},
