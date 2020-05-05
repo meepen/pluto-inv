@@ -9,7 +9,7 @@ util.AddNetworkString "posteaster_data"
 
 ROUND.BunnySpawnDistances = {
 	Min = 1750,
-	Max = 3500
+	Max = 4500
 }
 
 ROUND.Boss = true
@@ -124,12 +124,17 @@ function ROUND:BunnySpawn(ply, state)
 	local children = round.GetActivePlayersByRole "Child"
 	local function filter(pos)
 		for _, child in pairs(children) do
+			if (child:GetPos():Distance(pos) < 100) then
+				return false
+			end
+
 			local tr = util.TraceLine {
 				start = child:EyePos(),
 				endpos = pos,
 				filter = player.GetAll(),
 				mask = MASK_SHOT,
 			}
+
 			if (tr.Fraction > 0.99) then
 				return false
 			end
