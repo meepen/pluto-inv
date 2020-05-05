@@ -553,7 +553,7 @@ for name, values in pairs {
 		Shares = 1,
 	},
 	crate3 = {
-		Shares = 5,
+		Shares = 4,
 		Types = "None",
 		DefaultTier = "easter_unique",
 		Contents = {
