@@ -1,6 +1,6 @@
 
 QUEST.Name = "Jedi Training"
-QUEST.Description = "Kill players with a lightsaber"
+QUEST.Description = "Kill players with a lightsaber (>8 players on)"
 QUEST.Color = Color(7, 162, 247)
 
 function QUEST:GetRewardText(seed)
@@ -9,6 +9,10 @@ end
 
 function QUEST:Init(data)
 	data:Hook("DoPlayerDeath", function(data, ply, atk, dmg)
+		if (player.GetCount() < 8) then
+			return
+		end
+
 		local wep = dmg:GetInflictor()
 		if (IsValid(atk) and IsValid(ply) and atk:IsPlayer() and ply:GetRoleTeam() ~= atk:GetRoleTeam() and atk == data.Player and IsValid(wep) and wep:IsWeapon() and rb655_IsLightsaber(wep)) then
 			local gun = wep.PlutoGun

@@ -9,6 +9,10 @@ end
 
 function QUEST:Init(data)
 	data:Hook("DoPlayerDeath", function(data, ply, atk, dmg)
+		if (player.GetCount() < 8) then
+			return
+		end
+
 		local wep = dmg:GetInflictor()
 		if (ply:GetRoleData():GetEvil() and IsValid(atk) and IsValid(ply) and atk:IsPlayer() and ply:GetRoleTeam() ~= atk:GetRoleTeam() and atk == data.Player and IsValid(wep) and wep:IsWeapon() and rb655_IsLightsaber(wep)) then
 			local gun = wep.PlutoGun

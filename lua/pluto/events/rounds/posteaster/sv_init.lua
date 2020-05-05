@@ -1,14 +1,14 @@
 ROUND.Name = "Bunny Attack"
 ROUND.EggsPerCluster = 8
-ROUND.EggSpread = 130
+ROUND.EggSpread = 50
 ROUND.BunnyLives = 3
 ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
 
 util.AddNetworkString "posteaster_data"
 
 ROUND.BunnySpawnDistances = {
-	Min = 6000,
-	Max = 12000
+	Min = 1750,
+	Max = 3500
 }
 
 ROUND.Boss = true
@@ -120,15 +120,31 @@ end
 
 function ROUND:BunnySpawn(ply, state)
 	local cluster = state.cluster
+	local children = round.GetActivePlayersByRole "Child"
+	local function filter(pos)
+		for _, child in pairs(children) do
+			local tr = util.TraceLine {
+				start = child:EyePos(),
+				endpos = pos,
+				filter = player.GetAll(),
+				mask = MASK_SHOT,
+			}
+			if (tr.Fraction > 0.99) then
+				return false
+			end
+		end
+
+		return true
+	end
 	for i = 1, 3 do
-		local r = self:FindPosition(cluster.SpawnNavs, self.BunnySpawnDistances.Min, self.BunnySpawnDistances.Max)
+		local r = self:FindPosition(cluster.SpawnNavs, self.BunnySpawnDistances.Min, self.BunnySpawnDistances.Max, filter)
 		if (r) then
 			return r
 		end
 	end
 end
 
-function ROUND:FindPosition(navs, distance_min, distance_max)
+function ROUND:FindPosition(navs, distance_min, distance_max, filter)
 	distance_min = distance_min or -math.huge
 	distance_max = distance_max or math.huge
 
@@ -141,7 +157,7 @@ function ROUND:FindPosition(navs, distance_min, distance_max)
 
 		local dist = nav.Distance + nav.LastPos:Distance(pos)
 
-		if (dist <= distance_max and dist >= distance_min) then
+		if (dist <= distance_max and dist >= distance_min and (not filter or filter(pos))) then
 			return pos, nav.Nav
 		end
 	end
@@ -162,7 +178,7 @@ function ROUND:ProcessNav(output, nav, max_distance, target, cur_distance)
 
 		local processed = output.processed[area:GetID()]
 
-		if (processed and processed.Distance < distance) then
+		if (processed and processed.Distance <= distance) then
 			continue
 		end
 
@@ -175,7 +191,7 @@ function ROUND:ProcessNav(output, nav, max_distance, target, cur_distance)
 
 			output.processed[area:GetID()] = t
 			table.insert(output, t)
-			self:ProcessNav(output, area, max_distance, target, distance)
+			coroutine.yield(output, area, max_distance, closest, distance)
 		end
 	end
 end
@@ -194,7 +210,22 @@ function ROUND:FilterByMinimum(navs, min)
 end
 
 function ROUND:ProcessNavAreasNear(output, nav, max_distance, target, cur_distance)
-	self:ProcessNav(output, nav, max_distance, target, cur_distance)
+	local list = {{output, nav, max_distance, target, cur_distance}}
+	while (#list > 0) do
+		local run = coroutine.create(self.ProcessNav)
+		output, nav, max_distance, target, cur_distance = unpack(list[#list])
+		list[#list] = nil
+		while (coroutine.status(run) ~= "dead") do
+			local success, _output, _nav, _max_distance, _target, _cur_distance = coroutine.resume(run, self, output, nav, max_distance, target, cur_distance)
+			if (success and _output) then
+				list[#list + 1] = {_output, _nav, _max_distance, _target, _cur_distance}
+			end
+
+			if (not success) then
+				pwarnf("ERROR %s", debug.traceback(run))
+			end
+		end
+	end
 
 	output.processed = nil
 end
@@ -223,7 +254,7 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 			local cluster = {random}
 
 			local navs = {}
-			self:ProcessNavAreasNear(navs, nav, self.EggSpread * 2 ^ (#children - 1), random)
+			self:ProcessNavAreasNear(navs, nav, self.EggSpread * (#children), random)
 			
 			-- generate navmeshes close to this
 			cluster.SpawnNavs = {}
