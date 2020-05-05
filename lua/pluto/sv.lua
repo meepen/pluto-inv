@@ -32,6 +32,8 @@ pluto.files.load {
 
 		"events/sv_aprilfools.lua",
 
+		"chat/sv_chat.lua",
+
 		"cheaters/sv_nocheats.lua",
 	},
 	Client = {}, -- keep empty

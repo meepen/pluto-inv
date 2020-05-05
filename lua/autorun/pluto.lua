@@ -50,6 +50,8 @@ pluto.files.load {
 
 		"util.lua",
 
+		"chat/sh_chat.lua",
+
 		"mods/shared/limp.lua",
 
 		"tfa/tfa_compat.lua",
