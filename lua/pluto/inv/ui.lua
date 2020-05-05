@@ -1361,7 +1361,6 @@ function PANEL:Select(tab)
 	end
 
 	if (tab.Position + tab:GetWide() > self.CurPos + self:GetWide()) then
-		self.CurPos = self.CurPos + tab.Position + tab:GetWide() - (self.CurPos + self:GetWide())
 		self:Recalculate(self.Next)
 	end
 
