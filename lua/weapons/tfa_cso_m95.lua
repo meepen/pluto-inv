@@ -46,11 +46,7 @@ SWEP.Offset = {
 }
 
 SWEP.HasScope = true
-SWEP.Secondary.ScopeTable = {
-	["ScopeMaterial"] =  Material("scope/sniper/sniper_scope.png", "smooth"),
-	["ScopeBorder"] = Color(0,0,0,255),
-	["ScopeCrosshair"] = { ["r"] = 0, ["g"]  = 0, ["b"] = 0, ["a"] = 255, ["s"] = 0 }
-}
+
 
 SWEP.Ironsights = {
 	Pos = Vector(0, 0, -10),
