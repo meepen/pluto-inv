@@ -6,12 +6,11 @@ local active_text = Color(205, 203, 203)
 local inactive_text = Color(130, 130, 136)
 
 local function curve(level)
-	return 4 + level
+	return math.ceil((8 + level * 2) / 2)
 end
 pluto.ui.curve = curve
 
 local bg_color = Color(36, 36, 37)
-local inactive_color = Color(47, 47, 48)
 local light_color = Color(84, 89, 89)
 
 local count = 6
@@ -126,7 +125,7 @@ function PANEL:Init()
 	self:SetKeyboardInputEnabled(false)
 	self:SetMouseInputEnabled(false)
 
-	self:SetCurve(curve(0))
+	self:SetCurve(2)
 	self:SetColor(Color(0,0,0,0))
 
 	self.Material = Material "pluto/item_bg_real.png"
@@ -364,7 +363,8 @@ local PANEL = {}
 DEFINE_BASECLASS "ttt_curved_panel"
 
 function PANEL:Init()
-	self:SetColor(Color(84, 89, 89, 255))
+	self:SetColor(Color(66, 68, 65, 255))
+	self:SetCurve(2)
 
 	self.Image = self:Add "pluto_item"
 	self.Image:Dock(FILL)
@@ -686,12 +686,6 @@ function PANEL:GhostClick(p, m)
 	end
 
 	return false
-end
-
-function PANEL:PerformLayout(w, h)
-	self:SetCurve(curve(0))
-	local p = curve(0) / 2
-	--self:DockPadding(p, p, p, p)
 end
 
 function PANEL:Think()
@@ -1066,7 +1060,7 @@ function PANEL:Init()
 	self.Image = self:Add "pluto_inventory_currency_image"
 
 	self.Background:Dock(BOTTOM)
-	local pad = curve(0)
+	local pad = 2
 	self.Background:DockPadding(pad / 2, pad / 2, pad / 2, pad / 2)
 	self.Background:SetCurve(pad)
 	self.Background:SetColor(light_color)
@@ -1114,7 +1108,7 @@ local PANEL = {}
 DEFINE_BASECLASS "pluto_inventory_base"
 function PANEL:Init()
 	BaseClass.Init(self)
-	
+
 	self.Layout = self:Add "DIconLayout"
 	self.Layout:Dock(FILL)
 
@@ -1155,11 +1149,21 @@ vgui.Register("pluto_inventory_currencies", PANEL, "pluto_inventory_base")
 local PANEL = {}
 
 function PANEL:Init()
-	self:SetCurve(curve(2))
-	self:SetColor(bg_color)
+	self:SetCurve(4)
+	self.Color = outline
 end
 
-vgui.Register("pluto_inventory_base", PANEL, "ttt_curved_panel")
+function PANEL:SetColor(c)
+	self.InnerColor = c
+end
+
+function PANEL:DrawInner(w, h)
+	local curve = self:GetCurve() / 2
+	surface.SetDrawColor(self.InnerColor or solid_color)
+	surface.DrawRect(curve, curve, w - curve * 2, h - curve * 2)
+end
+
+vgui.Register("pluto_inventory_base", PANEL, "ttt_curved_panel_outline")
 
 local PANEL = {}
 function PANEL:Init()
@@ -1208,8 +1212,8 @@ function PANEL:Init()
 	self.Text = self:Add "DLabel"
 	self.Text:Dock(FILL)
 	self.Text:SetContentAlignment(5)
-	self.Text:SetTextColor(inactive_text)
 	self.Text:SetZPos(0)
+	self.Text:SetTextColor(white_text)
 end
 function PANEL:SetText(t)
 	self.Text:SetText(t)
@@ -1232,15 +1236,12 @@ function PANEL:DoClick()
 end
 
 function PANEL:DoSelect()
-	self.Text:SetTextColor(active_text)
-
 	if (self.Tab) then
 		self:GetParent():SetTab(self.Tab)
 	end
 end
 
 function PANEL:Unselect()
-	self.Text:SetTextColor(inactive_text)
 end
 
 local LastHeight = 0
@@ -1252,21 +1253,22 @@ function PANEL:PerformLayout(w, h)
 		surface.CreateFont("pluto_inventory_tab", {
 			font = "Lato",
 			extended = true,
-			size = h - pad / 2
+			size = 18
 		})
 	end
-	
+
 	self.Text:SetFont "pluto_inventory_tab"
 
 	surface.SetFont(self.Text:GetFont())
 	local w = surface.GetTextSize(self.Text:GetText())
 	self:SetWide(w + pad * 2)
-	self:SetTall(h)
+	self:SetTall(h + 4)
 end
 
 function PANEL:SetTab(tab)
 	self.Tab = tab
 	self:SetText(tab.Name)
+	self:SetColor(solid_color)
 
 	if (self:GetParent().Current == self and tab) then
 		self:GetParent():SetTab(tab)
@@ -1348,7 +1350,7 @@ end
 
 function PANEL:Select(tab)
 	if (IsValid(self.Current)) then
-		self.Current:SetColor(inactive_color)
+		self.Current:SetColor(inactive_tab)
 		self.Current:Unselect()
 	end
 
@@ -1363,7 +1365,7 @@ function PANEL:Select(tab)
 		self:Recalculate(self.Next)
 	end
 
-	tab:SetColor(bg_color)
+	tab:SetColor(solid_color)
 
 	tab:DoSelect()
 end
@@ -1383,7 +1385,7 @@ function PANEL:AddTab(class, tabt)
 	if (not IsValid(self.Next)) then
 		self.Next = tab
 	else
-		tab:SetColor(inactive_color)
+		tab:SetColor(inactive_tab)
 	end
 	self.Last = tab
 
@@ -1418,7 +1420,7 @@ local PANEL = {}
 function PANEL:Init()
 	self:SetCurveBottomLeft(false)
 	self:SetCurveBottomRight(false)
-	self:SetColor(inactive_color)
+	self:SetColor(inactive_tab)
 	self:SetWide(20)
 end
 
@@ -1706,7 +1708,7 @@ function PANEL:PerformLayout(w, h)
 
 	self.Items:SetTall(h - real_h - pad)
 
-	self.Tabs:SetTall(real_h)
+	self.Tabs:SetTall(28)
 
 	pad = w * 0.05
 	pluto.ui.pad = pad
@@ -1726,12 +1728,12 @@ vgui.Register("pluto_inventory_control", PANEL, "EditablePanel")
 
 local PANEL = {}
 function PANEL:Init()
-	self:SetColor(Color(13, 12, 12, 220))
-	self:SetCurve(curve(3))
+	self:SetColor(main_color)
+	self:SetCurve(6)
 
 	self.Control1 = self:Add "pluto_inventory_control"
 	self.Control1:Dock(FILL)
-	self.Control1:SetZPos(0)
+	self.Control1:SetZPos(1)
 
 	local w = math.floor(math.min(500, math.max(400, ScrW() / 3)) / 2) * 2
 	local real_w = w
@@ -1759,7 +1761,7 @@ function PANEL:Init()
 
 		self.Control2:Dock(LEFT)
 		self.Control2:SetWide(w / 2)
-		self.Control2:SetZPos(2)
+		self.Control2:SetZPos(3)
 	else
 		self.Control1:SetTabs(pluto.cl_inv, true)
 	end
@@ -1783,7 +1785,7 @@ function PANEL:Init()
 	self.Bottom:DockPadding(0, smol_pad / 2, 0, smol_pad / 2)
 
 	self.ControlBar = self.Bottom:Add "pluto_inventory_bar"
-	self.ControlBar:SetZPos(1)
+	self.ControlBar:SetZPos(2)
 	self.ControlBar:SetTall(self.Bottom:GetTall() - smol_pad)
 	self.ControlBar:SetWide(real_w - pad * 1.5)
 	self.ControlBar:Center()
@@ -1805,7 +1807,7 @@ function PANEL:TabChanged(ele, old)
 	ele:InvalidateParent(true)
 end
 
-vgui.Register("pluto_inventory", PANEL, "ttt_curved_panel")
+vgui.Register("pluto_inventory", PANEL, "pluto_inventory_base")
 
 
 if (IsValid(pluto.ui.pnl)) then
@@ -2153,9 +2155,9 @@ function PANEL:Init()
 	pad = w * 0.05
 	pluto.ui.pad = pad
 
-	self:SetColor(bg_color)
+	self:SetColor(solid_color)
 	self.ItemBackground = self:Add "ttt_curved_panel"
-	self.ItemBackground:SetCurve(curve(0))
+	self.ItemBackground:SetCurve(2)
 	self.ItemBackground:Dock(TOP)
 	self.ItemBackground:SetCurveBottomLeft(false)
 	self.ItemBackground:SetCurveBottomRight(false)
@@ -2190,7 +2192,7 @@ local PANEL = {}
 function PANEL:Init()
 	self.Inner = self:Add "pluto_item_showcase_inner"
 	self.Inner:Dock(FILL)
-	self:SetCurve(curve(0))
+	self:SetCurve(4)
 	self:SetColor(color_black)
 	local pad = curve(0) / 2
 	self.Inner:SetCurve(pad)
