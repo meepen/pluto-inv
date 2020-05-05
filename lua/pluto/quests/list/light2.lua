@@ -4,7 +4,7 @@ QUEST.Description = "Kill players with your lightsaber"
 QUEST.Color = Color(129, 200, 6)
 
 function QUEST:GetRewardText(seed)
-	return "Dual Lightsaber"
+	return "Crossguard Lightsaber"
 end
 
 function QUEST:Init(data)
