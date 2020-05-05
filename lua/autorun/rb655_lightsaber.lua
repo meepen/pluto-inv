@@ -415,13 +415,14 @@ function rb655_LS_DoDamage( tr, wep )
 	if ( isbool( dmg ) && dmg == false ) then return end
 
 	local dmginfo = DamageInfo()
-	dmginfo:SetDamageForce( tr.HitNormal * -13.37 )
+	dmginfo:SetDamageForce( tr.HitNormal * -1.37 )
 
 	if ( dmg ) then
 		dmginfo:SetDamage( tonumber( dmg ) )
 	else
-		dmginfo:SetDamage( 1900 * engine.TickInterval() )
+		dmginfo:SetDamage( 1000 * engine.TickInterval() )
 	end
+	dmginfo:SetDamagePosition(tr.HitPos)
 
 	if ( ( !ent:IsPlayer() or !wep:IsWeapon() ) || IsKickbackAllowed() ) then
 		-- This causes the damage to apply force the the target, which we do not want
