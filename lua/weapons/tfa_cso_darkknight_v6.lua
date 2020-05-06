@@ -77,10 +77,8 @@ function SWEP:SecondaryAttack()
 	self.Charged = false
 end
 
-function SWEP:Damage(state, ply, dmg)
-	if (ply:IsPlayer() and dmg:GetDamage() >= ply:Health() and ply:Alive()) then
-		self.Charged = true
-	end
+function SWEP:Kill(state, atk, vic)
+	self.Charged = true
 end
 
 local pow = 3

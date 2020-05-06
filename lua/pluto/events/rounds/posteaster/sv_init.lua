@@ -26,17 +26,17 @@ ROUND.RoundDatas = {
 		BunnyModel = "kanna",
 		Health = 35,
 		ChildModel = badasses,
-		Shares = 0,
+		Shares = 1,
 	},
 	{
 		BunnyModel = "miku_cupid",
 		Health = 50,
 		ChildModel = badasses,
-		Shares = 0,
+		Shares = 1,
 	},
 	{
 		BunnyModel = {"dom_rabbit", "wild_rabbit"},
-		Health = 20,
+		Health = 25,
 		ChildModel = {"male_child", "female_child"},
 		Shares = 15,
 	}
