@@ -459,3 +459,7 @@ function pluto.inv.roll(crate)
 		end
 	end
 end
+
+hook.Add("PlayerSpray", "pluto_sprays", function()
+	return true
+end)
