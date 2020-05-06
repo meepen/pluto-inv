@@ -9,7 +9,7 @@ end
 
 function QUEST:Init(data)
 	data:Hook("DoPlayerDeath", function(data, ply, atk, dmg)
-		if (player.GetCount() < 8) then
+		if (player.GetCount() < 5) then
 			return
 		end
 
