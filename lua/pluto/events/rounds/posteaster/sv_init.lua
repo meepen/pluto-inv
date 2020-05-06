@@ -154,7 +154,9 @@ function ROUND:FindPosition(navs, distance_min, distance_max, filter)
 	distance_min = distance_min or -math.huge
 	distance_max = distance_max or math.huge
 
-	for _, nav in RandomPairs(navs) do
+
+	for i = 1, #navs do
+		local _, nav = pluto.inv.roll(navs)
 		local pos = pluto.currency.validpos(nav.Nav)
 
 		if (not pos) then
@@ -194,6 +196,7 @@ function ROUND:ProcessNav(output, nav, max_distance, target, cur_distance)
 			t.Nav = nav
 			t.Distance = distance
 			t.LastPos = closest
+			t.Shares = nav:GetCorner(2):Distance(nav:GetCorner(0))
 
 			output.processed[area:GetID()] = t
 			table.insert(output, t)
@@ -435,7 +438,6 @@ ROUND:Hook("PlutoCanPickup", function(self, state, ply, curr)
 		net.Broadcast()
 
 		ply.Collected = (ply.Collected or 0) + 1
-		print "yes"
 
 		if (ply.Collected >= self.CollectionsPerSpawn) then
 			ply.Collected = 0
