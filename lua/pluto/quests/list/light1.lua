@@ -1,6 +1,6 @@
 
 QUEST.Name = "Jedi Training"
-QUEST.Description = "Kill players with a lightsaber (>8 players on)"
+QUEST.Description = "Kill players with a lightsaber (>5 players on)"
 QUEST.Color = Color(7, 162, 247)
 
 function QUEST:GetRewardText(seed)
