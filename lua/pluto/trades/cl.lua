@@ -178,19 +178,84 @@ vgui.Register("pluto_currency_select_currency", PANEL, "ttt_curved_panel")
 local PANEL = {}
 
 function PANEL:Init()
-	self:SetCurve(4)
-	self:SetColor(solid_color)
-	self:SetSize(48 * 3 + 30, 400)
-	local pad = self:GetCurve() * 1.5
-	self:DockPadding(pad, pad, pad, pad)
+	self.CurrencyHolder = self:Add "EditablePanel"
+	self.CurrencyHolder:Dock(TOP)
+	self.CurrencyHolder:SetTall(48)
 
-	self.Layout = self:Add "DScrollPanel"
-	self.Layout:Dock(FILL)
+	self.Currency = self.CurrencyHolder:Add "DImage"
+	self.Currency:SetSize(48, 48)
+
+	function self.CurrencyHolder.PerformLayout(s, w, h)
+		self.Currency:SetPos(w / 2 - self.Currency:GetWide() / 2)
+	end
+
+
+	self.YouHave = self:Add "DLabel"
+	self.YouHave:Dock(TOP)
+	self.YouHave:SetTall(24)
+	self.YouHave:SetTextColor(white_text)
+	self.YouHave:SetText ""
+	self.YouHave:SetFont "pluto_close_button"
+	self.YouHave:SetContentAlignment(5)
+
+	self.Text = self:Add "DLabel"
+	self.Text:Dock(TOP)
+	self.Text:SetTall(24)
+	self.Text:SetTextColor(white_text)
+	self.Text:SetText "Input amount then hit Enter"
+	self.Text:SetFont "pluto_close_button"
+	self.Text:SetContentAlignment(5)
+
+	self.Input = self:Add "DTextEntry"
+	self.Input:Dock(FILL)
+
+	function self.Input.AllowInput(s, c)
+		return c < '0' or c > '9'
+	end
+
+	self.Input.OnValueChange = function(s, value)
+		self:OnConfirm(math.Clamp(tonumber(value), 0, pluto.cl_currency[self.CurrencyData.InternalName] or 0))
+	end
+
+	self:SetSize(200, 200)
+	self:DockPadding(6, 6, 6, 6)
+
+	self.Deny = self:Add "ttt_curved_button"
+	self.Deny:SetCurve(4)
+	self.Deny:SetFont "pluto_trade_buttons"
+	self.Deny:SetColor(ttt.teams.traitor.Color)
+	self.Deny:SetTextColor(white_text) -- pluto_trade_buttons
+
+	self.Deny:Dock(BOTTOM)
+	self.Deny:DockMargin(0, 4, 0, 0)
+	self.Deny:SetSkin "tttrw"
+	self.Deny:SetText "Cancel"
+	self.Deny.DoClick = function()
+		self:Remove()
+	end
+end
+
+function PANEL:SetCurrency(data)
+	self.Currency:SetImage(data.Icon)
+	self.CurrencyData = data
+	self.YouHave:SetText(string.format("You have %i", pluto.cl_currency[data.InternalName] or 0))
+end
+
+vgui.Register("pluto_currency_input", PANEL, "pluto_inventory_base")
+
+local PANEL = {}
+
+function PANEL:FilterAdd(filter)
+	filter = filter or function() return true end
 
 	local cur_layer
 
 	for currency, data in pairs(pluto.currency.byname) do
 		if (data.Fake) then
+			continue
+		end
+
+		if (not filter(data)) then
 			continue
 		end
 
@@ -207,35 +272,89 @@ function PANEL:Init()
 		p:Dock(LEFT)
 		p:SetWide(48)
 		p:SetImage(data.Icon)
+
+		function p.DoClick()
+			if (IsValid(self.Input)) then
+				self.Input:Remove()
+			end
+
+			self.Input = vgui.Create "pluto_currency_input"
+			self.Input:MakePopup()
+			self.Input:SetCurrency(data)
+			self.Input:Center()
+
+			function self.Input.OnConfirm(s, amount)
+				self:OnSelect {
+					Currency = currency,
+					Amount = amount
+				}
+
+				self:Remove()
+			end
+		end
 	end
+end
+
+function PANEL:Init()
+	self:SetCurve(4)
+	self:SetColor(solid_color)
+	self:SetSize(48 * 3 + 30, 400)
+
+	self.Text = self:Add "DLabel"
+	self.Text:Dock(TOP)
+	self.Text:SetTall(24)
+	self.Text:SetTextColor(white_text)
+	self.Text:SetText "Select Currency"
+	self.Text:SetFont "pluto_close_button"
+	self.Text:SetContentAlignment(5)
+
+	self:DockPadding(6, 6, 6, 6)
+
+	self.Layout = self:Add "DScrollPanel"
+	self.Layout:Dock(FILL)
 
 	self.CloseContainer = self:Add "EditablePanel"
 	self.CloseContainer:Dock(BOTTOM)
 	self.CloseContainer:SetTall(28)
 
-	self.Close = self.CloseContainer:Add "pluto_inventory_base_button"
+	self.Deny = self.CloseContainer:Add "ttt_curved_button"
+	self.Deny:SetCurve(4)
+	self.Deny:SetFont "pluto_trade_buttons"
+	self.Deny:SetColor(ttt.teams.traitor.Color)
+	self.Deny:SetTextColor(white_text) -- pluto_trade_buttons
 
-	self.Close:Dock(FILL)
-	self.Close:SetText "Close"
-	self.Close:SetTextColor(white_text)
-	self.Close:SetFont "pluto_close_button"
-
-	function self.Close.DoClick()
+	self.Deny:Dock(FILL)
+	self.Deny:SetSkin "tttrw"
+	self.Deny:SetText "Cancel"
+	function self.Deny.DoClick()
 		self:Remove()
 	end
+
 end
 
 function PANEL:SetCurrent(data)
 end
 
+DEFINE_BASECLASS "pluto_inventory_base"
+function PANEL:OnRemove()
+	if (BaseClass.OnRemove) then
+		BaseClass.OnRemove(self)
+	end
+
+	if (IsValid(self.Input)) then
+		self.Input:Remove()
+	end
+end
+
 vgui.Register("pluto_currency_select", PANEL, "pluto_inventory_base")
 
-function CurrencySelect(pnl, cb)
+function CurrencySelect(pnl, cb, filter)
 	local p = vgui.Create "pluto_currency_select"
 	p:SetCurrent(currentdata)
 	p:MakePopup()
 	p:SetKeyboardInputEnabled(false)
 	p:Center()
+	p:FilterAdd(filter)
 
 	local rem = pnl.OnRemove
 	function pnl:OnRemove()
@@ -283,7 +402,7 @@ function PANEL:Init()
 				end
 
 				self:SetInfo(data.Currency, data.Amount)
-			end)
+			end, self.Filter)
 		end
 	end
 end

@@ -188,6 +188,9 @@ function PANEL:Init()
 	end
 
 	self.Currency = self.Lines[3]:Add "pluto_trade_currency"
+	self.Currency.Filter = function(data)
+		return data.Crafted
+	end
 	self.Currency:SetModifiable()
 	function self.Currency:OnUpdate()
 		if (self.Info) then
