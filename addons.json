@@ -1601,9 +1601,42 @@
 		"materials/pluto/currencies/coin.png",
 		"materials/pluto/currencies/crate0.png",
 		"materials/pluto/currencies/crate1.png",
+		"materials/pluto/currencies/crate2.png",
+		"materials/pluto/currencies/crate3.png",
+		"materials/pluto/currencies/crate3_norm.png",
 		"materials/pluto/shard128.png",
 		"materials/pluto/shard128outline.png",
-		"materials/pluto/roles/jester.png"
+        "materials/pluto/roles/jester.png",
+        "sound/tttrw/hitmarker_hs.wav",
+        "sound/tttrw/hitmarker_.mp3",
+		"materials/tttrw/heart.png",
+		"materials/tttrw/tbutton.png",
+		"materials/tttrw/xbutton128.png",
+		"materials/tttrw/transparentevil.png",
+		"materials/tttrw/transparentgood.png",
+		"materials/tttrw/agree.png",
+		"materials/tttrw/disagree.png",
+		"materials/tttrw/roles/innocent.png",
+		"materials/tttrw/roles/detective.png",
+		"materials/tttrw/headshot.png",
+		"materials/tttrw/dna.png",
+        "materials/tttrw/expired_dna.png",
+        "materials/tttrw/scope.vmt",
+		"materials/pluto/item_bg_real.png",
+		"materials/pluto/trashcan_128.png",
+		"materials/pluto/icons/bluevoted.png",
+		"materials/pluto/icons/voted.png",
+		"materials/pluto/icons/liked.png",
+		"materials/pluto/icons/disliked.png",
+		"materials/pluto/icons/likednotvoted.png",
+		"materials/pluto/icons/dislikednotvoted.png",
+		"materials/pluto/icons/likeanddislike.png",
+
+		"materials/pluto/newshard.png",
+		"materials/pluto/newshardbg.png",
+
+		"materials/pluto/pluto-logo-header.png",
+		"materials/pluto/item_bg_mech.png"
 	],
 	"cayde6": [
 		"materials/models/devarture/destiny_dir/destiny_2/factions/vanguard/characters/cayde_6/aceofspades/aceofspades_diff.vtf",
@@ -2715,7 +2748,6 @@
         "materials/models/yuno_gasai/stockings.vtf",
         "materials/models/yuno_gasai/uniform.vmt",
         "materials/models/yuno_gasai/uniform.vtf",
-        "materials/pluto/item_bg_mech.png",
 
 
 

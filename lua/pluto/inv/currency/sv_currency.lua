@@ -674,7 +674,6 @@ end
 
 for _, item in pairs(pluto.currency.list) do
 	pluto.currency.shares = pluto.currency.shares + item.Shares
-	resource.AddFile("materials/" .. item.Icon)
 end
 
 function pluto.ghost_killed(e, dmg)

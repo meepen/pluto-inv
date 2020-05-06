@@ -34,6 +34,11 @@ surface.CreateFont("pluto_trade_player", {
 	size = 18,
 	weight = 300,
 })
+surface.CreateFont("pluto_close_button", {
+	font = "Roboto",
+	size = 16,
+	weight = 300,
+})
 
 local curve = pluto.ui.curve
 local count = 6
@@ -175,34 +180,48 @@ local PANEL = {}
 function PANEL:Init()
 	self:SetCurve(4)
 	self:SetColor(solid_color)
-	self:SetSize(250, 400)
+	self:SetSize(48 * 3 + 30, 400)
 	local pad = self:GetCurve() * 1.5
 	self:DockPadding(pad, pad, pad, pad)
 
 	self.Layout = self:Add "DScrollPanel"
 	self.Layout:Dock(FILL)
 
+	local cur_layer
+
 	for currency, data in pairs(pluto.currency.byname) do
 		if (data.Fake) then
 			continue
 		end
 
-		local p = self.Layout:Add "pluto_currency_select_currency"
-		p:SetCurrency(currency)
-		function p.DoClick(_, data)
-			if (not pluto.cl_currency[currency] or pluto.cl_currency[currency] < data or data <= 0) then
-				data = 0
-			end
-			data = math.floor(data)
-
-			self:OnSelect {
-				Currency = currency,
-				Amount = data,
-			}
-			self:Remove()
+		if (not cur_layer or cur_layer.Items >= 3) then
+			cur_layer = self.Layout:Add "EditablePanel"
+			cur_layer:Dock(TOP)
+			cur_layer:SetTall(48)
+			cur_layer.Items = 1
+		else
+			cur_layer.Items = cur_layer.Items + 1
 		end
-		p:DockMargin(0, 0, pad * 0.5, pad * 0.5)
-		p:Dock(TOP)
+
+		local p = cur_layer:Add "DImageButton"
+		p:Dock(LEFT)
+		p:SetWide(48)
+		p:SetImage(data.Icon)
+	end
+
+	self.CloseContainer = self:Add "EditablePanel"
+	self.CloseContainer:Dock(BOTTOM)
+	self.CloseContainer:SetTall(28)
+
+	self.Close = self.CloseContainer:Add "pluto_inventory_base_button"
+
+	self.Close:Dock(FILL)
+	self.Close:SetText "Close"
+	self.Close:SetTextColor(white_text)
+	self.Close:SetFont "pluto_close_button"
+
+	function self.Close.DoClick()
+		self:Remove()
 	end
 end
 
@@ -215,6 +234,7 @@ function CurrencySelect(pnl, cb)
 	local p = vgui.Create "pluto_currency_select"
 	p:SetCurrent(currentdata)
 	p:MakePopup()
+	p:SetKeyboardInputEnabled(false)
 	p:Center()
 
 	local rem = pnl.OnRemove

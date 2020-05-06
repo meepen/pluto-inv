@@ -97,11 +97,9 @@ function SWEP:UpdateJumpPower()
 	owner:SetJumpPower(self.BaseJump + self.PerKill * self:GetKills())
 end
 
-function SWEP:Damage(state, targ, dmg)
-	if (targ:Health() <= dmg:GetDamage()) then
-		self:SetKills(self:GetKills() + 1)
-		self:UpdateJumpPower()
-	end
+function SWEP:Kill(state, atk, vic)
+	self:SetKills(self:GetKills() + 1)
+	self:UpdateJumpPower()
 end
 
 function SWEP:Deploy()

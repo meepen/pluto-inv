@@ -1164,6 +1164,7 @@ function PANEL:DrawInner(w, h)
 end
 
 vgui.Register("pluto_inventory_base", PANEL, "ttt_curved_panel_outline")
+vgui.Register("pluto_inventory_base_button", table.Copy(PANEL), "ttt_curved_outline_button")
 
 local PANEL = {}
 function PANEL:Init()
