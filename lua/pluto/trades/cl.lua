@@ -173,8 +173,8 @@ vgui.Register("pluto_currency_select_currency", PANEL, "ttt_curved_panel")
 local PANEL = {}
 
 function PANEL:Init()
-	self:SetCurve(8)
-	self:SetColor(Color(43, 43, 44))
+	self:SetCurve(4)
+	self:SetColor(solid_color)
 	self:SetSize(250, 400)
 	local pad = self:GetCurve() * 1.5
 	self:DockPadding(pad, pad, pad, pad)
@@ -209,7 +209,7 @@ end
 function PANEL:SetCurrent(data)
 end
 
-vgui.Register("pluto_currency_select", PANEL, "ttt_curved_panel")
+vgui.Register("pluto_currency_select", PANEL, "pluto_inventory_base")
 
 function CurrencySelect(pnl, cb)
 	local p = vgui.Create "pluto_currency_select"

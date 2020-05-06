@@ -49,7 +49,7 @@ local map_lookup = {
 	ttt_theship_v1 = "133911194",
 	ttt_waterworld_remastered = "1293781407",
 	ttt_westwood_v4 = "104520719",
-	ttt_whitehouse_v9 = "1376497306",
+	ttt_whitehouse_v9 = "296631816",
 	ttt_pluto_winterdream_a1 = "2026893461",
 }
 
