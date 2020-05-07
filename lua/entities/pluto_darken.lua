@@ -22,6 +22,8 @@ function ENT:Initialize()
 	end
 
 	self.SpawnTime = CurTime()
+
+	hook.Add("TTTUpdatePlayerSpeed", self, self.TTTUpdatePlayerSpeed)
 end
 
 function ENT:UpdateTransmitState()
@@ -37,6 +39,23 @@ function ENT:StopTheSound()
 		self.Sound:Stop()
 		self.Sound = nil
 	end
+end
+
+function ENT:TTTUpdatePlayerSpeed(ply, data)
+	local distance = self:GetPos():Distance(ply:GetPos())
+	if (distance > self.Distance) then
+		return
+	end
+
+	local alpha = 1
+
+	if (distance > self.DistanceMin) then
+		local frommin = distance - self.DistanceMin
+		local max = self.Distance - self.DistanceMin
+		alpha = (max - frommin) / max
+	end
+
+	data.DarkenOrb = math.min(data.DarkenOrb or 1, 1 - 0.25 * alpha)
 end
 
 function ENT:RenderScreenspaceEffects()
