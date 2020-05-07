@@ -57,4 +57,17 @@ SWEP.Ironsights = {
 	Zoom = 0.35,
 }
 
+SWEP.Bullets = {
+	HullSize = 0,
+	Num = 1,
+	DamageDropoffRange = 5300,
+	DamageDropoffRangeMax = 6500,
+	DamageMinimumPercent = 0.1,
+}
+
+SWEP.RecoilInstructions = {
+	Interval = 1,
+	Angle(-70),
+}
+
 SWEP.Ortho = {-4, 2.5, angle = Angle(30, 180, -60)}
