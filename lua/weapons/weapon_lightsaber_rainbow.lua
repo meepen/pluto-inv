@@ -12,7 +12,7 @@ function SWEP:Initialize()
 	self:SetWorldModel(mdl)
 	self:SetModel(mdl)
 	self:SetMaxLength(self:GetMaxLength() * 2 / 3)
-	self:SetDarkInner(true)
+	self:SetDarkInner(false)
 end
 
 
