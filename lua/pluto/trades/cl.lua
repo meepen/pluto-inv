@@ -259,6 +259,10 @@ function PANEL:FilterAdd(filter)
 			continue
 		end
 
+		if (not self.Selected) then
+			self:Select(currency)
+		end
+
 		if (not cur_layer or cur_layer.Items >= 3) then
 			cur_layer = self.Layout:Add "EditablePanel"
 			cur_layer:Dock(TOP)
@@ -274,25 +278,30 @@ function PANEL:FilterAdd(filter)
 		p:SetImage(data.Icon)
 
 		function p.DoClick()
-			if (IsValid(self.Input)) then
-				self.Input:Remove()
-			end
-
-			self.Input = vgui.Create "pluto_currency_input"
-			self.Input:MakePopup()
-			self.Input:SetCurrency(data)
-			self.Input:Center()
-
-			function self.Input.OnConfirm(s, amount)
-				self:OnSelect {
-					Currency = currency,
-					Amount = amount
-				}
-
-				self:Remove()
-			end
+			self:Select(currency)
 		end
 	end
+end
+
+function PANEL:Select(currency)
+	local data = pluto.currency.byname[currency]
+
+	self.Selected = currency
+	self.Label:SetText(data.Name)
+	self:SetAmount(self:GetMax())
+end
+
+function PANEL:SetAmount(amt)
+	self.TextEntry:SetText(tostring(amt))
+	self.Slider:SetSlideX(amt / self:GetMax())
+end
+
+function PANEL:GetAmount()
+	return tonumber(self.TextEntry:GetText())
+end
+
+function PANEL:GetMax()
+	return pluto.cl_currency[self.Selected] or 0
 end
 
 function PANEL:Init()
@@ -315,7 +324,41 @@ function PANEL:Init()
 
 	self.CloseContainer = self:Add "EditablePanel"
 	self.CloseContainer:Dock(BOTTOM)
-	self.CloseContainer:SetTall(28)
+	self.CloseContainer:SetTall(52)
+
+	self.Slider = self:Add "DSlider"
+	self.Slider:Dock(BOTTOM)
+	self.Slider:SetTall(28)
+
+	self.TextEntry = self:Add "DTextEntry"
+	self.TextEntry:Dock(BOTTOM)
+	self.TextEntry:SetTall(28)
+	self.TextEntry:SetFont "pluto_trade_buttons"
+
+	self.Label = self:Add "DLabel"
+	self.Label:SetFont "pluto_close_button"
+	self.Label:SetTextColor(white_text)
+	self.Label:SetContentAlignment(5)
+	self.Label:Dock(BOTTOM)
+	self.Label:SetTall(28)
+
+	self.TextEntry.AllowInput = function(s, c)
+		return c < '0' or c > '9'
+	end
+
+	self.TextEntry.OnValueChange = function(s, val)
+		local num = tonumber(val)
+		if (not num) then
+			return
+		end
+
+		self.Slider:SetSlideX(num / self:GetMax())
+	end
+
+	function self.Slider.TranslateValues(s, x, y)
+		self.TextEntry:SetText(math.Round(x * self:GetMax()))
+		return x, y
+	end
 
 	self.Deny = self.CloseContainer:Add "ttt_curved_button"
 	self.Deny:SetCurve(4)
@@ -323,13 +366,33 @@ function PANEL:Init()
 	self.Deny:SetColor(ttt.teams.traitor.Color)
 	self.Deny:SetTextColor(white_text) -- pluto_trade_buttons
 
-	self.Deny:Dock(FILL)
+	self.Deny:Dock(BOTTOM)
 	self.Deny:SetSkin "tttrw"
 	self.Deny:SetText "Cancel"
+	self.Deny:SetTall(24)
 	function self.Deny.DoClick()
 		self:Remove()
 	end
 
+	self.Accept = self.CloseContainer:Add "ttt_curved_button"
+	self.Accept:SetCurve(4)
+	self.Accept:SetFont "pluto_trade_buttons"
+	self.Accept:SetColor(ttt.teams.innocent.Color)
+	self.Accept:SetTextColor(white_text) -- pluto_trade_buttons
+
+	self.Accept:DockMargin(0, 0, 0, 4)
+
+	self.Accept:Dock(FILL)
+	self.Accept:SetSkin "tttrw"
+	self.Accept:SetText "Accept"
+	function self.Accept.DoClick()
+		self:OnSelect {
+			Currency = self.Selected,
+			Amount = self:GetAmount()
+		}
+
+		self:Remove()
+	end
 end
 
 function PANEL:SetCurrent(data)
@@ -352,7 +415,6 @@ function CurrencySelect(pnl, cb, filter)
 	local p = vgui.Create "pluto_currency_select"
 	p:SetCurrent(currentdata)
 	p:MakePopup()
-	p:SetKeyboardInputEnabled(false)
 	p:Center()
 	p:FilterAdd(filter)
 

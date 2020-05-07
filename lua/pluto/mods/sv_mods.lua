@@ -158,7 +158,7 @@ function pluto.mods.bias(wpn, list, biases)
 	local retn = {}
 
 	for _, item in pairs(list) do
-		if (wpn and item.CanRollOn and not item:CanRollOn(wpn)) then
+		if (item.Retired or wpn and item.CanRollOn and not item:CanRollOn(wpn)) then
 			continue
 		end
 
