@@ -409,6 +409,7 @@ local packs =  {
 	fastdl = {
 		remote = default "fastdl",
 		versions = {
+			"20200504",
 			"20200503",
 		}
 	}
