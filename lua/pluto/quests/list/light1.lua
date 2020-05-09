@@ -37,5 +37,5 @@ function QUEST:IsType(type)
 end
 
 function QUEST:GetProgressNeeded(type)
-	return 30
+	return 10
 end
