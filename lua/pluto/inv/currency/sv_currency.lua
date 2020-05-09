@@ -29,7 +29,7 @@ end
 
 local crate1_fill = 750 / (5 + 6 + 9)
 
-local function process_percents(contents)
+function pluto.inv.percents(contents)
 	local shares = 0
 	for k, n in pairs(contents) do
 		shares = shares + (istable(n) and n.Shares or n)
@@ -63,7 +63,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	droplet = {
-		Shares = 3000,
+		Shares = 2000,
 		Use = function(ply, item)
 			local affixes = item:GetMaxAffixes()
 

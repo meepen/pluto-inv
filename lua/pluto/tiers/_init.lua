@@ -106,7 +106,9 @@ end
 
 function pluto.tiers.craft(tiers)
 	for i, t in pairs(tiers) do
-		tiers[i] = pluto.tiers.byname[tiers[i]]
+		if (not istable(tiers[i])) then
+			tiers[i] = pluto.tiers.byname[tiers[i]]
+		end
 	end
 
 	local t1, t2, t3 = tiers[1], tiers[2], tiers[3]
