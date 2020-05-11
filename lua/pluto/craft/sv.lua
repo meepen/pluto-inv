@@ -216,6 +216,11 @@ function pluto.inv.readcraft(cl)
 
 		cur.Amount = math.min(10, net.ReadUInt(32))
 
+		if (cur.Amount == 0) then
+			pluto.inv.sendfullupdate(cl)
+			return
+		end
+
 		local cur = pluto.currency.byname[cur.Currency]
 
 		if (not cur.Crafted) then
