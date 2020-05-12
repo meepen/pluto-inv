@@ -330,6 +330,32 @@ local function rand(seed)
 	return seed
 end
 
+local function HexColor(h)
+	if (h[1] == "#") then
+		h = h:sub(2)
+	end
+
+	local a, r, g, b = 255
+
+	if (h:len() <= 4) then
+		h = h:gsub(".", "%1%1")
+	end
+
+	local col = {}
+
+	
+	for num in h:gmatch "(..)" do
+		col[#col + 1] = tonumber(num, 16)
+	end
+
+	return Color(unpack(col))
+end
+
+local lookup = {
+	[1519018] = HexColor "#4fa800",
+	[1512886] = HexColor "#00ad34",
+}
+
 function SWEP:Initialize()
 	self.PlutoGun = pluto.NextWeaponSpawn
 	pluto.NextWeaponSpawn = nil
@@ -361,12 +387,19 @@ function SWEP:Initialize()
 
 	local wep = self.PlutoGun
 	if (SERVER and wep) then
-		local col = rand(wep.ID or wep.RowID)
-		local color = HSVToColor((col / 100) % 360, 1, 0.7)
+		local id = wep.ID or wep.RowID
+		local color, thickness
+		if (lookup[id]) then
+			color = lookup[id]
+			thickness = 4
+		else
+			local col = rand(id)
+			color = HSVToColor((col / 100) % 360, 1, 0.7)
+			thickness = rand(col)
+		end
 
 		self:SetCrystalColor(Vector(color.r, color.g, color.b))
 
-		local thickness = rand(col)
 
 		self:SetBladeWidth(thickness % 4 + 3)
 	end

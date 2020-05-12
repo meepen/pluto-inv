@@ -70,12 +70,10 @@ function SWEP:Think()
 		return
 	end
 
-	local amt = 0
-
 	for rope, attached in pairs(self.Ropes) do
 		if (IsValid(rope)) then
-			amt = amt + 1
 			attached:SetPhysicsAttacker(self:GetOwner(), 1)
+			attached:PhysWake()
 		end
 	end
 end
