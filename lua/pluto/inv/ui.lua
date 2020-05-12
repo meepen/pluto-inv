@@ -896,6 +896,7 @@ function PANEL:Init()
 	self.Items[4]:SetDefault "weapon_ttt_crowbar"
 	self.Items[5]:SetDefault "weapon_ttt_sticky_grenade"
 	self.Items[6]:SetDefault "weapon_ttt_unarmed"
+	self.Items[7]:SetDefault "weapon_ttt_magneto"
 
 	self.Items[1].OnSetItem = function(s, i)
 		self.PlayerModel:SetPlutoWeapon(i)
