@@ -17,6 +17,8 @@ function SWEP:Initialize()
 		return
 	end
 
+	hook.Add("Tick", self, self.Tick)
+
 	self.FakePlayer = ents.Create "prop_physics"
 	if (IsValid(self.FakePlayer)) then
 		self.FakePlayer:SetPos(self:GetPos())
@@ -92,7 +94,7 @@ function SWEP:PrimaryAttack()
 
 
 	local rope = constraint.Rope(self.FakePlayer, tr.Entity, 0, 0, vector_origin, tr.Entity:WorldToLocal(tr.HitPos),
-		length, length * 0.1, 2500,
+		length, length * 0.1, 4000,
 		1, "cable/xbeam", false)
 
 	if (not IsValid(rope)) then
@@ -102,11 +104,7 @@ function SWEP:PrimaryAttack()
 	self.Ropes[rope] = tr.Entity
 end
 
-function SWEP:Think()
-	if (BaseClass.Think) then
-		BaseClass.Think(self)
-	end
-
+function SWEP:Tick()
 	if (not SERVER) then
 		return
 	end
