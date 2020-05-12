@@ -176,6 +176,50 @@ local NitroRewards = {
 			return transact
 		end
 	},
+	{
+		Since = os.time {
+			day = 14,
+			hour = 0,
+			year = 2020,
+			month = 5,
+			min = 0,
+		},
+		Reward = function(ply)
+			local transact = pluto.inv.generatebufferweapon(ply, "unique", "weapon_nitro_rope")
+			transact:AddCallback(function(err)
+				if (err) then
+					return
+				end
+
+				ttt.chat(color_nitro, ply:Nick(), white_text, " has received the fifth ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Nitro Web!")
+				hook.Add("PlayerSpawn", "web_" .. ply:SteamID64(), function(p)
+					if (p ~= ply) then
+						return
+					end
+
+					hook.Remove("PlayerSpawn", "web_" .. ply:SteamID64())
+					local ang = ply:EyeAngles()
+					ang.p = 0
+			--[[
+					for i = 0, 360, 30 do
+						ang:RotateAroundAxis(ang:Up(), 30)
+			
+						local data = EffectData()
+						data:SetStart(ply:GetShootPos())
+						data:SetOrigin(data:GetStart() + ang:Forward())
+						data:SetMagnitude(1)
+						data:SetRadius(50)
+						data:SetFlags(0)
+						util.Effect("pluto_confetti", data, true, true)
+					end]]
+
+					sound.Play("pluto_confetti", ply:GetPos())
+				end)
+			end)
+
+			return transact
+		end
+	},
 }
 
 
