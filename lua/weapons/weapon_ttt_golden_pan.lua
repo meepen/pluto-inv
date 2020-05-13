@@ -5,6 +5,9 @@ SWEP.PrintName = "Golden Pan"
 SWEP.WorldModel = "models/weapons/quentindylanp/c_crowbar_nohands.mdl"
 SWEP.ViewModel  = "models/weapons/quentindylanp/c_crowbar_nohands.mdl"
 
+SWEP.PlutoSpawnable = false
+SWEP.AutoSpawnable = false
+
 --SWEP.Primary.Sound = "weapons/bat_draw_swoosh1.ogg"
 
 
