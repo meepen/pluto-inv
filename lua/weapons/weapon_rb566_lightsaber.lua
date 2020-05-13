@@ -51,7 +51,7 @@ SWEP.AutoSwitchFrom = false
 SWEP.DrawWeaponInfoBox = false
 
 SWEP.AutoSpawnable = false
-SWEP.PlutoSpawnable = true
+SWEP.PlutoSpawnable = false
 
 SWEP.ViewModel = "models/weapons/v_crowbar.mdl"
 SWEP.WorldModel = "models/sgg/starwars/weapons/w_anakin_ep2_saber_hilt.mdl"
