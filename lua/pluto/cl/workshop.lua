@@ -406,13 +406,6 @@ local packs =  {
 			"20200501",
 		}
 	},
-	fastdl = {
-		remote = default "fastdl",
-		versions = {
-			"20200504",
-			"20200503",
-		}
-	}
 }
 
 local good_col = Color(0, 255, 0)
