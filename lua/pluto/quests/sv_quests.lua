@@ -10,7 +10,7 @@ pluto.quests.types = {
 	[0] = {
 		Name = "Special",
 		Time = 60 * 60 * 24 * 7, -- week
-		Amount = 1,
+		Amount = 0,
 		Cooldown = 60 * 60 * 24 * 7,
 	},
 	[1] = {

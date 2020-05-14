@@ -33,7 +33,7 @@ function QUEST:Reward(data)
 end
 
 function QUEST:IsType(type)
-	return type == 0
+	return false -- type == 0
 end
 
 function QUEST:GetProgressNeeded(type)
