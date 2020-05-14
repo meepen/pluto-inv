@@ -1,3 +1,5 @@
+RunConsoleCommand("sv_downloadurl", "https://fastdl.pluto.gg")
+
 pluto.files.load {
 	Server = {
 		"sv/config.lua",

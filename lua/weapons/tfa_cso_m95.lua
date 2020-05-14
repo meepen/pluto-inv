@@ -9,6 +9,9 @@ SWEP.Primary.Damage		= 65
 SWEP.Primary.Automatic			= false
 SWEP.Primary.Delay				= 60 / 30
 
+SWEP.UseHands = true
+SWEP.NoPlayerModelHands = true
+
 SWEP.HeadshotMultiplier = 2.5
 
 SWEP.Primary.RecoilTiming  = 0.09
@@ -25,7 +28,6 @@ SWEP.AmmoEnt               = "item_ammo_357_ttt"
 SWEP.ViewModel			= "models/weapons/tfa_cso/c_m95.mdl"
 SWEP.ViewModelFOV			= 80
 SWEP.ViewModelFlip			= true
-SWEP.UseHands = true
 
 SWEP.WorldModel			= "models/weapons/tfa_cso/w_m95.mdl"
 
@@ -71,3 +73,21 @@ SWEP.RecoilInstructions = {
 }
 
 SWEP.Ortho = {-4, 2.5, angle = Angle(30, 180, -60)}
+
+
+local scales = {
+	[HITGROUP_LEFTARM] = 0.3,
+	[HITGROUP_RIGHTARM] = 0.3,
+	[HITGROUP_LEFTLEG] = 0.4,
+	[HITGROUP_RIGHTLEG] = 0.4
+}
+
+DEFINE_BASECLASS(SWEP.Base)
+
+function SWEP:GetHitgroupScale(hg)
+	if (scales[hg]) then
+		return scales[hg]
+	end
+
+	return BaseClass.GetHitgroupScale(self, hg)
+end
