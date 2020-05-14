@@ -383,6 +383,26 @@ function pluto.quests.delete(idx)
 	end
 end
 
+function pluto.quests.reset(ply)
+	ply:ChatPrint "reloading quests"
+	for type, quests in pairs(pluto.quests.byperson[ply] or {}) do
+		for _, quest in pairs(quests) do
+			quest.Dead = true
+		end
+	end
+
+	pluto.db.query("DELETE FROM pluto_quests WHERE steamid = ?", {pluto.db.steamid64(ply)}, function(err)
+		if (err or not IsValid(ply)) then
+			return
+		end
+
+		pluto.quests.init(ply, function()
+			ply:ChatPrint "reloaded"
+		end)
+	end)
+end
+
+
 function pluto.quests.reloadfor(ply)
 	ply:ChatPrint "reloading quests"
 	for type, quests in pairs(pluto.quests.byperson[ply] or {}) do
