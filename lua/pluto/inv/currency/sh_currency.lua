@@ -283,6 +283,9 @@ pluto.currency_mt.__colorprint = function(self)
 end
 
 for _, item in pairs(pluto.currency.list) do
+	if (SERVER) then
+		resource.AddFile(item.Icon)
+	end
 	setmetatable(item, pluto.currency_mt)
 	pluto.currency.byname[item.InternalName] = item
 end
