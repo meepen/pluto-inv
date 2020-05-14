@@ -63,7 +63,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	droplet = {
-		Shares = 2000,
+		Shares = 3000,
 		Use = function(ply, item)
 			local affixes = item:GetMaxAffixes()
 
