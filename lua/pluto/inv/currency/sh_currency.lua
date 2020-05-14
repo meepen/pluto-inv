@@ -284,7 +284,7 @@ end
 
 for _, item in pairs(pluto.currency.list) do
 	if (SERVER) then
-		resource.AddFile(item.Icon)
+		resource.AddFile("materials/" .. item.Icon)
 	end
 	setmetatable(item, pluto.currency_mt)
 	pluto.currency.byname[item.InternalName] = item
