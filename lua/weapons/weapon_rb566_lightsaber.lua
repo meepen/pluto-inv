@@ -79,8 +79,6 @@ function SWEP:PlayWeaponSound( snd )
 	if ( IsValid( self:GetOwner() ) && IsValid( self:GetOwner():GetActiveWeapon() ) && self:GetOwner():GetActiveWeapon() != self ) then return end
 	if ( !IsValid( self.Owner ) ) then return self:EmitSound( snd ) end
 	self.Owner:EmitSound( snd )
-	debug.Trace()
-	print(snd)
 end
 
 function SWEP:SelectTargets( num )
