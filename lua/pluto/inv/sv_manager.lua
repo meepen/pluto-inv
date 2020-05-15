@@ -726,4 +726,14 @@ function pluto.inv.readitemlock(ply)
 	end)
 end
 
+function pluto.inv.readui(ply)
+	local is_in = net.ReadBool()
+
+	if (is_in) then
+		ply:StartAnimation "walk_magic"
+	else
+		ply:StopAnimation()
+	end
+end
+
 hook.Add("PlayerAuthed", "pluto_init_inventory", pluto.inv.sendfullupdate)

@@ -1794,6 +1794,21 @@ function PANEL:Init()
 	self.ControlBar:SetTall(self.Bottom:GetTall() - smol_pad)
 	self.ControlBar:SetWide(real_w - pad * 1.5)
 	self.ControlBar:Center()
+
+	pluto.inv.message()
+		:write("ui", true)
+		:send()
+end
+
+DEFINE_BASECLASS "pluto_inventory_base"
+function PANEL:OnRemove()
+	if (BaseClass.OnRemove) then
+		BaseClass.OnRemove(self)
+	end
+
+	pluto.inv.message()
+		:write("ui", false)
+		:send()
 end
 
 function PANEL:TabChanged(ele, old)

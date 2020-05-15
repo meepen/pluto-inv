@@ -54,6 +54,8 @@ pluto.files.load {
 
 		"events/sh_init.lua",
 
+		"thirdparty/sh_animations_api.lua",
+
 		-- "unicode/init.lua",
 		-- "unicode/casefolding.lua",
 		-- -- "unicode/unicodedata.lua",

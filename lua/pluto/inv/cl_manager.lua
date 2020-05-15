@@ -372,3 +372,7 @@ function pluto.inv.readitemlock()
 
 	item.Locked = locked
 end
+
+function pluto.inv.writeui(b)
+	net.WriteBool(b)
+end

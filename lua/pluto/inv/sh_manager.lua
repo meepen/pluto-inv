@@ -18,6 +18,7 @@ pluto.inv.messages = {
 		"craft",
 		"itemlock",
 		"rename",
+		"ui",
 	},
 	sv2cl = {
 		[0] = "end",
