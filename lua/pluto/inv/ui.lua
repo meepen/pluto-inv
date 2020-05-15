@@ -200,6 +200,7 @@ function PANEL:SetModel(item)
 	local mdl = item.Model
 	self.Model = ClientsideModel(mdl.Model)
 	if (IsValid(self.Model)) then
+		self.Model:SetNoDraw(true)
 		self.Model:ResetSequence(self.Model:LookupSequence "idle_all_01")
 	end
 end
@@ -798,6 +799,7 @@ function PANEL:SetPlutoWeapon(item)
 
 	self.Weapon = ClientsideModel(stored.WorldModel, stored.RenderGroup)
 	if (IsValid(self.Weapon)) then
+		self.Weapon:SetNoDraw(true)
 		self.Weapon:SetParent(self:GetEntity())
 		self.Weapon:AddEffects(EF_BONEMERGE + EF_BONEMERGE_FASTCULL)
 		table.Merge(self.Weapon, stored)
