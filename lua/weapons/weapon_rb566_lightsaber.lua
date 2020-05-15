@@ -837,20 +837,20 @@ function SWEP:PlayerTick(ply)
 	-- Up
 	local isTrace1Hit = false
 	local pos, ang = self:GetSaberPosAng()
-	local trace = util.TraceLine( {
+	local trace = util.TraceLine {
 		start = pos,
 		endpos = pos + ang * self:GetBladeLength(),
 		filter = { self, self.Owner },
 		--mins = Vector( -1, -1, -1 ) * self:GetBladeWidth() / 8,
 		--maxs = Vector( 1, 1, 1 ) * self:GetBladeWidth() / 8
-	} )
-	local traceBack = util.TraceLine( {
+	}
+	local traceBack = util.TraceLine {
 		start = pos + ang * self:GetBladeLength(),
 		endpos = pos,
 		filter = { self, self.Owner },
 		--mins = Vector( -1, -1, -1 ) * self:GetBladeWidth() / 8,
 		--maxs = Vector( 1, 1, 1 ) * self:GetBladeWidth() / 8
-	} )
+	}
 
 	--if ( SERVER ) then debugoverlay.Line( trace.StartPos, trace.HitPos, .1, Color( 255, 0, 0 ), false ) end
 
@@ -859,43 +859,43 @@ function SWEP:PlayerTick(ply)
 	if ( traceBack.HitSky or ( traceBack.StartSolid && traceBack.HitWorld ) ) then traceBack.Hit = false end
 
 	self:DrawHitEffects( trace, traceBack )
-	isTrace1Hit = trace.Hit or traceBack.Hit
+	isTrace1Hit = self:FilterHit(tace) or self:FilterHit(traceBack)
 
 	-- Don't deal the damage twice to the same entity
 	if ( traceBack.Entity == trace.Entity && IsValid( trace.Entity ) ) then traceBack.Hit = false end
 
-	if ( trace.Hit ) then rb655_LS_DoDamage( trace, self ) end
-	if ( traceBack.Hit ) then rb655_LS_DoDamage( traceBack, self ) end
+	if ( self:FilterHit(trace) ) then rb655_LS_DoDamage( trace, self ) end
+	if ( self:FilterHit(traceBack) ) then rb655_LS_DoDamage( traceBack, self ) end
 
 	-- Down
 	local isTrace2Hit = false
 	if ( self:LookupAttachment( "blade2" ) > 0 ) then -- TEST ME
 		local pos2, dir2 = self:GetSaberPosAng( 2 )
-		local trace2 = util.TraceLine( {
+		local trace2 = util.TraceLine {
 			start = pos2,
 			endpos = pos2 + dir2 * self:GetBladeLength(),
 			filter = { self, self.Owner },
 			--mins = Vector( -1, -1, -1 ) * self:GetBladeWidth() / 8,
 			--maxs = Vector( 1, 1, 1 ) * self:GetBladeWidth() / 8
-		} )
-		local traceBack2 = util.TraceLine( {
+		}
+		local traceBack2 = util.TraceLine {
 			start = pos2 + dir2 * self:GetBladeLength(),
 			endpos = pos2,
 			filter = { self, self.Owner },
 			--mins = Vector( -1, -1, -1 ) * self:GetBladeWidth() / 8,
 			--maxs = Vector( 1, 1, 1 ) * self:GetBladeWidth() / 8
-		} )
+		}
 
 		if ( trace2.HitSky or ( trace2.StartSolid && trace2.HitWorld ) ) then trace2.Hit = false end
 		if ( traceBack2.HitSky or ( traceBack2.StartSolid && traceBack2.HitWorld ) ) then traceBack2.Hit = false end
 
 		self:DrawHitEffects( trace2, traceBack2 )
-		isTrace2Hit = trace2.Hit or traceBack2.Hit
+		isTrace2Hit = self:FilterHit(trace2) or self:FilterHit(traceBack2)
 
 		if ( traceBack2.Entity == trace2.Entity && IsValid( trace2.Entity ) ) then traceBack2.Hit = false end
 
-		if ( trace2.Hit ) then rb655_LS_DoDamage( trace2, self ) end
-		if ( traceBack2.Hit ) then rb655_LS_DoDamage( traceBack2, self ) end
+		if ( self:FilterHit(trace2) ) then rb655_LS_DoDamage( trace2, self ) end
+		if ( self:FilterHit(traceBack2.Hit) ) then rb655_LS_DoDamage( traceBack2, self ) end
 
 	end
 
@@ -963,14 +963,36 @@ function SWEP:Think()
 	end
 end
 
+function SWEP:FilterHit(tr)
+	if (not istable(tr) or not tr.Hit) then
+		return false
+	end
+
+	local e = tr.Entity
+
+	if (e == game.GetWorld()) then
+		return true -- sure
+	end
+
+	if (e:GetClass() == "func_breakable") then
+		local fl = e:GetSpawnFlags()
+
+		if (bit.band(fl, 1) == 1) then
+			return false
+		end
+	end
+
+	return true
+end
+
 function SWEP:DrawHitEffects( trace, traceBack )
 	if ( self:GetBladeLength() <= 0 ) then return end
 
-	if ( trace.Hit ) then
+	if (self:FilterHit(trace)) then
 		rb655_DrawHit( trace.HitPos, trace.HitNormal )
 	end
 
-	if ( traceBack && traceBack.Hit ) then
+	if (self:FilterHit(traceBack)) then
 		rb655_DrawHit( traceBack.HitPos, traceBack.HitNormal )
 	end
 end
