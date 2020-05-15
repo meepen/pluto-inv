@@ -131,6 +131,8 @@ function pluto.inv.readbaseitem(item)
 				t[i] = pluto.inv.readmod()
 			end
 		end
+
+		item.Crafted = net.ReadBool()
 	elseif (item.Type == "Model") then
 		item.Model = pluto.models[item.ClassName:match "^model_(.+)$"]
 		if (item.Model) then
@@ -163,6 +165,8 @@ function pluto.inv.readitem()
 	pluto.inv.readbaseitem(item)
 
 	item.Locked = net.ReadBool()
+	item.OriginalOwner = net.ReadString()
+	item.OriginalOwnerName = net.ReadString()
 
 	pluto.received.item[id] = item
 

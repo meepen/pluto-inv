@@ -330,7 +330,7 @@ local function rand(seed)
 	return seed
 end
 
-local function HexColor(h)
+function HexColor(h)
 	if (h[1] == "#") then
 		h = h:sub(2)
 	end

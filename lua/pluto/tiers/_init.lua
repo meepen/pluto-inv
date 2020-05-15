@@ -131,7 +131,8 @@ function pluto.tiers.craft(tiers)
 			t2.InternalName,
 			t3.InternalName,
 		},
-		Shares = (t1.Shares + t2.Shares + t3.Shares) / 2
+		Shares = (t1.Shares + t2.Shares + t3.Shares) / 2,
+		Crafted = true,
 	}, pluto.tier_mt)
 
 	pluto.tiers.crafted[name] = tier

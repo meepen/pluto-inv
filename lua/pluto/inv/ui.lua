@@ -127,8 +127,6 @@ function PANEL:Init()
 
 	self:SetCurve(2)
 	self:SetColor(Color(0,0,0,0))
-
-	self.Material = Material "pluto/item_bg_real.png"
 end
 
 function PANEL:SetShard()
@@ -180,6 +178,11 @@ function PANEL:SetWeapon(item)
 	if (not w) then
 		return
 	end
+	if (item.Crafted) then
+		self.Material = Material "pluto/item_bg_mech.png"
+	else
+		self.Material = Material "pluto/item_bg_real.png"
+	end
 
 	if (w.PlutoIcon) then
 		self.RealImage = Material(w.PlutoIcon)
@@ -193,6 +196,7 @@ function PANEL:SetWeapon(item)
 end
 
 function PANEL:SetModel(item)
+	self.Material = Material "pluto/item_bg_real.png"
 	local mdl = item.Model
 	self.Model = ClientsideModel(mdl.Model)
 	if (IsValid(self.Model)) then
@@ -2024,10 +2028,14 @@ end
 
 function PANEL:SetItem(item)
 	self.ItemName:SetTextColor(color_black)
+	self.OriginalOwner:SetTextColor(color_black)
 	self.ItemID:SetTextColor(color_black)
 	self.Experience:SetTextColor(color_black)
 	if (item.GetPrintName) then -- item
 		self.ItemName:SetText(item:GetPrintName())
+		if (item.Nickname) then
+			self.ItemName:SetFont "pluto_item_showcase_header_italic"
+		end
 		if (item.Type == "Weapon") then
 			self.ItemName:SetContentAlignment(4)
 		else
@@ -2036,6 +2044,21 @@ function PANEL:SetItem(item)
 	else -- currency???
 		self.ItemName:SetText(item.Name)
 		self.ItemName:SetContentAlignment(5)
+	end
+
+	if (item.OriginalOwnerName) then
+		surface.SetFont(self.OriginalOwner:GetFont())
+		local w, h = surface.GetTextSize "A"
+		self.OriginalOwnerBackground:SetTall(h * 1.8)
+		self.OriginalOwner:SetText("Originally " .. (item.Crafted and "crafted" or "found") .. " by " .. item.OriginalOwnerName)
+		self.OriginalOwner:SizeToContentsY()
+
+		local h, s, l = ColorToHSL(item.Color)
+		l = l * 0.85
+
+		self.OriginalOwnerBackground:SetColor(HSLToColor(h, s, l))
+	else
+		self.OriginalOwnerBackground:SetTall(0)
 	end
 
 	if (item.ID) then
@@ -2117,7 +2140,22 @@ surface.CreateFont("pluto_item_showcase_header", {
 	weight = 1000,
 })
 
+surface.CreateFont("pluto_item_showcase_header_italic", {
+	font = "Lato",
+	extended = true,
+	italic = true,
+	size = math.max(30, h / 28),
+	weight = 1000,
+})
+
 surface.CreateFont("pluto_item_showcase_id", {
+	font = "Roboto",
+	extended = true,
+	size = math.max(10, h / 50),
+	weight = 1000,
+})
+
+surface.CreateFont("pluto_item_owner_font", {
 	font = "Roboto",
 	extended = true,
 	size = math.max(10, h / 50),
@@ -2166,6 +2204,14 @@ function PANEL:Init()
 	self.ItemName = self.ItemBackground:Add "DLabel"
 	self.ItemName:Dock(FILL)
 	self.ItemName:SetFont "pluto_item_showcase_header"
+
+	self.OriginalOwnerBackground = self:Add "ttt_curved_panel"
+	self.OriginalOwnerBackground:Dock(TOP)
+
+	self.OriginalOwner = self.OriginalOwnerBackground:Add "DLabel"
+	self.OriginalOwner:Dock(FILL)
+	self.OriginalOwner:SetFont "pluto_item_owner_font"
+	self.OriginalOwner:SetContentAlignment(5)
 
 	self.ItemID = self.ItemName:Add "DLabel"
 	self.ItemID:Dock(FILL)

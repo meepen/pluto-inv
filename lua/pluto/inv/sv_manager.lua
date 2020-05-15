@@ -121,6 +121,8 @@ function pluto.inv.writeitem(ply, item)
 		pluto.inv.writebaseitem(ply, item)
 
 		net.WriteBool(item.Locked or false)
+		net.WriteString(item.OriginalOwner or "0")
+		net.WriteString(item.OriginalOwnerName or "[unknown]")
 	else
 		net.WriteBool(false)
 	end
@@ -281,6 +283,8 @@ function pluto.inv.writebaseitem(ply, item)
 				pluto.inv.writemod(ply, mod, item)
 			end
 		end
+
+		net.WriteBool(item.Tier.Crafted)
 	end
 end
 
