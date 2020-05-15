@@ -13,6 +13,7 @@ SWEP.Primary.Delay				= 60 / 45
 
 SWEP.Primary.ClipSize			= 7
 SWEP.Primary.DefaultClip			= 14
+SWEP.Primary.Ammo          = "357"
 SWEP.AmmoEnt               = "item_ammo_357_ttt"
 
 SWEP.ViewModel			= "models/weapons/tfa_cso/c_m82.mdl"
