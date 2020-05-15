@@ -274,6 +274,14 @@ pluto.currency.list = {
 		Color = color_white,
 		Fake = true
 	},
+	{
+		InternalName = "eye",
+		Name = "Eye",
+		Icon = "pluto/currencies/eye.png",
+		Description = "",
+		SubDescription = "I see the void envelop you, friend... embrace me.",
+		Color = Color(107, 25, 14),
+	}
 }
 
 pluto.currency_mt = pluto.currency_mt or {}

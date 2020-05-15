@@ -48,6 +48,7 @@ SWEP.Offset = {
 }
 
 SWEP.HasScope = true
+SWEP.IsSniper = true
 
 
 SWEP.Ironsights = {

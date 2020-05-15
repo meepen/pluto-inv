@@ -63,6 +63,7 @@ SWEP.MuzzleAttachment			= "0"
 SWEP.ShellAttachment			= "2"
 
 SWEP.HasScope = true
+SWEP.IsSniper = true
 
 SWEP.Primary.RecoilTiming  = 0.09
 SWEP.RecoilInstructions = {
@@ -77,3 +78,5 @@ SWEP.Secondary.ScopeTable = {
 }
 
 SWEP.Ortho = {-3.5, 1.5, angle = Angle(30, 180, -60), size = 1.1}
+
+SWEP.IsSniper = true

@@ -51,6 +51,7 @@ SWEP.AmmoEnt               = "item_ammo_357_ttt"
 SWEP.ViewModel             = "models/weapons/v_snip_agu.mdl"
 SWEP.WorldModel            = "models/weapons/w_snip_agu.mdl"
 SWEP.HasScope              = true
+SWEP.IsSniper              = true
 
 SWEP.Offset = {
 	Pos = {

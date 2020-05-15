@@ -132,7 +132,7 @@ end
 
 
 function SWEP:OnRemove()
-	for rope, attached in pairs(self.Ropes) do
+	for rope, attached in pairs(self.Ropes or {}) do
 		if (IsValid(rope)) then
 			rope:Remove()
 		end
