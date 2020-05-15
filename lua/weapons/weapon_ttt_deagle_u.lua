@@ -123,6 +123,7 @@ function SWEP:Think()
 			endpos = sdest,
 			filter = owner,
 			mask = MASK_SHOT_HULL,
+			collisiongroup = owner:GetCollisionGroup(),
 			mins = -maxs,
 			maxs = maxs
 		}
