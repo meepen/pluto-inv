@@ -66,6 +66,8 @@ function pluto.inv.savebufferitem(ply, new_item, transact)
 	new_item.TabID = tab.RowID
 	new_item.TabIndex = 1
 	new_item.Owner = ply:SteamID64()
+	new_item.OriginalOwner = ply:SteamID64()
+	new_item.OriginalOwnerName = ply:Nick()
 
 	pluto.weapons.save(new_item, ply, nil, transact)
 
