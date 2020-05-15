@@ -161,8 +161,10 @@ function SWEP:Think()
 		}
 
 		if (IsValid(hitEnt)) then
+			local hitang = hitEnt:GetAngles()
+			local dot = owner:GetAimVector():Dot(hitang:Forward())
 			local dmg = DamageInfo()
-			dmg:SetDamage(self.Primary.Damage)
+			dmg:SetDamage((dot > 0.4 and 1.7 or 1) * self.Primary.Damage)
 			dmg:SetAttacker(owner)
 			dmg:SetInflictor(self)
 			dmg:SetDamageForce(owner:GetAimVector() * 1500)
