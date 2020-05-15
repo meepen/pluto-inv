@@ -57,7 +57,7 @@ SWEP.WorldModel			= "models/weapons/tfa_cso2/w_awp_ss.mdl" -- Weapon world model
 
 SWEP.ViewModelFlip = true
 SWEP.HasScope = true
-SWEP.IsSniper = true
+SWEP.IsSniper = false
 
 SWEP.Ironsights = {
 	Pos = Vector(-3, 0, 2.44),
