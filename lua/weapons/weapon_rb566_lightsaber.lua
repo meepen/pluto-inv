@@ -79,6 +79,8 @@ function SWEP:PlayWeaponSound( snd )
 	if ( IsValid( self:GetOwner() ) && IsValid( self:GetOwner():GetActiveWeapon() ) && self:GetOwner():GetActiveWeapon() != self ) then return end
 	if ( !IsValid( self.Owner ) ) then return self:EmitSound( snd ) end
 	self.Owner:EmitSound( snd )
+	debug.Trace()
+	print(snd)
 end
 
 function SWEP:SelectTargets( num )
@@ -706,12 +708,16 @@ function SWEP:OnEnabledOrDisabled( name, old, new )
 end
 
 function SWEP:OnDrop()
-	if ( self:GetEnabled() ) then self:PlayWeaponSound( self:GetOffSound() ) end
+	if ( self:GetEnabled() ) then
+		self:SetEnabled(false)
+	end
 	self:OnDisabled( true )
 end
 
 function SWEP:OnRemove()
-	if ( self:GetEnabled() && IsValid( self.Owner ) ) then self:PlayWeaponSound( self:GetOffSound() ) end
+	if ( self:GetEnabled() && IsValid( self.Owner ) ) then
+		self:SetEnabled(false)
+	end
 	self:OnDisabled( true )
 end
 
@@ -737,7 +743,9 @@ function SWEP:Deploy()
 end
 
 function SWEP:Holster()
-	if ( self:GetEnabled() ) then self:PlayWeaponSound( self:GetOffSound() ) end
+	if ( self:GetEnabled() ) then
+		self:SetEnabled(false)
+	end
 
 	self:SetLengthAnimation( 0 ) -- For the effect
 	self:SetEnabled(false)
