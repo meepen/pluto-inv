@@ -89,7 +89,7 @@ end
 concommand.Add("+inspect", function()
 	local self = ttt.GetHUDTarget():GetActiveWeapon()
 
-	if (not IsValid(self)) then
+	if (not IsValid(self) or not self.GetInventoryItem) then
 		return
 	end
 
