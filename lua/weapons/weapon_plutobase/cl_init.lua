@@ -65,6 +65,35 @@ function SWEP:DisplayPlutoData()
 		end
 	end
 	MsgN ""
+end
+
+function SWEP:Deploy()
+	local data = self:GetInventoryItem()
+
+	if (data and IsFirstTimePredicted()) then
+		self:DisplayPlutoData()
+	end
+
+	return BaseClass.Deploy(self)
+end
+
+function SWEP:Holster(w)
+	if (IsValid(self.Showcase)) then
+		self.Showcase:Remove()
+	end
+
+	return BaseClass.Holster(self, w)
+end
+
+
+concommand.Add("+inspect", function()
+	local self = ttt.GetHUDTarget():GetActiveWeapon()
+
+	if (not IsValid(self)) then
+		return
+	end
+
+	local data = self:GetInventoryItem()
 
 	self.Showcase = pluto.ui.showcase(data)
 	self.Showcase.Start = CurTime()
@@ -88,24 +117,4 @@ function SWEP:DisplayPlutoData()
 
 		self:SetPos(ScrW() * 2 / 3 - self:GetWide() / 2, ScrH() - self:GetTall() * frac)
 	end
-
-	local s = self.Showcase
-end
-
-function SWEP:Deploy()
-	local data = self:GetInventoryItem()
-
-	if (data and IsFirstTimePredicted()) then
-		self:DisplayPlutoData()
-	end
-
-	return BaseClass.Deploy(self)
-end
-
-function SWEP:Holster(w)
-	if (IsValid(self.Showcase)) then
-		self.Showcase:Remove()
-	end
-
-	return BaseClass.Holster(self, w)
-end
+end)
