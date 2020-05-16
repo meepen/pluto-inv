@@ -118,3 +118,6 @@ concommand.Add("+inspect", function()
 		self:SetPos(ScrW() * 2 / 3 - self:GetWide() / 2, ScrH() - self:GetTall() * frac)
 	end
 end)
+
+concommand.Add("-inspect", function(ply, cmd, args)
+end)
