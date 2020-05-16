@@ -4,7 +4,7 @@ QUEST.Credits = "Eppen"
 QUEST.Color = Color(198, 201, 14)
 
 function QUEST:GetRewardText(seed)
-	return "orange egg"
+	return "set of 10 orange egg"
 end
 
 function QUEST:Init(data)
@@ -16,7 +16,7 @@ function QUEST:Init(data)
 end
 
 function QUEST:Reward(data)
-	pluto.inv.addcurrency(data.Player, "crate2", 1)
+	pluto.inv.addcurrency(data.Player, "crate2", 10)
 
 	data.Player:ChatPrint(white_text, "You have received a ", pluto.currency.byname.crate2, white_text, "!")
 end

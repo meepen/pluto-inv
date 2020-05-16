@@ -1,15 +1,15 @@
-QUEST.Name = "Floor Licker"
-QUEST.Description = "Kill players rightfully with floor weapons."
-QUEST.Credits = "Mia Fey"
-QUEST.Color = Color(24, 125, 216)
+QUEST.Name = "Noob Stomper"
+QUEST.Description = "Goomba stomp people rightfully"
+QUEST.Credits = "Eppen"
+QUEST.Color = Color(204, 43, 75)
 
 function QUEST:GetRewardText(seed)
 	return "legacy egg"
 end
 
 function QUEST:Init(data)
-	data:Hook("PlayerDeath", function(data, vic, inf, atk)
-		if (ttt.GetRoundState() == ttt.ROUNDSTATE_ACTIVE and atk == data.Player and atk:GetRoleTeam() ~= vic:GetRoleTeam() and inf.FloorWeapon) then
+	data:Hook("DoPlayerDeath", function(data, vic, atk, dmg)
+		if (atk == data.Player and atk:GetRoleTeam() ~= vic:GetRoleTeam() and atk:Health() == atk:GetMaxHealth() and dmg:IsDamageType(DMG_FALL)) then
 			data:UpdateProgress(1)
 		end
 	end)
@@ -28,7 +28,7 @@ function QUEST:Reward(data)
 end
 
 function QUEST:IsType(type)
-	return type == 1
+	return type == 2
 end
 
 function QUEST:GetProgressNeeded(type)

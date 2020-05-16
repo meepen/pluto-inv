@@ -22,7 +22,7 @@ pluto.quests.types = {
 	[2] = {
 		Name = "Daily",
 		Time = 60 * 60 * 24, -- day
-		Amount = 1,
+		Amount = 2,
 		Cooldown = 60 * 60 * 6,
 	},
 	[3] = {
@@ -48,6 +48,9 @@ for _, id in pairs {
 	"oneshot",
 	"stickcurr",
 	"traitors",
+
+	"goomba",
+	"floor",
 } do
 	QUEST = pluto.quests.list[id] or {}
 	QUEST.ID = id
@@ -466,5 +469,17 @@ concommand.Add("pluto_add_quest", function(ply, cmd, args)
 		ply:ChatPrint("Found quest. Adding " .. progress .. " progress.")
 
 		target:UpdateProgress(progress)
+	end
+end)
+
+concommand.Add("pluto_give_quest", function(ply, cmd, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+
+	local quest = pluto.quests.list[args[1]]
+	if (quest) then
+		pluto.quests.give(ply, 0, quest)
+		ply:ChatPrint "given"
 	end
 end)
