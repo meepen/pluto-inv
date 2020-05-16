@@ -95,6 +95,10 @@ concommand.Add("+inspect", function()
 
 	local data = self:GetInventoryItem()
 
+	if (not data) then
+		return
+	end
+
 	self.Showcase = pluto.ui.showcase(data)
 	self.Showcase.Start = CurTime()
 
