@@ -4,7 +4,7 @@ QUEST.Credits = "Eppen"
 QUEST.Color = Color(204, 43, 75)
 
 function QUEST:GetRewardText(seed)
-	return "legacy egg"
+	return "two legacy egg"
 end
 
 function QUEST:Init(data)
@@ -16,10 +16,10 @@ function QUEST:Init(data)
 end
 
 function QUEST:Reward(data)
-	local item = table.Random {
-		"crate3_n",
-		"crate3",
-		"crate1",
+	local item = pluto.inv.roll {
+		crate3_n = 10,
+		crate3 = 1,
+		crate1 = 10,
 	}
 
 	pluto.inv.addcurrency(data.Player, item, 2)

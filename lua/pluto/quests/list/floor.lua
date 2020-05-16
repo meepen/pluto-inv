@@ -16,13 +16,13 @@ function QUEST:Init(data)
 end
 
 function QUEST:Reward(data)
-	local item = table.Random {
-		"crate3_n",
-		"crate3",
-		"crate1",
+	local item = pluto.inv.roll {
+		crate3_n = 10,
+		crate3 = 1,
+		crate1 = 10,
 	}
 
-	pluto.inv.addcurrency(data.Player, item, 2)
+	pluto.inv.addcurrency(data.Player, item, 1)
 
 	data.Player:ChatPrint(white_text, "You have received a ", pluto.currency.byname[item], white_text, "!")
 end
