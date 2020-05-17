@@ -3,8 +3,42 @@ QUEST.Description = "Goomba stomp people rightfully"
 QUEST.Credits = "Eppen"
 QUEST.Color = Color(204, 43, 75)
 
+function QUEST:GetReward(seed)
+	local items = {
+		crate3_n = 4,
+		crate3 = 3,
+		crate1 = 10,
+	}
+
+	local max = 0
+
+	for _, amt in pairs(items) do
+		max = max + amt
+	end
+
+	local item
+
+	local num = max * seed
+	for cur, amt in pairs(items) do
+		num = num - amt
+		if (num <= 0) then
+			item = cur
+			break
+		end
+	end
+
+	local amount = ({
+		crate3_n = 20,
+		crate3 = 5,
+		crate1 = 5
+	})[item]
+
+	return amount, item
+end
+
 function QUEST:GetRewardText(seed)
-	return "two legacy egg"
+	local amount, cur = self:GetReward(seed)
+	return "set of " .. amount .. " " .. pluto.currency.byname[cur].Name .. "s"
 end
 
 function QUEST:Init(data)
@@ -16,15 +50,11 @@ function QUEST:Init(data)
 end
 
 function QUEST:Reward(data)
-	local item = pluto.inv.roll {
-		crate3_n = 10,
-		crate3 = 1,
-		crate1 = 10,
-	}
+	local amount, item = self:GetReward(data.Seed)
 
-	pluto.inv.addcurrency(data.Player, item, 2)
+	pluto.inv.addcurrency(data.Player, item, amount)
 
-	data.Player:ChatPrint(white_text, "You have received a ", pluto.currency.byname[item], white_text, "!")
+	data.Player:ChatPrint(white_text, "You have received ", amount, " ", pluto.currency.byname[item], "s", white_text, "!")
 end
 
 function QUEST:IsType(type)
