@@ -29,7 +29,7 @@ function QUEST:GetReward(seed)
 
 	local amount = ({
 		crate3_n = 20,
-		crate3 = 5,
+		crate3 = 3,
 		crate1 = 5
 	})[item]
 
