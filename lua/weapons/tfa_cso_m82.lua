@@ -63,7 +63,7 @@ SWEP.MuzzleAttachment			= "0"
 SWEP.ShellAttachment			= "2"
 
 SWEP.HasScope = true
-SWEP.IsSniper = true
+SWEP.IsSniper = false
 
 SWEP.Primary.RecoilTiming  = 0.09
 SWEP.RecoilInstructions = {
