@@ -83,7 +83,6 @@ end
 function pluto.inv.readtradeaccept()
 	local accepted = net.ReadBool()
 	hook.Run("PlutoTradeAccept", accepted)
-	table.insert()
 	trademsg(pluto.trade.Other:Nick(), accepted and " is ready to accept" or " is no longer ready to accept")
 end
 
