@@ -188,9 +188,6 @@ function PANEL:SetWeapon(item)
 		self.RealImage = Material(w.PlutoIcon)
 		self.RealColor = color_white
 	else
-		if (w.PlutoModel) then
-			print (w.PlutoModel)
-		end
 		self.Model = ClientsideModel(w.PlutoModel or w.WorldModel, RENDERGROUP_OTHER)
 		self.Model:SetNoDraw(true)
 		if (w.PlutoMaterial) then
@@ -690,9 +687,7 @@ function PANEL:GhostClick(p, m)
 		pluto.ui.unsetghost()
 	
 		if (self.Item and p ~= self) then
-			timer.Simple(0, function()
-				pluto.ui.ghost = self
-			end)
+			pluto.ui.ghost = self
 		end
 	end
 
