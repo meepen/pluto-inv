@@ -199,7 +199,7 @@ function PANEL:SetWeapon(item)
 end
 
 function PANEL:SetModel(item)
-	self.Material = Material "pluto/item_bg_real.png"
+	self.Material = Material "pluto/bg_paint7.png"
 	local mdl = item.Model
 	self.Model = ClientsideModel(mdl.Model)
 	if (IsValid(self.Model)) then
