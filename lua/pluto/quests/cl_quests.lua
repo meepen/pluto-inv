@@ -25,15 +25,9 @@ function pluto.inv.readquest()
 end
 
 function pluto.inv.readquests()
-	if (not net.ReadBool()) then
-		return
-	end
-
 	local quests = {}
 	while (net.ReadBool()) do
-		for i = 1, net.ReadUInt(8) do
-			quests[#quests + 1] = pluto.inv.readquest()
-		end
+		quests[#quests + 1] = pluto.inv.readquest()
 	end
 
 	pluto.quests.current = quests

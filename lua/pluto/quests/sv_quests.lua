@@ -351,13 +351,13 @@ function pluto.inv.writequests(ply)
 		return
 	end
 
-	net.WriteBool(true)
-
 	for quest_type, quest_list in pairs(quests) do
-		net.WriteBool(true)
-		net.WriteUInt(#quest_list, 8)
-
 		for _, quest in ipairs(quest_list) do
+			if (quest.Dead) then
+				continue
+			end
+
+			net.WriteBool(true)
 			pluto.inv.writequest(ply, quest)
 		end
 	end
@@ -370,7 +370,6 @@ function pluto.quests.delete(idx)
 	for ply, questlist in pairs(pluto.quests.byperson) do
 		for type, quests in pairs(questlist) do
 			for index, quest in pairs(quests) do
-				print(quest.RowID, idx)
 				if (quest.RowID == idx) then
 					local byperson = pluto.quests.byperson[ply]
 					byperson.byid[quest.RowID] = nil
