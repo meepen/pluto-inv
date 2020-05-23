@@ -1134,6 +1134,8 @@ hook.Add( "CalcView", "111!!!_rb655_lightsaber_3rdperson", function( ply, pos, a
 		filter = { ply:GetActiveWeapon(), ply },
 		mins = Vector( -4, -4, -4 ),
 		maxs = Vector( 4, 4, 4 ),
+		collisiongroup = ply:GetCollisionGroup(),
+		mask = MASK_PLAYERSOLID,
 	} )
 
 	if ( trace.Hit ) then
