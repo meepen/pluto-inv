@@ -111,7 +111,7 @@ function QUEST:Complete()
 			:write("quest", self)
 			:send()
 
-		timer.Simple(self.TYPE.Cooldown + 5, function()
+		timer.Create("quest_" .. quest.RowID, self.TYPE.Cooldown + 5, 1, function()
 			pluto.quests.delete(self.RowID)
 		end)
 	end)
@@ -270,7 +270,7 @@ function pluto.quests.init_nocache(ply, cb)
 		else
 			for type, quests in pairs(quests) do
 				for _, quest in pairs(quests) do
-					timer.Simple(quest.EndTime - os.time() + 5, function()
+					timer.Create("quest_" .. quest.RowID, quest.EndTime - os.time() + 5, 1, function()
 						pluto.quests.delete(quest.RowID)
 					end)
 				end
@@ -370,7 +370,8 @@ function pluto.quests.delete(idx)
 	for ply, questlist in pairs(pluto.quests.byperson) do
 		for type, quests in pairs(questlist) do
 			for index, quest in pairs(quests) do
-				if (quest.RowID == idx and quest:IsValid()) then
+				print(quest.RowID, idx)
+				if (quest.RowID == idx) then
 					local byperson = pluto.quests.byperson[ply]
 					byperson.byid[quest.RowID] = nil
 					quests[index] = nil

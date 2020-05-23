@@ -186,7 +186,7 @@ function PANEL:Init()
 					}
 				} do
 					local amount = left / what.Interval
-					if (amount > 1) then
+					if (amount >= 1) then
 						t = string.format(amount % 1 == 0 and "%i %s" or "%.1f %s", amount, what.Name)
 					end
 				end
@@ -255,7 +255,12 @@ function PANEL:RefreshQuests()
 	end
 
 	for _, pnl in pairs(self.Quests) do
+		if (not IsValid(pnl) or not pnl.Quest) then
+			continue
+		end
+
 		local quest = pnl.Quest
+		print(pnl)
 		if (not needed[quest.ID]) then
 			pnl:Remove()
 		else
