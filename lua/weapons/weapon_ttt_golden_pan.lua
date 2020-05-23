@@ -6,7 +6,8 @@ SWEP.WorldModel = "models/weapons/quentindylanp/c_crowbar_nohands.mdl"
 SWEP.ViewModel  = "models/weapons/quentindylanp/c_crowbar_nohands.mdl"
 
 SWEP.PlutoModel = "models/weapons/c_models/c_frying_pan/c_frying_pan.mdl"
-SWEP.PlutoMaterial = "models/player/shared/gold_player"
+local mat = "models/player/shared/gold_player"
+SWEP.PlutoMaterial = mat
 
 SWEP.PlutoSpawnable = false
 SWEP.AutoSpawnable = false
@@ -45,7 +46,7 @@ function MakeGold(what)
 		what:GetPhysicsObjectNum(bone):RecheckCollisionFilter()
 	end
 
-	what:SetMateria(self.PlutoMaterial)
+	what:SetMaterial(mat)
 
 	what:SetPos(what:GetPos() + vector_up * 100)
 

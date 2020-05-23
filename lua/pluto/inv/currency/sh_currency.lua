@@ -48,7 +48,7 @@ pluto.currency.list = {
 		Name = "Reflective Die",
 		Icon = "pluto/currencies/dice.png",
 		Description = "Randomizes all the rolls on modifiers",
-		SubDescription = "Arizor lost this die in a bet with a farmer long ago. That farmer won a bet with Yaari later, and gave him the power to create these at will",
+		SubDescription = "Arizor lost this die in a bet with a farmer long ago. That farmer won a bet with Yaari later on and gave him the power to create these at will",
 		Color = Color(255, 208, 86),
 		Crafted = {
 			Chance = 1 / 3,
@@ -171,7 +171,7 @@ pluto.currency.list = {
 		Name = "Glass Quill",
 		Icon = "pluto/currencies/quill.png",
 		Description = "Set an item's nickname",
-		SubDescription = "This glass quill was used by the inscribers to write history before it was even made, what will you do with it?",
+		SubDescription = "This glass quill was used by the inscribers to write history before it was even made. What will you do with it?",
 		Color = Color(23, 127, 105),
 		ClientsideUse = function(item)
 			if (IsValid(pluto.opener)) then
