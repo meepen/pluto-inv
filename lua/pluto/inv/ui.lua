@@ -694,6 +694,8 @@ function PANEL:GhostClick(p, m)
 	
 		if (self.Item and p ~= self and pluto.ui.ghost) then
 			pluto.ui.ghost = self
+		else
+			pluto.ui.unsetghost()
 		end
 	end
 
