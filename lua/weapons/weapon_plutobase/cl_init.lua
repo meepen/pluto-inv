@@ -51,20 +51,8 @@ end
 function SWEP:DisplayPlutoData()
 	local data = self:GetInventoryItem()
 	data.ClassName = self:GetClass()
-	pprintf("%s %s", data.Tier, self.PrintName)
 
-	for type, list in pairs(data.Mods or {}) do
-		if (#list == 0) then
-			continue
-		end
-
-		pprintf("    %s", type)
-
-		for _, item in ipairs(list) do
-			pprintf("        %s tier %i - %s", item.Name, item.Tier, item.Desc)
-		end
-	end
-	MsgN ""
+	MsgC(data:GetColor(), data:GetTextMessage())
 end
 
 function SWEP:Deploy()

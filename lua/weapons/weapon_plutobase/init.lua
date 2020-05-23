@@ -43,7 +43,7 @@ function SWEP:Initialize()
 end
 
 function SWEP:PlutoDoPlayerDeath(ply, atk, dmg)
-	if (not IsValid(self:GetOwner()) or dmg:GetInflictor() ~= self or not self.RunModFunctionSequence) then
+	if (not IsValid(self:GetOwner()) or dmg:GetInflictor() ~= self) then
 		return
 	end
 
@@ -53,7 +53,9 @@ function SWEP:PlutoDoPlayerDeath(ply, atk, dmg)
 		end
 	end
 
-	self:RunModFunctionSequence("Kill", nil, self:GetOwner(), ply)
+	if (self.RunModFunctionSequence) then
+		self:RunModFunctionSequence("Kill", nil, self:GetOwner(), ply)
+	end
 end
 
 function SWEP:RunModFunctionSingle(funcname, ...)

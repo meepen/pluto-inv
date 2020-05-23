@@ -184,7 +184,9 @@ end
 function ITEM:GetMaxAffixes()
 	local affix = 0
 
-	if (self.Tier) then
+	if (self.AffixMax) then
+		affix = self.AffixMax
+	elseif (istable(self.Tier)) then
 		affix = self.Tier.affixes
 	end
 
@@ -276,7 +278,9 @@ local function ToRomanNumerals(s)
 end
 
 function ITEM:GetColor()
-	if (self.Type == "Weapon") then
+	if (self.Color) then
+		return self.Color
+	elseif (self.Type == "Weapon") then
 		return self.Tier.Color
 	elseif (self.Type == "Model") then
 		return self.Model.Color
@@ -328,6 +332,54 @@ function ITEM:GetDiscordEmbed()
 	end
 
 	return embed
+end
+
+function ITEM:GetTextMessage()
+	local msg = {}
+	table.insert(msg, self:GetPrintName())
+	table.insert(msg, "\n")
+
+	if (self.Tier) then
+		local desc = self.SubDescription or self.Tier:GetSubDescription()
+
+		if (self:GetMaxAffixes() > 0) then
+			desc = desc .. (desc:len() > 0 and "\n" or "") .. "You can get up to " .. self:GetMaxAffixes() .. " modifiers on this item."
+		end
+
+		if (desc:len() > 0) then
+			table.insert(msg, "\n")
+			table.insert(msg, desc)
+		end
+	end
+	
+	if (self.Mods) then
+		for type, mods in pairs(self.Mods) do
+			for ind, mod_data in ipairs(mods) do
+				local mod = pluto.mods.byname[mod_data.Mod]
+				local rolls = pluto.mods.getrolls(mod, mod_data.Tier, mod_data.Roll)
+
+				local name = mod:GetPrintName()
+				local tier = mod_data.Tier
+				local tierroll = mod.Tiers[mod_data.Tier] or mod.Tiers[#mod.Tiers]
+
+				local desc_fmt = {}
+
+				for i, roll in ipairs(rolls) do
+					desc_fmt[i] = mod:FormatModifier(i, math.abs(roll), self.ClassName)
+				end
+
+				table.insert(msg, "\n")
+				table.insert(msg, name .. " " .. ToRomanNumerals(tier) .. " - " .. pluto.mods.formatdescription(mod_data, self, desc_fmt))
+			end
+		end
+	end
+
+	if (self.Model) then
+		table.insert(msg, "\n")
+		table.insert(msg, self.Model.SubDescription)
+	end
+
+	return table.concat(msg) .. "\n"
 end
 
 function ITEM:Duplicate()
