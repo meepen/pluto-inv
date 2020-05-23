@@ -624,6 +624,11 @@ function PANEL:SwitchWith(other)
 end
 
 function PANEL:GhostClick(p, m)
+	if (self == p and m == MOUSE_LEFT) then
+		pluto.ui.unsetghost()
+		return
+	end
+
 	if (not p or p.NoMove) then
 		return
 	end
@@ -673,6 +678,8 @@ function PANEL:GhostClick(p, m)
 			for i = parent.TabIndex, 5 do
 				self:GetParent().Items[i]:SetItem(pluto.buffer[i])
 			end
+
+			pluto.ui.unsetghost()
 		elseif (gparent.Tab.ID == 0 and gparent.SwitchWith and gparent.Tab.Type) then
 			gparent:SwitchWith(self)
 		elseif (gparent.Tab.ID ~= 0) then
@@ -684,9 +691,8 @@ function PANEL:GhostClick(p, m)
 			end
 			self:SwitchWith(gparent)
 		end
-		pluto.ui.unsetghost()
 	
-		if (self.Item and p ~= self) then
+		if (self.Item and p ~= self and pluto.ui.ghost) then
 			pluto.ui.ghost = self
 		end
 	end
