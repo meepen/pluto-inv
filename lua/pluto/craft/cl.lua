@@ -250,6 +250,8 @@ function PANEL:Init()
 			self.Tab.Items[i] = nil
 		end
 
+		self.Currency:SetInfo()
+
 		for _, item in pairs(items) do
 			if (item) then
 				hook.Run("PlutoItemDelete", item.ID)
