@@ -180,6 +180,8 @@ function PANEL:SetWeapon(item)
 	end
 	if (item.Crafted) then
 		self.Material = Material "pluto/item_bg_mech.png"
+	elseif (item.BackgroundMaterial) then
+		self.Material = Material(item.BackgroundMaterial)
 	else
 		self.Material = Material "pluto/item_bg_real.png"
 	end

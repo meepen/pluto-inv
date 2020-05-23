@@ -133,6 +133,10 @@ function pluto.inv.readbaseitem(item)
 		end
 
 		item.Crafted = net.ReadBool()
+
+		if (net.ReadBool()) then
+			item.BackgroundMaterial = net.ReadString()
+		end
 	elseif (item.Type == "Model") then
 		item.Model = pluto.models[item.ClassName:match "^model_(.+)$"]
 		if (item.Model) then

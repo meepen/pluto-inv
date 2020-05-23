@@ -25,24 +25,6 @@ function PANEL:SetTab(tab)
 	self.Tab = tab
 end
 
-hook.Remove("DrawOverlay", "cancer", function()
-	local p = vgui.GetHoveredPanel()
-	if (IsValid(p)) then
-		local x0, y0 = p:LocalToScreen(0, 0)
-		local x1, y1 = p:LocalToScreen(p:GetSize())
-
-		surface.SetTextColor(white_text)
-		surface.SetDrawColor(100, 50, 50, 50)
-		surface.SetFont "BudgetLabel"
-
-		surface.SetTextPos(x0, y1)
-		surface.DrawText(tostring(p))
-
-		surface.DrawRect(x0, y0, x1 - x0, y1 - y0)
-	end
-
-end)
-
 function PANEL:Init()
 	self:DockPadding(20, 16, 20, 10)
 

@@ -285,6 +285,13 @@ function pluto.inv.writebaseitem(ply, item)
 		end
 
 		net.WriteBool(item.Tier.Crafted)
+
+		if (item.Tier.BackgroundMaterial) then
+			net.WriteBool(true)
+			net.WriteString(item.Tier.BackgroundMaterial)
+		else
+			net.WriteBool(false)
+		end
 	end
 end
 

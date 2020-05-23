@@ -49,7 +49,9 @@ pluto.files.load {
 
 		"materials/pluto/pluto-logo-header.png",
 		"materials/pluto/item_bg_mech.png",
+
 		"materials/pluto/bg_paint7.png",
+		"materials/pluto/bg_bunny4.png",
 	},
 	Workshop = {
 		"2001929342",
