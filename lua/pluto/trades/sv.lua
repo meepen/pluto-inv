@@ -67,7 +67,7 @@ function pluto.inv.readtraderequest(ply)
 		if (not bypass_checks and GetRoundState() == ROUND_ACTIVE and user:Alive()) then
 			ply:ChatPrint "you cannot trade with people right now"
 		elseif (not pluto.trades.get(ply) and not pluto.trades.get(other))  then
-			ply.NextTrade = CurTime() + 30
+			ply.NextTrade = CurTime() + 10
 			-- TODO(meep): request instead of init
 
 			pluto.trades.cancel(ply)

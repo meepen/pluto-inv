@@ -40,6 +40,15 @@ surface.CreateFont("pluto_close_button", {
 	weight = 300,
 })
 
+local function trademsg(...)
+	chat.AddText(white_text, "[", ttt.teams.traitor.Color, "TRADE", white_text, "] ", ttt.teams.innocent.Color, ...)
+end
+
+local function tradeevent(event, ...)
+	hook.Run(event, ...)
+	table.insert(pluto.trade.Events, {Event = event, ...})
+end
+
 local curve = pluto.ui.curve
 local count = 6
 
@@ -74,13 +83,16 @@ end
 function pluto.inv.readtradeaccept()
 	local accepted = net.ReadBool()
 	hook.Run("PlutoTradeAccept", accepted)
+	table.insert()
+	trademsg(pluto.trade.Other:Nick(), accepted and " is ready to accept" or " is no longer ready to accept")
 end
 
 function pluto.inv.readtrademessage()
 	local ply = net.ReadEntity()
 	local msg = net.ReadString()
 
-	hook.Run("PlutoTradeMessage", ply, msg)
+	trademsg(ply:Nick(), ": ", white_text, msg)
+	tradeevent("PlutoTradeMessage", ply, msg)
 end
 
 function pluto.inv.readtradeupdate()
@@ -91,6 +103,7 @@ function pluto.inv.readtradeupdate()
 			Currency = {},
 			Items = {},
 			Other = net.ReadEntity(),
+			Events = {},
 		}
 
 		for i = 1, net.ReadUInt(3) do
@@ -109,9 +122,13 @@ function pluto.inv.readtradeupdate()
 		table.Empty(pluto.tradetab.Currency)
 	end
 
-	pluto.trade = trade
+	if (not pluto.trade) then
+		trademsg("Trade with ", trade.Other:Nick(), " opened")
+	end
 
-	hook.Run("PlutoTradeUpdate", trade)
+	pluto.trade = trade
+	
+	tradeevent("PlutoTradeUpdate", trade)
 end
 
 local function SendUpdate()
@@ -563,7 +580,7 @@ function PANEL:Init()
 		self:SetFontInternal "pluto_trade_chat_bold"
 	end
 
-	hook.Add("PlutoTradeMessage", self.Text, function(self, ply, msg)
+	function self.Text:PlutoTradeMessage(ply, msg)
 		local col = ttt.teams.innocent.Color
 		self:InsertColorChange(col.r, col.g, col.b, col.a)
 		self:AppendText(ply:Nick())
@@ -572,18 +589,22 @@ function PANEL:Init()
 		self:AppendText ": "
 		self:AppendText(msg)
 		self:AppendText "\n"
-	end)
+	end
 
-	hook.Add("PlutoTradeUpdate", self.Text, function(self)
+	hook.Add("PlutoTradeMessage", self.Text, self.Text.PlutoTradeMessage)
+
+	function self.Text:PlutoTradeUpdate()
 		self:InsertColorChange(230, 58, 80, 255)
 		self:AppendText "Trade has been updated.\n"
 
 		if (pluto.trade and not pluto.trade.CanAccept) then
 			self:AppendText "You cannot accept.\n"
 		end
-	end)
+	end
 
-	hook.Add("PlutoTradeAccept", self.Text, function(self, accepted)
+	hook.Add("PlutoTradeUpdate", self.Text, self.Text.PlutoTradeUpdate)
+
+	function self.Text:PlutoTradeAcept(accepted)
 		if (accepted) then
 			self:InsertColorChange(58, 230, 80, 255)
 			self:AppendText "Other player has accepted\n"
@@ -591,7 +612,15 @@ function PANEL:Init()
 			self:InsertColorChange(230, 58, 80, 255)
 			self:AppendText "Other player has unaccepted\n"
 		end
-	end)
+	end
+
+	hook.Add("PlutoTradeAccept", self.Text, self.Text.PlutoTradeAccept)
+
+	for _, event in pairs((pluto.trade or {Events = {}}).Events) do
+		if (self.Text[event.Event]) then
+			self.Text[event.Event](self.Text, unpack(event))
+		end
+	end
 
 	self.TextEntry = self.Inner:Add "DTextEntry"
 	self.TextEntry:Dock(BOTTOM)
@@ -878,9 +907,12 @@ function PANEL:PerformLayout(w, h)
 
 	local size = math.floor(math.Round(w / (count + 2)) / 2) * 2
 	local divide = math.floor((w - size * count) / (count + 2) / 2) * 2
-	self.Chat:SetWide(w * 3 / 7)
+	if (IsValid(self.Chat)) then
+		self.Chat:SetWide(w * 3 / 7)
 
-	self.Chat:DockPadding(0, pad / 2, divide, 0)
+		self.Chat:DockPadding(0, pad / 2, divide, 0)
+	end
+
 	self.Bottom:DockPadding(0, pad / 2, 0, 0)
 
 	for i = 13, 24 do
