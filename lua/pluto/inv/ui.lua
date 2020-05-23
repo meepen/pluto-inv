@@ -188,8 +188,14 @@ function PANEL:SetWeapon(item)
 		self.RealImage = Material(w.PlutoIcon)
 		self.RealColor = color_white
 	else
-		self.Model = ClientsideModel(w.WorldModel, RENDERGROUP_OTHER)
+		if (w.PlutoModel) then
+			print (w.PlutoModel)
+		end
+		self.Model = ClientsideModel(w.PlutoModel or w.WorldModel, RENDERGROUP_OTHER)
 		self.Model:SetNoDraw(true)
+		if (w.PlutoMaterial) then
+			self.Model:SetMaterial(w.PlutoMaterial)
+		end
 	end
 
 	self.Class = w.ClassName

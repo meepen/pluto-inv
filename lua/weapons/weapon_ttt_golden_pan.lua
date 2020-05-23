@@ -5,8 +5,13 @@ SWEP.PrintName = "Golden Pan"
 SWEP.WorldModel = "models/weapons/quentindylanp/c_crowbar_nohands.mdl"
 SWEP.ViewModel  = "models/weapons/quentindylanp/c_crowbar_nohands.mdl"
 
+SWEP.PlutoModel = "models/weapons/c_models/c_frying_pan/c_frying_pan.mdl"
+SWEP.PlutoMaterial = "models/player/shared/gold_player"
+
 SWEP.PlutoSpawnable = false
 SWEP.AutoSpawnable = false
+
+SWEP.Ortho = {-5, 3, angle = Angle(30, -90, 90)}
 
 --SWEP.Primary.Sound = "weapons/bat_draw_swoosh1.ogg"
 
@@ -40,7 +45,7 @@ function MakeGold(what)
 		what:GetPhysicsObjectNum(bone):RecheckCollisionFilter()
 	end
 
-	what:SetMaterial "models/player/shared/gold_player"
+	what:SetMateria(self.PlutoMaterial)
 
 	what:SetPos(what:GetPos() + vector_up * 100)
 

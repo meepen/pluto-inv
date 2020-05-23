@@ -157,7 +157,7 @@ function PANEL:Init()
 		local t = ""
 		if (q) then
 			local left = q.EndTime - os.time()
-			if (left >= 0) then
+			if (left >= 1) then
 				for _, what in ipairs {
 					{
 						Abbreviation = "s",
