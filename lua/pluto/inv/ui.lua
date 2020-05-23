@@ -1186,7 +1186,11 @@ local PANEL = {}
 function PANEL:Init()
 	self.Tab = self:GetParent().Tab
 
-	self:SetText(self.Tab.Name)
+	if (type(self.Tab.Name) == "string") then
+		self:SetText(self.Tab.Name)
+	else -- convar
+		self:SetText(self.Tab.Name:GetString())
+	end
 	self:SetFont "pluto_inventory_tab"
 	self:SetSkin "tttrw"
 	self:DockMargin(pad - 4, 0, pad - 4, 0)
@@ -1206,9 +1210,13 @@ end
 function PANEL:OnFocusChanged(gained)
 	if (not gained) then
 		self:GetParent():SetText(self:GetText())
-		pluto.inv.message()
-			:write("tabrename", self.Tab.ID, self:GetText())
-			:send()
+		if (type(self.Tab.Name) == "string") then
+			pluto.inv.message()
+				:write("tabrename", self.Tab.ID, self:GetText())
+				:send()
+		else
+			self.Tab.Name:SetString(self:GetText())
+		end
 
 		local p = self:GetParent()
 		self:Remove()
@@ -1284,7 +1292,11 @@ end
 
 function PANEL:SetTab(tab)
 	self.Tab = tab
-	self:SetText(tab.Name)
+	if (type(tab.Name) == "string") then
+		self:SetText(tab.Name)
+	else -- convar
+		self:SetText(tab.Name:GetString())
+	end
 	self:SetColor(solid_color)
 
 	if (self:GetParent().Current == self and tab) then
@@ -2398,7 +2410,7 @@ end)
 function pluto.inv.remakefake()
 	pluto.tradetab = {
 		Type = "trade",
-		Name = "Trade",
+		Name = CreateConVar("pluto_tradetab_name", "Trade", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Trade tab name"),
 		ID = 0,
 		Items = {},
 		Currency = {},
@@ -2407,7 +2419,7 @@ function pluto.inv.remakefake()
 
 	pluto.crafttab = {
 		Type = "craft",
-		Name = "Craft",
+		Name = CreateConVar("pluto_crafttab_name", "Craft", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Craft tab name"),
 		ID = 0,
 		Items = {},
 		Currency = {},
@@ -2416,7 +2428,7 @@ function pluto.inv.remakefake()
 
 	pluto.questtab = {
 		Type = "quest",
-		Name = "Quests",
+		Name = CreateConVar("pluto_questtab_name", "Quests", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Quest tab name"),
 		ID = 0,
 		Items = {},
 		Currency = {},
