@@ -26,6 +26,6 @@ timer.Create("pluto_sparkle_update", 0.5, 0, function()
 			continue
 		end
 
-		system:SetShouldDraw(not what:IsPlayer() or not (what:IsDormant() or not what:Alive() or what == LocalPlayer() and not what:ShouldDrawLocalPlayer()))
+		system:SetShouldDraw(not what:GetNoDraw() and not what:IsPlayer() or not (what:IsDormant() or not what:Alive() or what == LocalPlayer() and not what:ShouldDrawLocalPlayer()))
 	end
 end)

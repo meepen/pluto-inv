@@ -409,6 +409,7 @@ local packs =  {
 	sparklies = {
 		remote = default "sparklies",
 		versions = {
+			"20200524_10",
 			"20200524_9",
 			"20200524_8",
 			"20200524_7",

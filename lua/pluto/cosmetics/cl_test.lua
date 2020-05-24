@@ -28,20 +28,26 @@ local Cosmetic = {
 			return false
 		end
 
-		mdl:FollowBone(p, bone)
-		local _, bang = p:GetBonePosition(bone)
-
-		local base = LocalToWorld(Vector(-5, -8, 0), angle_zero, p:GetPos(), bang)
-		mdl:SetPos(base)
+		mdl.Bone = bone
+		--mdl:FollowBone(p, bone)
 
 		return true
 	end,
 	Think = function(mdl, p)
-		local rotate_time = 2
-		local rotate_time2 = 1.48
+		local rotate_time = 3
+		local rotate_time2 = 4
 		local time = CurTime() + mdl.rand
 		local ang = Angle((time % rotate_time) / rotate_time * 360, (time % rotate_time2) / rotate_time2 * 360)
 		mdl:SetAngles(ang)
+
+		local center_offset = Vector(0, 0, 1)
+		center_offset:Rotate(ang)
+		local offset = Vector(0, 8, 4)
+
+		local bpos = p:GetBonePosition(mdl.Bone)
+		local base = LocalToWorld(offset, angle_zero, bpos, p:EyeAngles())
+
+		mdl:SetPos(base - center_offset)
 	end,
 }
 
@@ -119,5 +125,5 @@ hook.Add("Think", "pluto_cosmetics", function()
 			c.Cosmetic.Think(c.Model, p)
 		end
 	end
-	--print("TIME", SysTime() - st, rendered)
+	print("TIME", SysTime() - st, rendered)
 end)
