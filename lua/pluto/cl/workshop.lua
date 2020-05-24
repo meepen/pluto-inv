@@ -406,6 +406,20 @@ local packs =  {
 			"20200501",
 		}
 	},
+	sparklies = {
+		remote = default "sparklies",
+		versions = {
+			"20200524_9",
+			"20200524_8",
+			"20200524_7",
+			"20200524_6",
+			"20200524_5",
+			"20200524_4",
+			"20200524_3",
+			"20200524_2",
+			"20200524",
+		}
+	}
 }
 
 local good_col = Color(0, 255, 0)
@@ -520,3 +534,5 @@ for pack, data in SortedPairs(packs) do
 		mount()
 	end
 end
+
+check_mount()

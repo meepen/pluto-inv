@@ -10,6 +10,7 @@ function pluto.model(name)
 			table.Merge(old, d)
 		else
 			pluto.models[name] = d
+			pluto.models[d.Model] = d
 		end
 
 		player_manager.AddValidModel(d.Name, d.Model)

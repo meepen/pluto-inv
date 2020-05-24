@@ -22,6 +22,9 @@ pluto.files.load {
 
 		"chat/cl_chat.lua",
 		"chat/cl_filter.lua",
+
+		"cosmetics/cl_test.lua",
+		"cosmetics/cl_sparkle.lua",
 	},
 	Shared = {
 		"co_net.lua",

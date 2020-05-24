@@ -816,6 +816,7 @@ c "wild_rabbit" {
 	Model = "models/pipann/wild_rabbit.mdl",
 	Color = ColorRand(),
 	SubDescription = "",
+	Fake = true,
 }
 
 c "dom_rabbit" {
@@ -823,6 +824,7 @@ c "dom_rabbit" {
 	Model = "models/pipann/domestic_rabbit.mdl",
 	Color = ColorRand(),
 	SubDescription = "",
+	Fake = true,
 }
 
 c "miku_cupid" {
@@ -832,6 +834,7 @@ c "miku_cupid" {
 	Color = ColorRand(),
 	SubDescription = "no",
 	Gender = "Female",
+	Fake = true,
 }
 
 c "chimp" {
@@ -839,6 +842,7 @@ c "chimp" {
 	Model = "models/player/chimp/chimp.mdl",
 	Color = ColorRand(),
 	SubDescription = "ook ook",
+	Fake = true,
 }
 
 c "clank" {
@@ -846,6 +850,7 @@ c "clank" {
 	Model = "models/rc/clank_pm.mdl",
 	Color = ColorRand(),
 	SubDescription = "Where's Ratchet?",
+	Fake = true,
 }
 
 c "revenant" {
@@ -854,6 +859,7 @@ c "revenant" {
 	Hands = "Models/weapons/revenantarms.mdl",
 	Color = ColorRand(),
 	SubDescription = "",
+	Fake = true,
 }
 
 c "hank" {
@@ -861,6 +867,7 @@ c "hank" {
 	Model = "models/hellinspector/koth/hank_pm.mdl",
 	Color = ColorRand(),
 	SubDescription = "",
+	Fake = true,
 }
 
 c "male_child" {
@@ -868,6 +875,7 @@ c "male_child" {
 	Model = "models/player/child_worker_m1.mdl",
 	Color = ColorRand(),
 	SubDescription = "",
+	Fake = true,
 }
 
 c "female_child" {
@@ -876,6 +884,7 @@ c "female_child" {
 	Color = ColorRand(),
 	SubDescription = "",
 	Gender = "Female",
+	Fake = true,
 }
 
 c "kanna" {
@@ -885,6 +894,7 @@ c "kanna" {
 	Color = ColorRand(),
 	SubDescription = "",
 	Gender = "Female",
+	Fake = true,
 }
 
 c "lara_croft_lo" {
@@ -893,6 +903,7 @@ c "lara_croft_lo" {
 	Color = ColorRand(),
 	SubDescription = "",
 	Gender = "Female",
+	Fake = true,
 }
 
 c "lara_croft_lo_anim" {
@@ -901,6 +912,7 @@ c "lara_croft_lo_anim" {
 	Color = ColorRand(),
 	SubDescription = "",
 	Gender = "Female",
+	Fake = true,
 }
 
 c "low_croft_lo_robe_anim" {
@@ -909,6 +921,7 @@ c "low_croft_lo_robe_anim" {
 	Color = ColorRand(),
 	SubDescription = "",
 	Gender = "Female",
+	Fake = true,
 }
 
 c "low_croft_lo_robe" {
@@ -917,6 +930,7 @@ c "low_croft_lo_robe" {
 	Color = ColorRand(),
 	SubDescription = "",
 	Gender = "Female",
+	Fake = true,
 }
 
 

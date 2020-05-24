@@ -15295,5 +15295,10 @@
         "models/weapons/revenantarms.sw.vtx",
         "models/weapons/revenantarms.vvd",
         "sound/pluto/blade_of_the_ruined_king.ogg"
+    ],
+    "sparklies": [
+        "particles/pluto_sparklies.pcf",
+        "materials/particle/animglow02.vmt",
+        "materials/particle/animglow02.vtf"
     ]
 }

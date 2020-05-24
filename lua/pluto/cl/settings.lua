@@ -4,6 +4,7 @@ hook.Add("TTTPopulateSettingsMenu", "pluto_settings", function()
 	local cat = vgui.Create "ttt_settings_category"
 
 	cat:AddSlider("FOV", "pluto_fov")
+	cat:AddCheckBox("Disable Cosmetics", "pluto_disable_cosmetics")
 	cat:InvalidateLayout(true)
 	cat:SizeToContents()
 	ttt.settings:AddTab("Pluto", cat)
