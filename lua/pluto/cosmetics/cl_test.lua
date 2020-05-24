@@ -125,5 +125,5 @@ hook.Add("Think", "pluto_cosmetics", function()
 			c.Cosmetic.Think(c.Model, p)
 		end
 	end
-	print("TIME", SysTime() - st, rendered)
+	--print("TIME", SysTime() - st, rendered)
 end)
