@@ -593,7 +593,7 @@ function PANEL:OnMousePressed(code)
 							end,
 							parameters = {
 								title = string.format("%s's %s", LocalPlayer():Nick(), item_name),
-								description = string.format("Taken by %s https://steamcommunity.com/profiles/%s\nDiscord: https://discord.gg/pluto\nWebsite: https://pluto.gg", LocalPlayer():Nick(), LocalPlayer():SteamID64()), 
+								description = string.format("Taken by %s https://steamcommunity.com/profiles/%s\nDiscord: https://discord.gg/pluto\nWebsite: https://pluto.gg\n\n%s", LocalPlayer():Nick(), LocalPlayer():SteamID64(), self.Item:GetTextMessage()), 
 							},
 						}
 					end)
