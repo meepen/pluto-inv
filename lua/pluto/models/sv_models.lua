@@ -73,6 +73,16 @@ hook.Add("PlayerSetModel", "pluto_model", function(ply)
 	if (mdl and mdl.Type == "Model") then
 		ply:SetModel(mdl.Model.Model)
 		pluto.updatemodel(ply, mdl)
+		for _, other in pairs(player.GetHumans()) do
+			pluto.inv.message(other)
+				:write("playermodel", ply, mdl)
+				:send()
+		end
 		return true
 	end
 end)
+
+function pluto.inv.writeplayermodel(to, ply, mdl)
+	net.WriteEntity(ply)
+	pluto.inv.writeitem(to, mdl)
+end

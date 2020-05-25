@@ -10,22 +10,36 @@ hook.Add("PlutoWorkshopFinish", "pluto_workshop", function()
 end)
 
 pluto.sparklelist = pluto.sparklelist or setmetatable({}, {__mode = "k"})
+pluto.sparklemap = pluto.sparklemap or setmetatable({}, {__mode = "k"})
 
 function pluto.sparkle(what, turnon)
-	local system = pluto.sparklelist[what]
+	pluto.sparklelist[what] = turnon or nil
+	local system = pluto.sparklemap[what]
 	if (IsValid(system) and not turnon) then
 		system:StopEmissionAndDestroyImmediately()
-	elseif (not IsValid(system) and turnon) then
-		pluto.sparklelist[what] = CreateParticleSystem(what, "pluto_sparklies", PATTACH_ABSORIGIN_FOLLOW, 0)
+	elseif (not IsValid(system) and turnon and IsValid(what)) then
+		pluto.sparklemap[what] = CreateParticleSystem(what, "pluto_sparklies", PATTACH_ABSORIGIN_FOLLOW, 0)
 	end
 end
 
 timer.Create("pluto_sparkle_update", 0.5, 0, function()
-	for what, system in pairs(pluto.sparklelist) do
-		if (not IsValid(what) or not IsValid(system)) then
+	for what in pairs(pluto.sparklelist) do
+		if (not IsValid(what)) then
 			continue
 		end
 
-		system:SetShouldDraw(not what:GetNoDraw() and not what:IsPlayer() or not (what:IsDormant() or not what:Alive() or what == LocalPlayer() and not what:ShouldDrawLocalPlayer()))
+		local system = pluto.sparklemap[what]
+		local shoulddraw = not what:GetNoDraw() and not what:IsPlayer() or not (what:IsDormant() or not what:Alive() or what == LocalPlayer() and not what:ShouldDrawLocalPlayer())
+
+		if (shoulddraw and not IsValid(system)) then
+			pluto.sparkle(what, true)
+			system = pluto.sparklemap[what]
+		end
+		
+		if (not IsValid(system)) then
+			continue
+		end
+
+		system:SetShouldDraw(shoulddraw)
 	end
 end)

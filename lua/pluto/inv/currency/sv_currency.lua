@@ -934,7 +934,7 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 		local ghosts = {}
 		for i = 1, 5 do
 			ghosts[i] = ents.Create "pluto_ghost"
-			ghosts[i]:SetPos(pluto.currency.randompos())
+			ghosts[i]:SetPos(pluto.currency.randompos() or vector_origin)
 			ghosts[i]:Spawn()
 		end
 		timer.Simple(60, function()

@@ -43,6 +43,7 @@ pluto.inv.messages = {
 		"quests",
 		"quest",
 		"questdone",
+		"playermodel",
 	}
 }
 

@@ -31,3 +31,10 @@ matproxy.Add {
 		mat:SetVector(self.EmoteColor, Vector(3, 0, 0))
 	end
 }
+
+function pluto.inv.readplayermodel()
+	local ply = net.ReadEntity()
+	local item = pluto.inv.readitem()
+
+	pluto.sparkle(ply, item and item.SpecialName and item.SpecialName:StartWith "Prototype ")
+end
