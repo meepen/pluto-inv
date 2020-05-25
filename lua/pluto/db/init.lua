@@ -24,6 +24,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function(db)
 					tab_idx TINYINT UNSIGNED NOT NULL,
 
 					locked tinyint(1) NOT NULL DEFAULT 0,
+					untradeable tinyint(1) NOT NULL DEFAULT 0,
 
 					original_owner BIGINT UNSIGNED NOT NULL,
 	

@@ -600,7 +600,7 @@ function PANEL:OnMousePressed(code)
 				end)
 			end):SetIcon("icon16/camera.png")
 
-			if (self.Item.Type == "Weapon") then
+			if (self.Item.Type ~= "Shard") then
 				rightclick_menu:AddOption("Toggle locked", function()
 					pluto.inv.message()
 					:write("itemlock", self.Item.ID)
