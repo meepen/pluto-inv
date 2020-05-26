@@ -39,7 +39,7 @@ async function make_gma(all_files, list) {
 		Buffer.alloc(1),
 		Buffer.from("pluto.gg content"),
 		Buffer.alloc(1),
-		await readFile("./addon.json"),
+		Buffer.from(await readFile("./addon.json")),
 		Buffer.alloc(1),
 		Buffer.from("Meepen"),
 		Buffer.alloc(1),
