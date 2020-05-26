@@ -1720,6 +1720,7 @@ function PANEL:SetTabs(tabs, addtrade)
 		table.insert(t, pluto.tradetab)
 		table.insert(t, pluto.crafttab)
 		table.insert(t, pluto.questtab)
+		table.insert(t, pluto.passtab)
 	end
 
 	self.Tabs:SetTabs(t)
@@ -2435,6 +2436,15 @@ function pluto.inv.remakefake()
 		Items = {},
 		Currency = {},
 		FakeID = 3,
+	}
+
+	pluto.passtab = {
+		Type = "pass",
+		Name = CreateConVar("pluto_passtab_name", "Mara's Request", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Pass tab name"),
+		ID = 0,
+		Items = {},
+		Currency = {},
+		FakeID = 4,
 	}
 end
 

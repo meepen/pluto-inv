@@ -52,6 +52,8 @@ pluto.files.load {
 
 		"materials/pluto/bg_paint7.png",
 		"materials/pluto/bg_bunny4.png",
+
+		"resource/fonts/Niconne-Regular.ttf",
 	},
 	Workshop = {
 		"2001929342",

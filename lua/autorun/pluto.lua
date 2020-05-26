@@ -25,6 +25,8 @@ pluto.files.load {
 
 		"cosmetics/cl_test.lua",
 		"cosmetics/cl_sparkle.lua",
+
+		"events/pass/cl_passevent.lua",
 	},
 	Shared = {
 		"co_net.lua",
@@ -40,6 +42,7 @@ pluto.files.load {
 		"craft/sh.lua",
 
 		"roles/ttc.lua",
+		"roles/pluto.lua",
 
 		"util.lua",
 

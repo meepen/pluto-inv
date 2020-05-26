@@ -16,7 +16,7 @@ if (SERVER) then
 end
 
 
-print "TTC"
+pprintf "TTC Enabled"
 
 pluto.files.load {
 	Client = {

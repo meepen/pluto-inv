@@ -98,6 +98,16 @@ pluto.tabs = {
 		canaccept = function()
 			return false
 		end,
+	},
+	pass = {
+		element = "pluto_pass",
+		size = 0,
+		canremove = function()
+			return false
+		end,
+		canaccept = function()
+			return false
+		end,
 	}
 }
 
