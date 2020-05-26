@@ -5,9 +5,9 @@ SWEP.PrintName				= "Barret .50 Cal"
 SWEP.Slot				= 2
 
 SWEP.Primary.Sound 			= Sound "M95.Fire"
-SWEP.Primary.Damage		= 65
+SWEP.Primary.Damage		= 60
 SWEP.Primary.Automatic			= false
-SWEP.Primary.Delay				= 60 / 30
+SWEP.Primary.Delay				= 60 / 25
 
 SWEP.UseHands = true
 SWEP.NoPlayerModelHands = true
@@ -20,8 +20,10 @@ SWEP.RecoilInstructions = {
 	Angle(-75),
 }
 
-SWEP.Primary.ClipSize			= 5
-SWEP.Primary.DefaultClip			= 55
+SWEP.ReloadSpeed = 0.75
+
+SWEP.Primary.ClipSize			= 4
+SWEP.Primary.DefaultClip			= 12
 
 SWEP.AmmoEnt               = "item_ammo_357_ttt"
 
@@ -48,8 +50,7 @@ SWEP.Offset = {
 }
 
 SWEP.HasScope = true
-SWEP.IsSniper = true
-
+SWEP.IsSniper = false
 
 SWEP.Ironsights = {
 	Pos = Vector(0, 0, -10),
@@ -70,7 +71,7 @@ SWEP.Bullets = {
 
 SWEP.RecoilInstructions = {
 	Interval = 1,
-	Angle(-70),
+	Angle(-200),
 }
 
 SWEP.Ortho = {-4, 2.5, angle = Angle(30, 180, -60)}
@@ -91,4 +92,8 @@ function SWEP:GetHitgroupScale(hg)
 	end
 
 	return BaseClass.GetHitgroupScale(self, hg)
+end
+
+function SWEP:GetSpread()
+	return BaseClass.GetSpread(self) + Vector(0.2, 0.2) * (1 - self:GetCurrentZoomPercent())
 end
