@@ -8,6 +8,14 @@ end
 
 local Cosmetic = {
 	Model = "models/balloons/balloon_star.mdl",
+	Valid = function(p)
+		local bone = p:LookupBone "ValveBiped.Bip01_Head1"
+		if (not bone) then
+			return false
+		end
+
+		return true
+	end,
 	Init = function(mdl)
 		mdl:SetModelScale(0.15, 0)
 		mdl:SetMaterial "models/player/shared/gold_player"
@@ -29,7 +37,6 @@ local Cosmetic = {
 		end
 
 		mdl.Bone = bone
-		--mdl:FollowBone(p, bone)
 
 		return true
 	end,
@@ -55,7 +62,7 @@ function pluto.cosmetics.get(p)
 	local c = pluto.cosmetics[p]
 
 	if (not IsValid(c)) then
-		if (not IsValid(p) or not p:Alive() or p:IsDormant()) then
+		if (not IsValid(p) or not p:Alive() or p:IsDormant() or not Cosmetic.Valid(p)) then
 			return
 		end
 
@@ -72,7 +79,10 @@ function pluto.cosmetics.get(p)
 	end
 
 	if (IsValid(c) and c:GetParent() ~= p) then
-		Cosmetic.Attach(c, p)
+		if (not Cosmetic.Attach(c, p)) then
+			c:Remove()
+			return
+		end
 	end
 
 	return {
