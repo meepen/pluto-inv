@@ -111,7 +111,7 @@ function QUEST:Complete()
 			:write("quest", self)
 			:send()
 
-		timer.Create("quest_" .. quest.RowID, self.TYPE.Cooldown + 5, 1, function()
+		timer.Create("quest_" .. self.RowID, self.TYPE.Cooldown + 5, 1, function()
 			pluto.quests.delete(self.RowID)
 		end)
 	end)
