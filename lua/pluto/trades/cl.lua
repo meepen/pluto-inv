@@ -40,12 +40,18 @@ surface.CreateFont("pluto_close_button", {
 	weight = 300,
 })
 
-local function trademsg(...)
-	chat.AddText(white_text, "[", ttt.teams.traitor.Color, "TRADE", white_text, "] ", ttt.teams.innocent.Color, ...)
+local function trademsg(noalive, ...)
+	if (not noalive or not LocalPlayer():Alive()) then
+		chat.AddText(white_text, "[", ttt.teams.traitor.Color, "TRADE", white_text, "] ", ttt.teams.innocent.Color, ...)
+	end
 end
 
 local function tradeevent(event, ...)
 	hook.Run(event, ...)
+	if (not pluto.trade) then
+		return
+	end
+
 	table.insert(pluto.trade.Events, {Event = event, ...})
 end
 
@@ -83,14 +89,14 @@ end
 function pluto.inv.readtradeaccept()
 	local accepted = net.ReadBool()
 	hook.Run("PlutoTradeAccept", accepted)
-	trademsg(pluto.trade.Other:Nick(), accepted and " is ready to accept" or " is no longer ready to accept")
+	trademsg(true, pluto.trade.Other:Nick(), accepted and " is ready to accept" or " is no longer ready to accept")
 end
 
 function pluto.inv.readtrademessage()
 	local ply = net.ReadEntity()
 	local msg = net.ReadString()
 
-	trademsg(ply:Nick(), ": ", white_text, msg)
+	trademsg(true, ply:Nick(), ": ", white_text, msg)
 	tradeevent("PlutoTradeMessage", ply, msg)
 end
 
@@ -122,7 +128,7 @@ function pluto.inv.readtradeupdate()
 	end
 
 	if (not pluto.trade) then
-		trademsg("Trade with ", trade.Other:Nick(), " opened")
+		trademsg(false, "Trade with ", trade.Other:Nick(), " opened")
 	end
 
 	pluto.trade = trade
