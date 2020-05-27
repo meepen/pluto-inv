@@ -329,6 +329,18 @@ end
 function pluto.inv.readtrademessage(ply)
 	local msg = net.ReadString()
 
+	if (msg:Trim() == "") then
+		return
+	end
+
+	local last_time = (ply.LastTradeMessage or -math.huge)
+
+	if (last_time > CurTime() - 0.5) then
+		return
+	end
+
+	ply.LastTradeMessage = CurTime()
+
 	local trade = pluto.trades.get(ply)
 	if (trade) then
 		for _, tradeply in ipairs(trade.Players) do
