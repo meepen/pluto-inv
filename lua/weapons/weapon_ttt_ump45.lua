@@ -41,8 +41,8 @@ SWEP.ViewModel             = "models/weapons/cstrike/c_smg_ump45.mdl"
 SWEP.WorldModel            = "models/weapons/w_smg_ump45.mdl"
 
 SWEP.Ironsights = {
-	Pos = Vector(-5.3, -2, 1.5),
-	Angle = Vector(2, 0, 1),
+	Pos = Vector(-8.8, -2, 4.3),
+	Angle = Vector(-1.3, -0.4, -3),
 	TimeTo = 0.175,
 	TimeFrom = 0.175,
 	SlowDown = 0.45,
