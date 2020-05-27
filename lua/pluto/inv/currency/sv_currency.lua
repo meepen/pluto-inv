@@ -855,7 +855,7 @@ hook.Add("DoPlayerDeath", "pluto_currency_add", function(vic, damager, dmg)
 	if (atk:GetRoleTeam() == vic:GetRoleTeam()) then
 		-- base on karma
 		points = -vic:GetKarma() / atk:GetKarma()
-	elseif (atk:GetRoleData().IsEvil) then
+	elseif (atk:GetRoleData().Evil) then
 		points = points * 0.8
 	end
 

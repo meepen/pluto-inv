@@ -1,4 +1,4 @@
-SWEP.Base				= "weapon_tfa_gun_base"
+SWEP.Base				= "weapon_tttbase"
 SWEP.Category				= "TFA CS:O2" --The category.  Please, just choose something generic or something I've already done if you plan on only doing like one swep..
 SWEP.Manufacturer = nil --Gun Manufactrer (e.g. Hoeckler and Koch )
 SWEP.Author				= "" --Author Tooltip
@@ -129,6 +129,7 @@ SWEP.Secondary.ScopeTable = {
 	["ScopeBorder"] = color_black,
 	["ScopeCrosshair"] = { ["r"] = 0, ["g"]  = 0, ["b"] = 0, ["a"] = 255, ["s"] = 1 }
 }
+SWEP.HasScope = true
 
 --[[SHOTGUN CODE]]--
 SWEP.Shotgun = false --Enable shotgun style reloading.
