@@ -261,7 +261,7 @@ function pluto.weapons.onrollmod(item, newmod)
 	end
 end
 
-function pluto.weapons.addmod(item, modname)
+function pluto.weapons.addmod(item, modname, tier)
 	local toadd = pluto.mods.byname[modname]
 
 	if (not item.Mods[toadd.Type]) then
@@ -274,7 +274,7 @@ function pluto.weapons.addmod(item, modname)
 		end
 	end
 
-	local newmod = pluto.mods.rollmod(toadd, item.Tier.rolltier, item.Tier.roll)
+	local newmod = pluto.mods.rollmod(toadd, tier and function() return tier end or item.Tier.rolltier, item.Tier.roll)
 
 	table.insert(item.Mods[toadd.Type], newmod)
 

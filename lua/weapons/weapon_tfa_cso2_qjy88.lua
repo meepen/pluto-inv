@@ -1,13 +1,13 @@
 SWEP.Base				= "weapon_tfa_gun_base"
 SWEP.Category				= "TFA CS:O2" --The category.  Please, just choose something generic or something I've already done if you plan on only doing like one swep..SWEP.DrawCrosshair			= true		-- Draw the crosshair?
-SWEP.PrintName				= "QJY-88"		-- Weapon name (Shown on HUD)
+SWEP.PrintName				= "Type 88"		-- Weapon name (Shown on HUD)
 SWEP.Slot				= 2				-- Slot in the weapon selection menu.  Subtract 1, as this starts at 0.
 --[[WEAPON HANDLING]]--
 SWEP.Primary.Sound = Sound("tfa_cso2_qjy88.1") -- This is the sound of the weapon, when you shoot.
-SWEP.Primary.Damage = 28 -- Damage, in standard damage points.
+SWEP.Primary.Damage = 22 -- Damage, in standard damage points.
 SWEP.HeadshotMultiplier = 1.2
 SWEP.Primary.Automatic = true -- Automatic/Semi Auto
-SWEP.Primary.Delay = 60 / 600 -- This is in Rounds Per Minute / RPM
+SWEP.Primary.Delay = 60 / 550 -- This is in Rounds Per Minute / RPM
 
 --Ammo Related
 SWEP.Primary.ClipSize = 100 -- This is the size of a clip
@@ -35,7 +35,10 @@ SWEP.Offset = {
 	},
 	Scale = 1.0
 }
-SWEP.ThirdPersonReloadDisable = false --Disable third person reload?  True disables.
+
+SWEP.AutoSpawnable = false
+SWEP.Spawnable = false
+SWEP.PlutoSpawnable = false
 
 
 SWEP.Ironsights = {
@@ -73,7 +76,7 @@ SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
 	DamageDropoffRange = 700,
-	DamageDropoffRangeMax = 4300,
+	DamageDropoffRangeMax = 2300,
 	DamageMinimumPercent = 0.45,
-	Spread = Vector(0.038, 0.038)
+	Spread = Vector(0.044, 0.044)
 }

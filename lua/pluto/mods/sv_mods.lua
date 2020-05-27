@@ -327,7 +327,7 @@ concommand.Add("pluto_add_mod", function(ply, cmd, arg, args)
 		return
 	end
 
-	pluto.weapons.addmod(item, arg[2])
+	pluto.weapons.addmod(item, arg[2], arg[3] and tonumber(arg[3]) or nil)
 	
 	pluto.weapons.update(item, function(id)
 		if (not IsValid(ply)) then
