@@ -288,7 +288,7 @@ function pluto.inv.retrieveitems(steamid, cb)
 				Locked = tobool(item.locked),
 				OriginalOwner = item.original_owner,
 				OriginalOwnerName = item.original_name,
-				Untradeable = item.untradeable,
+				Untradeable = item.untradeable == 1,
 			}, pluto.inv.item_mt)
 
 			it.Type = pluto.inv.itemtype(it)
