@@ -408,3 +408,69 @@ if CLIENT then
 	SWEP.WepSelectIconCSO = Material("vgui/killicons/tfa_cso_violingun")
 	SWEP.DrawWeaponSelection = TFA_CSO_DrawWeaponSelection
 end
+
+function SWEP:GetIdleAnimation()
+	return ACT_VM_RELEASE
+end
+
+//Violingun
+local soundData = {
+	name		= "Violingun.Draw" ,
+	channel	 = CHAN_WEAPON,
+	volume	  = 1,
+	soundlevel  = 80,
+	pitchstart  = 100,
+	pitchend	= 100,
+	sound	   = "weapons/tfa_cso/violingun/draw.ogg"
+}
+ 
+sound.Add(soundData)
+
+local soundData = {
+	name		= "Violingun.Idle" ,
+	channel	 = CHAN_WEAPON,
+	volume	  = 1,
+	soundlevel  = 80,
+	pitchstart  = 100,
+	pitchend	= 100,
+	sound	   = "weapons/tfa_cso/violingun/idle.ogg"
+}
+ 
+sound.Add(soundData)
+ 
+local soundData = {
+	name		= "Violingun.ClipOut" ,
+	channel	 = CHAN_WEAPON,
+	volume	  = 1,
+	soundlevel  = 80,
+	pitchstart  = 100,
+	pitchend	= 100,
+	sound	   = "weapons/tfa_cso/violingun/clipout.ogg"
+}
+ 
+sound.Add(soundData)
+ 
+local soundData = {
+	name		= "Violingun.ClipIn" ,
+	channel	 = CHAN_WEAPON,
+	volume	  = 1,
+	soundlevel  = 80,
+	pitchstart  = 100,
+	pitchend	= 100,
+	sound	   = "weapons/tfa_cso/violingun/clipin.ogg"
+}
+ 
+sound.Add(soundData)
+ 
+local soundData = {
+	name		= "Violingun.Fire" ,
+	channel	 = CHAN_WEAPON,
+	volume	  = 1,
+	soundlevel  = 80,
+	pitchstart  = 100,
+	pitchend	= 100,
+	sound	   = 
+		"weapons/tfa_cso/violingun/fire.ogg"
+}
+ 
+sound.Add(soundData)

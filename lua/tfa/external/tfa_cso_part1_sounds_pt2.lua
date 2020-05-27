@@ -2176,66 +2176,6 @@ local soundData = {
 
 sound.Add(soundData)
 
-//Water Gun. Not safe, though!
-local soundData = {
-	name 		= "WaterGun.Draw" ,
-	channel 	= CHAN_WEAPON,
-	volume 		= 1,
-	soundlevel 	= 80,
-	pitchstart 	= 100,
-	pitchend 	= 100,
-	sound 		= "weapons/tfa_cso/water_gun/draw.ogg"
-}
-
-sound.Add(soundData)
-
-local soundData = {
-	name 		= "WaterGun.Pump" ,
-	channel 	= CHAN_WEAPON,
-	volume 		= 1,
-	soundlevel 	= 80,
-	pitchstart 	= 100,
-	pitchend 	= 100,
-	sound 		= "weapons/tfa_cso/water_gun/pump.ogg"
-}
-
-sound.Add(soundData)
-
-local soundData = {
-	name 		= "WaterGun.ClipOut" ,
-	channel 	= CHAN_WEAPON,
-	volume 		= 1,
-	soundlevel 	= 80,
-	pitchstart 	= 100,
-	pitchend 	= 100,
-	sound 		= "weapons/tfa_cso/water_gun/clipout.ogg"
-}
-
-sound.Add(soundData)
-
-local soundData = {
-	name 		= "WaterGun.ClipIn" ,
-	channel 	= CHAN_WEAPON,
-	volume 		= 1,
-	soundlevel 	= 80,
-	pitchstart 	= 100,
-	pitchend 	= 100,
-	sound 		= "weapons/tfa_cso/water_gun/clipin.ogg"
-}
-
-sound.Add(soundData)
-
-local soundData = {
-	name 		= "WaterGun.Fire" ,
-	channel 	= CHAN_USER_BASE+11,
-	volume 		= 1,
-	soundlevel 	= 80,
-	pitchstart 	= 100,
-	pitchend 	= 100,
-	sound 		= "weapons/tfa_cso/water_gun/fire.ogg"
-}
-
-sound.Add(soundData)
 
 //Mk 48. MORE LMGS!
 local soundData = {

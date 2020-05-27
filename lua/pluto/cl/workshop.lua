@@ -424,7 +424,13 @@ local packs =  {
 			"20200524_2",
 			"20200524",
 		}
-	}
+	},
+	test = {
+		remote = default "tornado",
+		versions = {
+			"20200527" .. os.time(),
+		}
+	},
 }
 
 local good_col = Color(0, 255, 0)
