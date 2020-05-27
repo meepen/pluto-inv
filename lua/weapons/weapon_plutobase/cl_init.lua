@@ -39,7 +39,8 @@ end
 
 function SWEP:Initialize()
 	BaseClass.Initialize(self)
-	self:PlutoInitialize()
+
+	self.Pluto = {}
 
 	local data = pluto.wpn_db[self:GetPlutoID()]
 

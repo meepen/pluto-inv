@@ -25,8 +25,15 @@ MOD.Tiers = {
 }
 
 function MOD:ModifyWeapon(wep, rolls)
-	wep:DefinePlutoOverrides "Delay"
-	wep.Pluto.Delay = wep.Pluto.Delay - rolls[1] / 100
+	wep:DefinePlutoOverrides("Delay", 0, function(old, pct)
+		local rpm = 60 / old
+
+		rpm = rpm + pct * rpm
+
+		return 60 / rpm
+	end)
+
+	wep.Pluto.Delay = wep.Pluto.Delay + rolls[1] / 100
 end
 
 return MOD

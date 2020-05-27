@@ -51,35 +51,23 @@ function SWEP:SetupDataTables()
 	end
 end
 
-function SWEP:DefinePlutoOverrides(type)
+local function default_translate(old, pct)
+	if (pct < 0) then
+		pct = 1 / (2 - pct)
+	end
+	return old * pct
+end
+
+function SWEP:DefinePlutoOverrides(type, default, translate)
 	if (self.Pluto[type]) then
 		return
 	end
 
-	self.Pluto[type] = 1
+	self.Pluto[type] = default or 1
 
+	translate = translate or default_translate
 	local old = self["Get" .. type]
 	self["Get" .. type] = function(self)
-		local pct = self.Pluto[type]
-		if (pct < 0) then
-			pct = 1 / (2 - pct)
-		end
-		return old(self) * pct
-	end
-end
-
-function SWEP:PlutoInitialize()
-	self.Pluto = {
-		Delay = 1
-	}
-
-	local old = self.GetDelay
-	function self:GetDelay()
-		local pct = self.Pluto.Delay
-		if (pct < 0) then
-			pct = 1 / (2 - pct)
-		end
-		local o = old(self)
-		return old(self) * pct
+		return translate(old(self), self.Pluto[type])
 	end
 end

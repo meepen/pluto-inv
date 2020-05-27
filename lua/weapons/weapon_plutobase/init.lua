@@ -19,7 +19,8 @@ end
 
 function SWEP:Initialize()
 	BaseClass.Initialize(self)
-	self:PlutoInitialize()
+
+	self.Pluto = {}
 
 	local item = pluto.NextWeaponSpawn
 	pluto.NextWeaponSpawn = nil
