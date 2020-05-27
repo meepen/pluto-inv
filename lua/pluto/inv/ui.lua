@@ -2070,6 +2070,7 @@ end
 function PANEL:SetItem(item)
 	self.ItemName:SetTextColor(color_black)
 	self.OriginalOwner:SetTextColor(color_black)
+	self.Untradeable:SetTextColor(Color(240, 20, 30))
 	self.ItemID:SetTextColor(color_black)
 	self.Experience:SetTextColor(color_black)
 	if (item.GetPrintName) then -- item
@@ -2085,6 +2086,16 @@ function PANEL:SetItem(item)
 	else -- currency???
 		self.ItemName:SetText(item.Name)
 		self.ItemName:SetContentAlignment(5)
+	end
+
+	if (item.Untradeable) then
+		surface.SetFont(self.Untradeable:GetFont())
+		local w, h = surface.GetTextSize "A"
+		self.UntradeableBackground:SetTall(h * 1.8)
+		self.Untradeable:SetText("Not able to be traded")
+		self.Untradeable:SizeToContentsY()
+	else
+		self.UntradeableBackground:SetTall(0)
 	end
 
 	if (item.OriginalOwnerName) then
@@ -2253,6 +2264,15 @@ function PANEL:Init()
 	self.OriginalOwner:Dock(FILL)
 	self.OriginalOwner:SetFont "pluto_item_owner_font"
 	self.OriginalOwner:SetContentAlignment(5)
+
+	self.UntradeableBackground = self:Add "EditablePanel"
+	self.UntradeableBackground:Dock(TOP)
+	self.UntradeableBackground.Material = stripes
+
+	self.Untradeable = self.UntradeableBackground:Add "DLabel"
+	self.Untradeable:Dock(FILL)
+	self.Untradeable:SetFont "pluto_item_owner_font"
+	self.Untradeable:SetContentAlignment(5)
 
 	self.ItemID = self.ItemName:Add "DLabel"
 	self.ItemID:Dock(FILL)
