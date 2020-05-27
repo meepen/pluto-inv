@@ -171,6 +171,7 @@ function pluto.inv.readitem()
 	item.Locked = net.ReadBool()
 	item.OriginalOwner = net.ReadString()
 	item.OriginalOwnerName = net.ReadString()
+	item.Untradeable = net.ReadBool()
 
 	pluto.received.item[id] = item
 

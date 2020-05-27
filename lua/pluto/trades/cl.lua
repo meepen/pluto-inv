@@ -834,6 +834,13 @@ function PANEL:Init()
 				return
 			end
 
+			if (other and other.Item) then
+				PrintTable(other.Item)
+			end
+			if (other and other.Item and other.Item.Untradeable) then
+				return
+			end
+
 			if (self.Item) then
 				self.TradeItems[self.Item.ID] = nil
 			end

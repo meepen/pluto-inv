@@ -123,6 +123,7 @@ function pluto.inv.writeitem(ply, item)
 		net.WriteBool(item.Locked or false)
 		net.WriteString(item.OriginalOwner or "0")
 		net.WriteString(item.OriginalOwnerName or "[unknown]")
+		net.WriteBool(item.Untradeable)
 	else
 		net.WriteBool(false)
 	end

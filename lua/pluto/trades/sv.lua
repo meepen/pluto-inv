@@ -39,6 +39,11 @@ function pluto.inv.readtradeupdate(ply)
 			return
 		end
 
+		if (item.Untradeable) then
+			ply:Kick "You aren't allowed to trade that item! (report to meepen)"
+			return
+		end
+
 		items[ind] = item
 	end
 
