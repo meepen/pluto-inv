@@ -10,6 +10,7 @@ SWEP.HeadshotMultiplier    = 2
 SWEP.Primary.NumShots	= 1
 SWEP.Primary.Automatic			= false
 SWEP.Primary.Delay				= 60 / 45
+SWEP.DeploySpeed = 1.7
 
 SWEP.Primary.ClipSize			= 7
 SWEP.Primary.DefaultClip			= 14
