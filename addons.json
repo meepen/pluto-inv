@@ -15298,6 +15298,7 @@
     ],
     "sparklies": [
         "particles/pluto_sparklies.pcf",
+        "particles/pluto_heart.pcf",
         "materials/particle/animglow02.vmt",
         "materials/particle/animglow02.vtf"
     ]

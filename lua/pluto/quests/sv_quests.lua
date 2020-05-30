@@ -271,6 +271,7 @@ function pluto.quests.init_nocache(ply, cb)
 			for type, quests in pairs(quests) do
 				for _, quest in pairs(quests) do
 					timer.Create("quest_" .. quest.RowID, quest.EndTime - os.time() + 5, 1, function()
+						print("DELETE", quest.RowID, "OWNED BY", quest.Player)
 						pluto.quests.delete(quest.RowID)
 					end)
 				end

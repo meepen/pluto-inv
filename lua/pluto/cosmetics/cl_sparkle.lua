@@ -6,19 +6,26 @@ hook.Add("PlutoWorkshopFinish", "pluto_workshop", function()
 		["$vertexalpha"] = "1",
 	})
 
+	CreateMaterial("pluto_heart", "SpriteCard", {
+		["$additive"] = "1",
+		["$vertexcolor"] = "1",
+		["$vertexalpha"] = "1",
+	}):SetTexture("$basetexture", Material "pluto/currencies/heart.png":GetTexture "$basetexture")
+
 	game.AddParticles "particles/pluto_sparklies.pcf"
+	game.AddParticles "particles/pluto_heart.pcf"
 end)
 
 pluto.sparklelist = pluto.sparklelist or setmetatable({}, {__mode = "k"})
 pluto.sparklemap = pluto.sparklemap or setmetatable({}, {__mode = "k"})
 
-function pluto.sparkle(what, turnon)
+function pluto.sparkle(what, particle, turnon)
 	pluto.sparklelist[what] = turnon or nil
 	local system = pluto.sparklemap[what]
 	if (IsValid(system) and not turnon) then
 		system:StopEmissionAndDestroyImmediately()
 	elseif (not IsValid(system) and turnon and IsValid(what)) then
-		pluto.sparklemap[what] = CreateParticleSystem(what, "pluto_sparklies", PATTACH_ABSORIGIN_FOLLOW, 0)
+		pluto.sparklemap[what] = CreateParticleSystem(what, particle, PATTACH_ABSORIGIN_FOLLOW, 0)
 	end
 end
 

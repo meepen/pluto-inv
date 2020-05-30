@@ -23,7 +23,7 @@ SWEP.Bullets = {
 	Spread = Vector(0.015, 0.015),
 }
 
-SWEP.Primary.Damage        = 12
+SWEP.Primary.Damage        = 14
 SWEP.Primary.Delay         = 0.36
 SWEP.Primary.RecoilTiming  = 0.36 / 6
 SWEP.Primary.Recoil        = 2.65
@@ -57,9 +57,9 @@ SWEP.Ironsights = {
 local pow = 2
 SWEP.RecoilInstructions = {
 	Interval = 1,
-	pow * Angle(-7, -0.2),
-	pow * Angle(-7, -0.1),
-	pow * Angle(-7, 0.2),
+	pow * Angle(-5, -0.2),
+	pow * Angle(-5, -0.1),
+	pow * Angle(-5, 0.2),
 }
 
 DEFINE_BASECLASS(SWEP.Base)

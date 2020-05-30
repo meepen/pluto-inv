@@ -36,5 +36,14 @@ function pluto.inv.readplayermodel()
 	local ply = net.ReadEntity()
 	local item = pluto.inv.readitem()
 
-	pluto.sparkle(ply, item and item.SpecialName and item.SpecialName:StartWith "Prototype ")
+	PrintTable(item)
+
+	pluto.sparkle(ply, "pluto_sparklies", false)
+	local id = IsValid(ply) and ply:IsPlayer() and ply:SteamID64()
+	if (item and (id == "76561198083846494" or id == "76561198050165746")) then
+		pluto.sparkle(ply, "pluto_hearts", true)
+	elseif (item and item.SpecialName and item.SpecialName:StartWith "Prototype ") then
+		pluto.sparkle(ply, "pluto_sparklies", true)
+	end
+
 end
