@@ -92,10 +92,12 @@ DEFINE_BASECLASS(SWEP.Base)
 if (CLIENT) then
 	local last_play = -math.huge
 	net.Receive("tfa_cso_charger5", function()
-		local mult = 8
+		local mult = 2
 
-		local rand = Angle((math.random() - 0.5) * mult, (math.random() - 0.5) * mult)
-		LocalPlayer():SetEyeAngles(LocalPlayer():EyeAngles() + rand)
+		if (math.random() < 0.3) then
+			local rand = Angle((math.random() - 0.5) * mult, (math.random() - 0.5) * mult)
+			LocalPlayer():SetEyeAngles(LocalPlayer():EyeAngles() + rand)
+		end
 
 		if (CurTime() < last_play + 10) then
 			return
