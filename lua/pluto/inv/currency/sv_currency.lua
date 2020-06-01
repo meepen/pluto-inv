@@ -643,7 +643,7 @@ for name, values in pairs {
 		},
 	},
 	_lightsaber = {
-		Shares = 150,
+		Shares = 0,
 		Global = true,
 		Pickup = function(ply)
 			local found = false
