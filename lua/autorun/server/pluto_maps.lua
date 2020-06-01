@@ -51,6 +51,11 @@ local map_lookup = {
 	ttt_westwood_v4 = "104520719",
 	ttt_whitehouse_v9 = "296631816",
 	ttt_pluto_winterfactory = "2026893461",
+
+	ttt_orange_v7 = "201250938",
+	ttt_vegas_casino = "2013589768",
+	ttt_vault = "422801063",
+	ttt_kokiri = "2006894659",
 }
 
 function pluto.GetValidMaps()
