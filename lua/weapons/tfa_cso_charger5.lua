@@ -13,6 +13,7 @@ SWEP.HeadshotMultiplier = 1.3
 SWEP.Primary.Automatic			= true
 SWEP.Primary.Delay				= 60 / 600
 
+SWEP.IsInUse = true
 
 --Ammo Related
 

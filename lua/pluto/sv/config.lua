@@ -53,40 +53,42 @@ if (not pluto.db_init) then
 	pluto.db_init = true
 end
 
-if (not gay) then
-	---gay = true
-	return
-end
 
-require "gluamysql"
+concommand.Add("test_gluamysql", function(ply)
+	if (IsValid(ply)) then
+		return
+	end
+	require "gluamysql"
+	
+	local new_db, promise = mysql.connect(
+		config.db.host,
+		config.db.username,
+		config.db.password,
+		config.db.database
+	)
 
-local new_db = mysql.connect(
-	config.db.host,
-	config.db.username,
-	config.db.password,
-	config.db.database
-)
+	promise
+		:next(function(db)
+			print("CONNECTED", db)
+			db:query("SELECT displayname from pluto_player_info LIMIT 1")
+				:next(function(data)
+					print("RANDOM NAME: " .. data[1].displayname)
+				end)
+				:catch(function(err)
+					print("DISPLAYNAME ERROR: " .. err)
+				end)
+		end)
+		:catch(function(err)
+			print("CONNECTION ERROR" .. err)
+		end)
+--[[
+	include "pluto/sv/co_db.lua"
 
-hook.Add("MySQLConnection", "test", function(db, err)
-	print("CONNECTO STATUSO", db, err)
+	cmysql(function()
+		local db = mysql_init(config.db.host, config.db.username, config.db.password, config.db.database)
+
+		print("CMYSQL DB", db)
+		print("1 = " .. mysql_query(db, "SELECT 1")[1]["1"])
+		print("2 = " .. mysql_query(db, "SELECT 2")[1]["2"])
+	end)]]
 end)
-
-local query = new_db:query "SELECT 1"
-
-function query:OnError(p)
-	print("QUERY ERROR", p)
-end
-
-function query:OnData(data)
-	print "QUERY DATA-O"
-	PrintTable(data)
-end
-
-function query:OnFinish(data)
-	print "QUERY FINISHO"
-	PrintTable(data)
-end
-
-query:run()
-
-print(query.OnFinish)

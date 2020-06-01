@@ -17,6 +17,8 @@ SWEP.Primary.DefaultClip			= 14
 SWEP.Primary.Ammo          = "357"
 SWEP.AmmoEnt               = "item_ammo_357_ttt"
 
+SWEP.IsInUse = true
+
 SWEP.ViewModel			= "models/weapons/tfa_cso/c_m82.mdl"
 SWEP.ViewModelFlip = true
 SWEP.ViewModelChange = {

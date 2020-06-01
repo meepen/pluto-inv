@@ -16,6 +16,8 @@ SWEP.HeadshotMultiplier = 2.5
 
 SWEP.Primary.RecoilTiming  = 0.09
 
+SWEP.IsInUse = true
+
 SWEP.ReloadSpeed = 0.75
 
 SWEP.Primary.ClipSize			= 4
