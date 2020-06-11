@@ -24,6 +24,7 @@ for _, filename in pairs {
 	"greed",
 	"handed",
 	"hearted",
+	"leech",
 	"limp",
 	"mag",
 	"max_range",
