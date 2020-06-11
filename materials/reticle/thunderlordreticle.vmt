@@ -1,0 +1,6 @@
+"VertexlitGeneric"
+{
+    "$basetexture" "reticle/ThunderlordReticle"
+	"$selfillum" "1"
+    "$additive" 1
+}

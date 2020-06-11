@@ -54,9 +54,13 @@ pluto.files.load {
 		"materials/pluto/bg_bunny4.png",
 
 		"resource/fonts/Niconne-Regular.ttf",
+		"resource/fonts/Lateef-Regular.ttf",
+		"resource/fonts/Aladin-Regular.ttf",
 	},
 	Workshop = {
 		"2001929342",
+
+		"1940107958", -- thunderlord
 	},
 }
 

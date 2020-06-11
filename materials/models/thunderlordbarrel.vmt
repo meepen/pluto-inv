@@ -1,0 +1,21 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/ThunderlordBarrel"
+	"$bumpmap" "models/ThunderlordBarrel_normal"
+	"$normalmapalphaenvmapmask" "1"
+	"$phong" 					"1"
+	"$phongalbedoboost"			"3"
+	"$phongboost"				"5"
+	"$phongfresnelranges" 		"[0 0.3 1]"
+	"$phongalbedotint"			"1"
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[0.2 0.2 0.2]"
+	"$envmapfresnel" "1"
+	$detail "models/ThunderlordBarrelEmission"
+    $detailscale 1     //scales the detail texture to same size as diffuse.
+    $detailblendfactor 0.7  //lower values make the texture less visible. 0.0 - 1.0
+    $detailblendmode 6    //6 also works.
+	"$color2" "{170 170 170}"
+	//$selfillum 1
+	"$model" "1"
+}

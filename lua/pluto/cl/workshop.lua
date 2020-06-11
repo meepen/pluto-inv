@@ -427,6 +427,12 @@ local packs =  {
 			"20200524",
 		}
 	},
+	thunderlord = {
+		remote = default "thunderlord",
+		versions = {
+			"20200211"
+		}
+	}
 }
 
 local good_col = Color(0, 255, 0)

@@ -54,41 +54,14 @@ if (not pluto.db_init) then
 end
 
 
+
 concommand.Add("test_gluamysql", function(ply)
 	if (IsValid(ply)) then
 		return
 	end
 	require "gluamysql"
+
+	include "pluto/sv/mysql_pool.lua"
 	
-	local new_db, promise = mysql.connect(
-		config.db.host,
-		config.db.username,
-		config.db.password,
-		config.db.database
-	)
-
-	promise
-		:next(function(db)
-			print("CONNECTED", db)
-			db:query("SELECT displayname from pluto_player_info LIMIT 1")
-				:next(function(data)
-					print("RANDOM NAME: " .. data[1].displayname)
-				end)
-				:catch(function(err)
-					print("DISPLAYNAME ERROR: " .. err)
-				end)
-		end)
-		:catch(function(err)
-			print("CONNECTION ERROR" .. err)
-		end)
---[[
-	include "pluto/sv/co_db.lua"
-
-	cmysql(function()
-		local db = mysql_init(config.db.host, config.db.username, config.db.password, config.db.database)
-
-		print("CMYSQL DB", db)
-		print("1 = " .. mysql_query(db, "SELECT 1")[1]["1"])
-		print("2 = " .. mysql_query(db, "SELECT 2")[1]["2"])
-	end)]]
+	pluto.pool = pool
 end)

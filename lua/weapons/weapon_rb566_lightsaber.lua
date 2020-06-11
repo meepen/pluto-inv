@@ -260,7 +260,7 @@ function SWEP:SetupDataTables()
 		self:SetForce( self:GetMaxForce() )
 		self:SetOnSound( "lightsaber/saber_on" .. math.random( 1, 4 ) .. ".wav" )
 		self:SetOffSound( "lightsaber/saber_off" .. math.random( 1, 4 ) .. ".wav" )
-		
+
 		local color = HSVToColor(math.random() * 360, 1, 0.3)
 		self:SetCrystalColor( Vector( color.r, color.g, color.b ) )
 

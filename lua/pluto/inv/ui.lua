@@ -373,7 +373,7 @@ local PANEL = {}
 DEFINE_BASECLASS "ttt_curved_panel"
 
 function PANEL:Init()
-	self:SetColor(Color(66, 68, 65, 255))
+	self:SetColor(Color(78, 88, 88))
 	self:SetCurve(2)
 
 	self.Image = self:Add "pluto_item"
