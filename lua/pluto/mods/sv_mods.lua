@@ -19,6 +19,7 @@ for _, filename in pairs {
 	"damage",
 	"diced",
 	"dropletted",
+	"eagle",
 	"fire",
 	"firerate",
 	"greed",
