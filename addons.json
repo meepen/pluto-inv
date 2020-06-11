@@ -15318,5 +15318,11 @@
         "materials/effects/sc_softglow.vmt",
         "materials/effects/softglow.vmt",
         "materials/effects/softglow.vtf"
+    ],
+    "blink": [
+        "sound/vadim_blink/aim1.ogg",
+        "sound/vadim_blink/aim2.ogg",
+        "sound/vadim_blink/teleport1.ogg",
+        "sound/vadim_blink/teleport2.ogg"
     ]
 }

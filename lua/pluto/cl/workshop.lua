@@ -432,6 +432,12 @@ local packs =  {
 		versions = {
 			"20200211"
 		}
+	},
+	blink = {
+		remote = default "blink",
+		versions = {
+			"20200211",
+		}
 	}
 }
 
