@@ -12,7 +12,7 @@ function MOD:FormatModifier(index, roll)
 	return string.format("%.01f%%", roll)
 end
 
-MOD.Description = "Damage is lowered by %s. Heal for %s of damage."
+MOD.Description = "Damage is lowered by %s. %s of damage is returned as health."
 
 MOD.Tiers = {
 	{ 8, 15, 25, 35 },

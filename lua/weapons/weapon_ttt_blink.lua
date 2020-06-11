@@ -25,7 +25,7 @@ SWEP.Equipment = {
 	CanBuy	       = { traitor = true, Detective = true },
 	Cost 	   	   = 1,
 	Limit	       = 1,
-	Icon           = "materials/tttrw/equipment/flaregun.png"
+	Icon           = "materials/weapons/blink.png"
 }
 
 SWEP.DeploySpeed = 4
