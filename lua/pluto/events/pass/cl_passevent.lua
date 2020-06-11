@@ -40,6 +40,15 @@ hook.Add("HUDPaint", "pluto_passevent", function()
 
 	local start = SysTime()
 	local ends = SysTime() + 5
+
+	local texts = {
+		"this world... will be absorbed",
+		"do not test me",
+		"i have plans for you..."
+	}
+
+	local text = table.Random(texts)
+
 	hook.Add("DrawOverlay", "pluto_passevent", function()
 		if (ends < SysTime()) then
 			hook.Remove("DrawOverlay", "pluto_passevent")
@@ -50,6 +59,6 @@ hook.Add("HUDPaint", "pluto_passevent", function()
 		surface.SetDrawColor(0, 0, 0, 240 - frac * 220)
 		surface.DrawRect(0, 0, ScrW(), ScrH())
 
-		draw.SimpleText("the world must be enveloped", "ungodly_font", ScrW() / 2, ScrH() / 2, ColorAlpha(white_text, 240 - frac * 240), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText(text, "ungodly_font", ScrW() / 2, ScrH() / 2, ColorAlpha(white_text, 240 - frac * 240), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end)
 end)

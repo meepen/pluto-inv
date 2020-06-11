@@ -43,7 +43,7 @@ end
 
 function QUEST:Init(data)
 	data:Hook("DoPlayerDeath", function(data, vic, atk, dmg)
-		if (atk == data.Player and atk:GetRoleTeam() ~= vic:GetRoleTeam() and atk:Health() == atk:GetMaxHealth() and dmg:IsDamageType(DMG_FALL)) then
+		if (atk == data.Player and atk:GetRoleTeam() ~= vic:GetRoleTeam() and dmg:IsDamageType(DMG_FALL)) then
 			data:UpdateProgress(1)
 		end
 	end)
