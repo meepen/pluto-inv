@@ -59,8 +59,6 @@ pluto.files.load {
 	},
 	Workshop = {
 		"2001929342",
-
-		"1940107958", -- thunderlord
 	},
 }
 
