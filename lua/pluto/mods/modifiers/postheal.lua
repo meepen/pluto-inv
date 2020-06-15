@@ -19,9 +19,9 @@ end
 MOD.Description = "After a righteous kill, heal %s of your health over %s seconds"
 
 MOD.Tiers = {
-	{ 15,  15, 1, 5 },
-	{ 10, 10, 1, 5 },
-	{ 5, 5, 1, 5 },
+	{ 15, 22, 1, 5 },
+	{  8, 15, 1, 5 },
+	{  5,  8, 1, 5 },
 }
 
 function MOD:OnKill(wep, rolls, atk, vic)
