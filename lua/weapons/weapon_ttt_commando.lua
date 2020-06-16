@@ -41,8 +41,8 @@ SWEP.ViewModel             = "models/razorswep/weapons/v_rif_comma.mdl"
 SWEP.WorldModel            = "models/razorswep/weapons/w_rif_comm.mdl"
 
 SWEP.Ironsights = {
-	Pos = Vector(-5, -8, 2.8),
-	Angle = Vector(1, 1.2, -2),
+	Pos = Vector(-5.18, -10, 0.89),
+	Angle = Vector(-0.3, 0.39, -1),
 	TimeTo = 0.175,
 	TimeFrom = 0.175,
 	SlowDown = 0.45,

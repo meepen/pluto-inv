@@ -18,6 +18,8 @@ SWEP.ViewModelFOV          = 65
 SWEP.UseHands = true
 SWEP.NoPlayerModelHands = false
 
+SWEP.BobScale  = -999
+SWEP.SwayScale = -999
 SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
@@ -64,6 +66,15 @@ SWEP.Offset = {
 		Right = -10,
 		Forward = 180,
 	}
+}
+
+SWEP.Ironsights = {
+	Pos = Vector(-4.4, -999, 2), -- -4.4, -18, 2 for scope in wep
+	Angle = Vector(-6, 0.6, -2.3),
+	TimeTo = 0.1,
+	TimeFrom = 0.1,
+	SlowDown = 0.3,
+	Zoom = 0.35,
 }
 
 sound.Add {

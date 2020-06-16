@@ -41,8 +41,8 @@ SWEP.ViewModel             = "models/weapons/v_rif_aacho.mdl"
 SWEP.WorldModel            = "models/weapons/w_rif_aacho.mdl"
 
 SWEP.Ironsights = {
-	Pos = Vector(-5, -8, 2.8),
-	Angle = Vector(1, 1.2, -2),
+	Pos = Vector(-3.01, -8.8, 1),
+	Angle = Vector(0, 0, -0.5),
 	TimeTo = 0.175,
 	TimeFrom = 0.175,
 	SlowDown = 0.45,
