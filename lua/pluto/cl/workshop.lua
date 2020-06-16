@@ -438,8 +438,15 @@ local packs =  {
 		versions = {
 			"20200211",
 		}
+	},
+	destroyer = {
+		remote = default "destroyer",
+		versions = {
+			"20200615",
+		}
 	}
 }
+
 
 local good_col = Color(0, 255, 0)
 local error_col = Color(255, 0, 0)

@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$surfaceprop" "cloth"
+	"$basetexture" "models\weapons\attachments\scope_interior_col"
+}

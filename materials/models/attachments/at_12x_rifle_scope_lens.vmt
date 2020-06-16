@@ -1,0 +1,39 @@
+// v1.01
+//This file is auto-generated from reVaMpT. Edit at your own risk.
+"VertexLitGeneric"
+{
+
+	"$surfaceprop" "glass"
+	"$basetexture" "models\weapons\attachments\rifle_scope_lens_col"
+	"$bumpmap" "models\weapons\attachments\rifle_scope_lens_nml"
+	"$translucent" "1"
+	"$envmap" "env_cubemap"
+	"$reflectiontint" "models\weapons\attachments\rifle_scope_lens_spc"
+	"$reflectiontintshininess" "models\weapons\attachments\rifle_scope_lens_spc"
+	"$reflectiontintcolor" "1"
+	"$fresnelamount" "1"
+	"$fresnelintensity" "15"
+	"$fresnelcurvesharpness" "0.79"
+	"$envmapfresnel" "1"
+	"$envmapLambertian" "3"
+	"$envmaptint" "[1 1 1]"
+	"$EnvmapSharpnessBias" "0"
+	"$specularboost" ".5"
+	"$speculartint" "[1 1 1]"
+	"$shininess" "models\weapons\attachments\rifle_scope_lens_exp"
+	//Start of freehand input from reVaMpT//
+
+	"$vertexalpha" 1
+	
+	$allowditherfade 0
+	
+	"Proxies"
+	{
+		"ADSFOVTarget"
+		{
+			"range"		"25.0"
+			"invert"	"0"
+			"resultVar" "$alpha"
+		}
+	}
+}

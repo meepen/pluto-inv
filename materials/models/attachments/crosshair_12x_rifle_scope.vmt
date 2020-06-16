@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$surfaceprop" "glass"
+	"$basetexture" "models\weapons\attachments\12x_rifle_scope_crosshair_col"
+	"$bumpmap" "models\weapons\attachments\12x_rifle_scope_crosshair_nml"
+	"$translucent" "1"
+}
