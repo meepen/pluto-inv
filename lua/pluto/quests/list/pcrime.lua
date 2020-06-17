@@ -4,7 +4,15 @@ QUEST.Credits = "Froggy & add__123"
 QUEST.Color = Color(204, 43, 75)
 
 function QUEST:GetReward(seed)
-	return baseclass.Get "weapon_cod4_ak47_silencer"
+	local guns = {
+		"weapon_cod4_ak47_silencer",
+		"weapon_cod4_m4_silencer",
+		"weapon_cod4_m14_silencer",
+		"weapon_cod4_m16_silencer",
+		"weapon_cod4_g3_silencer",
+		"weapon_cod4_g36c_silencer",
+	}
+	return baseclass.Get(guns[math.floor(seed * #guns) + 1])
 end
 
 function QUEST:GetRewardText(seed)
@@ -18,7 +26,6 @@ end
 function QUEST:Reward(data)
 	local wep = self:GetReward(data.Seed)
 
-	print(wep.ClassName)
 	local transact, wep = pluto.inv.generatebufferweapon(data.Player, "uncommon", wep.ClassName)
 	transact:Run()
 
@@ -26,7 +33,7 @@ function QUEST:Reward(data)
 end
 
 function QUEST:IsType(type)
-	return type == 1
+	return type == 2
 end
 
 function QUEST:GetProgressNeeded(type)
