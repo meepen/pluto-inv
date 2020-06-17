@@ -8,6 +8,10 @@ function MOD:IsNegative(roll)
 	return roll < 0
 end
 
+function MOD:CanRollOn(class)
+	return not not class.Ironsights
+end
+
 function MOD:FormatModifier(index, roll)
 	return string.format("%.01f", roll)
 end
@@ -60,6 +64,9 @@ function MOD:ModifyWeapon(wep, rolls)
 			return
 		end
 
+		if (owner:GetActiveWeapon() ~= self) then
+			return
+		end
 
 		local es = ents.FindInCone(owner:GetShootPos(), owner:GetAimVector(), dist, ang)
 
