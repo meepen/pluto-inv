@@ -1,5 +1,5 @@
 QUEST.Name = "Invulnerable"
-QUEST.Description = "Kill players while at full health."
+QUEST.Description = "Kill players while you are at full health"
 QUEST.Credits = "Eppen"
 QUEST.Color = Color(204, 43, 75)
 

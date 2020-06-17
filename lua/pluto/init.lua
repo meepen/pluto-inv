@@ -20,6 +20,27 @@ local allowed = {
 	["76561198188070674"] = true, -- CROSSMAN
 }
 
+function HexColor(h)
+	if (h[1] == "#") then
+		h = h:sub(2)
+	end
+
+	local a, r, g, b = 255
+
+	if (h:len() <= 4) then
+		h = h:gsub(".", "%1%1")
+	end
+
+	local col = {}
+
+	
+	for num in h:gmatch "(..)" do
+		col[#col + 1] = tonumber(num, 16)
+	end
+
+	return Color(unpack(col))
+end
+
 function pluto.cancheat(ply)
 	return IsValid(ply) and allowed[ply:SteamID64()]
 end

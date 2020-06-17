@@ -6,33 +6,6 @@ pluto.quests.current = pluto.quests.current or {}
 
 pluto.quests.loading = pluto.quests.loading or {}
 
-pluto.quests.types = {
-	[0] = {
-		Name = "Special",
-		Time = 60 * 60 * 24 * 7, -- week
-		Amount = 0,
-		Cooldown = 60 * 60 * 24 * 7,
-	},
-	[1] = {
-		Name = "Hourly",
-		Time = 60 * 60,
-		Amount = 2,
-		Cooldown = 60 * 7.5,
-	},
-	[2] = {
-		Name = "Daily",
-		Time = 60 * 60 * 24, -- day
-		Amount = 2,
-		Cooldown = 60 * 60 * 6,
-	},
-	[3] = {
-		Name = "Weekly",
-		Time = 60 * 60 * 24 * 7, -- week
-		Amount = 0,
-		Cooldown = 0,
-	},
-}
-
 pluto.quests.list = pluto.quests.list or {}
 
 for _, id in pairs {
@@ -46,6 +19,7 @@ for _, id in pairs {
 	"nodamage",
 	"nojump",
 	"oneshot",
+	"pcrime",
 	"stickcurr",
 	"traitors",
 
@@ -337,6 +311,11 @@ function pluto.inv.writequest(ply, quest)
 	net.WriteString(quest.QUEST.Description)
 	net.WriteColor(quest.QUEST.Color)
 	net.WriteUInt(quest.Type, 8)
+
+	net.WriteBool(quest.QUEST.Credits)
+	if (quest.QUEST.Credits) then
+		net.WriteString(quest.QUEST.Credits)
+	end
 
 	net.WriteString(quest.QUEST:GetRewardText(quest.Seed))
 

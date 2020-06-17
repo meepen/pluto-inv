@@ -14,6 +14,9 @@ function pluto.inv.readquest()
 	quest.Description = net.ReadString()
 	quest.Color = net.ReadColor()
 	quest.Tier = net.ReadUInt(8)
+	if (net.ReadBool()) then
+		quest.Credits = net.ReadString()
+	end
 
 	quest.Reward = net.ReadString()
 
@@ -43,8 +46,8 @@ surface.CreateFont("pluto_quest_title", {
 
 surface.CreateFont("pluto_quest_desc", {
 	font = "Roboto",
-	size = math.max(16, ScrH() / 80),
-	weight = 200
+	size = math.max(8, ScrH() / 160) * 2,
+	weight = 0,
 })
 
 surface.CreateFont("pluto_quest_progress", {
@@ -63,7 +66,7 @@ surface.CreateFont("pluto_quest_reward", {
 local PANEL = {}
 
 function PANEL:Init()
-	self:DockPadding(12, 12, 12, 12)
+	self:DockPadding(10, 10, 10, 10)
 	self:SetCurve(4)
 	self:SetColor(Color(25, 25, 26))
 
@@ -181,7 +184,7 @@ function PANEL:Init()
 				} do
 					local amount = left / what.Interval
 					if (amount >= 1) then
-						t = string.format(amount % 1 == 0 and "%i %s" or "%.1f %s", amount, what.Name)
+						t = string.format("%i %s", amount, what.Name)
 					end
 				end
 			else
@@ -203,13 +206,15 @@ function PANEL:Resize()
 	h = h + self.Description:GetTall() + 6 + self.Bottom:GetTall() + self.RewardText:GetTall() + 12
 
 	self:SetTall(h)
+	
+	self.Right:SetWide(self:GetWide() / 4)
 end
 
 function PANEL:SetQuest(quest)
 	self.Quest = quest
 	self.QuestName:SetText(quest.Name)
 	self.Description:SetText(quest.Description)
-	self.RewardText:SetText("You could receive a " .. quest.Reward)
+	self.RewardText:SetText("You would receive a " .. quest.Reward)
 
 
 	self.QuestName:SetTextColor(quest.Color)
@@ -230,8 +235,30 @@ DEFINE_BASECLASS "pluto_inventory_base"
 function PANEL:Init()
 	BaseClass.Init(self)
 
-	self.List = self:Add "DScrollPanel"
+	self.List = self:Add "DCategoryList"
 	self.List:Dock(FILL)
+	self.List:SetSkin "tttrw"
+
+	self.Categories = {}
+
+	for i = 0, #pluto.quests.types do
+		local type = pluto.quests.types[i]
+		self.Categories[i] = {
+			Panel = self.List:Add(type.Name),
+			Contents = vgui.Create "EditablePanel"
+		}
+
+		self.Categories[i].Panel.Header:SetFont "pluto_quest_title"
+		self.Categories[i].Panel.Header:SetContentAlignment(5)
+		self.Categories[i].Panel.Header.UpdateColours = function() end
+		self.Categories[i].Panel.Header:SetTextColor(type.Color or white_text)
+
+		self.Categories[i].Panel:SetContents(self.Categories[i].Contents)
+		self.Categories[i].Panel:DockMargin(0, 0, 0, 3)
+		self.Categories[i].Panel:DockPadding(0, 1, 0, 4)
+
+		self.Categories[i].Contents:DockMargin(0, 8, 0, 0)
+	end
 
 	self.Quests = {}
 	self:RefreshQuests()
@@ -263,7 +290,7 @@ function PANEL:RefreshQuests()
 	end
 
 	for _, quest in pairs(needed) do
-		local pnl = self.List:Add "pluto_quest_item"
+		local pnl = self.Categories[quest.Tier].Contents:Add "pluto_quest_item"
 		pnl:Dock(TOP)
 		pnl:SetQuest(quest)
 		self.Quests[quest.ID] = pnl

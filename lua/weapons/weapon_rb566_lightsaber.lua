@@ -330,27 +330,6 @@ local function rand(seed)
 	return seed
 end
 
-function HexColor(h)
-	if (h[1] == "#") then
-		h = h:sub(2)
-	end
-
-	local a, r, g, b = 255
-
-	if (h:len() <= 4) then
-		h = h:gsub(".", "%1%1")
-	end
-
-	local col = {}
-
-	
-	for num in h:gmatch "(..)" do
-		col[#col + 1] = tonumber(num, 16)
-	end
-
-	return Color(unpack(col))
-end
-
 local lookup = {
 	[1519018] = HexColor "#4fa800",
 	[1512886] = HexColor "#00ad34",

@@ -1,5 +1,5 @@
 QUEST.Name = "Clubber"
-QUEST.Description = "Hit people rightfully with a melee, then kill them"
+QUEST.Description = "Hit people rightfully with a melee before murdering them"
 QUEST.Credits = "Phrot"
 QUEST.Color = Color(204, 61, 5)
 
