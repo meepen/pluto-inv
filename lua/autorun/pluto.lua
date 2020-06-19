@@ -27,6 +27,8 @@ pluto.files.load {
 		"cosmetics/cl_sparkle.lua",
 
 		"events/pass/cl_passevent.lua",
+
+		"inv/exp/cl_exp_scoreboard.lua",
 	},
 	Shared = {
 		"co_net.lua",

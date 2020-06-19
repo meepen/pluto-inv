@@ -403,19 +403,19 @@ function pluto.inv.init(ply, cb2)
 		TrySucceed "quests"
 	end)
 
-	local msg = pluto.inv.message(ply)
-
-	for _, ply in pairs(player.GetAll()) do
-		msg:write("playerexp", ply, ply:GetPlutoExperience() or 0)
-	end
-
-	msg:send()
-
 	pluto.db.query("SELECT experience from pluto_player_info where steamid = ?", {pluto.db.steamid64(ply)}, function(err, q, d)
 		d = d and d[1] or {experience = 0}
 		if (IsValid(ply)) then
 			ply:SetPlutoExperience(d.experience)
 			pluto.inv.addplayerexperience(ply, 0)
+
+			local msg = pluto.inv.message(ply)
+		
+			for _, ply in pairs(player.GetAll()) do
+				msg:write("playerexp", ply, ply:GetPlutoExperience() or 0)
+			end
+		
+			msg:send()
 		end
 	end)
 end
