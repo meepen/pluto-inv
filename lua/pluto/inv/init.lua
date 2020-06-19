@@ -414,6 +414,22 @@ function pluto.inv.addexperience(id, exp) -- should not need cb :shrug:
 	end)
 end
 
+function pluto.inv.addplayerexperience(ply, exp)
+	local stmd = pluto.db.steamid64(ply)
+
+	if (type(ply) == "Player") then
+		ply:SetPlutoExperience(ply:GetPlutoExperience() + exp)
+		for _, oply in pairs(player.GetAll()) do
+			pluto.inv.message(oply)
+				:write("playerexp", ply, ply:GetPlutoExperience())
+				:send()
+		end
+	end
+
+	pluto.db.query("UPDATE pluto_player_info SET experience = experience + ? WHERE steamid = ?", {exp, stmd}, function(e, q)
+	end)
+end
+
 function pluto.inv.lockitem(steamid, itemid, locked, cb, nostart)
 	steamid = pluto.db.steamid64(steamid)
 

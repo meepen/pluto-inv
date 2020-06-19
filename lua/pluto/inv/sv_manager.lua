@@ -402,6 +402,22 @@ function pluto.inv.init(ply, cb2)
 	pluto.quests.init(ply, function(_quests)
 		TrySucceed "quests"
 	end)
+
+	local msg = pluto.inv.message(ply)
+
+	for _, ply in pairs(player.GetAll()) do
+		msg:write("playerexp", ply, ply:GetPlutoExperience() or 0)
+	end
+
+	msg:send()
+
+	pluto.db.query("SELECT experience from pluto_player_info where steamid = ?", {pluto.db.steamid64(ply)}, function(err, q, d)
+		d = d and d[1] or {experience = 0}
+		if (IsValid(ply)) then
+			ply:SetPlutoExperience(d.experience)
+			pluto.inv.addplayerexperience(ply, 0)
+		end
+	end)
 end
 
 function pluto.inv.readtabswitch(ply)
@@ -701,6 +717,11 @@ end
 function pluto.inv.writeexpupdate(cl, item)
 	net.WriteUInt(item.RowID, 32)
 	net.WriteUInt(item.Experience, 32)
+end
+
+function pluto.inv.writeplayerexp(cl, ply, exp)
+	net.WriteEntity(ply)
+	net.WriteUInt(exp, 32)
 end
 
 function pluto.inv.writeitemlock(ply, itemid, locked)

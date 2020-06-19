@@ -15,7 +15,10 @@ pluto.files.load {
 		"mapvote/mapvote.lua",
 		"models/sv_models.lua",
 		"craft/sv.lua",
-		"inv/sv_exp.lua",
+
+		"inv/exp/sv_exp_provider.lua",
+		"inv/exp/sv_model_exp.lua",
+		"inv/exp/sv_player_exp.lua",
 
 		"tiers/_init.lua",
 

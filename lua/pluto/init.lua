@@ -44,3 +44,5 @@ end
 function pluto.cancheat(ply)
 	return IsValid(ply) and allowed[ply:SteamID64()]
 end
+
+AccessorFunc(FindMetaTable "Player", "pluto_exp", "PlutoExperience", FORCE_NUMBER)

@@ -360,6 +360,14 @@ function pluto.inv.readexpupdate()
 	item.Experience = exp
 end
 
+function pluto.inv.readplayerexp(cl, ply, exp)
+	local ply = net.ReadEntity()
+	local exp = net.ReadUInt(32)
+	if (IsValid(ply)) then
+		ply:SetPlutoExperience(exp)
+	end
+end
+
 function pluto.inv.writeitemlock(itemid)
 	net.WriteUInt(itemid, 32)
 end
