@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 SWEP.HoldType              = "ar2"
 
-SWEP.PrintName          = "Commando"
+SWEP.PrintName          = "Honey Badger"
 SWEP.Slot               = 2
 
 SWEP.ViewModelFlip      = false
