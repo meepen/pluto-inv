@@ -23,12 +23,6 @@ local badasses = {
 
 ROUND.RoundDatas = {
 	{
-		BunnyModel = "kanna",
-		Health = 35,
-		ChildModel = badasses,
-		Shares = 1,
-	},
-	{
 		BunnyModel = "miku_cupid",
 		Health = 50,
 		ChildModel = badasses,
