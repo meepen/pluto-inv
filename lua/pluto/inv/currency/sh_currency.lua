@@ -217,11 +217,11 @@ pluto.currency.list = {
 	},
 	{
 		InternalName = "tp",
-		Name = "Toilet Paper",
-		Icon = "pluto/currencies/toiletpaper.png",
-		Description = "Valuable Currency During the Quarantine",
-		SubDescription = "Toilet paper was the first to go when it started.",
-		Color = Color(235, 240, 236, 255),
+		Name = "Refined Plutonium",
+		Icon = "pluto/currencies/refined_ingot.png",
+		Description = "Valuable Black Market Currency",
+		SubDescription = "Once the mission was complete, it was revealed what Yaari was truly after...",
+		Color = Color(0, 213, 183),
 	},
 	{
 		InternalName = "crate3",
