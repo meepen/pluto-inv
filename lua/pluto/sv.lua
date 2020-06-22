@@ -62,7 +62,6 @@ pluto.files.load {
 	},
 	Workshop = {
 		"2001929342",
-		"315288391",
 	},
 }
 
