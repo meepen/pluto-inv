@@ -30,6 +30,7 @@ concommand.Add("pluto_generate_weapon", function(ply, cmd, args)
 	local h = w
 
 	for _, wep in pairs(list) do
+		wep = baseclass.Get(wep.ClassName)
 		local err = ClientsideModel(wep.WorldModel, RENDERGROUP_OTHER)
 
 		local lookup = wep.Ortho or {0, 0}
