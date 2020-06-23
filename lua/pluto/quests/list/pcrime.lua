@@ -47,7 +47,7 @@ function QUEST:Reward(data)
 	local transact, wep = pluto.inv.generatebufferweapon(data.Player, "uncommon", wep.ClassName)
 	transact:Run()
 
-	data.Player:ChatPrint(white_text, "You have received a ", pluto.tiers.byname.uncommon.Color, wep.PrintName, white_text, "!")
+	data.Player:ChatPrint(white_text, "You have received a ", wep, white_text, "!")
 end
 
 function QUEST:IsType(type)
