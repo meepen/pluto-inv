@@ -21,6 +21,24 @@ function QUEST:GetRewardText(seed)
 end
 
 function QUEST:Init(data)
+	local ragdolls = {}
+	data:Hook("PlayerRagdollCreated", function(data, ply, rag, atk)
+		print(ply, rag, atk)
+		if (atk == data.Player and atk:GetRoleTeam() ~= ply:GetRoleTeam()) then
+			ragdolls[rag] = true
+		end
+	end)
+
+	data:Hook("TTTEndRound", function(data)
+		data:UpdateProgress(table.Count(ragdolls))
+		ragdolls = {}
+	end)
+
+	data:Hook("TTTRWPlayerInspectBody", function(data, ply, ent, pos, is_silent)
+		if (not is_silent) then
+			ragdolls[ent] = nil
+		end
+	end)
 end
 
 function QUEST:Reward(data)
@@ -29,7 +47,7 @@ function QUEST:Reward(data)
 	local transact, wep = pluto.inv.generatebufferweapon(data.Player, "uncommon", wep.ClassName)
 	transact:Run()
 
-	data.Player:ChatPrint(white_text, "You have received a ", wep, white_text, "!")
+	data.Player:ChatPrint(white_text, "You have received a ", pluto.tiers.byname.uncommon.Color, wep.PrintName, white_text, "!")
 end
 
 function QUEST:IsType(type)

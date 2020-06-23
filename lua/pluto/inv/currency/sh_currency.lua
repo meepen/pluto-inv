@@ -278,7 +278,7 @@ pluto.currency.list = {
 		InternalName = "eye",
 		Name = "Eye",
 		Icon = "pluto/currencies/eye.png",
-		Description = "",
+		Description = "Spawns a Void boss",
 		SubDescription = "I see the void envelop you, friend... embrace me.",
 		Color = Color(107, 25, 14),
 	}
