@@ -8,7 +8,6 @@ function QUEST:GetReward(seed)
 		"weapon_cod4_ak47_silencer",
 		"weapon_cod4_m4_silencer",
 		"weapon_cod4_m14_silencer",
-		"weapon_cod4_m16_silencer",
 		"weapon_cod4_g3_silencer",
 		"weapon_cod4_g36c_silencer",
 	}
