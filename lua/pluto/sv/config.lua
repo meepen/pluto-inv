@@ -62,6 +62,11 @@ concommand.Add("test_gluamysql", function(ply)
 	require "gluamysql"
 
 	include "pluto/sv/mysql_pool.lua"
+
+	mysql.connect(config.db.host, config.db.username, config.db.password, config.db.database):next(function(db)
+		print(db)
+		db:query("SELECT 1 as number"):next(PrintTable)
+	end)
 	
 	pluto.pool = pool
 end)
