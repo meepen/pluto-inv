@@ -56,6 +56,19 @@ local map_lookup = {
 	ttt_vegas_casino = "2013589768",
 	ttt_vault = "422801063",
 	ttt_kokiri = "2006894659",
+
+	ttt_abandonedsubway = "1831532238",
+	ttt_biocube = "1276409718",
+	ttt_citadel = "2085978169",
+	ttt_csgoofficesummer = "1124885861",
+	ttt_cyberpunk = "572218391",
+	ttt_forsaken_chambers_v2 = "1766150425",
+	ttt_glacier = "228041314",
+	ttt_hazard = "1528231628",
+	ttt_simple_otat1 = "1812199726",
+	ttt_vacuity = "728570439",
+
+	ttt_pluto_station_b2 = "2152446974",
 }
 
 function pluto.GetValidMaps()
