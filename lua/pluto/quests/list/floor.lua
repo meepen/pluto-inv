@@ -1,5 +1,5 @@
 QUEST.Name = "Floor Licker"
-QUEST.Description = "Kill players rightfully with floor weapons."
+QUEST.Description = "Kill players rightfully with floor weapons"
 QUEST.Credits = "Mia Fey"
 QUEST.Color = Color(24, 125, 216)
 
