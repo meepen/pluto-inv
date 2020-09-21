@@ -43,10 +43,10 @@ end
 function QUEST:Reward(data)
 	local wep = self:GetReward(data.Seed)
 
-	local transact, wep = pluto.inv.generatebufferweapon(data.Player, "uncommon", wep.ClassName)
+	local transact, new_item = pluto.inv.generatebufferweapon(data.Player, "uncommon", wep.ClassName)
 	transact:Run()
 
-	data.Player:ChatPrint(white_text, "You have received a ", wep, white_text, "!")
+	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "! Check your inventory.")
 end
 
 function QUEST:IsType(type)

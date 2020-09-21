@@ -18,7 +18,8 @@ end
 function QUEST:Reward(data)
 	pluto.inv.addcurrency(data.Player, "heart", 2)
 
-	data.Player:ChatPrint(white_text, "You have received 2 ", pluto.currency.byname.heart, white_text, "!")
+	local cur = pluto.currency.byname.heart
+	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(cur.Name) and "an " or "a ", cur, white_text, " for completing ", self.Color, self.Name, white_text, "! (x2)")
 end
 
 function QUEST:IsType(type)

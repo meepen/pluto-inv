@@ -35,9 +35,9 @@ end
 
 function QUEST:Reward(data)
 	local cur = self:GetReward(data.Seed)
-	pluto.inv.addcurrency(data.Player, cur.InternalName, 1, function(succ)
-		data.Player:ChatPrint("You have received a ", cur, white_text, " for completing ", self.Color, self.Name)
-	end)
+	pluto.inv.addcurrency(data.Player, cur.InternalName, 1)
+
+	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(cur.Name) and "an " or "a ", cur, white_text, " for completing ", self.Color, self.Name, white_text, "!")
 end
 
 function QUEST:IsType(type)

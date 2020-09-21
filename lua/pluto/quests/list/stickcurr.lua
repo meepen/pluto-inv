@@ -36,7 +36,7 @@ function QUEST:Reward(data)
 	local trans, new_item = pluto.inv.generatebuffergrenade(data.Player)
 	trans:Run()
 
-	data.Player:ChatPrint("You have received a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "!")
+	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "! Check your inventory.")
 end
 
 function QUEST:IsType(type)

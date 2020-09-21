@@ -43,10 +43,10 @@ function QUEST:Reward(data)
 		return t.affixes >= 3
 	end)
 
-	local trans, gun = pluto.inv.generatebufferweapon(data.Player, tier, gun)
+	local trans, new_item = pluto.inv.generatebufferweapon(data.Player, tier, gun)
 	trans:Run()
 
-	data.Player:ChatPrint("You have received a ", gun, white_text, " for completing ", self.Color, self.Name, white_text, "! Check your inventory.")
+	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "! Check your inventory.")
 end
 
 function QUEST:IsType(type)

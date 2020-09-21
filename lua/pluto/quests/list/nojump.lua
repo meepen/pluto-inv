@@ -44,7 +44,7 @@ function QUEST:Reward(data)
 
 	pluto.inv.savebufferitem(data.Player, new_item):Run()
 
-	data.Player:ChatPrint(white_text, "You have received a ", new_item, white_text, " with the ", mod, white_text, " modifier for completing ", self.Color, self.Name, white_text, "!")
+	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " with the ", mod, white_text, " modifier completing ", self.Color, self.Name, white_text, "! Check your inventory.")
 end
 
 function QUEST:IsType(type)
