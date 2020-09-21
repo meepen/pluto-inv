@@ -34,7 +34,7 @@ function ENT:Reward(e)
 			end
 	
 		end)
-		e:ChatPrint(cur.Color, "+ ", white_text, "You received a ", cur)
+		e:ChatPrint(cur.Color, "+ ", white_text, "You received ", startswithvowel(cur.Name) and "an " or "a ", cur)
 	end
 
 	self.Got = true
