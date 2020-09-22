@@ -64,7 +64,7 @@ local map_lookup = {
 	ttt_cyberpunk = "572218391",
 	ttt_forsaken_chambers_v2 = "1766150425",
 	ttt_glacier = "228041314",
-	ttt_hazard = "1528231628",
+	--ttt_hazard = "1528231628",
 	ttt_simple_otat1 = "1812199726",
 	ttt_vacuity = "728570439",
 
