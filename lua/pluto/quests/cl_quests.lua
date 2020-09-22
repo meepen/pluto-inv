@@ -109,9 +109,9 @@ function PANEL:Init()
 		local t = ""
 		if (q) then
 			if (q.ProgressLeft == 0) then
-				t = "0 remaining (complete)"
+				t = string.format("0 / %i remaining (Complete)", q.TotalProgress)
 			else
-				t = string.format("%i remaining", q.ProgressLeft)
+				t = string.format("%i / %i remaining", q.ProgressLeft, q.TotalProgress)
 			end
 		end
 		draw.SimpleTextOutlined(t, "pluto_quest_reward", w / 2, h / 2, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, color_black)
