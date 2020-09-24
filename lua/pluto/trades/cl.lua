@@ -41,7 +41,7 @@ surface.CreateFont("pluto_close_button", {
 })
 
 local function trademsg(noalive, ...)
-	if (not noalive or not LocalPlayer():Alive()) then
+	if (not noalive or not LocalPlayer():Alive() or ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE) then
 		chat.AddText(white_text, "[", ttt.teams.traitor.Color, "TRADE", white_text, "] ", ttt.teams.innocent.Color, ...)
 	end
 end
@@ -120,6 +120,8 @@ function pluto.inv.readtradeupdate()
 		end
 
 		trade.CanAccept = net.ReadBool()
+	else
+		trademsg(false, "Trade" .. (pluto.trade and " with " .. pluto.trade.Other:Nick() or "") .. " ended")
 	end
 
 	if (not pluto.trade and trade) then
@@ -310,7 +312,7 @@ function PANEL:Select(currency)
 
 	self.Selected = currency
 	self.Label:SetText(data.Name)
-	self:SetAmount(self:GetMax())
+	self:SetAmount(self:GetMax() ~= 0 and 1 or 0)
 end
 
 function PANEL:SetAmount(amt)
