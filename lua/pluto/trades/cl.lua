@@ -120,10 +120,8 @@ function pluto.inv.readtradeupdate()
 		end
 
 		trade.CanAccept = net.ReadBool()
-	elseif pluto.trade then
-		trademsg(false, "Trade with ", pluto.trade.Other:Nick(), " ended")
 	else
-		trademsg(false, "Trade ended")
+		trademsg(false, "Trade" .. (pluto.trade and " with " .. pluto.trade.Other:Nick() or "") .. " ended")
 	end
 
 	if (not pluto.trade and trade) then
@@ -314,7 +312,7 @@ function PANEL:Select(currency)
 
 	self.Selected = currency
 	self.Label:SetText(data.Name)
-	self:SetAmount(self:GetMax() != 0 and 1 or 0)
+	self:SetAmount(self:GetMax() ~= 0 and 1 or 0)
 end
 
 function PANEL:SetAmount(amt)
