@@ -109,7 +109,7 @@ function PANEL:Init()
 		local t = ""
 		if (q) then
 			if (q.ProgressLeft == 0) then
-				t = string.format("0 / %i remaining (Complete)", q.TotalProgress)
+				t = string.format("Complete!", q.TotalProgress)
 			else
 				t = string.format("%i / %i remaining", q.ProgressLeft, q.TotalProgress)
 			end
