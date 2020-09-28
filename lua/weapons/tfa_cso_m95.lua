@@ -95,3 +95,18 @@ end
 function SWEP:GetSpread()
 	return BaseClass.GetSpread(self) + Vector(0.2, 0.2) * (1 - self:GetCurrentZoomPercent())
 end
+
+function SWEP:ScaleRollType(type, roll, init)
+	if (type == "damage") then
+		local ret = roll / 2
+
+		if (init) then
+			pluto.mods.byname.mag:ModifyWeapon(self, {roll * 1.5})
+			pluto.mods.byname.firerate:ModifyWeapon(self, {roll * 0.75})
+			self.HeadshotMultiplier = self.HeadshotMultiplier * (1 + roll / 100 * 5)
+		end
+
+		return ret
+	end
+	return roll
+end
