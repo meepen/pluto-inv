@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim/ingredients/firebowl"
+	"$bumpmap" 	"models/skyrim/ingredients/firebowl_n"
+	"$selfillum" "1"
+}

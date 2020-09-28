@@ -29,7 +29,7 @@ MOD.Tiers = {
 
 function MOD:ModifyWeapon(wep, rolls)
 	wep:DefinePlutoOverrides "Damage"
-	wep.Pluto.Damage = wep.Pluto.Damage + rolls[1] / 100
+	wep.Pluto.Damage = wep.Pluto.Damage + wep:ScaleRollType("damage", rolls[1] / 100, true)
 end
 
 return MOD

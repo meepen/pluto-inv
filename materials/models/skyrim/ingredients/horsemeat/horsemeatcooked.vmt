@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim//ingredients/horsemeat/horsemeatcooked"
+	"$bumpmap" 	"models/skyrim/ingredients/horsemeat/horsemeatcooked_n"
+}

@@ -62,6 +62,9 @@ pluto.files.load {
 	},
 	Workshop = {
 		"2001929342",
+
+		"1516699044", -- slvbase 2
+		"1516711672", -- skyrim snpcs
 	},
 }
 

@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim/weapons/glassarrow"
+	"$bumpmap" 	"models/skyrim/weapons/glassarrow_n"
+	"$alphatest" "1"
+}

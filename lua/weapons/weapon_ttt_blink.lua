@@ -196,6 +196,7 @@ function SWEP:PrimaryAttack()
 		return
 	end
 	self:SetBlinking(true)
+	hook.Run("PlutoMovementAbility", own, self)
 
 	self:EmitSound("vadim_blink/aim" .. math.random(2) .. ".ogg")
 end

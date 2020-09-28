@@ -210,6 +210,12 @@ concommand.Add("pluto_update_hitgroups", function(ply, cmd, args, arg)
 				maxs[i] = current:ReadFloat()
 			end
 
+
+			-- model specific changes (update as needed)
+			if (hitbox == 15) then
+				mins[3] = mins[3] - 5
+			end
+
 			for i = 1, 3 do
 				new:WriteFloat(mins[i])
 			end

@@ -1,0 +1,10 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim/chaurus/chaurus"
+	"$bumpmap" 	"models/skyrim/chaurus/chaurus_n"
+	"$selfillum" "1"
+	$phong			1
+	$phongexponent		50
+	$phongboost		0.8
+	$phongfresnelranges	"[0.5 0.5 1]"
+}

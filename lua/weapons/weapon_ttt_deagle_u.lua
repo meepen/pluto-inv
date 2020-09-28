@@ -53,10 +53,10 @@ SWEP.MuzzleScale	= 1.3
 SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
-	DamageDropoffRange = 600,
-	DamageDropoffRangeMax = 3600,
-	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.02, 0.02)
+	DamageDropoffRange = 1000,
+	DamageDropoffRangeMax = 5500,
+	DamageMinimumPercent = 0.6,
+	Spread = Vector(0.01, 0.01),
 }
 
 SWEP.RecoilInstructions = {

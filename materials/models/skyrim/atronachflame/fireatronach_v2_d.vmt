@@ -1,0 +1,10 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim/atronachflame/fireatronach_v2_d"
+	"$bumpmap" 	"models/skyrim/atronachflame/fireatronach_v2_n"
+	"$selfillum" "1"
+	$phong			1
+	$phongexponent		50
+	$phongboost		0.8
+	$phongfresnelranges	"[0.5 0.5 1]"
+}

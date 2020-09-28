@@ -20,9 +20,13 @@ MOD.Tiers = {
 	{ 5,  10, 30, 50 },
 }
 
+function MOD:ModifyWeapon(wep, rolls)
+	wep:ScaleRollType("damage", rolls[1], true)
+end
+
 function MOD:OnDamage(wep, rolls, vic, dmginfo, state)
 	if (IsValid(vic) and vic:IsPlayer() and dmginfo:GetDamage() > 0) then
-		state.poisondamage = math.ceil(rolls[1] / 100 * dmginfo:GetDamage())
+		state.poisondamage = math.ceil(wep:ScaleRollType("damage", rolls[1]) / 100 * dmginfo:GetDamage())
 		pluto.statuses.poison(vic, {
 			Owner = wep:GetOwner(),
 			Weapon = wep,

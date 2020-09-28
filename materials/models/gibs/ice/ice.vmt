@@ -1,0 +1,11 @@
+//"UnlitGeneric"
+"Vertexlitgeneric"
+{
+	// Original shader: TranslucentSpecularSphericalEnvMap
+	//"$additive" 1
+	"$baseTexture" "models/Gibs/ice/ice"
+	"$translucent" "1"
+	//"$envmap" "models/Gibs/ice/snow"
+	//"$envmap" "env_cubemap"
+	"$model" 1
+}

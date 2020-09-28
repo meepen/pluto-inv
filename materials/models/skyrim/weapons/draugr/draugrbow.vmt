@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim/weapons/draugr/draugrbow"
+	"$bumpmap" 	"models/skyrim/weapons/draugr/draugrbow_n"
+}

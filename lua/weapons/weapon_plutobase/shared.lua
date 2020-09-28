@@ -71,3 +71,7 @@ function SWEP:DefinePlutoOverrides(type, default, translate)
 		return translate(old(self), self.Pluto[type])
 	end
 end
+
+function SWEP:ScaleRollType(type, roll, init)
+	return roll
+end
