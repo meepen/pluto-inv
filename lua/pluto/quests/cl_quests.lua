@@ -109,9 +109,9 @@ function PANEL:Init()
 		local t = ""
 		if (q) then
 			if (q.ProgressLeft == 0) then
-				t = "100.0% (complete)"
+				t = string.format("Complete!", q.TotalProgress)
 			else
-				t = string.format("%.1f%% (%i remaining)", (q.TotalProgress - q.ProgressLeft) / q.TotalProgress * 100, q.ProgressLeft)
+				t = string.format("%i / %i remaining", q.ProgressLeft, q.TotalProgress)
 			end
 		end
 		draw.SimpleTextOutlined(t, "pluto_quest_reward", w / 2, h / 2, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, color_black)
@@ -214,7 +214,7 @@ function PANEL:SetQuest(quest)
 	self.Quest = quest
 	self.QuestName:SetText(quest.Name)
 	self.Description:SetText(quest.Description)
-	self.RewardText:SetText("You would receive a " .. quest.Reward)
+	self.RewardText:SetText("You " .. (quest.ProgressLeft == 0 and "received " or "will receive ") .. (startswithvowel(quest.Reward) and "an " or "a ") .. quest.Reward .. "  ")
 
 
 	self.QuestName:SetTextColor(quest.Color)
@@ -252,12 +252,13 @@ function PANEL:Init()
 		self.Categories[i].Panel.Header:SetContentAlignment(5)
 		self.Categories[i].Panel.Header.UpdateColours = function() end
 		self.Categories[i].Panel.Header:SetTextColor(type.Color or white_text)
+		self.Categories[i].Panel.Header:SetTall(select(2, self.Categories[i].Panel.Header:GetTextSize()) + 2)
 
 		self.Categories[i].Panel:SetContents(self.Categories[i].Contents)
 		self.Categories[i].Panel:DockMargin(0, 0, 0, 3)
-		self.Categories[i].Panel:DockPadding(0, 1, 0, 4)
+		self.Categories[i].Panel:DockPadding(0, 1, 0, 2)
 
-		self.Categories[i].Contents:DockMargin(0, 8, 0, 0)
+		self.Categories[i].Contents:DockMargin(0, 4, 0, 0)
 	end
 
 	self.Quests = {}
