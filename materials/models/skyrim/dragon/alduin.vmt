@@ -1,0 +1,10 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim/dragon/alduin"
+	"$bumpmap" 	"models/skyrim/dragon/alduin_n"
+	"$alphatest" "1"
+	$phong			1
+	$phongexponent		60
+	$phongboost		0.6
+	$phongfresnelranges	"[0.5 0.5 1]"
+}

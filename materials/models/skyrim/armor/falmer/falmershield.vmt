@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim/armor/falmer/falmershield"
+	"$bumpmap" 	"models/skyrim/armor/falmer/falmershield_n"
+}

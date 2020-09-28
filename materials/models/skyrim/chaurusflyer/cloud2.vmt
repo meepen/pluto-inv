@@ -1,0 +1,14 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim/chaurusflyer/cloud2"
+	"$translucent" "1"
+	"Proxies"
+	{
+		"TextureScroll"
+		{
+			"texturescrollvar" "$basetexturetransform"
+			"texturescrollrate" 2
+			"texturescrollangle" 180
+		}
+	}
+}

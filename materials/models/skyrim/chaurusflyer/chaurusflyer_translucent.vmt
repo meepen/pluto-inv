@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim/chaurusflyer/chaurusflyer"
+	"$bumpmap" 	"models/skyrim/chaurusflyer/chaurusflyer_n"
+	"$translucent" "1"
+}

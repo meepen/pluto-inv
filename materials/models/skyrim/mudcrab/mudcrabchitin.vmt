@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim/mudcrab/mudcrabchitin"
+	"$bumpmap" 	"models/skyrim/mudcrab/mudcrabchitin_n"
+}

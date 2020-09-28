@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim/armor/ebony/ebony_shield_d"
+	"$bumpmap" 	"models/skyrim/armor/ebony/ebony_shield_n"
+	$phong			1
+	$phongexponent		50
+	$phongboost		0.4
+	$phongfresnelranges	"[0.5 0.5 1]"
+}

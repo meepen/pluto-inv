@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim/weapons/ebonywaraxe"
+	"$bumpmap" 	"models/skyrim/weapons/ebonywaraxe_n"
+}

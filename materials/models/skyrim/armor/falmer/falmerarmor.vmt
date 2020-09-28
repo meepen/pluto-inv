@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim/armor/falmer/falmerarmor"
+	"$bumpmap" 	"models/skyrim/armor/falmer/falmerarmor_n"
+	"$alphatest" "1"
+}

@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim/draugr/draugrarrow"
+	"$bumpmap" 	"models/skyrim/draugr/draugrarrow_n"
+	"$alphatest" "1"
+}

@@ -69,6 +69,9 @@ local map_lookup = {
 	ttt_vacuity = "728570439",
 
 	ttt_pluto_station_b2 = "2152446974",
+	ttt_pluto_station = "2236114156",
+
+	ttt_pluto_bloodbath = "2220658788",
 }
 
 function pluto.GetValidMaps()

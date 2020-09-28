@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim/draugr/femalehair"
+	"$bumpmap" 	"models/skyrim/draugr/femalehair_n"
+	"$translucent" "1"
+}

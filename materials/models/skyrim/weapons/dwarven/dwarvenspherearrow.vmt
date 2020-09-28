@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim/weapons/dwarven/dwarvenspherearrow"
+	"$bumpmap" 	"models/skyrim/weapons/dwarven/dwarvenarrow_n"
+	"$selfillum" "1"
+	"$selfillummask" "models/skyrim/weapons/dwarven/dwarvenspherearrow_g"
+}

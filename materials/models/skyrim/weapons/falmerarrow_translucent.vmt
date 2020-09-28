@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/skyrim/weapons/falmerarrow"
+	"$bumpmap" 	"models/skyrim/weapons/falmerarrow_n"
+	"$translucent" "1"
+}
