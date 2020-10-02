@@ -720,7 +720,7 @@ function pluto.inv.writeexpupdate(cl, item)
 end
 
 function pluto.inv.writeplayerexp(cl, ply, exp)
-	net.WriteEntity(ply)
+	net.WriteString(ply:SteamID64())
 	net.WriteUInt(exp, 32)
 end
 

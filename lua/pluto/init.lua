@@ -48,7 +48,15 @@ end
 
 local PLAYER = FindMetaTable "Player"
 
-AccessorFunc(PLAYER, "pluto_exp", "PlutoExperience", FORCE_NUMBER)
+pluto.experience = pluto.experience or {}
+
+function PLAYER:SetPlutoExperience(exp)
+	pluto.experience[self:SteamID64()] = exp
+end
+
+function PLAYER:GetPlutoExperience()
+	return pluto.experience[self:SteamID64()] or 0
+end
 
 local base = 15
 local linear = 22

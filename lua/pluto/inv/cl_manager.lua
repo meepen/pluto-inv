@@ -361,11 +361,9 @@ function pluto.inv.readexpupdate()
 end
 
 function pluto.inv.readplayerexp(cl, ply, exp)
-	local ply = net.ReadEntity()
+	local ply = net.ReadString()
 	local exp = net.ReadUInt(32)
-	if (IsValid(ply)) then
-		ply:SetPlutoExperience(exp)
-	end
+	pluto.experience[ply] = exp
 end
 
 function pluto.inv.writeitemlock(itemid)
