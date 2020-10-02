@@ -21,7 +21,6 @@ SWEP.Primary.Damage = 15
 SWEP.Primary.Delay = 0.33
 
 SWEP.AutoSpawnable = true
-SWEP.PlutoSpawnable = true
 
 SWEP.Primary.Ammo          = "Pistol"
 SWEP.AmmoEnt               = "item_ammo_pistol_ttt"
