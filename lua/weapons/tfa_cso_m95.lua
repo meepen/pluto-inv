@@ -110,3 +110,16 @@ function SWEP:ScaleRollType(type, roll, init)
 	end
 	return roll
 end
+
+function SWEP:ShootBullet(...)
+	local r = BaseClass.ShootBullet(self, ...)
+
+	local p = self:GetOwner()
+	local dir = p:EyeAngles()
+	dir.r = 0
+	dir = -dir:Forward()
+	dir.z = dir.z * 0.5
+	self:GetOwner():SetVelocity(dir * 300)
+
+	return r
+end

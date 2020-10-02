@@ -11,7 +11,7 @@ function SWEP:PrimaryAttack()
 	if (not SERVER) then
 		return
 	end
-	local npc = ents.Create "npc_atronach_frost"
+	local npc = ents.Create "npc_dragon_paarthurnax"
 	npc:SetPos(self:GetOwner():GetPos())
 	local ang = self:GetOwner():GetAngles()
 	npc:SetAngles(Angle(0, ang.y))
