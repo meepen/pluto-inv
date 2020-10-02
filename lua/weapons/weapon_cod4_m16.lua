@@ -20,7 +20,8 @@ SWEP.Primary.Ammo = "AR2"
 SWEP.Primary.Damage = 14
 SWEP.Primary.Delay = 0.33
 
-SWEP.AutoSpawnable = false
+SWEP.AutoSpawnable = true
+SWEP.PlutoSpawnable = true
 
 SWEP.Bullets = {
 	HullSize = 0,
