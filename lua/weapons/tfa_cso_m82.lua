@@ -6,7 +6,7 @@ SWEP.Slot				= 2
 
 SWEP.Primary.Sound 			= Sound "M82.Fire"
 SWEP.Primary.Damage		= 45
-SWEP.HeadshotMultiplier    = 2
+SWEP.HeadshotMultiplier    = 3
 SWEP.Primary.NumShots	= 1
 SWEP.Primary.Automatic			= false
 SWEP.Primary.Delay				= 60 / 45
