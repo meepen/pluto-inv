@@ -17,11 +17,14 @@ SWEP.Primary.ClipSize = 30
 SWEP.Primary.DefaultClip = 90
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "AR2"
-SWEP.Primary.Damage = 14
+SWEP.Primary.Damage = 15
 SWEP.Primary.Delay = 0.33
 
 SWEP.AutoSpawnable = true
 SWEP.PlutoSpawnable = true
+
+SWEP.Primary.Ammo          = "Pistol"
+SWEP.AmmoEnt               = "item_ammo_pistol_ttt"
 
 SWEP.Bullets = {
 	HullSize = 0,
