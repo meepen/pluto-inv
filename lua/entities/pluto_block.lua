@@ -32,11 +32,11 @@ function ENT:Initialize()
 		p:EnableMotion(false)
 	end
 
-	self.Collide = CreatePhysCollideBox(self:GetMins(), self:GetMaxs())
+	self.Collider = CreatePhysCollideBox(self:GetMins(), self:GetMaxs())
 end
 
 function ENT:TestCollision(spos, delta, isbox, extents, mask)
-	if (not IsValid(self.Collide)) then
+	if (not IsValid(self.Collider)) then
 		return
 	end
 
@@ -45,7 +45,7 @@ function ENT:TestCollision(spos, delta, isbox, extents, mask)
     max.z = max.z - min.z
 	min.z = 0
 
-	local hit, norm, frac = self.Collide:TraceBox(vector_origin, angle_zero, spos, spos + delta, min, max)
+	local hit, norm, frac = self.Collider:TraceBox(vector_origin, angle_zero, spos, spos + delta, min, max)
 
 	if (hit) then
 		return {
