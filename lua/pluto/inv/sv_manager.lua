@@ -756,7 +756,9 @@ end
 function pluto.inv.readui(ply)
 	local is_in = net.ReadBool()
 
-	if (is_in) then
+	ply.IsInInventory = math.min(1, (ply.IsInInventory or 0) + (is_in and 1 or -1))
+
+	if (ply.IsInInventory == 1) then
 		ply:StartAnimation "walk_magic"
 	else
 		ply:StopAnimation()
