@@ -305,7 +305,7 @@ function PANEL:FullPaint(w, h)
 				cam.Start3D(Vector(50, 0, (maxs.z - mins.z) / 2), Angle(0, -180), 90, x, y, self:GetSize())
 					render.SuppressEngineLighting(true)
 
-						err:SetAngles(err:GetAngles() - Angle(0, 50) * FrameTime())
+						err:SetAngles(Angle(0, (-50 * CurTime()) % 360))
 						err:DrawModel()
 
 					render.SuppressEngineLighting(false)
