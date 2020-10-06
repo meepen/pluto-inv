@@ -41,7 +41,7 @@ SWEP.Ironsights = {
 	Zoom = 0.8,
 }
 
-baseclass.Get "weapon_cod4_m16".Ortho = {2.5, -3}
+SWEP.Ortho = {2.5, -3}
 
 DEFINE_BASECLASS(SWEP.Base)
 
