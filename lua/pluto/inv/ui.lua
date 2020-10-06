@@ -672,7 +672,7 @@ function PANEL:GhostClick(p, m)
 			end
 
 			pluto.inv.message()
-				:write("claimbuffer", parent.Item.BufferID, gparent.Tab.ID, gparent.TabIndex)
+				:write("claimbuffer", parent.Item.ID, gparent.Tab.ID, gparent.TabIndex)
 				:send()
 
 			table.remove(pluto.buffer, parent.TabIndex)
@@ -2115,8 +2115,6 @@ function PANEL:SetItem(item)
 
 	if (item.ID) then
 		self.ItemID:SetText(item.ID)
-	elseif (item.BufferID) then
-		self.ItemID:SetText("b" .. item.BufferID)
 	else
 		self.ItemID:SetText ""
 	end

@@ -343,7 +343,7 @@ function PANEL:Init()
 
 	hook.Add("CrateOpenResponse", self, function(self, id)
 		for _, item in pairs(pluto.buffer) do
-			if (item.BufferID == id) then
+			if (item.ID == id) then
 				self.Image:Remove()
 
 				if (item.Type == "Model") then
