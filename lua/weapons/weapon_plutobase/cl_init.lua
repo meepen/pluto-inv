@@ -39,6 +39,17 @@ function SWEP:GetPlutoPrintName()
 	end
 end
 
+function SWEP:GetPrintNameColor()
+	local item = self:GetInventoryItem()
+	if (item) then
+		if (item.Color) then
+			return (pluto.inv.colors(item.Color))
+		end
+	end
+
+	return white_text
+end
+
 function SWEP:Initialize()
 	BaseClass.Initialize(self)
 
