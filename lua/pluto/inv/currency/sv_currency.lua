@@ -884,7 +884,7 @@ function pluto.inv.readrename(cl)
 
 	local sid = pluto.db.steamid64(cl)
 
-	if (not gun or gun.Owner ~= sid) then
+	if (not gun or gun.Owner ~= sid or gun.Nickname) then
 		pluto.inv.sendfullupdate(cl)
 		return
 	end
@@ -898,7 +898,7 @@ function pluto.inv.readrename(cl)
 	
 	local transact = pluto.db.transact()
 
-	transact:AddQuery("UPDATE pluto_items set nick = ? WHERE idx = ?", {name, id}, function(err, q)
+	transact:AddQuery("UPDATE pluto_items set nick = ? WHERE idx = ? and nick is NULL", {name, id}, function(err, q)
 		if (err) then
 			pluto.inv.sendfullupdate(cl)
 			return
@@ -906,6 +906,39 @@ function pluto.inv.readrename(cl)
 	end)
 
 	pluto.inv.addcurrency(cl, "quill", -1, nil, transact)
+
+	transact:Run()
+end
+
+function pluto.inv.readunname(cl)
+	local id = net.ReadUInt(32)
+
+	local gun = pluto.itemids[id]
+
+	local sid = pluto.db.steamid64(cl)
+
+	if (not gun or gun.Owner ~= sid or not gun.Nickname) then
+		pluto.inv.sendfullupdate(cl)
+		return
+	end
+
+	gun.LastUpdate = (gun.LastUpdate or 0) + 1
+	gun.Nickname = nil
+
+	pluto.inv.message(cl)
+		:write("item", gun)
+		:send()
+	
+	local transact = pluto.db.transact()
+
+	transact:AddQuery("UPDATE pluto_items set nick = NULL WHERE idx = ?", {id}, function(err, q)
+		if (err) then
+			pluto.inv.sendfullupdate(cl)
+			return
+		end
+	end)
+
+	pluto.inv.addcurrency(cl, "hand", -100, nil, transact)
 
 	transact:Run()
 end

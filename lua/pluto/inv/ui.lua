@@ -605,9 +605,19 @@ function PANEL:OnMousePressed(code)
 			if (self.Item.Type ~= "Shard") then
 				rightclick_menu:AddOption("Toggle locked", function()
 					pluto.inv.message()
-					:write("itemlock", self.Item.ID)
-					:send()
+						:write("itemlock", self.Item.ID)
+						:send()
 				end):SetIcon("icon16/lock.png")
+			end
+
+			if (not self.Item.Locked and self.Item.Nickname) then
+				rightclick_menu:AddOption("Remove name (100 hands)", function()
+					self.Item.Nickname = nil
+					pluto.inv.message()
+						:write("unname", self.Item.ID)
+						:send()
+				end):SetIcon("icon16/cog_delete.png")
+
 			end
 
 			rightclick_menu:Open()

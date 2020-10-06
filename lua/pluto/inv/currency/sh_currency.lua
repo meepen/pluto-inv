@@ -174,6 +174,11 @@ pluto.currency.list = {
 		SubDescription = "This glass quill was used by the inscribers to write history before it was even made. What will you do with it?",
 		Color = Color(23, 127, 105),
 		ClientsideUse = function(item)
+			if (item.Nickname) then
+				chat.AddText "You must remove that item's name before naming it again!"
+				return
+			end
+
 			if (IsValid(pluto.opener)) then
 				pluto.opener:Remove()
 			end
@@ -377,4 +382,8 @@ vgui.Register("pluto_box_open", PANEL, "EditablePanel")
 function pluto.inv.writerename(itemid, name)
 	net.WriteUInt(itemid, 32)
 	net.WriteString(name)
+end
+
+function pluto.inv.writeunname(itemid)
+	net.WriteUInt(itemid, 32)
 end

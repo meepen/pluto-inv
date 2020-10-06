@@ -19,6 +19,7 @@ pluto.inv.messages = {
 		"itemlock",
 		"rename",
 		"ui",
+		"unname",
 	},
 	sv2cl = {
 		[0] = "end",
