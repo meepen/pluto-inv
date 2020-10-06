@@ -21,14 +21,6 @@ local lock = Material "icon16/lock.png"
 local colour = Material "models/debug/debugwhite"
 DEFINE_BASECLASS "DImage"
 
-function PANEL:OnRemove()
-	BaseClass.OnRemove(self)
-
-	if (IsValid(self.Model)) then
-		self.Model:Remove()
-	end
-end
-
 local function ColorToHSL(col)
 	local r = col.r / 255
 	local g = col.g / 255
@@ -129,9 +121,12 @@ function PANEL:Init()
 	self:SetColor(Color(0,0,0,0))
 end
 
+local newshard = Material "pluto/newshard.png"
+local newshardadd = Material "pluto/newshardbg.png"
+
 function PANEL:SetShard()
-	self.RealImage = Material "pluto/newshard.png"
-	self.RealImageAdd = Material "pluto/newshardbg.png"
+	self.RealImage = newshard
+	self.RealImageAdd = newshardadd
 	self.RealColor, self.AddColor = pluto.inv.colors(self.Item.Color)
 
 	local h, s, v = ColorToHSL(self.RealColor)
@@ -142,7 +137,7 @@ end
 function PANEL:SetItem(item)
 	self.Item = item
 	if (IsValid(self.Model)) then
-		self.Model:Remove()
+		self.Model = nil
 	end
 
 	self.RealImage = nil
@@ -173,37 +168,49 @@ function PANEL:SetItem(item)
 	end
 end
 
+pluto.ui_cache = pluto.ui_cache or {}
+
+function pluto.cached_model(mdl)
+	local m = pluto.ui_cache[mdl]
+	if (not m or not IsValid(m)) then
+		m = ClientsideModel(mdl)
+		m:SetNoDraw(true)
+		pluto.ui_cache[mdl] = m
+	end
+	return m
+end
+
+local mech_bg = Material "pluto/item_bg_mech.png"
+local item_bg = Material "pluto/item_bg_real.png"
+local model_bg = Material "pluto/bg_paint7.png"
+
 function PANEL:SetWeapon(item)
 	local w = baseclass.Get(item.ClassName)
 	if (not w) then
 		return
 	end
 	if (item.Crafted) then
-		self.Material = Material "pluto/item_bg_mech.png"
+		self.Material = mech_bg
 	elseif (item.BackgroundMaterial) then
 		self.Material = Material(item.BackgroundMaterial)
 	else
-		self.Material = Material "pluto/item_bg_real.png"
+		self.Material = item_bg
 	end
 
 	if (w.PlutoIcon) then
 		self.RealImage = Material(w.PlutoIcon)
 		self.RealColor = color_white
 	else
-		self.Model = ClientsideModel(w.PlutoModel or w.WorldModel, RENDERGROUP_OTHER)
-		self.Model:SetNoDraw(true)
-		if (w.PlutoMaterial) then
-			self.Model:SetMaterial(w.PlutoMaterial)
-		end
+		self.Model = pluto.cached_model(w.PlutoModel or w.WorldModel)
 	end
 
 	self.Class = w.ClassName
 end
 
 function PANEL:SetModel(item)
-	self.Material = Material "pluto/bg_paint7.png"
+	self.Material = model_bg
 	local mdl = item.Model
-	self.Model = ClientsideModel(mdl.Model)
+	self.Model = pluto.cached_model(mdl.Model)
 	if (IsValid(self.Model)) then
 		self.Model:SetNoDraw(true)
 		self.Model:ResetSequence(self.Model:LookupSequence "idle_all_01")
@@ -337,12 +344,11 @@ function PANEL:SetDefault(class)
 	elseif (type == "Model") then
 		str = pluto.models[class:match"model_(.+)"].Model
 	elseif (type == "Shard") then
-		self.DefaultMaterial = Material "pluto/newshard.png"
+		self.DefaultMaterial = newshard
 	end
 
 	if (str) then
-		self.DefaultModel = ClientsideModel(str)
-		self.DefaultModel:SetNoDraw(true)
+		self.DefaultModel = pluto.cached_model(str)
 
 		if (IsValid(self.DefaultModel) and type == "Model") then
 			self.DefaultModel:ResetSequence(self.DefaultModel:LookupSequence "idle_all_01")
@@ -354,10 +360,6 @@ function PANEL:SetDefault(class)
 end
 
 function PANEL:OnRemove()
-	if (IsValid(self.Model)) then
-		self.Model:Remove()
-	end
-
 	if (IsValid(self.DefaultModel)) then
 		self.DefaultModel:Remove()
 	end
@@ -1613,8 +1615,10 @@ function PANEL:Paint(w, h)
 	surface.DrawTexturedRect(x, y, w, h)
 end
 
+local trash = Material "materials/pluto/trashcan_128.png"
+
 function PANEL:Init()
-	self.Image = Material "materials/pluto/trashcan_128.png"
+	self.Image = trash
 end
 
 vgui.Register("pluto_inventory_garbage", PANEL, "EditablePanel")
