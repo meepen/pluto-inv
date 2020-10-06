@@ -135,6 +135,7 @@ function PANEL:SetShard()
 end
 
 function PANEL:SetItem(item)
+	self.PlutoMaterial = nil
 	self.Item = item
 	if (IsValid(self.Model)) then
 		self.Model = nil
@@ -202,6 +203,7 @@ function PANEL:SetWeapon(item)
 		self.RealColor = color_white
 	else
 		self.Model = pluto.cached_model(w.PlutoModel or w.WorldModel)
+		self.PlutoMaterial = w.PlutoMaterial
 	end
 
 	self.Class = w.ClassName
@@ -276,6 +278,11 @@ function PANEL:FullPaint(w, h)
 		end
 
 		if (IsValid(err)) then
+			if (self.PlutoMaterial) then
+				err:SetMaterial(self.PlutoMaterial)
+			else
+				err:SetMaterial()
+			end
 			if (typ == "Weapon") then
 				local lookup = baseclass.Get(class).Ortho or {0, 0}
 

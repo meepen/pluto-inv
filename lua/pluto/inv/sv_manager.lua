@@ -758,7 +758,6 @@ function pluto.inv.readui(ply)
 
 	ply.IsInInventory = math.Clamp((ply.IsInInventory or 0) + (is_in and 1 or -1), 0, 1)
 
-	print(ply, ply.IsInInventory)
 	if (ply.IsInInventory == 1) then
 		ply:StartAnimation "walk_magic"
 	else
