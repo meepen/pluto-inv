@@ -264,13 +264,7 @@ function pluto.inv.readtabupdate()
 end
 
 function pluto.inv.readbufferitem()
-	local id = net.ReadUInt(32)
-
-	local item = setmetatable({
-		BufferID = id,
-	}, pluto.inv.item_mt)
-
-	pluto.inv.readbaseitem(item)
+	local item = pluto.inv.readitem()
 
 	table.insert(pluto.buffer, item)
 	if (#pluto.buffer > 5) then

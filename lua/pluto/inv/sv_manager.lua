@@ -297,9 +297,7 @@ function pluto.inv.writebaseitem(ply, item)
 end
 
 function pluto.inv.writebufferitem(ply, item)
-	net.WriteUInt(item.RowID, 32)
-
-	pluto.inv.writebaseitem(ply, item)
+	pluto.inv.writeitem(ply, item)
 end
 
 local function noop() end
