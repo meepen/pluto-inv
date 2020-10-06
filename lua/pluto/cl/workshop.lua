@@ -444,7 +444,13 @@ local packs =  {
 		versions = {
 			"20200615",
 		}
-	}
+	},
+	--[[bo2 = {
+		remote = default "bo2",
+		versions = {
+			"20201006",
+		}
+	},]]
 }
 
 
