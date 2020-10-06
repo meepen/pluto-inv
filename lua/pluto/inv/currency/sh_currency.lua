@@ -175,7 +175,7 @@ pluto.currency.list = {
 		Color = Color(23, 127, 105),
 		ClientsideUse = function(item)
 			if (item.Nickname) then
-				chat.AddText "You must remove that item's name before naming it again!"
+				chat.AddText(white_text, "You must remove that item's name before naming it again!")
 				return
 			end
 
