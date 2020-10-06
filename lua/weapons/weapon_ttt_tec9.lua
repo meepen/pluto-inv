@@ -91,11 +91,11 @@ SWEP.Offset = {
 	}
 }
 
-SWEP.HeadshotMultiplier = 1.4
+SWEP.HeadshotMultiplier = 1.9
 
 SWEP.Primary.Damage = 15
 SWEP.Primary.Sound = "TFA_CSGO_TEC9.1"
-SWEP.Primary.Delay = 60 / 500
+SWEP.Primary.Delay = 60 / 550
 SWEP.Primary.ClipSize = 32
 SWEP.Primary.DefaultClip = 64
 SWEP.Primary.Automatic = true
@@ -108,7 +108,7 @@ SWEP.Ironsights = {
 	Angle = vector_origin,
 	TimeTo = 0.18,
 	TimeFrom = 0.13,
-	SlowDown = 0.42,
+	SlowDown = 0.95,
 	Zoom = 0.9,
 }
 
@@ -124,7 +124,7 @@ SWEP.Bullets = {
 	DamageDropoffRange = 300,
 	DamageDropoffRangeMax = 1000,
 	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.03, 0.035)
+	Spread = Vector(0.02, 0.03)
 }
 
 function SWEP:FireAnimationEvent(_, _, event)
