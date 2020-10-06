@@ -1,22 +1,27 @@
-pluto.Chat = pluto.Chat or {}
+pluto.chat = pluto.chat or {}
+pluto.chat.type = {}
+pluto.chat.type.TEXT = 0
+pluto.chat.type.COLOR = 1
+pluto.chat.type.PLAYER = 2
+pluto.chat.type.ITEM = 3
 
-local PLAYER = FindMetaTable("Player")
-
-function PLAYER:ChatPrint(...)
-	local args = {...}
-
-	if SERVER then
-		pluto.Chat.Send(self, args)
-		return
+pluto.chat.determineTypes = function(x)
+	local content = {}
+	for k,element in pairs (x) do
+		if type(element) == "string" then
+			table.insert(content, pluto.chat.type.TEXT)
+			table.insert(content, element)
+		elseif type(element) == "Color" or element["r"] ~= nil then
+			table.insert(content, pluto.chat.type.COLOR)
+			table.insert(content, element)
+		elseif type(element) == "Player" then
+			table.insert(content, pluto.chat.type.PLAYER)
+			table.insert(content, element)
+		elseif type(element) == "table" then
+			table.insert(content, pluto.chat.type.ITEM)
+			table.insert(content, element)
+		end
 	end
 
-	if (self == LocalPlayer()) then
-		pluto.Chat.Add(args)
-	else
-		-- send to someone else
-		net.Start("pluto_chat_player_receive")
-			net.WriteEntity(self)
-			net.WriteTable(args)
-		net.SendToServer()
-	end
+	return content
 end
