@@ -12,12 +12,12 @@ SWEP.Slot				= 2
 
 SWEP.Primary.Sound 			= Sound "XTracker.Fire"
 
-SWEP.Primary.Damage		= 100
+SWEP.Primary.Damage        = 21
 
 SWEP.Primary.Automatic			= true
 SWEP.Primary.Delay				= 60 / 700
 SWEP.Primary.ClipSize			= 50
-SWEP.Primary.DefaultClip			= 550
+SWEP.Primary.DefaultClip			= 250
 SWEP.Primary.Ammo			= "ar2"
 
 SWEP.ViewModel			= "models/weapons/tfa_cso/c_xtracker.mdl"
@@ -80,3 +80,23 @@ SWEP.Tracer				= 0
 SWEP.TracerName 		= "tra_xtracker_sniper"
 
 SWEP.TracerCount 		= 1
+
+local pow = 1.4
+SWEP.RecoilInstructions = {
+	Interval = 1,
+	pow * Angle(-6, -2),
+	pow * Angle(-4, -1),
+	pow * Angle(-2, 3),
+	pow * Angle(-1, 2.5),
+	pow * Angle(-3, 0),
+	pow * Angle(-3, 1),
+	pow * Angle(-3, -3),
+}
+SWEP.Bullets = {
+	HullSize = 0,
+	Num = 1,
+	DamageDropoffRange = 3500,
+	DamageDropoffRangeMax = 6520,
+	DamageMinimumPercent = 0.1,
+	Spread = Vector(0.01, 0.015, 0),
+}
