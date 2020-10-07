@@ -251,7 +251,7 @@ function SWEP:SetupDataTables()
 		self:SetOnSound( "lightsaber/saber_on" .. math.random( 1, 4 ) .. ".wav" )
 		self:SetOffSound( "lightsaber/saber_off" .. math.random( 1, 4 ) .. ".wav" )
 
-		local color = HSVToColor(math.random() * 360, 1, 0.3)
+		local color = HSVToColor(math.random() * 360, 1, 0.8)
 		self:SetCrystalColor( Vector( color.r, color.g, color.b ) )
 
 		local _, k = table.Random( list.Get( "LightsaberModels" ) )
@@ -385,7 +385,7 @@ function SWEP:GetPrintNameColor()
 			color = lookup[id]
 		else
 			local col = rand(id)
-			color = HSVToColor((col / 100) % 360, 1, 0.7)
+			color = HSVToColor((col / 100) % 360, 1, 0.8)
 		end
 
 		return color --self:SetCrystalColor(Vector(color.r, color.g, color.b))
