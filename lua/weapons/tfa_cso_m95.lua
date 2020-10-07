@@ -24,6 +24,7 @@ SWEP.Primary.ClipSize			= 4
 SWEP.Primary.DefaultClip			= 12
 
 SWEP.AmmoEnt               = "item_ammo_357_ttt"
+SWEP.Primary.Ammo          = "357"
 
 SWEP.ViewModel			= "models/weapons/tfa_cso/c_m95.mdl"
 SWEP.ViewModelFOV			= 80
