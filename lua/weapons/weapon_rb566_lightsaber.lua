@@ -56,6 +56,8 @@ SWEP.PlutoSpawnable = false
 SWEP.ViewModel = "models/weapons/v_crowbar.mdl"
 SWEP.WorldModel = "models/sgg/starwars/weapons/w_anakin_ep2_saber_hilt.mdl"
 SWEP.ViewModelFOV = -100
+SWEP.Base = "weapon_ttt_crowbar"
+DEFINE_BASECLASS(SWEP.Base)
 
 SWEP.Primary.ClipSize = -1
 SWEP.Primary.DefaultClip = -1
@@ -228,36 +230,24 @@ end
 -- --------------------------------------------------------- Initialize --------------------------------------------------------- --
 
 function SWEP:SetupDataTables()
-	self:NetworkVar( "Float", 0, "LengthAnimation" )
-	self:NetworkVar( "Float", 1, "MaxLength" )
-	self:NetworkVar( "Float", 2, "BladeWidth" )
-	self:NetworkVar( "Float", 3, "Force" )
-
-	self:NetworkVar( "Bool", 0, "DarkInner" )
-	self:NetworkVar( "Bool", 1, "Enabled" )
-	self:NetworkVar( "Bool", 2, "WorksUnderwater" )
-	self:NetworkVar( "Int", 0, "ForceType" )
-	self:NetworkVar( "Int", 1, "IncorrectPlayerModel" )
-	self:NetworkVar( "Int", 2, "MaxForce" )
-	self:NetworkVar("Int", 3, "Slot")
-
-	self:NetworkVar( "Vector", 0, "CrystalColor" )
-	self:NetworkVar( "String", 0, "WorldModel" )
-	self:NetworkVar( "String", 1, "OnSound" )
-	self:NetworkVar( "String", 2, "OffSound" )
+	BaseClass.SetupDataTables(self)
+	self:NetVar( "LengthAnimation", "Float", 0)
+	self:NetVar( "MaxLength", "Float", 42 )
+	self:NetVar( "BladeWidth", "Float", 4 )
+	self:NetVar( "Force", "Float", 100 )
+	self:NetVar( "DarkInner", "Bool", false )
+	self:NetVar( "Enabled", "Bool", false )
+	self:NetVar( "WorksUnderwater", "Bool", true )
+	self:NetVar( "ForceType", "Int", 1 )
+	self:NetVar( "IncorrectPlayerModel", "Int" )
+	self:NetVar( "MaxForce", "Int", 100 )
+	self:NetVar( "CrystalColor", "Vector" )
+	self:NetVar( "WorldModel", "String" )
+	self:NetVar( "OnSound", "String" )
+	self:NetVar( "OffSound", "String" )
 
 
 	if ( SERVER ) then
-		self:SetLengthAnimation( 0 )
-		self:SetBladeWidth( 4 )
-		self:SetMaxLength( 42 )
-		self:SetDarkInner( false )
-		self:SetWorksUnderwater( true )
-		self:SetEnabled( false )
-
-		self:SetForceType( 1 )
-		self:SetMaxForce( 100 )
-		self:SetForce( self:GetMaxForce() )
 		self:SetOnSound( "lightsaber/saber_on" .. math.random( 1, 4 ) .. ".wav" )
 		self:SetOffSound( "lightsaber/saber_off" .. math.random( 1, 4 ) .. ".wav" )
 
@@ -338,7 +328,6 @@ local lookup = {
 function SWEP:Initialize()
 	self.PlutoGun = pluto.NextWeaponSpawn
 	pluto.NextWeaponSpawn = nil
-	self.Slot = self:GetSlot()
 	self.LoopSound = self.LoopSound or "lightsaber/saber_loop" .. math.random( 1, 8 ) .. ".wav"
 	self.SwingSound = self.SwingSound or "lightsaber/saber_swing" .. math.random( 1, 2 ) .. ".wav"
 
@@ -384,6 +373,27 @@ function SWEP:Initialize()
 	end
 
 	hook.Add("PlayerTick", self, self.PlayerTick)
+end
+
+
+function SWEP:GetPrintNameColor()
+	local wep = self.PlutoGun
+	if (wep) then
+		local id = wep.ID or wep.RowID
+		local color
+		if (lookup[id]) then
+			color = lookup[id]
+		else
+			local col = rand(id)
+			color = HSVToColor((col / 100) % 360, 1, 0.7)
+		end
+
+		return color --self:SetCrystalColor(Vector(color.r, color.g, color.b))
+	end
+
+	local v = self:GetCrystalColor()
+
+	return Color(v.x, v.y, v.z)
 end
 
 -- --------------------------------------------------------- NPC Weapons --------------------------------------------------------- --
@@ -616,11 +626,10 @@ function SWEP:Reload()
 	if (self:GetNextPrimaryFire() > CurTime()) then
 		return
 	end
-	if ( !self.Owner:KeyPressed( IN_RELOAD ) ) then return end
 	if ( self.Owner:WaterLevel() > 2 && !self:GetWorksUnderwater() ) then return end
 
-	self:SetNextAttack( 1 )
-	self:SetEnabled( !self:GetEnabled() )
+	self:SetNextPrimaryFire( CurTime() + (self:GetEnabled() and 3 or 1) )
+	self:SetEnabled( not self:GetEnabled() )
 end
 
 -- --------------------------------------------------------- Hold Types --------------------------------------------------------- --
@@ -1509,4 +1518,4 @@ function SWEP:TranslateFOV(fov)
 	return (hook.Run("TTTGetFOV", fov) or fov)
 end
 
-SWEP.Ortho = {-4.5, 3}
+SWEP.Ortho = {-4.5, -3}
