@@ -4,7 +4,7 @@ QUEST.Credits = "zeBaconcake"
 QUEST.Color = Color(204, 61, 5)
 
 function QUEST:GetRewardText(seed)
-	return "random gun with at least 3 mods"
+	return pluto.quests.poolrewardtext("hourly", seed)
 end
 
 function QUEST:Init(data)
@@ -38,15 +38,9 @@ hook.Add("TTTBeginRound", "oneshot_quest", function(e, dmg)
 end)
 
 function QUEST:Reward(data)
-	local gun = baseclass.Get(pluto.weapons.randomgun())
-	local tier = pluto.tiers.filter(gun, function(t)
-		return t.affixes >= 3
-	end)
-
-	local trans, new_item = pluto.inv.generatebufferweapon(data.Player, tier, gun)
-	trans:Run()
-
-	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "! Check your inventory.")
+	data.Name = self.Name
+	data.Color = self.Color
+	pluto.quests.poolreward("hourly", data)
 end
 
 function QUEST:IsType(type)

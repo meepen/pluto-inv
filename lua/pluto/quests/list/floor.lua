@@ -4,7 +4,7 @@ QUEST.Credits = "Mia Fey"
 QUEST.Color = Color(24, 125, 216)
 
 function QUEST:GetRewardText(seed)
-	return "legacy egg"
+	return pluto.quests.poolrewardtext("hourly", seed)
 end
 
 function QUEST:Init(data)
@@ -16,16 +16,9 @@ function QUEST:Init(data)
 end
 
 function QUEST:Reward(data)
-	local item = pluto.inv.roll {
-		crate3_n = 10,
-		crate3 = 1,
-		crate1 = 10,
-	}
-
-	pluto.inv.addcurrency(data.Player, item, 1)
-
-	local cur = pluto.currency.byname[item]
-	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(cur.Name) and "an " or "a ", cur, white_text, " for completing ", self.Color, self.Name, white_text, "!")
+	data.Name = self.Name
+	data.Color = self.Color
+	pluto.quests.poolreward("hourly", data)
 end
 
 function QUEST:IsType(type)

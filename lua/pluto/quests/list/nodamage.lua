@@ -4,7 +4,7 @@ QUEST.Credits = "Eppen"
 QUEST.Color = Color(204, 43, 75)
 
 function QUEST:GetRewardText(seed)
-	return "set of two hearts"
+	return pluto.quests.poolrewardtext("daily", seed)
 end
 
 function QUEST:Init(data)
@@ -16,10 +16,9 @@ function QUEST:Init(data)
 end
 
 function QUEST:Reward(data)
-	pluto.inv.addcurrency(data.Player, "heart", 2)
-
-	local cur = pluto.currency.byname.heart
-	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(cur.Name) and "an " or "a ", cur, white_text, " for completing ", self.Color, self.Name, white_text, "! (x2)")
+	data.Name = self.Name
+	data.Color = self.Color
+	pluto.quests.poolreward("daily", data)
 end
 
 function QUEST:IsType(type)

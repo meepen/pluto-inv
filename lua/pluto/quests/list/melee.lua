@@ -3,13 +3,8 @@ QUEST.Description = "Hit people rightfully with a melee before murdering them"
 QUEST.Credits = "Phrot"
 QUEST.Color = Color(204, 61, 5)
 
-function QUEST:GetReward(seed)
-	return pluto.currency.byname[seed < 0.5 and "aciddrop" or "pdrop"]
-end
-
 function QUEST:GetRewardText(seed)
-	local cur = self:GetReward(seed)
-	return cur.Name
+	return pluto.quests.poolrewardtext("hourly", seed)
 end
 
 function QUEST:Init(data)
@@ -34,10 +29,9 @@ function QUEST:Init(data)
 end
 
 function QUEST:Reward(data)
-	local cur = self:GetReward(data.Seed)
-	pluto.inv.addcurrency(data.Player, cur.InternalName, 1)
-
-	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(cur.Name) and "an " or "a ", cur, white_text, " for completing ", self.Color, self.Name, white_text, "!")
+	data.Name = self.Name
+	data.Color = self.Color
+	pluto.quests.poolreward("hourly", data)
 end
 
 function QUEST:IsType(type)

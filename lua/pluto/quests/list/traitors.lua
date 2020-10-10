@@ -1,9 +1,9 @@
-QUEST.Name = "The Inevitable"
+QUEST.Name = "Flawless Victory"
 QUEST.Description = "Win as a group of 3 or more traitors without anyone dying"
 QUEST.Color = Color(175, 47, 36)
 
 function QUEST:GetRewardText(seed)
-	return "Inevitable gun"
+	return pluto.quests.poolrewardtext("hourly", seed)
 end
 
 function QUEST:Init(data)
@@ -26,10 +26,9 @@ function QUEST:Init(data)
 end
 
 function QUEST:Reward(data)
-	local trans, new_item = pluto.inv.generatebufferweapon(data.Player, "inevitable")
-	trans:Run()
-
-	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "! Check your inventory.")
+	data.Name = self.Name
+	data.Color = self.Color
+	pluto.quests.poolreward("hourly", data)
 end
 
 function QUEST:IsType(type)
