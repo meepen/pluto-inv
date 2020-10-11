@@ -279,7 +279,7 @@ function pluto.inv.retrieveitems(steamid, cb)
 				RowID = item.idx,
 				TabIndex = item.tab_idx,
 				TabID = item.tab_id,
-				Tier = pluto.tiers.byname[item.tier],
+				Tier = pluto.tiers.byname[item.tier] or pluto.tiers.byname.unique,
 				ClassName = item.class,
 				Owner = steamid,
 				SpecialName = item.special_name,

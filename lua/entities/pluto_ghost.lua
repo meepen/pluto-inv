@@ -61,6 +61,11 @@ function ENT:Think()
 		for _, nav in pairs(navmesh.GetAllNavAreas()) do
 			if (nav:Contains(pos)) then
 				local next = table.Random(nav:GetAdjacentAreas())
+
+				if (not next) then
+					next = nav
+				end
+
 				for i = 1, 100 do
 					pos = next:GetRandomPoint()
 					local mins, maxs = vector_origin, vector_origin
