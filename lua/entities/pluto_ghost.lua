@@ -46,6 +46,7 @@ function ENT:GetPosition()
 	pos = pos + (self:GetNextPos() - self:GetLastPos()):Angle():Right() * -size * math.sin(CurTime() * 3.5) / 2
 
 	local ang = (self:GetLastPos() - self:GetNextPos()):Angle()
+	ang.p = 0
 
 	return pos, ang
 end

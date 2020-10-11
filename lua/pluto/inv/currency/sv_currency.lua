@@ -684,13 +684,43 @@ function pluto.ghost_killed(e, dmg)
 	if (not IsValid(atk) or not atk:IsPlayer()) then
 		return
 	end
-
-	pluto.currency.spawnfor(atk, "tome", atk:GetPos())
-
 	admin.chatf(white_text, "A ", ttt.teams.traitor.Color, "ghost ", white_text, "has been vanquished.")
 
-	for _, ply in pairs(player.GetAll()) do
-		pluto.currency.spawnfor(ply, "tome")
+	local rand = pluto.inv.roll {
+		all = 1,
+		self = 15,
+		share = 2,
+		multi = 0.1,
+	}
+
+	if (rand == "self") then
+		atk:ChatPrint(white_text, "You have been granted a ", pluto.currency.byname.tome, white_text, " by the ghost")
+		pluto.currency.spawnfor(atk, "tome", atk:GetPos())
+	elseif (rand == "all") then
+		admin.chatf(white_text, "The server has been blessed with ", pluto.currency.byname.tome)
+		for _, ply in pairs(player.GetAll()) do
+			pluto.currency.spawnfor(ply, "tome")
+		end
+	elseif (rand == "share") then
+		for _, oply in RandomPairs(player.GetAll()) do
+			if (oply ~= atk) then
+				atk:ChatPrint("You have shared two ", pluto.currency.byname.tome, white_text, " with ", ttt.teams.traitor.Color, oply:Nick())
+				oply:ChatPrint("You have been granted two ", pluto.currency.byname.tome, white_text, " by ", ttt.teams.traitor.Color, atk:Nick())
+				for i = 1, 3 do
+					pluto.currency.spawnfor(oply, "tome")
+					pluto.currency.spawnfor(atk, "tome")
+				end
+				break
+			end
+		end
+	elseif (rand == "multi") then
+		for name, cur in pairs(pluto.currency.byname) do
+			if (cur.Fake or not cur.Shares or cur.Shares <= pluto.currency.byname.mirror.Shares) then
+				continue
+			end
+			
+			pluto.currency.spawnfor(atk, name)
+		end
 	end
 
 	return true
@@ -962,7 +992,7 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 	end
 
 	-- ghosts
-	if (false and math.random(10) == 1) then
+	if (math.random(8) == 1) then
 		admin.chatf(white_text, "A horde of ", ttt.teams.traitor.Color, "spirits ", white_text, "have entered this realm.")
 		local ghosts = {}
 		for i = 1, 5 do
