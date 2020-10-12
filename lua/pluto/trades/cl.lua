@@ -89,7 +89,7 @@ end
 function pluto.inv.readtradeaccept()
 	local accepted = net.ReadBool()
 	hook.Run("PlutoTradeAccept", accepted)
-	trademsg(true, pluto.trade.Other:Nick(), accepted and " is ready to accept" or " is no longer ready to accept")
+	trademsg(true, IsValid(pluto.trade.Other) and pluto.trade.Other:Nick() or "Other Player", accepted and " is ready to accept" or " is no longer ready to accept")
 end
 
 function pluto.inv.readtrademessage()
@@ -121,7 +121,7 @@ function pluto.inv.readtradeupdate()
 
 		trade.CanAccept = net.ReadBool()
 	else
-		trademsg(false, "Trade" .. (pluto.trade and " with " .. pluto.trade.Other:Nick() or "") .. " ended")
+		trademsg(false, "Trade" .. (pluto.trade and IsValid(pluto.trade.Other) and " with " .. pluto.trade.Other:Nick() or "") .. " ended")
 	end
 
 	if (not pluto.trade and trade) then
@@ -901,7 +901,7 @@ function PANEL:Update()
 		end
 	end
 
-	self.TopText:SetText(pluto.trade.Other:Nick() .. " is offering:")
+	self.TopText:SetText(IsValid(pluto.trade.Other) and pluto.trade.Other:Nick() or "Other Player" .. " is offering:")
 	for i = 13, 24 do
 		self.Items[i]:SetItem()
 	end
