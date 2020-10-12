@@ -9,8 +9,12 @@ function ENT:DoDamage()
 		self:Remove()
 		return
 	end
+
+	local heal = math.min(p:GetMaxHealth(), p:Health() + 1)
 	
-	p:SetHealth(math.min(p:GetMaxHealth(), p:Health() + 1))
+	hook.Run("PlutoHealthGain", p, heal - p:Health())
+
+	p:SetHealth(heal)
 end
 
 function ENT:GetDelay()

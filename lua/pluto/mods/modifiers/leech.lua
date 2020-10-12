@@ -17,7 +17,7 @@ MOD.Description = "Damage is lowered by %s. %s of damage is returned as health."
 MOD.Tiers = {
 	{ 8, 15, 25, 35 },
 	{ 8, 15, 15, 25 },
-	{ 8, 15, 10,  15 },
+	{ 8, 15, 10, 15 },
 }
 
 function MOD:PreDamage(wep, rolls, vic, dmginfo, state)
@@ -25,7 +25,11 @@ function MOD:PreDamage(wep, rolls, vic, dmginfo, state)
 		dmginfo:ScaleDamage(1 - rolls[1] / 100)
 		local atk = wep:GetOwner()
 		if (IsValid(atk)and atk:IsPlayer() and atk:Alive()) then
-			atk:SetHealth(math.min(atk:GetMaxHealth(), atk:Health() + dmginfo:GetDamage() * rolls[2] / 100))
+			local heal = math.min(atk:GetMaxHealth(), atk:Health() + dmginfo:GetDamage() * rolls[2] / 100)
+
+			hook.Run("PlutoHealthGain", atk, heal - atk:Health())
+
+			atk:SetHealth(heal)
 		end
 	end
 end
