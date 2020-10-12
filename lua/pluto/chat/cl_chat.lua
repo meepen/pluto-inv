@@ -23,6 +23,14 @@ surface.CreateFont("pluto_chat_font", {
 	weight = 100,
 })
 
+surface.CreateFont("pluto_chat_font_clickable", {
+	font = "Roboto Bk",
+	size = 18,
+	bold = true,
+	weight = 100,
+	underline = true,
+})
+
 local closed_alpha = 0
 local opened_alpha = .75 * 255
 
@@ -384,6 +392,7 @@ function PANEL:AddTab(name)
 	chat:AppendText("Channel: " .. name .. "\n")
 	chat:Hide()
 	chat:Dock(FILL)
+	
 	chat.name = name
 
 	local tab = self.Tabs:Add "tttrw_base_tab"
@@ -397,6 +406,7 @@ function PANEL:AddTab(name)
 
 	function chat:PerformLayout()
 		self:SetFontInternal "pluto_chat_font"
+		self:SetUnderlineFont "pluto_chat_font_clickable"
 	end
 
 	function chat:ActionSignal(name, value)

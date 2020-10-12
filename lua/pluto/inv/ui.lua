@@ -627,6 +627,16 @@ function PANEL:OnMousePressed(code)
 
 			end
 
+			rightclick_menu:AddSpacer()
+
+			rightclick_menu:AddOption("Send in Chat", function()
+				LocalPlayer():ConCommand("say {item:"..self.Item.ID.."}")
+			end):SetIcon("icon16/comment.png")
+
+			rightclick_menu:AddOption("Copy Item", function()
+				SetClipboardText("{item:"..self.Item.ID.."}")
+			end):SetIcon("icon16/book_edit.png")
+
 			rightclick_menu:Open()
 			rightclick_menu:SetPos(input.GetCursorPos())--s
 		end
