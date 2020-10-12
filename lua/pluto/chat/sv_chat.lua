@@ -1,11 +1,3 @@
-FindMetaTable "Player".ChatPrint = function(self, ...)
-	local content = pluto.chat.determineTypes({...})
-
-	pluto.inv.message(self)
-		:write("chatmessage", content)
-	:send()
-end
-
 function pluto.chat.Send(ply, ...)
 	local args = {...}
 
@@ -30,7 +22,6 @@ function pluto.inv.readchat(from)
 		if ctype == pluto.chat.type.TEXT then
 			table.insert(content, pluto.chat.type.TEXT)
 			data = net.ReadString()
-			-- DO TEXT REPLACEMENT HERE
 			texts = texts .. data
 		elseif ctype == pluto.chat.type.COLOR then
 			table.insert(content, pluto.chat.type.COLOR)
@@ -73,7 +64,6 @@ end
 
 function pluto.inv.writechatmessage(ply, content, channel, teamchat)
 	channel = channel or "server"
-	print(content)
 	PrintTable(content)
 	net.WriteUInt(#content/2, 8)
 	net.WriteBool(teamchat)
@@ -81,8 +71,8 @@ function pluto.inv.writechatmessage(ply, content, channel, teamchat)
 	for i = 1, #content, 2 do
 		local ctype = content[i]
 		data = content[i+1]
-
-		net.WriteUInt(ctype, 2)
+		
+		net.WriteUInt(ctype, 3)
 
 		if (ctype == pluto.chat.type.TEXT) then
 			net.WriteString(data)
@@ -92,6 +82,8 @@ function pluto.inv.writechatmessage(ply, content, channel, teamchat)
 			net.WriteEntity(data)
 		elseif (ctype == pluto.chat.type.ITEM) then
 			pluto.inv.writeitem(ply, data)
+		elseif (ctype == pluto.chat.type.CURRENCY) then
+			net.WriteString(data)
 		end
 	end
 end

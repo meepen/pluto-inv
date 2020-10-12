@@ -33,7 +33,7 @@ function pluto.inv.readchatmessage()
 
 	for i = 1, size do
 		local data
-		local type = net.ReadUInt(2)
+		local type = net.ReadUInt(3)
 
 		if type == pluto.chat.type.TEXT then
 			data = net.ReadString()
@@ -43,6 +43,8 @@ function pluto.inv.readchatmessage()
 			data = net.ReadEntity()
 		elseif type == pluto.chat.type.ITEM then
 			data = pluto.inv.readitem()
+		elseif type == pluto.chat.type.CURRENCY then
+			data = pluto.currency.byname[net.ReadString()]
 		end
 
 		table.insert(content, data)
@@ -93,13 +95,14 @@ function pluto.chat.Add(content, channel, teamchat)
 		end
 		pluto.chat.Box:Text(channel, from:Nick())
 		pluto.chat.Box:Color(channel, 255, 255, 255, 255)
-		pluto.chat.Box:Text(channel, "COLON:COLON ")
+		pluto.chat.Box:Text(channel, ": ")
 	end
 	print("x")
 	for k,v in pairs(content) do
 		if (IsColor(v)) then
 			pluto.chat.Box:Color(channel, v)
 		elseif (type(v) == "string") then
+			print("string", v)
 			pluto.chat.Box:Text(channel, v)
 		elseif (IsValid(v) and v:IsPlayer()) then
 			if (ttt.GetRoundState() ~= ttt.ROUNDSTATE_PREPARING and IsValid(v.HiddenState) and not v.HiddenState:IsDormant()) then
@@ -112,8 +115,13 @@ function pluto.chat.Add(content, channel, teamchat)
 			pluto.chat.Box:Color(channel, 255, 255, 255, 255)
 			--pluto.chat.Box:Text(channel, ": ")
 		else
-			print("other type")
+			print("other type", v)
 			PrintTable(v)
+			if (v.Type ~= nil) then
+				pluto.chat.Box:Item(channel, v)
+			elseif (v.InternalName ~= nil) then
+				pluto.chat.Box:Cur(channel, v)
+			end
 		end
 	end
 	pluto.chat.Box:Newline(channel)
@@ -263,6 +271,7 @@ DEFINE_BASECLASS "ttt_curved_panel"
 function PANEL:Init()
 	self.Inner = self:Add "ttt_curved_panel"
 	self.Inner:SetCurve(4)
+	self.Inner:SetCurveTopLeft(false)
 	self.Inner:Dock(FILL)
 	self.Inner:SetColor(Color(17, 15, 13, 0.25 * 255))
 
@@ -282,13 +291,6 @@ function PANEL:Init()
 		pluto.chat.Box:SetKeyboardInputEnabled(true)
 	end
 
-	function self.TextEntry:OnFocusChanged(gained)
-		if (not gained) then
-			self:SetKeyboardInputEnabled(false)
-			pluto.chat.Box:SetKeyboardInputEnabled(false)
-		end
-	end
-
 	self.TextEntry:SetEnterAllowed(false)
 
 	function self.TextEntry:OnKeyCode(code)
@@ -301,6 +303,10 @@ function PANEL:Init()
 			print("SAYING", text)
 			self:SetText ""
 			if (text ~= "") then
+				if (pluto.chat.Box.Tabs.active.name == "admin") then
+					text = "@" .. text
+				end
+
 				if (not pluto.chat.teamchat and text:sub(1,1) == "@") then
 					pluto.chat.Box:SelectTab("admin")
 				end
@@ -337,16 +343,13 @@ function PANEL:Init()
 	self.Buttons.Emoji:Dock(BOTTOM)
 
 	local pad = self.Inner:GetCurve() / 2
-	self.Inner:DockPadding(pad, pad, pad, pad)
+	self.Inner:DockPadding(pad, 0, pad, pad)
 end
 
 function PANEL:SetAlpha(a)
 	self.Inner:SetColor(Color(17, 15, 13, a))
 	self.TextEntry:SetAlpha(a)
 	self.Buttons:SetAlpha(a)
-end
-
-function PANEL:Paint(w, h)
 end
 
 vgui.Register("pluto_chatbox_inner", PANEL, "ttt_curved_panel_shadow")
@@ -368,13 +371,15 @@ function PANEL:Init()
 
 	self:AddTab("server")
 	self:AddTab("admin")
-	self:AddTab("global")
+	--self:AddTab("global") this doesn't do anything yet so im commenting it out until we do discord/socket things to make it work
 
 	self:SelectTab("server")
 
 	self.Tabs.active:SetVerticalScrollbarEnabled(false)
 
 	self:SetAlpha(closed_alpha)
+
+	self.Showcase = nil
 end
 
 function PANEL:SetAlpha(a)
@@ -387,8 +392,9 @@ function PANEL:AddTab(name)
 	chat:AppendText("Channel: "..name.."\n")
 	chat:Hide()
 	chat:Dock(FILL)
+	chat.name = name
 
-	local tab = self.Tabs:Add("pluto_chatbox_button")
+	local tab = self.Tabs:Add("tttrw_base_tab")
 	tab.name = name
 	tab:SetText(name)
 	tab:Dock(LEFT)
@@ -401,11 +407,37 @@ function PANEL:AddTab(name)
 		self:SetFontInternal "pluto_trade_chat_bold"
 	end
 
+	function chat:ActionSignal(name, value)
+		if (name == "TextClicked") then
+			local x = util.JSONToTable(value)
+			local thing
+
+			if (x.type == "item") then
+				thing = pluto.received.item[x.val]
+			elseif (x.type == "currency") then
+				thing = pluto.currency.byname[x.val]
+			end
+
+			local x,y = input.GetCursorPos()
+			pluto.chat.Box.Showcase = pluto.ui.showcase(thing)
+			pluto.chat.Box.Showcase:MakePopup()
+			pluto.chat.Box.Showcase:SetPos(x,y-pluto.chat.Box.Showcase:GetTall() - 20)
+			local i = 0
+			function pluto.chat.Box.Showcase:OnFocusChanged(gained)
+				if (not gained) then
+					pluto.chat.Box.Showcase:Remove()
+				end
+			end
+		end
+	end
+
 	self.Tabs.table[name] = chat
 end
 
 function PANEL:SelectTab(name)
 	if (self.Tabs.active ~= nil) then
+		if (self.Tabs.active.name == name) then return end
+		
 		self.Tabs.active:Hide()
 	end
 
@@ -437,13 +469,27 @@ function PANEL:Color(channel, col, g, b, a)
 end
 
 function PANEL:Item(channel, item)
+	print("item")
+	PrintTable(item)
 	local box = self.Tabs.table[channel]
-	box:Color(item.Tier.Color)
-	box:InsertClickableLinkStart(item.TabID)
-	box:Color(0,255,0,255)
-	box:Text("ITEMHERE")
-	box:InsertClickableLinkEnd()
-	box:Color(255, 255, 255, 255)
+	self:Color(channel, item.Color)
+	box:InsertClickableTextStart(util.TableToJSON({type = "item", val = item.ID}))
+	self:Text(channel, item:GetDefaultName())
+	box:InsertClickableTextEnd()
+	self:Color(channel, 255, 255, 255, 255)
+end
+
+function PANEL:Cur(channel, cur)
+	print("currency", cur)
+	local box = self.Tabs.table[channel]
+
+	if not cur then return end
+
+	self:Color(channel, cur.Color)
+	box:InsertClickableTextStart(util.TableToJSON({type = "currency", val = cur.InternalName}))
+	self:Text(channel, cur.Name)
+	box:InsertClickableTextEnd()
+	self:Color(channel, 255, 255, 255, 255)
 end
 
 function PANEL:Newline(channel)
@@ -466,6 +512,10 @@ end
 vgui.Register("pluto_chatbox", PANEL, "EditablePanel")
 
 if (IsValid(pluto.chat.Box)) then
+	if (IsValid(pluto.chat.Box.Showcase)) then
+		pluto.chat.Box.Showcase:Remove()
+	end
+	pluto.chat.Close()
 	pluto.chat.Box:Remove()
 	pluto.chat.Box = vgui.Create("pluto_chatbox")
 end
