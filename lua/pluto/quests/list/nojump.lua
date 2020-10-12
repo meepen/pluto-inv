@@ -2,10 +2,7 @@ QUEST.Name = "Cemented"
 QUEST.Description = "Kill people rightfully in one round without jumping"
 QUEST.Credits = "add__123"
 QUEST.Color = Color(204, 61, 5)
-
-function QUEST:GetRewardText(seed)
-	return pluto.quests.poolrewardtext("hourly", seed)
-end
+QUEST.RewardPool = "hourly"
 
 function QUEST:Init(data)
 	local current = 0
@@ -28,12 +25,6 @@ function QUEST:Init(data)
 			end
 		end
 	end)
-end
-
-function QUEST:Reward(data)
-	data.Name = self.Name
-	data.Color = self.Color
-	pluto.quests.poolreward("hourly", data)
 end
 
 function QUEST:IsType(type)

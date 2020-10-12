@@ -1,10 +1,7 @@
 QUEST.Name = "Flawless Victory"
 QUEST.Description = "Win as a group of 3 or more traitors without anyone dying"
 QUEST.Color = Color(175, 47, 36)
-
-function QUEST:GetRewardText(seed)
-	return pluto.quests.poolrewardtext("hourly", seed)
-end
+QUEST.RewardPool = "hourly"
 
 function QUEST:Init(data)
 	local good = false
@@ -23,12 +20,6 @@ function QUEST:Init(data)
 			data:UpdateProgress(1)
 		end
 	end)
-end
-
-function QUEST:Reward(data)
-	data.Name = self.Name
-	data.Color = self.Color
-	pluto.quests.poolreward("hourly", data)
 end
 
 function QUEST:IsType(type)

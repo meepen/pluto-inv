@@ -2,10 +2,7 @@ QUEST.Name = "Floor Licker"
 QUEST.Description = "Rightfully kill players with weapons found on the floor"
 QUEST.Credits = "Mia Fey"
 QUEST.Color = Color(24, 125, 216)
-
-function QUEST:GetRewardText(seed)
-	return pluto.quests.poolrewardtext("hourly", seed)
-end
+QUEST.RewardPool = "hourly"
 
 function QUEST:Init(data)
 	data:Hook("PlayerDeath", function(data, vic, inf, atk)
@@ -13,12 +10,6 @@ function QUEST:Init(data)
 			data:UpdateProgress(1)
 		end
 	end)
-end
-
-function QUEST:Reward(data)
-	data.Name = self.Name
-	data.Color = self.Color
-	pluto.quests.poolreward("hourly", data)
 end
 
 function QUEST:IsType(type)

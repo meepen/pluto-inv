@@ -1,10 +1,7 @@
 QUEST.Name = "Medic"
 QUEST.Description = "Heal missing health"
 QUEST.Color = Color(255, 0, 255)
-
-function QUEST:GetRewardText(seed)
-	return pluto.quests.poolrewardtext("daily", seed)
-end
+QUEST.RewardPool = "daily"
 
 function QUEST:Init(data)
 	data:Hook("PlutoHealthGain", function(data, ply, amt)
@@ -12,12 +9,6 @@ function QUEST:Init(data)
 			data:UpdateProgress(amt)
 		end
 	end)
-end
-
-function QUEST:Reward(data)
-	data.Name = self.Name
-	data.Color = self.Color
-	pluto.quests.poolreward("daily", data)
 end
 
 function QUEST:IsType(type)

@@ -2,10 +2,7 @@ QUEST.Name = "Perfect Crime"
 QUEST.Description = "Prevent the bodies of your victims from being discovered"
 QUEST.Credits = "Froggy & add__123"
 QUEST.Color = Color(204, 43, 75)
-
-function QUEST:GetRewardText(seed)
-	return pluto.quests.poolrewardtext("daily", seed)
-end
+QUEST.RewardPool = "daily"
 
 function QUEST:Init(data)
 	local ragdolls = {}
@@ -26,12 +23,6 @@ function QUEST:Init(data)
 			ragdolls[ent] = nil
 		end
 	end)
-end
-
-function QUEST:Reward(data)
-	data.Name = self.Name
-	data.Color = self.Color
-	pluto.quests.poolreward("daily", data)
 end
 
 function QUEST:IsType(type)

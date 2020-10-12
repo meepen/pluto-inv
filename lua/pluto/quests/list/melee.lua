@@ -2,10 +2,7 @@ QUEST.Name = "Clubber"
 QUEST.Description = "Hit people rightfully with a melee before murdering them"
 QUEST.Credits = "Phrot"
 QUEST.Color = Color(204, 61, 5)
-
-function QUEST:GetRewardText(seed)
-	return pluto.quests.poolrewardtext("hourly", seed)
-end
+QUEST.RewardPool = "hourly"
 
 function QUEST:Init(data)
 	local meleed = {}
@@ -26,12 +23,6 @@ function QUEST:Init(data)
 			data:UpdateProgress(1)
 		end
 	end)
-end
-
-function QUEST:Reward(data)
-	data.Name = self.Name
-	data.Color = self.Color
-	pluto.quests.poolreward("hourly", data)
 end
 
 function QUEST:IsType(type)

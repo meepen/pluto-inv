@@ -1,10 +1,7 @@
 QUEST.Name = "Traitor Tracker"
 QUEST.Description = "Kill traitors whose DNA you were following"
 QUEST.Color = Color(21, 128, 0)
-
-function QUEST:GetRewardText(seed)
-	return pluto.quests.poolrewardtext("weekly", seed)
-end
+QUEST.RewardPool = "weekly"
 
 function QUEST:Init(data)
 	data:Hook("PlayerDeath", function(data, vic, inf, atk)
@@ -20,12 +17,6 @@ function QUEST:Init(data)
 			end
 		end
 	end)
-end
-
-function QUEST:Reward(data)
-	data.Name = self.Name
-	data.Color = self.Color
-	pluto.quests.poolreward("weekly", data)
 end
 
 function QUEST:IsType(type)

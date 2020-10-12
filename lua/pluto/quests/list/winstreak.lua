@@ -1,10 +1,7 @@
 QUEST.Name = "Survivor"
 QUEST.Description = "Win rounds in a row without dying"
 QUEST.Color = Color(204, 170, 0)
-
-function QUEST:GetRewardText(seed)
-	return pluto.quests.poolrewardtext("hourly", seed)
-end
+QUEST.RewardPool = "hourly"
 
 function QUEST:Init(data)
 	data:Hook("TTTEndRound", function(data)
@@ -17,12 +14,6 @@ function QUEST:Init(data)
 			data:UpdateProgress(-1 * (data.TotalProgress - data.ProgressLeft))
 		end
 	end)
-end
-
-function QUEST:Reward(data)
-	data.Name = self.Name
-	data.Color = self.Color
-	pluto.quests.poolreward("hourly", data)
 end
 
 function QUEST:IsType(type)

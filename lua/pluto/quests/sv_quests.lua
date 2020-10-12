@@ -52,7 +52,7 @@ pluto.quests.rewardhandlers = {
 
             pluto.inv.addcurrency(data.Player, self.Currency, amount)
 
-            data.Player:ChatPrint(white_text, "You have received ", amount, " ", cur, amount == 1 and "" or "s", white_text, " for completing ", data.Color, data.Name, white_text, "!")
+            data.Player:ChatPrint(white_text, "You have received ", amount, " ", cur, amount == 1 and "" or "s", white_text, " for completing ", data.QUEST.Color, data.QUEST.Name, white_text, "!")
 		end,
         small = function(self)
             if (self.Small) then
@@ -98,12 +98,12 @@ pluto.quests.rewardhandlers = {
 
 			pluto.inv.savebufferitem(data.Player, new_item):Run()
 
-			data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", data.Color, data.Name, white_text, "!")
+			data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", data.QUEST.olor, data.QUEST.Name, white_text, "!")
 		end,
 		small = function(self)
-            if (self.Small) then
-                return self.Small
-            end
+			if (self.Small) then
+				return self.Small
+			end
 
 			local smalltext = ""
 
@@ -152,7 +152,7 @@ pluto.quests.rewardhandlers = {
 
 			tier = pluto.tiers.byname[tier]
 
-			data.Player:ChatPrint(white_text, "You have received ", startswithvowel(tier.Name) and "an " or "a ", tier.Color, tier.Name, " Tier Shard", white_text, " for completing ", data.Color, data.Name, white_text, "!")
+			data.Player:ChatPrint(white_text, "You have received ", startswithvowel(tier.Name) and "an " or "a ", tier.Color, tier.Name, " Tier Shard", white_text, " for completing ", data.QUEST.Color, data.QUEST.Name, white_text, "!")
 		end,
 		small = function(self)
             if (self.Small) then
@@ -392,6 +392,8 @@ function QUEST:Complete()
 	pluto.db.query("UPDATE pluto_quests SET expiry_time = LEAST(expiry_time, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP)) WHERE idx = ?", {self.TYPE.Cooldown, self.RowID}, function(err, q)
 		if (self.QUEST.Reward) then
 			self.QUEST:Reward(self)
+		elseif (self.Reward) then
+			self:Reward(self)
 		end
 		self.EndTime = math.min(self.EndTime, os.time() + self.TYPE.Cooldown)
 
@@ -405,8 +407,16 @@ function QUEST:Complete()
 	end)
 end
 
+function QUEST:GetRewardText(seed)
+    return pluto.quests.poolrewardtext(self.QUEST.RewardPool, seed)
+end
+
+function QUEST:Reward(data)
+	pluto.quests.poolreward(self.QUEST.RewardPool, data)
+end
+
 local function poolpick(type, seed)
-	local typequests = pluto.quests.rewards[type]
+	local typequests = pluto.quests.rewards[type or "unique"]
 
 	if (not typequests) then
 		return
@@ -659,7 +669,7 @@ function pluto.inv.writequest(ply, quest)
 		net.WriteString(quest.QUEST.Credits)
 	end
 
-	net.WriteString(quest.QUEST:GetRewardText(quest.Seed))
+	net.WriteString(quest.QUEST.GetRewardText and quest.QUEST:GetRewardText(quest.Seed) or quest:GetRewardText(quest.Seed))
 
 	net.WriteInt(quest.EndTime - os.time(), 32)
 	net.WriteUInt(quest.ProgressLeft, 32)

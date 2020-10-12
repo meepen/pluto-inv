@@ -2,10 +2,7 @@ QUEST.Name = "Hitman"
 QUEST.Description = "Rightfully one-shot players in one round"
 QUEST.Credits = "zeBaconcake"
 QUEST.Color = Color(204, 61, 5)
-
-function QUEST:GetRewardText(seed)
-	return pluto.quests.poolrewardtext("hourly", seed)
-end
+QUEST.RewardPool = "hourly"
 
 function QUEST:Init(data)
 	local current = 0
@@ -36,12 +33,6 @@ hook.Add("TTTBeginRound", "oneshot_quest", function(e, dmg)
 		ply.DamageTakens = {}
 	end
 end)
-
-function QUEST:Reward(data)
-	data.Name = self.Name
-	data.Color = self.Color
-	pluto.quests.poolreward("hourly", data)
-end
 
 function QUEST:IsType(type)
 	return type == 1

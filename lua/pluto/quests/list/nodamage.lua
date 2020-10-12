@@ -2,10 +2,7 @@ QUEST.Name = "Invulnerable"
 QUEST.Description = "Kill people rightfully while at full health"
 QUEST.Credits = "Eppen"
 QUEST.Color = Color(204, 43, 75)
-
-function QUEST:GetRewardText(seed)
-	return pluto.quests.poolrewardtext("daily", seed)
-end
+QUEST.RewardPool = "daily"
 
 function QUEST:Init(data)
 	data:Hook("PlayerDeath", function(data, vic, inf, atk)
@@ -13,12 +10,6 @@ function QUEST:Init(data)
 			data:UpdateProgress(1)
 		end
 	end)
-end
-
-function QUEST:Reward(data)
-	data.Name = self.Name
-	data.Color = self.Color
-	pluto.quests.poolreward("daily", data)
 end
 
 function QUEST:IsType(type)

@@ -1,10 +1,7 @@
 QUEST.Name = "Swiss Army Traitor"
 QUEST.Description = "Get a rightful kill with a melee, primary, and secondary in one round"
 QUEST.Color = Color(45, 20, 130)
-
-function QUEST:GetRewardText(seed)
-	return pluto.quests.poolrewardtext("hourly", seed)
-end
+QUEST.RewardPool = "hourly"
 
 function QUEST:Init(data)
 	local current = 0
@@ -36,12 +33,6 @@ function QUEST:Init(data)
 			end
 		end
 	end)
-end
-
-function QUEST:Reward(data)
-	data.Name = self.Name
-	data.Color = self.Color
-	pluto.quests.poolreward("hourly", data)
 end
 
 function QUEST:IsType(type)

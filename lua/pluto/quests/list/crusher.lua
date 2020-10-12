@@ -2,10 +2,7 @@ QUEST.Name = "Noob Crusher"
 QUEST.Description = "Crush people rightfully without movement abilities"
 QUEST.Credits = "Eppen"
 QUEST.Color = Color(204, 43, 75)
-
-function QUEST:GetRewardText(seed)
-	return pluto.quests.poolrewardtext("daily", seed)
-end
+QUEST.RewardPool = "daily"
 
 function QUEST:Init(data)
 	local failed = false
@@ -31,12 +28,6 @@ function QUEST:Init(data)
 			data:UpdateProgress(1)
 		end
 	end)
-end
-
-function QUEST:Reward(data)
-	data.Name = self.Name
-	data.Color = self.Color
-	pluto.quests.poolreward("daily", data)
 end
 
 function QUEST:IsType(type)
