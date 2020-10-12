@@ -34,14 +34,13 @@ function chat.AddText(...)
 end
 
 function pluto.inv.readchatmessage()
-	local size = net.ReadUInt(8)
 	local teamchat = net.ReadBool()
 	local channel = net.ReadString()
 	local content = {}
 
-	for i = 1, size do
+	while (1) do
 		local data
-		local type = net.ReadUInt(3)
+		local type = net.ReadUInt(4)
 
 		if type == pluto.chat.type.TEXT then
 			data = net.ReadString()
@@ -53,6 +52,8 @@ function pluto.inv.readchatmessage()
 			data = pluto.inv.readitem()
 		elseif type == pluto.chat.type.CURRENCY then
 			data = pluto.currency.byname[net.ReadString()]
+		elseif (type == pluto.chat.type.NONE) then
+			break
 		end
 
 		table.insert(content, data)

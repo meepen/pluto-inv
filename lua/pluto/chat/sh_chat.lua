@@ -5,6 +5,7 @@ pluto.chat.type.COLOR = 1
 pluto.chat.type.PLAYER = 2
 pluto.chat.type.ITEM = 3
 pluto.chat.type.CURRENCY = 4
+pluto.chat.type.NONE = 5
 
 local function override()
 	
