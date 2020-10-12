@@ -20,6 +20,7 @@ pluto.inv.messages = {
 		"rename",
 		"ui",
 		"unname",
+		"chat",
 	},
 	sv2cl = {
 		[0] = "end",
@@ -46,6 +47,7 @@ pluto.inv.messages = {
 		"questdone",
 		"playermodel",
 		"playerexp",
+		"chatmessage",
 	}
 }
 
