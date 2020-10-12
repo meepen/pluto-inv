@@ -12,7 +12,7 @@ function QUEST:Init(data)
 
 		if (dmg:IsDamageType(DMG_BURN) or dmg:IsDamageType(DMG_BLAST) or dmg:IsDamageType(270532608) or dmg:IsDamageType(268435464)) then
 			succ = true
-			if (not atk:IsPlayer() and vic.was_burned and data.Player == vic.was_burned.att) then
+			if (not atk:IsPlayer() and vic.was_burned and data.Player == vic.was_burned.att and vic.was_burned.t > CurTime() - 5) then
 				atk = vic.was_burned.att
 			end
 		end
