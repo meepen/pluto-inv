@@ -79,7 +79,6 @@ SWEP.Primary.ClipSize		= 50
 SWEP.Primary.DefaultClip	= 100
 SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo          = "smg1"
-SWEP.AmmoEnt               = "item_ammo_smg1_ttt"
 
 SWEP.Primary.Sound = "CW_PPS_FIRE"
 SWEP.Primary.Recoil = 2

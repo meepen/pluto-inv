@@ -101,7 +101,6 @@ SWEP.Primary.DefaultClip = 64
 SWEP.Primary.Automatic = true
 SWEP.Primary.Recoil = 2
 SWEP.Primary.Ammo          = "smg1"
-SWEP.AmmoEnt               = "item_ammo_smg1_ttt"
 
 SWEP.Ironsights = {
 	Pos = Vector(-5.14, -2, 2.6),

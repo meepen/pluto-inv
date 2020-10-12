@@ -92,4 +92,3 @@ SWEP.AutoSpawnable = true
 SWEP.Ortho = {5.5, -7}
 
 SWEP.Primary.Ammo          = "smg1"
-SWEP.AmmoEnt               = "item_ammo_smg1_ttt"

@@ -38,7 +38,6 @@ SWEP.Primary.Delay 		= 0.6
 SWEP.Primary.DefaultClip= 16
 SWEP.Primary.Automatic 	= true
 SWEP.Primary.Ammo          = "AlyxGun"
-SWEP.AmmoEnt               = "item_ammo_revolver_ttt"
 SWEP.Primary.Recoil = 2
 SWEP.Primary.RecoilTiming = 0.1
 SWEP.HeadshotMultiplier = 5

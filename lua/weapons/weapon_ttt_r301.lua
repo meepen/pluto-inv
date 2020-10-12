@@ -101,7 +101,6 @@ SWEP.FireSoundAffectedByClipSize = true
 SWEP.Primary.ClipSize = 28
 SWEP.Primary.DefaultClip = 28 * 2
 SWEP.Primary.Ammo = "pistol"
-SWEP.AmmoEnt = "item_ammo_pistol_ttt"
 SWEP.Primary.Recoil = 1
 
 SWEP.ViewModel = "models/v_models/v_r301.mdl"

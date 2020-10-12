@@ -34,7 +34,6 @@ SWEP.Primary.DefaultClip = 74
 SWEP.Primary.Automatic = true 
 SWEP.Primary.Damage = 17.5
 SWEP.Primary.Ammo = "SMG1"
-SWEP.AmmoEnt = "item_ammo_smg1_ttt"
 
 SWEP.HeadshotMultiplier = 1.4
 

@@ -17,7 +17,6 @@ SWEP.ViewModel             = "models/weapons/c_slam.mdl"
 SWEP.WorldModel            = "models/weapons/w_slam.mdl"
 
 SWEP.Slot = 6
-SWEP.Primary.Ammo          = 0
 
 SWEP.Equipment = {
 	Name		   = "Blink",

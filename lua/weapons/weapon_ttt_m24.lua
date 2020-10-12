@@ -46,7 +46,6 @@ SWEP.ReloadSpeed = 1.66
 
 SWEP.AutoSpawnable         = true
 SWEP.Spawnable             = true
-SWEP.AmmoEnt               = "item_ammo_357_ttt"
 
 SWEP.ViewModel             = "models/weapons/v_snip_agu.mdl"
 SWEP.WorldModel            = "models/weapons/w_snip_agu.mdl"

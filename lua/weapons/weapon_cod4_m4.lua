@@ -24,7 +24,6 @@ SWEP.HeadshotMultiplier = 1.333
 SWEP.Sights = true
 
 SWEP.Primary.Ammo          = "Pistol"
-SWEP.AmmoEnt               = "item_ammo_pistol_ttt"
 
 sound.Add {
 	name = "Weapon_CoD4_M4.Single",

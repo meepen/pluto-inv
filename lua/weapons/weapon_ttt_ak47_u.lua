@@ -38,7 +38,6 @@ SWEP.Primary.Delay 		= 0.19
 SWEP.Primary.DefaultClip= 120
 SWEP.Primary.Automatic 	= true
 SWEP.Primary.Ammo          = "Pistol"
-SWEP.AmmoEnt               = "item_ammo_pistol_ttt"
 
 SWEP.HeadshotMultiplier = 1.5
 
