@@ -133,6 +133,11 @@ local ITEM = {}
 pluto.inv.item_mt = pluto.inv.item_mt or {}
 pluto.inv.item_mt.__index = ITEM
 
+function pluto.isitem(t)
+	return debug.getmetatable(t) == pluto.inv.item_mt
+end
+
+
 pluto.inv.item_mt.__colorprint = function(self)
 	return {self:GetColor(), self:GetPrintName()}
 end

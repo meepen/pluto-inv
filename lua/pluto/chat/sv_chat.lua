@@ -7,50 +7,101 @@ function pluto.chat.Send(ply, ...)
 end
 
 function pluto.inv.readchat(from)
-	local size = net.ReadUInt(8)
 	local teamchat = net.ReadBool()
-	local texts = ""
+	local texts = net.ReadString():sub(1, 256)
 	local content = {
-		pluto.chat.type.PLAYER,
 		from,
 	}
-
-	for i = 1, size do
-		local data
-		local ctype = net.ReadUInt(2)
-
-		if ctype == pluto.chat.type.TEXT then
-			table.insert(content, pluto.chat.type.TEXT)
-			data = net.ReadString()
-			texts = texts .. data
-		elseif ctype == pluto.chat.type.COLOR then
-			table.insert(content, pluto.chat.type.COLOR)
-			data = net.ReadColor()
-		elseif ctype == pluto.chat.type.PLAYER then
-			table.insert(content, pluto.chat.type.PLAYER)
-			data = net.ReadEntity()
-		elseif ctype == pluto.chat.type.ITEM then
-			local id = net.ReadUInt(32)
-			
-			local item = pluto.itemids[id]
-
-			if item then
-				table.insert(content, pluto.chat.type.ITEM)
-				data = item
-			else
-				table.insert(content, pluto.chat.type.TEXT)
-				data = "[UNKNOWN ITEM]"
-			end
-		end
-
-		table.insert(content, data)
-	end
 
 	local replace = hook.Run("PlayerSay", from, texts, teamchat)
 
 	if replace == "" or not replace then return end
 
-	print("replace", replace)
+	local last_pos = 1
+
+	for pos, match, next_pos in replace:gmatch "(){([^%}]+)}()" do
+		if (pos ~= last_pos) then
+			table.insert(content, replace:sub(last_pos, pos - 1))
+		end
+
+		local what, id = match:match "^([^:]+):(.+)$"
+
+		local done = false
+
+		if (what == "item") then
+			local item = pluto.itemids[tonumber(id)]
+			if (item and item.Owner == from:SteamID64()) then
+				table.insert(content, item)
+				done = true
+			end
+		elseif (match == "primary") then
+			local eq = pluto.inv.invs[from].tabs.equip
+
+			local slot = eq.Items[1]
+			table.insert(content, slot)
+			done = true
+		elseif (match == "secondary") then
+			local eq = pluto.inv.invs[from].tabs.equip
+
+			local slot = eq.Items[2]
+			table.insert(content, slot)
+			done = true
+		elseif (match == "model") then
+			local eq = pluto.inv.invs[from].tabs.equip
+
+			local slot = eq.Items[3]
+			table.insert(content, slot)
+			done = true
+		elseif (match == "melee") then
+			local eq = pluto.inv.invs[from].tabs.equip
+
+			local slot = eq.Items[4]
+			table.insert(content, slot)
+			done = true
+		elseif (match == "grenade") then
+			local eq = pluto.inv.invs[from].tabs.equip
+
+			local slot = eq.Items[5]
+			table.insert(content, slot)
+			done = true
+		elseif (match == "other" or match == "holster") then
+			local eq = pluto.inv.invs[from].tabs.equip
+
+			local slot = eq.Items[6]
+			table.insert(content, slot)
+			done = true
+		elseif (match == "pickup") then
+			local eq = pluto.inv.invs[from].tabs.equip
+
+			local slot = eq.Items[7]
+			table.insert(content, slot)
+			done = true
+		elseif (match == "loadout") then
+			
+			local eq = pluto.inv.invs[from].tabs.equip
+
+			for i = 1, 14 do
+				local slot = eq.Items[i]
+				
+				if (slot) then
+					table.insert(content, slot)
+					table.insert(content, " ")
+				end
+			end
+
+			done = true
+		end
+
+		if (not done) then
+			table.insert(content, "{" .. match .. "}")
+		end
+
+		last_pos = next_pos
+	end
+
+	if (pos ~= #replace) then
+		table.insert(content, replace:sub(last_pos))
+	end
 
 	for _,ply in pairs(player.GetAll()) do
 		local canSee = hook.Run("PlayerCanSeePlayersChat", texts, teamchat, ply, from)
@@ -64,26 +115,44 @@ end
 
 function pluto.inv.writechatmessage(ply, content, channel, teamchat)
 	channel = channel or "server"
-	PrintTable(content)
-	net.WriteUInt(#content/2, 8)
+
+	net.WriteUInt(#content, 8)
 	net.WriteBool(teamchat)
 	net.WriteString(channel)
-	for i = 1, #content, 2 do
-		local ctype = content[i]
-		data = content[i+1]
-		
-		net.WriteUInt(ctype, 3)
 
-		if (ctype == pluto.chat.type.TEXT) then
-			net.WriteString(data)
-		elseif (ctype == pluto.chat.type.COLOR) then
-			net.WriteColor(data)
-		elseif (ctype == pluto.chat.type.PLAYER) then
+	for _, data in ipairs(content) do
+		local tpid = TypeID(data)
+
+		if (tpid == TYPE_ENTITY) then
+			net.WriteUInt(pluto.chat.type.PLAYER, 3)
 			net.WriteEntity(data)
-		elseif (ctype == pluto.chat.type.ITEM) then
-			pluto.inv.writeitem(ply, data)
-		elseif (ctype == pluto.chat.type.CURRENCY) then
+		elseif (IsColor(data)) then
+			net.WriteUInt(pluto.chat.type.COLOR, 3)
+			net.WriteColor(data)
+		elseif (tpid == TYPE_STRING) then
+			net.WriteUInt(pluto.chat.type.TEXT, 3)
 			net.WriteString(data)
+		elseif (tpid == TYPE_TABLE) then
+			if (pluto.iscurrency(data)) then
+				net.WriteUInt(pluto.chat.type.CURRENCY, 3)
+				net.WriteString(data.InternalName)
+			elseif (pluto.isitem(data)) then
+				if (not data.RowID) then
+					net.WriteUInt(pluto.chat.type.COLOR, 3)
+					net.WriteColor(data.Tier.Color)
+					net.WriteUInt(pluto.chat.type.TEXT, 3)
+					net.WriteString(data:GetPrintName())
+				else
+					net.WriteUInt(pluto.chat.type.ITEM, 3)
+					pluto.inv.writeitem(ply, data)
+				end
+			else
+				net.WriteUInt(pluto.chat.type.TEXT, 3)
+				net.WriteString(tostring(data))
+			end
+		else
+			net.WriteUInt(pluto.chat.type.TEXT, 3)
+			net.WriteString(tostring(data))
 		end
 	end
 end

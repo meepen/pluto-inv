@@ -16,12 +16,20 @@ hook.Add("PlayerBindPress", "plutoChatBind", function(ply, bind, pressed)
 	return true
 end)
 
+surface.CreateFont("pluto_chat_font", {
+	font = "Roboto Bk",
+	size = 18,
+	bold = true,
+	weight = 100,
+})
+
 local closed_alpha = 0
 local opened_alpha = .75 * 255
 
 local chatAddText = chat.AddText
 
 function chat.AddText(...)
+	debug.Trace()
 	pluto.chat.Add({...}, "server")
 end
 
@@ -54,27 +62,17 @@ function pluto.inv.readchatmessage()
 end
 
 function pluto.inv.writechat(teamchat, data)
-	net.WriteUInt(#data, 8)
 	net.WriteBool(teamchat)
-	for k,element in pairs(data) do
-		if type(element) == "string" then
-			net.WriteUInt(pluto.chat.type.TEXT, 2)
-			net.WriteString(element)
-		elseif type(element) == "Color" then
-			net.WriteUInt(pluto.chat.type.COLOR, 2)
-			net.WriteColor(element)
-		elseif type(element) == "Player" then
-			net.WriteUInt(pluto.chat.type.PLAYER, 2)
-			net.WriteEntity(element)
-		elseif type(element) == "table" then
-			net.WriteUInt(pluto.chat.type.ITEM, 2)
-			net.WriteUInt(element, 32)
+	for i = #data, 1, -1 do
+		if (type(data[i]) ~= "string") then
+			table.remove(data, i)
 		end
 	end
+
+	net.WriteString(table.concat(data, " "))
 end
 
 function pluto.chat.Add(content, channel, teamchat)
-	--PrintTable(content)
 	pluto.chat.Box:Color(channel, 255, 255, 255, 255)
 	if (type(content[1]) ~= "string" and IsValid(content[1]) and content[1]:IsPlayer()) then
 		from = table.remove(content, 1)
@@ -87,30 +85,23 @@ function pluto.chat.Add(content, channel, teamchat)
 				pluto.chat.Box:Text(channel, "(TEAM) ")
 			end
 		end
-		if (ttt.GetRoundState() ~= ttt.ROUNDSTATE_PREPARING and IsValid(from.HiddenState) and not from.HiddenState:IsDormant()) then
-			local col = from:GetRoleData().Color
-			pluto.chat.Box:Color(channel, col.r, col.g, col.b, 255)
-		else
-			pluto.chat.Box:Color(channel, 17, 15, 13, 255)
-		end
+
+		local col = ttt.teams.innocent.Color
+		pluto.chat.Box:Color(channel, col.r, col.g, col.b, 255)
+
 		pluto.chat.Box:Text(channel, from:Nick())
 		pluto.chat.Box:Color(channel, 255, 255, 255, 255)
 		pluto.chat.Box:Text(channel, ": ")
 	end
-	print("x")
+
 	for k,v in pairs(content) do
 		if (IsColor(v)) then
 			pluto.chat.Box:Color(channel, v)
 		elseif (type(v) == "string") then
-			print("string", v)
 			pluto.chat.Box:Text(channel, v)
 		elseif (IsValid(v) and v:IsPlayer()) then
-			if (ttt.GetRoundState() ~= ttt.ROUNDSTATE_PREPARING and IsValid(v.HiddenState) and not v.HiddenState:IsDormant()) then
-				local col = v:GetRoleData().Color
-				pluto.chat.Box:Color(channel, col.r, col.g, col.b, 255)
-			else
-				pluto.chat.Box:Color(channel, 17, 15, 13, 255)
-			end
+			local col = ttt.teams.innocent.Color
+			pluto.chat.Box:Color(channel, col.r, col.g, col.b, 255)
 			pluto.chat.Box:Text(channel, v:Nick())
 			pluto.chat.Box:Color(channel, 255, 255, 255, 255)
 			--pluto.chat.Box:Text(channel, ": ")
@@ -300,7 +291,7 @@ function PANEL:Init()
 			pluto.chat.Close()
 		elseif (code == KEY_ENTER) then
 			text = self:GetText()
-			print("SAYING", text)
+
 			self:SetText ""
 			if (text ~= "") then
 				if (pluto.chat.Box.Tabs.active.name == "admin") then
@@ -360,20 +351,20 @@ function PANEL:Init()
 	self:SetSize(ScrW()/4,ScrH()/4)
 	self:SetPos(150,ScrH()-self:GetTall()*2)
 
-	self.Tabs = self:Add("EditablePanel")
+	self.Tabs = self:Add "EditablePanel"
 	self.Tabs:Dock(TOP)
 	self.Tabs:SetTall(50)
 
 	self.Tabs.table = {}
 	
-	self.Chatbox = self:Add("pluto_chatbox_inner")
+	self.Chatbox = self:Add "pluto_chatbox_inner"
 	self.Chatbox:Dock(FILL)
 
-	self:AddTab("server")
-	self:AddTab("admin")
+	self:AddTab "server"
+	self:AddTab "admin"
 	--self:AddTab("global") this doesn't do anything yet so im commenting it out until we do discord/socket things to make it work
 
-	self:SelectTab("server")
+	self:SelectTab "server"
 
 	self.Tabs.active:SetVerticalScrollbarEnabled(false)
 
@@ -388,13 +379,13 @@ function PANEL:SetAlpha(a)
 end
 
 function PANEL:AddTab(name)
-	local chat = self.Chatbox.Text:Add("RichText")
-	chat:AppendText("Channel: "..name.."\n")
+	local chat = self.Chatbox.Text:Add "RichText"
+	chat:AppendText("Channel: " .. name .. "\n")
 	chat:Hide()
 	chat:Dock(FILL)
 	chat.name = name
 
-	local tab = self.Tabs:Add("tttrw_base_tab")
+	local tab = self.Tabs:Add "tttrw_base_tab"
 	tab.name = name
 	tab:SetText(name)
 	tab:Dock(LEFT)
@@ -404,7 +395,7 @@ function PANEL:AddTab(name)
 	end
 
 	function chat:PerformLayout()
-		self:SetFontInternal "pluto_trade_chat_bold"
+		self:SetFontInternal "pluto_chat_font"
 	end
 
 	function chat:ActionSignal(name, value)
