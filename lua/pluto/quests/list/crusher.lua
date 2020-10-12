@@ -12,8 +12,10 @@ function QUEST:Init(data)
 	data:Hook("TTTBeginRound", function()
 		failed = false
 	end)
-	data:Hook("PlutoMovementAbility", function(ply, what)
-		failed = true
+	data:Hook("PlutoMovementAbility", function(data, ply, what)
+		if data.Player == ply then
+			failed = true
+		end
 	end)
 	data:Hook("DoPlayerDeath", function(data, vic, atk, dmg)
 		local succ = false
