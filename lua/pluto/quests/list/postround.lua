@@ -1,7 +1,6 @@
-QUEST.Name = "Invulnerable"
-QUEST.Description = "Kill people rightfully while at full health"
-QUEST.Credits = "Eppen"
-QUEST.Color = Color(204, 43, 75)
+QUEST.Name = "Final Fight"
+QUEST.Description = "Kill people after the end of the round"
+QUEST.Color = Color(153, 25, 0)
 
 function QUEST:GetRewardText(seed)
 	return pluto.quests.poolrewardtext("daily", seed)
@@ -9,7 +8,7 @@ end
 
 function QUEST:Init(data)
 	data:Hook("PlayerDeath", function(data, vic, inf, atk)
-		if (atk == data.Player and atk:GetRoleTeam() ~= vic:GetRoleTeam() and atk:Health() == atk:GetMaxHealth()) then
+		if (ttt.GetRoundState() == ttt.ROUNDSTATE_ENDED and atk == data.Player) then
 			data:UpdateProgress(1)
 		end
 	end)
@@ -26,5 +25,5 @@ function QUEST:IsType(type)
 end
 
 function QUEST:GetProgressNeeded(type)
-	return math.random(50, 60)
+	return math.random(50, 70)
 end

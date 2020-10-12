@@ -14,17 +14,27 @@ for _, id in pairs {
 	"light2",
 	"light3",
 
-	"credits",
 	"melee",
-	"nodamage",
 	"nojump",
 	"oneshot",
-	"pcrime",
 	"stickcurr",
 	"traitors",
-
-	"goomba",
 	"floor",
+	"wepswitch",
+	"nomove",
+	"winstreak",
+
+	"nodamage",
+	"credits",
+	"pcrime",
+	"crusher",
+	"postround",
+	"healthgain",
+
+	"dnatrack",
+	"fourcraft",
+	"sacrifices",
+	"burn",
 } do
 	QUEST = pluto.quests.list[id] or {}
 	QUEST.ID = id
@@ -70,19 +80,17 @@ pluto.quests.rewardhandlers = {
 				end
 
 				return true
-			end)
+			end).InternalName
 			
 			local new_item = pluto.weapons.generatetier(tier, classname)
 
-			--[[ Add specific mods or implicits via InternalName, currently unused
-			for _, mod in ipairs(self.Mods) do
+			for _, mod in ipairs(self.Mods or {}) do
 				pluto.weapons.addmod(new_item, mod)
 			end
-			--]]
 
 			if (self.RandomImplicit) then
-				local mod = table.shuffle(pluto.mods.getfor(classname, function(m)
-					return mod.Type == "implicit" and not m.PreventChange and not m.NoCoined
+				local mod = table.shuffle(pluto.mods.getfor(baseclass.Get(classname), function(m)
+					return m.Type == "implicit" and not m.PreventChange and not m.NoCoined
 				end))[1]
 
 				pluto.weapons.addmod(new_item, mod.InternalName)
@@ -126,10 +134,9 @@ pluto.quests.rewardhandlers = {
 			return smalltext
 		end,
 	},
-	--[[ Shard reward, currently unused
 	shard = {
 		reward = function(self, data)
-			local tier = self.Tier or pluto.tiers.filter(baseclass.Get(classname), function(t)
+			local tier = self.Tier or pluto.tiers.filter(baseclass.Get(pluto.weapons.randomgun()), function(t)
 				if (self.ModMin and t.affixes < self.ModMin) then
 					return false
 				end
@@ -139,13 +146,13 @@ pluto.quests.rewardhandlers = {
 				end
 
 				return true
-			end)
+			end).InternalName
 
-			pluto.inv.generatebuffershard(data.Ply, tier):Run()
+			pluto.inv.generatebuffershard(data.Player, tier):Run()
 
 			tier = pluto.tiers.byname[tier]
 
-			data.Player:ChatPrint(white_text, "You have received ", startswithvowel(tier.Name) and "an " or "a ", tier.Color, tier.Name, white_text, " for completing ", data.Color, data.Name, white_text, "!")
+			data.Player:ChatPrint(white_text, "You have received ", startswithvowel(tier.Name) and "an " or "a ", tier.Color, tier.Name, " Tier Shard", white_text, " for completing ", data.Color, data.Name, white_text, "!")
 		end,
 		small = function(self)
             if (self.Small) then
@@ -171,7 +178,7 @@ pluto.quests.rewardhandlers = {
 
 			return smalltext
 		end,
-	},--]]
+	},
 }
 
 pluto.quests.rewards = {
@@ -227,6 +234,11 @@ pluto.quests.rewards = {
 			Type = "weapon",
 			Tier = "inevitable",
 		},
+		{
+			Type = "shard",
+			ModMin = 4,
+			ModMax = 5,
+		},
 	},
 	daily = {
 		{
@@ -274,9 +286,65 @@ pluto.quests.rewards = {
 			ClassName = "weapon_cod4_g36c_silencer",
 			Tier = "uncommon",
 		},
+		{
+			Type = "weapon",
+			ModMin = 4,
+		},
+		{
+			Type = "weapon",
+			Tier = "uncommon",
+			Mods = {"hearted",},
+			Small = "Hearted Uncommon gun",
+		},
+		{
+			Type = "weapon",
+			Tier = "common",
+			Mods = {"tomed",},
+			Small = "Tomed Common gun"
+		},
+		{
+			Type = "shard",
+			ModMin = 5,
+		},
 	},
 	weekly = {
-
+		{
+			Type = "currency",
+			Currency = "tome",
+			Amount = 15,
+		},
+		{
+			Type = "currency",
+			Currency = "coin",
+			Amount = 1,
+		},
+		{
+			Type = "currency",
+			Currency = "quill",
+			Amount = 1,
+		},
+		{
+			Type = "currency",
+			Currency = "tp",
+			Amount = 1,
+		},
+		{
+			Type = "weapon",
+			Mods = {"hearted",},
+			ModMin = 5,
+			ModMax = 5,
+			Small = "Hearted gun with 5 mods"
+		},
+		{
+			Type = "weapon",
+			Tier = "mystical",
+			Mods = {"dropletted", "handed", "diced",},
+			Small = "Dropletted, Handed, Diced, Mystical gun",
+		},
+		{
+			Type = "shard",
+			ModMin = 6,
+		},
 	},
 }
 

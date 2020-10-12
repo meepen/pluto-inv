@@ -7,7 +7,7 @@ pluto.quests.types = {
 		Name = "Unique",
 		Time = 60 * 60 * 24 * 7, -- week
 		Amount = 0,
-		Cooldown = 60 * 60 * 24 * 7,
+		Cooldown = 60 * 60 * 24,
 		Color = HexColor "a446d2",
 	},
 	[1] = {
