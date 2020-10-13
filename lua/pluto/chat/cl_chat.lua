@@ -114,8 +114,6 @@ function pluto.chat.Add(content, channel, teamchat)
 			pluto.chat.Box:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
 			--pluto.chat.Box:Text(channel, ": ")
 		else
-			print("other type", v)
-			PrintTable(v)
 			if (v.Type ~= nil) then
 				pluto.chat.Box:Item(channel, v)
 			elseif (v.InternalName ~= nil) then
@@ -128,14 +126,13 @@ end
 
 function pluto.chat.Open(teamchat)
 	if (pluto.chat.isOpened) then return end
-	print("OPEN")
+
 	pluto.chat.isOpened = true
 	pluto.chat.teamchat = teamchat or false
 
 	pluto.chat.Box:SetAlpha(opened_alpha)
 	pluto.chat.Box:ResetFade()
 	--timer.Create("AlphaSetChatbox", 1, 0, function()
-		print("timer")
 		pluto.chat.Box:ResetFade()
 	--end)
 
@@ -146,12 +143,11 @@ function pluto.chat.Open(teamchat)
 end
 
 function pluto.chat.Close()
-	print("CLOSE")
 	pluto.chat.isOpened = false
 	pluto.chat.teamchat = false
 
 	pluto.chat.Box:SetAlpha(closed_alpha)
-	timer.Remove("AlphaSetChatbox")
+	timer.Remove "AlphaSetChatbox"
 
 	pluto.chat.Box:Scrollbar(false)
 
@@ -464,8 +460,6 @@ function PANEL:Color(channel, col, g, b, a)
 		r = col
 	end
 
-	print("channel", channel)
-
 	self.Tabs.table[channel]:InsertColorChange(r, g, b, a)
 end
 
@@ -479,7 +473,6 @@ function PANEL:Item(channel, item)
 end
 
 function PANEL:Cur(channel, cur)
-	print("currency", cur)
 	local box = self.Tabs.table[channel]
 
 	if not cur then return end
@@ -496,7 +489,6 @@ function PANEL:Newline(channel)
 end
 
 function PANEL:ResetFade()
-	print("fade reset")
 	if (self.Tabs.active ~= nil) then
 		self.Tabs.active:ResetAllFades(true, false, 1)
 	end
