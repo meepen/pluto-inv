@@ -471,8 +471,6 @@ function PANEL:Color(channel, col, g, b, a)
 end
 
 function PANEL:Item(channel, item)
-	print("item")
-	PrintTable(item)
 	local box = self.Tabs.table[channel]
 	self:Color(channel, item.Color)
 	box:InsertClickableTextStart(util.TableToJSON({type = "item", val = item.ID}))

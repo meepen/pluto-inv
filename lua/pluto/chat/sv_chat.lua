@@ -1,4 +1,4 @@
-local MAX_LENGTH = 256
+local MAX_LENGTH = 128
 
 function pluto.chat.Send(ply, ...)
 	local args = {...}
@@ -24,6 +24,10 @@ function pluto.inv.readchat(from)
 
 	for pos, match, next_pos in replace:gmatch "(){([^%}]+)}()" do
 		if (pos ~= last_pos) then
+			if (length + pos - last_pos > MAX_LENGTH) then
+				table.insert(content, replace:sub(last_pos, last_pos + MAX_LENGTH - length))
+				break
+			end
 			length = length + last_pos - pos
 			table.insert(content, replace:sub(last_pos, pos - 1))
 		end
@@ -32,62 +36,28 @@ function pluto.inv.readchat(from)
 
 		local done = false
 
+		local item
+		local eq = pluto.inv.invs[from].tabs.equip
+
 		if (what == "item") then
-			local item = pluto.itemids[tonumber(id)]
+			local slot = pluto.itemids[tonumber(id)]
 			if (item and item.Owner == from:SteamID64()) then
-				table.insert(content, item)
-				length = length + item:GetPrintName():len()
-				done = true
+				item = slot
 			end
 		elseif (match == "primary") then
-			local eq = pluto.inv.invs[from].tabs.equip
-
-			local slot = eq.Items[1]
-			table.insert(content, slot)
-			length = length + slot:GetPrintName():len()
-			done = true
+			item = eq.Items[1]
 		elseif (match == "secondary") then
-			local eq = pluto.inv.invs[from].tabs.equip
-
-			local slot = eq.Items[2]
-			table.insert(content, slot)
-			length = length + slot:GetPrintName():len()
-			done = true
+			item = eq.Items[2]
 		elseif (match == "model") then
-			local eq = pluto.inv.invs[from].tabs.equip
-
-			local slot = eq.Items[3]
-			table.insert(content, slot)
-			length = length + slot:GetPrintName():len()
-			done = true
+			item = eq.Items[3]
 		elseif (match == "melee") then
-			local eq = pluto.inv.invs[from].tabs.equip
-
-			local slot = eq.Items[4]
-			table.insert(content, slot)
-			length = length + slot:GetPrintName():len()
-			done = true
+			item = eq.Items[4]
 		elseif (match == "grenade") then
-			local eq = pluto.inv.invs[from].tabs.equip
-
-			local slot = eq.Items[5]
-			table.insert(content, slot)
-			length = length + slot:GetPrintName():len()
-			done = true
+			item = eq.Items[5]
 		elseif (match == "other" or match == "holster") then
-			local eq = pluto.inv.invs[from].tabs.equip
-
-			local slot = eq.Items[6]
-			table.insert(content, slot)
-			length = length + slot:GetPrintName():len()
-			done = true
+			item = eq.Items[6]
 		elseif (match == "pickup") then
-			local eq = pluto.inv.invs[from].tabs.equip
-
-			local slot = eq.Items[7]
-			table.insert(content, slot)
-			length = length + slot:GetPrintName():len()
-			done = true
+			item = eq.Items[7]
 		elseif (match == "loadout") then
 			
 			local eq = pluto.inv.invs[from].tabs.equip
@@ -102,6 +72,12 @@ function pluto.inv.readchat(from)
 				end
 			end
 
+			done = true
+		end
+
+		if (item) then
+			table.insert(content, item)
+			length = length + item:GetPrintName():len()
 			done = true
 		end
 
