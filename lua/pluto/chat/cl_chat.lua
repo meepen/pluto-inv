@@ -476,7 +476,7 @@ function PANEL:Item(channel, item)
 	local box = self.Tabs.table[channel]
 	self:Color(channel, item.Color)
 	box:InsertClickableTextStart(util.TableToJSON({type = "item", val = item.ID}))
-	self:Text(channel, item:GetDefaultName())
+	self:Text(channel, item:GetPrintName())
 	box:InsertClickableTextEnd()
 	self:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
 end
