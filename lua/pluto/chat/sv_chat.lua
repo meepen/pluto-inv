@@ -8,9 +8,14 @@ function pluto.chat.Send(ply, ...)
 	:send()
 end
 
-function pluto.inv.readchat(from)
-	local teamchat = net.ReadBool()
-	local texts = net.ReadString()
+-- override PlayerSay
+for idx, name in pairs(debug.getregistry()[3]) do
+	if (name == "PlayerSay") then
+		debug.getregistry()[3][idx] = "RealPlayerSay"
+	end
+end
+
+hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 	local content = {
 		from,
 	}
@@ -104,6 +109,15 @@ function pluto.inv.readchat(from)
 			:send()
 		end
 	end
+
+	return ""
+end)
+
+function pluto.inv.readchat(from)
+	local teamchat = net.ReadBool()
+	local texts = net.ReadString()
+
+	hook.Run("RealPlayerSay", from, texts, teamchat)
 end
 
 function pluto.inv.writechatmessage(ply, content, channel, teamchat)

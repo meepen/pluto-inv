@@ -37,7 +37,6 @@ local opened_alpha = .75 * 255
 local chatAddText = chat.AddText
 
 function chat.AddText(...)
-	debug.Trace()
 	pluto.chat.Add({...}, "server")
 end
 
