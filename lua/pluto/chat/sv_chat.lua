@@ -1,4 +1,4 @@
-local MAX_LENGTH = 128
+local MAX_LENGTH = 192
 
 function pluto.chat.Send(ply, ...)
 	local args = {...}
@@ -90,11 +90,11 @@ hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 			table.insert(content, "{" .. match .. "}")
 		end
 
+		last_pos = next_pos
+
 		if (length > MAX_LENGTH) then
 			break
 		end
-
-		last_pos = next_pos
 	end
 
 	if (pos ~= #replace) then
