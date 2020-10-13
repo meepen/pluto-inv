@@ -81,6 +81,9 @@ function pluto.inv.writechat(teamchat, data)
 end
 
 function pluto.chat.Add(content, channel, teamchat)
+	if (channel == "admin") then
+		pluto.chat.Add(content, "server", teamchat)
+	end
 	pluto.chat.Box:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
 	if (type(content[1]) ~= "string" and IsValid(content[1]) and content[1]:IsPlayer()) then
 		from = table.remove(content, 1)
@@ -160,7 +163,7 @@ DEFINE_BASECLASS "ttt_curved_button"
 
 function PANEL:Init()
 	self:SetTall(25)
-	self:SetText("A")
+	self:SetText("")
 	self:SetColor(Color(10, 10, 10, .9 * 255))
 	self:DockMargin(5, 5, 5, 5)
 	self:SetCurve(4)
