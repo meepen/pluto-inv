@@ -82,7 +82,7 @@ function pluto.inv.writechat(teamchat, data)
 end
 
 function pluto.chat.Add(content, channel, teamchat)
-	pluto.chat.Box:Color(channel, 255, 255, 255, 255)
+	pluto.chat.Box:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
 	if (type(content[1]) ~= "string" and IsValid(content[1]) and content[1]:IsPlayer()) then
 		from = table.remove(content, 1)
 		if (channel == "server") then 
@@ -99,7 +99,7 @@ function pluto.chat.Add(content, channel, teamchat)
 		pluto.chat.Box:Color(channel, col.r, col.g, col.b, 255)
 
 		pluto.chat.Box:Text(channel, from:Nick())
-		pluto.chat.Box:Color(channel, 255, 255, 255, 255)
+		pluto.chat.Box:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
 		pluto.chat.Box:Text(channel, ": ")
 	end
 
@@ -112,7 +112,7 @@ function pluto.chat.Add(content, channel, teamchat)
 			local col = ttt.teams.innocent.Color
 			pluto.chat.Box:Color(channel, col.r, col.g, col.b, 255)
 			pluto.chat.Box:Text(channel, v:Nick())
-			pluto.chat.Box:Color(channel, 255, 255, 255, 255)
+			pluto.chat.Box:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
 			--pluto.chat.Box:Text(channel, ": ")
 		else
 			print("other type", v)
@@ -478,7 +478,7 @@ function PANEL:Item(channel, item)
 	box:InsertClickableTextStart(util.TableToJSON({type = "item", val = item.ID}))
 	self:Text(channel, item:GetDefaultName())
 	box:InsertClickableTextEnd()
-	self:Color(channel, 255, 255, 255, 255)
+	self:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
 end
 
 function PANEL:Cur(channel, cur)
@@ -491,7 +491,7 @@ function PANEL:Cur(channel, cur)
 	box:InsertClickableTextStart(util.TableToJSON({type = "currency", val = cur.InternalName}))
 	self:Text(channel, cur.Name)
 	box:InsertClickableTextEnd()
-	self:Color(channel, 255, 255, 255, 255)
+	self:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
 end
 
 function PANEL:Newline(channel)
