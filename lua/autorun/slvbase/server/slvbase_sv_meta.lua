@@ -738,7 +738,7 @@ function meta:slvIgnite(dur, radius, attacker)
 	local cspBurn = CreateSound(self, "General.BurningFlesh")
 	cspBurn:Play()
 	tblEntsIgnited[self] = {duration = CurTime() +dur, nextDmg = 0, cspBurn = cspBurn}
-	hook.Add("Think", tostring(self) .. CurTime(), function()
+	hook.Add("Think", "slvbase_ignite", function()
 		for ent, data in pairs(tblEntsIgnited) do
 			if(!IsValid(ent) || ent:Health() <= 0) then
 				data.cspBurn:Stop()
@@ -754,7 +754,7 @@ function meta:slvIgnite(dur, radius, attacker)
 					dmg:SetDamageType(DMG_DIRECT + DMG_SLOWBURN)
 					dmg:SetAttacker(IsValid(attacker) && attacker || game.GetWorld())
 					dmg:SetInflictor(inflictor)
-					dmg:SetDamagePosition(self:GetPos())
+					dmg:SetDamagePosition(ent:GetPos())
 					ent:TakeDamageInfo(dmg)
 				end
 			end

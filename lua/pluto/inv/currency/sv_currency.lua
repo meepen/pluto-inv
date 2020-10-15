@@ -684,6 +684,9 @@ function pluto.ghost_killed(e, dmg)
 	if (not IsValid(atk) or not atk:IsPlayer()) then
 		return
 	end
+
+	hook.Run("PlutoPlayerKilledGhost", atk)
+
 	admin.chatf(white_text, "A ", ttt.teams.traitor.Color, "ghost ", white_text, "has been vanquished.")
 
 	local rand = pluto.inv.roll {
