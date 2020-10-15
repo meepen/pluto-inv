@@ -995,22 +995,37 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 	end
 
 	-- ghosts
-	if (math.random(7) == 1) then
+	local pct = 1 / 7
+	if (game.MaxPlayers() < 8) then
+		pct = 1 / 8
+	elseif (game.MaxPlayers() < 16) then
+		pct = 1 / 5
+	else
+		pct = 1 / 4
+	end
+
+	if (math.random() < pct) then
 		admin.chatf(white_text, "Multiple ", ttt.teams.traitor.Color, "spirits ", white_text, "have entered this realm.")
 		local ghosts = {}
-		for i = 1, 5 do
+		for i = 1, 5 + game.MaxPlayers() / 5 do
 			ghosts[i] = ents.Create "pluto_ghost"
 			ghosts[i]:SetPos(pluto.currency.randompos() or vector_origin)
 			ghosts[i]:Spawn()
 		end
 		timer.Simple(60, function()
+			local had_ghosts = false
 			for _, ghost in pairs(ghosts) do
 				if (IsValid(ghost)) then
 					ghost:Remove()
+					had_ghosts = true
 				end
 			end
 
-			admin.chatf(white_text, "The remaining ", ttt.teams.traitor.Color, "spirits ", white_text, "have left this realm.")
+			if (had_ghosts) then
+				admin.chatf(white_text, "The remaining ", ttt.teams.traitor.Color, "spirits ", white_text, "have left this realm.")
+			else
+				admin.chatf(white_text, "The ", ttt.teams.traitor.Color, "spirits ", white_text, "were silenced this time.")
+			end
 		end)
 	end
 end)
