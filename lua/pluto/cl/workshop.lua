@@ -456,6 +456,12 @@ local packs =  {
 		versions = {
 			"dev",
 		}
+	},
+	pumpkin = {
+		remote = default "pumpkin",
+		versions = {
+			"20201015"
+		}
 	}
 }
 

@@ -192,6 +192,11 @@ pluto.quests.rewards = {
 	hourly = {
 		{
 			Type = "currency",
+			Currency = "tome",
+			Amount = 2,
+		},
+		{
+			Type = "currency",
 			Currency = "crate3_n",
 			Amount = 1,
 		},
@@ -219,10 +224,11 @@ pluto.quests.rewards = {
 			Type = "weapon",
 			RandomImplicit = true,
 			ModMax = 4,
+			ModMin = 3,
 		},
 		{
 			Type = "weapon",
-			ModMin = 3,
+			ModMin = 4,
 		},
 		--[[ Random grenade, currently unused
 		{
