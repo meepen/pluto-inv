@@ -1,6 +1,6 @@
 
 ENT.Type 			= "anim"
-ENT.Base 			= "gmod_baseentity"
+ENT.Base 			= "base_gmodentity"
 ENT.PrintName		= "Sporeplant Spit"
 ENT.Author			= "Silverlan"
 

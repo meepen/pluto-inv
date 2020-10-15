@@ -23,7 +23,6 @@ SWEP.Primary.Delay = 0.33
 SWEP.AutoSpawnable = true
 
 SWEP.Primary.Ammo          = "Pistol"
-SWEP.AmmoEnt               = "item_ammo_pistol_ttt"
 
 SWEP.Bullets = {
 	HullSize = 0,

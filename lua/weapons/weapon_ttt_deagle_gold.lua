@@ -19,7 +19,6 @@ SWEP.Primary.ClipSize = 7
 SWEP.Primary.DefaultClip = 14
 SWEP.Primary.Sound = "Golden_Deagle.Single"
 SWEP.Primary.Ammo = "AlyxGun"
-SWEP.AmmoEnt = "item_ammo_revolver_ttt"
 
 SWEP.HeadshotMultiplier = 3.5
 

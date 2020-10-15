@@ -279,23 +279,6 @@ SWEP.RTCode = nil
 SWEP.Akimbo = false 
 SWEP.AnimCycle = 0 
 
---[[TTT]]--
-
-local gm = engine.ActiveGamemode()
-if string.find(gm,"ttt") or string.find(gm,"terrorist") then
-	SWEP.Kind = WEAPON_HEAVY
-	SWEP.AutoSpawnable = false
-	SWEP.AllowDrop = true
-	SWEP.AmmoEnt = "item_ammo_smg1_ttt"
-	SWEP.Base = "weapon_tttbase"
-	DEFINE_BASECLASS("weapon_tttbase")
-else
-	SWEP.Base = "weapon_base"
-	DEFINE_BASECLASS("weapon_base")
-end
-
-
-
 --[[MISC INFO FOR MODELERS]]--
 
 --[[

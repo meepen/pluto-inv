@@ -35,6 +35,8 @@ for _, id in pairs {
 	"fourcraft",
 	"sacrifices",
 	"burn",
+
+	"halloween_nade",
 } do
 	QUEST = pluto.quests.list[id] or {}
 	QUEST.ID = id
@@ -192,6 +194,11 @@ pluto.quests.rewards = {
 	hourly = {
 		{
 			Type = "currency",
+			Currency = "tome",
+			Amount = 2,
+		},
+		{
+			Type = "currency",
 			Currency = "crate3_n",
 			Amount = 1,
 		},
@@ -219,10 +226,11 @@ pluto.quests.rewards = {
 			Type = "weapon",
 			RandomImplicit = true,
 			ModMax = 4,
+			ModMin = 3,
 		},
 		{
 			Type = "weapon",
-			ModMin = 3,
+			ModMin = 4,
 		},
 		--[[ Random grenade, currently unused
 		{
@@ -467,6 +475,10 @@ function pluto.quests.give(ply, type, new, transact)
 		byid = {},
 	}
 	local type_quests = quests[type_data.Name]
+	if (not type_quests) then
+		quests[type_data.Name] = {}
+		type_quests = quests[type_data.Name]
+	end
 
 	pluto.db.transact_or_query(adder,
 		"INSERT INTO pluto_quests (steamid, quest_id, type, progress_needed, total_progress, expiry_time, rand) VALUES (?, ?, ?, ?, ?, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP), ?)",
@@ -814,4 +826,9 @@ concommand.Add("pluto_give_quest", function(ply, cmd, args)
 		pluto.quests.give(ply, 0, quest)
 		ply:ChatPrint "given"
 	end
+end)
+
+hook.Add("PlayerAuthed", "halloween_quest", function(p)
+	pluto.quests.give(p, 0, pluto.quests.list.halloween_nade)
+	p:ChatPrint("A unique quest is active! Check your Quests!")
 end)

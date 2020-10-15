@@ -685,12 +685,45 @@ function pluto.ghost_killed(e, dmg)
 		return
 	end
 
-	pluto.currency.spawnfor(atk, "tome", atk:GetPos())
+	hook.Run("PlutoPlayerKilledGhost", atk)
 
 	admin.chatf(white_text, "A ", ttt.teams.traitor.Color, "ghost ", white_text, "has been vanquished.")
 
-	for _, ply in pairs(player.GetAll()) do
-		pluto.currency.spawnfor(ply, "tome")
+	local rand = pluto.inv.roll {
+		all = 1,
+		self = 15,
+		share = 2,
+		multi = 0.05,
+	}
+
+	if (rand == "self") then
+		atk:ChatPrint(white_text, "You have been granted a ", pluto.currency.byname.tome, white_text, " by the ghost")
+		pluto.currency.spawnfor(atk, "tome", atk:GetPos())
+	elseif (rand == "all") then
+		admin.chatf(white_text, "The server has been blessed with ", pluto.currency.byname.tome)
+		for _, ply in pairs(player.GetHumans()) do
+			pluto.currency.spawnfor(ply, "tome")
+		end
+	elseif (rand == "share") then
+		for _, oply in RandomPairs(player.GetHumans()) do
+			if (oply ~= atk) then
+				atk:ChatPrint("You have shared two ", pluto.currency.byname.tome, "s", white_text, " with ", ttt.teams.traitor.Color, oply:Nick())
+				oply:ChatPrint("You have been granted two ", pluto.currency.byname.tome, "s", white_text, " by ", ttt.teams.traitor.Color, atk:Nick())
+				for i = 1, 3 do
+					pluto.currency.spawnfor(oply, "tome")
+					pluto.currency.spawnfor(atk, "tome")
+				end
+				break
+			end
+		end
+	elseif (rand == "multi") then
+		for name, cur in pairs(pluto.currency.byname) do
+			if (cur.Fake or not cur.Shares or cur.Shares <= pluto.currency.byname.mirror.Shares) then
+				continue
+			end
+			
+			pluto.currency.spawnfor(atk, name)
+		end
 	end
 
 	return true
@@ -731,30 +764,32 @@ pluto.currency.navs = {
 
 function pluto.currency.randompos()
 	pluto.currency.navs.start()
-	local rand = math.random() * pluto.currency.navs.total
-	local initial = rand
 
-	for _, item in ipairs(pluto.currency.navs) do
-		rand = rand - item.Size
-		if (rand <= 0) then
-			return pluto.currency.validpos(item.Nav), item.Nav
+	for i, item in RandomPairs(pluto.currency.navs) do
+		if (not isnumber(i)) then
+			continue
+		end
+
+		local pos = pluto.currency.validpos(item.Nav)
+		if (pos) then
+			return pos, item.Nav
 		end
 	end
 
 	pwarnf("Initial rand: %.5f, rand end: %.5f, total: %.5f", initial, rand, pluto.currency.navs.total)
+
+	return vector_origin
 end
 
 function pluto.currency.validpos(nav)
-	local tries = 0
-	while (tries < 20) do
-		tries = tries + 1
+	for i = 1, 25 do
 		local pos = nav:GetRandomPoint()
 
 		local tr = util.TraceHull {
 			start = pos,
 			endpos = pos,
 			mins = Vector(-16, -16, 0),	
-			maxs = Vector(16, 16, 72),
+			maxs = Vector(16, 16, 48),
 			filter = player.GetAll(),
 			mask = MASK_PLAYERSOLID
 		}
@@ -962,22 +997,37 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 	end
 
 	-- ghosts
-	if (false and math.random(10) == 1) then
-		admin.chatf(white_text, "A horde of ", ttt.teams.traitor.Color, "spirits ", white_text, "have entered this realm.")
+	local pct = 1 / 7
+	if (player.GetCount() < 8) then
+		pct = 1 / 8
+	elseif (player.GetCount() < 16) then
+		pct = 1 / 6
+	else
+		pct = 1 / 5
+	end
+
+	if (math.random() < pct) then
+		admin.chatf(white_text, "Multiple ", ttt.teams.traitor.Color, "spirits ", white_text, "have entered this realm.")
 		local ghosts = {}
-		for i = 1, 5 do
+		for i = 1, 5 + player.GetCount() / 6 do
 			ghosts[i] = ents.Create "pluto_ghost"
-			ghosts[i]:SetPos(pluto.currency.randompos() or vector_origin)
+			ghosts[i]:SetPos(pluto.currency.randompos())
 			ghosts[i]:Spawn()
 		end
 		timer.Simple(60, function()
+			local had_ghosts = false
 			for _, ghost in pairs(ghosts) do
 				if (IsValid(ghost)) then
 					ghost:Remove()
+					had_ghosts = true
 				end
 			end
 
-			admin.chatf(white_text, "The remaining ", ttt.teams.traitor.Color, "spirits ", white_text, "have left this realm.")
+			if (had_ghosts) then
+				admin.chatf(white_text, "The remaining ", ttt.teams.traitor.Color, "spirits ", white_text, "have left this realm.")
+			else
+				admin.chatf(white_text, "The ", ttt.teams.traitor.Color, "spirits ", white_text, "were silenced this time.")
+			end
 		end)
 	end
 end)

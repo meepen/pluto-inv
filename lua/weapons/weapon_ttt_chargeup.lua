@@ -50,7 +50,6 @@ SWEP.Spawnable = false
 SWEP.AdminSpawnable = false
 SWEP.AutoSpawnable         = false
 SWEP.Spawnable             = false
-SWEP.AmmoEnt               = "item_ammo_357_ttt"
 
 SWEP.ViewModel			= "models/weapons/tfa_cso2/c_awp_ss.mdl" --Viewmodel path
 SWEP.WorldModel			= "models/weapons/tfa_cso2/w_awp_ss.mdl" -- Weapon world model path
