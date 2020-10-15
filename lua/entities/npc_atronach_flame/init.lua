@@ -232,7 +232,7 @@ function ENT:EventHandle(...)
 				entFlame:Fire("SetParentAttachment",att,0)
 				entFlame:SetDamageOwner(IsValid(self:GetDamageOwner()) and self:GetDamageOwner() or self)
 				function entFlame:OnHit(ent,dist)
-					ent:slvIgnite(1, nil, self:GetDamageOwner())
+					ent:slvIgnite(2, nil, self:GetDamageOwner())
 				end
 				entFlame:Spawn()
 				entFlame:Activate()
@@ -294,11 +294,11 @@ function ENT:EventHandle(...)
 			ang = Angle(-30,-18,3)
 			force = Vector(360,0,0)
 		end
-		self:DealMeleeDamage(dist,GetConVarNumber(skDmg),ang,force,DMG_BURN,nil,nil,nil,function(ent,dmgInfo)
+		self:DealMeleeDamage(dist,15,ang,force,DMG_BURN,nil,nil,nil,function(ent,dmgInfo)
 			if (IsValid(self)) then
 				dmgInfo:SetAttacker(self:GetDamageOwner())
 			end
-			ent:slvIgnite(6,nil,IsValid(self) and self:GetDamageOwner() or self)
+			ent:slvIgnite(4,nil,IsValid(self) and self:GetDamageOwner() or self)
 		end)
 		return true
 	end
