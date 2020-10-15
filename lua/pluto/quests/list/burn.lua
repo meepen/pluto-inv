@@ -7,11 +7,12 @@ function QUEST:Init(data)
 	data:Hook("DoPlayerDeath", function(data, vic, atk, dmg)
 		local succ = false
 
-		if (dmg:IsDamageType(DMG_BURN) or dmg:IsDamageType(DMG_BLAST) or dmg:IsDamageType(DMG_SLOWBURN)) then
+		if (not atk:IsPlayer() and vic.was_burned and vic.was_burned.t > CurTime() - 5) then
+			atk = vic.was_burned.att
+		end
+
+		if (atk == data.Player and (dmg:IsDamageType(DMG_BURN) or dmg:IsDamageType(DMG_BLAST) or dmg:IsDamageType(DMG_SLOWBURN))) then
 			succ = true
-			if (not atk:IsPlayer() and vic.was_burned and data.Player == vic.was_burned.att and vic.was_burned.t > CurTime() - 5) then
-				atk = vic.was_burned.att
-			end
 		end
 
 		if (IsValid(atk) and atk:IsPlayer() and atk:GetRoleTeam() ~= vic:GetRoleTeam() and succ) then
