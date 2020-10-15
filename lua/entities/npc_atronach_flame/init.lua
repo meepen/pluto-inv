@@ -230,8 +230,9 @@ function ENT:EventHandle(...)
 				entFlame:SetParticleEffect("magic_spell_fireball")
 				entFlame:SetParent(self)
 				entFlame:Fire("SetParentAttachment",att,0)
+				entFlame:SetDamageOwner(IsValid(self:GetDamageOwner()) and self:GetDamageOwner() or self)
 				function entFlame:OnHit(ent,dist)
-					ent:slvIgnite(ent:IsPlayer() && 1.2 || 6,nil,self)
+					ent:slvIgnite(1, nil, self:GetDamageOwner())
 				end
 				entFlame:Spawn()
 				entFlame:Activate()
@@ -294,7 +295,10 @@ function ENT:EventHandle(...)
 			force = Vector(360,0,0)
 		end
 		self:DealMeleeDamage(dist,GetConVarNumber(skDmg),ang,force,DMG_BURN,nil,nil,nil,function(ent,dmgInfo)
-			ent:slvIgnite(6,nil,self)
+			if (IsValid(self)) then
+				dmgInfo:SetAttacker(self:GetDamageOwner())
+			end
+			ent:slvIgnite(6,nil,IsValid(self) and self:GetDamageOwner() or self)
 		end)
 		return true
 	end

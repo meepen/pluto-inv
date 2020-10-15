@@ -10,6 +10,12 @@ SWEP.WorldModel				= "models/weapons/tfa_cso/w_pumpkin.mdl"
 SWEP.Base				= "weapon_ttt_basegrenade"
 SWEP.UseHands = true
 
+SWEP.GrenadeEntity = "pluto_atronach_grenade"
+
+SWEP.Primary.Ammo = "none"
+SWEP.Primary.ClipSize      = -1
+SWEP.Primary.DefaultClip   = -1
+
 SWEP.Velocity = 1250
 SWEP.Velocity_Underhand = 450
 

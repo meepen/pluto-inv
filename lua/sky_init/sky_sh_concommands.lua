@@ -8,9 +8,9 @@ ConVars["sk_mudcrab_legendary_health"] = 600
 ConVars["sk_mudcrab_legendary_dmg_slash"] = 22
 
 // FLAME ATRONACH
-ConVars["sk_atronach_flame_health"] = 250
-ConVars["sk_atronach_flame_dmg_slash"] = 8
-ConVars["sk_atronach_flame_dmg_slash_power"] = 13
+ConVars["sk_atronach_flame_health"] = 500
+ConVars["sk_atronach_flame_dmg_slash"] = 20
+ConVars["sk_atronach_flame_dmg_slash_power"] = 25
 
 // FROST ATRONACH
 ConVars["sk_atronach_frost_health"] = 580

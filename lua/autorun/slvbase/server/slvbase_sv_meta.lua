@@ -726,57 +726,45 @@ umsg.PoolString("slv_extinguish")
 PrecacheParticleSystem("burning_gib_01")
 local tblEntsIgnited = {}
 local slvIgnite = meta.Ignite
-function meta:slvIgnite(...)
-	local dur, radius, attacker = ...
+function meta:slvIgnite(dur, radius, attacker)
+	if (not self:IsPlayer() and not self:IsNPC()) then
+		return self:Ignite(dur, radius)
+	end
 	local bNPC = self:IsNPC()
 	if(self.Ignitable && !self:Ignitable()) then return end
-	if bNPC || self:IsPlayer() then
-		local iPercentFrozen = self:PercentageFrozen()
-		if iPercentFrozen >= 20 then return end
-		if bNPC && self.bScripted then
-			if tblEntsIgnited[self] then tblEntsIgnited[self].duration = CurTime() +dur; return end
-			local cspBurn = CreateSound(self, "General.BurningFlesh")
-			cspBurn:Play()
-			tblEntsIgnited[self] = {duration = CurTime() +dur, nextDmg = 0, cspBurn = cspBurn}
-			umsg.Start("slv_ignite")
-				umsg.Entity(self)
-			umsg.End()
-			hook.Add("Think", "HLR_EntityIgniteThink", function()
-				for ent, data in pairs(tblEntsIgnited) do
-					if(!IsValid(ent) || ent:Health() <= 0) then
-						data.cspBurn:Stop()
-						tblEntsIgnited[ent] = nil
-					elseif CurTime() >= data.duration || ent:WaterLevel() == 3 then
-						ent:slvExtinguish()
-					else
-						if CurTime() >= data.nextDmg then
-							local inflictor = IsValid(self) && self || ent
-							data.nextDmg = CurTime() +0.2
-							local dmg = DamageInfo()
-							dmg:SetDamage(1)
-							dmg:SetDamageType(DMG_DIRECT)
-							dmg:SetAttacker(IsValid(attacker) && attacker || game.GetWorld())
-							dmg:SetInflictor(inflictor)
-							ent:TakeDamageInfo(dmg)
-							if !ent.m_bDontGetBurnt then
-								local col = ent:GetColor()
-								col.r = math.Clamp(col.r -8,45,255)
-								col.g = math.Clamp(col.g -8,45,255)
-								col.b = math.Clamp(col.b -8,45,255)
-								ent:SetColor(col)
-							end
-						end
-					end
+	local iPercentFrozen = self:PercentageFrozen()
+	if iPercentFrozen >= 20 then return end
+	if tblEntsIgnited[self] then tblEntsIgnited[self].duration = CurTime() +dur; return end
+	local cspBurn = CreateSound(self, "General.BurningFlesh")
+	cspBurn:Play()
+	tblEntsIgnited[self] = {duration = CurTime() +dur, nextDmg = 0, cspBurn = cspBurn}
+	hook.Add("Think", tostring(self) .. CurTime(), function()
+		for ent, data in pairs(tblEntsIgnited) do
+			if(!IsValid(ent) || ent:Health() <= 0) then
+				data.cspBurn:Stop()
+				tblEntsIgnited[ent] = nil
+			elseif CurTime() >= data.duration || ent:WaterLevel() == 3 then
+				ent:slvExtinguish()
+			else
+				if CurTime() >= data.nextDmg then
+					local inflictor = IsValid(self) && self || ent
+					data.nextDmg = CurTime() +0.2
+					local dmg = DamageInfo()
+					dmg:SetDamage(1)
+					dmg:SetDamageType(DMG_DIRECT + DMG_SLOWBURN)
+					dmg:SetAttacker(IsValid(attacker) && attacker || game.GetWorld())
+					dmg:SetInflictor(inflictor)
+					dmg:SetDamagePosition(self:GetPos())
+					ent:TakeDamageInfo(dmg)
 				end
-			end)
-			self:CallOnRemove("IgniteStop", function()
-				if !tblEntsIgnited[self] then return end
-				tblEntsIgnited[self].cspBurn:Stop()
-				tblEntsIgnited[self] = nil
-			end)
-		return end
-	end
-	return slvIgnite(self, ...)
+			end
+		end
+	end)
+	self:CallOnRemove("IgniteStop", function()
+		if !tblEntsIgnited[self] then return end
+		tblEntsIgnited[self].cspBurn:Stop()
+		tblEntsIgnited[self] = nil
+	end)
 end
 
 local Extinguish = meta.Extinguish
