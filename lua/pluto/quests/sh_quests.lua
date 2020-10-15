@@ -29,7 +29,7 @@ pluto.quests.types = {
 		Name = "Weekly",
 		Time = 60 * 60 * 24 * 7, -- week
 		Amount = 0,
-		Cooldown = 0,
+		Cooldown = 60 * 60 * 24 * 2,
 		Color = HexColor "ff1a1a"
 	},
 }
