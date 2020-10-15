@@ -98,7 +98,7 @@ pluto.quests.rewardhandlers = {
 
 			pluto.inv.savebufferitem(data.Player, new_item):Run()
 
-			data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", data.QUEST.olor, data.QUEST.Name, white_text, "!")
+			data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", data.QUEST.Color, data.QUEST.Name, white_text, "!")
 		end,
 		small = function(self)
 			if (self.Small) then
