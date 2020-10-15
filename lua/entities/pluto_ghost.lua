@@ -32,7 +32,7 @@ function ENT:OnTakeDamage(dmg)
 	if (SERVER and pluto.ghost_killed(self, dmg)) then
 		self:Remove()
 	end
-endw
+end
 
 function ENT:GetPosition()
 	local first, next = self:GetLastPos(), self:GetNextPos()
