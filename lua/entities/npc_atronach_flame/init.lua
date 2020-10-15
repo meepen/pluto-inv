@@ -346,7 +346,7 @@ function ENT:SelectScheduleHandle(enemy,dist,distPred,disp)
 						local fTimeToGoal = self:GetPathTimeToGoal()
 						if(self.bDirectChase && fTimeToGoal <= 3 && fTimeToGoal >= 0.6 && distPred <= self.fMeleeForwardDistance) then
 							self:SLVPlayActivity(ACT_MELEE_ATTACK2)
-							self.m_nextForwardAttack = CurTime() +math.Rand(1,4)
+							self.m_nextForwardAttack = CurTime() +math.Rand(1,2)
 							return
 						end
 					end
