@@ -764,30 +764,32 @@ pluto.currency.navs = {
 
 function pluto.currency.randompos()
 	pluto.currency.navs.start()
-	local rand = math.random() * pluto.currency.navs.total
-	local initial = rand
 
-	for _, item in ipairs(pluto.currency.navs) do
-		rand = rand - item.Size
-		if (rand <= 0) then
-			return pluto.currency.validpos(item.Nav), item.Nav
+	for i, item in RandomPairs(pluto.currency.navs) do
+		if (not isnumber(i)) then
+			continue
+		end
+
+		local pos = pluto.currency.validpos(item.Nav)
+		if (pos) then
+			return pos, item.Nav
 		end
 	end
 
 	pwarnf("Initial rand: %.5f, rand end: %.5f, total: %.5f", initial, rand, pluto.currency.navs.total)
+
+	return vector_origin
 end
 
 function pluto.currency.validpos(nav)
-	local tries = 0
-	while (tries < 20) do
-		tries = tries + 1
+	for i = 1, 25 do
 		local pos = nav:GetRandomPoint()
 
 		local tr = util.TraceHull {
 			start = pos,
 			endpos = pos,
 			mins = Vector(-16, -16, 0),	
-			maxs = Vector(16, 16, 72),
+			maxs = Vector(16, 16, 48),
 			filter = player.GetAll(),
 			mask = MASK_PLAYERSOLID
 		}
@@ -1004,12 +1006,12 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 		pct = 1 / 5
 	end
 
-	if (math.random() < pct) then
+	if (math.random() < 1) then
 		admin.chatf(white_text, "Multiple ", ttt.teams.traitor.Color, "spirits ", white_text, "have entered this realm.")
 		local ghosts = {}
 		for i = 1, 5 + player.GetCount() / 6 do
 			ghosts[i] = ents.Create "pluto_ghost"
-			ghosts[i]:SetPos(pluto.currency.randompos() or vector_origin)
+			ghosts[i]:SetPos(pluto.currency.randompos())
 			ghosts[i]:Spawn()
 		end
 		timer.Simple(60, function()
