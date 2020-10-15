@@ -690,7 +690,7 @@ function pluto.ghost_killed(e, dmg)
 		all = 1,
 		self = 15,
 		share = 2,
-		multi = 0.1,
+		multi = 0.05,
 	}
 
 	if (rand == "self") then
@@ -992,7 +992,7 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 	end
 
 	-- ghosts
-	if (math.random(10) == 1) then
+	if (math.random(7) == 1) then
 		admin.chatf(white_text, "Multiple ", ttt.teams.traitor.Color, "spirits ", white_text, "have entered this realm.")
 		local ghosts = {}
 		for i = 1, 5 do
