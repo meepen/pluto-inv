@@ -355,7 +355,7 @@ function ENT:SelectScheduleHandle(enemy,dist,distPred,disp)
 			local bWalk
 			if(dist <= self.fRangeDistance && self:CanUseRangeAttack(self.entEnemy)) then
 				if(CurTime() >= self.m_nextAttack) then
-					self.m_nextAttack = CurTime() +math.Rand(1,4)
+					self.m_nextAttack = CurTime() +math.Rand(0.5, 1)
 					self:RestartGesture(ACT_GESTURE_RANGE_ATTACK1)
 				end
 				if(!bMoveBack && dist <= 800) then
