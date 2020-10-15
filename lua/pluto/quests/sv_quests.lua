@@ -14,17 +14,27 @@ for _, id in pairs {
 	"light2",
 	"light3",
 
-	"credits",
 	"melee",
-	"nodamage",
 	"nojump",
 	"oneshot",
-	"pcrime",
 	"stickcurr",
 	"traitors",
-
-	"goomba",
 	"floor",
+	"wepswitch",
+	"nomove",
+	"winstreak",
+
+	"nodamage",
+	"credits",
+	"pcrime",
+	"crusher",
+	"postround",
+	"healthgain",
+
+	"dnatrack",
+	"fourcraft",
+	"sacrifices",
+	"burn",
 } do
 	QUEST = pluto.quests.list[id] or {}
 	QUEST.ID = id
@@ -33,6 +43,310 @@ for _, id in pairs {
 	pluto.quests.list[id] = QUEST
 	QUEST = nil
 end
+
+pluto.quests.rewardhandlers = {
+	currency = {
+		reward = function(self, data)
+            local cur = self.Currency and pluto.currency.byname[self.Currency] or pluto.currency.random()
+            local amount = self.Amount or 1
+
+            pluto.inv.addcurrency(data.Player, self.Currency, amount)
+
+            data.Player:ChatPrint(white_text, "You have received ", amount, " ", cur, amount == 1 and "" or "s", white_text, " for completing ", data.QUEST.Color, data.QUEST.Name, white_text, "!")
+		end,
+        small = function(self)
+            if (self.Small) then
+                return self.Small
+            end
+
+            local cur = pluto.currency.byname[self.Currency]
+            local amount = self.Amount or 1
+
+            return (amount == 1 and "" or "set of " .. amount .. " ") .. cur.Name .. (amount == 1 and "" or "s")
+        end,
+	},
+	weapon = {
+		reward = function(self, data)
+			local classname = self.ClassName --[[or (self.Grenade and pluto.weapons.randomgrenade()) or (self.Melee and pluto.weapons.randommelee())]] or pluto.weapons.randomgun()
+			-- Random grenade and random melee rewards, currently unused
+
+			local tier = self.Tier or pluto.tiers.filter(baseclass.Get(classname), function(t)
+				if (self.ModMin and t.affixes < self.ModMin) then
+					return false
+				end
+
+				if (self.ModMax and t.affixes > self.ModMax) then
+					return false
+				end
+
+				return true
+			end).InternalName
+			
+			local new_item = pluto.weapons.generatetier(tier, classname)
+
+			for _, mod in ipairs(self.Mods or {}) do
+				pluto.weapons.addmod(new_item, mod)
+			end
+
+			if (self.RandomImplicit) then
+				local mod = table.shuffle(pluto.mods.getfor(baseclass.Get(classname), function(m)
+					return m.Type == "implicit" and not m.PreventChange and not m.NoCoined
+				end))[1]
+
+				pluto.weapons.addmod(new_item, mod.InternalName)
+			end
+
+			pluto.inv.savebufferitem(data.Player, new_item):Run()
+
+			data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", data.QUEST.olor, data.QUEST.Name, white_text, "!")
+		end,
+		small = function(self)
+			if (self.Small) then
+				return self.Small
+			end
+
+			local smalltext = ""
+
+			if (self.Tier) then
+				smalltext = pluto.tiers.byname[self.Tier].Name .. " "
+			end
+
+			if (self.ClassName) then
+				smalltext = smalltext .. baseclass.Get(self.ClassName).PrintName
+			else
+				smalltext = smalltext .. "gun"
+			end
+
+			local append = {}
+			if (self.RandomImplicit) then
+				table.insert(append, " a random implicit")
+			end
+			if (self.ModMin) then
+				table.insert(append, " at least " .. tostring(self.ModMin) .. " mods")
+			end
+			if (self.ModMax) then
+				table.insert(append, " at most " .. tostring(self.ModMax) .. " mods")
+			end
+			for _, text in ipairs(append) do
+				smalltext = smalltext .. (_ == 1 and " with" or " and") .. text
+			end
+
+			return smalltext
+		end,
+	},
+	shard = {
+		reward = function(self, data)
+			local tier = self.Tier or pluto.tiers.filter(baseclass.Get(pluto.weapons.randomgun()), function(t)
+				if (self.ModMin and t.affixes < self.ModMin) then
+					return false
+				end
+
+				if (self.ModMax and t.affixes > self.ModMax) then
+					return false
+				end
+
+				return true
+			end).InternalName
+
+			pluto.inv.generatebuffershard(data.Player, tier):Run()
+
+			tier = pluto.tiers.byname[tier]
+
+			data.Player:ChatPrint(white_text, "You have received ", startswithvowel(tier.Name) and "an " or "a ", tier.Color, tier.Name, " Tier Shard", white_text, " for completing ", data.QUEST.Color, data.QUEST.Name, white_text, "!")
+		end,
+		small = function(self)
+            if (self.Small) then
+                return self.Small
+            end
+
+			local smalltext = "shard"
+
+			if (self.Tier) then
+				smalltext = pluto.tiers.byname[self.Tier].Name .. " "
+			end
+
+			local append = {}
+			if (self.ModMin) then
+				table.insert(append, " at least " .. tostring(self.ModMin) .. " mods")
+			end
+			if (self.ModMax) then
+				table.insert(append, " at most " .. tostring(self.ModMax) .. " mods")
+			end
+			for _, text in ipairs(append) do
+				smalltext = smalltext .. (_ == 1 and " with" or " and") .. text
+			end
+
+			return smalltext
+		end,
+	},
+}
+
+pluto.quests.rewards = {
+	unique = { -- This should never be used
+		{
+			Type = "currency",
+			Currency = "droplet",
+			Amount = 1,
+		},
+	},
+	hourly = {
+		{
+			Type = "currency",
+			Currency = "crate3_n",
+			Amount = 1,
+		},
+		{
+			Type = "currency",
+			Currency = "crate3",
+			Amount = 1,
+		},
+		{
+			Type = "currency",
+			Currency = "crate1",
+			Amount = 1,
+		},
+		{
+			Type = "currency",
+			Currency = "aciddrop",
+			Amount = 1,
+		},
+		{
+			Type = "currency",
+			Currency = "pdrop",
+			Amount = 1,
+		},
+		{
+			Type = "weapon",
+			RandomImplicit = true,
+			ModMax = 4,
+		},
+		{
+			Type = "weapon",
+			ModMin = 3,
+		},
+		--[[ Random grenade, currently unused
+		{
+			Type = "weapon",
+			Grenade = true,
+		},
+		--]]
+		{
+			Type = "weapon",
+			Tier = "inevitable",
+		},
+		{
+			Type = "shard",
+			ModMin = 4,
+			ModMax = 5,
+		},
+	},
+	daily = {
+		{
+			Type = "currency",
+			Currency = "crate2",
+			Amount = 10,
+		},
+		{
+			Type = "currency",
+			Currency = "crate3_n",
+			Amount = 10,
+		},
+		{
+			Type = "currency",
+			Currency = "crate3",
+			Amount = 3,
+		},
+		{
+			Type = "currency",
+			Currency = "crate1",
+			Amount = 5,
+		},
+		{
+			Type = "weapon",
+			ClassName = "weapon_cod4_ak47_silencer",
+			Tier = "uncommon",
+		},
+		{
+			Type = "weapon",
+			ClassName = "weapon_cod4_m4_silencer",
+			Tier = "uncommon",
+		},
+		{
+			Type = "weapon",
+			ClassName = "weapon_cod4_m14_silencer",
+			Tier = "uncommon",
+		},
+		{
+			Type = "weapon",
+			ClassName = "weapon_cod4_g3_silencer",
+			Tier = "uncommon",
+		},
+		{
+			Type = "weapon",
+			ClassName = "weapon_cod4_g36c_silencer",
+			Tier = "uncommon",
+		},
+		{
+			Type = "weapon",
+			ModMin = 4,
+		},
+		{
+			Type = "weapon",
+			Tier = "uncommon",
+			Mods = {"hearted",},
+			Small = "Hearted Uncommon gun",
+		},
+		{
+			Type = "weapon",
+			Tier = "common",
+			Mods = {"tomed",},
+			Small = "Tomed Common gun"
+		},
+		{
+			Type = "shard",
+			ModMin = 5,
+		},
+	},
+	weekly = {
+		{
+			Type = "currency",
+			Currency = "tome",
+			Amount = 15,
+		},
+		{
+			Type = "currency",
+			Currency = "coin",
+			Amount = 1,
+		},
+		{
+			Type = "currency",
+			Currency = "quill",
+			Amount = 1,
+		},
+		{
+			Type = "currency",
+			Currency = "tp",
+			Amount = 1,
+		},
+		{
+			Type = "weapon",
+			Mods = {"hearted",},
+			ModMin = 5,
+			ModMax = 5,
+			Small = "Hearted gun with 5 mods"
+		},
+		{
+			Type = "weapon",
+			Tier = "mystical",
+			Mods = {"dropletted", "handed", "diced",},
+			Small = "Dropletted, Handed, Diced, Mystical gun",
+		},
+		{
+			Type = "shard",
+			ModMin = 6,
+		},
+	},
+}
 
 pluto.quests.quest_mt = pluto.quests.quest_mt or {}
 
@@ -78,6 +392,8 @@ function QUEST:Complete()
 	pluto.db.query("UPDATE pluto_quests SET expiry_time = LEAST(expiry_time, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP)) WHERE idx = ?", {self.TYPE.Cooldown, self.RowID}, function(err, q)
 		if (self.QUEST.Reward) then
 			self.QUEST:Reward(self)
+		elseif (self.Reward) then
+			self:Reward(self)
 		end
 		self.EndTime = math.min(self.EndTime, os.time() + self.TYPE.Cooldown)
 
@@ -89,6 +405,42 @@ function QUEST:Complete()
 			pluto.quests.delete(self.RowID)
 		end)
 	end)
+end
+
+function QUEST:GetRewardText(seed)
+    return pluto.quests.poolrewardtext(self.QUEST.RewardPool, seed)
+end
+
+function QUEST:Reward(data)
+	pluto.quests.poolreward(self.QUEST.RewardPool, data)
+end
+
+local function poolpick(type, seed)
+	local typequests = pluto.quests.rewards[type or "unique"]
+
+	if (not typequests) then
+		return
+	end
+
+	return typequests[math.floor((seed * 100) % 1 * #typequests) + 1]
+end
+
+function pluto.quests.poolreward(type, quest)
+	local pick = poolpick(type, quest.Seed)
+
+	if (pick) then
+		pluto.quests.rewardhandlers[pick.Type].reward(pick, quest)
+	end
+end
+
+function pluto.quests.poolrewardtext(type, seed)
+	local pick = poolpick(type, seed)
+
+	if (pick) then
+		return pluto.quests.rewardhandlers[pick.Type].small(pick)
+	else
+		return "Error: No reward found"
+	end
 end
 
 function pluto.quests.oftype(type, ignore)
@@ -317,7 +669,7 @@ function pluto.inv.writequest(ply, quest)
 		net.WriteString(quest.QUEST.Credits)
 	end
 
-	net.WriteString(quest.QUEST:GetRewardText(quest.Seed))
+	net.WriteString(quest.QUEST.GetRewardText and quest.QUEST:GetRewardText(quest.Seed) or quest:GetRewardText(quest.Seed))
 
 	net.WriteInt(quest.EndTime - os.time(), 32)
 	net.WriteUInt(quest.ProgressLeft, 32)

@@ -2,15 +2,7 @@ QUEST.Name = "Clubber"
 QUEST.Description = "Hit people rightfully with a melee before murdering them"
 QUEST.Credits = "Phrot"
 QUEST.Color = Color(204, 61, 5)
-
-function QUEST:GetReward(seed)
-	return pluto.currency.byname[seed < 0.5 and "aciddrop" or "pdrop"]
-end
-
-function QUEST:GetRewardText(seed)
-	local cur = self:GetReward(seed)
-	return cur.Name
-end
+QUEST.RewardPool = "hourly"
 
 function QUEST:Init(data)
 	local meleed = {}
@@ -21,7 +13,7 @@ function QUEST:Init(data)
 	data:Hook("EntityTakeDamage", function(data, vic, dmg)
 		local inf, atk = dmg:GetInflictor(), dmg:GetAttacker()
 
-		if (IsValid(inf) and atk == data.Player and vic:IsPlayer() and inf.Slot == 0 and atk:GetRoleTeam() ~= vic:GetRoleTeam()) then
+		if (IsValid(inf) and atk == data.Player and vic:IsPlayer() and (inf.Slot == 0 or inf.ClassName == "weapon_ttt_deagle_u" and dmg:IsDamageType(DMG_CLUB)) and atk:GetRoleTeam() ~= vic:GetRoleTeam()) then
 			meleed[vic] = true
 		end
 	end)
@@ -31,13 +23,6 @@ function QUEST:Init(data)
 			data:UpdateProgress(1)
 		end
 	end)
-end
-
-function QUEST:Reward(data)
-	local cur = self:GetReward(data.Seed)
-	pluto.inv.addcurrency(data.Player, cur.InternalName, 1)
-
-	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(cur.Name) and "an " or "a ", cur, white_text, " for completing ", self.Color, self.Name, white_text, "!")
 end
 
 function QUEST:IsType(type)

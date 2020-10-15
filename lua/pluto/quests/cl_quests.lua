@@ -111,7 +111,7 @@ function PANEL:Init()
 			if (q.ProgressLeft == 0) then
 				t = string.format("Complete!", q.TotalProgress)
 			else
-				t = string.format("%i / %i remaining", q.ProgressLeft, q.TotalProgress)
+				t = string.format("%i / %i", q.TotalProgress - q.ProgressLeft, q.TotalProgress)
 			end
 		end
 		draw.SimpleTextOutlined(t, "pluto_quest_reward", w / 2, h / 2, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, color_black)
@@ -214,7 +214,7 @@ function PANEL:SetQuest(quest)
 	self.Quest = quest
 	self.QuestName:SetText(quest.Name)
 	self.Description:SetText(quest.Description)
-	self.RewardText:SetText("You " .. (quest.ProgressLeft == 0 and "received " or "will receive ") .. (startswithvowel(quest.Reward) and "an " or "a ") .. quest.Reward .. "  ")
+	self.RewardText:SetText("Reward: " .. (startswithvowel(quest.Reward) and "An " or "A ") .. quest.Reward .. "  ")
 
 
 	self.QuestName:SetTextColor(quest.Color)

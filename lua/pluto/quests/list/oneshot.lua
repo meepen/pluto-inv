@@ -2,10 +2,7 @@ QUEST.Name = "Hitman"
 QUEST.Description = "Rightfully one-shot players in one round"
 QUEST.Credits = "zeBaconcake"
 QUEST.Color = Color(204, 61, 5)
-
-function QUEST:GetRewardText(seed)
-	return "random gun with at least 3 mods"
-end
+QUEST.RewardPool = "hourly"
 
 function QUEST:Init(data)
 	local current = 0
@@ -36,18 +33,6 @@ hook.Add("TTTBeginRound", "oneshot_quest", function(e, dmg)
 		ply.DamageTakens = {}
 	end
 end)
-
-function QUEST:Reward(data)
-	local gun = baseclass.Get(pluto.weapons.randomgun())
-	local tier = pluto.tiers.filter(gun, function(t)
-		return t.affixes >= 3
-	end)
-
-	local trans, new_item = pluto.inv.generatebufferweapon(data.Player, tier, gun)
-	trans:Run()
-
-	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "! Check your inventory.")
-end
 
 function QUEST:IsType(type)
 	return type == 1

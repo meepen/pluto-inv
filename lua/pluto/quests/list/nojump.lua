@@ -2,10 +2,7 @@ QUEST.Name = "Cemented"
 QUEST.Description = "Kill people rightfully in one round without jumping"
 QUEST.Credits = "add__123"
 QUEST.Color = Color(204, 61, 5)
-
-function QUEST:GetRewardText(seed)
-	return "gun with at most 4 mods and a random implicit"
-end
+QUEST.RewardPool = "hourly"
 
 function QUEST:Init(data)
 	local current = 0
@@ -28,23 +25,6 @@ function QUEST:Init(data)
 			end
 		end
 	end)
-end
-
-function QUEST:Reward(data)
-	local gun = pluto.weapons.randomgun()
-	local new_item = pluto.weapons.generatetier(pluto.tiers.filter(baseclass.Get(gun), function(t)
-		return t.affixes <= 4
-	end), gun)
-
-	local mod = table.shuffle(pluto.mods.getfor(baseclass.Get(new_item.ClassName), function(mod)
-		return mod.Type == "implicit" and not mod.PreventChange and not mod.NoCoined
-	end))[1]
-
-	pluto.weapons.addmod(new_item, mod.InternalName)
-
-	pluto.inv.savebufferitem(data.Player, new_item):Run()
-
-	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " with the ", mod, white_text, " modifier for completing ", self.Color, self.Name, white_text, "! Check your inventory.")
 end
 
 function QUEST:IsType(type)

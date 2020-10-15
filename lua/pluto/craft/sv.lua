@@ -301,5 +301,7 @@ function pluto.inv.readcraft(cl)
 		pluto.inv.addcurrency(cl, cur.Currency, -cur.Amount, nil, transact)
 	end
 
+	hook.Run("PlutoWeaponCrafted", cl, wpn, items, cur)
+
 	transact:Run()
 end

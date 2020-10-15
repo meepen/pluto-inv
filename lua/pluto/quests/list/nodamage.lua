@@ -1,11 +1,8 @@
 QUEST.Name = "Invulnerable"
-QUEST.Description = "Kill players while you are at full health"
+QUEST.Description = "Kill people rightfully while at full health"
 QUEST.Credits = "Eppen"
 QUEST.Color = Color(204, 43, 75)
-
-function QUEST:GetRewardText(seed)
-	return "set of two hearts"
-end
+QUEST.RewardPool = "daily"
 
 function QUEST:Init(data)
 	data:Hook("PlayerDeath", function(data, vic, inf, atk)
@@ -13,13 +10,6 @@ function QUEST:Init(data)
 			data:UpdateProgress(1)
 		end
 	end)
-end
-
-function QUEST:Reward(data)
-	pluto.inv.addcurrency(data.Player, "heart", 2)
-
-	local cur = pluto.currency.byname.heart
-	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(cur.Name) and "an " or "a ", cur, white_text, " for completing ", self.Color, self.Name, white_text, "! (x2)")
 end
 
 function QUEST:IsType(type)

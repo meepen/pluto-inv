@@ -69,6 +69,11 @@ function SWEP:FireBulletsCallback(tr, dmginfo)
 		tr.Entity:Ignite(2)
 
 		if (tr.Entity:IsPlayer()) then
+			tr.Entity.was_burned = {
+				att = att,
+				t = CurTime(),
+				wep = self:GetClass()
+			}
 			pluto.statuses.limp(tr.Entity, self:GetDelay())
 		end
 	end
