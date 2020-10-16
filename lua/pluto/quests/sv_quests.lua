@@ -370,6 +370,11 @@ function QUEST:Hook(event, fn)
 end
 
 function QUEST:UpdateProgress(amount)
+	local p = self.Player
+	if (IsValid(p) and p.Punishments and p.Punishments.questban and p.Punishments.questban.Ending > os.time()) then
+		return
+	end
+
 	self.ProgressLeft = math.max(0, self.ProgressLeft - amount)
 	local transact = pluto.db.transact()
 
