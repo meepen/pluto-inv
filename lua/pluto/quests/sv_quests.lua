@@ -166,10 +166,11 @@ pluto.quests.rewardhandlers = {
 			end
 
 			local append = {}
-			if (self.ModMin) then
+			if (self.ModMin and self.ModMax) then
+				table.insert(append, " between " .. tostring(self.ModMin) .. " and " .. tostring(self.ModMax) .. " mods")
+			elseif (self.ModMin) then
 				table.insert(append, " at least " .. tostring(self.ModMin) .. " mods")
-			end
-			if (self.ModMax) then
+			elseif (self.ModMax) then
 				table.insert(append, " at most " .. tostring(self.ModMax) .. " mods")
 			end
 			for _, text in ipairs(append) do
