@@ -28,13 +28,13 @@ for _, id in pairs {
 	"credits",
 	"pcrime",
 	"crusher",
-	"postround",
 	"healthgain",
 
 	"dnatrack",
 	"fourcraft",
 	"sacrifices",
 	"burn",
+	"postround",
 } do
 	QUEST = pluto.quests.list[id] or {}
 	QUEST.ID = id

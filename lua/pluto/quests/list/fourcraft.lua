@@ -16,5 +16,5 @@ function QUEST:IsType(type)
 end
 
 function QUEST:GetProgressNeeded(type)
-	return math.random(20, 30)
+	return math.random(15, 20)
 end

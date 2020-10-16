@@ -1,7 +1,7 @@
 QUEST.Name = "Final Fight"
 QUEST.Description = "Kill people after the end of the round"
 QUEST.Color = Color(153, 25, 0)
-QUEST.RewardPool = "daily"
+QUEST.RewardPool = "weekly"
 
 function QUEST:Init(data)
 	data:Hook("PlayerDeath", function(data, vic, inf, atk)
@@ -12,9 +12,9 @@ function QUEST:Init(data)
 end
 
 function QUEST:IsType(type)
-	return type == 2
+	return type == 3
 end
 
 function QUEST:GetProgressNeeded(type)
-	return math.random(50, 70)
+	return math.random(80, 100)
 end
