@@ -66,25 +66,14 @@ function ENT:Think()
 					next = nav
 				end
 
-				for i = 1, 100 do
-					pos = next:GetRandomPoint()
-					local mins, maxs = Vector(0.01, 0.01, 0.01), Vector(0.01, 0.01, 0.01)
-					if (not util.TraceHull {
-						start = pos,
-						endpos = pos,
-						mins = mins,
-						maxs = maxs,
-						collisiongroup = COLLISION_GROUP_PLAYER,
-						mask = MASK_PLAYERSOLID,
-					}.StartSolid) then
-						break
-					end
-				end
+				pos = pluto.currency.validpos(next) or pos
+				break
 			end
 		end
 
 		self:SetStart(CurTime())
 		self:SetLastPos(self:GetNextPos())
+		print(self, "NEXT", pos)
 		self:SetNextPos(pos)
 	end
 

@@ -759,20 +759,39 @@ pluto.currency.navs = {
 				pluto.currency.navs.total = pluto.currency.navs.total + dist
 			end
 		end
-	end
+	end,
+	random = function()
+		local state = {}
+		for i, nav in ipairs(pluto.currency.navs) do
+			state[i] = {
+				Random = math.random() * nav.Size,
+				Nav = nav.Nav
+			}
+		end
+		
+		table.sort(state, function(a, b)
+			return a.Random < b.Random
+		end)
+
+		for i, nav in pairs(state) do
+			state[i] = nav.Nav
+		end
+
+		return ipairs(state)
+	end,
 }
 
 function pluto.currency.randompos()
 	pluto.currency.navs.start()
 
-	for i, item in RandomPairs(pluto.currency.navs) do
+	for i, item in pluto.currency.navs.random() do
 		if (not isnumber(i)) then
 			continue
 		end
 
-		local pos = pluto.currency.validpos(item.Nav)
+		local pos = pluto.currency.validpos(item)
 		if (pos) then
-			return pos, item.Nav
+			return pos, item
 		end
 	end
 
