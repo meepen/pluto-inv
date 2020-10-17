@@ -73,7 +73,6 @@ function ENT:Think()
 
 		self:SetStart(CurTime())
 		self:SetLastPos(self:GetNextPos())
-		print(self, "NEXT", pos)
 		self:SetNextPos(pos)
 	end
 
