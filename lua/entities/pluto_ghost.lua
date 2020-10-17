@@ -46,6 +46,7 @@ function ENT:GetPosition()
 	pos = pos + (self:GetNextPos() - self:GetLastPos()):Angle():Right() * -size * math.sin(CurTime() * 3.5) / 2
 
 	local ang = (self:GetLastPos() - self:GetNextPos()):Angle()
+	ang.p = 0
 
 	return pos, ang
 end
@@ -57,12 +58,17 @@ end
 function ENT:Think()
 	if (SERVER and (CurTime() - self:GetStart()) / (self:GetLastPos():Distance(self:GetNextPos()) / self:GetSpeed()) >= 1) then
 		local pos = self:GetNextPos()
-		for _, nav in pairs(navmesh.GetAllNavAreas()) do
+		for _, nav in RandomPairs(navmesh.GetAllNavAreas()) do
 			if (nav:Contains(pos)) then
 				local next = table.Random(nav:GetAdjacentAreas())
+
+				if (not next) then
+					next = nav
+				end
+
 				for i = 1, 100 do
 					pos = next:GetRandomPoint()
-					local mins, maxs = vector_origin, vector_origin
+					local mins, maxs = Vector(0.01, 0.01, 0.01), Vector(0.01, 0.01, 0.01)
 					if (not util.TraceHull {
 						start = pos,
 						endpos = pos,

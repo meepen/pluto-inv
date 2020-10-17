@@ -35,7 +35,6 @@ SWEP.DeploySpeed = 1.5
 
 SWEP.AutoSpawnable         = false
 SWEP.Spawnable             = false
-SWEP.AmmoEnt               = "item_ammo_smg1_ttt"
 
 SWEP.ViewModel             = "models/razorswep/weapons/v_rif_comma.mdl"
 SWEP.WorldModel            = "models/razorswep/weapons/w_rif_comm.mdl"

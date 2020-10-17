@@ -230,8 +230,9 @@ function ENT:EventHandle(...)
 				entFlame:SetParticleEffect("magic_spell_fireball")
 				entFlame:SetParent(self)
 				entFlame:Fire("SetParentAttachment",att,0)
+				entFlame:SetDamageOwner(IsValid(self:GetDamageOwner()) and self:GetDamageOwner() or self)
 				function entFlame:OnHit(ent,dist)
-					ent:slvIgnite(ent:IsPlayer() && 1.2 || 6,nil,self)
+					ent:slvIgnite(2, nil, self:GetDamageOwner())
 				end
 				entFlame:Spawn()
 				entFlame:Activate()
@@ -293,8 +294,11 @@ function ENT:EventHandle(...)
 			ang = Angle(-30,-18,3)
 			force = Vector(360,0,0)
 		end
-		self:DealMeleeDamage(dist,GetConVarNumber(skDmg),ang,force,DMG_BURN,nil,nil,nil,function(ent,dmgInfo)
-			ent:slvIgnite(6,nil,self)
+		self:DealMeleeDamage(dist,15,ang,force,DMG_BURN,nil,nil,nil,function(ent,dmgInfo)
+			if (IsValid(self)) then
+				dmgInfo:SetAttacker(self:GetDamageOwner())
+			end
+			ent:slvIgnite(4,nil,IsValid(self) and self:GetDamageOwner() or self)
 		end)
 		return true
 	end
@@ -342,7 +346,7 @@ function ENT:SelectScheduleHandle(enemy,dist,distPred,disp)
 						local fTimeToGoal = self:GetPathTimeToGoal()
 						if(self.bDirectChase && fTimeToGoal <= 3 && fTimeToGoal >= 0.6 && distPred <= self.fMeleeForwardDistance) then
 							self:SLVPlayActivity(ACT_MELEE_ATTACK2)
-							self.m_nextForwardAttack = CurTime() +math.Rand(1,4)
+							self.m_nextForwardAttack = CurTime() +math.Rand(1,2)
 							return
 						end
 					end
@@ -351,7 +355,7 @@ function ENT:SelectScheduleHandle(enemy,dist,distPred,disp)
 			local bWalk
 			if(dist <= self.fRangeDistance && self:CanUseRangeAttack(self.entEnemy)) then
 				if(CurTime() >= self.m_nextAttack) then
-					self.m_nextAttack = CurTime() +math.Rand(1,4)
+					self.m_nextAttack = CurTime() +math.Rand(0.5, 1)
 					self:RestartGesture(ACT_GESTURE_RANGE_ATTACK1)
 				end
 				if(!bMoveBack && dist <= 800) then

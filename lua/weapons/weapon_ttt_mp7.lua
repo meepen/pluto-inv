@@ -24,7 +24,6 @@ SWEP.Primary.DefaultClip		= 60
 SWEP.Primary.Recoil = 2
 SWEP.Primary.Automatic			= true
 SWEP.Primary.Ammo			= "pistol"
-SWEP.AmmoEnt = "item_ammo_pistol_ttt"
 
 SWEP.Primary.NumShots	= 1
 SWEP.Primary.Damage		= 10

@@ -48,7 +48,6 @@ SWEP.ReloadSpeed = 1
 
 SWEP.AutoSpawnable         = false
 SWEP.Spawnable             = false
-SWEP.AmmoEnt               = "item_ammo_357_ttt"
 
 SWEP.ViewModel             = "models/weapons/rspn101_dmr/ptpov_rspn101_dmr.mdl"
 SWEP.WorldModel            = "models/weapons/rspn101_dmr/w_rspn101_dmr.mdl"
