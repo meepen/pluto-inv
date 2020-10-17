@@ -297,7 +297,7 @@ pluto.quests.rewards = {
 		},
 		{
 			Type = "weapon",
-			ModMin = 4,
+			ModMin = 5,
 		},
 		{
 			Type = "weapon",
@@ -339,10 +339,16 @@ pluto.quests.rewards = {
 		},
 		{
 			Type = "weapon",
+			ModMin = 6,
+			ModMax = 6,
+			Small = "gun with 6 mods",
+		},
+		{
+			Type = "weapon",
 			Mods = {"hearted",},
 			ModMin = 5,
 			ModMax = 5,
-			Small = "Hearted gun with 5 mods"
+			Small = "Hearted gun with 5 mods",
 		},
 		{
 			Type = "weapon",
