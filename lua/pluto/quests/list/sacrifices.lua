@@ -1,5 +1,5 @@
 QUEST.Name = "The Greater Good"
-QUEST.Description = "Sacrifice Inevitables and Unusuals"
+QUEST.Description = "Use Inevitables and Unusuals in crafting"
 QUEST.Color = Color(170, 0, 255)
 QUEST.RewardPool = "weekly"
 
@@ -9,8 +9,8 @@ function QUEST:Init(data)
 			return
 		end
 
-		for _, item in ipairs(items) do
-			if (item.Type == "Weapon" and (item.Tier.Name == "Inevitable" or item.Tier.Name == "Unusual")) then
+		for _, item in pairs(items) do
+			if (item.Tier and item.Tier.InternalName and (item.Tier.InternalName == "inevitable" or item.Tier.InternalName == "unusual")) then
 				data:UpdateProgress(1)
 			end
 		end
