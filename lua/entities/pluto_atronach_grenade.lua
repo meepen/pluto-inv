@@ -23,6 +23,18 @@ function ENT:Explode()
 		npcs[i] = npc
 	end
 
+	local pos = self:GetPos()
+	local effect = EffectData()
+	effect:SetStart(pos)
+	effect:SetOrigin(pos)
+	effect:SetScale(100)
+	effect:SetRadius(255)
+	effect:SetMagnitude(1)
+
+	util.Effect("Explosion", effect, true, true)
+	util.BlastDamage(self, self:GetOwner(), pos, 255, 50)
+	self:StartFires(pos, 10, 20, false, self:GetOwner())
+
 	timer.Simple(30, function()
 		for _, npc in pairs(npcs) do
 			if (IsValid(npc)) then
