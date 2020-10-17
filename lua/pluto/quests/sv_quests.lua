@@ -28,13 +28,13 @@ for _, id in pairs {
 	"credits",
 	"pcrime",
 	"crusher",
-	"postround",
 	"healthgain",
 
 	"dnatrack",
 	"fourcraft",
 	"sacrifices",
 	"burn",
+	"postround",
 
 	"halloween_nade",
 } do
@@ -168,10 +168,11 @@ pluto.quests.rewardhandlers = {
 			end
 
 			local append = {}
-			if (self.ModMin) then
+			if (self.ModMin and self.ModMax) then
+				table.insert(append, " between " .. tostring(self.ModMin) .. " and " .. tostring(self.ModMax) .. " mods")
+			elseif (self.ModMin) then
 				table.insert(append, " at least " .. tostring(self.ModMin) .. " mods")
-			end
-			if (self.ModMax) then
+			elseif (self.ModMax) then
 				table.insert(append, " at most " .. tostring(self.ModMax) .. " mods")
 			end
 			for _, text in ipairs(append) do
@@ -296,7 +297,7 @@ pluto.quests.rewards = {
 		},
 		{
 			Type = "weapon",
-			ModMin = 4,
+			ModMin = 5,
 		},
 		{
 			Type = "weapon",
@@ -338,10 +339,16 @@ pluto.quests.rewards = {
 		},
 		{
 			Type = "weapon",
+			ModMin = 6,
+			ModMax = 6,
+			Small = "gun with 6 mods",
+		},
+		{
+			Type = "weapon",
 			Mods = {"hearted",},
 			ModMin = 5,
 			ModMax = 5,
-			Small = "Hearted gun with 5 mods"
+			Small = "Hearted gun with 5 mods",
 		},
 		{
 			Type = "weapon",

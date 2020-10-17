@@ -8,11 +8,16 @@ function QUEST:Init(data)
 		if (ttt.GetRoundState() == ttt.ROUNDSTATE_ACTIVE and atk == data.Player and atk:GetRoleTeam() ~= "traitor" and vic:GetRoleTeam() == "traitor") then
 			local scanner = atk:GetWeapon("weapon_ttt_dna")
 
-			if (not IsValid(scanner) or not IsValid(scanner:GetCurrentDNA())) then
-				return
+			local own
+
+			if (IsValid(scanner) and IsValid(scanner:GetCurrentDNA())) then
+				local own = scanner:GetCurrentDNA():GetOwner()
+				if (own:GetClass() == "prop_ragdoll" and own.HiddenState) then
+					own = own.HiddenState:GetPlayer()
+				end
 			end
 
-			if (scanner:GetCurrentDNA():GetOwner() == vic) then
+			if (IsValid(own) and own == vic) then
 				data:UpdateProgress(1)
 			end
 		end

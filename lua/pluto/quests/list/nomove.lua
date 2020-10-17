@@ -33,5 +33,5 @@ function QUEST:IsType(type)
 end
 
 function QUEST:GetProgressNeeded(type)
-	return math.random(2, 4)
+	return 2
 end
