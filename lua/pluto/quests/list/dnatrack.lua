@@ -5,7 +5,7 @@ QUEST.RewardPool = "weekly"
 
 function QUEST:Init(data)
 	data:Hook("PlayerDeath", function(data, vic, inf, atk)
-		if (ttt.GetRoundState() == ttt.ROUNDSTATE_ACTIVE and atk == data.Player) then-- and atk:GetRoleTeam() ~= "traitor" and vic:GetRoleTeam() == "traitor") then
+		if (ttt.GetRoundState() == ttt.ROUNDSTATE_ACTIVE and atk == data.Player and atk:GetRoleTeam() ~= "traitor" and vic:GetRoleTeam() == "traitor") then
 			local scanner = atk:GetWeapon("weapon_ttt_dna")
 			local own
 
