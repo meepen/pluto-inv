@@ -159,32 +159,32 @@ function PANEL:Init()
 					{
 						Abbreviation = "s",
 						Interval = 1,
-						Name = "Seconds",
+						Name = "Second",
 					},
 					{
 						Abbreviation = "m",
 						Interval = 60,
-						Name = "Minutes",
+						Name = "Minute",
 					},
 					{
 						Abbreviation = "h",
 						Interval = 60 * 60,
-						Name = "Hours",
+						Name = "Hour",
 					},
 					{
 						Abbreviation = "d",
 						Interval = 60 * 60 * 24,
-						Name = "Days",
+						Name = "Day",
 					},
 					{
 						Abbreviation = "w",
 						Interval = 60 * 60 * 24 * 7,
-						Name = "Weeks",
+						Name = "Week",
 					}
 				} do
 					local amount = left / what.Interval
 					if (amount >= 1) then
-						t = string.format("%i %s", amount, what.Name)
+						t = string.format("%i %s", amount, what.Name) .. (amount < 2 and "  " or "s  ")
 					end
 				end
 			else
