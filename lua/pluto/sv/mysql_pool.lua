@@ -1,14 +1,16 @@
 require "gluamysql"
+include "promise.lua"
 
-include "pluto/sv/cmysql.lua"
+-- hijack think thing
+RunConsoleCommand("sv_hibernate_think", GetConVar "sv_hibernate_think":GetInt() + 1)
 
 pool = pool or {}
 
-pluto.mt = pluto.mt or {
+pool.mt = pool.mt or {
 	__index = {}
 }
 
-local MT = pluto.mt.__index
+local MT = pool.mt.__index
 
 function MT:Request(request)
 	if (#self.connections > 0) then
@@ -16,7 +18,7 @@ function MT:Request(request)
 		table.remove(self.connections, 1)
 
 		self.statuses[db] = request
-		return cmysql(function() fn(db) end)
+		request(db)
 	else
 		table.insert(self.requests, request)
 	end
@@ -26,13 +28,23 @@ function MT:Return(db)
 	self.statuses[db] = nil
 
 	if (#self.requests > 0) then
-		local request = self.request[1]
-		table.remove(self.request, 1)
+		local request = self.requests[1]
+		table.remove(self.requests, 1)
 
 		self.statuses[db] = request
-		return cmysql(function() request(db) end)
+		request(db)
 	else
 		table.insert(self.connections, db)
+	end
+end
+
+function MT:KeepAlive()
+	while (#self.connections > 0) do
+		self:Request(function(db)
+			db:ping():next(function()
+				self:Return(db)
+			end)
+		end)
 	end
 end
 
@@ -41,7 +53,7 @@ function pool.create(amount, ...)
 		connections = {},
 		requests = {},
 		statuses = {},
-	}, MT)
+	}, pool.mt)
 
 	for i = 1, amount do
 		mysql.connect(...)

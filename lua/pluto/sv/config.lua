@@ -5,6 +5,7 @@ local config = {
 		database = "pluto",
 		password = "IwE6&60b^z%h$EM9",
 		name = "Main",
+		poolamount = 5
 	},
 }
 
@@ -53,14 +54,10 @@ if (not pluto.db_init) then
 	pluto.db_init = true
 end
 
-if (true) then
-	require "gluamysql"
-	include "promise.lua"
+include "mysql_pool.lua"
+pluto.pool = pool.create(config.db.poolamount, config.db.host, config.db.username, config.db.password, config.db.database)
 
-	mysql.connect(config.db.host, config.db.username, config.db.password, config.db.database):next(function(db)
-		print(db)
-		db:query("SELECT 1 as number"):next(PrintTable)
-	end)
 
-	pluto.pool = pool
-end
+timer.Create("pluto_pool_keepalive", 60, 0, function()
+	pluto.pool:KeepAlive()	
+end)
