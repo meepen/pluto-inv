@@ -53,20 +53,14 @@ if (not pluto.db_init) then
 	pluto.db_init = true
 end
 
-
-
-concommand.Add("test_gluamysql", function(ply)
-	if (IsValid(ply)) then
-		return
-	end
+if (true) then
 	require "gluamysql"
-
-	include "pluto/sv/mysql_pool.lua"
+	include "promise.lua"
 
 	mysql.connect(config.db.host, config.db.username, config.db.password, config.db.database):next(function(db)
 		print(db)
 		db:query("SELECT 1 as number"):next(PrintTable)
 	end)
-	
+
 	pluto.pool = pool
-end)
+end
