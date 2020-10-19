@@ -67,13 +67,12 @@ function SWEP:Deploy()
 end
 
 function SWEP:Holster(w)
-	if (IsValid(self.Showcase)) then
-		self.Showcase:Remove()
+	if (IsValid(pluto.Showcase)) then
+		pluto.Showcase:Remove()
 	end
 
 	return BaseClass.Holster(self, w)
 end
-
 
 concommand.Add("+inspect", function()
 	local self = ttt.GetHUDTarget():GetActiveWeapon()
@@ -88,17 +87,25 @@ concommand.Add("+inspect", function()
 		return
 	end
 
-	if IsValid(self.Showcase) then
-		self.Showcase.Start = CurTime() - 0.2
+	local toggle = GetConVar("pluto_inspect_toggle"):GetBool()
+	local lifespan = GetConVar("pluto_inspect_slider"):GetFloat()
+
+	if IsValid(pluto.Showcase) then
+		if (pluto.Showcase.Toggle) then
+			pluto.Showcase.Toggle = false
+			pluto.Showcase.Start = CurTime() - lifespan + 0.2
+		elseif (not toggle) then
+			pluto.Showcase.Start = CurTime() - 0.2
+		end
+		return
 	else
-		self.Showcase = pluto.ui.showcase(data)
-		self.Showcase.Start = CurTime()
+		pluto.Showcase = pluto.ui.showcase(data)
+		pluto.Showcase.Toggle = toggle
+		pluto.Showcase.Start = CurTime()
 	end
 
-	local lifespan = GetConVar("pluto_inspect"):GetFloat()
-
-	local t = self.Showcase.Think
-	function self.Showcase:Think()
+	local t = pluto.Showcase.Think
+	function pluto.Showcase:Think()
 		if (t) then
 			t(self)
 		end
@@ -107,10 +114,10 @@ concommand.Add("+inspect", function()
 		local frac = 1
 		if (diff < 0.2) then
 			frac = (diff / 0.2) ^ 0.5
-		elseif (diff > lifespan) then
+		elseif (diff > lifespan and not self.Toggle) then
 			frac = 0
 			self:Remove()
-		elseif (diff > (lifespan - 0.2)) then
+		elseif (diff > (lifespan - 0.2) and not self.Toggle) then
 			frac = 1 - ((diff - lifespan + 0.2) / 0.2) ^ 0.5
 		end
 
@@ -119,11 +126,7 @@ concommand.Add("+inspect", function()
 end)
 
 concommand.Add("-inspect", function(ply, cmd, args)
-	local self = ttt.GetHUDTarget():GetActiveWeapon()
-
-	if (not IsValid(self) or not IsValid(self.Showcase)) then
-		return
+	if (IsValid(pluto.Showcase)) then
+		pluto.Showcase:Remove()
 	end
-
-	self.Showcase:Remove()
 end)
