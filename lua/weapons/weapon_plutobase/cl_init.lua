@@ -95,6 +95,8 @@ concommand.Add("+inspect", function()
 		self.Showcase.Start = CurTime()
 	end
 
+	local lifespan = GetConVar("pluto_inspect"):GetFloat()
+
 	local t = self.Showcase.Think
 	function self.Showcase:Think()
 		if (t) then
@@ -105,11 +107,11 @@ concommand.Add("+inspect", function()
 		local frac = 1
 		if (diff < 0.2) then
 			frac = (diff / 0.2) ^ 0.5
-		elseif (diff > 4) then
+		elseif (diff > lifespan) then
 			frac = 0
 			self:Remove()
-		elseif (diff > 3.8) then
-			frac = 1 - ((diff - 3.8) / 0.2) ^ 0.5
+		elseif (diff > (lifespan - 0.2)) then
+			frac = 1 - ((diff - lifespan + 0.2) / 0.2) ^ 0.5
 		end
 
 		self:SetPos(ScrW() * 2 / 3 - self:GetWide() / 2, ScrH() - self:GetTall() * frac)
