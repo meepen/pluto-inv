@@ -5,7 +5,7 @@ local config = {
 		database = "pluto",
 		password = "IwE6&60b^z%h$EM9",
 		name = "Main",
-		poolamount = 5
+		poolamount = 15
 	},
 }
 

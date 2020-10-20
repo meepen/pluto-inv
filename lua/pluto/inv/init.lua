@@ -85,8 +85,9 @@ function pluto.inv.retrievetabs(steamid, cb)
 	steamid = pluto.db.steamid64(steamid)
 
 	pluto.db.instance(function(db)
-		local d = mysql_stmt_run(db, "SELECT idx, color, name, tab_type FROM pluto_tabs WHERE owner = ?", steamid)
+		local d, err = mysql_stmt_run(db, "SELECT idx, color, name, tab_type FROM pluto_tabs WHERE owner = ?", steamid)
 		if (not d) then
+			pwarnf("NO TABS FOR %s: %s", steamid, err)
 			return cb(false)
 		end
 		local tabs = {}

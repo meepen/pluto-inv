@@ -49,8 +49,6 @@ end
 function pluto.inv.savebufferitem(db, ply, new_item)
 	mysql_cmysql()
 
-	print(ply)
-
 	local tab = pluto.inv.invs[ply].tabs.buffer
 
 	pluto.inv.pushbuffer(db, ply)

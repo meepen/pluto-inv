@@ -54,9 +54,9 @@ pluto.quests.rewardhandlers = {
 
 			pluto.db.instance(function(db)
 				pluto.inv.addcurrency(db, data.Player, self.Currency, amount)
+				data.Player:ChatPrint(white_text, "You have received ", amount, " ", cur, amount == 1 and "" or "s", white_text, " for completing ", data.QUEST.Color, data.QUEST.Name, white_text, "!")
 			end)
 
-            data.Player:ChatPrint(white_text, "You have received ", amount, " ", cur, amount == 1 and "" or "s", white_text, " for completing ", data.QUEST.Color, data.QUEST.Name, white_text, "!")
 		end,
         small = function(self)
             if (self.Small) then
@@ -100,9 +100,11 @@ pluto.quests.rewardhandlers = {
 				pluto.weapons.addmod(new_item, mod.InternalName)
 			end
 
-			pluto.inv.savebufferitem(data.Player, new_item):Run()
-
-			data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", data.QUEST.Color, data.QUEST.Name, white_text, "!")
+			pluto.db.transact(function(db)
+				pluto.inv.savebufferitem(db, data.Player, new_item)
+				mysql_commit(db)
+				data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", data.QUEST.Color, data.QUEST.Name, white_text, "!")
+			end)
 		end,
 		small = function(self)
 			if (self.Small) then
@@ -152,11 +154,13 @@ pluto.quests.rewardhandlers = {
 				return true
 			end).InternalName
 
-			pluto.inv.generatebuffershard(data.Player, tier):Run()
-
-			tier = pluto.tiers.byname[tier]
-
-			data.Player:ChatPrint(white_text, "You have received ", startswithvowel(tier.Name) and "an " or "a ", tier.Color, tier.Name, " Tier Shard", white_text, " for completing ", data.QUEST.Color, data.QUEST.Name, white_text, "!")
+			pluto.db.transact(function(db)
+				pluto.inv.generatebuffershard(db, data.Player, tier)
+				mysql_commit(db)
+				tier = pluto.tiers.byname[tier]
+	
+				data.Player:ChatPrint(white_text, "You have received ", startswithvowel(tier.Name) and "an " or "a ", tier.Color, tier.Name, " Tier Shard", white_text, " for completing ", data.QUEST.Color, data.QUEST.Name, white_text, "!")
+			end)
 		end,
 		small = function(self)
             if (self.Small) then
@@ -798,6 +802,23 @@ concommand.Add("pluto_test_quest", function(ply, cmd, args)
 	}
 
 	ply:ChatPrint("pluto_test_quest: Rewarded for quest ", quest.Color, quest.Name)
+end)
+
+concommand.Add("pluto_test_pool", function(ply, cmd, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+
+	pluto.quests.poolreward(args[1], {
+		Seed = math.random(),
+		Player = ply,
+		QUEST = {
+			Name = "Test",
+			Color = ColorRand(),
+		},
+	})
+
+	ply:ChatPrint("pluto_test_pool: Rewarded for pool ", unpack(args))
 end)
 
 concommand.Add("pluto_add_quest", function(ply, cmd, args)
