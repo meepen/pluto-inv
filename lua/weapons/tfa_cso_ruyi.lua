@@ -99,6 +99,19 @@ SWEP.Secondary.Attacks = {
 
 
 DEFINE_BASECLASS(SWEP.Base)
+
+function SWEP:Initialize()
+	BaseClass.Initialize(self)
+
+	hook.Add("DoPlayerDeath", self, self.DoPlayerDeath)
+end
+
+function SWEP:DoPlayerDeath(ply, atk, dmg)
+	if (dmg and dmg:GetInflictor() == self) then
+		ply:SetModel(pluto.models["chimp"].Model)
+	end
+end
+
 function SWEP:PrimaryAttack()
 	BaseClass.PrimaryAttack(self)
 	self:SetBulletsShot(self:GetBulletsShot() + 1)
