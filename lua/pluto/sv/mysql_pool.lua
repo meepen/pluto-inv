@@ -1,5 +1,5 @@
-require "gluamysql"
 include "promise.lua"
+require "gluamysql"
 
 -- hijack think thing
 RunConsoleCommand("sv_hibernate_think", GetConVar "sv_hibernate_think":GetInt() + 1)
@@ -58,7 +58,11 @@ function pool.create(amount, ...)
 	for i = 1, amount do
 		mysql.connect(...)
 			:next(function(db)
-				ret:Return(db)
+				db:autocommit(true):next(function()
+					ret:Return(db)
+				end):catch(function(e)
+					ErrorNoHalt("Couldn't autocommit: " .. e)
+				end)
 			end)
 			:catch(function(e)
 				ErrorNoHalt("Couldn't connect to pool: " .. e)

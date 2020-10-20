@@ -14,26 +14,34 @@ function PLAYER:SteamID64()
 	return fake_cv:GetString() ~= "" and fake_cv:GetString() or self:RealSteamID64() or "0"
 end
 
-function pluto.inv.defaulttabs(steamid, cb)
-	pluto.inv.addtabs(steamid, {"equip", "currency", "normal", "buffer"}, function(tabs)
-		if (not tabs) then
-			return cb(false)
-		end
+function pluto.inv.defaulttabs(db, steamid)
+	mysql_cmysql()
 
-		cb(tabs)
-	end):Run()
+	return pluto.inv.addtabs(db, steamid, {"equip", "currency", "normal", "buffer"})
+end
+
+function pluto.inv.reloadfor(ply)
+	if (isstring(ply)) then
+		ply = player.GetBySteamID64(ply)
+	end
+
+	if (not IsValid(ply)) then
+		return
+	end
+
+	pluto.inv.sendfullupdate(ply)
 end
 
 function pluto.inv.retrievecurrency(steamid, cb)
 	steamid = pluto.db.steamid64(steamid)
 
-	pluto.db.query("SELECT currency, amount FROM pluto_currency_tab WHERE owner = ?", {steamid}, function(err, q)
-		if (err) then
+	pluto.db.simplequery("SELECT currency, amount FROM pluto_currency_tab WHERE owner = ?", {steamid}, function(d)
+		if (not d) then
 			return cb(false)
 		end
 
 		local cur = {}
-		for _, item in pairs(q:getData()) do
+		for _, item in ipairs(d) do
 			cur[item.currency] = item.amount
 		end
 
@@ -41,32 +49,34 @@ function pluto.inv.retrievecurrency(steamid, cb)
 	end)
 end
 
-function pluto.inv.addcurrency(steamid, currency, amt, cb, transact)
+function pluto.inv.addcurrency(db, steamid, currency, amt)
+	mysql_cmysql()
+
 	steamid = pluto.db.steamid64(steamid)
 
-	pluto.db.transact_or_query(transact, "INSERT INTO pluto_currency_tab (owner, currency, amount) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE amount = amount + ?", {steamid, currency, math.max(0, amt), amt}, function(err, q)
+	if (amt >= 0) then
+		local succ, err = mysql_stmt_run(db, "INSERT INTO pluto_currency_tab (owner, currency, amount) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE amount = amount + VALUE(amount)", steamid, currency, amt)
+
 		if (err) then
-			if (not cb) then
-				return
-			end
-
-			cb(false)
-
-			return
+			return false
 		end
+	else
+		local succ, err = mysql_stmt_run(db, "UPDATE pluto_currency_tab SET amount = amount + ? WHERE owner = ? AND currency = ?", amt, steamid, currency)
 
-		local ply = player.GetBySteamID64(steamid)
-		if (IsValid(ply) and pluto.inv.currencies[ply]) then
-			pluto.inv.currencies[ply][currency] = (pluto.inv.currencies[ply][currency] or 0) + amt
-			pluto.inv.message(ply)
-				:write("currencyupdate", currency)
-				:send()
+		if (not succ or succ.AFFECTED_ROWS ~= 1) then
+			return false
 		end
+	end
 
-		if (cb) then
-			cb(true)
-		end
-	end)
+	local ply = player.GetBySteamID64(steamid)
+	if (IsValid(ply) and pluto.inv.currencies[ply]) then
+		pluto.inv.currencies[ply][currency] = (pluto.inv.currencies[ply][currency] or 0) + amt
+		pluto.inv.message(ply)
+			:write("currencyupdate", currency)
+			:send()
+	end
+
+	return true
 end
 
 local added_types = {"buffer"}
@@ -74,8 +84,9 @@ local added_types = {"buffer"}
 function pluto.inv.retrievetabs(steamid, cb)
 	steamid = pluto.db.steamid64(steamid)
 
-	pluto.db.query("SELECT idx, color, name, tab_type FROM pluto_tabs WHERE owner = ?", {steamid}, function(err, q)
-		if (err) then
+	pluto.db.instance(function(db)
+		local d = mysql_stmt_run(db, "SELECT idx, color, name, tab_type FROM pluto_tabs WHERE owner = ?", steamid)
+		if (not d) then
 			return cb(false)
 		end
 		local tabs = {}
@@ -85,7 +96,7 @@ function pluto.inv.retrievetabs(steamid, cb)
 			need_add[v] = true
 		end
 
-		for _, tab in pairs(q:getData()) do
+		for _, tab in ipairs(d) do
 			need_add[tab.tab_type] = nil
 			table.insert(tabs, {
 				RowID = tab.idx,
@@ -97,7 +108,7 @@ function pluto.inv.retrievetabs(steamid, cb)
 		end
 
 		if (#tabs == 0) then
-			return pluto.inv.defaulttabs(steamid, cb)
+			return cb(pluto.inv.defaulttabs(db, steamid))
 		end
 
 		if (next(need_add, nil) ~= nil) then
@@ -106,23 +117,18 @@ function pluto.inv.retrievetabs(steamid, cb)
 				adding[#adding + 1] = type
 			end
 
-			pluto.inv.addtabs(steamid, adding, function()
-				pluto.inv.retrievetabs(steamid, cb)
-			end):Run()
-			return
+			pluto.inv.addtabs(db, steamid, adding)
+			return pluto.inv.retrievetabs(steamid, cb)
 		end
 
 		cb(tabs)
 	end)
 end
 
-function pluto.inv.addtabs(steamid, types, cb, transact)
+function pluto.inv.addtabs(db, steamid, types)
+	mysql_cmysql()
 	if (#types == 0) then
-		return cb {}
-	end
-
-	if (not transact) then
-		transact = pluto.db.transact()
+		return
 	end
 
 	steamid = pluto.db.steamid64(steamid)
@@ -130,41 +136,23 @@ function pluto.inv.addtabs(steamid, types, cb, transact)
 	local tabs = {}
 	for i = 1, #types do
 		local type = types[i]
-		transact:AddQuery("INSERT INTO pluto_tabs (name, owner, tab_type) SELECT CAST(COUNT(*) + 1 as CHAR), ?, ? FROM pluto_tabs WHERE owner = ?", {steamid, type or "normal", steamid})
-		transact:AddQuery(
-			"SELECT idx, color, name, tab_type FROM pluto_tabs WHERE idx = LAST_INSERT_ID()",
-			nil,
-			function(err, q)
-				if (err) then
-					return
-				end
+		mysql_stmt_run(db, "INSERT INTO pluto_tabs (name, owner, tab_type) SELECT CAST(COUNT(*) + 1 as CHAR), ?, ? FROM pluto_tabs WHERE owner = ?", steamid, type or "normal", steamid)
+		local tab = mysql_query(db, "SELECT idx, color, name, tab_type FROM pluto_tabs WHERE idx = LAST_INSERT_ID()")[1]
 
-				local tab = q:getData()[1]
-
-				tabs[i] = {
-					RowID = tab.idx,
-					Color = tab.color,
-					Name = tab.name,
-					Owner = steamid,
-					Type = tab.tab_type,
-				}
-			end
-		)
+		tabs[i] = {
+			RowID = tab.idx,
+			Color = tab.color,
+			Name = tab.name,
+			Owner = steamid,
+			Type = tab.tab_type,
+		}
 	end
 
-	transact:AddCallback(function(err)
-		if (err) then
-			cb(false)
-		else
-			cb(tabs)
-		end
-	end)
-	
-	return transact
+	return tabs
 end
 
-function pluto.inv.switchtab(steamid, tabid1, tabindex1, tabid2, tabindex2, cb, transact)
-	steamid = pluto.db.steamid64(steamid)
+function pluto.inv.switchtab(db, tabid1, tabindex1, tabid2, tabindex2)
+	mysql_cmysql()
 
 	local affected = 0
 
@@ -176,37 +164,23 @@ function pluto.inv.switchtab(steamid, tabid1, tabindex1, tabid2, tabindex2, cb, 
 		affected = affected + q:affectedRows()
 	end
 
-	if (not transact) then
-		transact = pluto.db.transact()
+	mysql_stmt_run(db, "SELECT 1 FROM pluto_items WHERE tab_id IN (?, ?) FOR UPDATE", tabid1, tabid2)
+	affected = affected + mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = 0 WHERE tab_id = ? AND tab_idx = ?", tabid1, tabid2, tabindex2).AFFECTED_ROWS
+	affected = affected + mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE tab_id = ? AND tab_idx = ?", tabid2, tabindex2, tabid1, tabindex1).AFFECTED_ROWS
+	affected = affected + mysql_stmt_run(db, "UPDATE pluto_items SET tab_idx = ? WHERE tab_id = ? AND tab_idx = 0", tabindex1, tabid1).AFFECTED_ROWS
+
+	if (affected ~= 3 and affected ~= 1) then
+		print "NO BUENO"
+		print(affected)
+		mysql_rollback(db)
+		return false
 	end
 
-	transact
-		:AddQuery("SELECT 1 FROM pluto_items WHERE tab_id IN (?, ?) FOR UPDATE", {tabid1, tabid2})
-		:AddQuery("UPDATE pluto_items SET tab_id = ?, tab_idx = 0 WHERE tab_id = ? AND tab_idx = ?", {tabid1, tabid2, tabindex2}, addaffected)
-		:AddQuery("UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE tab_id = ? AND tab_idx = ?", {tabid2, tabindex2, tabid1, tabindex1}, addaffected)
-		:AddQuery("UPDATE pluto_items SET tab_idx = ? WHERE tab_id = ? AND tab_idx = 0", {tabindex1, tabid1}, addaffected)
-	
-	transact:AddCallback(function(err, q)
-		if (err) then
-			cb(false)
-			return
-		end
-
-		if (affected ~= 1 and affected ~= 3) then
-			cb(false)
-			return
-		end
-
-		cb(true)
-	end)
-
-	return transact
+	return true, affected == 1 and 1 or 2
 end
 
-function pluto.inv.setitemplacement(ply, item, tabid, tabindex, cb, transact)
-	if (not transact) then
-		transact = pluto.db.transact()
-	end
+function pluto.inv.setitemplacement(db, ply, item, tabid, tabindex)
+	mysql_cmysql()
 
 	local inv = pluto.inv.invs[ply]
 
@@ -221,26 +195,22 @@ function pluto.inv.setitemplacement(ply, item, tabid, tabindex, cb, transact)
 	item.TabID = tabid
 	item.TabIndex = tabindex
 
-	transact
-		:AddQuery("UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE idx = ?", {tabid, tabindex, item.RowID})
 
-	transact:AddCallback(function(err, q)
-		if (err) then
-			cb(false)
-			return
-		end
+	local succ, err = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE idx = ?", tabid, tabindex, item.RowID)
+	if (not succ) then
+		mysql_rollback(db)
+		pluto.inv.reloadfor(ply)
+		return false
+	end
 
-		cb(true)
-	end)
-
-	return transact
+	return true
 end
 
 function pluto.inv.renametab(tab, cb)
 	assert(tab.RowID, "no rowid")
 	assert(tab.Name, "no name")
-	pluto.db.query("UPDATE pluto_tabs SET name = ? WHERE idx = ?", {tab.Name, tab.RowID}, function(err, q)
-		return cb(not not err)
+	pluto.db.simplequery("UPDATE pluto_tabs SET name = ? WHERE idx = ?", {tab.Name, tab.RowID}, function(d)
+		return cb(not err)
 	end)
 end
 
@@ -264,8 +234,8 @@ end
 function pluto.inv.retrieveitems(steamid, cb)
 	steamid = pluto.db.steamid64(steamid)
 
-	pluto.db.query("SELECT i.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable, original_owner, owner.displayname as original_name FROM pluto_items i LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx JOIN pluto_tabs t ON t.idx = i.tab_id WHERE owner = ?", {steamid}, function(err, q)
-		if (err) then
+	pluto.db.simplequery("SELECT i.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable, original_owner, owner.displayname as original_name FROM pluto_items i LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx JOIN pluto_tabs t ON t.idx = i.tab_id WHERE owner = ?", {steamid}, function(d, err)
+		if (not d) then
 			pwarnf("sql error: %s\n%s", err, debug.traceback())
 			return
 		end
@@ -274,7 +244,7 @@ function pluto.inv.retrieveitems(steamid, cb)
 
 		local weapons = {}
 
-		for i, item in pairs(q:getData()) do
+		for i, item in ipairs(d) do
 			local it = setmetatable({
 				RowID = item.idx,
 				TabIndex = item.tab_idx,
@@ -315,17 +285,19 @@ function pluto.inv.retrieveitems(steamid, cb)
 			pluto.itemids[it.RowID] = it
 		end
 
-		pluto.db.query([[
+		pprintf("Querying mods for %s", steamid)
+		pluto.db.simplequery([[
 			SELECT pluto_mods.idx as idx, gun_index, modname, pluto_mods.tier as tier, roll1, roll2, roll3 FROM pluto_mods
 				JOIN pluto_items ON pluto_mods.gun_index = pluto_items.idx
 				JOIN pluto_tabs ON pluto_items.tab_id = pluto_tabs.idx
-			WHERE owner = ? ORDER BY pluto_mods.idx ASC]], {steamid}, function(err, q)
-			if (err) then
+			WHERE owner = ? ORDER BY pluto_mods.idx ASC]], {steamid}, function(d, err)
+			pprintf("Got mods for %s", steamid)
+			if (not d) then
 				pwarnf("sql error: %s\n%s", err, debug.traceback())
 				return
 			end
 
-			for _, item in pairs(q:getData()) do
+			for _, item in ipairs(d) do
 				local wpn = weapons[item.gun_index]
 
 				if (not wpn) then
@@ -354,7 +326,9 @@ function pluto.inv.retrieveitems(steamid, cb)
 	end)
 end
 
-function pluto.inv.deleteitem(steamid, itemid, cb, transact, ignorelock)
+function pluto.inv.deleteitem(db, steamid, itemid, ignorelock)
+	mysql_cmysql()
+
 	steamid = pluto.db.steamid64(steamid)
 
 	local i = pluto.itemids[itemid]
@@ -375,27 +349,24 @@ function pluto.inv.deleteitem(steamid, itemid, cb, transact, ignorelock)
 		query = "delete pluto_items from pluto_items inner join pluto_tabs on pluto_tabs.idx = pluto_items.tab_id where pluto_items.idx = ? and pluto_tabs.owner = ?"
 	end
 
-	pluto.db.transact_or_query(transact, query, {itemid, steamid}, function(err, q)
-		if (err) then
-			if (IsValid(cl)) then
-				pluto.inv.sendfullupdate(cl)
-			end
-			return cb(false)
-		end
+	local d = mysql_stmt_run(db, query, itemid, steamid)
+	if (not d) then
+		pluto.inv.reloadfor(cl)
+		mysql_rollback(db)
+		return false
+	end
 
-		if (q:affectedRows() ~= 1) then
-			if (IsValid(cl)) then
-				pluto.inv.sendfullupdate(cl)
-			end
+	if (not d or d.AFFECTED_ROWS ~= 1) then
+		pluto.inv.reloadfor(cl)
 
-			pwarnf("Affected rows: %i", q:affectedRows())
-			return cb(false)
-		end
+		pwarnf("Affected rows: %i", d.AFFECTED_ROWS)
+		mysql_rollback(db)
+		return false
+	end
 
-		pluto.itemids[itemid] = nil
+	pluto.itemids[itemid] = nil
 
-		cb(true)
-	end)
+	return true
 end
 
 function pluto.inv.addexperience(id, exp) -- should not need cb :shrug:
@@ -410,8 +381,7 @@ function pluto.inv.addexperience(id, exp) -- should not need cb :shrug:
 		end
 	end
 
-	pluto.db.query("UPDATE pluto_items SET exp = exp + ? WHERE idx = ?", {exp, id}, function(e, q)
-	end)
+	pluto.db.simplequery("UPDATE pluto_items SET exp = exp + ? WHERE idx = ?", {exp, id})
 end
 
 function pluto.inv.addplayerexperience(ply, exp)
@@ -426,34 +396,33 @@ function pluto.inv.addplayerexperience(ply, exp)
 		end
 	end
 
-	pluto.db.query("UPDATE pluto_player_info SET experience = experience + ? WHERE steamid = ?", {exp, stmd}, function(e, q)
-	end)
+	pluto.db.simplequery("UPDATE pluto_player_info SET experience = experience + ? WHERE steamid = ?", {exp, stmd})
 end
 
-function pluto.inv.lockitem(steamid, itemid, locked, cb, nostart)
+function pluto.inv.lockitem(steamid, itemid, locked, cb)
 	steamid = pluto.db.steamid64(steamid)
 
-	return pluto.db.query("UPDATE pluto_items SET locked = ? WHERE idx = ? and locked = ?", {locked, itemid, not locked}, function(err, q)
-		if (err) then
+	return pluto.db.simplequery("UPDATE pluto_items SET locked = ? WHERE idx = ? and locked = ?", {locked, itemid, not locked}, function(d, err)
+		if (not d) then
 			if (IsValid(cl)) then
 				pluto.inv.sendfullupdate(cl)
 			end
 			return cb(false)
 		end
 
-		if (q:affectedRows() ~= 1) then
+		if (d.AFFECTED_ROWS ~= 1) then
 			if (IsValid(cl)) then
 				pluto.inv.sendfullupdate(cl)
 			end
 
-			pwarnf("Affected rows: %i", q:affectedRows())
+			pwarnf("Affected rows: %i", q.AFFECTED_ROWS)
 			return cb(false)
 		end
 
 		pluto.itemids[itemid].Locked = locked
 
 		cb(true)
-	end, nil, nostart)
+	end)
 end
 
 function pluto.inv.roll(crate)

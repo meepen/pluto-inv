@@ -7,24 +7,19 @@ local currency_per_round = 3
 local pluto_currency_spawnrate = CreateConVar("pluto_currency_spawnrate", "0.9")
 
 local function UpdateAndDecrement(ply, item, currency)
-	local transact = pluto.db.transact()
-	pluto.weapons.update(item, function(id)
-		if (not IsValid(ply)) then
-			return
+	pluto.db.transact(function(db)
+		pluto.weapons.update(db, item)
+		if (pluto.inv.addcurrency(db, ply, currency, -1)) then
+			mysql_commit(db)
+		else
+			mysql_rollback(db)
 		end
-
-		if (not id) then
-			ply:ChatPrint("Error modifying gun!")
-		end
-	end, transact)
+	end)
 
 	pluto.inv.message(ply)
 		:write("item", item)
 		:send()
 
-	pluto.inv.addcurrency(ply, currency, -1, nil, transact)
-
-	transact:Run()
 end
 
 local crate1_fill = 750 / (5 + 6 + 9)
@@ -265,13 +260,16 @@ for name, values in pairs {
 			local new_item = item:Duplicate()
 			pluto.weapons.addmod(new_item, "mirror")
 
-			local transact = pluto.db.transact()
+			pluto.db.transact(function(db)
+				if (not pluto.inv.addcurrency(db, ply, "mirror", -1)) then
+					mysql_rollback(db)
+					return
+				end
 
-			pluto.inv.savebufferitem(ply, new_item, transact)
+				pluto.inv.savebufferitem(db, ply, new_item)
 
-			pluto.inv.addcurrency(ply, "mirror", -1, nil, transact)
-
-			transact:Run()
+				mysql_commit(db)
+			end)
 		end,
 		Types = "Weapon",
 	},
@@ -287,28 +285,22 @@ for name, values in pairs {
 	coin = {
 		Shares = 0.3,
 		Use = function(ply)
-			local trans = pluto.inv.addtabs(ply, {"normal"}, function(tab)
-				if (not tab or not IsValid(ply)) then
+			pluto.db.transact(function(db)
+				if (not pluto.inv.addcurrency(db, ply, "coin", -1)) then
+					mysql_rollback(db)
 					return
 				end
 
-				tab = tab[1]
+				local tab = pluto.inv.addtabs(db, ply, {"normal"})[1]
 
-				if (not tab) then
-					return
-				end
-
+				mysql_commit(db)
 				tab.Items = {}
-
 				pluto.inv.invs[ply][tab.RowID] = tab
+
 				pluto.inv.message(ply)
 					:write("tab", tab)
 					:send()
 			end)
-
-			pluto.inv.addcurrency(ply, "coin", -1, function() end, trans)
-
-			trans:Run()
 		end,
 		Types = "None",
 	},
@@ -950,18 +942,16 @@ function pluto.inv.readrename(cl)
 		:write("item", gun)
 		:send()
 	
-	local transact = pluto.db.transact()
-
-	transact:AddQuery("UPDATE pluto_items set nick = ? WHERE idx = ? and nick is NULL", {name, id}, function(err, q)
-		if (err) then
-			pluto.inv.sendfullupdate(cl)
+	pluto.db.transact(function(db)
+		if (not pluto.inv.addcurrency(db, cl, "quill", -1)) then
+			mysql_rollback(db)
 			return
 		end
+
+		mysql_stmt_run(db, "UPDATE pluto_items set nick = ? WHERE idx = ? and nick is NULL", name, id)
+
+		mysql_commit(db)
 	end)
-
-	pluto.inv.addcurrency(cl, "quill", -1, nil, transact)
-
-	transact:Run()
 end
 
 function pluto.inv.readunname(cl)
@@ -983,18 +973,15 @@ function pluto.inv.readunname(cl)
 		:write("item", gun)
 		:send()
 	
-	local transact = pluto.db.transact()
-
-	transact:AddQuery("UPDATE pluto_items set nick = NULL WHERE idx = ?", {id}, function(err, q)
-		if (err) then
-			pluto.inv.sendfullupdate(cl)
+	pluto.db.transact(function(db)
+		if (not pluto.inv.addcurrency(db, cl, "hand", -100)) then
+			mysql_rollback(db)
 			return
 		end
+
+		mysql_stmt_run(db, "UPDATE pluto_items set nick = NULL WHERE idx = ?", id)
+		mysql_commit(db)
 	end)
-
-	pluto.inv.addcurrency(cl, "hand", -100, nil, transact)
-
-	transact:Run()
 end
 
 

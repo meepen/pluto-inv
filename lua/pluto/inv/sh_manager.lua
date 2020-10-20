@@ -143,6 +143,19 @@ function ITEM:GetPrintName()
 	return self:GetDefaultName()
 end
 
+function ITEM:GetTab()
+	if (SERVER) then
+		local owner = player.GetBySteamID64(self.Owner)
+		if (not IsValid(owner)) then
+			return
+		end
+
+		local tab = pluto.inv.invs[owner][self.TabID]
+
+		return tab
+	end
+end
+
 function ITEM:ShouldPreventChange()
 	if (self.Type ~= "Weapon") then
 		return true

@@ -59,6 +59,7 @@ end
 
 local queries = {}
 
+error "old code"
 local transact = pluto.db.transact()
 local function query(str, t)
 	transact:AddQuery(str, t)

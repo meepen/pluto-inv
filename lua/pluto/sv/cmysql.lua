@@ -6,19 +6,19 @@
 include "promise.lua"
 require "gluamysql"
 
-local env = setmetatable({}, {__index = getfenv(0)})
+local env = getfenv(0)
 
 local function handle_returns(success, ...)
 	if (not success) then
-		error(...)
+		return nil, ...
 	end
 
 	return ...
 end
 
-local function handle_resume(success, err)
+local function handle_resume(co, success, err)
 	if (not success) then
-		print("ERROR IN RESUME", err)
+		pwarnf("error: %s\n%s", err, debug.traceback(co))
 	end
 end
 
@@ -27,10 +27,12 @@ local function wait_promise(promise)
 
 	promise
 		:next(function(...)
-			handle_resume(coroutine.resume(co, true, ...))
+			handle_resume(co, coroutine.resume(co, true, ...))
 		end)
 		:catch(function(...)
-			handle_resume(coroutine.resume(co, false, ...))
+			handle_resume(co, coroutine.resume(co, false, ...))
+			print "error?"
+			print(promise.trace)
 		end)
 
 	return handle_returns(coroutine.yield())
@@ -68,14 +70,16 @@ function env.mysql_stmt_execute(stmt, ...)
 	return wait_promise(stmt:execute(...))
 end
 
+function env.mysql_stmt_run(db, query, ...)
+	return wait_promise(mysql_stmt_prepare(db, query):execute(...))
+end
+
 -- entry point
 
-function cmysql(func, final)
-	setfenv(func, env)
-	handle_resume(coroutine.resume(coroutine.create(function()
-		func()
-		if (final) then
-			final()
-		end
-	end)))
+function cmysql(func)
+	handle_resume(nil, coroutine.resume(coroutine.create(func)))
+end
+
+function env.mysql_cmysql()
+	assert(coroutine.running() ~= nil, "not running in coroutine")
 end

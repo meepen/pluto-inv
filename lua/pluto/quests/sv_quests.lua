@@ -52,7 +52,9 @@ pluto.quests.rewardhandlers = {
             local cur = self.Currency and pluto.currency.byname[self.Currency] or pluto.currency.random()
             local amount = self.Amount or 1
 
-            pluto.inv.addcurrency(data.Player, self.Currency, amount)
+			pluto.db.instance(function(db)
+				pluto.inv.addcurrency(db, data.Player, self.Currency, amount)
+			end)
 
             data.Player:ChatPrint(white_text, "You have received ", amount, " ", cur, amount == 1 and "" or "s", white_text, " for completing ", data.QUEST.Color, data.QUEST.Name, white_text, "!")
 		end,
@@ -382,34 +384,26 @@ function QUEST:UpdateProgress(amount)
 		return
 	end
 
-	self.ProgressLeft = math.max(0, self.ProgressLeft - amount)
-	local transact = pluto.db.transact()
-
-	transact:AddQuery(
-		"UPDATE pluto_quests SET progress_needed = GREATEST(0, progress_needed - ?) WHERE progress_needed > 0 AND idx = ?",
-		{
-			amount,
-			self.RowID
-		},
-		function(err, q)
+	pluto.db.instance(function(db)
+		local succ = mysql_stmt_run(db, "UPDATE pluto_quests SET progress_needed = GREATEST(0, progress_needed - ?) WHERE progress_needed > 0 AND idx = ?", amount, self.RowID)
+		if (not succ) then
+			return
 		end
-	)
+		self.ProgressLeft = math.max(0, self.ProgressLeft - amount)
 
-	transact:AddQuery("SELECT progress_needed FROM pluto_quests WHERE ROW_COUNT() = 1 AND progress_needed = 0 AND idx = ?", {self.RowID}, function(err, q)
-		if (q:getData()[1]) then
+		dat = mysql_stmt_run(db, "SELECT progress_needed FROM pluto_quests WHERE ROW_COUNT() = 1 AND progress_needed = 0 AND idx = ?", self.RowID)
+		if (dat[1]) then
 			self:Complete()
 		end
+
+		pluto.inv.message(self.Player)
+			:write("quest", self)
+			:send()
 	end)
-
-	pluto.inv.message(self.Player)
-		:write("quest", self)
-		:send()
-
-	transact:Run()
 end
 
 function QUEST:Complete()
-	pluto.db.query("UPDATE pluto_quests SET expiry_time = LEAST(expiry_time, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP)) WHERE idx = ?", {self.TYPE.Cooldown, self.RowID}, function(err, q)
+	pluto.db.simplequery("UPDATE pluto_quests SET expiry_time = LEAST(expiry_time, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP)) WHERE idx = ?", {self.TYPE.Cooldown, self.RowID}, function(d, err)
 		if (self.QUEST.Reward) then
 			self.QUEST:Reward(self)
 		elseif (self.Reward) then
@@ -479,7 +473,15 @@ function pluto.quests.oftype(type, ignore)
 	return available
 end
 
-function pluto.quests.give(ply, type, new, transact)
+function pluto.quests.give(ply, type, new, db)
+	if (not db) then
+		pluto.db.instance(function(db)
+			pluto.quests.give(ply, type, new, db)
+		end)
+		return
+	end
+	mysql_cmysql()
+
 	local type_data = pluto.quests.types[type]
 	local progress_needed = new:GetProgressNeeded(type)
 	local seed = math.random()
@@ -492,48 +494,48 @@ function pluto.quests.give(ply, type, new, transact)
 		type_quests = quests[type_data.Name]
 	end
 
-	pluto.db.transact_or_query(adder,
+	local dat, err = mysql_stmt_run(
+		db,
 		"INSERT INTO pluto_quests (steamid, quest_id, type, progress_needed, total_progress, expiry_time, rand) VALUES (?, ?, ?, ?, ?, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP), ?)",
-		{
-			ply:SteamID64(),
-			new.ID,
-			type,
-			progress_needed,
-			progress_needed,
-			type_data.Time,
-			seed,
-		},
-		function(err, q)
-			local quest = setmetatable({
-				RowID = q:lastInsert(),
-				QuestID = new.ID,
-				ProgressLeft = progress_needed,
-				TotalProgress = progress_needed,
-				EndTime = os.time() + type_data.Time,
-				Seed = seed,
-				Player = ply,
-				Type = type,
-				QUEST = new,
-				TYPE = type_data,
-			}, pluto.quests.quest_mt)
-
-			quests.byid[quest.RowID] = quest
-
-			table.insert(type_quests, quest)
-		end
+		ply:SteamID64(),
+		new.ID,
+		type,
+		progress_needed,
+		progress_needed,
+		type_data.Time,
+		seed
 	)
+	if (not dat) then
+		pwarnf("Couldn't give quest!: %s", err)
+		return
+	end
+
+	local quest = setmetatable({
+		RowID = dat.LAST_INSERT_ID,
+		QuestID = new.ID,
+		ProgressLeft = progress_needed,
+		TotalProgress = progress_needed,
+		EndTime = os.time() + type_data.Time,
+		Seed = seed,
+		Player = ply,
+		Type = type,
+		QUEST = new,
+		TYPE = type_data,
+	}, pluto.quests.quest_mt)
+
+	quests.byid[quest.RowID] = quest
+
+	table.insert(type_quests, quest)
 end
 
 function pluto.quests.init_nocache(ply, cb)
 	print("loading - no cache", ply)
 	local sid = pluto.db.steamid64(ply)
 
-	local transact = pluto.db.transact()
+	pluto.db.transact(function(db)
+		mysql_stmt_run(db, "DELETE FROM pluto_quests WHERE steamid = ? AND expiry_time < CURRENT_TIMESTAMP", sid)
+		local dat = mysql_stmt_run(db, "SELECT idx, quest_id, type, progress_needed, total_progress, TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, expiry_time) as expire_diff, rand as seed FROM pluto_quests WHERE steamid = ?", sid)
 
-	transact:AddQuery("DELETE FROM pluto_quests WHERE steamid = ? AND expiry_time < CURRENT_TIMESTAMP", {sid}, function(err, q)
-	end)
-
-	transact:AddQuery("SELECT idx, quest_id, type, progress_needed, total_progress, TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, expiry_time) as expire_diff, rand as seed FROM pluto_quests WHERE steamid = ?", {sid}, function(err, q)
 		local quests = pluto.quests.byperson[ply] or {
 			byid = {},
 		}
@@ -541,7 +543,7 @@ function pluto.quests.init_nocache(ply, cb)
 
 		local have = {}
 
-		for _, data in pairs(q:getData() or {}) do
+		for _, data in ipairs(dat) do
 			local quest_type = pluto.quests.types[data.type]
 			if (not quest_type) then
 				pwarnf("Unknown quest type %s for %s", tostring(data.type), sid)
@@ -581,7 +583,6 @@ function pluto.quests.init_nocache(ply, cb)
 			have[data.quest_id] = true
 		end
 
-		local adder = pluto.db.transact()
 		local needs_run = false
 
 		for type, type_data in pairs(pluto.quests.types) do
@@ -606,17 +607,14 @@ function pluto.quests.init_nocache(ply, cb)
 
 				table.remove(oftype, 1)
 				
-				pluto.quests.give(ply, type, new, adder)
+				pluto.quests.give(ply, type, new, db)
 
 				needs_run = true
 			end
 		end
 
 		if (needs_run) then
-			adder:AddCallback(function()
-				pluto.quests.init_nocache(ply, cb)
-			end)
-			adder:Run()
+			mysql_commit(db)
 		else
 			for type, quests in pairs(quests) do
 				for _, quest in pairs(quests) do
@@ -626,11 +624,10 @@ function pluto.quests.init_nocache(ply, cb)
 					end)
 				end
 			end
+			mysql_rollback(db)
 			cb(quests)
 		end
 	end)
-
-	transact:Run()
 end
 
 function pluto.quests.init(ply, _cb)
@@ -750,8 +747,8 @@ function pluto.quests.reset(ply)
 		end
 	end
 
-	pluto.db.query("DELETE FROM pluto_quests WHERE steamid = ?", {pluto.db.steamid64(ply)}, function(err)
-		if (err or not IsValid(ply)) then
+	pluto.db.simplequery("DELETE FROM pluto_quests WHERE steamid = ?", {pluto.db.steamid64(ply)}, function(dat)
+		if (not dat or not IsValid(ply)) then
 			return
 		end
 

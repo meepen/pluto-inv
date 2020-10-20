@@ -9,39 +9,20 @@ local NitroRewards = {
 			month = 1,
 			min = 0,
 		},
-		Reward = function(ply)
-			local transact = pluto.inv.generatebufferweapon(ply, "unique", "weapon_noise_nitro")
-			transact:AddCallback(function(e)
-				if (e) then
+		Reward = function(db, ply)
+			mysql_cmysql()
+
+			pluto.inv.generatebufferweapon(db, ply, "unique", "weapon_noise_nitro")
+			ttt.chat(color_nitro, ply:Nick(), white_text, " has received the original ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Noise Maker!")
+			hook.Add("PlayerSpawn", "confetti_" .. ply:SteamID64(), function(p)
+				if (p ~= ply) then
 					return
 				end
-				ttt.chat(color_nitro, ply:Nick(), white_text, " has received the original ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Noise Maker!")
-				hook.Add("PlayerSpawn", "confetti_" .. ply:SteamID64(), function(p)
-					if (p ~= ply) then
-						return
-					end
 
-					hook.Remove("PlayerSpawn", "confetti_" .. ply:SteamID64())
-					local ang = ply:EyeAngles()
-					ang.p = 0
-
-			--[[
-					for i = 0, 360, 30 do
-						ang:RotateAroundAxis(ang:Up(), 30)
-			
-						local data = EffectData()
-						data:SetStart(ply:GetShootPos())
-						data:SetOrigin(data:GetStart() + ang:Forward())
-						data:SetMagnitude(1)
-						data:SetRadius(50)
-						data:SetFlags(0)
-						util.Effect("pluto_confetti", data, true, true)
-					end]]
-					sound.Play("pluto_confetti", ply:GetPos())
-				end)
+				hook.Remove("PlayerSpawn", "confetti_" .. ply:SteamID64())
+				sound.Play("pluto_confetti", ply:GetPos())
 			end)
-
-			return transact
+			mysql_commit(db)
 		end
 	},
 	{
@@ -52,40 +33,21 @@ local NitroRewards = {
 			month = 2,
 			min = 0,
 		},
-		Reward = function(ply)
-			local transact = pluto.inv.generatebufferweapon(ply, "unique", "weapon_ttt_confetti_grenade")
-			transact:AddCallback(function(err)
-				if (err) then
+		Reward = function(db, ply)
+			mysql_cmysql()
+
+			pluto.inv.generatebufferweapon(db, ply, "unique", "weapon_ttt_confetti_grenade")
+
+			ttt.chat(color_nitro, ply:Nick(), white_text, " has received the second ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Confetti Grenade!")
+			hook.Add("PlayerSpawn", "nade_" .. ply:SteamID64(), function(p)
+				if (p ~= ply) then
 					return
 				end
 
-				ttt.chat(color_nitro, ply:Nick(), white_text, " has received the second ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Confetti Grenade!")
-				hook.Add("PlayerSpawn", "nade_" .. ply:SteamID64(), function(p)
-					if (p ~= ply) then
-						return
-					end
-
-					hook.Remove("PlayerSpawn", "nade_" .. ply:SteamID64())
-					local ang = ply:EyeAngles()
-					ang.p = 0
-			--[[
-					for i = 0, 360, 30 do
-						ang:RotateAroundAxis(ang:Up(), 30)
-			
-						local data = EffectData()
-						data:SetStart(ply:GetShootPos())
-						data:SetOrigin(data:GetStart() + ang:Forward())
-						data:SetMagnitude(1)
-						data:SetRadius(50)
-						data:SetFlags(0)
-						util.Effect("pluto_confetti", data, true, true)
-					end]]
-
-					sound.Play("pluto_confetti", ply:GetPos())
-				end)
+				hook.Remove("PlayerSpawn", "nade_" .. ply:SteamID64())
+				sound.Play("pluto_confetti", ply:GetPos())
 			end)
-
-			return transact
+			mysql_commit(db)
 		end
 	},
 	{
@@ -96,40 +58,21 @@ local NitroRewards = {
 			month = 2,
 			min = 0,
 		},
-		Reward = function(ply)
-			local transact = pluto.inv.generatebufferweapon(ply, "unique", "weapon_ttt_golden_pan")
-			transact:AddCallback(function(err)
-				if (err) then
+		Reward = function(db, ply)
+			mysql_cmysql()
+
+			pluto.inv.generatebufferweapon(db, ply, "unique", "weapon_ttt_golden_pan")
+
+			ttt.chat(color_nitro, ply:Nick(), white_text, " has received the third ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Golden Pan!")
+			hook.Add("PlayerSpawn", "pan_" .. ply:SteamID64(), function(p)
+				if (p ~= ply) then
 					return
 				end
 
-				ttt.chat(color_nitro, ply:Nick(), white_text, " has received the third ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Golden Pan!")
-				hook.Add("PlayerSpawn", "pan_" .. ply:SteamID64(), function(p)
-					if (p ~= ply) then
-						return
-					end
-
-					hook.Remove("PlayerSpawn", "pan_" .. ply:SteamID64())
-					local ang = ply:EyeAngles()
-					ang.p = 0
-			--[[
-					for i = 0, 360, 30 do
-						ang:RotateAroundAxis(ang:Up(), 30)
-			
-						local data = EffectData()
-						data:SetStart(ply:GetShootPos())
-						data:SetOrigin(data:GetStart() + ang:Forward())
-						data:SetMagnitude(1)
-						data:SetRadius(50)
-						data:SetFlags(0)
-						util.Effect("pluto_confetti", data, true, true)
-					end]]
-
-					sound.Play("pluto_confetti", ply:GetPos())
-				end)
+				hook.Remove("PlayerSpawn", "pan_" .. ply:SteamID64())
+				sound.Play("pluto_confetti", ply:GetPos())
 			end)
-
-			return transact
+			mysql_commit(db)
 		end
 	},
 	{
@@ -140,40 +83,21 @@ local NitroRewards = {
 			month = 3,
 			min = 0,
 		},
-		Reward = function(ply)
-			local transact = pluto.inv.generatebuffermodel(ply, "spy")
-			transact:AddCallback(function(err)
-				if (err) then
+		Reward = function(db, ply)
+			mysql_cmysql()
+
+			pluto.inv.generatebuffermodel(db, ply, "spy")
+
+			ttt.chat(color_nitro, ply:Nick(), white_text, " has received the fourth ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Spy Model!")
+			hook.Add("PlayerSpawn", "spy_" .. ply:SteamID64(), function(p)
+				if (p ~= ply) then
 					return
 				end
 
-				ttt.chat(color_nitro, ply:Nick(), white_text, " has received the fourth ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Spy Model!")
-				hook.Add("PlayerSpawn", "spy_" .. ply:SteamID64(), function(p)
-					if (p ~= ply) then
-						return
-					end
-
-					hook.Remove("PlayerSpawn", "spy_" .. ply:SteamID64())
-					local ang = ply:EyeAngles()
-					ang.p = 0
-			--[[
-					for i = 0, 360, 30 do
-						ang:RotateAroundAxis(ang:Up(), 30)
-			
-						local data = EffectData()
-						data:SetStart(ply:GetShootPos())
-						data:SetOrigin(data:GetStart() + ang:Forward())
-						data:SetMagnitude(1)
-						data:SetRadius(50)
-						data:SetFlags(0)
-						util.Effect("pluto_confetti", data, true, true)
-					end]]
-
-					sound.Play("pluto_confetti", ply:GetPos())
-				end)
+				hook.Remove("PlayerSpawn", "spy_" .. ply:SteamID64())
+				sound.Play("pluto_confetti", ply:GetPos())
 			end)
-
-			return transact
+			mysql_commit(db)
 		end
 	},
 	{
@@ -184,40 +108,22 @@ local NitroRewards = {
 			month = 5,
 			min = 0,
 		},
-		Reward = function(ply)
-			local transact = pluto.inv.generatebufferweapon(ply, "unique", "weapon_nitro_rope")
-			transact:AddCallback(function(err)
-				if (err) then
+		Reward = function(db, ply)
+			mysql_cmysql()
+
+			pluto.inv.generatebufferweapon(db, ply, "unique", "weapon_nitro_rope")
+
+			ttt.chat(color_nitro, ply:Nick(), white_text, " has received the fifth ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Nitro Web!")
+			hook.Add("PlayerSpawn", "web_" .. ply:SteamID64(), function(p)
+				if (p ~= ply) then
 					return
 				end
 
-				ttt.chat(color_nitro, ply:Nick(), white_text, " has received the fifth ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Nitro Web!")
-				hook.Add("PlayerSpawn", "web_" .. ply:SteamID64(), function(p)
-					if (p ~= ply) then
-						return
-					end
+				hook.Remove("PlayerSpawn", "web_" .. ply:SteamID64())
 
-					hook.Remove("PlayerSpawn", "web_" .. ply:SteamID64())
-					local ang = ply:EyeAngles()
-					ang.p = 0
-			--[[
-					for i = 0, 360, 30 do
-						ang:RotateAroundAxis(ang:Up(), 30)
-			
-						local data = EffectData()
-						data:SetStart(ply:GetShootPos())
-						data:SetOrigin(data:GetStart() + ang:Forward())
-						data:SetMagnitude(1)
-						data:SetRadius(50)
-						data:SetFlags(0)
-						util.Effect("pluto_confetti", data, true, true)
-					end]]
-
-					sound.Play("pluto_confetti", ply:GetPos())
-				end)
+				sound.Play("pluto_confetti", ply:GetPos())
 			end)
-
-			return transact
+			mysql_commit(db)
 		end
 	},
 }
@@ -271,50 +177,47 @@ hook.Add("PlutoInventoryLoad", "pluto_admin", function(p)
 					continue
 				end
 
-				local transact = reward.Reward(p)
-
-				for _, ply in pairs(player.GetAll()) do
-					pluto.inv.message(ply)
-						:write("nitro", reward_num, p)
-						:send()
-				end
-				
-				pluto.db.transact_or_query(transact, "INSERT INTO pluto_nitro_rewards (steamid, reward_num, assoc_discordid) VALUES(?, ?, ?)", {sid, reward_num, boost.discordid}, function(err, q)
-					if (err) then
-						pwarnf("Error inserting nitro reward data for %s", sid)
+				pluto.db.transact(function(db)
+					reward.Reward(db, p)
+					local succ = mysql_stmt_run("INSERT INTO pluto_nitro_rewards (steamid, reward_num, assoc_discordid) VALUES(?, ?, ?)", sid, reward_num, boost.discordid)
+					if (not succ) then
+						mysql_rollback(db)
+						return
+					end
+					mysql_commit(db)
+					for _, ply in pairs(player.GetAll()) do
+						pluto.inv.message(ply)
+							:write("nitro", reward_num, p)
+							:send()
 					end
 				end)
-
-				if (transact) then
-					transact:Run()
-				end
 			end
 		end
 
 		-- finished!
 	end
 
-	pluto.db.query("SELECT CAST(discordid as CHAR) as discordid, UNIX_TIMESTAMP(boosting_since) as boosting_since, UNIX_TIMESTAMP(first_boost) as first_boost from styx.nitro N \
+	pluto.db.simplequery("SELECT CAST(discordid as CHAR) as discordid, UNIX_TIMESTAMP(boosting_since) as boosting_since, UNIX_TIMESTAMP(first_boost) as first_boost from styx.nitro N \
 		inner join forums.discord_users D on N.discordid = D.snowflake \
 		inner join forums.core_members C on C.member_id = D.forum_id \
 			where C.steamid = ?", {sid}, 
-		function(err, q)
-			if (err) then
+		function(dat, err)
+			if (not dat) then
 				try_finish(false, nil)
 				return
 			end
 
-			try_finish(q:getData()[1] or false, nil)
+			try_finish(dat[1] or false, nil)
 		end
 	)
 
-	pluto.db.query("SELECT reward_num, assoc_discordid FROM pluto_nitro_rewards WHERE steamid = ?", {sid}, function(err, q)
-		if (err) then
+	pluto.db.simplequery("SELECT reward_num, assoc_discordid FROM pluto_nitro_rewards WHERE steamid = ?", {sid}, function(dat, err)
+		if (not dat) then
 			try_finish(nil, false)
 			return
 		end
 
-		try_finish(nil, q:getData() or false)
+		try_finish(nil, dat)
 	end)
 end)
 
