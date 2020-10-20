@@ -5,6 +5,10 @@ SWEP.PrintName = "Golden Pan"
 SWEP.WorldModel = "models/weapons/quentindylanp/c_crowbar_nohands.mdl"
 SWEP.ViewModel  = "models/weapons/quentindylanp/c_crowbar_nohands.mdl"
 
+SWEP.Primary.Damage = 25
+SWEP.Primary.Range = 75
+SWEP.Primary.Extents = Vector(1.1, 1.1, 1.1)
+
 SWEP.PlutoModel = "models/weapons/c_models/c_frying_pan/c_frying_pan.mdl"
 local mat = "models/player/shared/gold_player"
 SWEP.PlutoMaterial = mat
