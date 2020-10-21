@@ -192,9 +192,11 @@ function pluto.inv.switchtab(db, tabid1, tabindex1, tabid2, tabindex2)
 			mysql_rollback(db)
 			return false
 		end
+		
+		return true, 1
 	end
 	
-	return true
+	return true, 2
 end
 
 function pluto.inv.setitemplacement(db, ply, item, tabid, tabindex)

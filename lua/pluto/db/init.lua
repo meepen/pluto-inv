@@ -29,7 +29,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				original_owner BIGINT UNSIGNED NOT NULL,
 
 				FOREIGN KEY(tab_id) REFERENCES pluto_tabs(idx) ON DELETE CASCADE,
-				PRIMARY KEY(tab_id, tab_idx),
+				UNIQUE INDEX (tab_id, tab_idx),
 				INDEX USING HASH(tab_id),
 
 				INDEX USING HASH(idx)

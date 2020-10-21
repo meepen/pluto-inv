@@ -175,6 +175,13 @@ function pluto.trades.accept(ply)
 
 	pluto.trades.cancel(ply)
 
+	local function reloadall(txt)
+		pprintf("Trade failed: %s", txt)
+		for _, ply in pairs(trade.Players) do
+			pluto.inv.reloadfor(ply)
+		end
+	end
+
 	pluto.db.transact(function(db)
 		-- currency exchange
 
@@ -183,10 +190,12 @@ function pluto.trades.accept(ply)
 			for cur, amt in pairs(data) do
 				if (not pluto.inv.addcurrency(db, ply, cur, -amt)) then
 					mysql_rollback(db)
+					reloadall("currency 1: " .. cur .. " x" .. amt)
 					return
 				end
 				if (not pluto.inv.addcurrency(db, otherply, cur, amt)) then
 					mysql_rollback(db)
+					reloadall("currency 2: " .. cur .. " x" .. amt)
 					return
 				end
 			end
@@ -223,6 +232,7 @@ function pluto.trades.accept(ply)
 				complete[otheritem], complete[item] = true, true
 				local succ = pluto.inv.switchtab(db, item.TabID, item.TabIndex, otheritem.TabID, otheritem.TabIndex)
 				if (not succ) then
+					reloadall "switch tab 1"
 					return
 				end
 				break
@@ -230,6 +240,10 @@ function pluto.trades.accept(ply)
 		end
 
 		-- NOW we swap any EMPTY tab place things killme
+		local done = setmetatable({}, {__index = function(self, k)
+			self[k] = {}
+			return self[k]
+		end})
 
 		for ply, items in pairs(trade.Items) do
 			local otherply = trade.Players[trade.Players[1] == ply and 2 or 1]
@@ -249,6 +263,9 @@ function pluto.trades.accept(ply)
 					end
 
 					for tab2slot = 1, tab2_type.size do
+						if (done[tab2.RowID][tab2slot]) then
+							continue
+						end
 						if (tab2.Items[tab2slot]) then
 							continue
 						end
@@ -265,10 +282,15 @@ function pluto.trades.accept(ply)
 							return
 						end
 
-						if (swapped ~= 1) then
-							mysql_rollback(db)
+						if (not succ or swapped ~= 1) then
+							if (succ) then
+								mysql_rollback(db)
+							end
+							print(item.TabID, item.TabIndex, tab2.RowID, tab2slot)
+							reloadall("swapped: " .. swapped)
 							return
 						end
+						done[tab2.RowID][tab2slot] = true
 
 						did_good = true
 						break
@@ -280,6 +302,7 @@ function pluto.trades.accept(ply)
 
 				if (not did_good) then
 					mysql_rollback(db)
+					reloadall("no good")
 					return
 				end
 
