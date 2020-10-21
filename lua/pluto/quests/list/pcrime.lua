@@ -7,7 +7,6 @@ QUEST.RewardPool = "daily"
 function QUEST:Init(data)
 	local ragdolls = {}
 	data:Hook("PlayerRagdollCreated", function(data, ply, rag, atk)
-		print(ply, rag, atk)
 		if (atk == data.Player and atk:GetRoleTeam() ~= ply:GetRoleTeam()) then
 			ragdolls[rag] = true
 		end

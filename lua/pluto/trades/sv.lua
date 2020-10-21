@@ -181,7 +181,6 @@ function pluto.trades.accept(ply)
 		for ply, data in pairs(trade.Currency) do
 			local otherply = trade.Players[ply == trade.Players[1] and 2 or 1]
 			for cur, amt in pairs(data) do
-				print(ply, otherply, amt)
 				if (not pluto.inv.addcurrency(db, ply, cur, -amt)) then
 					mysql_rollback(db)
 					return

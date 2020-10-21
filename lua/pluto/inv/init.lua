@@ -165,19 +165,36 @@ function pluto.inv.switchtab(db, tabid1, tabindex1, tabid2, tabindex2)
 		affected = affected + q:affectedRows()
 	end
 
-	mysql_stmt_run(db, "SELECT 1 FROM pluto_items WHERE tab_id IN (?, ?) FOR UPDATE", tabid1, tabid2)
-	affected = affected + mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = 0 WHERE tab_id = ? AND tab_idx = ?", tabid1, tabid2, tabindex2).AFFECTED_ROWS
-	affected = affected + mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE tab_id = ? AND tab_idx = ?", tabid2, tabindex2, tabid1, tabindex1).AFFECTED_ROWS
-	affected = affected + mysql_stmt_run(db, "UPDATE pluto_items SET tab_idx = ? WHERE tab_id = ? AND tab_idx = 0", tabindex1, tabid1).AFFECTED_ROWS
+	--[[
+		
+		idx INT UNSIGNED NOT NULL AUTO_INCREMENT,
+		tier VARCHAR(16) NOT NULL,
+		class VARCHAR(32) NOT NULL,
+		nick VARCHAR(32) NULL,
+		special_name VARCHAR(32) NULL,
+		exp INT UNSIGNED NOT NULL DEFAULT 0,
 
-	if (affected ~= 3 and affected ~= 1) then
-		print "NO BUENO"
-		print(affected)
-		mysql_rollback(db)
-		return false
+		tab_id INT UNSIGNED NOT NULL,
+		tab_idx TINYINT UNSIGNED NOT NULL,
+
+		locked tinyint(1) NOT NULL DEFAULT 0,
+		untradeable tinyint(1) NOT NULL DEFAULT 0,
+
+		original_owner BIGINT UNSIGNED NOT NULL,
+	]]
+	local ret, err = mysql_stmt_run(db, [[
+		UPDATE pluto_items i, pluto_items i2 SET
+			i.tab_id = i2.tab_id, i2.tab_id = i.tab_id,
+			i.tab_idx = i2.tab_idx, i2.tab_idx = i.tab_idx
+		WHERE i.tab_id = ? and i.tab_idx = ? and i2.tab_id = ? and i2.tab_idx = ?
+	]], tabid1, tabindex1, tabid2, tabindex2)
+
+	print(ret, err)
+	if (ret) then
+		PrintTable(ret)
 	end
-
-	return true, affected == 1 and 1 or 2
+	mysql_rollback(db)
+	return false
 end
 
 function pluto.inv.setitemplacement(db, ply, item, tabid, tabindex)
@@ -322,6 +339,7 @@ function pluto.inv.retrieveitems(steamid, cb)
 				})
 			end
 
+			pprintf("Returned mods of %s", steamid)
 			cb(weapons)
 		end)
 	end)

@@ -35,6 +35,8 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				INDEX USING HASH(idx)
 			)
 		]])
+		-- ALTER TABLE pluto_items DROP PRIMARY KEY;
+		-- ALTER TABLE pluto_items ADD UNIQUE INDEX (tab_id, tab_idx);
 		mysql_query(db, [[
 			CREATE TABLE IF NOT EXISTS pluto_mods (
 				idx INT UNSIGNED NOT NULL AUTO_INCREMENT,

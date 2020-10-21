@@ -8,6 +8,12 @@ require "gluamysql"
 
 local env = getfenv(0)
 
+mysql.prepare_cache = setmetatable({}, {__mode = "k", __index = function(self, k)
+	local r = {}
+	self[k] = r
+	return r
+end})
+
 local function handle_returns(success, ...)
 	if (not success) then
 		return nil, ...
@@ -63,7 +69,19 @@ end
 -- statement library
 
 function env.mysql_stmt_prepare(db, query)
-	return wait_promise(db:prepare(query))
+
+	local cache = mysql.prepare_cache[db][query]
+	if (cache) then
+		return cache
+	end
+
+	local stmt, err = wait_promise(db:prepare(query))
+
+	if (stmt) then
+		mysql.prepare_cache[db][query] = stmt
+	end
+
+	return stmt, err
 end
 
 function env.mysql_stmt_execute(stmt, ...)
@@ -71,7 +89,11 @@ function env.mysql_stmt_execute(stmt, ...)
 end
 
 function env.mysql_stmt_run(db, query, ...)
-	return wait_promise(mysql_stmt_prepare(db, query):execute(...))
+	local stmt, err = mysql_stmt_prepare(db, query)
+	if (not stmt) then
+		return false, err
+	end
+	return wait_promise(stmt:execute(...))
 end
 
 -- entry point

@@ -322,6 +322,7 @@ function pluto.inv.init(ply, cb2)
 
 	local success = 0
 	local function TrySucceed(where)
+		print(ply, where, "success")
 		success = success + 1
 
 		if (not IsValid(ply)) then
@@ -334,6 +335,7 @@ function pluto.inv.init(ply, cb2)
 	end
 
 	local function InitTabs()
+		print(ply, tabs, items)
 		if (not tabs or not items) then
 			return
 		end
