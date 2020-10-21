@@ -38,7 +38,6 @@ function SWEP:Initialize()
 
 				return true
 			end)
-			print(tier)
 			item = pluto.weapons.generatetier(tier, self)
 			item.Type = "Weapon"
 			self.FloorWeapon = true
