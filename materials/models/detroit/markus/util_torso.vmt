@@ -1,0 +1,15 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/markus/util_torso"
+	"$bumpmap" "models/detroit/markus/util_torso_n"
+	"$nocull" 1
+
+	$phong "1"
+	$phongboost "0.02"
+	$phongexponent  "10"
+	$phongfresnelranges "[1 5 10]"
+
+
+
+	
+}

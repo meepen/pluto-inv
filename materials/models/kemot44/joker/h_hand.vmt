@@ -1,0 +1,10 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" 	"models\kemot44\Joker\H_Hand_D"
+	"$bumpmap" 	"models\kemot44\Joker\H_Hand_N"
+	
+	"$phong" "1"
+	"$phongexponent" "5"
+	"$phongboost" "0.75"
+	"$phongfresnelranges" "[0.1 0.4 0.6]"
+}

@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/detroit/markus/head"
+	"$bumpmap" "models/detroit/markus/head_n"
+	
+	$phong "1"
+	$phongboost "1"
+	//$phongexponent  "2"
+	$phongfresnelranges "[0.01 0.2 2]"
+	"$phongexponenttexture" "models/detroit/markus/head_exponent"	
+}

@@ -1,0 +1,12 @@
+VertexLitGeneric
+{
+	$basetexture "models/detroit/markus/eyecorner"
+	$bumpmap "models/detroit/markus/eyecorner_n"
+
+	$phong 1
+	$phongfresnelranges "[0.5 0.75 1]"
+	$phongexponent 10
+	$phongboost 0.2
+
+	$color2 "[0.60 0.60 0.60]"
+}

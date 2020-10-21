@@ -1,0 +1,17 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/markus/util_hat"
+	"$bumpmap" "models/detroit/markus/util_hat_n"
+	"$nocull" 1
+
+	$phong 1
+	$phongboost 0.51
+	$phongexponent  "1"
+	$phongfresnelranges "[1 5 10]"
+	$phongtint "[0.5 1 1]"
+	
+
+	$rimlight               1
+	$rimlightexponent       2
+	$rimlightboost          .2
+}

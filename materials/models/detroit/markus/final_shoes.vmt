@@ -1,0 +1,15 @@
+VertexLitGeneric
+{
+	$basetexture "models/detroit/markus/final_shoes"
+	$bumpmap "models/detroit/markus/final_shoes_n"
+	
+	
+	$nocull 1
+	
+		
+	$phong "1"
+	$phongboost "0.01"
+	$phongexponent  "6"
+	$phongfresnelranges "[10 5 0.5]"
+	
+}

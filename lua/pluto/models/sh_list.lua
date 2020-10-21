@@ -1063,6 +1063,155 @@ c "ror2_commando" {
 	SubDescription = "\nSuggested by Obfuscate on the March 2020 Forum Thread"
 }
 
+
+--halloween 2020
+
+c "mythra" {
+	Name = "Mythra",
+	Model = "models/kaesar/mythra/mythra.mdl",
+	Hands = "models/kaesar/mythra/c_arms_mythra.mdl",
+	Color = ColorRand(),
+	SubDescription = "Mythra"
+}
+
+c "houndmodel" {
+	Name = "Shadowscale Acolyte",
+	Model = "models/dizcordum/shadowscale_acolyte.mdl",
+	Hands = "models/dizcordum/shadowscale_acolyte_hands.mdl",
+	Color = ColorRand(),
+	SubDescription = "Shadowscale Acolyte"
+}
+
+c "ghostface" {
+	Name = "Ghostface",
+	Model = "models/player/screamplayermodel/scream/scream.mdl",
+	Hands = nil,
+	Color = ColorRand(),
+	SubDescription = "Ghostface"
+}
+
+c "scarecrow" {
+	Name = "Scarecrow",
+	Model = "models/dc/injustice2/pm_scarecrow.mdl",
+	Hands = nil,
+	Color = ColorRand(),
+	SubDescription = "Scarecrow"
+}
+
+c "darkwraith" {
+	Name = "Darkwraith",
+	Model = "models/dwdarksouls/models/darkwraith.mdl",
+	Hands = "models/dwdarksouls/models/darkwraithfp.mdl",
+	Color = ColorRand(),
+	SubDescription = "Darkwraith"
+}
+
+c "joker_2019" {
+	Name = "Joker 2019",
+	Model = "models/kemot44/Models/Joker_PM.mdl",
+	Hands = "models/kemot44/Models/Joker_cArm.mdl",
+	Color = ColorRand(),
+	SubDescription = "Joker 2019"
+}
+
+c "detr_connor" {
+	Name = "Detroit - Connor",
+	Model = "models/konnie/isa/detroit/connor.mdl",
+	Hands = "models/weapons/arms/v_arms_connor.mdl",
+	Color = ColorRand(),
+	SubDescription = "Detroit - Connor"
+}
+
+c "death_paint" {
+	Name = "Death (Painted)",
+	Model = "models/dawson/death_a_grim_bundle_pms/death_painted/death_painted.mdl",
+	Hands = "models/dawson/death_a_grim_bundle_pms/death_painted/death_painted_arms.mdl",
+	Color = ColorRand(),
+	SubDescription = "Death (Painted)"
+}
+
+c "ghost_rider" {
+	Name = "Ghost Rider",
+	Model = "models/player/ghostrider/ghostrider.mdl",
+	Hands = "models/weapons/arms/ghostrider_arms.mdl",
+	Color = ColorRand(),
+	SubDescription = "Ghost Rider"
+}
+
+c "death_class" {
+	Name = "Death (Classic)",
+	Model = "models/dawson/death_a_grim_bundle_pms/death_classic/death_classic.mdl",
+	Hands = "models/dawson/death_a_grim_bundle_pms/death_classic/death_classic_arms.mdl",
+	Color = ColorRand(),
+	SubDescription = "Death (Classic)"
+}
+
+c "markus_3" {
+	Name = "Detroit - Markus 3",
+	Model = "models/konnie/isa/detroit/markus_3.mdl",
+	Hands = "models/weapons/arms/v_arms_markus_3.mdl",
+	Color = ColorRand(),
+	SubDescription = "Detroit - Markus 3"
+}
+
+c "markus_2" {
+	Name = "Detroit - Markus 2",
+	Model = "models/konnie/isa/detroit/markus_2.mdl",
+	Hands = "models/weapons/arms/v_arms_markus_2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Detroit - Markus 2"
+}
+
+c "frogshit" {
+	Name = "Halloween Miku",
+	Model = "models/carrot/vocaloid/halloween_miku.mdl",
+	Hands = "models/carrot/vocaloid/c_arms/halloween_miku.mdl",
+	Color = ColorRand(),
+	SubDescription = "Halloween Miku"
+}
+
+c "death" {
+	Name = "Death",
+	Model = "models/dawson/death_a_grim_bundle_pms/death/death.mdl",
+	Hands = "models/dawson/death_a_grim_bundle_pms/death/death_arms.mdl",
+	Color = ColorRand(),
+	SubDescription = "Death"
+}
+
+c "savini_jason" {
+	Name = "Savini Jason",
+	Model = "models/models/konnie/savini/savini.mdl",
+	Hands = "models/weapons/arms/v_arms_savini.mdl",
+	Color = ColorRand(),
+	SubDescription = "Savini Jason"
+}
+
+c "terminator" {
+	Name = "M11 Terminator",
+	Model = "models/kemot44/Models/MK11/characters/Terminator_PM.mdl",
+	Hands = "models/kemot44/Models/MK11/characters/Terminator_cArm.mdl",
+	Color = ColorRand(),
+	SubDescription = "M11 Terminator"
+}
+
+c "markus_1" {
+	Name = "Detroit - Markus 1",
+	Model = "models/konnie/isa/detroit/markus_1.mdl",
+	Hands = "models/weapons/arms/v_arms_markus_1.mdl",
+	Color = ColorRand(),
+	SubDescription = "Detroit - Markus 1"
+}
+
+c "husk" {
+	Name = "Husk",
+	Model = "models/player/husk/slow.mdl",
+	Hands = nil,
+	Color = ColorRand(),
+	SubDescription = "Husk"
+}
+
+
+
 function pluto.updatemodel(ent, item)
 	if (not item or not item.Model) then
 		return

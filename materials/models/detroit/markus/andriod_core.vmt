@@ -1,0 +1,14 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/markus/android_core"
+	"$selfillum" 1
+
+		"$surfaceprop" "Default"
+	"Proxies"
+{
+	"AnimatedTexture"
+{
+	"animatedTextureVar" "$basetexture"
+	"animatedTextureFrameNumVar" "$frame"
+	"animatedTextureFrameRate" "3"
+}

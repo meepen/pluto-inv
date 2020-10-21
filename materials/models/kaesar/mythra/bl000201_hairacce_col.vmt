@@ -1,0 +1,17 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/kaesar/mythra/BL000201_HAIRACCE_COL"
+	"$bumpmap" "models/kaesar/mythra/normal"
+
+	"$lightwarptexture" "models/kaesar/mythra/lightwarptexture"
+
+	"$phong" "1"
+	"$phongboost"	"24"
+	"$phongalbedotint" "1"
+	"$phongexponenttexture" "models/kaesar/mythra/phong_exp"
+	"$phongfresnelranges"	"[0 0 1]"
+
+	"$rimlight"               "1"
+	"$rimlightexponent"       "3"
+	"$rimlightboost"          "4"
+}

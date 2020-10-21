@@ -1,0 +1,42 @@
+"VertexLitGeneric"				
+{
+	$baseTexture			"models\kemot44\MK11\Terminator\Eyeball_Da2"
+	$bumpmap    			"models\kemot44\MK11\Terminator\Eyeball_N"
+//	$phongexponenttexture		"models\kemot44\MK11\Terminator\Skull_E"
+	$phongexponenttexture		"models\kemot44\MK11\Terminator\green2"
+
+ 
+
+//phong  // pesudo efekt metalu ?\_(O)_/?
+	$phong "1"
+	$phongexponent 4						
+	$phongboost "1.75" 
+	$phongfresnelranges  "[0.95 1.75 3.25]"
+	$PhongDisableHalfLambert "1"
+	$PhongAlbedoTint "1"
+// Przyciemnienie
+
+//	$color2 "[0.93 0.92 0.91]"
+//	$color2 "[0.85 0.85 0.85]"
+//	$color2 "[0.80 0.80 0.80]"  // WAZNE dla BIG AUDITORE
+//	$color2 "[0.75 0.75 0.75]"
+//	$color2 "[0.70 0.70 0.70]"
+//	$color2 "[0.65 0.65 0.65]"
+//	$color2 "[0.60 0.60 0.60]"
+//	$color2 "[0.50 0.50 0.50]"     // musi byæ aby nie przeœwietliæ PRZY boost 
+	$color2 "[0.35 0.35 0.35 ]"
+//	$color2 "[0 0 0]"   // PBR 1.
+   	 $blendtintbybasealpha "1" 
+
+//envmap
+	"$envmap" env_cubemap						
+//	"$envmaptint"    "[0.06 0.06 0.06]"
+	"$envmaptint"    "[0.12 0.12 0.12]"
+    	"$envmapfresnel"    "1"
+   	 $normalmapalphaenvmapmask    "1"
+
+}
+
+
+
+

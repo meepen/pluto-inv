@@ -1,0 +1,15 @@
+"vertexlitGeneric"
+{
+	"$basetexture" "models/dc/injustice2/scarecrow/scarecrow"
+	"$bumpmap" "models/dc/injustice2/scarecrow/scarecrow_n"
+
+    	"$selfillum" "1"
+    	"$selfillummask" "models/dc/injustice2/scarecrow/scarecrow_illum"
+
+	"$phong" "1"
+	"$phongfresnelranges"  "[0.3 0.75 1.00]"
+	"$halflambert" "1"
+	"$phongexponent" "25"
+	"$phongboost" "0.2"
+    	"$nocull" "1"
+}

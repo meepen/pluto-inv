@@ -1,0 +1,25 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/connor/hair"
+	"$bumpmap" "models/detroit/connor/hair_n"
+	"$color2" "[0.45 0.4 0.35]"
+	
+
+    "$alphatest" 1
+    "$allowalphatocoverage" 1
+    "$nocull" 1
+    $envmap env_cubemap
+   "$envmaptint" "[0.005 0.005 0.005]"
+    $normalmapalphaenvmapmask <1>
+
+    $phong 1
+
+
+    $phongexponent    5
+    //$phongexponenttexture    "models/detroit/kara/hair_short_p"
+    $phongboost                0.03
+    $phongfresnelranges        "[1 1 1]"
+    $phongtint "[0.6 0.8 1]"}
+
+
+

@@ -1,0 +1,12 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/connor/shirt"
+	"$bumpmap" "models/detroit/connor/shirt_n"
+
+	"$phong" "1"
+	"$phongboost" "2"
+	//$phongexponent  "3"
+	phongexponenttexture "models/detroit/connor/head_p"
+	$phongfresnelranges "[0.05 0.05 0.05]"
+	$phongalbedotint "0"
+}

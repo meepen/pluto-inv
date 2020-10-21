@@ -1,0 +1,23 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/connor/shirt"
+	"$bumpmap" "models/detroit/connor/shirt_n"
+
+		$color2 "[0.3 0.3 0.3]"
+
+		$phongexponenttexture "color/white"
+
+	$phong "1"
+	$phongboost "10"
+	$phongexponent  "10"
+	$phongfresnelranges "[0.05 0.05 0.05]"
+	
+
+	$envmap "env_cubemap"
+	$envmapfresnel "1"
+	//$envmaptint "[0.01 0.01 0.01]"
+	$normalmapalphaenvmapmask "1"
+
+}
+
+

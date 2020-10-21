@@ -1,0 +1,17 @@
+"vertexlitGeneric"
+{
+	"$basetexture" "models/dc/injustice2/scarecrowhook/scarecrowhook"
+	"$bumpmap" "models/dc/injustice2/scarecrowhook/scarecrowhook_n"
+
+	"$phong" "1"
+	"$phongfresnelranges"  "[0.3 0.75 1.00]"
+	"$halflambert" "1"
+	"$phongexponent" "25"
+	"$phongboost" "0.2"
+    	"$nocull" "1"
+
+	$detail detail\metal_detail_01
+	$detailscale 4.283
+	$detailblendfactor .65
+	$detailblendmode 0
+}

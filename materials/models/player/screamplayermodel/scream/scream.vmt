@@ -1,0 +1,10 @@
+"vertexlitgeneric"
+{
+	"$baseTexture" "models\player\screamplayermodel\scream/scream"
+	"$halflambert" 1
+ 	"$phong" "1"
+	"$phongexponent" "8"
+	"$phongboost"	"6"
+	"$phongfresnelranges"	"[0.05 0.5 1]"
+	"$phongalbedotint" "1"
+}

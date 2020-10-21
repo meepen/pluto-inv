@@ -1,0 +1,21 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/markus/eyelash"
+	"$bumpmap" "models/detroit/markus/eyelash_n"
+	"$alphatest" "1"
+	$allowalphatocoverage 1
+	"$ambientocclusion" "0"
+	"$nocull" "1"
+	"$phong" "1"						
+	"$phongboost"	"0.1" 		
+	//"$phongexponent" "2"	
+	"$phongexponenttexture" "models/detroit/markus/green"  
+		
+	"$phongwarptexture"		"models/detroit/markus/phongwarp_hair2"		
+	$lightwarptexture "models/detroit/markus/lightwarp_soft"
+	
+	"$phongfresnelranges"	"[1 1.05 1.25]"			
+	"$phongtint" 			"[1 1 1.1]"			
+	//"$PhongAlbedoTint" "1"
+	"$color2" "[0.1 0.1 0]"
+}

@@ -1,0 +1,7 @@
+"UnlitGeneric" 
+{ 
+	"$basetexture"		"vgui/entities/Terminator_Friendly" 
+	"$vertexcolor" 		1 
+	"$vertexalpha" 		1 
+	"$nolod" 		1 
+} 

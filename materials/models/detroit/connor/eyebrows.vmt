@@ -1,0 +1,8 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/connor/eyebrows"
+	"$alphatest" 1
+	"$allowalphatocoverage" 1
+	
+	"$color2" "[0.5 0.35 0.3]"
+}

@@ -1,0 +1,8 @@
+"UnlitGeneric"
+{
+	"$basetexture" "models/player/slow/mass_effect/husk/slow_eyes_glow"
+
+	"$model" 1
+	"$additive" 1
+	"$nocull" 1
+}

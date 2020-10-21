@@ -1,0 +1,16 @@
+VertexLitGeneric
+{
+	$basetexture "models/detroit/markus/final_coat"
+	$bumpmap "models/detroit/markus/final_coat_n"
+	$surfaceprop Carpet
+
+	$nocull 1
+
+	$phong 1
+	$phongfresnelranges "[0.47 0.71 2.8]"
+	$phongtint "[0.47 0.47 0.47]"
+	$phongexponent 4
+	$phongboost 0.1
+
+	$color2 "[0.93 0.91 0.90]"
+}

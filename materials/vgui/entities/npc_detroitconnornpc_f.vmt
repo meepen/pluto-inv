@@ -1,0 +1,9 @@
+"UnlitGeneric" 
+{ 
+	"$basetexture"		"vgui/entities/npc_detroitconnornpc_f" 
+	"$vertexcolor" 		1 
+	"$vertexalpha" 		1 
+	"$nolod" 			1 
+} 
+
+

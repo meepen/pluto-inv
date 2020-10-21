@@ -1,0 +1,16 @@
+VertexLitGeneric
+{
+	$basetexture "models/detroit/markus/infil_pants.tga"
+	$bumpmap "models/detroit/markus/infil_pants_n.tga"
+	$surfaceprop Carpet
+
+	$phong 1
+	$phongfresnelranges "[0.51 2.26 0.8]"
+	$phongexponent 10
+	$phongboost 0.54
+	$phongalbedoboost 2
+
+	$rimlight 1
+	$rimlightexponent 100
+	$rimlightboost 0.1
+}

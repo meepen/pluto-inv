@@ -1,0 +1,7 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/player/ghostrider/silver_d"
+	$envmap "env_cubemap"
+
+
+}

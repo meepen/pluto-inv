@@ -1,0 +1,18 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/player/ghostrider/body_d"
+	"$bumpmap" "models/player/ghostrider/body_n"
+	$phong 1
+	$phongboost "1.4"
+
+	$phongtint "[.85 .85 1]"
+	$phongfresnelranges "[.1 .3 3]"
+	$ambientocclusion 1
+	$halflambert 1
+	$diffuseexp "1.5"
+	
+	"$rimlight" "1" 
+	"$rimlightexponent" "10.8" 
+	"$rimlightboost" "0.01" 
+
+}

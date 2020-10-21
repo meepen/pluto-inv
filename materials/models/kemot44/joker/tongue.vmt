@@ -1,0 +1,66 @@
+"VertexlitGeneric"
+{
+//texture	
+	$baseTexture			"models\kemot44\Joker\Body_D"
+	$bumpmap    			"models\kemot44\Joker\Body_Na"
+	$phongexponenttexture		"models\kemot44\Joker\Body_E"
+
+
+// Zastepstwo TYLKO dla _v1
+//	$phongexponenttexture	"models\kemot44\suport_texture\phong_EXP\green"
+//	$phongexponenttexture	"models\kemot44\suport_texture\phong_EXP\phong_exp2"
+
+
+
+// Przyciemnienie
+
+	$color2 "[0.93 0.92 0.91]"
+//	$color2 "[0.85 0.85 0.85]"
+//	$color2 "[0.80 0.80 0.80]"  // WAZNE dla BIG AUDITORE
+//	$color2 "[0.75 0.75 0.75]"
+//	$color2 "[0.70 0.70 0.70]"
+//	$color2 "[0.65 0.65 0.65]"
+//	$color2 "[0.60 0.60 0.60]"
+//	$color2 "[0.50 0.50 0.50]"     // musi byæ aby nie przeœwietliæ PRZY boost 
+//	$color2 "[0 0 0]"   // PBR 1.
+
+
+
+
+// phong  // AUTORSKIE USTAWIENIE 
+	$phong 1
+	$phongfresnelranges "[0.55 .99 1.25]"
+	$PhongExponent 2 
+	$phongboost 1  // 2:1 +/-d
+	//$phongdisablehalflambert 1
+	$phongalbedotint 1
+		
+
+//Liightwarp
+//	$lightwarptexture "models\kemot44\suport_texture\warp\lightwarp_cel"
+//	$lightwarptexture "models\kemot44\suport_texture\warp\lightwarp_cherry"
+//	$lightwarptexture "models\kemot44\suport_texture\warp\lightwarp_elchulus"
+//	$lightwarptexture "models\kemot44\suport_texture\warp\lightwarp_hair"
+//	$lightwarptexture "models\kemot44\suport_texture\warp\lightwarp_metallic"
+//	$lightwarptexture "models\kemot44\suport_texture\warp\lightwarp_flesh"       //
+	$lightwarptexture "models\kemot44\suport_texture\warp\lightwarp_coach_head"
+//	$lightwarptexture "models\kemot44\suport_texture\warp\lightwarp_soft"
+//	$lightwarptexture "models\kemot44\suport_texture\warp\lightwarp_soft_white"
+//	$lightwarptexture "models\kemot44\suport_texture\warp\lightwarp_t"
+//	$lightwarptexture "models\kemot44\suport_texture\warp\lightwarp_wet"        //
+
+
+
+// Rim				
+//	$rimlight 1
+//	$rimlightboost 0.25
+//	$rimlightexponent 35
+//	$rimmask 1
+//	$rimlightexponent 2 // Raczej nie przy Wlosach x1
+
+
+
+
+
+
+}

@@ -1,0 +1,28 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/detroit/markus/android_heart"
+	//"$bumpmap" "models/detroit/markus/android_heart_n"
+	"$nocull" 1
+
+	$selfillum 1
+	$selfillummask "models/detroit/markus/android_heart_si"
+
+	$emissiveblendenabled 1
+   	$emissiveBlendBaseTexture "models/detroit/markus/android_heart_si"
+    	$emissiveblendflowtexture "models/detroit/markus/android_heart"
+    	$emissiveblendscrollvector "[0 0]"
+    	$emissiveblendstrength 1
+    	$emissiveblendtexture "models/detroit/markus/android_heart_si"
+	 
+
+	"$surfaceprop" "Default"
+	"Proxies"
+{
+	"AnimatedTexture"
+{
+	"animatedTextureVar" "$basetexture"
+	"animatedTextureFrameNumVar" "$frame"
+	"animatedTextureFrameRate" "25"
+}
+} 
+}

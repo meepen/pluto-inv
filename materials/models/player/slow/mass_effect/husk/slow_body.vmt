@@ -1,0 +1,14 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/player/slow/mass_effect/husk/slow_body"
+	"$bumpmap" "models/player/slow/mass_effect/husk/slow_body_bump"
+
+	"$selfillum" 1
+	"$selfillumtint" "{177 227 252}"
+
+ 	"$phong" "1"
+//	"$phongexponent" "4"
+	"$phongexponenttexture" "models/player/slow/mass_effect/husk/slow_body_exp"
+	"$phongboost"	"25"
+	"$phongfresnelranges"	"[.05 .25 1]"
+}

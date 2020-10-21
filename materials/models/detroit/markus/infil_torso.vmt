@@ -1,0 +1,16 @@
+VertexLitGeneric
+{
+	$basetexture "models/detroit/markus/infil_torso"
+	$bumpmap "models/detroit/markus/infil_torso_n"
+
+	$envmap "env_cubemap"
+	$normalmapalphaenvmapmask 1
+	$envmaptint "[0.81 0.97 1]"
+	$envmapfresnel 1
+
+	$phong 1
+	$phongfresnelranges "[0.05 0 0.05]"
+	$phongtint "[0.57 0.74 1]"
+	$phongexponent 5
+	$phongboost 10
+}

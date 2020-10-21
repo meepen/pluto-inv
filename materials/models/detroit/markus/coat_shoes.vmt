@@ -1,0 +1,6 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/markus/coat_shoes"
+	"$bumpmap" "models/detroit/markus/interior_shoes_n"
+	"$alphatest" 1
+}

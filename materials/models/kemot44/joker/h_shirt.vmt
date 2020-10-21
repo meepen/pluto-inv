@@ -1,0 +1,14 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models\kemot44\Joker\H_Jacket_D"
+	"$bumpmap" 	"models\kemot44\Joker\H_Jacket_N"
+
+//	$phongtint "[0.18 0.67 0.24]"
+
+//	$color "[0 0.98 0.03]"
+	
+	"$phong" "1"
+	"$phongexponent" "5"
+	"$phongboost" "0.05"
+	"$phongfresnelranges" "[0.1 0.4 0.7]"
+}

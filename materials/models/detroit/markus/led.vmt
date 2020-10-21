@@ -1,0 +1,15 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/markus/led_blue"
+	$nocull 1
+	$selfillum 1
+	"proxies"
+	{
+		"AnimatedTexture"
+			{
+			"Animatedtexturevar" "$Basetexture"
+			"Animatedtextureframenumvar" "$frame"
+			"Animatedtextureframerate" "30"
+			}
+	}
+}

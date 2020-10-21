@@ -1,0 +1,10 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/markus/interior_arms"
+	"$bumpmap" "models/detroit/markus/interior_arms_n"
+
+	$phong "1"
+	$phongboost "0.5"
+	$phongexponent  "5"
+	$phongfresnelranges "[0.001 0.3 1]"
+}

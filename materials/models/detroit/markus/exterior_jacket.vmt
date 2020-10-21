@@ -1,0 +1,18 @@
+VertexLitGeneric
+{
+	$basetexture "models/detroit/markus/exterior_jacket"
+	$bumpmap "models/detroit/markus/exterior_jacket_n"
+
+	$detail "models/detroit/markus/woven_detail"
+	$detailscale 50
+
+	$nocull 1
+
+	$phong 1
+	$phongfresnelranges "[0.1 0.5 1]"
+	$phongtint "[0.09 0.09 0.12]"
+	$phongexponent 4
+	$phongboost 1.2
+
+	$color2 "[0.81 0.81 0.81]"
+}

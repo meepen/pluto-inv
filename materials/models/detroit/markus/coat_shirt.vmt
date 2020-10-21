@@ -1,0 +1,12 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/markus/coat_shirt"
+	"$bumpmap" "models/detroit/markus/coat_shirt_n"
+	"$alphatest" 1
+	"$allowaphatocoverage" 1
+		$nocull 1
+	$phong "1"
+	$phongboost "0.5"
+	$phongexponent  ""
+	$phongfresnelranges "[0.05 0.1 0.05]"
+}

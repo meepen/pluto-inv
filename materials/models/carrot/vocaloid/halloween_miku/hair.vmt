@@ -1,0 +1,18 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\carrot\vocaloid\halloween_miku\hair"
+	"$bumpmap" "models\carrot\vocaloid\halloween_miku\normal"
+	"$nodecal" "1"
+
+	"$lightwarptexture" "models\carrot\vocaloid\halloween_miku\hairwarp"
+
+	"$phong" "1"
+	"$phongboost"	"24"
+	"$phongalbedotint" "1"
+	"$phongexponenttexture" "models\carrot\vocaloid\halloween_miku\phong_exp"
+	"$phongfresnelranges"	"[0 0 1]"
+
+	"$rimlight"               "1"
+	"$rimlightexponent"       "3"
+	"$rimlightboost"          "4"
+}

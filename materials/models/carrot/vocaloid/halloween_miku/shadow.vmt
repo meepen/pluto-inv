@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\carrot\vocaloid\halloween_miku\face"
+	"$bumpmap" "models\carrot\vocaloid\halloween_miku\normal"
+
+	"$lightwarptexture" "models\carrot\vocaloid\halloween_miku\facewarp"
+	"$translucent" "1"
+}

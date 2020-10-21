@@ -1,0 +1,6 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/markus/android_another"
+	"$bumpmap" "models/detroit/markus/android_another_n"
+	"$nocull" 1
+}

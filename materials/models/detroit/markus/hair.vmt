@@ -1,0 +1,17 @@
+VertexLitGeneric
+{
+	$basetexture "models/detroit/markus/hair"
+	$bumpmap "models/detroit/markus/hair_n"
+
+	$lightwarptexture "models/detroit/markus/hair_lightwarp"
+
+	$alphatest 1
+	$nocull 1
+
+	$phong 1
+	$phongfresnelranges "[1 1.05 1.25]"
+	$phongboost 0.1
+
+	$allowalphatocoverage 1
+	$ambientocclusion 0
+}

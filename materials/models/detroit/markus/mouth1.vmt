@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/markus/mouth"
+	"$bumpmap" "models/detroit/markus/mouth_n"
+}

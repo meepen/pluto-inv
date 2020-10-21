@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/dawson/death_a_grim_bundle/death_body_classic"
+	"$halflambert" 1
+	"$bumpmap" "models/dawson/death_a_grim_bundle/death_body_normal"
+  	  "$alphatest" 1
+  	  "$model" 1
+   	 "$nocull" 1
+}

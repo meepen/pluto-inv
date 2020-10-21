@@ -1,0 +1,12 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/markus/util_shoes"
+	"$bumpmap" "models/detroit/markus/util_shoes_n"
+	"$nocull" 1
+
+	$phong 1
+	$phongboost 0.1
+	$phongexponent  "2"
+	$phongfresnelranges "[0.5 0.5 1]"
+	"$phongtint" "[0.1 0.1 0.1]"
+}

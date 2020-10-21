@@ -1,0 +1,18 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models\savini/T_Savini_Jason_Head_D"
+	"$bumpmap" "models\savini/T_Savini_Jason_Head_N"
+                 "$halflambert" "1"
+
+	"$phong" "1"
+	"$phongboost" "2"
+                "$phongexponent" "45"	
+	"$phongfresnelranges"	"[.3 1 8]"
+
+	"$rimlight" "1"												
+	"$rimlightexponent" "3"											
+	"$rimlightboost" ".25"										
+	"$rimmask" "1" 
+
+}
+

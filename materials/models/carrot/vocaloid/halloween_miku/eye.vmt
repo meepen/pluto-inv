@@ -1,0 +1,7 @@
+"UnlitGeneric"
+{
+	"$basetexture" "models\carrot\vocaloid\halloween_miku\face"
+	"$nodecal" "1"
+	"$translucent" "1"
+	"$model" "1"
+}

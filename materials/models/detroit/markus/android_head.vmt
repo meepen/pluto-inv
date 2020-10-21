@@ -1,0 +1,18 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/markus/android_head"
+	"$bumpmap" "models/detroit/markus/android_head_n"
+	"$phongexponenttexture" "models/detroit/markus/android_head_p"
+	"$alphatest" 1
+	"$allowalphatocoverage" 1
+	"$nocull" 1
+	"$color2" "[0.7 0.7 0.6]"
+
+	"$phong" "1"
+	"$phongboost" "0.3"
+	//$phongexponent  "100"
+	$phongfresnelranges "[0.5 0.5 0.5]"
+	$phongalbedotint "0"
+
+	
+}

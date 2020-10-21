@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/connor/2torso"
+	"$bumpmap" "models/detroit/connor/2torso_n"
+}

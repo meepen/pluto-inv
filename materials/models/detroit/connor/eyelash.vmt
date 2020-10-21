@@ -1,0 +1,10 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/connor/eyelash"
+	"$bumpmap" "models/detroit/connor/eyelash_n"
+	"$color2" "[0 0 0]"
+
+	"$alphatest" 1
+	"$allowalphatocoverage" 1
+
+}

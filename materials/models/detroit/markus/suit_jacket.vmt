@@ -1,0 +1,13 @@
+VertexLitGeneric
+{
+	$basetexture "models/detroit/markus/suit_jacket.vtf"
+	$bumpmap "models/detroit/markus/suit_jacket_n.vtf"
+	$surfaceprop Carpet
+
+	$phong 1
+	$phongfresnelranges "[0.5 0.75 2]"
+	$phongexponent 5
+	$phongboost 0.1
+	$phongalbedoboost 0.54
+	
+}

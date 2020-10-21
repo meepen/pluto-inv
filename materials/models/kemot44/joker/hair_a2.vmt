@@ -1,0 +1,21 @@
+"VertexLitGeneric"
+{
+	$baseTexture 		"models\kemot44\joker\Hair_Da"
+	$bumpmap     		"models\kemot44\joker\Hair_N"
+//	$color2 "[1 0.52 0.52]"
+//phong
+	$phong "1"						
+	$phongboost	"0.6" 		
+	$phongfresnelranges	"[0.04 0.1 1.0]"
+	$phongexponent 	"12"
+	$phongtint "[0 0.25 0]"
+
+	$ambientocclusion 		"0"
+	$alphatest		 "1"
+	$alphatestreference		"0.65"
+
+	$nocull "1"
+
+
+
+}

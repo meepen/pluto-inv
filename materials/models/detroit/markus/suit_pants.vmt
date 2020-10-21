@@ -1,0 +1,10 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/detroit/markus/suit_pants"
+	"$bumpmap" "models/detroit/markus/suit_pants_n"
+	"$nocull" 1
+
+	$color2 "[0.6 0.6 0.6]"
+	
+
+}

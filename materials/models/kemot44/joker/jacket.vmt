@@ -1,0 +1,32 @@
+"VertexLitGeneric" 
+{
+	$baseTexture			"models\kemot44\Joker\Jacket_D"
+	$bumpmap    			"models\kemot44\Joker\Jacket_Na"
+	$phongexponenttexture		"models\kemot44\suport_texture\shared_pack\green"
+
+// W³osy Intensywnoœæ (Przy Boost ofc)
+//	$color2 "[0.85 0.85 0.85]"
+//	$color2 "[0.80 0.80 0.80]"
+//	$color2 "[0.75 0.75 0.75]"
+//	$color2 "[0.70 0.70 0.70]"
+//	$color2 "[0.65 0.65 0.65]"
+//	$color2 "[0.60 0.60 0.60]"
+//	$color2 "[0.50 0.50 0.50]"     // musi byæ aby nie przeœwietliæ PRZY boost 
+//	$color2 "[0 0 0]"
+
+// Detail
+	$detailscale 15
+	$detail "models\kemot44\suport_texture\detail\d_thickfabric"  // Musisz Wymodelowaæ UV bo nie pasuje
+	$detailblendmode 0
+
+	$phong "1"
+//	$phongexponent "4"
+	$phongboost "6"  //22
+	$phongfresnelranges "[0.55 0.75 1.250]"
+	$phongalbedotint "1"
+
+//	$translucent "1"
+
+	$nocull "1"
+//	$ambientocclusion "0"
+}

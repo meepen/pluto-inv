@@ -1,0 +1,8 @@
+"vertexlitgeneric"
+{
+	"$baseTexture" "models/dawson/death_a_grim_bundle/death_eye"
+	"$model" "1"
+	"$selfillum" "1"
+	"$selfillumtint" "[1.00 0.00 0.00]"
+}
+
