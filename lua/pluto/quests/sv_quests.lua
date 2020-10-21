@@ -569,7 +569,7 @@ function pluto.quests.init_nocache(ply, cb)
 			}, pluto.quests.quest_mt)
 
 			pluto.quests.byperson[ply].byid[data.idx] = quest
-			
+
 			quest.Type = data.type
 			quest.QuestID = data.quest_id
 			quest.ProgressLeft = data.progress_needed
@@ -616,9 +616,9 @@ function pluto.quests.init_nocache(ply, cb)
 				needs_run = true
 			end
 		end
+		mysql_commit(db)
 
 		if (needs_run) then
-			mysql_commit(db)
 			pluto.quests.init_nocache(ply, cb)
 		else
 			for type, quests in pairs(quests) do
@@ -628,7 +628,6 @@ function pluto.quests.init_nocache(ply, cb)
 					end)
 				end
 			end
-			mysql_rollback(db)
 			cb(quests)
 		end
 	end)
