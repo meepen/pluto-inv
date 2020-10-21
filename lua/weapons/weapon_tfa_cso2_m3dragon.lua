@@ -70,7 +70,7 @@ function SWEP:FireBulletsCallback(tr, dmginfo)
 
 		if (tr.Entity:IsPlayer()) then
 			tr.Entity.was_burned = {
-				att = att,
+				att = dmginfo:GetAttacker(),
 				t = CurTime(),
 				wep = self:GetClass()
 			}
