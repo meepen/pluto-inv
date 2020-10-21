@@ -31,7 +31,15 @@ function SWEP:Initialize()
 
 	if (pluto.tiers.bytype[pluto.weapons.type(self)]) then
 		if (not item) then
-			item = pluto.weapons.generatetier(nil, self)
+			local tier = pluto.tiers.filter(self, function(t)
+				if (t.affixes < 4) then
+					return false
+				end
+
+				return true
+			end)
+			print(tier)
+			item = pluto.weapons.generatetier(tier, self)
 			item.Type = "Weapon"
 			self.FloorWeapon = true
 		end
