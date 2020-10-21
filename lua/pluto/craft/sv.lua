@@ -291,17 +291,22 @@ function pluto.inv.readcraft(cl)
 		):Send "crafts"
 	end
 
-	local transact = pluto.db.transact()
-	for _, item in pairs(items) do
-		pluto.inv.deleteitem(cl, item.RowID, print, transact, true)
-	end
-	pluto.inv.savebufferitem(cl, wpn, transact)
-
-	if (cur) then
-		pluto.inv.addcurrency(cl, cur.Currency, -cur.Amount, nil, transact)
-	end
+	pluto.db.transact(function(db)
+		for _, item in pairs(items) do
+			if (not pluto.inv.deleteitem(db, cl, item.RowID, true)) then
+				return
+			end
+		end
+		pluto.inv.savebufferitem(db, cl, wpn)
+	
+		if (cur) then
+			if (not pluto.inv.addcurrency(db, cl, cur.Currency, -cur.Amount)) then
+				mysql_rollback(db)
+				return
+			end
+		end
+		mysql_commit(db)
+	end)
 
 	hook.Run("PlutoWeaponCrafted", cl, wpn, items, cur)
-
-	transact:Run()
 end

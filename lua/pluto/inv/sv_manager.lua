@@ -322,6 +322,7 @@ function pluto.inv.init(ply, cb2)
 
 	local success = 0
 	local function TrySucceed(where)
+		print(ply, where, "success")
 		success = success + 1
 
 		if (not IsValid(ply)) then
@@ -334,6 +335,7 @@ function pluto.inv.init(ply, cb2)
 	end
 
 	local function InitTabs()
+		print(ply, tabs, items)
 		if (not tabs or not items) then
 			return
 		end
@@ -401,7 +403,7 @@ function pluto.inv.init(ply, cb2)
 		TrySucceed "quests"
 	end)
 
-	pluto.db.query("SELECT experience from pluto_player_info where steamid = ?", {pluto.db.steamid64(ply)}, function(err, q, d)
+	pluto.db.simplequery("SELECT experience from pluto_player_info where steamid = ?", {pluto.db.steamid64(ply)}, function(d, err)
 		d = d and d[1] or {experience = 0}
 		if (IsValid(ply)) then
 			ply:SetPlutoExperience(d.experience)
@@ -479,13 +481,13 @@ function pluto.inv.readtabswitch(ply)
 		end)
 	end
 
-	pluto.inv.switchtab(ply, tabid1, tabindex1, tabid2, tabindex2, function(succ)
-		if (succ or not IsValid(ply)) then
+	pluto.db.transact(function(db)
+		if (not pluto.inv.switchtab(db, tabid1, tabindex1, tabid2, tabindex2)) then
+			pluto.inv.reloadfor(ply)
 			return
 		end
-
-		pluto.inv.sendfullupdate(ply)
-	end):Run()
+		mysql_commit(db)
+	end)
 end
 
 function pluto.inv.readitemdelete(ply)
@@ -514,17 +516,18 @@ function pluto.inv.readitemdelete(ply)
 	
 	tab.Items[tabindex] = nil
 
-	pluto.inv.deleteitem(ply, itemid, function(succ)
-		if (succ) then
-			if (IsValid(ply)) then
-				if (i.Type == "Weapon" and i.Tier.InternalName ~= "crafted" and math.random() < 0.8) then
-					pluto.inv.generatebuffershard(ply, i.Tier.InternalName):Run()
-				end
-			end
+	pluto.db.transact(function(db)
+		local succ = pluto.inv.deleteitem(db, ply, itemid)
+
+		if (not succ) then
 			return
 		end
+		
+		if (IsValid(ply) and i.Type == "Weapon" and i.Tier.InternalName ~= "crafted" and math.random() < 0.8) then
+			pluto.inv.generatebuffershard(db, ply, i.Tier.InternalName)
+		end
 
-		pluto.inv.sendfullupdate(ply)
+		mysql_commit(db)
 	end)
 end
 
@@ -581,36 +584,35 @@ function pluto.inv.readcurrencyuse(ply)
 		local gotten, data = pluto.inv.roll(cur.Contents)
 		local type = pluto.inv.itemtype(gotten)
 
-		local transact, wpn
-		if (type == "Model") then -- model
-			transact, wpn = pluto.inv.generatebuffermodel(ply, gotten:match "^model_(.+)$")
-		elseif (type == "Weapon") then -- unique
-			transact, wpn = pluto.inv.generatebufferweapon(ply, istable(data) and data.Tier or cur.DefaultTier or "unique", gotten)
-		end
+		pluto.db.transact(function(db)
+			local wpn
+			if (type == "Model") then -- model
+				wpn = pluto.inv.generatebuffermodel(db, ply, gotten:match "^model_(.+)$")
+			elseif (type == "Weapon") then -- unique
+				wpn = pluto.inv.generatebufferweapon(db, ply, istable(data) and data.Tier or cur.DefaultTier or "unique", gotten)
+			end
 
-		if (not wpn) then
-			print(gotten)
-		end
+			if (not wpn) then
+				print(gotten)
+			end
 
-		if (istable(data) and data.Rare) then
-			discord.Message():AddEmbed(
-				wpn:GetDiscordEmbed()
-					:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
-			):Send "drops"
-		end
+			if (istable(data) and data.Rare) then
+				discord.Message():AddEmbed(
+					wpn:GetDiscordEmbed()
+						:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
+				):Send "drops"
+			end
 
-		if (transact) then
-			pluto.inv.addcurrency(ply, currency, -1, nil, transact)
-			transact:Run(function(err)
-				if (err) then
-					return
-				end
+			if (not pluto.inv.addcurrency(db, ply, currency, -1)) then
+				mysql_rollback(db)
+				return
+			end
 
-				pluto.inv.message(ply)
-					:write("crate_id", wpn.RowID)
-					:send()
-			end)
-		end
+			pluto.inv.message(ply)
+				:write("crate_id", wpn.RowID)
+				:send()
+			mysql_commit(db)
+		end)
 	end
 end
 
@@ -670,37 +672,28 @@ function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
 
 	local pop_from = i.TabIndex
 
-	local transact = pluto.inv.setitemplacement(ply, i, tabid, tabindex, function(succ)
-		if (succ or not IsValid(ply)) then
-			if (IsValid(ply)) then
-				pluto.inv.message(ply)
-					:write("tabupdate", i.TabID, i.TabIndex)
-					:send()
-			end
+	pluto.db.transact(function(db)
+		if (not pluto.inv.setitemplacement(db, ply, i, tabid, tabindex)) then
+			pluto.inv.reloadfor(ply)
 			return
 		end
 
-		pprintf "ERROR: bad err"
-		pluto.inv.sendfullupdate(ply)
-	end)
+		pluto.inv.popbuffer(db, ply, pop_from, transact)
 
-	if (not pluto.inv.popbuffer(ply, pop_from, transact)) then
-		pprintf "ERROR: no pop"
-		pluto.inv.sendfullupdate(ply)
-		return
-	end
-
-	transact:Run()
-	transact:AddCallback(function(err)
-		if (err) then
+		if (not IsValid(ply)) then
 			return
 		end
+		
+		pluto.inv.message(ply)
+			:write("tabupdate", i.TabID, i.TabIndex)
+			:send()
 
 		for i, item in pairs(pluto.inv.invs[ply].tabs.buffer.Items) do
 			if (item == i) then
 				table.remove(pluto.inv.invs[ply].tabs.buffer.Items, i)
 			end
 		end
+		mysql_commit(db)
 	end)
 end
 

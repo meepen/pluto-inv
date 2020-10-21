@@ -3,8 +3,6 @@ local last_played = sql.Query("SELECT * from pluto_map_plays ORDER BY last_playe
 
 sql.Query("INSERT INTO pluto_map_plays (mapname, last_played) VALUES (" .. sql.SQLStr(game.GetMap()) .. ", CAST(strftime('%s', 'now') AS INT UNSIGNED)) ON CONFLICT(mapname) DO UPDATE SET last_played = CAST(strftime('%s', 'now') AS INT UNSIGNED)")
 
-PrintTable(last_played)
-
 pluto.mapvote = pluto.mapvote or {}
 
 function pluto.mapvote.broadcast()
@@ -65,11 +63,7 @@ end
 function pluto.inv.readlikemap(cl)
 	local liked = net.ReadBool()
 
-	pluto.db.query("INSERT INTO pluto_map_vote (voter, liked, mapname) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE liked = VALUE(liked)", {pluto.db.steamid64(cl), liked, game.GetMap()}, function(err, q)
-		if (err) then
-			return
-		end
-	end)
+	pluto.db.simplequery("INSERT INTO pluto_map_vote (voter, liked, mapname) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE liked = VALUE(liked)", {pluto.db.steamid64(cl), liked, game.GetMap()}, function() end)
 end
 
 function pluto.inv.readvotemap(cl)
@@ -189,14 +183,12 @@ function pluto.mapvote.start()
 		end
 	end
 
-	pluto.db.query("SELECT COUNT(*) as votes, liked, mapname FROM pluto_map_vote WHERE mapname IN (?, ?, ?, ?, ?, ?, ?, ?, ?) GROUP BY liked, mapname", valid, function(err, q)
-		if (err) then
+	pluto.db.simplequery("SELECT COUNT(*) as votes, liked, mapname FROM pluto_map_vote WHERE mapname IN (?, ?, ?, ?, ?, ?, ?, ?, ?) GROUP BY liked, mapname", valid, function(dat, err)
+		if (not dat) then
 			return
 		end
 
-		local dat = q:getData()
-
-		for _, d in pairs(dat) do
+		for _, d in ipairs(dat) do
 			local cur = state.maps[d.mapname]
 			if (d.liked == 1) then
 				cur.likes = d.votes
@@ -208,14 +200,12 @@ function pluto.mapvote.start()
 		checkdone "likes"
 	end)
 
-	pluto.db.query("SELECT played, mapname FROM pluto_map_info WHERE mapname IN (?, ?, ?, ?, ?, ?, ?, ?, ?)", valid, function(err, q)
-		if (err) then
+	pluto.db.simplequery("SELECT played, mapname FROM pluto_map_info WHERE mapname IN (?, ?, ?, ?, ?, ?, ?, ?, ?)", valid, function(dat, err)
+		if (not dat) then
 			return
 		end
 
-		local dat = q:getData()
-
-		for _, d in pairs(dat) do
+		for _, d in ipairs(dat) do
 			local cur = state.maps[d.mapname]
 			cur.played = d.played
 		end
@@ -225,8 +215,8 @@ function pluto.mapvote.start()
 end
 
 hook.Add("Initialize", "pluto_map", function()
-	pluto.db.query("INSERT INTO pluto_map_info (mapname, played) VALUES(?, 1) ON DUPLICATE KEY UPDATE played = played + VALUE(played)", {game.GetMap()}, function(err, q)
-		if (err) then
+	pluto.db.simplequery("INSERT INTO pluto_map_info (mapname, played) VALUES(?, 1) ON DUPLICATE KEY UPDATE played = played + VALUE(played)", {game.GetMap()}, function(dat, err)
+		if (not dat) then
 			return
 		end
 

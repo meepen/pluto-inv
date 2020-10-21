@@ -5,68 +5,104 @@ local config = {
 		database = "pluto",
 		password = "IwE6&60b^z%h$EM9",
 		name = "Main",
+		poolamount = 15
 	},
 }
 
-if (not pluto.db_init) then
-	require "mysqloo"
-	local init = include "db.lua"
+include "mysql_pool.lua"
+include "cmysql.lua"
+pluto.pool = pool.create(config.db.poolamount, config.db.host, config.db.username, config.db.password, config.db.database)
 
-	for k, info in pairs(config) do
-		local db = mysqloo.connect(info.host, info.username, info.password, info.database)
-		pluto[k] = init(db)
+timer.Create("pluto_pool_keepalive", 60, 0, function()
+	pluto.pool:KeepAlive()	
+end)
 
-		local connects = 0
-		function db:onConnected()
-			db:setCharacterSet "utf8mb4"
+pluto.db = pluto.db or {}
 
-			connects = connects + 1
-			if (connects == 1) then
-				pprintf("%s database connected", info.name)
-				hook.Run("PlutoDatabaseInitialize", db)
-			elseif (connects > 1) then
-				pprintf("%s database reconnected", info.name)
-			end
-
-			hook.Run("PlutoDatabaseConnected", db, connects)
-		end
-
-		function db:onConnectionFailed(err)
-			pwarnf("%s Database disconnected: %s. Reconnecting.", info.name, err)
-		end
-
-		db:connect()
-
-		hook.Add("CheckPassword", "pluto_db_" .. tostring(db), function()
-			if (player.GetCount() == 0) then
-				db:ping()
-			end
-		end)
-	
-		hook.Add("TTTPrepareRound", "pluto_db_" .. tostring(db), function()
-			if (player.GetCount() == 0) then
-				db:ping()
-			end
-		end)
+function pluto.db.steamid64(obj)
+	if (TypeID(obj) == TYPE_ENTITY) then
+		return obj:SteamID64()
 	end
 
-	pluto.db_init = true
+	if (type(obj) == "string" and obj:StartWith "S") then
+		obj = util.SteamIDTo64(obj)
+	end
+
+	if (not obj) then
+		error("Bad object to convert to steamid: " .. tostring(obj))
+	end
+
+	return obj
+end
+
+local function noop() end
+
+function pluto.db.simplequery(query, params, onfinish)
+	onfinish = onfinish or noop
+
+	local ret = pluto.db.instance(function(db)
+		onfinish(mysql_stmt_run(db, query, unpack(params, 1, params.n)))
+	end)
+	
+	return ret
 end
 
 
-
-concommand.Add("test_gluamysql", function(ply)
-	if (IsValid(ply)) then
-		return
-	end
-	require "gluamysql"
-
-	include "pluto/sv/mysql_pool.lua"
-
-	mysql.connect(config.db.host, config.db.username, config.db.password, config.db.database):next(function(db)
-		print(db)
-		db:query("SELECT 1 as number"):next(PrintTable)
+--[[
+	pluto.db.instance(function(db)
+		-- cmysql bindings
 	end)
-	
-	pluto.pool = pool
+]]
+function pluto.db.instance(fn)
+	local callbacks = {}
+
+	function callbacks:AddCallback(fn)
+		table.insert(self, fn)
+	end
+
+	pluto.pool:Request(function(db)
+		cmysql(function()
+			mysql_autocommit(db, true)
+			fn(db)
+			pluto.pool:Return(db)
+			for _, callback in ipairs(callbacks) do
+				callback()
+			end
+		end)
+	end)
+
+	return callbacks
+end
+
+
+--[[
+	pluto.db.transact(function(db)
+		-- cmysql bindings
+	end)
+]]
+
+function pluto.db.transact(fn)
+	local callbacks = {}
+
+	function callbacks:AddCallback(fn)
+		table.insert(self, fn)
+	end
+
+	pluto.db.instance(function(db)
+		cmysql(function()
+			mysql_autocommit(db, false)
+			fn(db)
+			mysql_autocommit(db, true)
+
+			for _, callback in ipairs(callbacks) do
+				callback()
+			end
+		end)
+	end)
+
+	return callbacks
+end
+
+hook.Add("Initialize", "pluto_database", function()
+	hook.Run "PlutoDatabaseInitialize"
 end)

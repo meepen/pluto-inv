@@ -163,106 +163,160 @@ end
 function pluto.trades.accept(ply)
 	local trade = pluto.trades.get(ply)
 
-	if (trade) then
-		for _, accept in pairs(trade.Accepted) do
-			if (not accept) then
-				return
-			end
+	if (not trade) then
+		return
+	end
+
+	for _, accept in pairs(trade.Accepted) do
+		if (not accept) then
+			return
 		end
+	end
 
-		pluto.trades.cancel(ply)
+	pluto.trades.cancel(ply)
 
-		-- TODO(meepen): log lol
-
-		local frees = {}
-
-		for i = 1, 2 do
-			local otherply = trade.Players[3 - i]
-			local recv = trade.Players[i]
-
-			local ignore = {}
-			for _, item in pairs(trade.Items[recv]) do
-				ignore[item] = true
-			end
-
-			local incoming = {}
-			for _, item in pairs(trade.Items[otherply]) do
-				incoming[#incoming + 1] = item
-			end
-
-			frees[i] = pluto.inv.getfreespaces(recv, incoming, ignore)
+	local function reloadall(txt)
+		pprintf("Trade failed: %s", txt)
+		for _, ply in pairs(trade.Players) do
+			pluto.inv.reloadfor(ply)
 		end
+	end
 
-		local done = {}
-		local toswap = {}
-
-		for i = 1, 2 do
-			local items, swaplookup = frees[i]
-
-			for item, dst in pairs(items) do
-				if (dst.Swap) then
-					if (toswap[item]) then
-						continue
-					end
-					toswap[dst.Swap] = item
-					done[dst.Swap] = true
-					done[item] = true
-				end
-			end
-		end
-
-
-		local ids = {}
-		for i = 1, 2 do
-			ids[i] = pluto.db.steamid64(trade.Players[i])
-		end
-
-		local transact = pluto.db.transact()
-
-		transact:AddQuery("SELECT * from pluto_items INNER JOIN pluto_tabs ON pluto_items.tab_id = pluto_tabs.idx WHERE OWNER IN (?, ?) FOR UPDATE", ids)
-
-		for i1, i2 in pairs(toswap) do
-			local tabid1, tabindex1 = i1.TabID, i1.TabIndex
-			local tabid2, tabindex2 = i2.TabID, i2.TabIndex
-
-			transact:AddQuery("UPDATE pluto_items SET tab_id = ?, tab_idx = 0 WHERE idx = ?", {i1.TabID, i2.RowID})
-			transact:AddQuery("UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE idx = ?", {i2.TabID, i2.TabIndex, i1.RowID})
-			transact:AddQuery("UPDATE pluto_items SET tab_idx = ? WHERE idx = ?", {i1.TabIndex, i2.RowID})
-		end
-
-		for i = 1, 2 do
-			for item, dst in pairs(frees[i]) do
-				if (done[item]) then
-					continue
-				end
-
-				transact:AddQuery("UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE idx = ?", {dst.TabID, dst.TabIndex, item.RowID})
-			end
-		end
+	pluto.db.transact(function(db)
+		-- currency exchange
 
 		for ply, data in pairs(trade.Currency) do
 			local otherply = trade.Players[ply == trade.Players[1] and 2 or 1]
 			for cur, amt in pairs(data) do
-				if (not pluto.inv.currencies[ply] or pluto.inv.currencies[ply][cur] < amt or amt <= 0) then
+				if (not pluto.inv.addcurrency(db, ply, cur, -amt)) then
+					mysql_rollback(db)
+					reloadall("currency 1: " .. cur .. " x" .. amt)
 					return
 				end
-
-				transact:AddQuery("INSERT INTO pluto_currency_tab (owner, currency, amount) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE amount = amount - VALUE(amount)", {pluto.db.steamid64(ply), cur, amt})
-				transact:AddQuery("INSERT INTO pluto_currency_tab (owner, currency, amount) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE amount = amount + VALUE(amount)", {pluto.db.steamid64(otherply), cur, amt})
+				if (not pluto.inv.addcurrency(db, otherply, cur, amt)) then
+					mysql_rollback(db)
+					reloadall("currency 2: " .. cur .. " x" .. amt)
+					return
+				end
 			end
 		end
 
-		transact:Run(function(err, q)
-			for i = 1, 2 do
-				local ply = trade.Players[i]
+		-- item exchange
 
-				if (IsValid(ply)) then
-					pluto.inv.invs[ply] = nil
-					pluto.inv.sendfullupdate(ply)
+		-- lock all items owned by traders
+
+		-- TODO(meep): too slow???
+		--[[
+		local succ, err = mysql_stmt_run(db, "SELECT tab_id, tab_index from pluto_items i INNER JOIN pluto_tabs t ON i.tab_id = t.idx WHERE owner IN (?, ?) FOR UPDATE", pluto.db.steamid64(trade.Players[1]), pluto.db.steamid64(trade.Players[2]))
+		if (not succ) then
+			print(err)
+		else
+			print "ITEMS"
+		end]]
+
+		-- find any items we can swap first
+		local complete = {}
+
+		--pluto.canswitchtabs(tab1, tab2, tabindex1, tabindex2)
+
+		for _, item in pairs(trade.Items[trade.Players[1]]) do
+			for _, otheritem in pairs(trade.Items[trade.Players[2]]) do
+				if (complete[otheritem]) then -- already did a swap
+					continue
 				end
+
+				if (not pluto.canswitchtabs(item:GetTab(), otheritem:GetTab(), item.TabIndex, otheritem.TabIndex)) then
+					continue
+				end
+
+				complete[otheritem], complete[item] = true, true
+				local succ = pluto.inv.switchtab(db, item.TabID, item.TabIndex, otheritem.TabID, otheritem.TabIndex)
+				if (not succ) then
+					reloadall "switch tab 1"
+					return
+				end
+				break
 			end
-		end)
-	end
+		end
+
+		-- NOW we swap any EMPTY tab place things killme
+		local done = setmetatable({}, {__index = function(self, k)
+			self[k] = {}
+			return self[k]
+		end})
+
+		for ply, items in pairs(trade.Items) do
+			local otherply = trade.Players[trade.Players[1] == ply and 2 or 1]
+
+			for _, item in pairs(items) do
+				if (complete[item]) then
+					continue
+				end
+
+				local tab1 = item:GetTab()
+				local did_good = false
+
+				for _, tab2 in pairs(pluto.inv.invs[otherply]) do
+					local tab2_type = pluto.tabs[tab2.Type]
+					if (not tab2_type) then
+						continue
+					end
+
+					for tab2slot = 1, tab2_type.size do
+						if (done[tab2.RowID][tab2slot]) then
+							continue
+						end
+						if (tab2.Items[tab2slot]) then
+							continue
+						end
+
+						-- empty tab slot find, check
+						if (not pluto.canswitchtabs(tab1, tab2, item.TabIndex, tab2slot)) then
+							continue
+						end
+
+						-- GO AHEAD
+
+						local succ, swapped = pluto.inv.switchtab(db, item.TabID, item.TabIndex, tab2.RowID, tab2slot)
+						if (not succ) then
+							return
+						end
+
+						if (not succ or swapped ~= 1) then
+							if (succ) then
+								mysql_rollback(db)
+							end
+							print(item.TabID, item.TabIndex, tab2.RowID, tab2slot)
+							reloadall("swapped: " .. swapped)
+							return
+						end
+						done[tab2.RowID][tab2slot] = true
+
+						did_good = true
+						break
+					end
+					if (did_good) then
+						break
+					end
+				end
+
+				if (not did_good) then
+					mysql_rollback(db)
+					reloadall("no good")
+					return
+				end
+
+				-- complete[item] = true
+			end
+		end
+
+		-- TODO(meepen): log lol
+		mysql_commit(db)
+
+		-- TODO(meep): way to remove this? prob not for a while
+		pluto.inv.reloadfor(trade.Players[1])
+		pluto.inv.reloadfor(trade.Players[2])
+	end)
 end
 
 function pluto.trades.cancel(ply)
@@ -385,8 +439,7 @@ function pluto.inv.writetradeupdate(recv)
 		incoming[#incoming + 1] = item
 	end
 
-	local free = pluto.inv.getfreespaces(recv, incoming, ignore)
-	net.WriteBool(free)
+	net.WriteBool(true)
 end
 
 function pluto.inv.writetrademessage(recv, ply, msg)

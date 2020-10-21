@@ -145,17 +145,19 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 		if (not IsValid(ply) or math.random() > pluto_weapon_droprate:GetFloat()) then
 			continue
 		end
-		local transact, item = pluto.inv.generatebufferweapon(ply)
-		transact:Run()
+		pluto.db.transact(function(db)
+			local item = pluto.inv.generatebufferweapon(db, ply)
 
-		if (item:GetMaxAffixes() >= 5) then
-			msg:AddEmbed(item:GetDiscordEmbed()
-				:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
-			)
-			send = true
-		end
+			if (item:GetMaxAffixes() >= 5) then
+				msg:AddEmbed(item:GetDiscordEmbed()
+					:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
+				)
+				send = true
+			end
 
-		ply:ChatPrint("You have received a ", item, white_text, "! Check your inventory.")
+			ply:ChatPrint("You have received a ", item, white_text, "! Check your inventory.")
+			mysql_commit(db)
+		end)
 	end
 
 	if (send) then

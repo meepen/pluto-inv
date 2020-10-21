@@ -31,6 +31,7 @@ end
 
 function MT:_try()
 	if (self._finished) then
+		pwarnf("already finished! %s", debug.traceback())
 		return self
 	end
 
@@ -64,7 +65,7 @@ function MT:_finish(success, ...)
 end
 
 function Promise(run)
-	local promise = setmetatable({}, PROMISE)
+	local promise = setmetatable({trace = debug.traceback()}, PROMISE)
 	run(function(...)
 		promise:_finish(true, ...)
 	end, function(...)

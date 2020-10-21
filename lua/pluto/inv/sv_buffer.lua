@@ -2,22 +2,20 @@ local function ornull(n)
 	return n and SQLStr(n) or "NULL"
 end
 
-function pluto.inv.pushbuffer(ply, transact)
+function pluto.inv.pushbuffer(db, ply)
+	mysql_cmysql()
+
 	local tab = pluto.inv.invs[ply].tabs.buffer
 
 	if (not tab) then
 		return false
 	end
 
-	if (not transact) then
-		transact = pluto.db.transact()
-	end
-
-	transact:AddQuery([[DELETE FROM pluto_items where tab_id = ? and tab_idx = 5]], {tab.RowID})
-	transact:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 4]], {tab.RowID})
-	transact:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 3]], {tab.RowID})
-	transact:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 2]], {tab.RowID})
-	transact:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 1]], {tab.RowID})
+	mysql_stmt_run(db, "DELETE FROM pluto_items where tab_id = ? and tab_idx = 5", tab.RowID)
+	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 4", tab.RowID)
+	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 3", tab.RowID)
+	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 2", tab.RowID)
+	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 1", tab.RowID)
 
 	for i = 4, 1, -1 do
 		local item = tab.Items[i]
@@ -26,23 +24,19 @@ function pluto.inv.pushbuffer(ply, transact)
 			item.TabIndex = i + 1
 		end
 	end
-
-	return transact
 end
 
-function pluto.inv.popbuffer(ply, index, transact)
+function pluto.inv.popbuffer(db, ply, index)
+	mysql_cmysql()
+
 	local tab = pluto.inv.invs[ply].tabs.buffer
 
 	if (not tab) then
 		return false
 	end
 
-	if (not transact) then
-		transact = pluto.db.transact()
-	end
-
 	for i = index + 1, 5 do
-		transact:AddQuery([[UPDATE pluto_items set tab_idx = tab_idx - 1 where tab_id = ? and tab_idx = ?]], {tab.RowID, i})
+		mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx - 1 where tab_id = ? and tab_idx = ?", tab.RowID, i)
 		local item = tab.Items[i]
 		tab.Items[i - 1] = item
 		if (item) then
@@ -50,18 +44,14 @@ function pluto.inv.popbuffer(ply, index, transact)
 		end
 	end
 	tab.Items[5] = nil
-
-	return transact
 end
 
-function pluto.inv.savebufferitem(ply, new_item, transact)
+function pluto.inv.savebufferitem(db, ply, new_item)
+	mysql_cmysql()
+
 	local tab = pluto.inv.invs[ply].tabs.buffer
 
-	if (not transact) then
-		transact = pluto.db.transact()
-	end
-
-	pluto.inv.pushbuffer(ply, transact)
+	pluto.inv.pushbuffer(db, ply)
 
 	new_item.TabID = tab.RowID
 	new_item.TabIndex = 1
@@ -69,52 +59,36 @@ function pluto.inv.savebufferitem(ply, new_item, transact)
 	new_item.OriginalOwner = ply:SteamID64()
 	new_item.OriginalOwnerName = ply:Nick()
 
-	pluto.weapons.save(new_item, ply, nil, transact)
+	pluto.weapons.save(db, new_item, ply)
 
-	transact:AddCallback(function()
-		pluto.inv.notifybufferitem(ply, new_item)
-	end)
+	pluto.inv.notifybufferitem(ply, new_item)
 
-	return transact, new_item
+	return new_item
 end
 
-function pluto.inv.generatebufferweapon(ply, ...)
+function pluto.inv.generatebufferweapon(db, ply, ...)
 	local new_item = pluto.weapons.generatetier(...)
 
-	return pluto.inv.savebufferitem(ply, new_item)
+	return pluto.inv.savebufferitem(db, ply, new_item)
 end
 
-function pluto.inv.generatebuffergrenade(ply, tier, grenade, ...)
-	return pluto.inv.generatebufferweapon(ply, tier, grenade or pluto.weapons.randomgrenade(), ...)
+function pluto.inv.generatebuffergrenade(db, ply, tier, grenade, ...)
+	return pluto.inv.generatebufferweapon(db, ply, tier, grenade or pluto.weapons.randomgrenade(), ...)
 end
 
-function pluto.inv.generatebuffershard(ply, tier, transact)
+function pluto.inv.generatebuffershard(db, ply, tier)
+	mysql_cmysql()
+
 	local new_item = setmetatable({
 		ClassName = "shard",
 		Tier = pluto.tiers.byname[tier],
 		Type = "Shard",
 	}, pluto.inv.item_mt)
 
-	return pluto.inv.savebufferitem(ply, new_item, transact)
+	return pluto.inv.savebufferitem(db, ply, new_item)
 end
 
-concommand.Add("pluto_spawn_weapon", function(ply, cmd, arg, args)
-	if (not pluto.cancheat(ply)) then
-		return
-	end
-
-	pluto.inv.generatebufferweapon(ply, unpack(arg)):Run()
-end)
-
-concommand.Add("pluto_spawn_shard", function(ply, cmd, arg, args)
-	if (not pluto.cancheat(ply)) then
-		return
-	end
-
-	pluto.inv.generatebuffershard(ply, arg[1]):Run()
-end)
-
-function pluto.inv.generatebuffermodel(ply, mdl)
+function pluto.inv.generatebuffermodel(db, ply, mdl)
 	local new_item = setmetatable({
 		ClassName = "model_" .. mdl,
 		Model = pluto.models[mdl],
@@ -125,16 +99,8 @@ function pluto.inv.generatebuffermodel(ply, mdl)
 		return false
 	end
 
-	return pluto.inv.savebufferitem(ply, new_item)
+	return pluto.inv.savebufferitem(db, ply, new_item)
 end
-
-concommand.Add("pluto_spawn_model", function(ply, cmd, arg, args)
-	if (not pluto.cancheat(ply)) then
-		return
-	end
-
-	pluto.inv.generatebuffermodel(ply, unpack(arg)):Run()
-end)
 
 function pluto.inv.notifybufferitem(ply, i)
 	pluto.inv.message(ply)
@@ -154,3 +120,34 @@ function pluto.inv.getbufferitem(ply, id)
 		end
 	end
 end
+
+
+concommand.Add("pluto_spawn_weapon", function(ply, cmd, arg, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+
+	pluto.db.instance(function(db)
+		pluto.inv.generatebufferweapon(db, ply, unpack(arg))
+	end)
+end)
+
+concommand.Add("pluto_spawn_shard", function(ply, cmd, arg, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+
+	pluto.db.instance(function(db)
+		pluto.inv.generatebuffershard(db, ply, arg[1])
+	end)
+end)
+
+concommand.Add("pluto_spawn_model", function(ply, cmd, arg, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+
+	pluto.db.instance(function(db)
+		pluto.inv.generatebuffermodel(db, ply, unpack(arg))
+	end)
+end)

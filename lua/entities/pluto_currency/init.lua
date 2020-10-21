@@ -23,16 +23,15 @@ function ENT:Reward(e)
 
 
 	if (not cur.Fake) then
-		pluto.inv.addcurrency(e, cur.InternalName, 1, function(succ)
+		pluto.db.instance(function(db)
+			local succ, err = pluto.inv.addcurrency(db, e, cur.InternalName, 1)
 			if (not IsValid(e)) then
 				return
 			end
-	
+
 			if (not succ) then
 				e:ChatPrint("i tried to add currency but it didn't work, tell meepen you lost: " .. cur.InternalName)
-				return
 			end
-	
 		end)
 		e:ChatPrint(cur.Color, "+ ", white_text, "You received ", startswithvowel(cur.Name) and "an " or "a ", cur)
 	end

@@ -5,8 +5,8 @@ hook.Add("CheckPassword", "pluto_maxplayers", function(sid64, ipaddr, svpwd, clp
 		return
 	end
 
-	pluto.db.query("SELECT rank FROM pluto_player_info WHERE steamid = ?", {sid64}, function(err, q, d)
-		if (err) then
+	pluto.db.simplequery("SELECT rank FROM pluto_player_info WHERE steamid = ?", {sid64}, function(d, err)
+		if (not d) then
 			return
 		end
 
