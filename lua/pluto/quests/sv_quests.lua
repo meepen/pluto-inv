@@ -619,6 +619,7 @@ function pluto.quests.init_nocache(ply, cb)
 
 		if (needs_run) then
 			mysql_commit(db)
+			pluto.quests.init_nocache(ply, cb)
 		else
 			for type, quests in pairs(quests) do
 				for _, quest in pairs(quests) do
