@@ -7,11 +7,10 @@ function QUEST:Init(data)
 	data:Hook("PlayerDeath", function(data, vic, inf, atk)
 		if (ttt.GetRoundState() == ttt.ROUNDSTATE_ACTIVE and atk == data.Player and atk:GetRoleTeam() ~= "traitor" and vic:GetRoleTeam() == "traitor") then
 			local scanner = atk:GetWeapon("weapon_ttt_dna")
-
 			local own
 
 			if (IsValid(scanner) and IsValid(scanner:GetCurrentDNA())) then
-				local own = scanner:GetCurrentDNA():GetOwner()
+				own = scanner:GetCurrentDNA():GetDNAOwner()
 				if (own:GetClass() == "prop_ragdoll" and own.HiddenState) then
 					own = own.HiddenState:GetPlayer()
 				end
@@ -29,5 +28,5 @@ function QUEST:IsType(type)
 end
 
 function QUEST:GetProgressNeeded(type)
-	return math.random(40, 50)
+	return math.random(25, 30)
 end

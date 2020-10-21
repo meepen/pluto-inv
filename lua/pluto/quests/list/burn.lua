@@ -7,7 +7,7 @@ function QUEST:Init(data)
 	data:Hook("DoPlayerDeath", function(data, vic, atk, dmg)
 		local succ = false
 
-		if (not atk:IsPlayer() and vic.was_burned and vic.was_burned.t > CurTime() - 5) then
+		if (not atk:IsPlayer() and vic.was_burned and vic.was_burned.t > CurTime() - 10) then
 			atk = vic.was_burned.att
 		end
 
