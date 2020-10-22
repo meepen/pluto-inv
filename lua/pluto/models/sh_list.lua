@@ -1082,7 +1082,7 @@ c "houndmodel" {
 	SubDescription = "Shadowscale Acolyte"
 }
 
-c "ghostface" {
+c "ghostface" { -- fix textures
 	Name = "Ghostface",
 	Model = "models/player/screamplayermodel/scream/scream.mdl",
 	Hands = nil,
@@ -1090,7 +1090,7 @@ c "ghostface" {
 	SubDescription = "Ghostface"
 }
 
-c "scarecrow" {
+c "scarecrow" { -- fix hitboxes
 	Name = "Scarecrow",
 	Model = "models/dc/injustice2/pm_scarecrow.mdl",
 	Hands = nil,
@@ -1106,7 +1106,7 @@ c "darkwraith" {
 	SubDescription = "Darkwraith"
 }
 
-c "joker_2019" {
+c "joker_2019" { -- bodygroups
 	Name = "Joker 2019",
 	Model = "models/kemot44/Models/Joker_PM.mdl",
 	Hands = "models/kemot44/Models/Joker_cArm.mdl",
@@ -1114,7 +1114,7 @@ c "joker_2019" {
 	SubDescription = "Joker 2019"
 }
 
-c "detr_connor" {
+c "detr_connor" { -- hitboxes fix
 	Name = "Detroit - Connor",
 	Model = "models/konnie/isa/detroit/connor.mdl",
 	Hands = "models/weapons/arms/v_arms_connor.mdl",
@@ -1122,7 +1122,7 @@ c "detr_connor" {
 	SubDescription = "Detroit - Connor"
 }
 
-c "death_paint" {
+c "death_paint" { -- hitgroups
 	Name = "Death (Painted)",
 	Model = "models/dawson/death_a_grim_bundle_pms/death_painted/death_painted.mdl",
 	Hands = "models/dawson/death_a_grim_bundle_pms/death_painted/death_painted_arms.mdl",
@@ -1178,7 +1178,7 @@ c "death" {
 	SubDescription = "Death"
 }
 
-c "savini_jason" {
+c "savini_jason" { -- hitgroups
 	Name = "Savini Jason",
 	Model = "models/models/konnie/savini/savini.mdl",
 	Hands = "models/weapons/arms/v_arms_savini.mdl",
@@ -1208,6 +1208,15 @@ c "husk" {
 	Hands = nil,
 	Color = ColorRand(),
 	SubDescription = "Husk"
+}
+
+c "hunk" {
+	Name = "Hunk",
+	Model = "models/player/lordvipes/rerc_hunk/hunk_cvp.mdl",
+	Hands = "models/player/lordvipes/rerc_hunk/arms/hunkarms_cvp.mdl",
+	Hands = nil,
+	Color = ColorRand(),
+	SubDescription = "Hunk"
 }
 
 

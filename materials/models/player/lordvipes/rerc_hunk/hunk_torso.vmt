@@ -1,0 +1,28 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/player/lordvipes/rerc_hunk/Hunk_Torso"
+	"$bumpmap" "models/player/lordvipes/rerc_hunk/Hunk_Torso_n"
+	"$phong" 1
+	"$phongboost" 0.04
+	"$phongexponent" 30
+	"$phongtint" "[1 .85 .85]"
+	"$phongfresnelranges" "[.5 .85 30]"
+	"$model" 1
+
+
+	"$rimlight" "1"
+	"$rimlightexponent" "5"
+	"$rimlightboost" "0.15"
+
+	"$blendtintbybasealpha" "1" 
+ 	"$blendtintcoloroverbase" "0"
+	
+	Proxies
+	{
+		PlayerColor
+		{
+			resultVar	$color2
+			default		0.53 0.46 0.39
+		}
+	}
+}

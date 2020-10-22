@@ -1,0 +1,22 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/player/lordvipes/rerc_hunk/hunk_gear"
+	"$bumpmap" "models/player/lordvipes/rerc_hunk/hunk_gear_n"
+	"$phong" 1
+	"$phongboost" 0.04
+	"$phongexponent" 30
+	"$phongtint" "[1 .85 .85]"
+	"$phongfresnelranges" "[.5 .85 30]"
+	"$model" 1
+
+
+	"$rimlight" "1"
+	"$rimlightexponent" "5"
+	"$rimlightboost" "0.15"
+
+	"$detail" "models/player/lordvipes/rerc_hunk/hunk_gear_b"
+	"$detailscale" "1"
+	"$detailblendfactor" "1"
+	"$detailblendmode" "5"
+
+}

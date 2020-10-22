@@ -452,7 +452,7 @@ local packs =  {
 		}
 	},]]
 	tfa_xtracker = {
-		remote = default "tfa_xtracker",
+		remote = default "tfa_xtrackermaterials/",
 		versions = {
 			"dev",
 		}
@@ -461,6 +461,14 @@ local packs =  {
 		remote = default "pumpkin",
 		versions = {
 			"20201015"
+		}
+	},
+	halloween2020 = {
+		remote = default "halloween2020",
+		versions = {
+			"20201021_new2",
+			"20201021_new",
+			"20201021"
 		}
 	}
 }
