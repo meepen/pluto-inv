@@ -389,14 +389,26 @@ function QUEST:UpdateProgress(amount)
 		return
 	end
 
+	if (self.ProgressLeft <= 0) then
+		return
+	end
+
 	pluto.db.instance(function(db)
+		local needed, err = mysql_stmt_run(db, "SELECT progress_needed FROM pluto_quests WHERE idx = ?", self.RowID)
+		if (err) then
+			return
+		end
+
+		if (not needed[1]) then
+			return
+		end
+
 		local succ, err = mysql_stmt_run(db, "UPDATE pluto_quests SET progress_needed = GREATEST(0, progress_needed - ?) WHERE progress_needed > 0 AND idx = ?", amount, self.RowID)
 		if (not succ) then
 			return
 		end
-		self.ProgressLeft = math.max(0, self.ProgressLeft - amount)
 
-		if (succ.AFFECTED_ROWS == 0) then
+		if (needed[1].progress_needed <= amount) then
 			self:Complete()
 		end
 
@@ -404,6 +416,7 @@ function QUEST:UpdateProgress(amount)
 			:write("quest", self)
 			:send()
 	end)
+	self.ProgressLeft = math.max(0, self.ProgressLeft - amount)
 end
 
 function QUEST:Complete()
