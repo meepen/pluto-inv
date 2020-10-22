@@ -15,9 +15,9 @@ SWEP.Primary.Sound 			= Sound "XTracker.Fire"
 SWEP.Primary.Damage        = 21
 
 SWEP.Primary.Automatic			= true
-SWEP.Primary.Delay				= 60 / 700
+SWEP.Primary.Delay				= 60 / 570
 SWEP.Primary.ClipSize			= 50
-SWEP.Primary.DefaultClip			= 250
+SWEP.Primary.DefaultClip			= 100
 SWEP.Primary.Ammo			= "ar2"
 
 SWEP.ViewModel			= "models/weapons/tfa_cso/c_xtracker.mdl"
@@ -61,24 +61,14 @@ SWEP.Ironsights = {
 }
 
 SWEP.MuzzleAttachment			= "1"
-
-
-
 SWEP.ShellAttachment			= "2"
-
-
 SWEP.DoMuzzleFlash = true
-
 SWEP.CustomMuzzleFlash = true
-
 SWEP.AutoDetectMuzzleAttachment = true
 
 SWEP.MuzzleFlashEffect = "muz_xtracker"
-
 SWEP.Tracer				= 0
-
 SWEP.TracerName 		= "tra_xtracker_sniper"
-
 SWEP.TracerCount 		= 1
 
 local pow = 1.4

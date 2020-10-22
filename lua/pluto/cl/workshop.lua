@@ -470,7 +470,13 @@ local packs =  {
 			"20201021_new",
 			"20201021"
 		}
-	}
+	},
+	tbarrel = {
+		remote = default "tbarrel",
+		versions = {
+			"20201022",
+		}
+	},
 }
 
 
