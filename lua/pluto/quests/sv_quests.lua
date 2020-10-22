@@ -408,7 +408,7 @@ function QUEST:UpdateProgress(amount)
 			return
 		end
 
-		if (needed[1].progress_needed <= amount) then
+		if (needed[1].progress_needed <= amount and succ.AFFECTED_ROWS == 1) then
 			self:Complete()
 		end
 
