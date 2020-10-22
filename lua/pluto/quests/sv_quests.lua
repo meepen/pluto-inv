@@ -395,7 +395,8 @@ function QUEST:UpdateProgress(amount)
 			return
 		end
 		self.ProgressLeft = math.max(0, self.ProgressLeft - amount)
-		if (dat.AFFECTED_ROWS == 0) then
+
+		if (succ.AFFECTED_ROWS == 0) then
 			self:Complete()
 		end
 
@@ -406,6 +407,10 @@ function QUEST:UpdateProgress(amount)
 end
 
 function QUEST:Complete()
+	if (self.AlreadyDone) then
+		return
+	end
+	self.AlreadyDone = true
 	pluto.db.simplequery("UPDATE pluto_quests SET expiry_time = LEAST(expiry_time, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP)) WHERE idx = ?", {self.TYPE.Cooldown, self.RowID}, function(d, err)
 		if (self.QUEST.Reward) then
 			self.QUEST:Reward(self)
