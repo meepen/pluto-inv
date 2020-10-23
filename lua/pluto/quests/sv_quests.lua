@@ -742,7 +742,7 @@ function pluto.quests.reset(ply)
 		end
 	end
 
-	pluto.db.simplequery("DELETE FROM pluto_quests WHERE steamid = ?", {pluto.db.steamid64(ply)}, function(dat)
+	pluto.db.simplequery("DELETE FROM pluto_quests_new WHERE owner = ?", {pluto.db.steamid64(ply)}, function(dat)
 		if (not dat or not IsValid(ply)) then
 			return
 		end
