@@ -85,7 +85,7 @@ pluto.quests.rewardhandlers = {
 
 				return true
 			end).InternalName
-			
+
 			local new_item = pluto.weapons.generatetier(tier, classname)
 
 			for _, mod in ipairs(self.Mods or {}) do
@@ -194,9 +194,7 @@ pluto.quests.rewardhandlers = {
 pluto.quests.rewards = {
 	unique = { -- This should never be used
 		{
-			Type = "currency",
-			Currency = "droplet",
-			Amount = 1,
+			Type = "unique",
 		},
 	},
 	hourly = {
@@ -384,10 +382,6 @@ function QUEST:Hook(event, fn)
 end
 
 function QUEST:UpdateProgress(amount)
-	if (true) then
-		return
-	end
-
 	local p = self.Player
 	if (IsValid(p) and p.Punishments and p.Punishments.questban and p.Punishments.questban.Ending > os.time()) then
 		return
@@ -398,37 +392,26 @@ function QUEST:UpdateProgress(amount)
 	end
 
 	pluto.db.instance(function(db)
-		local needed, err = mysql_stmt_run(db, "SELECT progress_needed FROM pluto_quests WHERE idx = ?", self.RowID)
-		if (err) then
+		local succ, err = mysql_stmt_run(db, "UPDATE pluto_quests_new SET current_progress = (@cur_prog:=LEAST(total_progress, current_progress + ?)) WHERE current_progress < total_progress AND idx = ?", amount, self.RowID)
+		if (not succ or succ.AFFECTED_ROWS == 0) then
 			return
 		end
 
-		if (not needed[1]) then
-			return
-		end
-
-		local succ, err = mysql_stmt_run(db, "UPDATE pluto_quests SET progress_needed = GREATEST(0, progress_needed - ?) WHERE progress_needed > 0 AND idx = ?", amount, self.RowID)
-		if (not succ) then
-			return
-		end
-
-		if (needed[1].progress_needed <= amount and succ.AFFECTED_ROWS == 1) then
+		local succ, err = mysql_stmt_run(db, "SELECT @cur_prog as current_progress")
+		if (succ and succ[1].current_progress == self.TotalProgress) then
 			self:Complete()
 		end
+
+		self.ProgressLeft = math.max(0, self.ProgressLeft - amount)
 
 		pluto.inv.message(self.Player)
 			:write("quest", self)
 			:send()
 	end)
-	self.ProgressLeft = math.max(0, self.ProgressLeft - amount)
 end
 
 function QUEST:Complete()
-	if (self.AlreadyDone) then
-		return
-	end
-	self.AlreadyDone = true
-	pluto.db.simplequery("UPDATE pluto_quests SET expiry_time = LEAST(expiry_time, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP)) WHERE idx = ?", {self.TYPE.Cooldown, self.RowID}, function(d, err)
+	pluto.db.simplequery("UPDATE pluto_quests_news SET expiry_time = LEAST(expiry_time, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP)) WHERE idx = ?", {self.TYPE.Cooldown, self.RowID}, function(d, err)
 		if (self.QUEST.Reward) then
 			self.QUEST:Reward(self)
 		elseif (self.Reward) then
@@ -446,51 +429,39 @@ function QUEST:Complete()
 	end)
 end
 
-function QUEST:GetRewardText(seed)
-    return pluto.quests.poolrewardtext(self.QUEST.RewardPool, seed)
+function QUEST:GetRewardText()
+    return pluto.quests.poolrewardtext(self.RewardData, self)
 end
 
 function QUEST:Reward(data)
-	pluto.quests.poolreward(self.QUEST.RewardPool, data)
+	pluto.quests.poolreward(self.RewardData, self)
 end
 
-local function poolpick(type, seed)
-	local typequests = pluto.quests.rewards[type or "unique"]
+function pluto.quests.getpoolreward(type)
+	local typequests = pluto.quests.rewards[type]
 
-	if (not typequests) then
-		return
+	return typequests and (table.Random(typequests)) or { Type="unique" }
+end
+
+function pluto.quests.poolreward(pick, quest)
+	if (quest.QUEST.Reward) then
+		return quest.QUEST.Reward(quest)
 	end
-
-	return typequests[math.floor((seed * 100) % 1 * #typequests) + 1]
+	return pluto.quests.rewardhandlers[pick.Type].reward(pick, quest)
 end
 
-function pluto.quests.poolreward(type, quest)
-	local pick = poolpick(type, quest.Seed)
-
-	if (pick) then
-		pluto.quests.rewardhandlers[pick.Type].reward(pick, quest)
+function pluto.quests.poolrewardtext(pick, quest)
+	if (quest.QUEST.GetRewardText) then
+		return quest.QUEST.GetRewardText(quest)
 	end
+	return pluto.quests.rewardhandlers[pick.Type].small(pick)
 end
 
-function pluto.quests.poolrewardtext(type, seed)
-	local pick = poolpick(type, seed)
-
-	if (pick) then
-		return pluto.quests.rewardhandlers[pick.Type].small(pick)
-	else
-		return "Error: No reward found"
-	end
-end
-
-function pluto.quests.oftype(type, ignore)
+function pluto.quests.oftype(type)
 	local available = {}
 
 	for id, QUEST in pairs(pluto.quests.list) do
-		if (ignore[id]) then
-			continue
-		end
-
-		if (QUEST:IsType(type)) then
+		if (QUEST.RewardPool == type) then
 			available[#available + 1] = QUEST
 		end
 	end
@@ -498,41 +469,50 @@ function pluto.quests.oftype(type, ignore)
 	return available
 end
 
-function pluto.quests.give(ply, type, new, db)
-	if (not db) then
-		pluto.db.instance(function(db)
-			pluto.quests.give(ply, type, new, db)
-		end)
-		return
-	end
+function pluto.quests.forplayer(ply)
+	pluto.quests.byperson[ply] = pluto.quests.byperson[ply] or setmetatable({byid = {}}, {__index = function(self, k) self[k] = {} return self[k] end})
+
+	return pluto.quests.byperson[ply]
+end
+
+function pluto.quests.addto(ply, quest)
+	local quests = pluto.quests.forplayer(ply)
+	quests.byid[quest.RowID] = quest
+	table.insert(quests[quest.Type], quest)
+end
+
+function pluto.quests.give(ply, new, db)
 	mysql_cmysql()
 
-	local type_data = pluto.quests.types[type]
-	local progress_needed = new:GetProgressNeeded(type)
-	local seed = math.random()
-	local quests = pluto.quests.byperson[ply] or {
-		byid = {},
-	}
-	local type_quests = quests[type_data.Name]
-	if (not type_quests) then
-		quests[type_data.Name] = {}
-		type_quests = quests[type_data.Name]
+	if (isstring(new)) then
+		new = pluto.quests.list[new]
 	end
+	if (not new) then
+		pwarnf("couldn't find quest")
+		return false
+	end
+
+	local type = new.RewardPool
+
+	local type_data = pluto.quests.bypool[type]
+
+	local progress_needed = new:GetProgressNeeded()
+	local reward = pluto.quests.getpoolreward(type)
 
 	local dat, err = mysql_stmt_run(
 		db,
-		"INSERT INTO pluto_quests (steamid, quest_id, type, progress_needed, total_progress, expiry_time, rand) VALUES (?, ?, ?, ?, ?, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP), ?)",
+		"INSERT INTO pluto_quests_new (owner, quest_name, type, current_progress, total_progress, expiry_time, reward) VALUES (?, ?, ?, 0, ?, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP), ?)",
 		ply:SteamID64(),
 		new.ID,
-		type,
-		progress_needed,
+		new.RewardPool,
 		progress_needed,
 		type_data.Time,
-		seed
+		util.TableToJSON(reward)
 	)
+
 	if (not dat) then
 		pwarnf("Couldn't give quest!: %s", err)
-		return
+		return false
 	end
 
 	local quest = setmetatable({
@@ -541,16 +521,16 @@ function pluto.quests.give(ply, type, new, db)
 		ProgressLeft = progress_needed,
 		TotalProgress = progress_needed,
 		EndTime = os.time() + type_data.Time,
-		Seed = seed,
 		Player = ply,
 		Type = type,
 		QUEST = new,
 		TYPE = type_data,
+		RewardData = reward
 	}, pluto.quests.quest_mt)
 
-	quests.byid[quest.RowID] = quest
+	pluto.quests.addto(ply, quest)
 
-	table.insert(type_quests, quest)
+	return quest
 end
 
 function pluto.quests.init_nocache(ply, cb)
@@ -558,85 +538,78 @@ function pluto.quests.init_nocache(ply, cb)
 	local sid = pluto.db.steamid64(ply)
 
 	pluto.db.transact(function(db)
-		mysql_stmt_run(db, "DELETE FROM pluto_quests WHERE steamid = ? AND expiry_time < CURRENT_TIMESTAMP", sid)
-		local dat = mysql_stmt_run(db, "SELECT idx, quest_id, type, progress_needed, total_progress, TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, expiry_time) as expire_diff, rand as seed FROM pluto_quests WHERE steamid = ?", sid)
-
-		local quests = pluto.quests.byperson[ply] or {
-			byid = {},
-		}
-		pluto.quests.byperson[ply] = quests
+		mysql_stmt_run(db, "DELETE FROM pluto_quests_new WHERE owner = ? AND expiry_time < CURRENT_TIMESTAMP", sid)
+		local dat, err = mysql_stmt_run(db, "SELECT idx, quest_name, CAST(reward as CHAR(1024)) as reward, CAST(type as CHAR(32)) as type, current_progress, total_progress, TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, expiry_time) as expire_diff FROM pluto_quests_new WHERE owner = ?", sid)
 
 		local have = {}
+		local types_have = setmetatable({}, {__index = function(self, k) self[k] = 0 return 0 end})
+		local quests = pluto.quests.forplayer(ply)
 
 		for _, data in ipairs(dat) do
-			local quest_type = pluto.quests.types[data.type]
+			local quest_data = pluto.quests.list[data.quest_name]
+			if (not quest_data) then
+				pwarnf("Unknown quest id %s for %s", tostring(data.quest_name), sid)
+				continue
+			end
+
+			local quest_type = pluto.quests.bypool[data.type]
 			if (not quest_type) then
 				pwarnf("Unknown quest type %s for %s", tostring(data.type), sid)
 				continue
 			end
 
-			local quest_data = pluto.quests.list[data.quest_id]
-			if (not quest_data) then
-				pwarnf("Unknown quest id %s for %s", tostring(data.quest_id), sid)
-				continue
-			end
-
-			if (not quests[quest_type.Name]) then
-				quests[quest_type.Name] = {}
+			if (not quests[quest_type.RewardPool]) then
+				quests[quest_type.RewardPool] = {}
 			end
 
 			local quest = quests.byid[data.idx] or setmetatable({
 				RowID = data.idx,
 			}, pluto.quests.quest_mt)
 
-			pluto.quests.byperson[ply].byid[data.idx] = quest
-
 			quest.Type = data.type
-			quest.QuestID = data.quest_id
-			quest.ProgressLeft = data.progress_needed
+			quest.QuestID = data.quest_name
+			quest.ProgressLeft = data.total_progress - data.current_progress
 			quest.TotalProgress = data.total_progress
 			quest.EndTime = os.time() + data.expire_diff
 			quest.Player = ply
-			quest.QUEST = quest_data
-			quest.TYPE = quest_type
-			quest.Seed = data.seed
+			quest.RewardData = util.JSONToTable(data.reward)
 			quest.Dead = false
 
-			quests.byid[quest.RowID] = quest
+			quest.QUEST = quest_data
+			quest.TYPE = quest_type
 
-			table.insert(quests[quest_type.Name], quest)
-			have[data.quest_id] = true
+			pluto.quests.addto(ply, quest)
+
+			table.insert(have, quest.QuestID)
+			types_have[data.type] = types_have[data.type] + 1
 		end
 
-		local needs_run = false
-
-		for type, type_data in pairs(pluto.quests.types) do
-			local type_quests = quests[type_data.Name]
-			if ((type_quests and #type_quests or 0) >= type_data.Amount) then
+		for _, type in ipairs(pluto.quests.types) do
+			if (types_have[type.RewardPool] >= type.Amount) then
 				continue
 			end
 
-			if (not type_quests) then
-				type_quests = {}
-				quests[type_data.Name] = type_quests
-			end
+			local quests_of_type = pluto.quests.oftype(type.RewardPool)
 
-			-- add quests
-			local oftype = table.shuffle(pluto.quests.oftype(type, have))
-
-			for i = type_quests and #type_quests + 1 or 1, type_data.Amount do
-				local new = oftype[1]
-				if (not new) then
-					return
+			-- clear already gotten ones
+			for _, already_have in pairs(have) do
+				for i, quest in pairs(quests_of_type) do
+					if (quest.ID == already_have) then
+						table.remove(quests_of_type, i)
+						break
+					end
 				end
-
-				table.remove(oftype, 1)
-				
-				pluto.quests.give(ply, type, new, db)
-
-				needs_run = true
+			end
+			
+			for i = types_have[type], type.Amount - 1 do
+				local selected, idx = table.Random(quests_of_type)
+				table.remove(quests_of_type, idx)
+				if (not pluto.quests.give(ply, selected, db)) then
+					pwarnf("couldn't add quest to player: %s", selected.ID)
+				end
 			end
 		end
+
 		mysql_commit(db)
 
 		if (needs_run) then
@@ -661,11 +634,9 @@ function pluto.quests.init(ply, _cb)
 	end
 
 	pluto.quests.loading[ply] = {_cb}
-	print("loading", ply)
+	print("loading quests for", ply)
 
 	pluto.quests.init_nocache(ply, function(dat)
-		print("init callback for", ply)
-		pluto.quests.byperson[ply] = dat
 
 		for type, questlist in pairs(dat) do
 			for _, quest in pairs(questlist) do
@@ -707,14 +678,14 @@ function pluto.inv.writequest(ply, quest)
 	net.WriteString(quest.QUEST.Name)
 	net.WriteString(quest.QUEST.Description)
 	net.WriteColor(quest.QUEST.Color)
-	net.WriteUInt(quest.Type, 8)
+	net.WriteString(quest.Type)
 
 	net.WriteBool(quest.QUEST.Credits)
 	if (quest.QUEST.Credits) then
 		net.WriteString(quest.QUEST.Credits)
 	end
 
-	net.WriteString(quest.QUEST.GetRewardText and quest.QUEST:GetRewardText(quest.Seed) or quest:GetRewardText(quest.Seed))
+	net.WriteString(pluto.quests.poolrewardtext(quest.RewardData, quest))
 
 	net.WriteInt(quest.EndTime - os.time(), 32)
 	net.WriteUInt(quest.ProgressLeft, 32)
@@ -771,7 +742,7 @@ function pluto.quests.reset(ply)
 		end
 	end
 
-	pluto.db.simplequery("DELETE FROM pluto_quests WHERE steamid = ?", {pluto.db.steamid64(ply)}, function(dat)
+	pluto.db.simplequery("DELETE FROM pluto_quests_new WHERE owner = ?", {pluto.db.steamid64(ply)}, function(dat)
 		if (not dat or not IsValid(ply)) then
 			return
 		end
@@ -791,7 +762,7 @@ function pluto.quests.reloadfor(ply)
 		end
 	end
 
-	pluto.quests.init(ply, function()
+	pluto.quests.init_nocache(ply, function()
 		ply:ChatPrint "reloaded"
 	end)
 end
@@ -801,8 +772,6 @@ function pluto.quests.reload()
 		pluto.quests.reloadfor(v)
 	end
 end
-
-pluto.quests.reload()
 
 concommand.Add("pluto_test_quest", function(ply, cmd, args)
 	if (not pluto.cancheat(ply)) then
@@ -829,16 +798,7 @@ concommand.Add("pluto_test_pool", function(ply, cmd, args)
 		return
 	end
 
-	pluto.quests.poolreward(args[1], {
-		Seed = math.random(),
-		Player = ply,
-		QUEST = {
-			Name = "Test",
-			Color = ColorRand(),
-		},
-	})
-
-	ply:ChatPrint("pluto_test_pool: Rewarded for pool ", unpack(args))
+	ply:ChatPrint("pluto_test_pool: Not finished")
 end)
 
 concommand.Add("pluto_add_quest", function(ply, cmd, args)
@@ -879,6 +839,17 @@ concommand.Add("pluto_give_quest", function(ply, cmd, args)
 end)
 
 hook.Add("PlayerAuthed", "halloween_quest", function(p)
-	pluto.quests.give(p, 0, pluto.quests.list.halloween_nade)
-	p:ChatPrint("A unique quest is active! Check your Quests!")
+	pluto.db.transact(function(db)
+		local quest = pluto.quests.give(p, "halloween_nade", db)
+		if (quest) then
+		
+			pluto.inv.message(p)
+				:write("quest", quest)
+				:send()
+			p:ChatPrint("A unique quest is active! Check your Quests!")
+		else
+			p:ChatPrint "Couldn't init your unique quest :("
+		end
+		mysql_commit(db)
+	end)
 end)

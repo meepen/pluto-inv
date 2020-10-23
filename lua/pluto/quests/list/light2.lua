@@ -3,7 +3,7 @@ QUEST.Name = "Jedi Mastery"
 QUEST.Description = "Kill players with your lightsaber"
 QUEST.Color = Color(129, 200, 6)
 
-function QUEST:GetRewardText(seed)
+function QUEST:GetRewardText()
 	return "Crossguard Lightsaber"
 end
 
@@ -32,10 +32,6 @@ function QUEST:Reward(data)
 	pluto.quests.give(data.Player, 0, pluto.quests.list.light3)
 end
 
-function QUEST:IsType(type)
-	return false
-end
-
-function QUEST:GetProgressNeeded(type)
+function QUEST:GetProgressNeeded()
 	return 15
 end

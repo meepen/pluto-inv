@@ -3,7 +3,7 @@ QUEST.Name = "Jedi Training"
 QUEST.Description = "Kill players with a lightsaber (>5 players on)"
 QUEST.Color = Color(7, 162, 247)
 
-function QUEST:GetRewardText(seed)
+function QUEST:GetRewardText()
 	return "Lightsaber"
 end
 
@@ -32,10 +32,6 @@ function QUEST:Reward(data)
 	pluto.quests.give(data.Player, 0, pluto.quests.list.light2)
 end
 
-function QUEST:IsType(type)
-	return false -- type == 0
-end
-
-function QUEST:GetProgressNeeded(type)
+function QUEST:GetProgressNeeded()
 	return 10
 end

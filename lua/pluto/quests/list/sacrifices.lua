@@ -17,10 +17,6 @@ function QUEST:Init(data)
 	end)
 end
 
-function QUEST:IsType(type)
-	return type == 3
-end
-
-function QUEST:GetProgressNeeded(type)
+function QUEST:GetProgressNeeded()
 	return math.random(15, 20)
 end

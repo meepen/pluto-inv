@@ -2,7 +2,7 @@ QUEST.Name = "Currency Revealer"
 QUEST.Description = "Reveal any currency to everyone by throwing a sticky grenade on them"
 QUEST.Color = Color(254, 233, 105)
 
-function QUEST:GetRewardText(seed)
+function QUEST:GetRewardText()
 	return "random grenade"
 end
 
@@ -39,10 +39,6 @@ function QUEST:Reward(data)
 	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "! Check your inventory.")
 end
 
-function QUEST:IsType(type)
-	return false
-end
-
-function QUEST:GetProgressNeeded(type)
+function QUEST:GetProgressNeeded()
 	return math.random(6, 8)
 end

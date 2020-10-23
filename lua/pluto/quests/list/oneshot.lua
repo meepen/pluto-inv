@@ -28,16 +28,13 @@ hook.Add("EntityTakeDamage", "oneshot_quest", function(e, dmg)
 		e.DamageTakens[dmg:GetAttacker()] = (e.DamageTakens[dmg:GetAttacker()] or 0) + 1
 	end
 end)
+
 hook.Add("TTTBeginRound", "oneshot_quest", function(e, dmg)
 	for _, ply in pairs(player.GetAll()) do
 		ply.DamageTakens = {}
 	end
 end)
 
-function QUEST:IsType(type)
-	return type == 1
-end
-
-function QUEST:GetProgressNeeded(type)
+function QUEST:GetProgressNeeded()
 	return math.random(2, 3)
 end

@@ -35,10 +35,6 @@ function QUEST:Init(data)
 	end)
 end
 
-function QUEST:IsType(type)
-	return type == 1
-end
-
-function QUEST:GetProgressNeeded(type)
+function QUEST:GetProgressNeeded()
 	return 3
 end
