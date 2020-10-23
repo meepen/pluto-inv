@@ -684,6 +684,7 @@ function pluto.ghost_killed(e, dmg)
 	local rand = pluto.inv.roll {
 		all = 1,
 		self = 15,
+		nothin = 7,
 		share = 2,
 		multi = 0.05,
 	}
@@ -716,6 +717,8 @@ function pluto.ghost_killed(e, dmg)
 			
 			pluto.currency.spawnfor(atk, name)
 		end
+	else
+		atk:ChatPrint(white_text, "That ghost was a ", pluto.currency.byname.tome.Color, "mirage")
 	end
 
 	return true
@@ -1005,17 +1008,17 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 	-- ghosts
 	local pct = 1 / 7
 	if (player.GetCount() < 8) then
-		pct = 1 / 8
-	elseif (player.GetCount() < 16) then
 		pct = 1 / 6
+	elseif (player.GetCount() < 16) then
+		pct = 1 / 4
 	else
-		pct = 1 / 5
+		pct = 1 / 3
 	end
 
 	if (math.random() < pct) then
 		admin.chatf(white_text, "Multiple ", ttt.teams.traitor.Color, "spirits ", white_text, "have entered this realm.")
 		local ghosts = {}
-		for i = 1, 5 + player.GetCount() / 6 do
+		for i = 1, 7 + player.GetCount() / 6 do
 			ghosts[i] = ents.Create "pluto_ghost"
 			ghosts[i]:SetPos(pluto.currency.randompos())
 			ghosts[i]:Spawn()
