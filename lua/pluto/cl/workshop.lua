@@ -452,7 +452,7 @@ local packs =  {
 		}
 	},]]
 	tfa_xtracker = {
-		remote = default "tfa_xtrackermaterials/",
+		remote = default "tfa_xtracker",
 		versions = {
 			"dev",
 		}
@@ -473,6 +473,18 @@ local packs =  {
 	},
 	tbarrel = {
 		remote = default "tbarrel",
+		versions = {
+			"20201022",
+		}
+	},
+	stinger = {
+		remote = default "stinger",
+		versions = {
+			"20201022",
+		}
+	},
+	qbarrel = {
+		remote = default "qbarrel",
 		versions = {
 			"20201022",
 		}
