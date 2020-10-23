@@ -84,7 +84,7 @@ function SWEP:ShootBullet(...)
 	local dir = p:EyeAngles()
 	dir.r = 0
 	dir = -dir:Forward()
-	dir.z = dir.z * 0.6
+	dir.z = dir.z * 0.7
 	dir.y = dir.y * 0.1
 	dir.x = dir.x * 0.1
 	self:GetOwner():SetVelocity(dir * 300)

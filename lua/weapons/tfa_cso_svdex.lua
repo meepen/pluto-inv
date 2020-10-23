@@ -2,7 +2,7 @@ SWEP.Gun					= ("tfa_base_template") --Make sure this is unique.  Specically, yo
 if (GetConVar(SWEP.Gun.."_allowed")) != nil then
 	if not (GetConVar(SWEP.Gun.."_allowed"):GetBool()) then SWEP.Base = "tfa_blacklisted" SWEP.PrintName = SWEP.Gun return end
 end
-SWEP.Base				= "tfa_gun_base"
+SWEP.Base				= "weapon_tttbase"
 SWEP.Category				= "TFA CS:O" --The category.  Please, just choose something generic or something I've already done if you plan on only doing like one swep.
 SWEP.Author				= "Kamikaze" --Author Tooltip
 SWEP.Contact				= "" --Contact Info Tooltip
@@ -12,7 +12,7 @@ SWEP.Spawnable				= true --Can you, as a normal user, spawn this?
 SWEP.AdminSpawnable			= true --Can an adminstrator spawn this?  Does not tie into your admin mod necessarily, unless its coded to allow for GMod's default ranks somewhere in its code.  Evolve and ULX should work, but try to use weapon restriction rather than these.
 SWEP.DrawCrosshair			= true		-- Draw the crosshair?
 SWEP.PrintName				= "SVD Custom"		-- Weapon name (Shown on HUD)
-SWEP.Slot				= 3				-- Slot in the weapon selection menu.  Subtract 1, as this starts at 0.
+SWEP.Slot				= 2				-- Slot in the weapon selection menu.  Subtract 1, as this starts at 0.
 SWEP.SlotPos				= 73			-- Position in the slot
 SWEP.DrawAmmo				= true		-- Should draw the default HL2 ammo counter if enabled in the GUI.
 SWEP.DrawWeaponInfoBox			= false		-- Should draw the weapon info box
@@ -46,85 +46,6 @@ SWEP.Secondary.Damage = 1000
 
 DEFINE_BASECLASS( SWEP.Base )
 
-function SWEP:PrimaryAttack( ... )
-	if self:GetSilenced() and not self.Owner:KeyDown(IN_USE) then
-		if CurTime() > self:GetNextPrimaryFire() and self:GetStatus() == TFA.GetStatus("idle") and self:Ammo2() > 0 then
-			self.Owner:ViewPunch(Angle(-3,0,0))
-			if IsFirstTimePredicted() then
-				self:EmitSound(self:GetStat("Secondary.Sound"))
-			end
-			self:SendViewModelAnim(ACT_VM_PRIMARYATTACK_SILENCED)
-            self:SetNextPrimaryFire(CurTime() +2.8)
-			self:SetClip2( 0 )
-			self:TakeSecondaryAmmo( 1 )
-			if SERVER then
-				local ent = ents.Create(self:GetStat("Secondary.Projectile"))
-				local dir
-				local ang = self:GetOwner():EyeAngles()
-				dir = ang:Forward()
-				ent:SetPos(self:GetOwner():GetShootPos())
-				ent:SetOwner( self:GetOwner() )
-				ent:SetAngles(self:GetOwner():EyeAngles())
-				ent.damage = self:GetStat("Secondary.Damage")
-				ent.mydamage = self:GetStat("Secondary.Damage")
-
-				if self:GetStat("Secondary.ProjectileModel") then
-					ent:SetModel(self:GetStat("Secondary.ProjectileModel"))
-				end
-
-				ent:Spawn()
-				ent:SetVelocity(dir * self:GetStat("Secondary.ProjectileVelocity"))
-				local phys = ent:GetPhysicsObject()
-
-				if IsValid(phys) then
-					phys:SetVelocity(dir * self:GetStat("Secondary.ProjectileVelocity"))
-				end
-
-				if self.ProjectileModel then
-					ent:SetModel(self:GetStat("Secondary.ProjectileModel"))
-				end
-
-				ent:SetOwner(self:GetOwner())
-			end
-		end
-		return
-	end
-	return BaseClass.PrimaryAttack( self, ... )
-end
-
-function SWEP:Reload( ... )
-	if self:GetSilenced() and not self.Owner:KeyDown(IN_USE) then
-		if self:Ammo2() > 0 and self:GetStatus() == TFA.GetStatus("idle") and self:Ammo2()  < self.Secondary.ClipSize then
-			success, tanim = self:ChooseReloadAnim()
-			self:SetStatus(TFA.Enum.STATUS_RELOADING)
-			self:SetStatusEnd(CurTime() + self:GetActivityLength( tanim, true ) )
-			self:SetNextPrimaryFire(CurTime() + self:GetActivityLength( tanim, false ) )
-		end
-		return
-	end
-	return BaseClass.Reload( self, ... )
-end
-
-function SWEP:Think2( ... )
-	if self:GetStatus() == TFA.GetStatus("reloading") and CurTime() > self:GetStatusEnd() then
-		if self:GetSilenced() then
-			self:SetClip2( 1 )
-			self:TakeSecondaryAmmo( 1, true )
-			self:SetStatus(TFA.GetStatus("idle"))
-		end
-	end
-	return BaseClass.Think2( self, ... )
-end
-
-function SWEP:AltAttack()
-	if not self:CanPrimaryAttack() then return end
-	if self.CanBeSilenced  and ( SERVER or not sp ) then
-		self:ChooseSilenceAnim( not self:GetSilenced() )
-		success, tanim = self:SetStatus(TFA.Enum.STATUS_SILENCER_TOGGLE)
-		self:SetStatusEnd( CurTime() + self:GetActivityLength( tanim ) )
-		return
-	end
-end
 
 -- nZombies Stuff
 SWEP.NZWonderWeapon		= false	-- Is this a Wonder-Weapon? If true, only one player can have it at a time. Cheats aren't stopped, though.
