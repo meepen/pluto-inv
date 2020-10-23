@@ -846,10 +846,8 @@ hook.Add("PlayerAuthed", "halloween_quest", function(p)
 			pluto.inv.message(p)
 				:write("quest", quest)
 				:send()
-			p:ChatPrint("A unique quest is active! Check your Quests!")
-		else
-			p:ChatPrint "Couldn't init your unique quest :("
 		end
+		p:ChatPrint("A unique quest is active! Check your Quests!")
 		mysql_commit(db)
 	end)
 end)
