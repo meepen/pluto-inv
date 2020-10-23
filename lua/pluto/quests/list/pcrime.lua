@@ -24,10 +24,6 @@ function QUEST:Init(data)
 	end)
 end
 
-function QUEST:IsType(type)
-	return type == 2
-end
-
-function QUEST:GetProgressNeeded(type)
+function QUEST:GetProgressNeeded()
 	return math.random(50, 70)
 end

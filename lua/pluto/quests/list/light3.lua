@@ -3,7 +3,7 @@ QUEST.Name = "The Dark Side"
 QUEST.Description = "Kill evil players with your lightsaber"
 QUEST.Color = Color(219, 29, 41)
 
-function QUEST:GetRewardText(seed)
+function QUEST:GetRewardText()
 	return "Double-bladed Lightsaber"
 end
 
@@ -30,10 +30,6 @@ function QUEST:Reward(data)
 	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "!")
 end
 
-function QUEST:IsType(type)
-	return false
-end
-
-function QUEST:GetProgressNeeded(type)
+function QUEST:GetProgressNeeded()
 	return 15
 end

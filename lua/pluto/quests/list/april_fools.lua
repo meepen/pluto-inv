@@ -2,7 +2,7 @@ QUEST.Name = "Proper Etiquette"
 QUEST.Description = "T-Bag people you have killed"
 QUEST.Color = Color(40, 185, 171)
 
-function QUEST:GetRewardText(seed)
+function QUEST:GetRewardText()
 	return "Toilet Paper"
 end
 
@@ -43,10 +43,6 @@ function QUEST:Reward(data)
 	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "!")
 end
 
-function QUEST:IsType(type)
-	return false
-end
-
-function QUEST:GetProgressNeeded(type)
+function QUEST:GetProgressNeeded()
 	return 200
 end

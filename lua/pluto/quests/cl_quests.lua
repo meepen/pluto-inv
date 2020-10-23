@@ -13,7 +13,7 @@ function pluto.inv.readquest()
 	quest.Name = net.ReadString()
 	quest.Description = net.ReadString()
 	quest.Color = net.ReadColor()
-	quest.Tier = net.ReadUInt(8)
+	quest.Tier = net.ReadString()
 	if (net.ReadBool()) then
 		quest.Credits = net.ReadString()
 	end
@@ -236,20 +236,6 @@ function PANEL:Init()
 	BaseClass.Init(self)
 
 	local lp = LocalPlayer()
-	if (true) then
-		self.BanMessage = self:Add "DLabel"
-		self.BanMessage:SetFont "BudgetLabel"
-		self.BanMessage:SetText("Quests are down for now! Sorry!")
-		self.BanMessage:Dock(FILL)
-		self.BanMessage:SetContentAlignment(5)
-		self.BanMessage:SetZPos(2)
-		self.Image = self:Add "DHTML"
-		self.Image:OpenURL "https://cdn.discordapp.com/emojis/624900639171805200.gif"
-		self.Image:Dock(FILL)
-		self.Image:SetZPos(1)
-		self.Image:DockMargin(30, 30, 30, 30)
-		return
-	end
 	if (IsValid(lp) and lp:GetNWString "pluto_questban" ~= "") then
 		self.BanMessage = self:Add "DLabel"
 		self.BanMessage:SetFont "BudgetLabel"
@@ -271,24 +257,24 @@ function PANEL:Init()
 
 	self.Categories = {}
 
-	for i = 0, #pluto.quests.types do
-		local type = pluto.quests.types[i]
-		self.Categories[i] = {
+	for _, type in ipairs(pluto.quests.types) do
+		local cat = {
 			Panel = self.List:Add(type.Name),
 			Contents = vgui.Create "EditablePanel"
 		}
+		self.Categories[type.RewardPool] = cat
 
-		self.Categories[i].Panel.Header:SetFont "pluto_quest_title"
-		self.Categories[i].Panel.Header:SetContentAlignment(5)
-		self.Categories[i].Panel.Header.UpdateColours = function() end
-		self.Categories[i].Panel.Header:SetTextColor(type.Color or white_text)
-		self.Categories[i].Panel.Header:SetTall(select(2, self.Categories[i].Panel.Header:GetTextSize()) + 2)
+		cat.Panel.Header:SetFont "pluto_quest_title"
+		cat.Panel.Header:SetContentAlignment(5)
+		cat.Panel.Header.UpdateColours = function() end
+		cat.Panel.Header:SetTextColor(type.Color or white_text)
+		cat.Panel.Header:SetTall(select(2, cat.Panel.Header:GetTextSize()) + 2)
 
-		self.Categories[i].Panel:SetContents(self.Categories[i].Contents)
-		self.Categories[i].Panel:DockMargin(0, 0, 0, 3)
-		self.Categories[i].Panel:DockPadding(0, 1, 0, 2)
+		cat.Panel:SetContents(cat.Contents)
+		cat.Panel:DockMargin(0, 0, 0, 3)
+		cat.Panel:DockPadding(0, 1, 0, 2)
 
-		self.Categories[i].Contents:DockMargin(0, 4, 0, 0)
+		cat.Contents:DockMargin(0, 4, 0, 0)
 	end
 
 	self.Quests = {}

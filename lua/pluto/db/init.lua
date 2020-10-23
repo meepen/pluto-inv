@@ -120,6 +120,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				INDEX USING HASH(steamid)
 			)
 		]])
+		--[=[
 		mysql_query(db, [[
 			CREATE TABLE IF NOT EXISTS pluto_quests (
 				idx INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -136,6 +137,24 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				PRIMARY KEY(idx),
 				UNIQUE(steamid, quest_id),
 				INDEX USING HASH(steamid)
+			)
+		]])
+		]=]
+		mysql_query(db, [[
+			CREATE TABLE IF NOT EXISTS pluto_quests_new (
+				idx INT UNSIGNED NOT NULL AUTO_INCREMENT,
+				owner BIGINT UNSIGNED NOT NULL,
+				quest_name VARCHAR(32) NOT NULL,
+				reward JSON NOT NULL,
+				type ENUM("unique", "hourly", "daily", "weekly") NOT NULL,
+
+				expiry_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				current_progress INT UNSIGNED NOT NULL,
+				total_progress INT UNSIGNED NOT NULL,
+
+				PRIMARY KEY(idx),
+				UNIQUE(owner, quest_name),
+				INDEX(owner)
 			)
 		]])
 	end)
