@@ -384,6 +384,10 @@ function QUEST:Hook(event, fn)
 end
 
 function QUEST:UpdateProgress(amount)
+	if (true) then
+		return
+	end
+
 	local p = self.Player
 	if (IsValid(p) and p.Punishments and p.Punishments.questban and p.Punishments.questban.Ending > os.time()) then
 		return

@@ -236,6 +236,20 @@ function PANEL:Init()
 	BaseClass.Init(self)
 
 	local lp = LocalPlayer()
+	if (true) then
+		self.BanMessage = self:Add "DLabel"
+		self.BanMessage:SetFont "BudgetLabel"
+		self.BanMessage:SetText("Quests are down for now! Sorry!")
+		self.BanMessage:Dock(FILL)
+		self.BanMessage:SetContentAlignment(5)
+		self.BanMessage:SetZPos(2)
+		self.Image = self:Add "DHTML"
+		self.Image:OpenURL "https://cdn.discordapp.com/emojis/624900639171805200.gif"
+		self.Image:Dock(FILL)
+		self.Image:SetZPos(1)
+		self.Image:DockMargin(30, 30, 30, 30)
+		return
+	end
 	if (IsValid(lp) and lp:GetNWString "pluto_questban" ~= "") then
 		self.BanMessage = self:Add "DLabel"
 		self.BanMessage:SetFont "BudgetLabel"
