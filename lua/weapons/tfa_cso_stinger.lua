@@ -4,6 +4,19 @@ SWEP.Author				= "Kamikaze" --Author Tooltip
 SWEP.PrintName = "Explosive Crossbow"
 SWEP.Slot = 6
 
+SWEP.Equipment = {
+	Name		   = "Explosive Crossbow",
+	Desc 		   = "Explosive arrows. From a crossbow.",
+	CanBuy	       = { traitor = true },
+	Cost 	   	   = 1,
+	Icon           = "materials/tttrw/equipment/flaregun.png"
+}
+
+SWEP.GrenadeEntity = "ttt_sticky_grenade"
+SWEP.ThrowVelocity = 10000
+SWEP.Bounciness = 0
+
+
 SWEP.Primary.Sound 			= Sound "Stinger.Fire"
 SWEP.Primary.Damage		= 20
 SWEP.Primary.Automatic			= true					-- Automatic/Semi Auto
@@ -32,9 +45,33 @@ SWEP.Offset = { --Procedural world model animation, defaulted for CS:S purposes.
 	},
 	Scale = 1.2
 }
+DEFINE_BASECLASS(SWEP.Base)
+function SWEP:SetupDataTables()
+	BaseClass.SetupDataTables(self)
+
+	self:NetVar("ThrowStart", "Float", math.huge)
+end
+
 
 function SWEP:DoFireBullets(src, dir, data)
-	print(src, dir, data)
+	local e
+	if (SERVER) then
+		e = ents.Create(self.GrenadeEntity)
+		e.DoRemove = true
+	end
+
+	if (IsValid(e)) then
+		e:SetOrigin(self:GetOwner():EyePos())
+		e:SetOwner(self:GetOwner())
+		e.Owner = self:GetOwner()
+		e:SETVelocity(self:GetOwner():GetAimVector() * self.ThrowVelocity + self:GetOwner():GetVelocity() * 0.8)
+		e:SetDieTime(CurTime() + self.Primary.Delay)
+		e:SetBounciness(self.Bounciness)
+		e:SetWeapon(self)
+		e:Spawn()
+
+		self:SetThrowStart(math.huge)
+	end
 end
 
 SWEP.Ironsights = false
