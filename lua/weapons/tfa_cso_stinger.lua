@@ -9,6 +9,7 @@ SWEP.Equipment = {
 	Desc 		   = "Explosive arrows. From a crossbow.",
 	CanBuy	       = { traitor = true },
 	Cost 	   	   = 1,
+	Limit	       = 1,
 	Icon           = "materials/tttrw/equipment/flaregun.png"
 }
 
@@ -22,7 +23,7 @@ SWEP.Primary.Damage		= 20
 SWEP.Primary.Automatic			= true					-- Automatic/Semi Auto
 SWEP.Primary.Delay				= 60 / 90
 
-SWEP.Primary.ClipSize			= 3
+SWEP.Primary.ClipSize			= 1
 SWEP.Primary.DefaultClip			= 3
 SWEP.Primary.Ammo			= "none"
 
