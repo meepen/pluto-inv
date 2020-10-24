@@ -786,8 +786,7 @@ concommand.Add("pluto_test_quest", function(ply, cmd, args)
 	end
 
 	quest:Reward {
-		Player = ply,
-		Seed = math.random()
+		Player = ply
 	}
 
 	ply:ChatPrint("pluto_test_quest: Rewarded for quest ", quest.Color, quest.Name)
