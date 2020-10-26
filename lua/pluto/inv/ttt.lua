@@ -126,9 +126,6 @@ end)
 hook.Add("TTTEndRound", "pluto_endround", function()
 	timer.Remove "pluto_afkcheck"
 
-	local msg = discord.Message()
-	local send = false
-
 	for _, obj in pairs(round.GetStartingPlayers()) do
 		local ply = obj.Player
 		if (not IsValid(ply)) then
@@ -149,19 +146,17 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 			local item = pluto.inv.generatebufferweapon(db, ply)
 
 			if (item:GetMaxAffixes() >= 5) then
+				local msg = discord.Message()
+
 				msg:AddEmbed(item:GetDiscordEmbed()
 					:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
 				)
-				send = true
+				msg:Send "drops"
 			end
 
 			ply:ChatPrint("You have received a ", item, white_text, "! Check your inventory.")
 			mysql_commit(db)
 		end)
-	end
-
-	if (send) then
-		msg:Send "drops"
 	end
 end)
 
