@@ -253,8 +253,9 @@ end
 
 function pluto.inv.retrieveitems(steamid, cb)
 	steamid = pluto.db.steamid64(steamid)
+	local ply = player.GetBySteamID64(steamid)
 
-	pluto.db.simplequery("SELECT i.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable, original_owner, owner.displayname as original_name FROM pluto_items i LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx JOIN pluto_tabs t ON t.idx = i.tab_id WHERE owner = ?", {steamid}, function(d, err)
+	pluto.db.simplequery("SELECT i.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable, CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name FROM pluto_items i LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx JOIN pluto_tabs t ON t.idx = i.tab_id WHERE owner = ?", {steamid}, function(d, err)
 		if (not d) then
 			pwarnf("sql error: %s\n%s", err, debug.traceback())
 			return
@@ -327,10 +328,20 @@ function pluto.inv.retrieveitems(steamid, cb)
 
 				local mod = pluto.mods.byname[item.modname]
 
+				if (not wpn.Mods) then
+					if (IsValid(ply)) then
+						ply:ChatPrint("Your item with id " .. item.gun_index .. " has mods when it shouldn't!")
+					end
+					continue
+				end
+
 				wpn.Mods[mod.Type] = wpn.Mods[mod.Type] or {}
 
 				if (not item.tier) then
-					error "wtf"
+					if (IsValid(ply)) then
+						ply:ChatPrint("Your item with id " .. item.gun_index .. " has a mod with an invalid tier!")
+					end
+					continue
 				end
 
 				table.insert(wpn.Mods[mod.Type], {
