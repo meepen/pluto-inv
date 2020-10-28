@@ -145,7 +145,7 @@ function PANEL:Init()
 				self.Used[self.Item.ID] = true
 			end
 
-			pluto.ui.ghost = nil
+			pluto.ui.unsetghost()
 		end
 
 		function p:RightClick()
