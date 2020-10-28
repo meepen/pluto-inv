@@ -1517,7 +1517,7 @@ local PANEL = {}
 DEFINE_BASECLASS "DImage"
 
 function PANEL:OnMousePressed(mouse)
-	if (IsValid(pluto.ui.ghost)) then
+	if (IsValid(pluto.ui.ghost) and pluto.ui.ghost.Tab.ID != 0) then
 		if (pluto.ui.ghost.Item and pluto.ui.ghost.Item.Locked) then
 			local p = vgui.Create "pluto_falling_text"
 			p:SetText "That item is locked!"
