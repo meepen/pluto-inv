@@ -328,7 +328,7 @@ function PANEL:Init()
 	end
 
 	self.Image.Start = RealTime()
-	self.Image.Ends = RealTime() + 3
+	self.Image.Ends = RealTime() + (3 / GetConVar("pluto_open_speed"):GetFloat())
 
 	local s = self
 	function self.Image:Think()

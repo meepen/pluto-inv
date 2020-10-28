@@ -1531,7 +1531,7 @@ function PANEL:OnMousePressed(mouse)
 			TabIndex = pluto.ui.ghost.TabIndex,
 			Item = pluto.ui.ghost.Item.ID,
 			Time = CurTime(),
-			EndTime = CurTime() + 1,
+			EndTime = CurTime() + (1 / GetConVar("pluto_trash_speed"):GetFloat()),
 		}
 	else
 		local p = vgui.Create "pluto_falling_text"
