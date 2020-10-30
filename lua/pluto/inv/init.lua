@@ -328,7 +328,7 @@ function pluto.inv.retrieveitems(steamid, cb)
 
 				local mod = pluto.mods.byname[item.modname]
 
-				if (not wpn.Mods) then
+				if (not mod or not wpn.Mods) then
 					if (IsValid(ply)) then
 						ply:ChatPrint("Your item with id " .. item.gun_index .. " has mods when it shouldn't!")
 					end
