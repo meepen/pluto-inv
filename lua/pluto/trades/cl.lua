@@ -860,6 +860,8 @@ function PANEL:Init()
 
 				self.TradeItems[self.Item.ID] = true
 			end
+
+			pluto.ui.unsetghost()
 		end
 
 		function p:RightClick()
