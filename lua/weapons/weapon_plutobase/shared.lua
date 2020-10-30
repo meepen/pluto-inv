@@ -34,7 +34,7 @@ function SWEP:ReceivePlutoData()
 	for _, modlist in pairs(data.Mods or {}) do
 		for _, mod_data in pairs(modlist) do
 			local mod = pluto.mods.byname[mod_data.Mod]
-			if (mod.ModifyWeapon) then
+			if (mod and mod.ModifyWeapon) then
 				mod:ModifyWeapon(self, pluto.mods.getrolls(mod, mod_data.Tier, mod_data.Roll))
 			end
 		end

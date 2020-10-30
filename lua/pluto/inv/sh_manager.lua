@@ -209,7 +209,7 @@ function ITEM:GetMaxAffixes()
 	if (self.Mods and self.Mods.implicit) then
 		for _, modd in pairs(self.Mods.implicit) do
 			local mod = pluto.mods.byname[modd.Mod]
-			if (mod.ExtraAffixes) then
+			if (mod and mod.ExtraAffixes) then
 				affix = affix + mod.ExtraAffixes
 			end
 		end
@@ -326,6 +326,11 @@ function ITEM:GetDiscordEmbed()
 		for type, mods in pairs(self.Mods) do
 			for ind, mod_data in ipairs(mods) do
 				local mod = pluto.mods.byname[mod_data.Mod]
+
+				if (not mod) then
+					continue
+				end
+				
 				local rolls = pluto.mods.getrolls(mod, mod_data.Tier, mod_data.Roll)
 
 				local name = mod:GetPrintName()
@@ -372,6 +377,11 @@ function ITEM:GetTextMessage()
 		for type, mods in pairs(self.Mods) do
 			for ind, mod_data in ipairs(mods) do
 				local mod = pluto.mods.byname[mod_data.Mod]
+
+				if (not mod) then
+					continue
+				end
+				
 				local rolls = pluto.mods.getrolls(mod, mod_data.Tier, mod_data.Roll)
 
 				local name = mod:GetPrintName()
