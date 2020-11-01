@@ -1132,7 +1132,7 @@ local HitboxOverride = {
 	},
 }
 
-for i = 28, 57 do HitboxOverride[0][i] = {HitGroup = HITGROUP_RIGHTARM }end
+for i = 28, 57 do HitboxOverride[0][i] = {HitGroup = HITGROUP_RIGHTARM } end
 
 c "scarecrow" { -- fix hitboxes
 	Name = "Scarecrow",
@@ -1142,6 +1142,7 @@ c "scarecrow" { -- fix hitboxes
 	SubDescription = "Scarecrow",
 	HitboxOverride = HitboxOverride
 }
+
 
 c "darkwraith" {
 	Name = "Darkwraith",
@@ -1167,12 +1168,50 @@ c "detr_connor" { -- hitboxes fix
 	SubDescription = "Detroit - Connor"
 }
 
-c "death_paint" { -- hitgroups
+local HitboxOverride = {
+	[0] = {
+		[0] = {
+			HitGroup = HITGROUP_GEAR,
+		},
+		[6] = {
+			HitGroup = HITGROUP_HEAD,
+		},
+		[24] = {
+			HitGroup = HITGROUP_GEAR,
+		},
+		[25] = {
+			HitGroup = HITGROUP_GEAR,
+		},
+	},
+}
+
+for i = 7, 22 do HitboxOverride[0][i] = {HitGroup = HITGROUP_RIGHTARM } end
+
+c "death_paint" { -- resize 24 25 and 0
 	Name = "Death (Painted)",
 	Model = "models/dawson/death_a_grim_bundle_pms/death_painted/death_painted.mdl",
 	Hands = "models/dawson/death_a_grim_bundle_pms/death_painted/death_painted_arms.mdl",
 	Color = ColorRand(),
-	SubDescription = "Death (Painted)"
+	SubDescription = "Death (Painted)",
+	HitboxOverride = HitboxOverride
+}
+
+c "death_class" {
+	Name = "Death (Classic)",
+	Model = "models/dawson/death_a_grim_bundle_pms/death_classic/death_classic.mdl",
+	Hands = "models/dawson/death_a_grim_bundle_pms/death_classic/death_classic_arms.mdl",
+	Color = ColorRand(),
+	SubDescription = "Death (Classic)",
+	HitboxOverride = HitboxOverride
+}
+
+c "death" {
+	Name = "Death",
+	Model = "models/dawson/death_a_grim_bundle_pms/death/death.mdl",
+	Hands = "models/dawson/death_a_grim_bundle_pms/death/death_arms.mdl",
+	Color = ColorRand(),
+	SubDescription = "Death",
+	HitboxOverride = HitboxOverride
 }
 
 c "ghost_rider" {
@@ -1181,14 +1220,6 @@ c "ghost_rider" {
 	Hands = "models/weapons/arms/ghostrider_arms.mdl",
 	Color = ColorRand(),
 	SubDescription = "Ghost Rider"
-}
-
-c "death_class" {
-	Name = "Death (Classic)",
-	Model = "models/dawson/death_a_grim_bundle_pms/death_classic/death_classic.mdl",
-	Hands = "models/dawson/death_a_grim_bundle_pms/death_classic/death_classic_arms.mdl",
-	Color = ColorRand(),
-	SubDescription = "Death (Classic)"
 }
 
 c "markus_3" {
@@ -1222,20 +1253,23 @@ c "frogshit" {
 	},
 }
 
-c "death" {
-	Name = "Death",
-	Model = "models/dawson/death_a_grim_bundle_pms/death/death.mdl",
-	Hands = "models/dawson/death_a_grim_bundle_pms/death/death_arms.mdl",
-	Color = ColorRand(),
-	SubDescription = "Death"
+local HitboxOverride = {
+	[0] = {
+		[6] = {
+			HitGroup = HITGROUP_HEAD,
+		},
+	},
 }
+
+for i = 7, 24 do HitboxOverride[0][i] = {HitGroup = HITGROUP_RIGHTARM } end
 
 c "savini_jason" { -- hitgroups
 	Name = "Savini Jason",
 	Model = "models/models/konnie/savini/savini.mdl",
 	Hands = "models/weapons/arms/v_arms_savini.mdl",
 	Color = ColorRand(),
-	SubDescription = "Savini Jason"
+	SubDescription = "Savini Jason",
+	HitboxOverride = HitboxOverride
 }
 
 c "terminator" {

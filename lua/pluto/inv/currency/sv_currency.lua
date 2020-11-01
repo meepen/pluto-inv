@@ -667,7 +667,7 @@ for name, values in pairs {
 		Shares = 1,
 		Types = "None",
 		Contents = {
-			model_ghostface = 1,
+			--model_ghostface = 1,
 			model_scarecrow = 1,
 			model_darkwraith = 1,
 			model_joker_2019 = 1,
