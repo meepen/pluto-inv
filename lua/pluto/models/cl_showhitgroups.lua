@@ -212,8 +212,9 @@ concommand.Add("pluto_update_hitgroups", function(ply, cmd, args, arg)
 
 
 			-- model specific changes (update as needed)
-			if (hitbox == 15) then
-				mins[3] = mins[3] - 5
+			if (hitbox == 0) then
+				mins[1] = mins[1] + 7
+				maxs[1] = maxs[1] + 7
 			end
 
 			for i = 1, 3 do

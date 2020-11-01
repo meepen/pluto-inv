@@ -675,7 +675,8 @@ for name, values in pairs {
 			model_ghost_rider = 1,
 			model_death_class = 1,
 			model_death = 1,
-			model_savini_jason = 1,
+			model_jason = 1,
+			model_jason_unmask = 1,
 			model_terminator = 1,
 
 			--[[

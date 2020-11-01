@@ -72,6 +72,16 @@ local function rand(seed)
 	return seed
 end
 
+local function BodyGroupRand(data, seed)
+	local ret = {}
+	for bodygroup, allowed in SortedPairs(data) do
+		seed = rand(seed)
+		local randf = seed / (2^31 + 1)
+		ret[bodygroup] = istable(allowed) and allowed[math.floor(randf * #allowed) + 1] or math.floor(randf * allowed)
+	end
+	return ret
+end
+
 local function own(i)
 	return CLIENT and LocalPlayer():SteamID64() or i.Owner or "0"
 end
@@ -1108,12 +1118,24 @@ c "mythra" {
 	SubDescription = "Mythra"
 }
 
+
+local HitboxOverride = {
+	[0] = {
+		[6] = {
+			HitGroup = HITGROUP_HEAD,
+		},
+	},
+}
+
+for i = 7, 33 do HitboxOverride[0][i] = {HitGroup = HITGROUP_RIGHTARM } end
+
 c "houndmodel" {
 	Name = "Shadowscale Acolyte",
 	Model = "models/dizcordum/shadowscale_acolyte.mdl",
 	Hands = "models/dizcordum/shadowscale_acolyte_hands.mdl",
 	Color = ColorRand(),
-	SubDescription = "Shadowscale Acolyte"
+	SubDescription = "Shadowscale Acolyte",
+	HitboxOverride = HitboxOverride
 }
 
 c "ghostface" { -- fix textures
@@ -1193,7 +1215,20 @@ c "death_paint" { -- resize 24 25 and 0
 	Hands = "models/dawson/death_a_grim_bundle_pms/death_painted/death_painted_arms.mdl",
 	Color = ColorRand(),
 	SubDescription = "Death (Painted)",
-	HitboxOverride = HitboxOverride
+	HitboxOverride = HitboxOverride,
+	GenerateBodygroups = function(item)
+		local bg = BodyGroupRand({
+			Hood = 2,
+			Skull = 3,
+			Jaw = {0, 2},
+			Eyes = 11,
+			Belt = 3,
+			["Skull Trinket 1"] = 2,
+			["Skull Trinket 2"] = 2
+		}, item.RowID or item.ID)
+		
+		return bg
+	end,
 }
 
 c "death_class" {
@@ -1202,7 +1237,20 @@ c "death_class" {
 	Hands = "models/dawson/death_a_grim_bundle_pms/death_classic/death_classic_arms.mdl",
 	Color = ColorRand(),
 	SubDescription = "Death (Classic)",
-	HitboxOverride = HitboxOverride
+	HitboxOverride = HitboxOverride,
+	GenerateBodygroups = function(item)
+		local bg = BodyGroupRand({
+			Hood = 2,
+			Skull = 3,
+			Jaw = {0, 2},
+			Eyes = 11,
+			Belt = 3,
+			["Skull Trinket 1"] = 2,
+			["Skull Trinket 2"] = 2
+		}, item.RowID or item.ID)
+		
+		return bg
+	end,
 }
 
 c "death" {
@@ -1211,7 +1259,20 @@ c "death" {
 	Hands = "models/dawson/death_a_grim_bundle_pms/death/death_arms.mdl",
 	Color = ColorRand(),
 	SubDescription = "Death",
-	HitboxOverride = HitboxOverride
+	HitboxOverride = HitboxOverride,
+	GenerateBodygroups = function(item)
+		local bg = BodyGroupRand({
+			Hood = 2,
+			Skull = 3,
+			Jaw = {0, 2},
+			Eyes = 11,
+			Belt = 3,
+			["Skull Trinket 1"] = 2,
+			["Skull Trinket 2"] = 2
+		}, item.RowID or item.ID)
+		
+		return bg
+	end,
 }
 
 c "ghost_rider" {
@@ -1263,13 +1324,36 @@ local HitboxOverride = {
 
 for i = 7, 24 do HitboxOverride[0][i] = {HitGroup = HITGROUP_RIGHTARM } end
 
-c "savini_jason" { -- hitgroups
-	Name = "Savini Jason",
+c "jason" { -- hitgroups
+	Name = "Jason",
 	Model = "models/models/konnie/savini/savini.mdl",
 	Hands = "models/weapons/arms/v_arms_savini.mdl",
 	Color = ColorRand(),
 	SubDescription = "Savini Jason",
-	HitboxOverride = HitboxOverride
+	HitboxOverride = HitboxOverride,
+	GenerateBodygroups = function(item)
+		local bg = {
+			[2] = 0
+		}
+
+		return bg
+	end,
+}
+
+c "jason_unmask" { -- hitgroups
+	Name = "Jason Unmasked",
+	Model = "models/models/konnie/savini/savini.mdl",
+	Hands = "models/weapons/arms/v_arms_savini.mdl",
+	Color = ColorRand(),
+	SubDescription = "Savini Jason",
+	HitboxOverride = HitboxOverride,
+	GenerateBodygroups = function(item)
+		local bg = {
+			[2] = 1
+		}
+
+		return bg
+	end,
 }
 
 c "terminator" {
@@ -1277,7 +1361,16 @@ c "terminator" {
 	Model = "models/kemot44/Models/MK11/characters/Terminator_PM.mdl",
 	Hands = "models/kemot44/Models/MK11/characters/Terminator_cArm.mdl",
 	Color = ColorRand(),
-	SubDescription = "M11 Terminator"
+	SubDescription = "M11 Terminator",
+	GenerateBodygroups = function(item)
+		local bg = BodyGroupRand({
+			["[Right] Arm"] = 2,
+			["[Left] Arm"] = 2,
+			["[Right] Leg"] = 2,
+		}, item.RowID or item.ID)
+
+		return bg
+	end,
 }
 
 c "markus_1" {
@@ -1324,7 +1417,7 @@ function pluto.updatemodel(ent, item)
 		end
 
 		for name, id in pairs(bg or {}) do
-			local bgid = ent:FindBodygroupByName(name)
+			local bgid = isnumber(name) and name or ent:FindBodygroupByName(name)
 			if (bgid == -1) then
 				pwarnf("Couldn't find %s on %s", name, item.Model.Model)
 				continue
