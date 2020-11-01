@@ -391,7 +391,8 @@ function QUEST:UpdateProgress(amount)
 		return
 	end
 
-	pluto.db.instance(function(db)
+	pluto.db.transact(function(db)
+		mysql_stmt_run(db, "SELECT current_progress FROM pluto_quests_new WHERE idx = ? FOR UPDATE", self.RowID)
 		local succ, err = mysql_stmt_run(db, "UPDATE pluto_quests_new SET current_progress = (@cur_prog:=LEAST(total_progress, current_progress + ?)) WHERE current_progress < total_progress AND idx = ?", amount, self.RowID)
 		if (not succ or succ.AFFECTED_ROWS == 0) then
 			return
@@ -403,6 +404,7 @@ function QUEST:UpdateProgress(amount)
 		end
 
 		self.ProgressLeft = math.max(0, self.ProgressLeft - amount)
+		mysql_commit(db)
 
 		pluto.inv.message(self.Player)
 			:write("quest", self)
