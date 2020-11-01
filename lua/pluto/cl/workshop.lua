@@ -489,6 +489,18 @@ local packs =  {
 			"20201022",
 		}
 	},
+	tomahawk = {
+		remote = default "tomahawk",
+		versions = {
+			"20201101",
+		}
+	},
+	thanatos9 = {
+		remote = default "thanatos_9",
+		versions = {
+			"20201101",
+		}
+	},
 }
 
 

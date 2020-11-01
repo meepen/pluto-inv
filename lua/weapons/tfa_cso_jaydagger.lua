@@ -10,6 +10,7 @@ SWEP.ViewModelFOV = 85
 SWEP.UseHands = true
 SWEP.HoldType = "melee"
 SWEP.DrawCrosshair = true
+SWEP.Slot = 2
 
 SWEP.Primary.Directional = false
 

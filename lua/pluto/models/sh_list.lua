@@ -1161,7 +1161,7 @@ c "scarecrow" { -- fix hitboxes
 	Model = "models/dc/injustice2/pm_scarecrow.mdl",
 	Hands = nil,
 	Color = ColorRand(),
-	SubDescription = "Scarecrow",
+	SubDescription = "Everyone has something to fear.\nSuggested by DJ Diamond Bear (STEAM_0:1:110260122)",
 	HitboxOverride = HitboxOverride
 }
 
@@ -1171,7 +1171,7 @@ c "darkwraith" {
 	Model = "models/dwdarksouls/models/darkwraith.mdl",
 	Hands = "models/dwdarksouls/models/darkwraithfp.mdl",
 	Color = ColorRand(),
-	SubDescription = "Darkwraith"
+	SubDescription = "Be still. Entrust thine flesh to me.\nSuggested by Sηεαкү (STEAM_0:0:419473092)"
 }
 
 c "joker_2019" { -- bodygroups
@@ -1179,7 +1179,7 @@ c "joker_2019" { -- bodygroups
 	Model = "models/kemot44/Models/Joker_PM.mdl",
 	Hands = "models/kemot44/Models/Joker_cArm.mdl",
 	Color = ColorRand(),
-	SubDescription = "Joker 2019",
+	SubDescription = "People are starting to notice\nSuggested by Gayboi 2019 (STEAM_0:1:63007893)",
 	GenerateBodygroups = function(item)
 		local bg = BodyGroupRand({
 			Top = {
@@ -1222,11 +1222,11 @@ local HitboxOverride = {
 for i = 7, 22 do HitboxOverride[0][i] = {HitGroup = HITGROUP_RIGHTARM } end
 
 c "death_paint" { -- resize 24 25 and 0
-	Name = "Death (Painted)",
+	Name = "Painted Death",
 	Model = "models/dawson/death_a_grim_bundle_pms/death_painted/death_painted.mdl",
 	Hands = "models/dawson/death_a_grim_bundle_pms/death_painted/death_painted_arms.mdl",
 	Color = ColorRand(),
-	SubDescription = "Death (Painted)",
+	SubDescription = "Death is inevitable\nSuggested by Topz (STEAM_0:0:149180748)",
 	HitboxOverride = HitboxOverride,
 	GenerateBodygroups = function(item)
 		local bg = BodyGroupRand({
@@ -1244,11 +1244,11 @@ c "death_paint" { -- resize 24 25 and 0
 }
 
 c "death_class" {
-	Name = "Death (Classic)",
+	Name = "Classic Death",
 	Model = "models/dawson/death_a_grim_bundle_pms/death_classic/death_classic.mdl",
 	Hands = "models/dawson/death_a_grim_bundle_pms/death_classic/death_classic_arms.mdl",
 	Color = ColorRand(),
-	SubDescription = "Death (Classic)",
+	SubDescription = "Death is inevitable\nSuggested by Topz (STEAM_0:0:149180748)",
 	HitboxOverride = HitboxOverride,
 	GenerateBodygroups = function(item)
 		local bg = BodyGroupRand({
@@ -1270,7 +1270,7 @@ c "death" {
 	Model = "models/dawson/death_a_grim_bundle_pms/death/death.mdl",
 	Hands = "models/dawson/death_a_grim_bundle_pms/death/death_arms.mdl",
 	Color = ColorRand(),
-	SubDescription = "Death",
+	SubDescription = "Death is inevitable\nSuggested by Topz (STEAM_0:0:149180748)",
 	HitboxOverride = HitboxOverride,
 	GenerateBodygroups = function(item)
 		local bg = BodyGroupRand({
@@ -1292,23 +1292,7 @@ c "ghost_rider" {
 	Model = "models/player/ghostrider/ghostrider.mdl",
 	Hands = "models/weapons/arms/ghostrider_arms.mdl",
 	Color = ColorRand(),
-	SubDescription = "Ghost Rider"
-}
-
-c "markus_3" {
-	Name = "Detroit - Markus 3",
-	Model = "models/konnie/isa/detroit/markus_3.mdl",
-	Hands = "models/weapons/arms/v_arms_markus_3.mdl",
-	Color = ColorRand(),
-	SubDescription = "Detroit - Markus 3"
-}
-
-c "markus_2" {
-	Name = "Detroit - Markus 2",
-	Model = "models/konnie/isa/detroit/markus_2.mdl",
-	Hands = "models/weapons/arms/v_arms_markus_2.mdl",
-	Color = ColorRand(),
-	SubDescription = "Detroit - Markus 2"
+	SubDescription = "Sorry, all out of mercy.\nSuggested by Eppen (STEAM_0:0:119244900)",
 }
 
 c "frogshit" {
@@ -1316,7 +1300,7 @@ c "frogshit" {
 	Model = "models/carrot/vocaloid/halloween_miku.mdl",
 	Hands = "models/carrot/vocaloid/c_arms/halloween_miku.mdl",
 	Color = ColorRand(),
-	SubDescription = "Halloween Miku",
+	SubDescription = "Froggy is 100% gayboi",
 	HitboxOverride = {
 		[0] = {
 			[10] = {
@@ -1341,7 +1325,7 @@ c "jason" { -- hitgroups
 	Model = "models/models/konnie/savini/savini.mdl",
 	Hands = "models/weapons/arms/v_arms_savini.mdl",
 	Color = ColorRand(),
-	SubDescription = "Savini Jason",
+	SubDescription = "Tch tch tch tch tcha ah ah ah\nSuggested by DJ Diamond Bear (STEAM_0:1:110260122)",
 	HitboxOverride = HitboxOverride,
 	GenerateBodygroups = function(item)
 		local bg = {
@@ -1357,7 +1341,7 @@ c "jason_unmask" { -- hitgroups
 	Model = "models/models/konnie/savini/savini.mdl",
 	Hands = "models/weapons/arms/v_arms_savini.mdl",
 	Color = ColorRand(),
-	SubDescription = "Savini Jason",
+	SubDescription = "Ch ch ch ha ha ha\nSuggested by DJ Diamond Bear (STEAM_0:1:110260122)",
 	HitboxOverride = HitboxOverride,
 	GenerateBodygroups = function(item)
 		local bg = {
@@ -1369,11 +1353,11 @@ c "jason_unmask" { -- hitgroups
 }
 
 c "terminator" {
-	Name = "M11 Terminator",
+	Name = "Terminator",
 	Model = "models/kemot44/Models/MK11/characters/Terminator_PM.mdl",
 	Hands = "models/kemot44/Models/MK11/characters/Terminator_cArm.mdl",
 	Color = ColorRand(),
-	SubDescription = "M11 Terminator",
+	SubDescription = "Skynet: Online\nSuggested by Limeinade (STEAM_0:0:160185749)",
 	GenerateBodygroups = function(item)
 		local bg = BodyGroupRand({
 			["[Right] Arm"] = 2,
@@ -1385,20 +1369,12 @@ c "terminator" {
 	end,
 }
 
-c "markus_1" {
-	Name = "Detroit - Markus 1",
-	Model = "models/konnie/isa/detroit/markus_1.mdl",
-	Hands = "models/weapons/arms/v_arms_markus_1.mdl",
-	Color = ColorRand(),
-	SubDescription = "Detroit - Markus 1"
-}
-
 c "husk" {
 	Name = "Husk",
 	Model = "models/player/husk/slow.mdl",
 	Hands = nil,
 	Color = ColorRand(),
-	SubDescription = "Husk"
+	SubDescription = "You exist because we allow it.\nSuggested by DJ Diamond Bear (STEAM_0:1:110260122)"
 }
 
 c "hunk" {
@@ -1410,6 +1386,29 @@ c "hunk" {
 	SubDescription = "Hunk"
 }
 
+c "markus_1" {
+	Name = "Detroit - Markus 1",
+	Model = "models/konnie/isa/detroit/markus_1.mdl",
+	Hands = "models/weapons/arms/v_arms_markus_1.mdl",
+	Color = ColorRand(),
+	SubDescription = "Detroit - Markus 1"
+}
+
+c "markus_3" {
+	Name = "Detroit - Markus 3",
+	Model = "models/konnie/isa/detroit/markus_3.mdl",
+	Hands = "models/weapons/arms/v_arms_markus_3.mdl",
+	Color = ColorRand(),
+	SubDescription = "Detroit - Markus 3"
+}
+
+c "markus_2" {
+	Name = "Detroit - Markus 2",
+	Model = "models/konnie/isa/detroit/markus_2.mdl",
+	Hands = "models/weapons/arms/v_arms_markus_2.mdl",
+	Color = ColorRand(),
+	SubDescription = "Detroit - Markus 2"
+}
 
 
 function pluto.updatemodel(ent, item)

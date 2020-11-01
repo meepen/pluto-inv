@@ -1,51 +1,30 @@
-SWEP.Base = "tfa_melee_base"
+SWEP.Base = "weapon_ttt_crowbar"
 SWEP.Category = "TFA CS:O"
 SWEP.PrintName = "Tomahawk"
-SWEP.Author	= "Kamikaze" --Author Tooltip
-SWEP.Type	= "Melee weapon"
+SWEP.Author	= "Kamikaze"
 SWEP.ViewModel = "models/weapons/tfa_cso/c_tomahawk.mdl"
 SWEP.WorldModel = "models/weapons/tfa_cso/w_tomahawk.mdl"
 SWEP.ViewModelFlip = false
 SWEP.ViewModelFOV = 85
-SWEP.UseHands = true
 SWEP.HoldType = "melee"
-SWEP.DrawCrosshair = true
+SWEP.Slot = 0
 
-SWEP.Primary.Directional = false
+SWEP.StabMissTable = {"ACT_VM_PULLBACK"}
 
-SWEP.Spawnable = true
-SWEP.AdminOnly = false
-
-SWEP.DisableIdleAnimations = false
-SWEP.StabMissTable = {"ACT_VM_PULLBACK"} --Table of possible hull sequences
-
-SWEP.Secondary.CanBash = false
-
--- nZombies Stuff
-SWEP.NZWonderWeapon		= false	-- Is this a Wonder-Weapon? If true, only one player can have it at a time. Cheats aren't stopped, though.
---SWEP.NZRePaPText		= "your text here"	-- When RePaPing, what should be shown? Example: Press E to your text here for 2000 points.
-SWEP.NZPaPName				= "It's Johnny"
---SWEP.NZPaPReplacement 	= "tfa_cso_dualsword"	-- If Pack-a-Punched, replace this gun with the entity class shown here.
-SWEP.NZPreventBox		= false	-- If true, this gun won't be placed in random boxes GENERATED. Users can still place it in manually.
-SWEP.NZTotalBlackList	= false	-- if true, this gun can't be placed in the box, even manually, and can't be bought off a wall, even if placed manually. Only code can give this gun.
-SWEP.PaPMats			= {}
-
-SWEP.Precision = 50
-SWEP.Secondary.MaxCombo = -1
-SWEP.Primary.MaxCombo = -1
+SWEP.Primary.Damage = 25
 
 SWEP.Offset = {
-		Pos = {
+	Pos = {
 		Up = -6.5,
 		Right = 0,
 		Forward = 3.5,
-		},
-		Ang = {
+	},
+	Ang = {
 		Up = -20,
 		Right = 180,
 		Forward = -20
-		},
-		Scale = 1
+	},
+	Scale = 1
 }
 
 sound.Add({
@@ -112,7 +91,7 @@ SWEP.Primary.Attacks = {
 		['end'] = 0.6, --time before next attack
 		['hull'] = 32, --Hullsize
 		['direction'] = "F", --Swing dir,
-		['hitflesh'] = "Tomahawk.HitFleshSlash1",
+		['hitflesh'] = "Tomahawk.HitFleshSlash2",
 		['hitworld'] = "Tomahawk.HitWall",
 		['maxhits'] = 25
 	},
@@ -156,15 +135,51 @@ SWEP.Secondary.Attacks = {
 		['maxhits'] = 25
 	}
 }
+SWEP.WElements = {}
 
 SWEP.InspectionActions = {ACT_VM_RECOIL1}
 
 DEFINE_BASECLASS(SWEP.Base)
 function SWEP:Holster( ... )
-	self:StopSound("Hellfire.Idle")
+	self:StopSound "Hellfire.Idle"
 	return BaseClass.Holster(self,...)
 end
-if CLIENT then
-	SWEP.WepSelectIconCSO = Material("vgui/killicons/tfa_cso_tomahawk")
-	SWEP.DrawWeaponSelection = TFA_CSO_DrawWeaponSelection
+
+function SWEP:Initialize()
+	self:SetModelScale(15)
+	BaseClass.Initialize(self)
 end
+
+function SWEP:GetCurrentAnimation(what)
+	local t = self[what or "Primary"].Attacks
+	return t[(self:GetBulletsShot() % #t) + 1]
+end
+
+function SWEP:MeleeAnimation(tr_main)
+	self:SendWeaponAnim(self:GetCurrentAnimation().act)
+end
+
+function SWEP:SoundEffect(tr_main)
+	if (IsValid(tr_main.Entity) and tr_main.Entity:IsPlayer()) then
+		self:EmitSound(self:GetCurrentAnimation().hitflesh)
+	elseif (IsValid(tr_main.Entity) or tr_main.HitWorld) then
+		self:EmitSound(self:GetCurrentAnimation().hitworld)
+	elseif (SERVER) then
+		self:EmitSound(self:GetCurrentAnimation().snd)
+	end
+end
+
+function SWEP:SecondaryAttack()
+	if (self:GetNextPrimaryFire() > CurTime()) then
+		return
+	end
+
+	self:SetBulletsShot(self:GetBulletsShot() + 1)
+
+	self:SendWeaponAnim(self:GetCurrentAnimation "Secondary".act)
+	self:SetSecondary(CurTime() + 0.4)
+
+	self:SetNextPrimaryFire(CurTime() + self.Secondary.Delay)
+end
+
+SWEP.Ortho = {2.2, 3, angle = Angle(0, 0, 0), size = 0.65}

@@ -480,6 +480,23 @@ function pluto.inv.roll(crate)
 	end
 end
 
+function pluto.inv.printroll(crate)
+	local total = 0
+	for _, v in pairs(crate) do
+		total = total + (istable(v) and v.Shares or v)
+	end
+
+	local inorder = {}
+
+	for itemname, val in pairs(crate) do
+		inorder[itemname] = istable(val) and val.Shares or val
+	end
+
+	for itemname, shares in SortedPairsByValue(inorder) do
+		pprintf("Item %s: %.03f%%", itemname, shares / total * 100)
+	end
+end
+
 hook.Add("PlayerSpray", "pluto_sprays", function()
 	return true
 end)

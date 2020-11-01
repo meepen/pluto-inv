@@ -1,4 +1,4 @@
-SWEP.Base = "tfa_melee_base"
+SWEP.Base = "weapon_ttt_crowbar"
 SWEP.Category = "TFA CS:O"
 SWEP.PrintName = "THANATOS-9"
 
@@ -8,43 +8,23 @@ SWEP.ViewModelFlip = false
 SWEP.ViewModelFOV = 80
 SWEP.UseHands = true
 SWEP.HoldType = "melee2"
-SWEP.DrawCrosshair = true
+SWEP.Slot = 0
 
-SWEP.Primary.Directional = false
-
-SWEP.Spawnable = true
-SWEP.AdminOnly = false
-
-SWEP.DisableIdleAnimations = false
-
-SWEP.Secondary.CanBash = false
-SWEP.Secondary.MaxCombo = -1
-SWEP.Primary.MaxCombo = -1
-
-SWEP.VMPos = Vector(0,0,0) --The viewmodel positional offset, constantly.  Subtract this from any other modifications to viewmodel position.
-
--- nZombies Stuff
-SWEP.NZWonderWeapon		= false	-- Is this a Wonder-Weapon? If true, only one player can have it at a time. Cheats aren't stopped, though.
---SWEP.NZRePaPText		= "your text here"	-- When RePaPing, what should be shown? Example: Press E to your text here for 2000 points.
-SWEP.NZPaPName				= "Grim Reaper"
---SWEP.NZPaPReplacement 	= "tfa_cso_dualinfinityfinal"	-- If Pack-a-Punched, replace this gun with the entity class shown here.
-SWEP.NZPreventBox		= false	-- If true, this gun won't be placed in random boxes GENERATED. Users can still place it in manually.
-SWEP.NZTotalBlackList	= false	-- if true, this gun can't be placed in the box, even manually, and can't be bought off a wall, even if placed manually. Only code can give this gun.
-SWEP.Precision = 15
-
+SWEP.Secondary.Delay = 2.5
+SWEP.Secondary.Damage = 80
 
 SWEP.Offset = { --Procedural world model animation, defaulted for CS:S purposes.
-		Pos = {
+	Pos = {
 		Up = -30,
 		Right = 1,
 		Forward = 5,
-		},
-		Ang = {
+	},
+	Ang = {
 		Up = -90,
 		Right = 0,
 		Forward = 180
-		},
-		Scale = 1.35
+	},
+	Scale = 1.35
 }
 
 
@@ -96,7 +76,7 @@ SWEP.Secondary.Attacks = {
 		['len'] = 130, -- Trace source; X ( +right, -left ), Y ( +forward, -back ), Z ( +up, -down )
 		['dir'] = Vector(-140,-5,0), -- Trace dir/length; X ( +right, -left ), Y ( +forward, -back ), Z ( +up, -down )
 		['dmg'] = 1, --This isn't overpowered enough, I swear!!
-		['dmgtype'] = DMG_SLASH, --DMG_SLASH,DMG_CRUSH, etc.
+		['dmgtype'] = DMG_CLUB, --DMG_SLASH,DMG_CRUSH, etc.
 		['delay'] = 0.8, --Delay
 		['spr'] = true, --Allow attack while sprinting?
 		['snd'] = "TFABaseMelee.Null", -- Sound ID
@@ -154,7 +134,35 @@ SWEP.EventTable = {
 		}
 	}
 }
-if CLIENT then
-	SWEP.WepSelectIconCSO = Material("vgui/killicons/tfa_cso_thanatos9")
-	SWEP.DrawWeaponSelection = TFA_CSO_DrawWeaponSelection
+
+function SWEP:GetCurrentAnimation(what)
+	local t = self[what or "Primary"].Attacks
+	return t[(self:GetBulletsShot() % #t) + 1]
 end
+
+function SWEP:SoundEffect(tr_main)
+	if (IsValid(tr_main.Entity) and tr_main.Entity:IsPlayer()) then
+		self:EmitSound(self:GetCurrentAnimation().hitflesh)
+	elseif (IsValid(tr_main.Entity) or tr_main.HitWorld) then
+		self:EmitSound(self:GetCurrentAnimation().hitworld)
+	elseif (SERVER) then
+		self:EmitSound(self:GetCurrentAnimation().snd)
+	end
+end
+
+function SWEP:PrimaryAttack()
+	if (self:GetNextPrimaryFire() > CurTime()) then
+		return
+	end
+
+	local owner = self:GetOwner()
+	owner:SetAnimation(PLAYER_ATTACK1)
+	self:SetBulletsShot(self:GetBulletsShot() + 1)
+
+	self:SendWeaponAnim(self:GetCurrentAnimation "Secondary".act)
+	self:SetSecondary(CurTime() + 0.95)
+
+	self:SetNextPrimaryFire(CurTime() + self.Secondary.Delay)
+end
+
+SWEP.Ortho = {0, -5, angle = Angle(0, 0, -15), size = 1}

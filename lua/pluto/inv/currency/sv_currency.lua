@@ -664,21 +664,26 @@ for name, values in pairs {
 		Shares = 0,
 	},
 	brainegg = {
-		Shares = 1,
+		Shares = 50,
 		Types = "None",
 		Contents = {
 			--model_ghostface = 1,
-			model_scarecrow = 1,
-			model_darkwraith = 1,
-			model_joker_2019 = 1,
-			model_death_paint = 1,
-			model_ghost_rider = 1,
-			model_death_class = 1,
-			model_death = 1,
-			model_jason = 1,
-			model_jason_unmask = 1,
-			model_terminator = 1,
+			tfa_cso_tbarrel = 0.1,
+			tfa_cso_thanatos9 = 0.1,
 
+			model_jason_unmask = 1,
+			model_joker_2019 = 1,
+			model_terminator = 2,
+
+			model_darkwraith = 6,
+			model_jason = 7,
+			model_husk = 7,
+			model_scarecrow = 8,
+			model_death = 11,
+
+			model_death_paint = 15,
+			model_ghost_rider = 16,
+			model_death_class = 17,
 			--[[
 			model_markus_1 = 1,
 			model_markus_3 = 1,
