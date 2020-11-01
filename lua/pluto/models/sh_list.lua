@@ -1,4 +1,38 @@
-local c = pluto.model
+local ENT = FindMetaTable "Entity"
+local mt0 = {
+	__index = function(self, k)
+		local ret = {}
+		self[k] = ret
+		return ret
+	end
+}
+pluto.hitbox_overrides = setmetatable({}, {
+	__index = function(self, k)
+		local ret = setmetatable({}, mt0)
+		self[k] = ret
+		return ret
+	end
+})
+
+ENT.RealGetHitBoxHitGroup = ENT.RealGetHitBoxHitGroup or ENT.GetHitBoxHitGroup
+function ENT:GetHitBoxHitGroup(hitbox, hitboxset)
+	local data = pluto.hitbox_overrides[self:GetModel()][hitboxset][hitbox]
+
+	return data or self:RealGetHitBoxHitGroup(hitbox, hitboxset)
+end
+
+local c = function(name)
+	return function(data)
+		if (data.HitboxOverride) then
+			for hitboxset, setchanges in pairs(data.HitboxOverride) do
+				for hitbox, changes in pairs(setchanges) do
+					pluto.hitbox_overrides[data.Model][hitboxset][hitbox] = changes.HitGroup
+				end
+			end
+		end
+		pluto.model(name)(data)
+	end
+end
 
 local rare = Color(190, 0, 0)
 local crate_0 = {
@@ -1090,12 +1124,23 @@ c "ghostface" { -- fix textures
 	SubDescription = "Ghostface"
 }
 
+local HitboxOverride = {
+	[0] = {
+		[6] = {
+			HitGroup = HITGROUP_HEAD
+		},
+	},
+}
+
+for i = 28, 57 do HitboxOverride[0][i] = {HitGroup = HITGROUP_RIGHTARM }end
+
 c "scarecrow" { -- fix hitboxes
 	Name = "Scarecrow",
 	Model = "models/dc/injustice2/pm_scarecrow.mdl",
 	Hands = nil,
 	Color = ColorRand(),
-	SubDescription = "Scarecrow"
+	SubDescription = "Scarecrow",
+	HitboxOverride = HitboxOverride
 }
 
 c "darkwraith" {
@@ -1167,7 +1212,14 @@ c "frogshit" {
 	Model = "models/carrot/vocaloid/halloween_miku.mdl",
 	Hands = "models/carrot/vocaloid/c_arms/halloween_miku.mdl",
 	Color = ColorRand(),
-	SubDescription = "Halloween Miku"
+	SubDescription = "Halloween Miku",
+	HitboxOverride = {
+		[0] = {
+			[10] = {
+				HitGroup = HITGROUP_HEAD
+			},
+		},
+	},
 }
 
 c "death" {
