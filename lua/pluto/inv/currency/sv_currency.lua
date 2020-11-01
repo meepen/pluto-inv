@@ -662,6 +662,10 @@ for name, values in pairs {
 	},
 	eye = {
 		Shares = 0,
+	},
+	_banna = {
+		Shares = 0,
+		Global = true,
 	}
 } do
 	table.Merge(pluto.currency.byname[name], values)

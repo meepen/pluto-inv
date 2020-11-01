@@ -5,7 +5,8 @@ pluto.rounds.files = pluto.rounds.files or {}
 pluto.rounds.byname = pluto.rounds.byname or {}
 
 for _, event in pairs {
-	"posteaster"
+	"posteaster",
+	"chimp",
 } do
 	local folder = "pluto/events/rounds/" .. event .. "/"
 

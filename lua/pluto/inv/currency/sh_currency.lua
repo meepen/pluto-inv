@@ -286,6 +286,13 @@ pluto.currency.list = {
 		Description = "Spawns a Void boss",
 		SubDescription = "I see the void envelop you, friend... embrace me.",
 		Color = Color(107, 25, 14),
+	},
+	{
+		InternalName = "_banna",
+		Name = "FAKE: Banna",
+		Icon = "pluto/currencies/banna.png",
+		Color = Color(204, 180, 0),
+		Fake = true
 	}
 }
 
