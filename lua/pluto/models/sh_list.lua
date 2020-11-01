@@ -1179,7 +1179,19 @@ c "joker_2019" { -- bodygroups
 	Model = "models/kemot44/Models/Joker_PM.mdl",
 	Hands = "models/kemot44/Models/Joker_cArm.mdl",
 	Color = ColorRand(),
-	SubDescription = "Joker 2019"
+	SubDescription = "Joker 2019",
+	GenerateBodygroups = function(item)
+		local bg = BodyGroupRand({
+			Top = {
+				0, 1, 2
+			},
+		}, item.RowID or item.ID)
+		
+		return bg
+	end,
+	GenerateSkin = function(item)
+		return rand(item.RowID or item.ID) % 2 + 1
+	end,
 }
 
 c "detr_connor" { -- hitboxes fix
@@ -1405,8 +1417,11 @@ function pluto.updatemodel(ent, item)
 		return
 	end
 
+
 	if (item.Model.GenerateSkin) then
 		ent:SetSkin(item.Model.GenerateSkin(item))
+	else
+		ent:SetSkin(0)
 	end
 
 	if (item.Model.GenerateBodygroups) then
