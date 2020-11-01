@@ -157,5 +157,44 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				INDEX(owner)
 			)
 		]])
+		mysql_query(db, [[
+			CREATE TABLE IF NOT EXISTS pluto_class_stats (
+				classname VARCHAR(32) NOT NULL,
+				date DATE NOT NULL DEFAULT (CURRENT_DATE),
+
+				tracked INT UNSIGNED DEFAULT 0,
+				rounds_used INT UNSIGNED DEFAULT 0,
+
+				damage INT UNSIGNED DEFAULT 0,
+				healed INT UNSIGNED DEFAULT 0,
+				damage_taken INT UNSIGNED DEFAULT 0,
+
+				fired INT UNSIGNED DEFAULT 0,
+				missed INT UNSIGNED DEFAULT 0,
+
+				headshots INT UNSIGNED DEFAULT 0,
+
+				kills INT UNSIGNED DEFAULT 0,
+				deaths INT UNSIGNED DEFAULT 0,
+				assists INT UNSIGNED DEFAULT 0,
+				hit_to_death INT UNSIGNED DEFAULT 0,
+
+				ads_shots INT UNSIGNED DEFAULT 0,
+				ads_hits INT UNSIGNED DEFAULT 0,
+				crouch_shots INT UNSIGNED DEFAULT 0,
+				crouch_hits INT UNSIGNED DEFAULT 0,
+				jump_shots INT UNSIGNED DEFAULT 0,
+				jump_hits INT UNSIGNED DEFAULT 0,
+
+				mods INT UNSIGNED DEFAULT 0,
+				mod_tiers INT UNSIGNED DEFAULT 0,
+
+				currency_used INT UNSIGNED DEFAULT 0,
+
+				PRIMARY KEY (classname, date),
+				INDEX USING HASH(classname),
+				INDEX (date)
+			)
+		]])
 	end)
 end)

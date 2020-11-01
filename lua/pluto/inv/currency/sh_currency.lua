@@ -229,6 +229,28 @@ pluto.currency.list = {
 		Color = Color(0, 213, 183),
 	},
 	{
+		InternalName = "brainegg",
+		Name = "Brain Egg",
+		Icon = "pluto/currencies/brainegg.png",
+		Description = "Contains a Halloween 2020 Item",
+		SubDescription = "Brraaaaiiinsss...",
+		Color = Color(120, 120, 120),
+		NoTarget = true,
+		ClientsideUse = function()
+			if (IsValid(pluto.opener)) then
+				pluto.opener:Remove()
+			end
+
+			pluto.opener = vgui.Create "tttrw_base"
+
+			pluto.opener:AddTab("Open Brain Egg", vgui.Create "pluto_box_open" :SetCurrency "brainegg")
+
+			pluto.opener:SetSize(640, 400)
+			pluto.opener:Center()
+			pluto.opener:MakePopup()
+		end,
+	},
+	{
 		InternalName = "crate3",
 		Name = "Consumed Pink Egg",
 		Icon = "pluto/currencies/crate3.png",
@@ -286,7 +308,7 @@ pluto.currency.list = {
 		Description = "Spawns a Void boss",
 		SubDescription = "I see the void envelop you, friend... embrace me.",
 		Color = Color(107, 25, 14),
-	}
+	},
 }
 
 pluto.currency_mt = pluto.currency_mt or {}

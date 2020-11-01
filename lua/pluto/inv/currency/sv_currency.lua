@@ -662,7 +662,29 @@ for name, values in pairs {
 	},
 	eye = {
 		Shares = 0,
-	}
+	},
+	brainegg = {
+		Shares = 1,
+		Types = "None",
+		Contents = {
+			model_ghostface = 1,
+			model_scarecrow = 1,
+			model_darkwraith = 1,
+			model_joker_2019 = 1,
+			model_death_paint = 1,
+			model_ghost_rider = 1,
+			model_death_class = 1,
+			model_death = 1,
+			model_savini_jason = 1,
+			model_terminator = 1,
+
+			--[[
+			model_markus_1 = 1,
+			model_markus_3 = 1,
+			model_markus_2 = 1,
+			model_detr_connor = 1,]]
+		},
+	},
 } do
 	table.Merge(pluto.currency.byname[name], values)
 end

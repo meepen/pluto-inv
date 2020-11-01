@@ -127,8 +127,9 @@ concommand.Add("pluto_spawn_weapon", function(ply, cmd, arg, args)
 		return
 	end
 
-	pluto.db.instance(function(db)
+	pluto.db.transact(function(db)
 		pluto.inv.generatebufferweapon(db, ply, unpack(arg))
+		mysql_commit(db)
 	end)
 end)
 
@@ -137,8 +138,9 @@ concommand.Add("pluto_spawn_shard", function(ply, cmd, arg, args)
 		return
 	end
 
-	pluto.db.instance(function(db)
+	pluto.db.transact(function(db)
 		pluto.inv.generatebuffershard(db, ply, arg[1])
+		mysql_commit(db)
 	end)
 end)
 
@@ -147,7 +149,8 @@ concommand.Add("pluto_spawn_model", function(ply, cmd, arg, args)
 		return
 	end
 
-	pluto.db.instance(function(db)
+	pluto.db.transact(function(db)
 		pluto.inv.generatebuffermodel(db, ply, unpack(arg))
+		mysql_commit(db)
 	end)
 end)
