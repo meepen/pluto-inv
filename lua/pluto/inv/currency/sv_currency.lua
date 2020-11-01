@@ -1043,7 +1043,7 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 		pct = 1 / 3
 	end
 
-	if (math.random() < pct) then
+	if (false and math.random() < pct) then
 		admin.chatf(white_text, "Multiple ", ttt.teams.traitor.Color, "spirits ", white_text, "have entered this realm.")
 		local ghosts = {}
 		for i = 1, 7 + player.GetCount() / 6 do

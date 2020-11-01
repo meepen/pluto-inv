@@ -836,17 +836,3 @@ concommand.Add("pluto_give_quest", function(ply, cmd, args)
 		ply:ChatPrint "given"
 	end
 end)
-
-hook.Add("PlayerAuthed", "halloween_quest", function(p)
-	pluto.db.transact(function(db)
-		local quest = pluto.quests.give(p, "halloween_nade", db)
-		if (quest) then
-		
-			pluto.inv.message(p)
-				:write("quest", quest)
-				:send()
-		end
-		p:ChatPrint("A unique quest is active! Check your Quests!")
-		mysql_commit(db)
-	end)
-end)
