@@ -9,6 +9,9 @@ SWEP.ViewModelFOV = 85
 SWEP.HoldType = "melee"
 SWEP.Slot = 0
 
+SWEP.Secondary.Delay = 1.2
+SWEP.Secondary.Damage = 40
+
 SWEP.StabMissTable = {"ACT_VM_PULLBACK"}
 
 SWEP.Primary.Damage = 25
@@ -146,7 +149,7 @@ function SWEP:Holster( ... )
 end
 
 function SWEP:Initialize()
-	self:SetModelScale(15)
+	self:SetModelScale(2)
 	BaseClass.Initialize(self)
 end
 
@@ -169,15 +172,17 @@ function SWEP:SoundEffect(tr_main)
 	end
 end
 
-function SWEP:SecondaryAttack()
+function SWEP:PrimaryAttack()
 	if (self:GetNextPrimaryFire() > CurTime()) then
 		return
 	end
 
+	local owner = self:GetOwner()
+	owner:SetAnimation(PLAYER_ATTACK1)
 	self:SetBulletsShot(self:GetBulletsShot() + 1)
 
 	self:SendWeaponAnim(self:GetCurrentAnimation "Secondary".act)
-	self:SetSecondary(CurTime() + 0.4)
+	self:SetSecondary(CurTime() + 0.3)
 
 	self:SetNextPrimaryFire(CurTime() + self.Secondary.Delay)
 end

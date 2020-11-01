@@ -15,10 +15,12 @@ SWEP.Primary.Sound 			= Sound "XTracker.Fire"
 SWEP.Primary.Damage        = 21
 
 SWEP.Primary.Automatic			= true
-SWEP.Primary.Delay				= 60 / 570
+SWEP.Primary.Delay				= 60 / 550
 SWEP.Primary.ClipSize			= 50
 SWEP.Primary.DefaultClip			= 100
 SWEP.Primary.Ammo			= "ar2"
+
+SWEP.HeadshotMultiplier = 1.2
 
 SWEP.ViewModel			= "models/weapons/tfa_cso/c_xtracker.mdl"
 SWEP.ViewModelFOV			= 80
