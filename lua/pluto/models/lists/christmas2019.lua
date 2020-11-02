@@ -2,6 +2,8 @@ local function CHRISTMAS(g)
 	return Color(0x33, 0x67, 0x39)
 end
 
+local xmas_rare = Color(255, 0, 0)
+
 c "cayde6" {
 	Name = "Cayde 6",
 	Model = "models/cayde_6_pm/cayde_6_pm.mdl",
