@@ -58,7 +58,6 @@ net.Receive("pluto_hitreg", function(len, cl)
 
 	hitent:TakeDamageInfo(dmg)
 	hook.Run("PlutoHitregOverride", shootent)
-	print "override"
 end)
 
 local function SnapshotHitboxes()

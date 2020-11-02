@@ -234,7 +234,7 @@ pluto.currency.list = {
 		Icon = "pluto/currencies/brainegg.png",
 		Description = "Contains a Halloween 2020 Item",
 		SubDescription = "Brraaaaiiinsss...",
-		Color = Color(120, 120, 120),
+		Color = Color(0x92, 0xd4, 0x00),
 		NoTarget = true,
 		ClientsideUse = function()
 			if (IsValid(pluto.opener)) then

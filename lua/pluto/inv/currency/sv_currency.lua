@@ -1120,5 +1120,5 @@ concommand.Add("pluto_spawn_cur", function(ply, cmd, args)
 
 	local pos = ply:GetEyeTrace().HitPos
 
-	pluto.currency.spawnfor(ply, args[1] or "droplet", pos ,args[2])
+	pluto.currency.spawnfor(ply, args[1] or "droplet", pos, args[2])
 end)
