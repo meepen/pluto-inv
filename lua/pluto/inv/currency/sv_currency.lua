@@ -674,11 +674,11 @@ for name, values in pairs {
 			},
 			tfa_cso_tomahawk = {
 				Rare = true,
-				Shares = 0.9,
+				Shares = 0.6,
 			},
 			tfa_cso_thanatos9 = {
 				Rare = true,
-				Shares = 0.9,
+				Shares = 0.7,
 			},
 
 			model_jason_unmask = {
@@ -694,15 +694,40 @@ for name, values in pairs {
 				Shares = 2,
 			},
 
-			model_darkwraith = 6,
-			model_jason = 7,
-			model_husk = 7,
-			model_scarecrow = 8,
-			model_death = 11,
+			model_richtofen        = {
+				Rare = true,
+				Shares = 5,
+			},
+			model_dempsey          = {
+				Rare = true,
+				Shares = 5,
+			},
+			model_nikolai          = {
+				Rare = true,
+				Shares = 5,
+			},
+			model_takeo            = {
+				Rare = true,
+				Shares = 5,
+			},
+			model_ghostfacereddevi = {
+				Rare = true,
+				Shares = 5,
+			},
 
-			model_death_paint = 15,
-			model_ghost_rider = 16,
-			model_death_class = 17,
+			model_darkwraith       = 6,
+			model_jason            = 7,
+			model_husk             = 7,
+			model_scarecrow        = 8,
+			model_ghostfacetheghos = 9,
+			model_death            = 11,
+
+			model_ghostfaceclassic = 12,
+			model_blackmask        = 14,
+			model_death_paint      = 15,
+			model_ghost_rider      = 16,
+			model_death_class      = 17,
+
 			--[[
 			model_markus_1 = 1,
 			model_markus_3 = 1,

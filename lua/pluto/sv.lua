@@ -1,3 +1,7 @@
+function pluto.isdevserver()
+	return GetHostName():find "[DEV]" and true or false
+end
+
 pluto.files.load {
 	Server = {
 		"sv/config.lua",
@@ -64,7 +68,7 @@ pluto.files.load {
 		"resource/fonts/Aladin-Regular.ttf",
 	},
 	Workshop = {
-		"2001929342",
+		pluto.isdevserver() and "2275087857" or "2001929342",
 
 		"1516699044", -- slvbase 2
 		"1516711672", -- skyrim snpcs

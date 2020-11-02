@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/error/ghostface/006/T_OKMask_BC"
+"$basealphaenvmapmask" "1"
+
+"$envmap" "models/error/ghostface/006/Softgold" 
+"$halflambert" "1"
+
+
+	"$phong" "1" 
+	"$phongexponent" "6"
+	"$phongboost" "3"
+	"$phongfresnelranges"		"[0 0.5 1]"               
+}
+

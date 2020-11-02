@@ -1,6 +1,6 @@
 SWEP.Base = "weapon_ttt_crowbar"
 SWEP.Category = "TFA CS:O"
-SWEP.PrintName = "THANATOS-9"
+SWEP.PrintName = "Demon Slayer"
 
 SWEP.ViewModel = "models/weapons/tfa_cso/c_thanatos_9.mdl"
 SWEP.WorldModel = "models/weapons/tfa_cso/w_thanatos_9.mdl"
@@ -10,8 +10,10 @@ SWEP.UseHands = true
 SWEP.HoldType = "melee2"
 SWEP.Slot = 0
 
+SWEP.Primary.Range           = 130
+SWEP.Primary.Extents = Vector(2, 20, 4)
 SWEP.Secondary.Delay = 2.5
-SWEP.Secondary.Damage = 80
+SWEP.Secondary.Damage = 69
 
 SWEP.Offset = { --Procedural world model animation, defaulted for CS:S purposes.
 	Pos = {

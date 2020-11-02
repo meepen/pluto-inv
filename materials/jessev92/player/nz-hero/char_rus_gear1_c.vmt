@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "jessev92/player/nz-hero/char_rus_gear1_c"
+	"$nocull" "1"
+	
+	"$halflambert" 1
+	"$model" 1
+}
