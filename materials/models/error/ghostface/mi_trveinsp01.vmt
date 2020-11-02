@@ -1,0 +1,18 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/error/ghostface/veins"
+	"$bumpmap" "models/error/ghostface/veins_n"
+	
+	"$halflambert" "1"
+
+	"$phong" "1" 
+	"$phongexponent" "60"
+	"$phongboost" "57"
+	"$phongfresnelranges"		"[0 0.5 1]"
+
+	$rimlight               1
+	$rimlightexponent       2
+	$rimlightboost          2
+               
+}
+

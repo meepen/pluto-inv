@@ -1,0 +1,18 @@
+"VertexLitGeneric"
+{
+	// Original shader: VertexLitTexture
+	"$basetexture" "models/vampire/hairlong"
+	"$bumpmap" "models/vampire/hairlong_n"
+	"$phong" "1"
+	"$phongboost"   "0.02"
+$phongexponent 10
+	"$phongfresnelranges" "[0.2 .5 10]"
+	"$phongalbedotint" "1"
+	"$normalmapalphaenvmapmask" "1"
+$alphatest 1
+
+// Rim lighting parameters
+	"$rimlight" "1"												// To enable rim lighting (requires phong)
+	"$rimlightexponent" "5"										// Exponent for phong component of rim lighting	
+	"$rimlightboost" "0.3"		
+}

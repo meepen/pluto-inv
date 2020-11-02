@@ -1,0 +1,14 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/error/ghostface/Red_Devil/T_OKMask_OG_BC"
+	"$bumpmap" "models/error/ghostface/006/T_OKMask_N"
+
+
+	"$halflambert" "1"
+
+	"$phong" "1" 
+	"$phongexponent" "7"
+	"$phongboost" "1"
+	"$phongfresnelranges"		"[0 0.5 1]"            
+}
+

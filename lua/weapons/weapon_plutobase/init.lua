@@ -104,9 +104,7 @@ end
 function SWEP:FireBulletsCallback(tr, dmginfo)
 	BaseClass.FireBulletsCallback(self, tr, dmginfo)
 
-	if (not tr.IsFake) then
-		self:RunModFunctionSequence("Shoot", nil, tr, dmginfo)
-	end
+	self:RunModFunctionSequence("Shoot", nil, tr, dmginfo)
 end
 
 function SWEP:SendData(ply)

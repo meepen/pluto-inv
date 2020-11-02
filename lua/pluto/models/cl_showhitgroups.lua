@@ -212,8 +212,14 @@ concommand.Add("pluto_update_hitgroups", function(ply, cmd, args, arg)
 
 
 			-- model specific changes (update as needed)
-			if (hitbox == 15) then
-				mins[3] = mins[3] - 5
+			if (hitbox == 3 or hitbox == 3) then
+				mins, maxs = mins * 0.8, maxs * 0.8
+			end
+			if (hitbox == 0) then
+				mins, maxs = mins * 0.6, maxs * 0.6
+			end
+			if (hitbox < 48 and hitbox > 42) then
+				mins, maxs = Vector(0.01, 0.01, 0.01), Vector(0.01, 0.01, 0.01)
 			end
 
 			for i = 1, 3 do

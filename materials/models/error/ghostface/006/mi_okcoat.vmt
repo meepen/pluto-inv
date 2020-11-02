@@ -1,0 +1,20 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/error/ghostface/006/T_OKCoat_BC"
+	"$bumpmap" "models/error/ghostface/006/T_OKCoat_N"
+
+	"$halflambert" "1"
+
+	"$phong" "1" 
+	"$phongexponent" "20"
+	"$phongboost" "0.2"
+                "$phongtint"    "[1 1 1]"
+	"$phongfresnelranges" "[0.5 2 50]"
+                "$alphatest" "1"
+                "$ambientocclusion" "0"
+
+                "$rimlight"    "1"
+                "$rimlightboost"    "1"
+                "$rimlightexponent"    "150"        
+}
+

@@ -666,7 +666,79 @@ for name, values in pairs {
 	_banna = {
 		Shares = 0,
 		Global = true,
-	}
+	},
+	brainegg = {
+		Shares = 10,
+		Types = "None",
+		Contents = {
+			--model_ghostface = 1,
+			tfa_cso_tbarrel = {
+				Rare = true,
+				Shares = 0.5,
+			},
+			tfa_cso_tomahawk = {
+				Rare = true,
+				Shares = 0.6,
+			},
+			tfa_cso_thanatos9 = {
+				Rare = true,
+				Shares = 0.7,
+			},
+
+			model_jason_unmask = {
+				Rare = true,
+				Shares = 1,
+			},
+			model_joker_2019 = {
+				Rare = true,
+				Shares = 1,
+			},
+			model_terminator = {
+				Rare = true,
+				Shares = 2,
+			},
+
+			model_richtofen        = {
+				Rare = true,
+				Shares = 5,
+			},
+			model_dempsey          = {
+				Rare = true,
+				Shares = 5,
+			},
+			model_nikolai          = {
+				Rare = true,
+				Shares = 5,
+			},
+			model_takeo            = {
+				Rare = true,
+				Shares = 5,
+			},
+			model_ghostfacereddevi = {
+				Rare = true,
+				Shares = 5,
+			},
+
+			model_darkwraith       = 6,
+			model_jason            = 7,
+			model_husk             = 7,
+			model_scarecrow        = 8,
+			model_ghostfacetheghos = 9,
+			model_death            = 11,
+
+			model_ghostfaceclassic = 12,
+			model_blackmask        = 14,
+			model_death_paint      = 15,
+			model_ghost_rider      = 16,
+			model_death_class      = 17,
+
+			--[[
+			model_markus_1 = 1,
+			model_markus_3 = 1,
+			model_markus_2 = 1,
+			model_detr_connor = 1,]]
+		},
+	},
 } do
 	table.Merge(pluto.currency.byname[name], values)
 end
@@ -1019,7 +1091,7 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 		pct = 1 / 3
 	end
 
-	if (math.random() < pct) then
+	if (false and math.random() < pct) then
 		admin.chatf(white_text, "Multiple ", ttt.teams.traitor.Color, "spirits ", white_text, "have entered this realm.")
 		local ghosts = {}
 		for i = 1, 7 + player.GetCount() / 6 do
@@ -1052,5 +1124,5 @@ concommand.Add("pluto_spawn_cur", function(ply, cmd, args)
 
 	local pos = ply:GetEyeTrace().HitPos
 
-	pluto.currency.spawnfor(ply, args[1] or "droplet", pos ,args[2])
+	pluto.currency.spawnfor(ply, args[1] or "droplet", pos, args[2])
 end)

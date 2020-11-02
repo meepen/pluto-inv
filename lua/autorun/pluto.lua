@@ -29,6 +29,10 @@ pluto.files.load {
 		"events/pass/cl_passevent.lua",
 
 		"inv/exp/cl_exp_scoreboard.lua",
+		
+		"hitreg/cl_hitreg.lua",
+
+		"weapons/cl_hover.lua",
 	},
 	Shared = {
 		"co_net.lua",

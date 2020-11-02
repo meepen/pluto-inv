@@ -1,7 +1,7 @@
 SWEP.Base				= "tfa_cso_xtracker"
 
 SWEP.Primary.Sound 			= Sound "XTracker.Fire"
-SWEP.Primary.Delay				= 60 / 660
+SWEP.Primary.Delay				= 60 / 630
 
 SWEP.Offset = {
 	Pos = {

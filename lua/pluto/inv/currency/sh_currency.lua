@@ -229,6 +229,28 @@ pluto.currency.list = {
 		Color = Color(0, 213, 183),
 	},
 	{
+		InternalName = "brainegg",
+		Name = "Brain Egg",
+		Icon = "pluto/currencies/brainegg.png",
+		Description = "Contains a Halloween 2020 Item",
+		SubDescription = "Brraaaaiiinsss...",
+		Color = Color(0x92, 0xd4, 0x00),
+		NoTarget = true,
+		ClientsideUse = function()
+			if (IsValid(pluto.opener)) then
+				pluto.opener:Remove()
+			end
+
+			pluto.opener = vgui.Create "tttrw_base"
+
+			pluto.opener:AddTab("Open Brain Egg", vgui.Create "pluto_box_open" :SetCurrency "brainegg")
+
+			pluto.opener:SetSize(640, 400)
+			pluto.opener:Center()
+			pluto.opener:MakePopup()
+		end,
+	},
+	{
 		InternalName = "crate3",
 		Name = "Consumed Pink Egg",
 		Icon = "pluto/currencies/crate3.png",
@@ -293,7 +315,7 @@ pluto.currency.list = {
 		Icon = "pluto/currencies/banna.png",
 		Color = Color(204, 180, 0),
 		Fake = true
-	}
+	},
 }
 
 pluto.currency_mt = pluto.currency_mt or {}
@@ -335,7 +357,7 @@ function PANEL:Init()
 	end
 
 	self.Image.Start = RealTime()
-	self.Image.Ends = RealTime() + 3
+	self.Image.Ends = RealTime() + (3 / GetConVar("pluto_open_speed"):GetFloat())
 
 	local s = self
 	function self.Image:Think()

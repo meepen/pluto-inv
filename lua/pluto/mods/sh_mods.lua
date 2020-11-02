@@ -47,6 +47,11 @@ end
 
 function pluto.mods.getminmaxs(mod_data, item)
 	local mod = pluto.mods.byname[mod_data.Mod]
+	
+	if (not mod) then
+		return ""
+	end
+
 	local tier = mod.Tiers[mod_data.Tier] or mod.Tiers[#mod.Tiers]
 
 	local formatted = {}
@@ -64,6 +69,11 @@ end
 
 function pluto.mods.format(mod_data, gun)
 	local mod = pluto.mods.byname[mod_data.Mod]
+
+	if (not mod) then
+		return ""
+	end
+
 	local tier = mod.Tiers[mod_data.Tier]
 	local rolls = pluto.mods.getrolls(mod, mod_data.Tier, mod_data.Roll)
 
@@ -79,6 +89,10 @@ end
 
 function pluto.mods.getdescription(mod_data)
 	local mod = pluto.mods.byname[mod_data.Mod]
+
+	if (not mod) then
+		return ""
+	end
 
 	if (mod.Description) then
 		return mod.Description

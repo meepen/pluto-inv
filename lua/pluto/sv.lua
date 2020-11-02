@@ -1,9 +1,16 @@
+function pluto.isdevserver()
+	return GetHostName():find "[DEV]" and true or false
+end
+
 pluto.files.load {
 	Server = {
 		"sv/config.lua",
 		"sv/maxplayers.lua",
+
 		"weapons/weapons.lua",
 		"weapons/random_spawns.lua",
+		"weapons/tracker/sv_tracker.lua",
+
 		"mods/sv_mods.lua",
 		"sv/hacks.lua",
 		"db/init.lua",
@@ -33,6 +40,8 @@ pluto.files.load {
 		"events/sv_aprilfools.lua",
 
 		"cheaters/sv_nocheats.lua",
+
+		"hitreg/sv_hitreg.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty
@@ -61,7 +70,7 @@ pluto.files.load {
 		"resource/fonts/Aladin-Regular.ttf",
 	},
 	Workshop = {
-		"2001929342",
+		pluto.isdevserver() and "2275087857" or "2001929342",
 
 		"1516699044", -- slvbase 2
 		"1516711672", -- skyrim snpcs

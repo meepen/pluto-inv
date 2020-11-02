@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "jessev92/player/nz-hero/char_ger_gear02_zomb_c"
+	"$bumpmap" "jessev92/player/nz-hero/char_ger_gear02_zomb_n"
+	"$nocull" 1
+	"$phong" "1"
+	"$phongexponent" "8"
+	"$phongboost" ".1"	
+	"$phongfresnelranges"	"[.3 1 8]"
+	"$halflambert" "1"
+
+	// Rim lighting parameters
+	"$rimlight" "1"												// To enable rim lighting (requires phong)
+	"$rimlightexponent" "4"										// Exponent for phong component of rim lighting	
+	"$rimlightboost" "1"	
+}

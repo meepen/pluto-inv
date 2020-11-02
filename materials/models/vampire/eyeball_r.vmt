@@ -1,0 +1,17 @@
+EyeRefract
+{
+$Iris 						"models\vampire\eye" 
+$AmbientOcclTexture 		"models\vampire\survivor_eye_ao" 
+$Envmap 					"models\vampire\eye-reflection-cubemap-" 
+$CorneaTexture 				"models\vampire\eye-cornea" 
+$EyeballRadius ".5" 
+$AmbientOcclColor "[.4 .4 .4]" Default 0.33, 0.33, 0.33
+$Dilation ".5" 
+$ParallaxStrength "0.25" 
+$CorneaBumpStrength ".5" 
+$halflambert 1
+$nodecal 1
+$ambientocclusion 1
+$selfillum 1
+$SphereTexkillCombo 0 
+}

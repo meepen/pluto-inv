@@ -1,0 +1,18 @@
+"VertexLitGeneric"
+{
+	// Original shader: VertexLitTexture
+	"$basetexture" "models/vampire/robes_alt_v2"
+	"$bumpmap" "models/vampire/robes_alt_n"
+	"$phong" "1"
+	"$phongboost"   "0.02"
+$phongexponent 10
+	"$phongfresnelranges" "[0.2 .5 10]"
+	"$phongalbedotint" "1"
+	"$normalmapalphaenvmapmask" "1"
+
+// Rim lighting parameters
+	"$rimlight" "1"												// To enable rim lighting (requires phong)
+	"$rimlightexponent" "5"										// Exponent for phong component of rim lighting	
+	"$rimlightboost" "0.3"		
+$alphatest 1
+}

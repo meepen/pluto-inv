@@ -1,0 +1,12 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/error/ghostface/classic/first_blade"
+	"$bumpmap" "models/error/ghostface/classic/first_blade_bump"
+
+	//"$halflambert" 1
+
+	"$phong" "1"
+	"$phongexponent" "55"
+	"$phongboost" "0.3"	
+	"$phongfresnelranges"	"[.5 .5 .5]"
+}

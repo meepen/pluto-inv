@@ -1,0 +1,10 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "jessev92/player/nz-hero/jap_equipment_2"
+	"$bumpmap" "jessev92/player/nz-hero/jap_equipment_2_normal"
+	"$nocull" 1
+	"$phong" "1"
+	"$phongexponent" "8"
+	"$phongboost" ".1"	
+	"$phongfresnelranges"	"[.3 1 8]"
+}

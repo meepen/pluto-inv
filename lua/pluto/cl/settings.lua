@@ -1,10 +1,16 @@
 local pluto_fov = CreateConVar("pluto_fov", GetConVar "fov_desired":GetFloat(), FCVAR_ARCHIVE, "FOV Addend", 60, 160)
+local pluto_trash_speed = CreateConVar("pluto_trash_speed", 1, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Speed multiplier for item trashing", 1, 5)
+local pluto_open_speed = CreateConVar("pluto_open_speed", 1, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Speed multiplier for item opening", 1, 5)
 
 hook.Add("TTTPopulateSettingsMenu", "pluto_settings", function()
 	local cat = vgui.Create "ttt_settings_category"
 
 	cat:AddSlider("FOV", "pluto_fov")
 	cat:AddCheckBox("Disable Cosmetics", "pluto_disable_cosmetics")
+	cat:AddSlider("Item trashing speed", "pluto_trash_speed")
+	cat:AddSlider("Item opening speed", "pluto_open_speed")
+	cat:AddCheckBox("Enable Gun Hover", "pluto_hover_enabled")
+	cat:AddSlider("Gun Hover Image Size", "pluto_hover_pct")
 	cat:InvalidateLayout(true)
 	cat:SizeToContents()
 	ttt.settings:AddTab("Pluto", cat)

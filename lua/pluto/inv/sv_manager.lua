@@ -580,6 +580,7 @@ function pluto.inv.readcurrencyuse(ply)
 
 	if (cur.Use) then
 		cur.Use(ply, wpn)
+		hook.Run("PlayerCurrencyUse", ply, wpn, currency)
 	elseif (cur.Contents) then
 		local gotten, data = pluto.inv.roll(cur.Contents)
 		local type = pluto.inv.itemtype(gotten)

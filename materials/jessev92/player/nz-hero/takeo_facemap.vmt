@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "jessev92/player/nz-hero/takeo_facemap"
+	"$bumpmap" "jessev92/player/nz-hero/takeo_facemap_normal"
+	"$halflambert" 1
+	"$nocull" 1
+}
