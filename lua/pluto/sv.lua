@@ -40,6 +40,8 @@ pluto.files.load {
 		"events/sv_aprilfools.lua",
 
 		"cheaters/sv_nocheats.lua",
+
+		"hitreg/sv_hitreg.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty
