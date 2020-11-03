@@ -14,4 +14,5 @@ function ROUND:TTTPrepareRoles(Team, Role)
 		:SetCalculateAmountFunc(function(total_players)
 			return 0
 		end)
+		:SetCanSeeThroughWalls(false)
 end

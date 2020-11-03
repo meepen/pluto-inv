@@ -85,6 +85,11 @@ ROUND:Hook("HUDPaint", function(self, state)
 	end
 end)
 
+ROUND:Hook("PreventRDMManagerPopup", function()
+	print "hooked into"
+	return true
+end)
+
 ROUND:Hook("TTTBeginRound", function(self, state)
 	EmitSound("pluto/dkrap.ogg", vector_origin, -2, CHAN_STATIC, 1)
 end)
