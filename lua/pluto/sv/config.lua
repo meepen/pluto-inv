@@ -100,7 +100,10 @@ function pluto.db.transact(fn)
 					callback()
 				end
 			end
-			db:autocommit(true):next(finish):catch(finish)
+			local function cont()
+				db:autocommit(true):next(finish):catch(finish)
+			end
+			db:commit():next(cont):catch(cont)
 		end)
 	end)
 
