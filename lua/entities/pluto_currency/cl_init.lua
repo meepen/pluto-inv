@@ -14,31 +14,28 @@ function ENT:GetImage()
 	return self.Material
 end
 
-function ENT:PostDrawTranslucentRenderables()
-	if (self:IsDormant()) then
-		return
-	end
-
-	local throughwalls = self:ShouldSeeThroughWalls()
-	if (throughwalls) then
-		cam.IgnoreZ(true)
-	end
-	
-	render.SetMaterial(self:GetImage())
-	local pos = self:GetPos()
-	local size = self.Size * 0.75
-
+hook.Add("PostDrawTranslucentRenderables", "pluto_currency_render", function()
 	local wait = 1.5
-	local timing = 1 - (((wait * self.random) + CurTime()) % wait) / wait * 2
-	
-	pos = pos + vector_up * (math.sin(timing * math.pi) + 1) / 2 * self.Size * 0.25
+	local timing = 1 - ((wait + CurTime()) % wait) / wait * 2
+	local up_offset = vector_up * (math.sin(timing * math.pi) + 1) / 2 * 15 * 0.25
 
-	render.DrawSprite(pos, size, size, color_white)
+	for _, self in pairs(pluto_currencies) do
+		if (not IsValid(self) or self:IsDormant()) then
+			continue
+		end
 
-	if (throughwalls) then
-		cam.IgnoreZ(false)
+		cam.IgnoreZ(self:ShouldSeeThroughWalls())
+		
+		render.SetMaterial(self:GetImage())
+		local pos = self:GetPos()
+		
+		pos = pos + up_offset
+		local size = self.Size
+
+		render.DrawSprite(pos, size, size, color_white)
 	end
-end
+	cam.IgnoreZ(false)
+end)
 
 function ENT:ShouldSeeThroughWalls()
 	local dist = math.min(16000, LocalPlayer():GetCurrencyDistance())

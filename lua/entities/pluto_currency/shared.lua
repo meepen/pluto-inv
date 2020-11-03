@@ -3,6 +3,10 @@ ENT.Base = "ttt_point_info"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_OPAQUE
 
+if (CLIENT) then
+	pluto_currencies = pluto_currencies or setmetatable({}, {__mode = "v"})
+end
+
 function ENT:SetupDataTables()
 	self:NetworkVar("String", 0, "Icon")
 end
@@ -22,7 +26,9 @@ function ENT:Initialize()
 
 	self:SetMoveType(MOVETYPE_NONE)
 
-	hook.Add("PostDrawTranslucentRenderables", self, self.PostDrawTranslucentRenderables)
+	if (CLIENT) then
+		table.insert(pluto_currencies, self)
+	end
 end
 
 function ENT:ShouldCollide(e1, e2)
