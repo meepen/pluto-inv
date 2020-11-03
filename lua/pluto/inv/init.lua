@@ -166,37 +166,24 @@ function pluto.inv.switchtab(db, tabid1, tabindex1, tabid2, tabindex2)
 		affected = affected + q:affectedRows()
 	end
 
-	mysql_stmt_run(db, "SET foreign_key_checks = 0")
-	local dat, err, errno = mysql_stmt_run(db, [[
-		UPDATE pluto_items i, pluto_items i2 SET
-			i.idx = i2.idx, i2.idx = i.idx,
-			i.tier = i2.tier, i2.tier = i.tier,
-			i.class = i2.class, i2.class = i.class,
-			i.nick = i2.nick, i2.nick = i.nick,
-			i.special_name = i2.special_name, i2.special_name = i.special_name,
-			i.exp = i2.exp, i2.exp = i.exp,
-			i.locked = i2.locked, i2.locked = i.locked,
-			i.untradeable = i2.untradeable, i2.untradeable = i.untradeable,
-			i.original_owner = i2.original_owner, i2.original_owner = i.original_owner
-		WHERE i.tab_id = ? AND i.tab_idx = ? AND i2.tab_id = ? AND i2.tab_idx = ?
-	]], tabid1, tabindex1, tabid2, tabindex2)
-	mysql_stmt_run(db, "SET foreign_key_checks = 1")
+	mysql_stmt_run(db, "SELECT tab_id, tab_idx FROM pluto_items WHERE tab_id IN (?, ?) FOR UPDATE", tabid1, tabid2)
+	local affected = 0
 
-	if (dat.AFFECTED_ROWS == 0) then
-		local dat, err = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE tab_id = ? AND tab_idx = ?", tabid2, tabindex2, tabid1, tabindex1)
-		if (dat.AFFECTED_ROWS == 0) then
-			dat, err = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE tab_id = ? AND tab_idx = ?", tabid1, tabindex1, tabid2, tabindex2)
-		end
-
-		if (dat.AFFECTED_ROWS == 0) then
-			mysql_rollback(db)
-			return false
-		end
-		
-		return true, 1
+	local dat, err = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = 0 WHERE tab_id = ? AND tab_idx = ?", tabid2, tabid1, tabindex1)
+	if (dat.AFFECTED_ROWS == 1) then
+		affected = affected + 1
 	end
-	
-	return true, 2
+	dat, err = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE tab_id = ? AND tab_idx = ?", tabid1, tabindex1, tabid2, tabindex2)
+	if (dat.AFFECTED_ROWS == 1) then
+		affected = affected + 1
+	end
+	dat, err = mysql_stmt_run(db, "UPDATE pluto_items SET tab_idx = ? WHERE tab_id = ? AND tab_idx = 0", tabindex2, tabid2)
+
+	if (affected == 0) then
+		return false, affected
+	else
+		return true, affected
+	end
 end
 
 function pluto.inv.setitemplacement(db, ply, item, tabid, tabindex)
