@@ -5,7 +5,7 @@ ROUND.BananasPerPlayer = 6
 ROUND.KillStealMin = 0.35
 ROUND.KillStealMax = 0.65
 ROUND.HealthPerBanana = 10
-ROUND.BananasPerEgg = 10
+ROUND.BananasPerEgg = 8
 ROUND.WinnerBonus = 3
 ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
 
@@ -217,7 +217,7 @@ ROUND:Hook("TTTEndRound", function(self, state)
 	self:ChooseLeader(state)
 
 	state.leader:SetModelScale(1, 0)
---[[
+
 	for ply, score in pairs(state.playerscores) do
 		local togive = math.floor(score / self.BananasPerEgg)
 		pluto.db.instance(function(db)
@@ -234,7 +234,7 @@ ROUND:Hook("TTTEndRound", function(self, state)
 		end)
 	else
 		ttt.chat("All monke suck")
-	end]]
+	end
 
 	GetConVar("ttt_karma"):Revert()
 
