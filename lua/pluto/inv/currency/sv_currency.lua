@@ -663,6 +663,18 @@ for name, values in pairs {
 	eye = {
 		Shares = 0,
 	},
+	_banna = {
+		Shares = 3,
+		Pickup = function(ply)
+			if (ttt.GetCurrentRoundEvent() == "chimp" and ttt.GetRoundState() == ttt.ROUNDSTATE_ACTIVE) then
+				hook.Run("PlutoBannaPickup", ply)
+			elseif (player.GetCount() >= 6) then
+				pluto.rounds.prepare "chimp"
+			end
+
+			return true
+		end,
+	},
 	brainegg = {
 		Shares = 10,
 		Types = "None",

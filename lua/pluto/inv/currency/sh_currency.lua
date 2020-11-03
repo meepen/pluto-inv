@@ -309,6 +309,13 @@ pluto.currency.list = {
 		SubDescription = "I see the void envelop you, friend... embrace me.",
 		Color = Color(107, 25, 14),
 	},
+	{
+		InternalName = "_banna",
+		Name = "Banna",
+		Icon = "pluto/currencies/banna.png",
+		Color = Color(204, 180, 0),
+		Fake = true
+	},
 }
 
 pluto.currency_mt = pluto.currency_mt or {}
