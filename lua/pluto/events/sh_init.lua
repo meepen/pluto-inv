@@ -138,6 +138,7 @@ hook.Add("OnNextRoundEventChange", "pluto_event", function(old, new)
 		event:NotifyCancel()
 	end
 end)
+
 hook.Add("OnCurrentRoundEventChange", "pluto_event", function(old, new)
 	if (new == "" and old ~= "") then
 		local event = pluto.rounds.get(old)
@@ -185,3 +186,13 @@ end)
 hook.Add("TTTEndRound", "pluto_event_manager", function()
 	ttt.SetCurrentRoundEvent ""
 end)
+
+if (SERVER) then
+	concommand.Add("pluto_prepare_round", function(ply, cmd, args)
+		if (not pluto.cancheat(ply)) then
+			return
+		end
+
+		pluto.rounds.prepare(args[1])
+	end)
+end

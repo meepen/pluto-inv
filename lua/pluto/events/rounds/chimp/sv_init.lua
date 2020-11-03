@@ -1,10 +1,12 @@
-resource.AddFile("sound/pluto/dkrap.ogg")
+resource.AddFile("sound/pluto/dkrap.ogg") -- REMOVE ME
 
 ROUND.Name = "Monke Mania"
 ROUND.BananasPerPlayer = 6
 ROUND.KillStealMin = 0.35
 ROUND.KillStealMax = 0.65
 ROUND.HealthPerBanana = 10
+ROUND.BananasPerEgg = 10
+ROUND.WinnerBonus = 3
 ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
 
 util.AddNetworkString "chimp_data"
@@ -22,6 +24,8 @@ function ROUND:Prepare(state)
 			end
 		end
 	end)
+
+	timer.Pause("tttrw_afk")
 end
 
 function ROUND:Finish()
@@ -125,20 +129,18 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 
 	self:ChooseLeader(state)
 
-	hook.Add("TTTUpdatePlayerSpeed", "chimp_speed", function(self, ply, data)
-		if (state.playerscores[ply]) then
-			data["chimp"] = 1 + (state.playerscores[ply] * 0.05)
-		end
-	end)
-
 	GetConVar("ttt_karma"):SetBool(false)
 	
-	timer.Simple(3, function()
-		round.SetRoundEndTime(CurTime() + 200)
-		ttt.SetVisibleRoundEndTime(CurTime() + 200)
+	timer.Simple(1, function()
+		round.SetRoundEndTime(CurTime() + 195)
+		ttt.SetVisibleRoundEndTime(CurTime() + 195)
 	end)
+end)
 
-	timer.Pause("tttrw_afk")
+ROUND:Hook("TTTUpdatePlayerSpeed", function(self, state, ply, data)
+	if (state.playerscores and state.playerscores[ply]) then
+		data["chimp"] = 1 + (state.playerscores[ply] * 0.05)
+	end
 end)
 
 ROUND:Hook("PostPlayerDeath", function(self, state, ply)
@@ -175,9 +177,6 @@ end
 function ROUND:UpdateScore(state, ply, amt)
 	state.playerscores[ply] = (state.playerscores[ply] or 0) + amt
 
-	ply:SetWalkSpeed(ply:GetWalkSpeed() + amt * 5)
-	ply:SetRunSpeed(ply:GetRunSpeed() + amt * 5)
-
 	net.Start "chimp_data"
 		net.WriteString "currency_collected"
 		net.WriteUInt(state.playerscores[ply], 32)
@@ -212,24 +211,30 @@ ROUND:Hook("PlayerSelectSpawnPosition", ROUND.ResetPosition)
 ROUND:Hook("TTTEndRound", function(self, state)
 	self:ChooseLeader(state)
 
+	for ply, score in pairs(state.playerscores) do
+		local togive = math.floor(score / self.BananasPerEgg)
+		pluto.db.instance(function(db)
+			pluto.inv.addcurrency(db, ply, "brainegg", togive)
+			ply:ChatPrint(white_text, "Monke get ", togive, " ", pluto.currency.byname.brainegg, white_text, " for hav ", score, " ", pluto.currency.byname._banna, white_text, "!")
+		end)
+	end
+
 	if (IsValid(state.leader)) then
 		ttt.chat(ttt.roles["Banna Boss"].Color, state.leader:Nick(), white_text, " banna king!")
+		pluto.db.instance(function(db)
+			pluto.inv.addcurrency(db, state.leader, "brainegg", self.WinnerBonus)
+			state.leader:ChatPrint(white_text, "Monke get ", self.WinnerBonus	, " extra ", pluto.currency.byname.brainegg, white_text, " for be banna king!")
+		end)
 	else
 		ttt.chat("All monke suck")
 	end
-
-	for ply, score in pairs(state.playerscores) do
-		ply:ChatPrint(ttt.roles.Monke.Color, "Monke", white_text, " havd ", score, " banna!")
-	end
-
-	hook.Remove("TTTUpdatePlayerSpeed", "chimp_speed")
 
 	GetConVar("ttt_karma"):Revert()
 
 	timer.UnPause("tttrw_afk")
 end)
 
-ROUND:Hook("PlutoCanPickup", function(self, state, ply, curr)
+ROUND:Hook("PlutoBannaPickup", function(self, state, ply)
 	local left = -1
 	for _, ent in pairs(state.bananas) do
 		if (IsValid(ent)) then
@@ -247,8 +252,6 @@ ROUND:Hook("PlutoCanPickup", function(self, state, ply, curr)
 	end
 
 	self:UpdateScore(state, ply, 1)
-	
-	return true
 end)
 
 ROUND:Hook("PlayerCanPickupWeapon", function(self, state, ply, wep)
@@ -268,7 +271,7 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, att)
 		return
 	end
 
-	if (not state.playerscores or not state.playerscores[vic] or not state.playerscores[att]) then
+	if (not state.playerscores or not state.playerscores[vic]) then
 		return
 	end
 
@@ -276,7 +279,7 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, att)
 
 	if (not IsValid(att) or not att:IsPlayer() or vic == att) then
 		self:UpdateScore(state, vic, -1 * tosteal)
-		vic:ChatPrint(ttt.teams.traitor.Color, att:Nick(), white_text, " lose ", tosteal, " banna!")
+		vic:ChatPrint(ttt.teams.traitor.Color, vic:Nick(), white_text, " lose ", tosteal, " banna!")
 		return
 	end
 

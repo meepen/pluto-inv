@@ -311,7 +311,7 @@ pluto.currency.list = {
 	},
 	{
 		InternalName = "_banna",
-		Name = "FAKE: Banna",
+		Name = "Banna",
 		Icon = "pluto/currencies/banna.png",
 		Color = Color(204, 180, 0),
 		Fake = true
