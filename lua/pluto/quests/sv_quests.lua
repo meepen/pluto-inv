@@ -413,7 +413,7 @@ function QUEST:UpdateProgress(amount)
 end
 
 function QUEST:Complete()
-	pluto.db.simplequery("UPDATE pluto_quests_news SET expiry_time = LEAST(expiry_time, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP)) WHERE idx = ?", {self.TYPE.Cooldown, self.RowID}, function(d, err)
+	pluto.db.simplequery("UPDATE pluto_quests_new SET expiry_time = LEAST(expiry_time, TIMESTAMPADD(SECOND, ?, CURRENT_TIMESTAMP)) WHERE idx = ?", {self.TYPE.Cooldown, self.RowID}, function(d, err)
 		if (self.QUEST.Reward) then
 			self.QUEST:Reward(self)
 		elseif (self.Reward) then

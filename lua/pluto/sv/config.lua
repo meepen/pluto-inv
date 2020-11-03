@@ -65,7 +65,6 @@ function pluto.db.instance(fn)
 			fn(db)
 		end,
 		function()
-			print "finished!"
 			pluto.pool:Return(db)
 			for _, callback in ipairs(callbacks) do
 				callback()
@@ -96,7 +95,6 @@ function pluto.db.transact(fn)
 			fn(db)
 		end, function()
 			local function finish()
-				print "finish"
 				pluto.pool:Return(db)
 				for _, callback in ipairs(callbacks) do
 					callback()
