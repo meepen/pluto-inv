@@ -20,7 +20,7 @@ c "a2lh" {
 	Color = COL(1),
 	GenerateBodygroups = function(item)
 		return {
-			Cloth = own(item) == "76561198050165746" and rand(item.RowID or item.ID) % 2 or 0
+			Cloth = item.Owner == "76561198050165746" and rand(item.RowID or item.ID) % 2 or 0
 		}
 	end,
 	Gender = "Female",
