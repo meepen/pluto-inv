@@ -144,6 +144,8 @@ function ROUND:BunnySpawn(ply, state)
 	end
 end
 
+local hull_mins, hull_maxs = Vector(-16, -16, 0), Vector(16, 16, 72)
+
 function ROUND:FindPosition(navs, distance_min, distance_max, filter)
 	distance_min = distance_min or -math.huge
 	distance_max = distance_max or math.huge
@@ -151,7 +153,7 @@ function ROUND:FindPosition(navs, distance_min, distance_max, filter)
 
 	for i = 1, #navs do
 		local _, nav = pluto.inv.roll(navs)
-		local pos = pluto.currency.validpos(nav.Nav)
+		local pos = pluto.currency.validpos(nav.Nav, hull_mins, hull_maxs)
 
 		if (not pos) then
 			continue
@@ -273,7 +275,7 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 				end
 
 				for k, nav in RandomPairs(navs) do
-					local newpos = pluto.currency.validpos(nav.Nav)
+					local newpos = pluto.currency.validpos(nav.Nav, hull_mins, hull_maxs)
 					if (not newpos) then
 						continue
 					end

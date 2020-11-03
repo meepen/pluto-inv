@@ -66,7 +66,7 @@ function ENT:Think()
 					next = nav
 				end
 
-				pos = pluto.currency.validpos(next) or pos
+				pos = pluto.currency.validpos(next, Vector(), Vector()) or pos
 				break
 			end
 		end

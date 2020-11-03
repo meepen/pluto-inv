@@ -132,14 +132,14 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	GetConVar("ttt_karma"):SetBool(false)
 	
 	timer.Simple(1, function()
-		round.SetRoundEndTime(CurTime() + 195)
-		ttt.SetVisibleRoundEndTime(CurTime() + 195)
+		round.SetRoundEndTime(CurTime() + 190)
+		ttt.SetVisibleRoundEndTime(CurTime() + 190)
 	end)
 end)
 
 ROUND:Hook("TTTUpdatePlayerSpeed", function(self, state, ply, data)
 	if (state.playerscores and state.playerscores[ply]) then
-		data["chimp"] = 1 + (state.playerscores[ply] * 0.05)
+		data["chimp"] = 1.2 + math.min(0.5, (state.playerscores[ply] * 0.1))
 	end
 end)
 
@@ -151,7 +151,7 @@ end)
 function ROUND:Initialize(state, ply)
 	self:PlayerSetModel(state, ply)
 	self:Spawn(state, ply)
-	local pos = select(1, pluto.currency.randompos())
+	local pos = self:ResetPosition(state, ply)
 	if (pos) then
 		ply.ForcePos = pos
 	end
@@ -163,9 +163,11 @@ function ROUND:ChooseLeader(state)
 	if (IsValid(new)) then
 		if (IsValid(state.leader) and new ~= state.leader) then
 			state.leader:SetRole("Monke")
+			state.leader:SetModelScale(1, 0)
 			ttt.chat(ttt.roles["Banna Boss"].Color, new:Nick(), white_text, " new banna boss!")
 		end
 		state.leader = new
+		--new:SetModelScale(1.2, 1)
 		new:SetRole("Banna Boss")
 		net.Start "chimp_data"
 			net.WriteString "current_leader"
@@ -198,12 +200,15 @@ function ROUND:Spawn(state, ply)
 		ply:SetHealth(100)
 		ply:SetMaxHealth(100)
 	end
+	ply.LastBannaAttacker = nil
 end
 
 ROUND:Hook("PlayerSpawn", ROUND.Spawn)
 
+local hull_mins, hull_maxs = Vector(-22, -22, 0), Vector(22, 22, 90)
+
 function ROUND:ResetPosition(state, ply)
-	return select(1, pluto.currency.randompos())
+	return select(1, pluto.currency.randompos(hull_mins, hull_maxs))
 end
 
 ROUND:Hook("PlayerSelectSpawnPosition", ROUND.ResetPosition)
@@ -211,6 +216,8 @@ ROUND:Hook("PlayerSelectSpawnPosition", ROUND.ResetPosition)
 ROUND:Hook("TTTEndRound", function(self, state)
 	self:ChooseLeader(state)
 
+	state.leader:SetModelScale(1, 0)
+--[[
 	for ply, score in pairs(state.playerscores) do
 		local togive = math.floor(score / self.BananasPerEgg)
 		pluto.db.instance(function(db)
@@ -227,14 +234,14 @@ ROUND:Hook("TTTEndRound", function(self, state)
 		end)
 	else
 		ttt.chat("All monke suck")
-	end
+	end]]
 
 	GetConVar("ttt_karma"):Revert()
 
 	timer.UnPause("tttrw_afk")
 end)
 
-ROUND:Hook("PlutoBannaPickup", function(self, state, ply)
+function ROUND:SendUpdateBananas(state)
 	local left = -1
 	for _, ent in pairs(state.bananas) do
 		if (IsValid(ent)) then
@@ -246,6 +253,10 @@ ROUND:Hook("PlutoBannaPickup", function(self, state, ply)
 		net.WriteString "currency_left"
 		net.WriteUInt(left, 32)
 	net.Broadcast()
+end
+
+ROUND:Hook("PlutoBannaPickup", function(self, state, ply)
+	self:SendUpdateBananas(state)
 
 	if (ply:Alive()) then
 		ply:SetHealth(math.min(ply:GetMaxHealth(), ply:Health() + self.HealthPerBanana))
@@ -266,6 +277,32 @@ ROUND:Hook("TTTHasRoundBeenWon", function(self, state)
 	return false
 end)
 
+ROUND:Hook("EntityTakeDamage", function(self, state, targ, dmg)
+	local atk = dmg:GetAttacker()
+	if (not IsValid(targ) or not targ:IsPlayer()) then
+		return
+	end
+	if (not IsValid(atk) or not atk:IsPlayer()) then
+		return
+	end
+
+	targ.LastBannaAttacker = atk
+end)
+
+ROUND:Hook("PlayerDisconnected", function(self, state, ply)
+	if (not state.playerscores or not state.playerscores[ply]) then
+		return
+	end
+
+	local tosteal = state.playerscores[ply]
+
+	for i = 1, tosteal do
+		table.insert(state.bananas, pluto.currency.spawnfor(player.GetAll()[1], "_banna", nil, true))
+	end
+	self:SendUpdateBananas(state)
+	state.playerscores[ply] = nil
+end)
+
 ROUND:Hook("PlayerDeath", function(self, state, vic, inf, att)
 	if (not IsValid(vic)) then
 		return
@@ -277,13 +314,22 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, att)
 
 	local tosteal = state.playerscores[vic] > 0 and math.ceil(Lerp(math.random(), self.KillStealMin, self.KillStealMax) * state.playerscores[vic]) or 0
 
+	if (vic == att and IsValid(vic.LastBannaAttacker)) then
+		att = vic.LastBannaAttacker
+	end
+
 	if (not IsValid(att) or not att:IsPlayer() or vic == att) then
-		self:UpdateScore(state, vic, -1 * tosteal)
+		self:UpdateScore(state, vic, -tosteal)
+		for i = 1, tosteal do
+			table.insert(state.bananas, pluto.currency.spawnfor(vic, "_banna", nil, true))
+		end
+		self:SendUpdateBananas(state)
+	
 		vic:ChatPrint(ttt.teams.traitor.Color, "Monke", white_text, " lose ", tosteal, " banna!")
 		return
 	end
 
-	self:UpdateScore(state, vic, -1 * tosteal)
+	self:UpdateScore(state, vic, -tosteal)
 	self:UpdateScore(state, att, tosteal)
 
 	if (tosteal > 0) then

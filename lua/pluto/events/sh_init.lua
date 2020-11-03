@@ -78,6 +78,10 @@ function pluto.rounds.run(hook, ...)
 	end
 end
 
+function pluto.rounds.getcurrent()
+	return pluto.rounds.get(ttt.GetCurrentRoundEvent())
+end
+
 function pluto.rounds.get(name)
 	return pluto.rounds.byname[name]
 end

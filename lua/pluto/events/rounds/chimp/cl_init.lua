@@ -56,6 +56,10 @@ local function RenderStats(state)
 end
 
 net.Receive("chimp_data", function()
+	if (not pluto.rounds.state) then
+		return
+	end
+
 	local str = net.ReadString()
 	if (str == "currency_left" or str == "currency_collected") then
 		pluto.rounds.state[str] = net.ReadUInt(32)
@@ -69,6 +73,10 @@ function ROUND:Prepare(state)
 end
 
 ROUND:Hook("HUDPaint", function(self, state)
+	if (not pluto.rounds.state) then
+		return
+	end
+
 	if (ttt.GetRoundState() == ttt.ROUNDSTATE_PREPARING) then
 		RenderHeader(state)
 	elseif (ttt.GetRoundState() == ttt.ROUNDSTATE_ACTIVE) then

@@ -665,6 +665,7 @@ for name, values in pairs {
 	},
 	_banna = {
 		Shares = 3,
+		Global = true,
 		Pickup = function(ply)
 			if (ttt.GetCurrentRoundEvent() == "chimp" and ttt.GetRoundState() == ttt.ROUNDSTATE_ACTIVE) then
 				hook.Run("PlutoBannaPickup", ply)
@@ -860,7 +861,13 @@ pluto.currency.navs = {
 	end,
 }
 
-function pluto.currency.randompos()
+function pluto.currency.randompos(mins, maxs)
+	if (not mins) then
+		mins = Vector(-16, -16, 0)
+	end
+	if (not maxs) then
+		maxs = Vector(16, 16, 48)
+	end
 	pluto.currency.navs.start()
 
 	for i, item in pluto.currency.navs.random() do
@@ -868,7 +875,7 @@ function pluto.currency.randompos()
 			continue
 		end
 
-		local pos = pluto.currency.validpos(item)
+		local pos = pluto.currency.validpos(item, mins, maxs)
 		if (pos) then
 			return pos, item
 		end
@@ -879,15 +886,15 @@ function pluto.currency.randompos()
 	return vector_origin
 end
 
-function pluto.currency.validpos(nav)
+function pluto.currency.validpos(nav, mins, maxs)
 	for i = 1, 25 do
 		local pos = nav:GetRandomPoint()
 
 		local tr = util.TraceHull {
 			start = pos,
 			endpos = pos,
-			mins = Vector(-16, -16, 0),	
-			maxs = Vector(16, 16, 48),
+			mins = mins,	
+			maxs = maxs,
 			filter = player.GetAll(),
 			mask = MASK_PLAYERSOLID
 		}
@@ -969,7 +976,7 @@ pluto.currency.tospawn = pluto.currency.tospawn or {}
 pluto.currency.spawned = pluto.currency.spawned or {}
 
 hook.Add("DoPlayerDeath", "pluto_currency_add", function(vic, damager, dmg)
-	if (pluto.rounds.current and pluto.rounds.current.Boss) then
+	if (pluto.rounds.getcurrent()) then
 		return
 	end
 
