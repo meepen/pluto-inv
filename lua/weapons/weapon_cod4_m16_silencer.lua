@@ -9,4 +9,6 @@ SWEP.Base = "weapon_cod4_m16"
 
 SWEP.Primary.Sound = "Weapon_CoD4_M4.Silenced"
 
+SWEP.CraftBuff = 3.3
+
 SWEP.AutoSpawnable = false

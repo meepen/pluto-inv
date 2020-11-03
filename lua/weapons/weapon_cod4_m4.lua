@@ -63,7 +63,7 @@ sound.Add {
 }
 
 
-local pow = 1.7
+local pow = 1.3
 SWEP.RecoilInstructions = {
 	Interval = 1,
 	pow * Angle(-8, -2),

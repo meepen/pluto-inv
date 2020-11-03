@@ -23,4 +23,6 @@ SWEP.Ironsights = {
 
 SWEP.AutoSpawnable = false
 
+SWEP.CraftBuff = 3.3
+
 SWEP.Ortho = {0, -2}

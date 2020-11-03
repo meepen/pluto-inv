@@ -92,8 +92,8 @@ concommand.Add("pluto_generate_weapon", function(ply, cmd, args)
 
 		err:Remove()
 
-		pprintf("Done. Saved to %s (copied to clipboard)", util.RelativePathToFull("data/" .. fname))
-		SetClipboardText(util.RelativePathToFull("data/" .. fname))
+		pprintf("Done. Saved to %s (copied to clipboard)", "data/" .. fname)
+		SetClipboardText("data/" .. fname)
 	end
 end)
 
@@ -163,8 +163,8 @@ concommand.Add("pluto_generate_model", function(ply, cmd, args)
 			w = w,
 			h = h
 		})
-		pprintf("Done. Saved to %s (copied to clipboard)", util.RelativePathToFull("data/" .. fname))
-		SetClipboardText(util.RelativePathToFull("data/" .. fname))
+		pprintf("Done. Saved to %s (copied to clipboard)", "data/" .. fname)
+		SetClipboardText("data/" .. fname)
 
 		err:Remove()
 	end

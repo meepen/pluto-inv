@@ -25,4 +25,6 @@ SWEP.Bullets = {
 
 SWEP.AutoSpawnable = false
 
+SWEP.CraftBuff = 3.3
+
 SWEP.Ortho = {3, -4.5}

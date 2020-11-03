@@ -236,5 +236,5 @@ concommand.Add("pluto_update_hitgroups", function(ply, cmd, args, arg)
 	new:Close()
 	current:Close()
 
-	pprintf("File written to %s", util.RelativePathToFull("data/" .. model .. ".dat"))
+	pprintf("File written to %s", "data/" .. model .. ".dat")
 end)

@@ -17,4 +17,6 @@ sound.Add {
 
 SWEP.AutoSpawnable = false
 
+SWEP.CraftBuff = 3.3
+
 SWEP.Ortho = {0, -0.5}

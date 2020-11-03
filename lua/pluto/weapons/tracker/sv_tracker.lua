@@ -175,6 +175,10 @@ hook.Add("TTTEndRound", "pluto_tracker", function()
 	end)
 end)
 
+hook.Add("PlutoHitregOverride", "pluto_tracker", function(ent)
+	-- add stats?
+end)
+
 concommand.Add("pluto_test_tracker", function(ply)
 	pluto.db.instance(function(db)
 		PrintTable(mysql_query(db, "SELECT * FROM pluto_class_stats WHERE date = CURRENT_DATE"))

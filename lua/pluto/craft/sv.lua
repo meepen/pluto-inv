@@ -58,7 +58,12 @@ function pluto.craft.itemsworth(items)
 		local item = items[i]
 
 		if (item and item.Type == "Weapon") then
-			count[item.ClassName] = (count[item.ClassName] or 0) + 1
+			local SWEP = weapons.GetStored(item.ClassName)
+			local addend = 1
+			if (SWEP and SWEP.CraftBuff) then
+				addend = addend + SWEP.CraftBuff
+			end
+			count[item.ClassName] = (count[item.ClassName] or 0) + addend
 		end
 
 		for k, v in pairs(pluto.craft.itemworth(item)) do

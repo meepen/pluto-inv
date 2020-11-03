@@ -23,4 +23,6 @@ SWEP.Bullets = {
 	Spread = Vector(0.015, 0.015),
 }
 
+SWEP.CraftBuff = 3.3
+
 SWEP.AutoSpawnable = false
