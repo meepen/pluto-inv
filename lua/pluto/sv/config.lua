@@ -62,8 +62,10 @@ function pluto.db.instance(fn)
 
 	pluto.pool:Request(function(db)
 		cmysql(function()
-			mysql_autocommit(db, true)
 			fn(db)
+		end,
+		function()
+			print "finished!"
 			pluto.pool:Return(db)
 			for _, callback in ipairs(callbacks) do
 				callback()
@@ -88,15 +90,19 @@ function pluto.db.transact(fn)
 		table.insert(self, fn)
 	end
 
-	pluto.db.instance(function(db)
+	pluto.pool:Request(function(db)
 		cmysql(function()
 			mysql_autocommit(db, false)
 			fn(db)
-			mysql_autocommit(db, true)
-
-			for _, callback in ipairs(callbacks) do
-				callback()
+		end, function()
+			local function finish()
+				print "finish"
+				pluto.pool:Return(db)
+				for _, callback in ipairs(callbacks) do
+					callback()
+				end
 			end
+			db:autocommit(true):next(finish):catch(finish)
 		end)
 	end)
 

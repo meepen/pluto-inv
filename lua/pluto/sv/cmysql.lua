@@ -14,6 +14,8 @@ mysql.prepare_cache = setmetatable({}, {__mode = "k", __index = function(self, k
 	return r
 end})
 
+mysql.finish_cache = setmetatable({}, {__mode = "k"})
+
 local function handle_returns(success, ...)
 	if (not success) then
 		return nil, ...
@@ -25,6 +27,13 @@ end
 local function handle_resume(co, success, err)
 	if (not success) then
 		pwarnf("error: %s\n%s", err, debug.traceback(co))
+	end
+
+	if (coroutine.status(co) == "dead") then
+		local finished = mysql.finish_cache[co]
+		if (finished) then
+			finished(success, err)
+		end
 	end
 end
 
@@ -98,8 +107,10 @@ end
 
 -- entry point
 
-function cmysql(func)
-	handle_resume(nil, coroutine.resume(coroutine.create(func)))
+function cmysql(func, finished)
+	local co = coroutine.create(func)
+	mysql.finish_cache[co] = finished
+	handle_resume(co, coroutine.resume(co))
 end
 
 function env.mysql_cmysql()
