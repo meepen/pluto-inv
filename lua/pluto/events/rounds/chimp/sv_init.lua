@@ -279,7 +279,7 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, att)
 
 	if (not IsValid(att) or not att:IsPlayer() or vic == att) then
 		self:UpdateScore(state, vic, -1 * tosteal)
-		vic:ChatPrint(ttt.teams.traitor.Color, vic:Nick(), white_text, " lose ", tosteal, " banna!")
+		vic:ChatPrint(ttt.teams.traitor.Color, "Monke", white_text, " lose ", tosteal, " banna!")
 		return
 	end
 
