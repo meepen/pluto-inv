@@ -5,10 +5,6 @@
 	"$nocull" "1"
 	"$envmap" "env_cubemap"
 	"$normalmapalphaenvmapmask" "1"
-	"$phong" "1"
-	"$phongexponent" "19"
-	"$phongboost" "0.4"
-	"$phongfresnelranges" "[0 0.2 0.5]"
 	
 	"$phong" "1"
 	"$phongexponenttexture" "voxelzero/models/marine/spartan_helmet_malcolm_normal"

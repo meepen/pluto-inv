@@ -17,7 +17,10 @@ function weapons.OnLoaded()
 
 	for _, wep in pairs(weapons.GetList()) do
 		wep = weapons.GetStored(wep.ClassName)
-		if (wep.Base == "tfa_gun_base") then
+		if (wep.PlutoIcon and SERVER) then
+			resource.AddSingleFile(wep.PlutoIcon)
+		end
+		if (wep.Base == "tfa_gun_base" or wep.Base == "tfa_melee_base" or wep.Base == "tfa_nade_base" or wep.Base == "tfa_bash_base") then
 			--pwarnf("GUN DISABLED: %s", wep.ClassName)
 			wep.AutoSpawnable = false
 			wep.Spawnable = false

@@ -70,7 +70,9 @@ pluto.files.load {
 		"resource/fonts/Aladin-Regular.ttf",
 	},
 	Workshop = {
-		pluto.isdevserver() and "2275087857" or "2001929342",
+		"2275087857",
+		"2277399930",
+		"2277451436",
 
 		"1516699044", -- slvbase 2
 		"1516711672", -- skyrim snpcs

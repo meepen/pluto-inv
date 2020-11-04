@@ -1,7 +1,8 @@
 const { buf } = require("crc-32");
-const addons = require("./addons")
-const { readdir, readFile, writeFile } = require('fs').promises;
+const { readdir, readFile, stat } = require("fs").promises;
+const { createWriteStream } = require("fs");
 
+const too_big_size = 1024 * 1024 * 1024;
 async function* getFiles(dir) {
 	const dirents = await readdir(dir, { withFileTypes: true });
 	for (const dirent of dirents) {
@@ -14,63 +15,69 @@ async function* getFiles(dir) {
 	}
 }
 
-async function add_file(file_datas, gma_header, filenum, f) {
-	let content = await readFile(f);
+const addon_data = JSON.stringify(require("./addon.json"));
 
-	let num = Buffer.alloc(4);
-	num.writeUInt32LE(filenum);
+class GMAFile {
+	constructor(fname) {
+		this.stream = createWriteStream(fname);
+		this.current_length = 8; // crc32 + 0 (uint)
+		this.length = this.current_length;
 
-	gma_header.push(num);
-	gma_header.push(Buffer.from(f.toLowerCase()));
-	let size = Buffer.alloc(13);
-	size.writeUInt32LE(content.length, 1);
-	size.writeInt32LE(buf(content), 9);
-	gma_header.push(size);
-
-	file_datas.push(content);
-}
-
-async function make_gma(all_files, list) {
-	let gma_header = [
-		Buffer.from("GMAD"),
-		Buffer.from("\x03"),
-		Buffer.alloc(8),
-		Buffer.alloc(8),
-		Buffer.alloc(1),
-		Buffer.from("pluto.gg content"),
-		Buffer.alloc(1),
-		Buffer.from(await readFile("./addon.json")),
-		Buffer.alloc(1),
-		Buffer.from("Meepen"),
-		Buffer.alloc(1),
-		Buffer.from("\x01\x00\x00\x00"),
-	];
-
-	let file_datas = [];
-	let filenum = 0;
-
-	for (const f of list) {
-		const idx = all_files.indexOf(f);
-		if (idx === -1) {
-			throw new Error(`couldn't find ${f}`);
-		}
-		all_files[idx] = null;
-
-		await add_file(file_datas, gma_header, ++filenum, f);
+		this.write(Buffer.from("GMAD"));
+		this.write(Buffer.from("\x03"));
+		this.write(Buffer.alloc(8));
+		this.write(Buffer.alloc(8));
+		this.write(Buffer.alloc(1));
+		this.write(Buffer.from("pluto.gg content"));
+		this.write(Buffer.alloc(1));
+		this.write(Buffer.from(addon_data));
+		this.write(Buffer.alloc(1));
+		this.write(Buffer.from("Meepen"));
+		this.write(Buffer.alloc(1));
+		this.write(Buffer.from("\x01\x00\x00\x00"));
+		this.filenames = [];
 	}
 
-	gma_header.push(Buffer.alloc(4));
+	write(data) {
+		this.current_length += data.length;
+		this.length += data.length;
+		this.crc32 = buf(data, this.crc32);
+		this.stream.write(data);
+	}
 
-	let header = Buffer.concat(gma_header);
-	let files = Buffer.concat(file_datas);
+	async addFile(fname) {
+		this.filenames.push(fname);
 
-	let full_data = Buffer.concat([header, files]);
-	let last_crc = Buffer.alloc(4);
-	last_crc.writeInt32LE(buf(full_data))
+		let size = (await stat(fname)).size;
+		this.length += size;
 
-	full_data = Buffer.concat([full_data, last_crc]);
+		let num = Buffer.alloc(4);
+		num.writeUInt32LE(this.filenames.length);
+		this.write(num);
 
-	return full_data;
+		let name = Buffer.from(fname.toLowerCase())
+		this.write(name);
+
+		let size_buffer = Buffer.alloc(13);
+		size_buffer.writeUInt32LE(size, 1);
+		size_buffer.writeInt32LE(buf(await readFile(fname)), 9);
+		this.write(size_buffer);
+	}
+
+	async finalize() {
+		this.write(Buffer.alloc(4));
+
+		for (let fname of this.filenames) {
+			let data = await readFile(fname);
+			this.write(data);
+		}
+
+		let last_crc = Buffer.alloc(4);
+		last_crc.writeInt32LE(this.crc32);
+		this.write(last_crc);
+
+		this.stream.end();
+	}
 }
 
 (async () => {
@@ -88,23 +95,16 @@ async function make_gma(all_files, list) {
 	for await (const f of getFiles("particles")) {
 		list.push(f);
 	}
-	for (let pack in addons) {
-		if (pack !== "workshop") {
-			for (let i = addons[pack].length - 1; i >= 0; i--) {
-				let file = addons[pack][i];
-				if (file.indexOf("models/") === 0 || file.indexOf(".vmt") !== -1) {
-					console.log(`${file} being sent to workshop`);
-					addons.workshop.push(addons[pack].splice(i, 1)[0]);
-				}
-			}
+
+	let size = 0;
+	let gma = new GMAFile(`content/pack${size++}.gma`);
+	for (let file of list) {
+		await gma.addFile(file);
+		if (gma.length > too_big_size) {
+			await gma.finalize();
+
+			gma = new GMAFile(`content/pack${size++}.gma`);
 		}
 	}
-	
-	for (const pack in addons) {
-		writeFile(`content/${pack}.gma`, await make_gma(list, addons[pack]));
-	}
-
-	writeFile(`content/content.gma`, await make_gma(list, list.filter(x => x)));
-
-	console.log(list.filter(x => x));
+	await gma.finalize();
 })();

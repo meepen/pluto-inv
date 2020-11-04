@@ -6,7 +6,6 @@
 
 	 $model "1"
 	"$halflambert" "0"
-	$diffuseexp 1.5
 	"$phong" "1"
 	$phongboost "1.4"
 	$phongexponent 12
