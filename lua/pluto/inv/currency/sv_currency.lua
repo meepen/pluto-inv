@@ -669,8 +669,15 @@ for name, values in pairs {
 		Pickup = function(ply)
 			if (ttt.GetCurrentRoundEvent() == "chimp" and ttt.GetRoundState() == ttt.ROUNDSTATE_ACTIVE) then
 				hook.Run("PlutoBannaPickup", ply)
-			elseif (player.GetCount() >= 6) then
-				pluto.rounds.prepare "chimp"
+			elseif (ttt.GetCurrentRoundEvent() ~= "chimp") then
+				if (player.GetCount() >= 6) then
+					pluto.rounds.prepare "chimp"
+				end
+
+				pluto.db.instance(function(db)
+					pluto.inv.addcurrency(db, ply, "brainegg", 1)
+					ply:ChatPrint(white_text, "You have received 1 ", pluto.currency.byname.brainegg, white_text, " for finding a banna!")
+				end)
 			end
 
 			return true

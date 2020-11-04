@@ -2,10 +2,10 @@ resource.AddFile("sound/pluto/dkrap.ogg") -- REMOVE ME
 
 ROUND.Name = "Monke Mania"
 ROUND.BananasPerPlayer = 6
-ROUND.KillStealMin = 0.35
-ROUND.KillStealMax = 0.65
+ROUND.KillStealMin = 0.25
+ROUND.KillStealMax = 0.45
 ROUND.HealthPerBanana = 10
-ROUND.BananasPerEgg = 8
+ROUND.BananasPerEgg = 10
 ROUND.WinnerBonus = 3
 ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
 
@@ -139,7 +139,7 @@ end)
 
 ROUND:Hook("TTTUpdatePlayerSpeed", function(self, state, ply, data)
 	if (state.playerscores and state.playerscores[ply]) then
-		data["chimp"] = 1.2 + math.min(0.5, (state.playerscores[ply] * 0.1))
+		data["chimp"] = 1.2 + math.min(0.4, (state.playerscores[ply] * 0.08))
 	end
 end)
 
@@ -214,12 +214,18 @@ end
 ROUND:Hook("PlayerSelectSpawnPosition", ROUND.ResetPosition)
 
 ROUND:Hook("TTTEndRound", function(self, state)
+	for _, ent in ipairs(state.bananas) do
+		if (IsValid(ent)) then
+			ent:Remove() -- DOES NOT WORK, PLEASE FIX
+		end
+	end
+
 	self:ChooseLeader(state)
 
 	state.leader:SetModelScale(1, 0)
 
 	for ply, score in pairs(state.playerscores) do
-		local togive = math.floor(score / self.BananasPerEgg)
+		local togive = math.floor((score + self.BananasPerEgg / 2) / self.BananasPerEgg)
 		pluto.db.instance(function(db)
 			pluto.inv.addcurrency(db, ply, "brainegg", togive)
 			ply:ChatPrint(white_text, "Monke get ", togive, " ", pluto.currency.byname.brainegg, white_text, " for hav ", score, " ", pluto.currency.byname._banna, white_text, "!")
@@ -243,7 +249,7 @@ end)
 
 function ROUND:SendUpdateBananas(state)
 	local left = -1
-	for _, ent in pairs(state.bananas) do
+	for _, ent in ipairs(state.bananas) do
 		if (IsValid(ent)) then
 			left = left + 1
 		end
