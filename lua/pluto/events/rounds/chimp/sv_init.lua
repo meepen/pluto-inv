@@ -213,8 +213,8 @@ end
 
 ROUND:Hook("PlayerSelectSpawnPosition", ROUND.ResetPosition)
 
-ROUND:Hook("TTTEndRound", function(self, state)
-	for _, ent in ipairs(state.bananas) do
+function ROUND:TTTEndRound(state)
+	for _, ent in pairs(state.bananas) do
 		if (IsValid(ent)) then
 			ent:Remove() -- DOES NOT WORK, PLEASE FIX
 		end
@@ -245,7 +245,7 @@ ROUND:Hook("TTTEndRound", function(self, state)
 	GetConVar("ttt_karma"):Revert()
 
 	timer.UnPause("tttrw_afk")
-end)
+end
 
 function ROUND:SendUpdateBananas(state)
 	local left = -1

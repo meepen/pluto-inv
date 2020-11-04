@@ -188,6 +188,11 @@ hook.Add("TTTPrepareRound", "pluto_event_manager", function()
 end)
 
 hook.Add("TTTEndRound", "pluto_event_manager", function()
+	local current = pluto.rounds.getcurrent()
+	if (current and current.TTTEndRound) then
+		current:TTTEndRound(pluto.rounds.state)
+	end
+
 	ttt.SetCurrentRoundEvent ""
 end)
 

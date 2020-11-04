@@ -400,7 +400,7 @@ end
 
 ROUND:Hook("PlayerSelectSpawnPosition", ROUND.ResetPosition)
 
-ROUND:Hook("TTTEndRound", function(self, state)
+function ROUND:TTTEndRound(self, state)
 	local children = state.children
 
 	for _, ent in ipairs(state.cluster.Currencies) do
@@ -418,7 +418,7 @@ ROUND:Hook("TTTEndRound", function(self, state)
 
 		ent:Remove()
 	end
-end)
+end
 
 ROUND:Hook("PlutoCanPickup", function(self, state, ply, curr)
 	if (ply:GetRole() == "Bunny") then
