@@ -780,22 +780,31 @@ end
 
 
 function pluto.quests.reloadfor(ply)
-	if (ply.QuestsReloading) then
+	if (ply.QuestsReloading == 1) then
 		return
 	end
 
-	ply.QuestsReloading = true
-	ply:ChatPrint "reloading quests"
 	for type, quests in pairs(pluto.quests.byperson[ply] or {}) do
 		for _, quest in pairs(quests) do
 			quest.Dead = true
 		end
 	end
 
-	pluto.quests.init_nocache(ply, function()
-		ply.QuestsReloading = false
-		ply:ChatPrint "reloaded"
+	if (ply.QuestsReloading) then
+		return
+	end
+
+	ply.QuestsReloading = true
+
+	timer.Simple(5, function()
+		ply:ChatPrint "reloading quests"
+		ply.QuestsReloading = 1
+		pluto.quests.init_nocache(ply, function()
+			ply.QuestsReloading = nil
+			ply:ChatPrint "reloaded"
+		end)
 	end)
+
 end
 
 function pluto.quests.reload()
