@@ -562,6 +562,7 @@ function pluto.quests.init_nocache(ply, cb)
 	local sid = pluto.db.steamid64(ply)
 
 	pluto.db.transact(function(db)
+		mysql_stmt_run("SELECT * from pluto_quests_new WHERE owner = ? FOR UPDATE", sid)
 		mysql_stmt_run(db, "DELETE FROM pluto_quests_new WHERE owner = ? AND expiry_time < CURRENT_TIMESTAMP", sid)
 		local dat, err = mysql_stmt_run(db, "SELECT idx, quest_name, CAST(reward as CHAR(1024)) as reward, CAST(type as CHAR(32)) as type, current_progress, total_progress, TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, expiry_time) as expire_diff FROM pluto_quests_new WHERE owner = ?", sid)
 
@@ -779,6 +780,11 @@ end
 
 
 function pluto.quests.reloadfor(ply)
+	if (ply.QuestsReloading) then
+		return
+	end
+
+	ply.QuestsReloading = true
 	ply:ChatPrint "reloading quests"
 	for type, quests in pairs(pluto.quests.byperson[ply] or {}) do
 		for _, quest in pairs(quests) do
@@ -787,6 +793,7 @@ function pluto.quests.reloadfor(ply)
 	end
 
 	pluto.quests.init_nocache(ply, function()
+		ply.QuestsReloading = false
 		ply:ChatPrint "reloaded"
 	end)
 end
