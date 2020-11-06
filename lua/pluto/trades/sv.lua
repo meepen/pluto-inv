@@ -176,13 +176,40 @@ function pluto.trades.accept(ply)
 	pluto.trades.cancel(ply)
 
 	local function reloadall(txt)
-		pprintf("Trade failed: %s", txt)
+		for _, ply in ipairs(trade.Players) do
+			if (not IsValid(ply)) then
+				continue
+			end
+			ply:ChatPrint(string.format("Trade failed: %s", txt))
+		end
 		for _, ply in pairs(trade.Players) do
 			pluto.inv.reloadfor(ply)
 		end
 	end
 
+	for _, ply in ipairs(trade.Players) do
+		ply:ChatPrint "finalizing trade..."
+	end
+	local snapshot = trade.Snapshot
+	local p1, p2 = trade.Players[1], trade.Players[2]
+	snapshot.currencies = {
+		[p1:SteamID64()] = trade.Currency[p1],
+		[p2:SteamID64()] = trade.Currency[p2]
+	}
+	for _, ply in ipairs(trade.Players) do
+		local itemsnapshot = {}
+		for i, item in pairs(trade.Items[ply]) do
+			itemsnapshot[i] = item:Duplicate()
+			itemsnapshot[i].RowID = item.RowID
+		end
+		snapshot.items[ply:SteamID64()] = itemsnapshot
+	end
+	for _, ply in ipairs(trade.Players) do
+		ply:ChatPrint "created snapshot..."
+	end
+
 	pluto.db.transact(function(db)
+
 		-- currency exchange
 
 		for ply, data in pairs(trade.Currency) do
@@ -201,23 +228,18 @@ function pluto.trades.accept(ply)
 			end
 		end
 
+		for _, ply in ipairs(trade.Players) do
+			if (not IsValid(ply)) then
+				continue
+			end
+			
+			ply:ChatPrint "currencies finished..."
+		end
+
 		-- item exchange
-
-		-- lock all items owned by traders
-
-		-- TODO(meep): too slow???
-		--[[
-		local succ, err = mysql_stmt_run(db, "SELECT tab_id, tab_index from pluto_items i INNER JOIN pluto_tabs t ON i.tab_id = t.idx WHERE owner IN (?, ?) FOR UPDATE", pluto.db.steamid64(trade.Players[1]), pluto.db.steamid64(trade.Players[2]))
-		if (not succ) then
-			print(err)
-		else
-			print "ITEMS"
-		end]]
 
 		-- find any items we can swap first
 		local complete = {}
-
-		--pluto.canswitchtabs(tab1, tab2, tabindex1, tabindex2)
 
 		for _, item in pairs(trade.Items[trade.Players[1]]) do
 			for _, otheritem in pairs(trade.Items[trade.Players[2]]) do
@@ -310,9 +332,33 @@ function pluto.trades.accept(ply)
 			end
 		end
 
+		for _, ply in ipairs(trade.Players) do
+			if (not IsValid(ply)) then
+				continue
+			end
+			
+			ply:ChatPrint "items finished..."
+		end
+
+		local idx = mysql_stmt_run(db, "INSERT INTO pluto_trades (snapshot, accepted) VALUES(?, true)", util.TableToJSON(snapshot)).LAST_INSERT_ID
+		mysql_stmt_run(db, "INSERT INTO pluto_trades_players (trade_id, player) VALUES (?, ?)", idx, pluto.db.steamid64(trade.Players[1]))
+		mysql_stmt_run(db, "INSERT INTO pluto_trades_players (trade_id, player) VALUES (?, ?)", idx, pluto.db.steamid64(trade.Players[2]))
+		for _, data in pairs(snapshot.items) do
+			for _, item in pairs(data) do
+				mysql_stmt_run(db, "INSERT INTO pluto_trades_items (trade_id, item_id) VALUES (?, ?)", idx, item.RowID)
+			end
+		end
+
 		-- TODO(meepen): log lol
 		mysql_commit(db)
 
+		for _, ply in ipairs(trade.Players) do
+			if (not IsValid(ply)) then
+				continue
+			end
+			
+			ply:ChatPrint("trade done! id: " .. idx .."; sending full inventory update...")
+		end
 		-- TODO(meep): way to remove this? prob not for a while
 		pluto.inv.reloadfor(trade.Players[1])
 		pluto.inv.reloadfor(trade.Players[2])
@@ -350,6 +396,12 @@ function pluto.trades.init(ply1, ply2)
 			[ply1] = false,
 			[ply2] = false,
 		},
+		Snapshot = {
+			messages = {},
+			currency = {},
+			items = {},
+		},
+		Start = RealTime(),
 	}
 
 	if (pluto.trades[ply1]) then
@@ -381,7 +433,7 @@ function pluto.inv.writetradeaccept(ply, accepted)
 end
 
 function pluto.inv.readtrademessage(ply)
-	local msg = net.ReadString()
+	local msg = net.ReadString():sub(1, 128)
 
 	if (msg:Trim() == "") then
 		return
@@ -397,6 +449,10 @@ function pluto.inv.readtrademessage(ply)
 
 	local trade = pluto.trades.get(ply)
 	if (trade) then
+		table.insert(trade.Snapshot.messages, {
+			ply:SteamID64(),
+			msg
+		})
 		for _, tradeply in ipairs(trade.Players) do
 			pluto.inv.message(tradeply)
 				:write("trademessage", ply, msg)
@@ -448,3 +504,17 @@ function pluto.inv.writetrademessage(recv, ply, msg)
 end
 
 hook.Add("PlayerDisconnected", "pluto_trades", pluto.trades.cancel)
+
+concommand.Add("pluto_print_trade", function(ply, _, args)
+	if (not pluto.cancheat(ply)) then
+		return	
+	end
+	
+	local id = tonumber(args[1])
+
+	pluto.db.instance(function(db)
+		PrintTable(mysql_stmt_run(db, "SELECT CAST(player AS CHAR(32)) as player FROM pluto_trades_players WHERE trade_id = ?", id))
+		PrintTable(mysql_stmt_run(db, "SELECT item_id FROM pluto_trades_items WHERE trade_id = ?", id))
+		PrintTable(mysql_stmt_run(db, "SELECT CAST(snapshot as CHAR(100000)) as snapshot FROM pluto_trades WHERE idx = ?", id))
+	end)
+end)

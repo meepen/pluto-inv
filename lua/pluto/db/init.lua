@@ -198,5 +198,33 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				INDEX (date)
 			)
 		]])
+
+		mysql_query(db, [[
+			CREATE TABLE IF NOT EXISTS pluto_trades (
+				idx INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+				snapshot JSON NOT NULL,
+				accepted TINYINT NOT NULL DEFAULT 0
+			)
+		]])
+
+		mysql_query(db, [[
+			CREATE TABLE IF NOT EXISTS pluto_trades_players (
+				trade_id INT UNSIGNED NOT NULL REFERENCES pluto_trades(idx) ON DELETE CASCADE,
+				player BIGINT UNSIGNED NOT NULL,
+
+				INDEX (trade_id),
+				INDEX (player)
+			)
+		]])
+
+		mysql_query(db, [[
+			CREATE TABLE IF NOT EXISTS pluto_trades_items (
+				trade_id INT UNSIGNED NOT NULL REFERENCES pluto_trades(idx) ON DELETE CASCADE,
+				item_id BIGINT UNSIGNED NOT NULL,
+
+				INDEX (trade_id),
+				INDEX (item_id)
+			)
+		]])
 	end)
 end)
