@@ -241,7 +241,7 @@ c "jason_unmask" { -- hitgroups
 		return bg
 	end,
 }
-
+--[[
 c "terminator" {
 	Name = "Terminator",
 	Model = "models/kemot44/Models/MK11/characters/Terminator_PM.mdl",
@@ -257,6 +257,11 @@ c "terminator" {
 
 		return bg
 	end,
+}]]
+
+c "terminator" {
+	Name = "Terrorist",
+	Model = "models/player/phoenix.mdl"
 }
 
 c "husk" {
