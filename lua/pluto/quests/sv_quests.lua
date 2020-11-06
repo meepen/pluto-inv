@@ -562,7 +562,7 @@ function pluto.quests.init_nocache(ply, cb)
 	local sid = pluto.db.steamid64(ply)
 
 	pluto.db.transact(function(db)
-		mysql_stmt_run("SELECT * from pluto_quests_new WHERE owner = ? FOR UPDATE", sid)
+		mysql_stmt_run(db, "SELECT * from pluto_quests_new WHERE owner = ? FOR UPDATE", sid)
 		mysql_stmt_run(db, "DELETE FROM pluto_quests_new WHERE owner = ? AND expiry_time < CURRENT_TIMESTAMP", sid)
 		local dat, err = mysql_stmt_run(db, "SELECT idx, quest_name, CAST(reward as CHAR(1024)) as reward, CAST(type as CHAR(32)) as type, current_progress, total_progress, TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, expiry_time) as expire_diff FROM pluto_quests_new WHERE owner = ?", sid)
 
