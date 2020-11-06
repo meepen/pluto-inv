@@ -275,7 +275,6 @@ function PANEL:FullPaint(w, h)
 				surface.SetMaterial(self.RealImageAdd)
 				surface.DrawTexturedRect(0, 0, w, h)
 			end
-			return
 		elseif (IsValid(err)) then
 			if (self.PlutoMaterial) then
 				err:SetMaterial(self.PlutoMaterial)
