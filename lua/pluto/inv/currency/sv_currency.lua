@@ -266,6 +266,7 @@ for name, values in pairs {
 					return
 				end
 
+				new_item.CreationMethod = "MIRROR"
 				pluto.inv.savebufferitem(db, ply, new_item)
 
 				mysql_commit(db)

@@ -68,7 +68,6 @@ local map_lookup = {
 	ttt_simple_otat1 = "1812199726",
 	ttt_vacuity = "728570439",
 
-	ttt_pluto_station_b2 = "2152446974",
 	ttt_pluto_station = "2236114156",
 
 	ttt_pluto_bloodbath = "2220658788",

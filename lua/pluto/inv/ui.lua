@@ -2123,7 +2123,21 @@ function PANEL:SetItem(item)
 		surface.SetFont(self.OriginalOwner:GetFont())
 		local w, h = surface.GetTextSize "A"
 		self.OriginalOwnerBackground:SetTall(h * 1.8)
-		self.OriginalOwner:SetText("Originally " .. (item.Crafted and "crafted" or "found") .. " by " .. item.OriginalOwnerName)
+		if (item.CreationMethod) then
+			local fmt = ({
+				UNBOXED = "Unboxed by %s",
+				SPAWNED = "Created by %s",
+				FOUND = "Found by %s",
+				DELETE = "Sharded by %s",
+				REWARD = "Rewarded to %s",
+				QUEST = "Quest Reward given to %s",
+				DROPPED = "Dropped by %s",
+				MIRROR = "Mirrored by %s",
+			})[item.CreationMethod] or item.CreationMethod .. " %s"
+			self.OriginalOwner:SetText(fmt:format(item.OriginalOwnerName))
+		else
+			self.OriginalOwner:SetText("Originally " .. (item.Crafted and "crafted" or "found") .. " by " .. item.OriginalOwnerName)
+		end
 		self.OriginalOwner:SizeToContentsY()
 
 		local h, s, l = ColorToHSL(item.Color)

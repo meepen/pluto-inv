@@ -100,6 +100,7 @@ pluto.quests.rewardhandlers = {
 			end
 
 			pluto.db.transact(function(db)
+				new_item.CreationMethod = "QUEST"
 				pluto.inv.savebufferitem(db, data.Player, new_item)
 				mysql_commit(db)
 				data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", data.QUEST.Color, data.QUEST.Name, white_text, "!")

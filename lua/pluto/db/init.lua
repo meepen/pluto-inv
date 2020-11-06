@@ -28,7 +28,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 
 				original_owner BIGINT UNSIGNED NOT NULL,
 
-				creation_method enum("DROPPED", "SPAWNED", "UNBOXED", "FOUND", "DELETE", "QUEST", "REWARD") NOT NULL DEFAULT "DROPPED"
+				creation_method enum("DROPPED", "SPAWNED", "UNBOXED", "FOUND", "DELETE", "QUEST", "REWARD", "MIRROR") NOT NULL DEFAULT "DROPPED",
 
 				FOREIGN KEY(tab_id) REFERENCES pluto_tabs(idx) ON DELETE CASCADE,
 				UNIQUE INDEX (tab_id, tab_idx),
