@@ -1,6 +1,6 @@
-local pluto_inspect_toggle = CreateConVar("pluto_inspect_toggle", 1, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Makes the +inspect toggleable")
-local pluto_inspect_toggle_autoclose = CreateConVar("pluto_inspect_toggle_autoclose", 2, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Toggle mode +inspect auto close time", 0, 10)
-local pluto_inspect_lifespan = CreateConVar("pluto_inspect_lifespan", 0.2, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Lifespan of +inspect menu", 0, 1)
+local pluto_inspect_toggle = CreateConVar("pluto_inspect_toggle", 1, FCVAR_ARCHIVE, "Makes the +inspect toggleable")
+local pluto_inspect_toggle_autoclose = CreateConVar("pluto_inspect_toggle_autoclose", 2, FCVAR_ARCHIVE, "Toggle mode +inspect auto close time", 0, 10)
+local pluto_inspect_lifespan = CreateConVar("pluto_inspect_lifespan", 0.2, FCVAR_ARCHIVE, "Lifespan of +inspect menu", 0, 1)
 
 include "shared.lua"
 
@@ -109,11 +109,11 @@ concommand.Add("+inspect", function()
 	end
 
 	if (IsValid(pluto.Showcase)) then
-		pluto.Showcase.Death = CurTime()
+		pluto.Showcase.Death = RealTime()
 		return
 	else
 		pluto.Showcase = pluto.ui.showcase(data)
-		pluto.Showcase.Start = CurTime()
+		pluto.Showcase.Start = RealTime()
 	end
 	if (pluto_inspect_toggle:GetBool()) then
 		local delay = pluto_inspect_toggle_autoclose:GetFloat()
@@ -121,7 +121,7 @@ concommand.Add("+inspect", function()
 			local cur = pluto.Showcase
 			timer.Simple(delay, function()
 				if (pluto.Showcase == cur and IsValid(cur)) then
-					cur.Death = CurTime()
+					cur.Death = RealTime()
 				end
 			end)
 		end
@@ -135,12 +135,12 @@ concommand.Add("+inspect", function()
 		local lifespan = pluto_inspect_lifespan:GetFloat()
 
 		if (self.Death) then
-			frac = math.max(0, (self.Death + lifespan - CurTime()) / lifespan)
+			frac = math.max(0, (self.Death + lifespan - RealTime()) / lifespan)
 			if (frac == 0) then
 				self:Remove()
 			end
 		else
-			frac = math.min(1, 1 - (self.Start + lifespan - CurTime()) / lifespan)
+			frac = math.min(1, 1 - (self.Start + lifespan - RealTime()) / lifespan)
 		end
 
 
@@ -150,6 +150,6 @@ end)
 
 concommand.Add("-inspect", function(ply, cmd, args)
 	if (IsValid(pluto.Showcase) and not pluto_inspect_toggle:GetBool()) then
-		pluto.Showcase.Death = CurTime()
+		pluto.Showcase.Death = RealTime()
 	end
 end)
