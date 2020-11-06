@@ -16,6 +16,9 @@ SWEP.Primary.Ammo = "none"
 SWEP.Primary.ClipSize      = -1
 SWEP.Primary.DefaultClip   = -1
 
+SWEP.AutoSpawnable = false
+SWEP.PlutoSpawnable = false
+
 SWEP.Velocity = 1250
 SWEP.Velocity_Underhand = 450
 
