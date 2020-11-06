@@ -780,7 +780,7 @@ end
 
 
 function pluto.quests.reloadfor(ply)
-	if (ply.QuestsReloading == 1) then
+	if (ply.QuestsReloading == 1) then -- TODO(meepen): callback sometime help
 		return
 	end
 

@@ -302,6 +302,7 @@ function pluto.inv.readcraft(cl)
 				return
 			end
 		end
+		wpn.CreationMethod = "CRAFT"
 		pluto.inv.savebufferitem(db, cl, wpn)
 	
 		if (cur) then

@@ -2132,6 +2132,7 @@ function PANEL:SetItem(item)
 				QUEST = "Quest Reward given to %s",
 				DROPPED = "Dropped by %s",
 				MIRROR = "Mirrored by %s",
+				CRAFT = "Crafted by %s",
 			})[item.CreationMethod] or item.CreationMethod .. " %s"
 			self.OriginalOwner:SetText(fmt:format(item.OriginalOwnerName))
 		else
