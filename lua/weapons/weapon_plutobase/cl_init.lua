@@ -1,3 +1,7 @@
+local pluto_inspect_toggle = CreateConVar("pluto_inspect_toggle", 1, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Makes the +inspect toggleable")
+local pluto_inspect_toggle_autoclose = CreateConVar("pluto_inspect_toggle_autoclose", 2, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Toggle mode +inspect auto close time", 0, 10)
+local pluto_inspect_lifespan = CreateConVar("pluto_inspect_lifespan", 0.2, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Lifespan of +inspect menu", 0, 1)
+
 include "shared.lua"
 
 net.Receive("pluto_wpn_db", function(len)
@@ -88,6 +92,10 @@ function SWEP:Holster(w)
 end
 
 concommand.Add("+inspect", function()
+	if (IsValid(pluto.Showcase) and pluto.Showcase.Death) then
+		pluto.Showcase:Remove()
+	end
+
 	local self = ttt.GetHUDTarget():GetActiveWeapon()
 
 	if (not IsValid(self) or not self.GetInventoryItem) then
@@ -100,21 +108,23 @@ concommand.Add("+inspect", function()
 		return
 	end
 
-	local toggle = GetConVar("pluto_inspect_toggle"):GetBool()
-	local lifespan = GetConVar("pluto_inspect_slider"):GetFloat()
-
-	if IsValid(pluto.Showcase) then
-		if (pluto.Showcase.Toggle) then
-			pluto.Showcase.Toggle = false
-			pluto.Showcase.Start = CurTime() - lifespan + 0.2
-		elseif (not toggle) then
-			pluto.Showcase.Start = CurTime() - 0.2
-		end
+	if (IsValid(pluto.Showcase)) then
+		pluto.Showcase.Death = CurTime()
 		return
 	else
 		pluto.Showcase = pluto.ui.showcase(data)
-		pluto.Showcase.Toggle = toggle
 		pluto.Showcase.Start = CurTime()
+	end
+	if (pluto_inspect_toggle:GetBool()) then
+		local delay = pluto_inspect_toggle_autoclose:GetFloat()
+		if (delay > 0) then
+			local cur = pluto.Showcase
+			timer.Simple(delay, function()
+				if (pluto.Showcase == cur and IsValid(cur)) then
+					cur.Death = CurTime()
+				end
+			end)
+		end
 	end
 
 	local t = pluto.Showcase.Think
@@ -122,24 +132,24 @@ concommand.Add("+inspect", function()
 		if (t) then
 			t(self)
 		end
+		local lifespan = pluto_inspect_lifespan:GetFloat()
 
-		local diff = CurTime() - self.Start
-		local frac = 1
-		if (diff < 0.2) then
-			frac = (diff / 0.2) ^ 0.5
-		elseif (diff > lifespan and not self.Toggle) then
-			frac = 0
-			self:Remove()
-		elseif (diff > (lifespan - 0.2) and not self.Toggle) then
-			frac = 1 - ((diff - lifespan + 0.2) / 0.2) ^ 0.5
+		if (self.Death) then
+			frac = math.max(0, (self.Death + lifespan - CurTime()) / lifespan)
+			if (frac == 0) then
+				self:Remove()
+			end
+		else
+			frac = math.min(1, 1 - (self.Start + lifespan - CurTime()) / lifespan)
 		end
+
 
 		self:SetPos(ScrW() * 2 / 3 - self:GetWide() / 2, ScrH() - self:GetTall() * frac)
 	end
 end)
 
 concommand.Add("-inspect", function(ply, cmd, args)
-	if (IsValid(pluto.Showcase)) then
-		pluto.Showcase:Remove()
+	if (IsValid(pluto.Showcase) and not pluto_inspect_toggle:GetBool()) then
+		pluto.Showcase.Death = CurTime()
 	end
 end)

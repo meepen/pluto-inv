@@ -1,8 +1,6 @@
 local pluto_fov = CreateConVar("pluto_fov", GetConVar "fov_desired":GetFloat(), FCVAR_ARCHIVE, "FOV Addend", 60, 160)
 local pluto_trash_speed = CreateConVar("pluto_trash_speed", 1, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Speed multiplier for item trashing", 1, 5)
 local pluto_open_speed = CreateConVar("pluto_open_speed", 1, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Speed multiplier for item opening", 1, 5)
-local pluto_inspect_toggle = CreateConVar("pluto_inspect_toggle", 0, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Makes the +inspect toggleable")
-local pluto_inspect_slider = CreateConVar("pluto_inspect_slider", 4, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Lifespan of +inspect menu", 2, 10)
 
 hook.Add("TTTPopulateSettingsMenu", "pluto_settings", function()
 	local cat = vgui.Create "ttt_settings_category"
@@ -14,7 +12,8 @@ hook.Add("TTTPopulateSettingsMenu", "pluto_settings", function()
 	cat:AddCheckBox("Enable Gun Hover", "pluto_hover_enabled")
 	cat:AddSlider("Gun Hover Image Size", "pluto_hover_pct")
 	cat:AddCheckBox("Make +inspect menu toggleable", "pluto_inspect_toggle")
-	cat:AddSlider("+inspect time", "pluto_inspect_slider")
+	cat:AddSlider("Toggle mode +inspect's lifespan (0=forever)", "pluto_inspect_toggle_autoclose")
+	cat:AddSlider("+inspect animation speed", "pluto_inspect_lifespan")
 	cat:InvalidateLayout(true)
 	cat:SizeToContents()
 	ttt.settings:AddTab("Pluto", cat)
