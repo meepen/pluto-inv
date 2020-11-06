@@ -226,21 +226,6 @@ function PANEL:FullPaint(w, h)
 		return
 	end
 
-	if (self.RealImage) then
-		self.RealImage:SetVector("$color", self.RealColor:ToVector())
-		if (self.RealImageAdd) then
-			self.RealImageAdd:SetVector("$color", self.AddColor:ToVector())
-		end
-		surface.SetDrawColor(255, 255, 255, 255)
-		surface.SetMaterial(self.RealImage)
-		surface.DrawTexturedRect(0, 0, w, h)
-		if (self.RealImageAdd) then
-			surface.SetMaterial(self.RealImageAdd)
-			surface.DrawTexturedRect(0, 0, w, h)
-		end
-		return
-	end
-
 	render.SetStencilWriteMask(1)
 	render.SetStencilTestMask(1)
 	render.SetStencilReferenceValue(1)
@@ -277,7 +262,21 @@ function PANEL:FullPaint(w, h)
 			render.SetBlend(0.5)
 		end
 
-		if (IsValid(err)) then
+
+		if (self.RealImage) then
+			self.RealImage:SetVector("$color", self.RealColor:ToVector())
+			if (self.RealImageAdd) then
+				self.RealImageAdd:SetVector("$color", self.AddColor:ToVector())
+			end
+			surface.SetDrawColor(255, 255, 255, 255)
+			surface.SetMaterial(self.RealImage)
+			surface.DrawTexturedRect(0, 0, w, h)
+			if (self.RealImageAdd) then
+				surface.SetMaterial(self.RealImageAdd)
+				surface.DrawTexturedRect(0, 0, w, h)
+			end
+			return
+		elseif (IsValid(err)) then
 			if (self.PlutoMaterial) then
 				err:SetMaterial(self.PlutoMaterial)
 			else
