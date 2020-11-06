@@ -17,7 +17,7 @@ end
 function pluto.inv.defaulttabs(db, steamid)
 	mysql_cmysql()
 
-	return pluto.inv.addtabs(db, steamid, {"equip", "currency", "normal", "buffer"})
+	return pluto.inv.addtabs(db, steamid, {"equip", "normal", "buffer"})
 end
 
 function pluto.inv.reloadfor(ply)
@@ -98,6 +98,9 @@ function pluto.inv.retrievetabs(steamid, cb)
 		end
 
 		for _, tab in ipairs(d) do
+			if (tab.tab_type == "currency") then
+				continue
+			end
 			need_add[tab.tab_type] = nil
 			table.insert(tabs, {
 				RowID = tab.idx,

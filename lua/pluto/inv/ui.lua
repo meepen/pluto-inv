@@ -1738,10 +1738,11 @@ function PANEL:SetTabs(tabs, addtrade)
 
 
 	if (addtrade) then
+		table.insert(t, pluto.currencytab)
 		table.insert(t, pluto.tradetab)
 		table.insert(t, pluto.crafttab)
 		table.insert(t, pluto.questtab)
-		table.insert(t, pluto.passtab)
+		--table.insert(t, pluto.passtab)
 	end
 
 	self.Tabs:SetTabs(t)
@@ -2450,6 +2451,15 @@ end)
 
 
 function pluto.inv.remakefake()
+	pluto.currencytab = {
+		Type = "currency",
+		Name = CreateConVar("pluto_currencytab_name", "Currency", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Currency tab name"),
+		ID = 0,
+		Items = {},
+		Currency = {},
+		FakeID = 4,
+	}
+
 	pluto.tradetab = {
 		Type = "trade",
 		Name = CreateConVar("pluto_tradetab_name", "Trade", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Trade tab name"),
