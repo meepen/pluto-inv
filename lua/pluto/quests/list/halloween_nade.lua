@@ -24,8 +24,6 @@ function QUEST:Reward(data)
 		end
 		mysql_commit(db)
 
-
-
 		data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "!")
 	end)
 end

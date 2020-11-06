@@ -14,16 +14,16 @@ function MOD:CanRollOn(wep)
 	return wep.ClassName ~= "weapon_ttt_sticky_grenade"
 end
 
-MOD.Description = "This grenade is %s more bouncy"
+MOD.Description = "This grenade is %s less bouncy"
 
 MOD.Tiers = {
-	{ 55, 100 },
-	{ 35, 55 },
-	{ 15, 35 },
+	{ 45, 60 },
+	{ 30, 45 },
+	{ 15, 30 },
 }
 
 function MOD:ModifyWeapon(wep, rolls)
-	wep.Bounciness = wep.Bounciness * (1 + rolls[1] / 100)
+	wep.Bounciness = wep.Bounciness * (1 - rolls[1] / 100)
 end
 
 MOD.ItemType = "Grenade"

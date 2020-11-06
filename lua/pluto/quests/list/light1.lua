@@ -2,6 +2,7 @@
 QUEST.Name = "Jedi Training"
 QUEST.Description = "Kill players with a lightsaber (>5 players on)"
 QUEST.Color = Color(7, 162, 247)
+QUEST.RewardPool = "unique"
 
 function QUEST:GetRewardText()
 	return "Lightsaber"
@@ -24,12 +25,26 @@ function QUEST:Init(data)
 end
 
 function QUEST:Reward(data)
-	local trans, new_item = pluto.inv.generatebufferweapon(data.Player, "unique", "weapon_rb566_lightsaber")
-	trans:Run()
+	pluto.db.transact(function(db)
+		local new_item = pluto.inv.generatebufferweapon(db, data.Player, "unique", "weapon_rb566_lightsaber")
+		if (not new_item) then
+			mysql_rollback(db)
+			return
+		end
+		mysql_commit(db)
 
-	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "!")
-
-	pluto.quests.give(data.Player, 0, pluto.quests.list.light2)
+		data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "!")
+	end)
+	
+	pluto.db.transact(function(db)
+		local quest = pluto.quests.give(data.Player, "light3", db)
+		if (quest) then
+			pluto.inv.message(data.Player)
+				:write("quest", quest)
+				:send()
+		end
+		mysql_commit(db)
+	end)
 end
 
 function QUEST:GetProgressNeeded()

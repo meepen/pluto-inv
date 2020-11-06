@@ -71,8 +71,7 @@ pluto.quests.rewardhandlers = {
 	},
 	weapon = {
 		reward = function(self, data)
-			local classname = self.ClassName --[[or (self.Grenade and pluto.weapons.randomgrenade()) or (self.Melee and pluto.weapons.randommelee())]] or pluto.weapons.randomgun()
-			-- Random grenade and random melee rewards, currently unused
+			local classname = self.ClassName or (self.Grenade and pluto.weapons.randomgrenade()) --[[or (self.Melee and pluto.weapons.randommelee())]] or pluto.weapons.randomgun()
 
 			local tier = self.Tier or pluto.tiers.filter(baseclass.Get(classname), function(t)
 				if (self.ModMin and t.affixes < self.ModMin) then
@@ -195,63 +194,72 @@ pluto.quests.rewards = {
 	unique = { -- This should never be used
 		{
 			Type = "unique",
+			Shares = 1,
 		},
 	},
 	hourly = {
 		{
 			Type = "currency",
 			Currency = "tome",
-			Amount = 2,
+			Amount = 3,
+			Shares = 1,
 		},
 		{
 			Type = "currency",
 			Currency = "crate3_n",
 			Amount = 1,
+			Shares = 1,
 		},
 		{
 			Type = "currency",
 			Currency = "crate3",
 			Amount = 1,
+			Shares = 1,
 		},
 		{
 			Type = "currency",
 			Currency = "crate1",
 			Amount = 1,
+			Shares = 1,
 		},
 		{
 			Type = "currency",
 			Currency = "aciddrop",
-			Amount = 1,
+			Amount = 2,
+			Shares = 1,
 		},
 		{
 			Type = "currency",
 			Currency = "pdrop",
-			Amount = 1,
+			Amount = 2,
+			Shares = 1,
 		},
 		{
 			Type = "weapon",
 			RandomImplicit = true,
 			ModMax = 4,
 			ModMin = 3,
+			Shares = 2,
 		},
 		{
 			Type = "weapon",
 			ModMin = 4,
+			Shares = 1,
 		},
-		--[[ Random grenade, currently unused
 		{
 			Type = "weapon",
 			Grenade = true,
+			Shares = 1,
 		},
-		--]]
 		{
 			Type = "weapon",
 			Tier = "inevitable",
+			Shares = 2,
 		},
 		{
 			Type = "shard",
 			ModMin = 4,
-			ModMax = 5,
+			Shares = 2,
 		},
 	},
 	daily = {
@@ -259,111 +267,124 @@ pluto.quests.rewards = {
 			Type = "currency",
 			Currency = "crate2",
 			Amount = 10,
+			Shares = 1,
 		},
 		{
 			Type = "currency",
 			Currency = "crate3_n",
 			Amount = 10,
+			Shares = 1,
 		},
 		{
 			Type = "currency",
 			Currency = "crate3",
 			Amount = 3,
+			Shares = 1,
 		},
 		{
 			Type = "currency",
 			Currency = "crate1",
 			Amount = 5,
+			Shares = 1,
 		},
 		{
 			Type = "weapon",
 			ClassName = "weapon_cod4_ak47_silencer",
-			Tier = "uncommon",
+			Tier = "inevitable",
+			Shares = 0.5,
 		},
 		{
 			Type = "weapon",
 			ClassName = "weapon_cod4_m4_silencer",
-			Tier = "uncommon",
+			Tier = "inevitable",
+			Shares = 0.5,
 		},
 		{
 			Type = "weapon",
 			ClassName = "weapon_cod4_m14_silencer",
-			Tier = "uncommon",
+			Tier = "inevitable",
+			Shares = 0.5,
 		},
 		{
 			Type = "weapon",
 			ClassName = "weapon_cod4_g3_silencer",
-			Tier = "uncommon",
+			Tier = "inevitable",
+			Shares = 0.5,
 		},
 		{
 			Type = "weapon",
 			ClassName = "weapon_cod4_g36c_silencer",
-			Tier = "uncommon",
+			Tier = "inevitable",
+			Shares = 0.5,
 		},
 		{
 			Type = "weapon",
 			ModMin = 5,
+			Shares = 2,
 		},
 		{
 			Type = "weapon",
 			Tier = "uncommon",
-			Mods = {"hearted",},
-			Small = "Hearted Uncommon gun",
+			Mods = {"dropletted", "handed", "diced", "hearted"},
+			Small = "Dropletted, Handed, Diced, Hearted Uncommon gun",
+			Shares = 1,
 		},
 		{
 			Type = "weapon",
 			Tier = "common",
 			Mods = {"tomed",},
-			Small = "Tomed Common gun"
+			Small = "Tomed Common gun",
+			Shares = 2,
 		},
 		{
 			Type = "shard",
 			ModMin = 5,
+			Shares = 1,
 		},
 	},
 	weekly = {
 		{
 			Type = "currency",
 			Currency = "tome",
-			Amount = 15,
+			Amount = 20,
+			Shares = 0.5,
 		},
 		{
 			Type = "currency",
 			Currency = "coin",
 			Amount = 1,
+			Shares = 1,
 		},
 		{
 			Type = "currency",
 			Currency = "quill",
 			Amount = 1,
+			Shares = 1,
 		},
 		{
 			Type = "currency",
 			Currency = "tp",
 			Amount = 1,
+			Shares = 1,
 		},
 		{
 			Type = "weapon",
 			ModMin = 6,
 			ModMax = 6,
 			Small = "gun with 6 mods",
-		},
-		{
-			Type = "weapon",
-			Mods = {"hearted",},
-			ModMin = 5,
-			ModMax = 5,
-			Small = "Hearted gun with 5 mods",
+			Shares = 1,
 		},
 		{
 			Type = "weapon",
 			Tier = "mystical",
-			Mods = {"dropletted", "handed", "diced",},
-			Small = "Dropletted, Handed, Diced, Mystical gun",
+			Mods = {"dropletted", "handed", "diced", "hearted"},
+			Small = "Dropletted, Handed, Diced, Hearted Mystical gun",
+			Shares = 1,
 		},
 		{
 			Type = "shard",
 			ModMin = 6,
+			Shares = 1,
 		},
 	},
 }
@@ -442,7 +463,7 @@ end
 function pluto.quests.getpoolreward(type)
 	local typequests = pluto.quests.rewards[type]
 
-	return typequests and (table.Random(typequests)) or { Type="unique" }
+	return typequests and typequests[pluto.inv.roll(typequests)] or { Type="unique" }
 end
 
 function pluto.quests.poolreward(pick, quest)
@@ -494,7 +515,7 @@ function pluto.quests.give(ply, new, db)
 		return false
 	end
 
-	local type = new.RewardPool
+	local type = new.RewardPool or "unique"
 
 	local type_data = pluto.quests.bypool[type]
 
@@ -787,9 +808,15 @@ concommand.Add("pluto_test_quest", function(ply, cmd, args)
 		return
 	end
 
-	quest:Reward {
-		Player = ply
-	}
+	if (quest.Reward) then
+		quest:Reward {
+			Player = ply
+		}
+	elseif (quest.RewardPool) then
+		pluto.quests.poolreward(pluto.quests.getpoolreward(quest.RewardPool), { QUEST = quest , Player = ply})
+	else
+		ply:ChatPrint("No quest reward for id ", tostring(args[1]))
+	end
 
 	ply:ChatPrint("pluto_test_quest: Rewarded for quest ", quest.Color, quest.Name)
 end)
@@ -818,7 +845,6 @@ concommand.Add("pluto_add_quest", function(ply, cmd, args)
 		end
 	end
 
-
 	if (IsValid(target)) then
 		local progress = tonumber(args[2]) or 1
 		ply:ChatPrint("Found quest. Adding " .. progress .. " progress.")
@@ -832,9 +858,16 @@ concommand.Add("pluto_give_quest", function(ply, cmd, args)
 		return
 	end
 
-	local quest = pluto.quests.list[args[1]]
-	if (quest) then
-		pluto.quests.give(ply, 0, quest)
-		ply:ChatPrint "given"
+	if (pluto.quests.list[args[1]]) then
+		pluto.db.transact(function(db)
+			local quest = pluto.quests.give(ply, args[1], db)
+			if (quest) then
+				pluto.inv.message(ply)
+					:write("quest", quest)
+					:send()
+			end
+			mysql_commit(db)
+		end)
+		ply:ChatPrint("Given quest: " .. args[1])
 	end
 end)
