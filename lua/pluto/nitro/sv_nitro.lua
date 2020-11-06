@@ -12,7 +12,7 @@ local NitroRewards = {
 		Reward = function(db, ply)
 			mysql_cmysql()
 
-			pluto.inv.generatebufferweapon(db, ply, "unique", "weapon_noise_nitro")
+			pluto.inv.generatebufferweapon(db, ply, "REWARD", "unique", "weapon_noise_nitro")
 			ttt.chat(color_nitro, ply:Nick(), white_text, " has received the original ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Noise Maker!")
 			hook.Add("PlayerSpawn", "confetti_" .. ply:SteamID64(), function(p)
 				if (p ~= ply) then
@@ -36,7 +36,7 @@ local NitroRewards = {
 		Reward = function(db, ply)
 			mysql_cmysql()
 
-			pluto.inv.generatebufferweapon(db, ply, "unique", "weapon_ttt_confetti_grenade")
+			pluto.inv.generatebufferweapon(db, ply, "REWARD", "unique", "weapon_ttt_confetti_grenade")
 
 			ttt.chat(color_nitro, ply:Nick(), white_text, " has received the second ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Confetti Grenade!")
 			hook.Add("PlayerSpawn", "nade_" .. ply:SteamID64(), function(p)
@@ -61,7 +61,7 @@ local NitroRewards = {
 		Reward = function(db, ply)
 			mysql_cmysql()
 
-			pluto.inv.generatebufferweapon(db, ply, "unique", "weapon_ttt_golden_pan")
+			pluto.inv.generatebufferweapon(db, ply, "REWARD", "unique", "weapon_ttt_golden_pan")
 
 			ttt.chat(color_nitro, ply:Nick(), white_text, " has received the third ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Golden Pan!")
 			hook.Add("PlayerSpawn", "pan_" .. ply:SteamID64(), function(p)
@@ -111,7 +111,7 @@ local NitroRewards = {
 		Reward = function(db, ply)
 			mysql_cmysql()
 
-			pluto.inv.generatebufferweapon(db, ply, "unique", "weapon_nitro_rope")
+			pluto.inv.generatebufferweapon(db, ply, "REWARD", "unique", "weapon_nitro_rope")
 
 			ttt.chat(color_nitro, ply:Nick(), white_text, " has received the fifth ", color_nitro, "Nitro Booster ", white_text, "reward: ", color_nitro, "Nitro Web!")
 			hook.Add("PlayerSpawn", "web_" .. ply:SteamID64(), function(p)

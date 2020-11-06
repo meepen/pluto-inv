@@ -262,6 +262,10 @@ function ITEM:GetRawName(ignoretier)
 	return "Unknown type: " .. tostring(self.Type)
 end
 
+function ITEM:GetCreationMethod()
+	return self.CreationMethod
+end
+
 -- https://gist.github.com/efrederickson/4080372
 local numbers = { 1, 5, 10, 50, 100, 500, 1000 }
 local chars = { "I", "V", "X", "L", "C", "D", "M" }

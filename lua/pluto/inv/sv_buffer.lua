@@ -67,17 +67,19 @@ function pluto.inv.savebufferitem(db, ply, new_item)
 	return new_item
 end
 
-function pluto.inv.generatebufferweapon(db, ply, ...)
+function pluto.inv.generatebufferweapon(db, ply, method, ...)
 	local new_item = pluto.weapons.generatetier(...)
+
+	new_item.CreationMethod = method or "SPAWNED"
 
 	return pluto.inv.savebufferitem(db, ply, new_item)
 end
 
-function pluto.inv.generatebuffergrenade(db, ply, tier, grenade, ...)
-	return pluto.inv.generatebufferweapon(db, ply, tier, grenade or pluto.weapons.randomgrenade(), ...)
+function pluto.inv.generatebuffergrenade(db, ply, method, tier, grenade, ...)
+	return pluto.inv.generatebufferweapon(db, ply, method, tier, grenade or pluto.weapons.randomgrenade(), ...)
 end
 
-function pluto.inv.generatebuffershard(db, ply, tier)
+function pluto.inv.generatebuffershard(db, ply, method, tier)
 	mysql_cmysql()
 
 	local new_item = setmetatable({
@@ -86,15 +88,19 @@ function pluto.inv.generatebuffershard(db, ply, tier)
 		Type = "Shard",
 	}, pluto.inv.item_mt)
 
+	new_item.CreationMethod = method
+
 	return pluto.inv.savebufferitem(db, ply, new_item)
 end
 
-function pluto.inv.generatebuffermodel(db, ply, mdl)
+function pluto.inv.generatebuffermodel(db, ply, method, mdl)
 	local new_item = setmetatable({
 		ClassName = "model_" .. mdl,
 		Model = pluto.models[mdl],
 		Type = "Model",
 	}, pluto.inv.item_mt)
+
+	new_item.CreationMethod = method
 
 	if (not new_item.Model) then
 		return false
@@ -129,7 +135,7 @@ concommand.Add("pluto_spawn_weapon", function(ply, cmd, arg, args)
 	end
 
 	pluto.db.transact(function(db)
-		pluto.inv.generatebufferweapon(db, ply, unpack(arg))
+		local item = pluto.inv.generatebufferweapon(db, ply, "SPAWNED", unpack(arg))
 		mysql_commit(db)
 	end)
 end)
@@ -140,7 +146,7 @@ concommand.Add("pluto_spawn_shard", function(ply, cmd, arg, args)
 	end
 
 	pluto.db.transact(function(db)
-		pluto.inv.generatebuffershard(db, ply, arg[1])
+		pluto.inv.generatebuffershard(db, ply, "SPAWNED", arg[1])
 		mysql_commit(db)
 	end)
 end)
@@ -151,7 +157,7 @@ concommand.Add("pluto_spawn_model", function(ply, cmd, arg, args)
 	end
 
 	pluto.db.transact(function(db)
-		pluto.inv.generatebuffermodel(db, ply, unpack(arg))
+		pluto.inv.generatebuffermodel(db, ply, "SPAWNED", unpack(arg))
 		mysql_commit(db)
 	end)
 end)

@@ -245,7 +245,7 @@ function pluto.inv.retrieveitems(steamid, cb)
 	steamid = pluto.db.steamid64(steamid)
 	local ply = player.GetBySteamID64(steamid)
 
-	pluto.db.simplequery("SELECT i.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable, CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name FROM pluto_items i LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx JOIN pluto_tabs t ON t.idx = i.tab_id WHERE owner = ?", {steamid}, function(d, err)
+	pluto.db.simplequery("SELECT i.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable, CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method FROM pluto_items i LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx JOIN pluto_tabs t ON t.idx = i.tab_id WHERE owner = ?", {steamid}, function(d, err)
 		if (not d) then
 			pwarnf("sql error: %s\n%s", err, debug.traceback())
 			return
@@ -270,6 +270,7 @@ function pluto.inv.retrieveitems(steamid, cb)
 				OriginalOwner = item.original_owner,
 				OriginalOwnerName = item.original_name,
 				Untradeable = item.untradeable == 1,
+				CreationData = item.creation_method,
 			}, pluto.inv.item_mt)
 
 			it.Type = pluto.inv.itemtype(it)

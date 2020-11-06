@@ -143,7 +143,7 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 			continue
 		end
 		pluto.db.transact(function(db)
-			local item = pluto.inv.generatebufferweapon(db, ply)
+			local item = pluto.inv.generatebufferweapon(db, ply, "DROPPED")
 
 			if (item:GetMaxAffixes() >= 5) then
 				local msg = discord.Message()

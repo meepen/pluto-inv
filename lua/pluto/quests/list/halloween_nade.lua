@@ -17,7 +17,7 @@ end
 
 function QUEST:Reward(data)
 	pluto.db.transact(function(db)
-		local new_item = pluto.inv.generatebufferweapon(db, data.Player, "unique", "tfa_cso_pumpkin")
+		local new_item = pluto.inv.generatebufferweapon(db, data.Player, "QUEST", "unique", "tfa_cso_pumpkin")
 		if (not new_item) then
 			mysql_rollback(db)
 			return

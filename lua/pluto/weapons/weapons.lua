@@ -138,14 +138,15 @@ function pluto.weapons.save(db, item, owner)
 
 	tab.Items[item.TabIndex] = item
 
-	local data, err = mysql_stmt_run(db, "INSERT INTO pluto_items (tier, class, tab_id, tab_idx, nick, special_name, original_owner) VALUES(?, ?, ?, ?, ?, ?, ?)", 
+	local data, err = mysql_stmt_run(db, "INSERT INTO pluto_items (tier, class, tab_id, tab_idx, nick, special_name, original_owner, creation_method) VALUES(?, ?, ?, ?, ?, ?, ?, ?)", 
 		type(item.Tier) == "string" and item.Tier or item.Tier and item.Tier.InternalName or "",
 		item.ClassName,
 		item.TabID,
 		item.TabIndex,
 		item.Nickname,
 		item.SpecialName,
-		item.Owner
+		item.Owner,
+		item.CreationMethod
 	)
 	if (not data) then
 		error(err)

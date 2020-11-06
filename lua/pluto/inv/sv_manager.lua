@@ -123,6 +123,7 @@ function pluto.inv.writeitem(ply, item)
 		net.WriteBool(item.Locked or false)
 		net.WriteString(item.OriginalOwner or "0")
 		net.WriteString(item.OriginalOwnerName or "[unknown]")
+		net.WriteString(item.CreationMethod or "UNKNOWN")
 		net.WriteBool(item.Untradeable)
 	else
 		net.WriteBool(false)
@@ -524,7 +525,7 @@ function pluto.inv.readitemdelete(ply)
 		end
 		
 		if (IsValid(ply) and i.Type == "Weapon" and i.Tier.InternalName ~= "crafted" and math.random() < 0.8) then
-			pluto.inv.generatebuffershard(db, ply, i.Tier.InternalName)
+			pluto.inv.generatebuffershard(db, ply, "DELETE", i.Tier.InternalName)
 		end
 
 		mysql_commit(db)
@@ -588,9 +589,9 @@ function pluto.inv.readcurrencyuse(ply)
 		pluto.db.transact(function(db)
 			local wpn
 			if (type == "Model") then -- model
-				wpn = pluto.inv.generatebuffermodel(db, ply, gotten:match "^model_(.+)$")
+				wpn = pluto.inv.generatebuffermodel(db, ply, "UNBOXED", gotten:match "^model_(.+)$")
 			elseif (type == "Weapon") then -- unique
-				wpn = pluto.inv.generatebufferweapon(db, ply, istable(data) and data.Tier or cur.DefaultTier or "unique", gotten)
+				wpn = pluto.inv.generatebufferweapon(db, ply, "UNBOXED", istable(data) and data.Tier or cur.DefaultTier or "unique", gotten)
 			end
 
 			if (not wpn) then

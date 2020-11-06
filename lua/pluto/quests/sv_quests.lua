@@ -156,7 +156,7 @@ pluto.quests.rewardhandlers = {
 			end).InternalName
 
 			pluto.db.transact(function(db)
-				pluto.inv.generatebuffershard(db, data.Player, tier)
+				pluto.inv.generatebuffershard(db, data.Player, "QUEST", tier)
 				mysql_commit(db)
 				tier = pluto.tiers.byname[tier]
 	
