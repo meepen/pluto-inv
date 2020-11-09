@@ -152,7 +152,7 @@ concommand.Add("pluto_item_dupe", function(ply, cmd, arg, args)
 		return
 	end
 	wep = wep:Duplicate()
-	wep.CreationMethod = "SPAWN"
+	wep.CreationMethod = "SPAWNED"
 
 	pluto.db.transact(function(db)
 		pluto.inv.savebufferitem(db, ply, wep)
