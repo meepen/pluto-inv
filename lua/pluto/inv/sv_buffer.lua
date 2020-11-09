@@ -145,7 +145,7 @@ concommand.Add("pluto_item_dupe", function(ply, cmd, arg, args)
 		return
 	end
 
-	local wep = pluto.itemids[tonumber(args[1])]
+	local wep = pluto.itemids[tonumber(args)]
 
 	if (not wep) then
 		ply:ChatPrint("Can't find gun!")
