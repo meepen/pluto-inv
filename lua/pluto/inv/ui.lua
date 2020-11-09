@@ -622,7 +622,12 @@ function PANEL:OnMousePressed(code)
 						:write("unname", self.Item.ID)
 						:send()
 				end):SetIcon("icon16/cog_delete.png")
+			end
 
+			if (LocalPlayer():GetUserGroup() == "developer") then
+				rightclick_menu:AddOption("Duplicate", function()
+					RunConsoleCommand("pluto_item_dupe", self.Item.ID)
+				end):SetIcon("icon16/cog_delete.png")
 			end
 
 			rightclick_menu:Open()

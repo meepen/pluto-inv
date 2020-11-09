@@ -140,6 +140,26 @@ concommand.Add("pluto_spawn_weapon", function(ply, cmd, arg, args)
 	end)
 end)
 
+concommand.Add("pluto_item_dupe", function(ply, cmd, arg, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+
+	local wep = pluto.itemids[tonumber(args[1])]
+
+	if (not wep) then
+		ply:ChatPrint("Can't find gun!")
+		return
+	end
+	wep = wep:Duplicate()
+	wep.CreationMethod = "SPAWN"
+
+	pluto.db.transact(function(db)
+		pluto.inv.savebufferitem(db, ply, wep)
+		mysql_commit(db)
+	end)
+end)
+
 concommand.Add("pluto_spawn_shard", function(ply, cmd, arg, args)
 	if (not pluto.cancheat(ply)) then
 		return
