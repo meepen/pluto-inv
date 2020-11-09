@@ -488,6 +488,10 @@ local function CreateMenu(self, item)
 	if (self.Tab and self.Tab.Type ~= "equip") then
 		rightclick_menu:AddOption("Equip",function()
 			local thistab = pluto.tabs[self.Tab.Type]
+			local tabtype = pluto.tabs.equip
+			if (not IsValid(tabele) or not tabtype) then
+				return
+			end
 
 			for i = 1, tabtype.size do
 				if (tabtype.canaccept(i, self.Item) and (not t.Items[self.TabIndex] or thistab.canaccept(self.TabIndex, t.Items[self.TabIndex]))) then
@@ -632,11 +636,6 @@ function PANEL:OnMousePressed(code)
 					t = tab
 					break
 				end
-			end
-
-			local tabtype = pluto.tabs.equip
-			if (not IsValid(tabele) or not tabtype) then
-				return
 			end
 
 			CreateMenu(self, self.Item)
