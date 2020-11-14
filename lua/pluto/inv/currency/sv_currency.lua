@@ -199,6 +199,10 @@ for name, values in pairs {
 
 			}
 
+			if (item.Tier.InternalName == "easter_unique") then
+				outcomes.classreroll.Shares = 0
+			end
+
 			local was_tomed = item:GetMod "tomed"
 			if (was_tomed) then
 				for k,v in pairs(outcomes) do
