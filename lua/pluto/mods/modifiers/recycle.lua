@@ -31,8 +31,9 @@ end
 
 function MOD:OnKill(wep, rolls, atk, vic)
 	local amt = wep.AmmoUsed[vic]
+
 	if (amt) then
-		atk:GiveAmmo(amt * rolls[1] / 100, wep:GetPrimaryAmmoType())
+		wep:SetClip1(math.min(wep:GetMaxClip1(), wep:Clip1() + amt * rolls[1] / 100) + 1)
 	end
 end
 
