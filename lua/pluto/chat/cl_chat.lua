@@ -85,14 +85,14 @@ end)
 
 surface.CreateFont("pluto_chat_font", {
 	font = "Roboto Bk",
-	size = 18,
+	size = 20,
 	bold = true,
 	weight = 100,
 })
 
 surface.CreateFont("pluto_chat_font_clickable", {
 	font = "Roboto Bk",
-	size = 18,
+	size = 20,
 	bold = true,
 	weight = 100,
 	underline = true,
@@ -583,6 +583,7 @@ function PANEL:SelectTab(name)
 	self.Tabs.active = self.Tabs.table[name]
 
 	self.Chatbox.Text:InvalidateLayout()
+	pluto.chat.Box:ResetFade(true)
 end
 
 function PANEL:Text(channel, text)
