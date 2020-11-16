@@ -7,15 +7,13 @@ include "shared.lua"
 net.Receive("pluto_wpn_db", function(len)
 	local ent = net.ReadInt(32)
 
-	local PlutoData = {
-		Type = "Weapon",
-	}
-
+	local PlutoData
 	if (net.ReadBool()) then
-		PlutoData.ID = net.ReadUInt(32)
+		PlutoData = pluto.inv.readitem()
+	else
+		PlutoData = {}
+		pluto.inv.readbaseitem(PlutoData)
 	end
-
-	pluto.inv.readbaseitem(PlutoData)
 
 	pluto.wpn_db[ent] = PlutoData
 

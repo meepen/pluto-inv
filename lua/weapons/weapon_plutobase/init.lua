@@ -135,12 +135,11 @@ function SWEP:SendData(ply)
 			net.WriteInt(self:GetPlutoID(), 32)
 			if (gun.RowID) then
 				net.WriteBool(true)
-				net.WriteUInt(gun.RowID, 32)
+				pluto.inv.writeitem(ply, gun)
 			else
 				net.WriteBool(false)
+				pluto.inv.writebaseitem(ply, gun)
 			end
-			pluto.inv.writebaseitem(ply, gun)
-
 		net.Send(ply)
 	end
 end

@@ -42,6 +42,7 @@ SWEP.Instructions = "Use the force, Luke."
 SWEP.RenderGroup = RENDERGROUP_BOTH
 
 SWEP.Slot = 0
+SWEP.HoldType           = "normal"
 
 SWEP.Spawnable = true
 SWEP.DrawAmmo = false
@@ -56,7 +57,7 @@ SWEP.PlutoSpawnable = false
 SWEP.ViewModel = "models/weapons/v_crowbar.mdl"
 SWEP.WorldModel = "models/sgg/starwars/weapons/w_anakin_ep2_saber_hilt.mdl"
 SWEP.ViewModelFOV = -100
-SWEP.Base = "weapon_ttt_crowbar"
+SWEP.Base = "weapon_tttbase"
 DEFINE_BASECLASS(SWEP.Base)
 
 SWEP.Primary.ClipSize = -1
@@ -326,6 +327,7 @@ local lookup = {
 }
 
 function SWEP:Initialize()
+	BaseClass.Initialize(self)
 	self.PlutoGun = pluto.NextWeaponSpawn
 	pluto.NextWeaponSpawn = nil
 	self.LoopSound = self.LoopSound or "lightsaber/saber_loop" .. math.random( 1, 8 ) .. ".wav"
@@ -377,7 +379,7 @@ end
 
 
 function SWEP:GetPrintNameColor()
-	local wep = self.PlutoGun
+	local wep = self:GetInventoryItem()
 	if (wep) then
 		local id = wep.ID or wep.RowID
 		local color
@@ -394,6 +396,15 @@ function SWEP:GetPrintNameColor()
 	local v = self:GetCrystalColor()
 
 	return Color(v.x, v.y, v.z)
+end
+
+function SWEP:GetPlutoPrintName()
+	local item = self:GetInventoryItem()
+	if (item) then
+		if (item.Nickname) then
+			return "'" .. item.Nickname .. "'"
+		end
+	end
 end
 
 -- --------------------------------------------------------- NPC Weapons --------------------------------------------------------- --
