@@ -317,7 +317,7 @@ pluto.quests.rewards = {
 		{
 			Type = "weapon",
 			ClassName = "weapon_cod4_g36c_silencer",
-			Tier = "inevitable",
+			Tier = "uncommon",
 			Shares = 0.5,
 		},
 		{
