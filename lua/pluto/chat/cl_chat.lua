@@ -178,6 +178,8 @@ function pluto.chat.Add(content, channel, teamchat)
 		pluto.chat.Box:Text(channel, ": ")
 	end
 
+	pluto.chat.Box.Tabs.active:InsertFade(5, 0.5)
+
 	for k,v in pairs(content) do
 		if (IsColor(v)) then
 			pluto.chat.Box:Color(channel, v)
@@ -626,6 +628,7 @@ function PANEL:Cur(channel, cur)
 	self:Text(channel, cur.Name)
 	box:InsertClickableTextEnd()
 	self:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
+	self.Tabs.table[channel]:InsertFade(5, 0.5)
 end
 
 function PANEL:Newline(channel)
