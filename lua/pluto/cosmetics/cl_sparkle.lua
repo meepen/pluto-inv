@@ -1,15 +1,24 @@
-CreateMaterial("pluto_glow", "SpriteCard", {
-	["$basetexture"] = "sprites/animglow02",
-	["$additive"] = "1",
-	["$vertexcolor"] = "1",
-	["$vertexalpha"] = "1",
-})
+local function init()
+	print "init"
+	CreateMaterial("pluto_glow", "SpriteCard", {
+		["$basetexture"] = "sprites/animglow02",
+		["$additive"] = "1",
+		["$vertexcolor"] = "1",
+		["$vertexalpha"] = "1",
+	})
 
-CreateMaterial("pluto_heart", "SpriteCard", {
-	["$additive"] = "1",
-	["$vertexcolor"] = "1",
-	["$vertexalpha"] = "1",
-}):SetTexture("$basetexture", Material "pluto/currencies/heart.png":GetTexture "$basetexture")
+	CreateMaterial("pluto_heart", "SpriteCard", {
+		["$additive"] = "1",
+		["$vertexcolor"] = "1",
+		["$vertexalpha"] = "1",
+	}):SetTexture("$basetexture", Material "pluto/currencies/heart.png":GetTexture "$basetexture")
+end
+
+if (gmod.GetGamemode()) then
+	init()
+else
+	hook.Add("Initialize", "pluto_sparkles", init)
+end
 
 game.AddParticles "particles/pluto_sparklies.pcf"
 game.AddParticles "particles/pluto_heart.pcf"
