@@ -212,7 +212,7 @@ function pluto.inv.sendfullupdate(ply)
 
 	pluto.inv.init(ply, function()
 		pluto.inv.loading[ply] = nil
-		pprintf("Loaded %s's inventory", ply:Nick())
+		pprintf("Loaded %s's [%s] inventory", ply:Nick(), ply:SteamID64())
 		hook.Run("PlutoInventoryLoad", ply)
 		if (ply:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE) then
 			ply:StripWeapons()
@@ -323,7 +323,6 @@ function pluto.inv.init(ply, cb2)
 
 	local success = 0
 	local function TrySucceed(where)
-		print(ply, where, "success")
 		success = success + 1
 
 		if (not IsValid(ply)) then
