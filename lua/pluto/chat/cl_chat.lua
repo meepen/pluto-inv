@@ -37,6 +37,7 @@ pluto.chat.cl_commands = {
 					SetClipboardText(data.data.link)
 					chat.AddText("Screenshot link made! Paste from your clipboard.")
 				end):catch(function()
+					chat.AddText("Couldn't upload your screenshot. Sorry!")
 				end)
 			end)
 		end
@@ -609,7 +610,7 @@ function PANEL:Item(channel, item)
 	local box = self.Tabs.table[channel]
 	self:Color(channel, item.Color)
 	box:InsertClickableTextStart(util.TableToJSON({type = "item", val = item.ID}))
-	self:Text(channel, item:GetPrintName():gsub(" ", "_"))
+	self:Text(channel, item:GetPrintName())
 	box:InsertClickableTextEnd()
 	self:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
 end
@@ -627,13 +628,14 @@ function PANEL:Cur(channel, cur)
 end
 
 function PANEL:Newline(channel)
+	self.Tabs.table[channel]:InsertFade(5, 0.5)
 	self.Tabs.table[channel]:AppendText("\n")
 	MsgN ""
 end
 
 function PANEL:ResetFade(enable)
 	if (self.Tabs.active ~= nil) then
-		self.Tabs.active:ResetAllFades(enable, false, enable and -1 or 2)
+		self.Tabs.active:ResetAllFades(enable, false, enable and -1 or 4)
 	end
 end
 
