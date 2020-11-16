@@ -119,6 +119,8 @@ pluto.quests.rewardhandlers = {
 
 			if (self.ClassName) then
 				smalltext = smalltext .. baseclass.Get(self.ClassName).PrintName
+			elseif (self.Grenade) then
+				smalltext = smalltext .. "grenade"
 			else
 				smalltext = smalltext .. "gun"
 			end
