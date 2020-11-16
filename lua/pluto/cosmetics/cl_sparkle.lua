@@ -1,20 +1,18 @@
-hook.Add("PlutoWorkshopFinish", "pluto_workshop", function()
-	CreateMaterial("pluto_glow", "SpriteCard", {
-		["$basetexture"] = "sprites/animglow02",
-		["$additive"] = "1",
-		["$vertexcolor"] = "1",
-		["$vertexalpha"] = "1",
-	})
+CreateMaterial("pluto_glow", "SpriteCard", {
+	["$basetexture"] = "sprites/animglow02",
+	["$additive"] = "1",
+	["$vertexcolor"] = "1",
+	["$vertexalpha"] = "1",
+})
 
-	CreateMaterial("pluto_heart", "SpriteCard", {
-		["$additive"] = "1",
-		["$vertexcolor"] = "1",
-		["$vertexalpha"] = "1",
-	}):SetTexture("$basetexture", Material "pluto/currencies/heart.png":GetTexture "$basetexture")
+CreateMaterial("pluto_heart", "SpriteCard", {
+	["$additive"] = "1",
+	["$vertexcolor"] = "1",
+	["$vertexalpha"] = "1",
+}):SetTexture("$basetexture", Material "pluto/currencies/heart.png":GetTexture "$basetexture")
 
-	game.AddParticles "particles/pluto_sparklies.pcf"
-	game.AddParticles "particles/pluto_heart.pcf"
-end)
+game.AddParticles "particles/pluto_sparklies.pcf"
+game.AddParticles "particles/pluto_heart.pcf"
 
 pluto.sparklelist = pluto.sparklelist or setmetatable({}, {__mode = "k"})
 pluto.sparklemap = pluto.sparklemap or setmetatable({}, {__mode = "k"})
