@@ -1,3 +1,69 @@
+local pluto_chatbox_x = CreateConVar("pluto_chatbox_x", 0.05, FCVAR_ARCHIVE)
+local pluto_chatbox_y = CreateConVar("pluto_chatbox_y", 0.15, FCVAR_ARCHIVE)
+local cur_color
+
+local function reposition()
+	if (IsValid(pluto.chat.Box)) then
+		pluto.chat.Box:SetPos(pluto_chatbox_x:GetFloat() * ScrW(), ScrH() * (1 - pluto_chatbox_y:GetFloat()) - pluto.chat.Box:GetTall())
+	end
+end
+
+pluto.chat.cl_commands = {
+	{
+		aliases = {
+			"ss",
+			"scr",
+			"srnsht",
+			"screenshot",
+			"capture",
+		},
+		Run = function(channel)
+			local ScreenshotRequested = true
+			hook.Add("PostRender", "pluto_screenshot", function()
+				if (not ScreenshotRequested) then
+					return
+				end
+				ScreenshotRequested = false
+			
+				local data = render.Capture {
+					format = "png",
+					x = 0,
+					y = 0,
+					w = ScrW(),
+					h = ScrH(),
+					alpha = false,
+				}
+				imgur.image(data):next(function(data)
+					SetClipboardText(data.data.link)
+					chat.AddText("Screenshot link made! Paste from your clipboard.")
+				end):catch(function()
+				end)
+			end)
+		end
+	},
+	{
+		aliases = {
+			"inv",
+			"inventory",
+			"ps",
+			"pointshop",
+		},
+		Run = function(channel)
+			pluto.ui.toggle()
+		end
+	},
+}
+
+pluto.chat.cl_commands.byname = {}
+for _, cmd in ipairs(pluto.chat.cl_commands) do
+	for _, alias in pairs(cmd.aliases) do
+		pluto.chat.cl_commands.byname[alias] = cmd
+	end
+end
+
+cvars.AddChangeCallback(pluto_chatbox_x:GetName(), reposition, pluto_chatbox_x:GetName())
+cvars.AddChangeCallback(pluto_chatbox_y:GetName(), reposition, pluto_chatbox_y:GetName())
+
 hook.Add("HUDShouldDraw", "plutoHideChatBox", function(name) 
 	if (name == "CHudChat") then
 		return false
@@ -37,7 +103,7 @@ local opened_alpha = .75 * 255
 local chatAddText = chat.AddText
 
 function chat.AddText(...)
-	pluto.chat.Add({...}, "server")
+	pluto.chat.Add({...}, "Server")
 end
 
 function pluto.inv.readchatmessage()
@@ -81,13 +147,19 @@ function pluto.inv.writechat(teamchat, data)
 end
 
 function pluto.chat.Add(content, channel, teamchat)
-	if (channel == "admin") then
-		pluto.chat.Add(content, "server", teamchat)
+	local data = pluto.chat.channels.byname[channel]
+	if (not data) then
+		return
+	end
+	if (data.Relay) then
+		for _, channel in pairs(data.Relay) do
+			pluto.chat.Add(content, channel, teamchat)
+		end
 	end
 	pluto.chat.Box:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
 	if (type(content[1]) ~= "string" and IsValid(content[1]) and content[1]:IsPlayer()) then
 		from = table.remove(content, 1)
-		if (channel == "server") then 
+		if (channel == "Server") then 
 			if (not from:Alive()) then
 				pluto.chat.Box:Color(channel, 255, 0, 0, 255)
 				pluto.chat.Box:Text(channel, "*DEAD* ")
@@ -164,12 +236,20 @@ DEFINE_BASECLASS "ttt_curved_button"
 function PANEL:Init()
 	self:SetTall(25)
 	self:SetText("")
-	self:SetColor(Color(10, 10, 10, .9 * 255))
+	self:SetColor(ColorAlpha(main_color, 200))
 	self:DockMargin(5, 5, 5, 5)
 	self:SetCurve(4)
 end
 
-
+function PANEL:SetImage(icon)
+	if (IsValid(self.Icon)) then
+		self.Icon:Remove()
+	end
+	self.Icon = self:Add "DImage"
+	self.Icon:Dock(FILL)
+	self.Icon:DockMargin(4, 4, 4, 4)
+	self.Icon:SetImage(icon)
+end
 
 vgui.Register("pluto_chatbox_button", PANEL, "ttt_curved_button")
 
@@ -267,11 +347,15 @@ local PANEL = {}
 DEFINE_BASECLASS "ttt_curved_panel"
 
 function PANEL:Init()
+	self:SetCurve(8)
 	self.Inner = self:Add "ttt_curved_panel"
-	self.Inner:SetCurve(4)
-	self.Inner:SetCurveTopLeft(false)
+	self.Inner:SetCurve(8)
 	self.Inner:Dock(FILL)
-	self.Inner:SetColor(Color(17, 15, 13, 0.25 * 255))
+	self.Inner:SetColor(Color(255,0,0))
+	self.Inner:SetCurveTopLeft(false)
+	self:SetCurveTopLeft(false)
+	self.Inner:SetCurveTopRight(false)
+	self:SetCurveTopRight(false)
 
 	self.Chat = self.Inner:Add("EditablePanel")
 	--self.Chat = vgui.Create("EditablePanel")
@@ -289,7 +373,14 @@ function PANEL:Init()
 		pluto.chat.Box:SetKeyboardInputEnabled(true)
 	end
 
+	self.TextEntry:SetFont "pluto_chat_font"
 	self.TextEntry:SetEnterAllowed(false)
+
+	function self.TextEntry:Think()
+		if (pluto.chat.isOpened and not self:HasFocus()) then
+			self:RequestFocus()
+		end
+	end
 
 	function self.TextEntry:OnKeyCode(code)
 		if (code == KEY_ESCAPE) then
@@ -297,16 +388,32 @@ function PANEL:Init()
 			gui.HideGameUI()
 			pluto.chat.Close()
 		elseif (code == KEY_ENTER) then
-			text = self:GetText()
+			text = self:GetText():Trim()
 
 			self:SetText ""
 			if (text ~= "") then
-				if (pluto.chat.Box.Tabs.active.name == "admin") then
-					text = "@" .. text
+				if (text:StartWith "!" or text:StartWith "/") then
+					local curcmd = text:sub(2)
+					local cmd = pluto.chat.cl_commands.byname[curcmd]
+					if (not cmd) then
+						cmd = hook.Run("PlutoGetChatCommand", cmd)
+					end
+					if (cmd) then
+						cmd.Run(pluto.chat.Box.Tabs.active.name)
+						pluto.chat.Close()
+						return
+					end
+				end
+				local selected = false
+				for prefix, tab in pairs(pluto.chat.Box.Tabs.prefixes) do
+					if (text:StartWith(prefix)) then
+						pluto.chat.Box:SelectTab(tab)
+						selected = true
+					end
 				end
 
-				if (not pluto.chat.teamchat and text:sub(1,1) == "@") then
-					pluto.chat.Box:SelectTab("admin")
+				if (not selected) then
+					text = pluto.chat.Box.Tabs.active.prefix .. text
 				end
 
 				pluto.inv.message()
@@ -322,56 +429,76 @@ function PANEL:Init()
 	self.Buttons:DockMargin(0, 5, 0, 5)
 	self.Buttons:Dock(RIGHT)
 
-	self.Buttons.Settings = self.Buttons:Add("pluto_chatbox_button")
-	self.Buttons.Settings:Dock(TOP)
+	self.Buttons.Mover = self.Buttons:Add "pluto_chatbox_button"
+	self.Buttons.Mover:SetCursor "sizeall"
+	self.Buttons.Mover:SetImage "icon16/arrow_out.png"
+	self.Buttons.Mover:Dock(TOP)
 
-	self.Buttons.Flag = self.Buttons:Add("pluto_chatbox_button")
-	self.Buttons.Flag:Dock(TOP)
+	function self.Buttons.Mover:OnMousePressed(code)
+		if (code ~= MOUSE_LEFT) then
+			return
+		end
 
-	self.Buttons.Pin = self.Buttons:Add("pluto_chatbox_button")
-	self.Buttons.Pin:Dock(BOTTOM)
+		local cur = pluto.chat.Box
+		local basex, basey = gui.MousePos()
+		local ox, oy = pluto_chatbox_x:GetFloat(), pluto_chatbox_y:GetFloat()
+		hook.Add("Think", "pluto_chatbox", function()
+			if (not IsValid(cur) or pluto.chat.Box ~= cur or not input.IsMouseDown(MOUSE_LEFT)) then
+				hook.Remove("Think", "pluto_chatbox")
+				return
+			end
 
-	self.Buttons.Page = self.Buttons:Add("pluto_chatbox_button")
-	self.Buttons.Page:Dock(BOTTOM)
+			local curx, cury = gui.MousePos()
 
-	self.Buttons.Inventory = self.Buttons:Add("pluto_chatbox_button")
-	self.Buttons.Inventory:Dock(BOTTOM)
+			pluto_chatbox_x:SetFloat(ox + (curx - basex) / ScrW())
+			pluto_chatbox_y:SetFloat(oy + (basey - cury) / ScrH())
+		end)
+	end
 
-	self.Buttons.Emoji = self.Buttons:Add("pluto_chatbox_button")
-	self.Buttons.Emoji:Dock(BOTTOM)
+	self.Buttons.Inventory = self.Buttons:Add "pluto_chatbox_button"
+	self.Buttons.Inventory:Dock(TOP)
+	self.Buttons.Inventory:SetImage("icon16/controller.png")
+
+	function self.Buttons.Inventory:DoClick()
+		pluto.ui.toggle()
+	end
 
 	local pad = self.Inner:GetCurve() / 2
 	self.Inner:DockPadding(pad, 0, pad, pad)
 end
 
 function PANEL:SetAlpha(a)
-	self.Inner:SetColor(Color(17, 15, 13, a))
+	self.Inner:SetColor(ColorAlpha(main_color, a))
+	self:SetColor(ColorAlpha(solid_color, a))
 	self.TextEntry:SetAlpha(a)
 	self.Buttons:SetAlpha(a)
 end
 
-vgui.Register("pluto_chatbox_inner", PANEL, "ttt_curved_panel_shadow")
+vgui.Register("pluto_chatbox_inner", PANEL, "ttt_curved_panel_outline")
 
 local PANEL = {}
 
 function PANEL:Init()
 	self:SetSize(ScrW()/4,ScrH()/4)
-	self:SetPos(150,ScrH()-self:GetTall()*2)
+	pluto.chat.Box = self
+	reposition()
 
 	self.Tabs = self:Add "EditablePanel"
 	self.Tabs:Dock(TOP)
 	self.Tabs:SetTall(50)
 
 	self.Tabs.table = {}
+	self.Tabs.prefixes = {}
 	
 	self.Chatbox = self:Add "pluto_chatbox_inner"
 	self.Chatbox:Dock(FILL)
 
-	self:AddTab "server"
-	self:AddTab "admin"
-	--self:AddTab("global") this doesn't do anything yet so im commenting it out until we do discord/socket things to make it work
+	local first = true
+	for _, channel in ipairs(pluto.chat.channels) do
+		self:AddTab(channel.Name, channel.Prefix)
+	end
 
-	self:SelectTab "server"
+	self:SelectTab(pluto.chat.channels[1].Name)
 
 	self.Tabs.active:SetVerticalScrollbarEnabled(false)
 
@@ -385,13 +512,14 @@ function PANEL:SetAlpha(a)
 	self.Chatbox:SetAlpha(a)
 end
 
-function PANEL:AddTab(name)
+function PANEL:AddTab(name, prefix)
 	local chat = self.Chatbox.Text:Add "RichText"
 	chat:AppendText("Channel: " .. name .. "\n")
 	chat:Hide()
 	chat:Dock(FILL)
 	
 	chat.name = name
+	chat.prefix = prefix
 
 	local tab = self.Tabs:Add "tttrw_base_tab"
 	tab.name = name
@@ -432,6 +560,7 @@ function PANEL:AddTab(name)
 	end
 
 	self.Tabs.table[name] = chat
+	self.Tabs.prefixes[prefix] = name
 end
 
 function PANEL:SelectTab(name)
@@ -448,6 +577,7 @@ function PANEL:SelectTab(name)
 end
 
 function PANEL:Text(channel, text)
+	MsgC(cur_color or white_text, text)
 	self.Tabs.table[channel]:AppendText(text)
 	self.Tabs.table[channel]:InsertFade(5,.2)
 end
@@ -463,6 +593,7 @@ function PANEL:Color(channel, col, g, b, a)
 		r = col
 	end
 
+	cur_color = Color(r, g, b, a)
 	self.Tabs.table[channel]:InsertColorChange(r, g, b, a)
 end
 
@@ -489,6 +620,7 @@ end
 
 function PANEL:Newline(channel)
 	self.Tabs.table[channel]:AppendText("\n")
+	MsgN ""
 end
 
 function PANEL:ResetFade()
@@ -511,9 +643,9 @@ if (IsValid(pluto.chat.Box)) then
 	end
 	pluto.chat.Close()
 	pluto.chat.Box:Remove()
-	pluto.chat.Box = vgui.Create("pluto_chatbox")
+	pluto.chat.Box = vgui.Create "pluto_chatbox"
 end
 
 hook.Add("Initialize", "init_chatbox", function()
-	pluto.chat.Box = vgui.Create("pluto_chatbox")
+	pluto.chat.Box = vgui.Create "pluto_chatbox"
 end)

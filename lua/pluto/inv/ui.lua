@@ -592,14 +592,6 @@ local function CreateMenu(self, item)
 		end)
 	end):SetIcon("icon16/camera.png")
 
-	if (self.Item.Type ~= "Shard") then
-		rightclick_menu:AddOption("Toggle locked", function()
-			pluto.inv.message()
-				:write("itemlock", self.Item.ID)
-				:send()
-		end):SetIcon("icon16/lock.png")
-	end
-
 	if (not self.Item.Locked and self.Item.Nickname) then
 		rightclick_menu:AddOption("Remove name (100 hands)", function()
 			self.Item.Nickname = nil
@@ -609,10 +601,26 @@ local function CreateMenu(self, item)
 		end):SetIcon("icon16/cog_delete.png")
 	end
 
+	rightclick_menu:AddOption("Copy Chat Link", function()
+		SetClipboardText("{item:" .. self.Item.ID .. "}")
+	end):SetIcon("icon16/book.png")
+
+	if (self.Item.Type ~= "Shard") then
+		rightclick_menu:AddOption("Toggle locked", function()
+			pluto.inv.message()
+				:write("itemlock", self.Item.ID)
+				:send()
+		end):SetIcon("icon16/lock.png")
+	end
+
 	if (LocalPlayer():GetUserGroup() == "developer") then
-		rightclick_menu:AddOption("Duplicate", function()
+		local dev = rightclick_menu:AddSubMenu "Developer"
+		dev:AddOption("Duplicate", function()
 			RunConsoleCommand("pluto_item_dupe", self.Item.ID)
-		end):SetIcon("icon16/cog_delete.png")
+		end):SetIcon("icon16/cog_add.png")
+		dev:AddOption("Copy ID", function()
+			SetClipboardText(self.Item.ID)
+		end):SetIcon("icon16/cog_edit.png")
 	end
 
 	rightclick_menu:Open()
@@ -1893,13 +1901,17 @@ if (IsValid(pluto.ui.pnl)) then
 	pluto.ui.pnl = vgui.Create "pluto_inventory"
 end
 
+function pluto.ui.toggle()
+	if (IsValid(pluto.ui.pnl)) then
+		pluto.ui.pnl:Remove()
+	else
+		pluto.ui.pnl = vgui.Create "pluto_inventory"
+	end
+end
+
 hook.Add("PlayerButtonDown", "pluto_inventory_ui", function(_, key)
 	if (IsFirstTimePredicted() and key == KEY_I and pluto.inv.status == "ready") then
-		if (IsValid(pluto.ui.pnl)) then
-			pluto.ui.pnl:Remove()
-		else
-			pluto.ui.pnl = vgui.Create "pluto_inventory"
-		end
+		pluto.ui.toggle()
 	end
 end)
 

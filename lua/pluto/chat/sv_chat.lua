@@ -23,6 +23,9 @@ hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 	local replace = hook.Run("PlayerSay", from, texts, teamchat)
 
 	if replace == "" or not replace then return end
+	if (replace:StartWith "//") then
+		replace = replace:sub(3)
+	end
 
 	local last_pos = 1
 	local length = 0
@@ -46,7 +49,7 @@ hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 
 		if (what == "item") then
 			local slot = pluto.itemids[tonumber(id)]
-			if (item and item.Owner == from:SteamID64()) then
+			if (slot and slot.Owner == from:SteamID64()) then
 				item = slot
 			end
 		elseif (match == "primary") then
@@ -105,7 +108,7 @@ hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 		local canSee = hook.Run("PlayerCanSeePlayersChat", texts, teamchat, ply, from)
 		if canSee then
 			pluto.inv.message(ply)
-				:write("chatmessage", content, "server", teamchat)
+				:write("chatmessage", content, "Server", teamchat)
 			:send()
 		end
 	end
@@ -121,7 +124,7 @@ function pluto.inv.readchat(from)
 end
 
 function pluto.inv.writechatmessage(ply, content, channel, teamchat)
-	channel = channel or "server"
+	channel = channel or "Server"
 
 	net.WriteBool(teamchat)
 	net.WriteString(channel)

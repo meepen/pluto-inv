@@ -72,6 +72,10 @@ pluto.files.load {
 
 		"thirdparty/sh_animations_api.lua",
 
+		"imgur/sh_imgur.lua",
+
+		"sv/promise.lua",
+
 		-- "unicode/init.lua",
 		-- "unicode/casefolding.lua",
 		-- -- "unicode/unicodedata.lua",
