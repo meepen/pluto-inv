@@ -33,7 +33,6 @@ function ENT:Reward(e)
 				e:ChatPrint("i tried to add currency but it didn't work, tell meepen you lost: " .. cur.InternalName)
 			end
 		end)
-		print (cur)
 		e:ChatPrint(cur.Color, "+ ", white_text, "You received ", startswithvowel(cur.Name) and "an " or "a ", cur)
 	end
 

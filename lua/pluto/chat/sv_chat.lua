@@ -16,7 +16,7 @@ for idx, name in pairs(debug.getregistry()[3]) do
 end
 
 hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
-	print(from, texts, teamchat)
+	print((teamchat and "[TEAM]" or "") .. from:Nick() .. ": " .. texts)
 	local content = {
 		from,
 	}
