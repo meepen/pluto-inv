@@ -84,10 +84,6 @@ function SWEP:Deploy()
 end
 
 function SWEP:Holster(w)
-	if (IsValid(pluto.Showcase)) then
-		pluto.Showcase:Remove()
-	end
-
 	return BaseClass.Holster(self, w)
 end
 
