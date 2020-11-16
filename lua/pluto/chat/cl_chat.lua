@@ -1,5 +1,5 @@
-local pluto_chatbox_x = CreateConVar("pluto_chatbox_x", 0.05, FCVAR_ARCHIVE)
-local pluto_chatbox_y = CreateConVar("pluto_chatbox_y", 0.15, FCVAR_ARCHIVE)
+local pluto_chatbox_x = CreateConVar("pluto_chatbox_x", 0.05, FCVAR_ARCHIVE, "Pluto chatbox x position", 0, 1)
+local pluto_chatbox_y = CreateConVar("pluto_chatbox_y", 0.15, FCVAR_ARCHIVE, "Pluto chatbox y position", 0, 1)
 local cur_color
 
 local function reposition()
