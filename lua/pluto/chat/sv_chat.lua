@@ -16,16 +16,17 @@ for idx, name in pairs(debug.getregistry()[3]) do
 end
 
 hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
+	print(from, texts, teamchat)
 	local content = {
 		from,
 	}
 
+	if (texts:StartWith "//") then
+		texts = texts:sub(3):Trim()
+	end
 	local replace = hook.Run("PlayerSay", from, texts, teamchat)
 
-	if replace == "" or not replace then return end
-	if (replace:StartWith "//") then
-		replace = replace:sub(3)
-	end
+	if replace == "" or not replace then return "" end
 
 	local last_pos = 1
 	local length = 0
@@ -118,9 +119,11 @@ end)
 
 function pluto.inv.readchat(from)
 	local teamchat = net.ReadBool()
-	local texts = net.ReadString()
+	local texts = net.ReadString():gsub("[\r\n]", "")
 
-	hook.Run("RealPlayerSay", from, texts, teamchat)
+	timer.Simple(0, function()
+		hook.Run("RealPlayerSay", from, texts, teamchat)
+	end)
 end
 
 function pluto.inv.writechatmessage(ply, content, channel, teamchat)

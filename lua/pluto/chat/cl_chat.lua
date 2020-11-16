@@ -206,11 +206,7 @@ function pluto.chat.Open(teamchat)
 	pluto.chat.teamchat = teamchat or false
 
 	pluto.chat.Box:SetAlpha(opened_alpha)
-	pluto.chat.Box:ResetFade()
-	--timer.Create("AlphaSetChatbox", 1, 0, function()
-		pluto.chat.Box:ResetFade()
-	--end)
-
+	pluto.chat.Box:ResetFade(true)
 	pluto.chat.Box:Scrollbar(true)
 
 	pluto.chat.Box:MakePopup()
@@ -222,6 +218,7 @@ function pluto.chat.Close()
 	pluto.chat.teamchat = false
 
 	pluto.chat.Box:SetAlpha(closed_alpha)
+	pluto.chat.Box:ResetFade(false)
 	timer.Remove "AlphaSetChatbox"
 
 	pluto.chat.Box:Scrollbar(false)
@@ -382,6 +379,16 @@ function PANEL:Init()
 		end
 	end
 
+	function self.TextEntry:OnValueChange(val)
+		for _, channel in ipairs(pluto.chat.channels) do
+			if (val:StartWith(channel.Prefix)) then
+				pluto.chat.Box:SelectTab(channel.Name)
+			end
+		end
+	end
+
+	self.TextEntry:SetUpdateOnType(true)
+
 	function self.TextEntry:OnKeyCode(code)
 		if (code == KEY_ESCAPE) then
 			self:SetText("")
@@ -514,6 +521,7 @@ end
 
 function PANEL:AddTab(name, prefix)
 	local chat = self.Chatbox.Text:Add "RichText"
+	chat:InsertFade(5, 0.5)
 	chat:AppendText("Channel: " .. name .. "\n")
 	chat:Hide()
 	chat:Dock(FILL)
@@ -578,8 +586,8 @@ end
 
 function PANEL:Text(channel, text)
 	MsgC(cur_color or white_text, text)
+	self.Tabs.table[channel]:InsertFade(5, 0.5)
 	self.Tabs.table[channel]:AppendText(text)
-	self.Tabs.table[channel]:InsertFade(5,.2)
 end
 
 function PANEL:Color(channel, col, g, b, a)
@@ -601,7 +609,7 @@ function PANEL:Item(channel, item)
 	local box = self.Tabs.table[channel]
 	self:Color(channel, item.Color)
 	box:InsertClickableTextStart(util.TableToJSON({type = "item", val = item.ID}))
-	self:Text(channel, item:GetPrintName())
+	self:Text(channel, item:GetPrintName():gsub(" ", "_"))
 	box:InsertClickableTextEnd()
 	self:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
 end
@@ -623,9 +631,9 @@ function PANEL:Newline(channel)
 	MsgN ""
 end
 
-function PANEL:ResetFade()
+function PANEL:ResetFade(enable)
 	if (self.Tabs.active ~= nil) then
-		self.Tabs.active:ResetAllFades(true, false, 1)
+		self.Tabs.active:ResetAllFades(enable, false, enable and -1 or 2)
 	end
 end
 
