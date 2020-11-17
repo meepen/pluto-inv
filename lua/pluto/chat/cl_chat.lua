@@ -1,7 +1,9 @@
 local pluto_chatbox_x = CreateConVar("pluto_chatbox_x", 0.05, FCVAR_ARCHIVE, "Pluto chatbox x position", 0, 1)
 local pluto_chatbox_y = CreateConVar("pluto_chatbox_y", 0.15, FCVAR_ARCHIVE, "Pluto chatbox y position", 0, 1)
+local pluto_chat_fade_enable = CreateConVar("pluto_chat_fade_enable", "1", FCVAR_ARCHIVE, "sustain", 0, 1)
 local pluto_chat_fade_sustain = CreateConVar("pluto_chat_fade_sustain", "5", FCVAR_ARCHIVE, "sustain", 0, 10)
 local pluto_chat_fade_length = CreateConVar("pluto_chat_fade_length", "0.5", FCVAR_ARCHIVE, "sustain", 0, 10)
+local pluto_chat_closed_alpha = CreateConVar("pluto_chat_closed_alpha", "0", FCVAR_ARCHIVE, "sustain", 0, 0.75)
 local cur_color
 
 local function reposition()
@@ -85,8 +87,8 @@ hook.Add("PlayerBindPress", "plutoChatBind", function(ply, bind, pressed)
 	return true
 end)
 
-local closed_alpha = 0
-local opened_alpha = .75 * 255
+local closed_alpha = 0.75 * 255
+local opened_alpha = 0.75 * 255
 
 local chatAddText = chat.AddText
 
@@ -207,7 +209,7 @@ function pluto.chat.Close()
 	pluto.chat.isOpened = false
 	pluto.chat.teamchat = false
 
-	pluto.chat.Box:SetAlpha(closed_alpha)
+	pluto.chat.Box:SetAlpha(closed_alpha * pluto_chat_closed_alpha:GetFloat())
 	pluto.chat.Box:ResetFade(false)
 	timer.Remove "AlphaSetChatbox"
 
@@ -499,7 +501,7 @@ function PANEL:Init()
 
 	self.Tabs.active:SetVerticalScrollbarEnabled(false)
 
-	self:SetAlpha(closed_alpha)
+	self:SetAlpha(closed_alpha * pluto_chat_closed_alpha:GetFloat())
 
 	self.Showcase = nil
 end
@@ -620,7 +622,7 @@ function PANEL:Cur(channel, cur)
 end
 
 function PANEL:DefaultFade(channel)
-	self.Tabs.table[channel]:InsertFade(pluto_chat_fade_sustain:GetFloat(), pluto_chat_fade_length:GetFloat())
+	self.Tabs.table[channel]:InsertFade(pluto_chat_fade_enable:GetBool() and pluto_chat_fade_sustain:GetFloat() or -1, pluto_chat_fade_length:GetFloat())
 end
 
 function PANEL:Newline(channel)
