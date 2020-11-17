@@ -298,9 +298,9 @@ ROUND:Hook("EntityTakeDamage", function(self, state, targ, dmg)
 	if (state.playerscores[targ] > 0) then
 		self:UpdateScore(state, targ, -1)
 		self:UpdateScore(state, atk, 1)
-		if (atk:Alive()) then
-			atk:SetHealth(math.min(atk:GetMaxHealth(), atk:Health() + self.HealthPerBanana))
-		end
+		targ:ChatPrint(ttt.teams.traitor.Color, atk:Nick(), white_text, " stealed 1 banna!")
+		atk:ChatPrint(ttt.roles.Monke.Color, "Monke", white_text, " stealed 1 banna from ", targ:Nick(), "!")
+		atk:SetHealth(math.min(atk:GetMaxHealth(), atk:Health() + self.HealthPerBanana))
 	end
 
 	targ.LastBannaAttacker = atk
@@ -338,7 +338,6 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 		for i = 1, amt do
 			table.insert(state.bananas, pluto.currency.spawnfor(vic, "_banna", nil, true))
 		end
-		self:SendUpdateBananas(state)
 	
 		vic:ChatPrint(ttt.teams.traitor.Color, "Monke", white_text, " drop ", amt, " banna!")
 		return
@@ -362,6 +361,8 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 	if (dropped > 0) then
 		vic:ChatPrint(ttt.teams.traitor.Color, "Monke", white_text, " drop ", dropped, " banna!")
 	end
+
+	self:SendUpdateBananas(state)
 end)
 
 ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)
