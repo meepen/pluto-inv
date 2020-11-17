@@ -3,7 +3,7 @@ AddCSLuaFile()
 SWEP.Base				= "weapon_tttbase"
 
 SWEP.PrintName				= "MP7"
-SWEP.Slot					= 2
+SWEP.Slot					= 1
 SWEP.SlotPos				= 0
 SWEP.DrawCrosshair			= true
 SWEP.HoldType 				= "smg"

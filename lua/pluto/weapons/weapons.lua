@@ -208,6 +208,7 @@ function pluto.weapons.save(db, item, owner)
 end
 
 function pluto.weapons.updatespecialname(db, item)
+	item.LastUpdate = item.LastUpdate + 1
 	mysql_cmysql()
 
 	mysql_stmt_run(db, "UPDATE pluto_items SET special_name = ? WHERE idx = ?", item.SpecialName, item.RowID)

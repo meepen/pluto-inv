@@ -108,6 +108,16 @@ pluto.tabs = {
 		canaccept = function()
 			return false
 		end,
+	},
+	minigame = {
+		element = "pluto_minigame",
+		size = 0,
+		canremove = function()
+			return false
+		end,
+		canaccept = function()
+			return false
+		end,
 	}
 }
 

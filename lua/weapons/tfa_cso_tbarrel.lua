@@ -60,19 +60,22 @@ SWEP.ShellAttachment			= "2" 		-- Should be "2" for CSS models or "shell" for hl
 
 DEFINE_BASECLASS(SWEP.Base)
 
-function SWEP:OwnerChanged()
-	BaseClass.OwnerChanged(self)
-	local owner = self:GetOwner()
+function SWEP:Initialize()
+	BaseClass.Initialize(self)
 
 	hook.Add("TTTUpdatePlayerSpeed", self, function(self, ply, data)
-		if (ply == owner) then
+		if (not self:IsDormant() and ply == self:GetOwner()) then
 			data[self] = self.Speedup
 		end
 	end)
+end
 
+function SWEP:OwnerChanged()
+	BaseClass.OwnerChanged(self)
 	if (not SERVER) then
 		return
 	end
+	local owner = self:GetOwner()
 	owner:SetMaxHealth(owner:GetMaxHealth() * self.HealthMult)
 	owner:SetHealth(owner:Health() * self.HealthMult)
 end

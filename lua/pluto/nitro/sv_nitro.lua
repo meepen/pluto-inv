@@ -173,7 +173,6 @@ hook.Add("PlutoInventoryLoad", "pluto_admin", function(p)
 				end
 
 				if (gotten) then
-					pprintf("%s already got reward %i", sid, reward_num)
 					continue
 				end
 

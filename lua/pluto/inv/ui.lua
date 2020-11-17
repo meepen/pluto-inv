@@ -543,62 +543,15 @@ local function CreateMenu(self, item)
 				render.PopRenderTarget(StatsRT)
 				cam.End2D()
 				show:Remove()
-				HTTP {
-					url = "https://api.imgur.com/3/album",
-					method = "post",
-					headers = {
-						Authorization = "Client-ID 3693fd6ea039830",
-					},
-					success = function(_, c, _, _)
-						local album = util.JSONToTable(c)
-						if (not album.success) then
-							Derma_Message("Your upload was not successful! Please try again.", "Upload failed", ":(")
-							return
-						end
-
-						HTTP {
-							url = "https://api.imgur.com/3/image",
-							method = "post",
-							headers = {
-								Authorization = "Client-ID 3693fd6ea039830"
-							},
-							success = function(_, b, _, _)
-								b = util.JSONToTable(b)
-								if (b.success) then
-									Derma_Message("Your picture of your stats has been uploaded and copied to your clipboard!\nYou can now simply paste it anywhere, like our Discord! discord.gg/pluto", "Upload success", "Thanks!")
-									SetClipboardText("https://imgur.com/a/" .. album.data.id)
-								else
-									Derma_Message("Your upload was not successful! Please try again.", "Upload failed", "Thanks")
-								end
-							end,
-							failed = function(a) 
-								Derma_Message("Imgur appears to be having some issues, please wait and try again!", "Upload failed", "Ok")
-							end,
-							parameters = {
-								image = util.Base64Encode(data),
-								album = album.data.deletehash
-							},
-						}
-					end,
-					failed = function(a)
-						Derma_Message("Your upload was not successful! Please try again.", "Upload failed", "Ok")
-					end,
-					parameters = {
-						title = string.format("%s's %s", LocalPlayer():Nick(), item_name),
-						description = string.format("Taken by %s https://steamcommunity.com/profiles/%s\nDiscord: https://discord.gg/pluto\nWebsite: https://pluto.gg\n\n%s", LocalPlayer():Nick(), LocalPlayer():SteamID64(), self.Item:GetTextMessage()), 
-					},
-				}
+				
+				imgur.image(data, "gun", string.format("%s's %s", LocalPlayer():Nick(), item_name)):next(function(data)
+					SetClipboardText(data.data.link)
+					chat.AddText("Screenshot link made! Paste from your clipboard.")
+				end):catch(function()
+				end)
 			end)
 		end)
 	end):SetIcon("icon16/camera.png")
-
-	if (self.Item.Type ~= "Shard") then
-		rightclick_menu:AddOption("Toggle locked", function()
-			pluto.inv.message()
-				:write("itemlock", self.Item.ID)
-				:send()
-		end):SetIcon("icon16/lock.png")
-	end
 
 	if (not self.Item.Locked and self.Item.Nickname) then
 		rightclick_menu:AddOption("Remove name (100 hands)", function()
@@ -609,10 +562,26 @@ local function CreateMenu(self, item)
 		end):SetIcon("icon16/cog_delete.png")
 	end
 
+	rightclick_menu:AddOption("Copy Chat Link", function()
+		SetClipboardText("{item:" .. self.Item.ID .. "}")
+	end):SetIcon("icon16/book.png")
+
+	if (self.Item.Type ~= "Shard") then
+		rightclick_menu:AddOption("Toggle locked", function()
+			pluto.inv.message()
+				:write("itemlock", self.Item.ID)
+				:send()
+		end):SetIcon("icon16/lock.png")
+	end
+
 	if (LocalPlayer():GetUserGroup() == "developer") then
-		rightclick_menu:AddOption("Duplicate", function()
+		local dev = rightclick_menu:AddSubMenu "Developer"
+		dev:AddOption("Duplicate", function()
 			RunConsoleCommand("pluto_item_dupe", self.Item.ID)
-		end):SetIcon("icon16/cog_delete.png")
+		end):SetIcon("icon16/cog_add.png")
+		dev:AddOption("Copy ID", function()
+			SetClipboardText(self.Item.ID)
+		end):SetIcon("icon16/cog_edit.png")
 	end
 
 	rightclick_menu:Open()
@@ -1483,6 +1452,32 @@ function PANEL:Init()
 	self:SetCurveBottomRight(false)
 	self:SetColor(inactive_tab)
 	self:SetWide(20)
+	self:SetCursor "hand"
+
+	self.Label = self:Add "DLabel"
+	self.Label:SetText "v"
+	self.Label:SetContentAlignment(5)
+	self.Label:Dock(FILL)
+end
+
+function PANEL:OnMousePressed(code)
+	if (code == MOUSE_LEFT) then
+		local m = DermaMenu()
+		local prnt = self:GetParent().Tabs
+		for _, pnl in ipairs(prnt.Tabs) do
+			local name
+			if (type(pnl.Tab.Name) == "string") then
+				name = pnl.Tab.Name
+			else -- convar
+				name = pnl.Tab.Name:GetString()
+			end
+
+			m:AddOption(name, function()
+				prnt:Select(pnl)
+			end)
+		end
+		m:Open()
+	end
 end
 
 vgui.Register("pluto_inventory_tab_selector", PANEL, "pluto_inventory_base")
@@ -1493,9 +1488,10 @@ function PANEL:Init()
 	self.Tabs = self:Add "pluto_inventory_tabs"
 	self.Tabs:Dock(FILL)
 
-	--self.Controller = self:Add "pluto_inventory_tab_selector"
-	--self.Controller:Dock(RIGHT)
-	--self.Controller:DockMargin(pad / 2, 0, 0, 0)
+	self.Controller = self:Add "pluto_inventory_tab_selector"
+	self.Controller:Dock(RIGHT)
+	self.Controller:DockMargin(pad / 2, 0, 0, 0)
+	self.Tabs:DockMargin(0, 0, pad, 0)
 
 	self:DockMargin(curve(2), 0, curve(2), 0)
 end
@@ -1754,10 +1750,12 @@ function PANEL:SetTabs(tabs, addtrade)
 		table.insert(t, pluto.tradetab)
 		table.insert(t, pluto.crafttab)
 		table.insert(t, pluto.questtab)
+		table.insert(t, pluto.minigametab)
 		--table.insert(t, pluto.passtab)
 	end
 
 	self.Tabs:SetTabs(t)
+	self.Tabs:DockMargin(0, 0, 22, 0)
 end
 
 function PANEL:SetWhere(leftright)
@@ -1895,13 +1893,17 @@ if (IsValid(pluto.ui.pnl)) then
 	pluto.ui.pnl = vgui.Create "pluto_inventory"
 end
 
+function pluto.ui.toggle()
+	if (IsValid(pluto.ui.pnl)) then
+		pluto.ui.pnl:Remove()
+	else
+		pluto.ui.pnl = vgui.Create "pluto_inventory"
+	end
+end
+
 hook.Add("PlayerButtonDown", "pluto_inventory_ui", function(_, key)
 	if (IsFirstTimePredicted() and key == KEY_I and pluto.inv.status == "ready") then
-		if (IsValid(pluto.ui.pnl)) then
-			pluto.ui.pnl:Remove()
-		else
-			pluto.ui.pnl = vgui.Create "pluto_inventory"
-		end
+		pluto.ui.toggle()
 	end
 end)
 
@@ -2508,6 +2510,15 @@ function pluto.inv.remakefake()
 	pluto.questtab = {
 		Type = "quest",
 		Name = CreateConVar("pluto_questtab_name", "Quests", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Quest tab name"),
+		ID = 0,
+		Items = {},
+		Currency = {},
+		FakeID = 3,
+	}
+
+	pluto.minigametab = {
+		Type = "minigame",
+		Name = CreateConVar("pluto_minigametab_name", "Minigames", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Minigames tab name"),
 		ID = 0,
 		Items = {},
 		Currency = {},
