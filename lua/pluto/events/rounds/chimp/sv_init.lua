@@ -139,7 +139,7 @@ end)
 
 ROUND:Hook("TTTUpdatePlayerSpeed", function(self, state, ply, data)
 	if (state.playerscores and state.playerscores[ply]) then
-		data["chimp"] = 1.2 + math.min(0.4, (state.playerscores[ply] * 0.08))
+		data["chimp"] = 1 + math.min(0.3, (state.playerscores[ply] * 0.06))
 	end
 end)
 
