@@ -6,7 +6,7 @@ ROUND.KillStealMin = 0.25
 ROUND.KillStealMax = 0.45
 ROUND.HealthPerBanana = 10
 ROUND.BananasPerEgg = 10
-ROUND.WinnerBonus = 3
+ROUND.WinnerBonus = 2
 ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
 
 util.AddNetworkString "chimp_data"
@@ -216,7 +216,7 @@ ROUND:Hook("PlayerSelectSpawnPosition", ROUND.ResetPosition)
 function ROUND:TTTEndRound(state)
 	for _, ent in pairs(state.bananas) do
 		if (IsValid(ent)) then
-			ent:Remove() -- DOES NOT WORK, PLEASE FIX
+			ent:Remove()
 		end
 	end
 
@@ -225,7 +225,10 @@ function ROUND:TTTEndRound(state)
 	state.leader:SetModelScale(1, 0)
 
 	for ply, score in pairs(state.playerscores) do
-		local togive = math.floor((score + self.BananasPerEgg / 2) / self.BananasPerEgg)
+		local togive = math.floor(score / self.BananasPerEgg)
+		if (score >= 5) then
+			togive = togive + 1
+		end
 		pluto.db.instance(function(db)
 			pluto.inv.addcurrency(db, ply, "brainegg", togive)
 			ply:ChatPrint(white_text, "Monke get ", togive, " ", pluto.currency.byname.brainegg, white_text, " for hav ", score, " ", pluto.currency.byname._banna, white_text, "!")
