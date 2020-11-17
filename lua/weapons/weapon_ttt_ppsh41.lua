@@ -75,14 +75,14 @@ SWEP.ViewModelFlip	= true
 SWEP.ViewModel		= "models/weapons/pps/v_smg_pps.mdl"
 SWEP.WorldModel		= "models/weapons/pps/w_smg_pps.mdl"
 
-SWEP.Primary.ClipSize		= 50
-SWEP.Primary.DefaultClip	= 100
+SWEP.Primary.ClipSize		= 60
+SWEP.Primary.DefaultClip	= 120
 SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo          = "smg1"
 
 SWEP.Primary.Sound = "CW_PPS_FIRE"
 SWEP.Primary.Recoil = 2
-SWEP.Primary.Delay = 60 / 800
+SWEP.Primary.Delay = 60 / 850
 SWEP.Primary.Damage = 10.5
 SWEP.ReloadSpeed = 1.3
 SWEP.DeploySpeed = 1.4

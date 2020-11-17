@@ -320,6 +320,10 @@ pluto.currency.list = {
 
 pluto.currency_mt = pluto.currency_mt or {}
 
+function pluto.iscurrency(t)
+	return debug.getmetatable(t) == pluto.currency_mt
+end
+
 pluto.currency_mt.__colorprint = function(self)
 	return {self.Color, self.Name}
 end

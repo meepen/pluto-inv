@@ -21,6 +21,15 @@ SWEP.Ironsights = {
 	Zoom = 0.85,
 }
 
+SWEP.Bullets = {
+	HullSize = 0,
+	Num = 1,
+	DamageDropoffRange = 1200,
+	DamageDropoffRangeMax = 3500,
+	DamageMinimumPercent = 0.7,
+	Spread = Vector(0.01, 0.01),
+}
+
 SWEP.AutoSpawnable = false
 
 SWEP.CraftBuff = 3.3

@@ -41,18 +41,29 @@ function ENT:Reward(e)
 	return true
 end
 
-function ENT:Touch(e)
-	if (self:IsVisibleTo(e) and not self.Got and self:CanPickUp(e)) then
-		if (self:Reward(e)) then
-			self:Remove()
+function ENT:BoundsWithin(e)
+	local ourpos = self:GetPos() - vector_up * self.Size
+	local epos, emins, emaxs = e:GetPos(), e:GetCollisionBounds()
+	emins = emins - Vector(self.Size, self.Size, self.Size)
+	emaxs = emaxs + Vector(self.Size, self.Size, self.Size)
+	
+	local diff = ourpos - epos
+	return diff:WithinAABox(emins, emaxs)
+end
+
+function ENT:Think()
+	for _, e in pairs(player.GetHumans()) do
+		if (self:IsVisibleTo(e) and not self.Got and self:CanPickUp(e) and self:BoundsWithin(e)) then
+			if (self:Reward(e)) then
+				self:Remove()
+			end
 		end
 	end
+	self:NextThink(CurTime())
+	return true
 end
 
 function ENT:SV_Initialize()
-	self:SetTrigger(true)
-	self:PhysicsInitBox(self:GetCollisionBounds())
-	self:SetCustomCollisionCheck(true)
 	hook.Add("SetupPlayerVisibility", self, self.SetupPlayerVisibility)
 
 	self.RoundCreated = ttt.GetRoundNumber()
