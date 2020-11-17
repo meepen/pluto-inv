@@ -7,14 +7,14 @@ local function initfont()
 		font = pluto_chat_font:GetString(),
 		size = 20,
 		bold = pluto_chat_font_bold:GetBool(),
-		weight = pluto_chat_font_weight:GetInt(),
+		weight = pluto_chat_font_weight:GetFloat(),
 	})
 
 	surface.CreateFont("pluto_chat_font_clickable", {
 		font = pluto_chat_font:GetString(),
 		size = 20,
 		bold = pluto_chat_font_bold:GetBool(),
-		weight = pluto_chat_font_weight:GetInt(),
+		weight = pluto_chat_font_weight:GetFloat(),
 		underline = true,
 	})
 end
@@ -34,3 +34,5 @@ hook.Add("TTTPopulateSettingsMenu", "pluto_settings", function()
 	cat:SizeToContents()
 	ttt.settings:AddTab("Chat", cat)
 end)
+
+initfont()
