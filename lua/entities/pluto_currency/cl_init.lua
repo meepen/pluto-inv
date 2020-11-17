@@ -13,8 +13,8 @@ function ENT:GetImage()
 
 	return self.Material
 end
-hook.Remove("PostDrawOpaqueRenderables", "pluto_currency_render")
-hook.Add("PostDrawOpaqueRenderables", "pluto_currency_render", function()
+
+hook.Add("PostDrawTranslucentRenderables", "pluto_currency_render", function()
 	local wait = 1.5
 	local timing = 1 - ((wait + CurTime()) % wait) / wait * 2
 	local up_offset = vector_up * (math.sin(timing * math.pi) + 1) / 2 * 15 * 0.25

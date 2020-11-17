@@ -24,7 +24,7 @@ cvars.AddChangeCallback(pluto_chat_font_bold:GetName(), initfont, pluto_chat_fon
 cvars.AddChangeCallback(pluto_chat_font_weight:GetName(), initfont, pluto_chat_font_weight:GetName())
 
 
-hook.Add("TTTPopulateSettingsMenu", "pluto_settings", function()
+hook.Add("TTTPopulateSettingsMenu", "chat_settings", function()
 	local cat = vgui.Create "ttt_settings_category"
 
 	cat:AddTextEntry("Font", "pluto_chat_font")
