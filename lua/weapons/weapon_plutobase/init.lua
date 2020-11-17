@@ -25,23 +25,25 @@ function SWEP:Initialize()
 	local item = pluto.NextWeaponSpawn
 	pluto.NextWeaponSpawn = nil
 
+	print(self:GetClass(), item)
 	if (item == false) then
 		return
 	end
 
-	if (pluto.tiers.bytype[pluto.weapons.type(self)]) then
-		if (not item) then
-			local tier = pluto.tiers.filter(self, function(t)
-				if (t.affixes < 4) then
-					return false
-				end
 
-				return true
-			end)
-			item = pluto.weapons.generatetier(tier, self)
-			item.Type = "Weapon"
-			self.FloorWeapon = true
-		end
+	if (not item and pluto.tiers.bytype[pluto.weapons.type(self)]) then
+		local tier = pluto.tiers.filter(self, function(t)
+			if (t.affixes < 4) then
+				return false
+			end
+
+			return true
+		end)
+		item = pluto.weapons.generatetier(tier, self)
+		item.Type = "Weapon"
+		self.FloorWeapon = true
+	end
+	if (item) then
 		self:SetInventoryItem(item)
 	end
 	self.PlutoData = self.PlutoData or {}

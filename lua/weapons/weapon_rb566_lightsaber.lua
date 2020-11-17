@@ -328,8 +328,6 @@ local lookup = {
 
 function SWEP:Initialize()
 	BaseClass.Initialize(self)
-	self.PlutoGun = pluto.NextWeaponSpawn
-	pluto.NextWeaponSpawn = nil
 	self.LoopSound = self.LoopSound or "lightsaber/saber_loop" .. math.random( 1, 8 ) .. ".wav"
 	self.SwingSound = self.SwingSound or "lightsaber/saber_swing" .. math.random( 1, 2 ) .. ".wav"
 
