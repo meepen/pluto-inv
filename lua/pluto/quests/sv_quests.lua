@@ -293,25 +293,25 @@ pluto.quests.rewards = {
 		{
 			Type = "weapon",
 			ClassName = "weapon_cod4_ak47_silencer",
-			Tier = "inevitable",
+			Tier = "uncommon",
 			Shares = 0.5,
 		},
 		{
 			Type = "weapon",
 			ClassName = "weapon_cod4_m4_silencer",
-			Tier = "inevitable",
+			Tier = "uncommon",
 			Shares = 0.5,
 		},
 		{
 			Type = "weapon",
 			ClassName = "weapon_cod4_m14_silencer",
-			Tier = "inevitable",
+			Tier = "uncommon",
 			Shares = 0.5,
 		},
 		{
 			Type = "weapon",
 			ClassName = "weapon_cod4_g3_silencer",
-			Tier = "inevitable",
+			Tier = "uncommon",
 			Shares = 0.5,
 		},
 		{
