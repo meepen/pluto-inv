@@ -72,10 +72,10 @@ end
 
 function SWEP:OwnerChanged()
 	BaseClass.OwnerChanged(self)
-
 	if (not SERVER) then
 		return
 	end
+	local owner = self:GetOwner()
 	owner:SetMaxHealth(owner:GetMaxHealth() * self.HealthMult)
 	owner:SetHealth(owner:Health() * self.HealthMult)
 end
