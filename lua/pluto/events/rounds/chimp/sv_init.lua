@@ -2,8 +2,8 @@ resource.AddFile("sound/pluto/dkrap.ogg") -- REMOVE ME
 
 ROUND.Name = "Monke Mania"
 ROUND.BananasPerPlayer = 6
-ROUND.KillStealMin = 0.25
-ROUND.KillStealMax = 0.45
+ROUND.KillSteal = 0.2
+ROUND.KillDrop = 0.1
 ROUND.HealthPerBanana = 10
 ROUND.BananasPerEgg = 10
 ROUND.WinnerBonus = 2
@@ -303,9 +303,9 @@ ROUND:Hook("PlayerDisconnected", function(self, state, ply)
 		return
 	end
 
-	local tosteal = state.playerscores[ply]
+	local amt = state.playerscores[ply]
 
-	for i = 1, tosteal do
+	for i = 1, amt do
 		table.insert(state.bananas, pluto.currency.spawnfor(player.GetAll()[1], "_banna", nil, true))
 	end
 	self:SendUpdateBananas(state)
@@ -313,41 +313,44 @@ ROUND:Hook("PlayerDisconnected", function(self, state, ply)
 end)
 
 ROUND:Hook("PlayerDeath", function(self, state, vic, inf, att)
-	if (not IsValid(vic)) then
+	if (not IsValid(vic) or not state.playerscores or not state.playerscores[vic]) then
 		return
 	end
 
-	if (not state.playerscores or not state.playerscores[vic]) then
-		return
-	end
+	local stolen = state.playerscores[vic] > 0 and math.ceil(self.KillSteal * state.playerscores[vic]) or 0
+	local dropped = state.playerscores[vic] > stolen and math.ceil(self.KillDrop * (state.playerscores[vic] - stolen)) or 0
+	local amt = stolen + dropped
 
-	local tosteal = state.playerscores[vic] > 0 and math.ceil(Lerp(math.random(), self.KillStealMin, self.KillStealMax) * state.playerscores[vic]) or 0
-
-	if (vic == att and IsValid(vic.LastBannaAttacker)) then
+	if ((vic == att or not IsValid(att)) and IsValid(vic.LastBannaAttacker)) then
 		att = vic.LastBannaAttacker
 	end
 
 	if (not IsValid(att) or not att:IsPlayer() or vic == att) then
-		self:UpdateScore(state, vic, -tosteal)
-		for i = 1, tosteal do
+		self:UpdateScore(state, vic, -amt)
+		for i = 1, amt do
 			table.insert(state.bananas, pluto.currency.spawnfor(vic, "_banna", nil, true))
 		end
 		self:SendUpdateBananas(state)
 	
-		vic:ChatPrint(ttt.teams.traitor.Color, "Monke", white_text, " lose ", tosteal, " banna!")
+		vic:ChatPrint(ttt.teams.traitor.Color, "Monke", white_text, " drop ", amt, " banna!")
 		return
 	end
 
-	self:UpdateScore(state, vic, -tosteal)
-	self:UpdateScore(state, att, tosteal)
-
-	if (tosteal > 0) then
-		vic:ChatPrint(ttt.teams.traitor.Color, att:Nick(), white_text, " take ", tosteal, " banna from Monke!")
-		att:ChatPrint(ttt.roles.Monke.Color, "Monke", white_text, " take ", tosteal, " banna from ", vic:Nick(), "!")
+	for i = 1, dropped do
+		table.insert(state.bananas, pluto.currency.spawnfor(vic, "_banna", nil, true))
 	end
 
-	if (att:Alive()) then
-		att:SetHealth(math.min(att:GetMaxHealth(), att:Health() + tosteal * self.HealthPerBanana))
+	self:UpdateScore(state, vic, -amt)
+	self:UpdateScore(state, att, stolen)
+
+	if (stolen > 0) then
+		vic:ChatPrint(ttt.teams.traitor.Color, att:Nick(), white_text, " take ", stolen, " banna from Monke!")
+		att:ChatPrint(ttt.roles.Monke.Color, "Monke", white_text, " take ", stolen, " banna from ", vic:Nick(), "!")
+		att:SetHealth(math.min(att:GetMaxHealth(), att:Health() + stolen * self.HealthPerBanana))
+	end
+
+	if (dropped > 0) then
+		vic:ChatPrint(ttt.teams.traitor.Color, "Monke", white_text, " drop ", dropped, " banna!")
 	end
 end)
 
