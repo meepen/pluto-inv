@@ -44,6 +44,8 @@ pluto.files.load {
 		"cheaters/sv_nocheats.lua",
 
 		"hitreg/sv_hitreg.lua",
+
+		"sv/ammospawn.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty
