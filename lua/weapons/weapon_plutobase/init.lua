@@ -29,19 +29,20 @@ function SWEP:Initialize()
 		return
 	end
 
-	if (pluto.tiers.bytype[pluto.weapons.type(self)]) then
-		if (not item) then
-			local tier = pluto.tiers.filter(self, function(t)
-				if (t.affixes < 4) then
-					return false
-				end
 
-				return true
-			end)
-			item = pluto.weapons.generatetier(tier, self)
-			item.Type = "Weapon"
-			self.FloorWeapon = true
-		end
+	if (not item and pluto.tiers.bytype[pluto.weapons.type(self)]) then
+		local tier = pluto.tiers.filter(self, function(t)
+			if (t.affixes < 4) then
+				return false
+			end
+
+			return true
+		end)
+		item = pluto.weapons.generatetier(tier, self)
+		item.Type = "Weapon"
+		self.FloorWeapon = true
+	end
+	if (item) then
 		self:SetInventoryItem(item)
 	end
 	self.PlutoData = self.PlutoData or {}
@@ -135,12 +136,11 @@ function SWEP:SendData(ply)
 			net.WriteInt(self:GetPlutoID(), 32)
 			if (gun.RowID) then
 				net.WriteBool(true)
-				net.WriteUInt(gun.RowID, 32)
+				pluto.inv.writeitem(ply, gun)
 			else
 				net.WriteBool(false)
+				pluto.inv.writebaseitem(ply, gun)
 			end
-			pluto.inv.writebaseitem(ply, gun)
-
 		net.Send(ply)
 	end
 end

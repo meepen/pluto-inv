@@ -877,6 +877,7 @@ function PANEL:Init()
 		local p = self.TopLayout:Add "pluto_inventory_item"
 		function p:SwitchWith()
 		end
+		p.NoMove = true
 		p.TabIndex = i
 		self.Items[i] = p
 	end

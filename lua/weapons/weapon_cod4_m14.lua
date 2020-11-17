@@ -14,11 +14,11 @@ SWEP.Base = "weapon_ttt_cod4_base"
 SWEP.Primary.Sound = "Weapon_CoD4_M14.Single"
 SWEP.Primary.ClipSize = 20
 SWEP.Primary.DefaultClip = 40
-SWEP.Primary.Automatic = true
+SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo          = "357"
-SWEP.Primary.Damage = 25
-SWEP.Primary.Delay = 0.33
-SWEP.HeadshotMultiplier = 50 / SWEP.Primary.Damage
+SWEP.Primary.Damage = 20
+SWEP.Primary.Delay = 1 / 6
+SWEP.HeadshotMultiplier = 40 / SWEP.Primary.Damage
 
 SWEP.Primary.RecoilTiming = 0.1
 
@@ -85,9 +85,9 @@ SWEP.Ironsights = {
 SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
-	DamageDropoffRange = 650,
+	DamageDropoffRange = 1500,
 	DamageDropoffRangeMax = 3500,
-	DamageMinimumPercent = 0.2,
+	DamageMinimumPercent = 0.8,
 	Spread = Vector(0.01, 0.01),
 }
 

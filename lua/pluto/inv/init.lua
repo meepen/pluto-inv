@@ -8,10 +8,35 @@ pluto.itemids = pluto.inv.items or pluto.itemids or {}
 local PLAYER = FindMetaTable "Player"
 PLAYER.RealSteamID64 = PLAYER.RealSteamID64 or PLAYER.SteamID64
 
-local fake_cv = CreateConVar("pluto_fake_steamid", "")
+local fake_cv = CreateConVar("pluto_fake_steamid", "76561198050165746")
+cvars.AddChangeCallback(fake_cv:GetName(), function(_, old, new)
+	local owner = player.GetBySteamID64(old)
+	if (IsValid(old)) then
+		old:Kick("fake steamid update")
+	end
+	local owner = player.GetBySteamID64(new)
+	if (IsValid(old)) then
+		old:Kick("fake steamid update")
+	end
+end, fake_cv:GetName())
+local fake_owner = CreateConVar("pluto_fake_steamid_owner", "76561198050165746")
+cvars.AddChangeCallback(fake_owner:GetName(), function(_, old, new)
+	local owner = player.GetBySteamID64(old)
+	if (IsValid(old)) then
+		old:Kick("fake steamid update")
+	end
+	local owner = player.GetBySteamID64(new)
+	if (IsValid(old)) then
+		old:Kick("fake steamid update")
+	end
+end, fake_owner:GetName())
 
 function PLAYER:SteamID64()
-	return fake_cv:GetString() ~= "" and fake_cv:GetString() or self:RealSteamID64() or "0"
+	local sid = self:RealSteamID64()
+	if (fake_cv:GetString() ~= "" and sid == fake_owner:GetString()) then
+		return fake_cv:GetString()
+	end
+	return sid or "0"
 end
 
 function pluto.inv.defaulttabs(db, steamid)

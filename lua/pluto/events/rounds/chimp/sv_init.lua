@@ -97,6 +97,7 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		if (ply:Alive()) then
 			self:Initialize(state, ply)
 		end
+		ply:SetNWInt("MonkeScore", 0)
 	end
 
 	for k, ply in pairs(banna) do
@@ -178,6 +179,7 @@ end
 
 function ROUND:UpdateScore(state, ply, amt)
 	state.playerscores[ply] = (state.playerscores[ply] or 0) + amt
+	ply:SetNWInt("MonkeScore", state.playerscores[ply])
 
 	net.Start "chimp_data"
 		net.WriteString "currency_collected"

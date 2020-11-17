@@ -21,6 +21,7 @@ pluto.files.load {
 		"models/cl_showhitgroups.lua",
 
 		"chat/cl_chat.lua",
+		"chat/cl_settings.lua",
 		"chat/cl_filter.lua",
 
 		"cosmetics/cl_test.lua",
@@ -33,6 +34,8 @@ pluto.files.load {
 		"hitreg/cl_hitreg.lua",
 
 		"weapons/cl_hover.lua",
+
+		"minigame/cl.lua",
 	},
 	Shared = {
 		"co_net.lua",
@@ -54,6 +57,8 @@ pluto.files.load {
 
 		"util.lua",
 
+		"chat/sh_chat.lua",
+
 		"mods/shared/limp.lua",
 
 		"tfa/tfa_compat.lua",
@@ -69,6 +74,10 @@ pluto.files.load {
 		"events/sh_init.lua",
 
 		"thirdparty/sh_animations_api.lua",
+
+		"imgur/sh_imgur.lua",
+
+		"sv/promise.lua",
 
 		-- "unicode/init.lua",
 		-- "unicode/casefolding.lua",
