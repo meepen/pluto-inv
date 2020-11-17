@@ -71,6 +71,7 @@ function GAME:KillSnake(snake)
 			Type = "food"
 		}
 	end
+	snake.Dead = true
 	for ply, _snake in pairs(self.Snakes) do
 		if (_snake == snake) then
 			self.Snakes[ply] = nil
@@ -95,6 +96,13 @@ local modify = {
 function GAME:Progress()
 	self.CurTick = self.CurTick + 1
 	-- remove the last position of all snakes that are needed
+	local moveto = {}
+	for x = 1, self.BoardSize do
+		moveto[x] = {}
+	end
+	for ply, snake in pairs(self.Snakes) do
+		moveto[snake.Pos.x][snake.Pos.y] = snake
+	end
 	for ply, snake in pairs(self.Snakes) do
 		snake.LastDirection = snake.Direction
 		modify[snake.Direction](snake.Pos)
@@ -105,6 +113,23 @@ function GAME:Progress()
 			local rem = snake.History[1]
 			table.remove(snake.History, 1)
 			self.BoardInfo[rem.x][rem.y] = nil
+		end
+
+		local collider = moveto[snake.Pos.x][snake.Pos.y]
+		if (collider and not collider.Dead) then
+			if (snake.Length == collider.Length) then
+				self:KillSnake(snake)
+				self:KillSnake(collider)
+				moveto[snake.Pos.x][snake.Pos.y] = nil
+			elseif (snake.Length < collider.Length) then
+				self:KillSnake(snake)
+				moveto[snake.Pos.x][snake.Pos.y] = snake
+			else
+				self:KillSnake(collider)
+				moveto[snake.Pos.x][snake.Pos.y] = collider
+			end
+		else
+			moveto[snake.Pos.x][snake.Pos.y] = snake
 		end
 	end
 	
@@ -138,6 +163,9 @@ function GAME:Progress()
 
 	if (math.random(3) == 1) then
 		local pos = self:GetFreeSpace()
+		if (not pos) then
+			return
+		end
 		self.BoardInfo[pos.x][pos.y] = {
 			Type = "food"
 		}
@@ -208,7 +236,7 @@ end
 
 snake = snake or {}
 
-function snake.makegame()
+function snake.makegame(size)
 	local game = setmetatable({
 		BoardInfo = setmetatable({
 			-- [x][y] = info
@@ -216,7 +244,7 @@ function snake.makegame()
 		Snakes = {
 			-- [ply] = snake
 		},
-		BoardSize = 21,
+		BoardSize = size or 11,
 		Listeners = {},
 		Speed = 0.25,
 		LastTick = -math.huge,
@@ -273,8 +301,8 @@ net.Receive("pluto_snake", function(len, cl)
 	GetGame(cl)
 end)
 
-concommand.Add("test_minigame", function()
-	local game = snake.makegame()
+concommand.Add("test_minigame", function(ply, cmd, arg)
+	local game = snake.makegame(tonumber(arg[1]))
 
 	for _, ply in pairs(player.GetHumans()) do
 		game:AddPlayer(ply)
