@@ -16,3 +16,7 @@ function ROUND:TTTPrepareRoles(Team, Role)
 		end)
 		:SetCanSeeThroughWalls(false)
 end
+
+ROUND:Hook("TTTUpdatePlayerSpeed", function(self, state, ply, data)
+	data.chimp = 1.2 + math.min(0.4, (ply:GetNWInt("MonkeScore", 0) * 0.08))
+end)

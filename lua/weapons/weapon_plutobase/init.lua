@@ -25,7 +25,6 @@ function SWEP:Initialize()
 	local item = pluto.NextWeaponSpawn
 	pluto.NextWeaponSpawn = nil
 
-	print(self:GetClass(), item)
 	if (item == false) then
 		return
 	end
