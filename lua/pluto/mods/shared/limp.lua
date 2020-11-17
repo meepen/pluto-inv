@@ -33,5 +33,3 @@ function pluto.statuses.limp(ply, time, max)
 	ply:SetSlowedUntil(start + time)
 	ply:SetSlowedStart(start)
 end
-
-print "JHEAKLDSA "

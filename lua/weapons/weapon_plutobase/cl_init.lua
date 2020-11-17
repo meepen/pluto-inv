@@ -67,6 +67,10 @@ function SWEP:Initialize()
 end
 
 function SWEP:DisplayPlutoData()
+	if (GetConVar("pluto_print_console"):GetBool()) then
+		return
+	end
+
 	local data = self:GetInventoryItem()
 	data.ClassName = self:GetClass()
 
