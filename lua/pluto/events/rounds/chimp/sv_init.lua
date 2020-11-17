@@ -1,4 +1,4 @@
-resource.AddFile("sound/pluto/dkrap.ogg") -- REMOVE ME
+resource.AddFile("sound/pluto/dkrap.ogg")
 
 ROUND.Name = "Monke Mania"
 ROUND.BananasPerPlayer = 6
@@ -295,6 +295,14 @@ ROUND:Hook("EntityTakeDamage", function(self, state, targ, dmg)
 		return
 	end
 
+	if (state.playerscores[targ] > 0) then
+		self:UpdateScore(state, targ, -1)
+		self:UpdateScore(state, atk, 1)
+		if (atk:Alive()) then
+			atk:SetHealth(math.min(atk:GetMaxHealth(), atk:Health() + self.HealthPerBanana))
+		end
+	end
+
 	targ.LastBannaAttacker = atk
 end)
 
@@ -312,7 +320,7 @@ ROUND:Hook("PlayerDisconnected", function(self, state, ply)
 	state.playerscores[ply] = nil
 end)
 
-ROUND:Hook("PlayerDeath", function(self, state, vic, inf, att)
+ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 	if (not IsValid(vic) or not state.playerscores or not state.playerscores[vic]) then
 		return
 	end
@@ -321,11 +329,11 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, att)
 	local dropped = state.playerscores[vic] > stolen and math.ceil(self.KillDrop * (state.playerscores[vic] - stolen)) or 0
 	local amt = stolen + dropped
 
-	if ((vic == att or not IsValid(att)) and IsValid(vic.LastBannaAttacker)) then
-		att = vic.LastBannaAttacker
+	if ((vic == atk or not IsValid(atk)) and IsValid(vic.LastBannaAttacker)) then
+		atk = vic.LastBannaAttacker
 	end
 
-	if (not IsValid(att) or not att:IsPlayer() or vic == att) then
+	if (not IsValid(atk) or not atk:IsPlayer() or vic == atk) then
 		self:UpdateScore(state, vic, -amt)
 		for i = 1, amt do
 			table.insert(state.bananas, pluto.currency.spawnfor(vic, "_banna", nil, true))
@@ -341,12 +349,14 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, att)
 	end
 
 	self:UpdateScore(state, vic, -amt)
-	self:UpdateScore(state, att, stolen)
+	self:UpdateScore(state, atk, stolen)
 
 	if (stolen > 0) then
-		vic:ChatPrint(ttt.teams.traitor.Color, att:Nick(), white_text, " take ", stolen, " banna from Monke!")
-		att:ChatPrint(ttt.roles.Monke.Color, "Monke", white_text, " take ", stolen, " banna from ", vic:Nick(), "!")
-		att:SetHealth(math.min(att:GetMaxHealth(), att:Health() + stolen * self.HealthPerBanana))
+		vic:ChatPrint(ttt.teams.traitor.Color, atk:Nick(), white_text, " stealed ", stolen, " banna!")
+		atk:ChatPrint(ttt.roles.Monke.Color, "Monke", white_text, " stealed ", stolen, " banna from ", vic:Nick(), "!")
+		if (atk:Alive()) then
+			atk:SetHealth(math.min(atk:GetMaxHealth(), atk:Health() + stolen * self.HealthPerBanana))
+		end
 	end
 
 	if (dropped > 0) then
