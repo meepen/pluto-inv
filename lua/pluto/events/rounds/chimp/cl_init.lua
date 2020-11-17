@@ -44,7 +44,7 @@ local function RenderStats(state)
 		y = y + h
 	end
 
-	if (state.currency_left) then
+	if (state.currency_left >= 0 and state.currency_left <= 256) then
 		local _, h = draw.SimpleTextOutlined(string.format("%i banna left", state.currency_left), "chimp_small", x, y, ttt.roles.Child.Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
 		y = y + h
 	end
@@ -70,6 +70,7 @@ end)
 
 function ROUND:Prepare(state)
 	state.Start = CurTime()
+	EmitSound("pluto/dkrap.ogg", vector_origin, -2, CHAN_STATIC, 1)
 end
 
 ROUND:Hook("HUDPaint", function(self, state)
