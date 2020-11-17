@@ -178,6 +178,14 @@ hook.Add( "GetFallDamage", "rb655_lightsaber_no_fall_damage", function( ply, spe
 			ply:SetNWFloat( "SWL_FeatherFall", CurTime() ) -- Hate on me for NWVars!
 			wep:SetNextAttack( 0.5 )
 			ply:ViewPunch( Angle( speed / 32, 0, math.random( -speed, speed ) / 128 ) )
+			if (speed > 550) then
+				pluto.statuses.limp(ply, speed / 600, 4)
+			end
+			if (speed > 650) then
+				pluto.statuses.bleed(ply, {
+					Damage = math.Clamp(math.ceil(speed / 50 - 10), 0, 30)
+				})
+			end
 			return 0
 		end
 	end

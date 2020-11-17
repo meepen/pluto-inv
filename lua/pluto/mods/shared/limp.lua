@@ -23,11 +23,11 @@ hook.Add("TTTUpdatePlayerSpeed", "pluto_limp", function(ply, data)
 	end
 end)
 
-function pluto.statuses.limp(ply, time)
+function pluto.statuses.limp(ply, time, max)
 	if (not IsValid(ply) or not ply:IsPlayer()) then
 		return
 	end
-	time = math.min(1.3, time * 3)
+	time = math.min(max or 1.3, time * 3)
 
 	local start = CurTime() + ply:Ping() * 4 / 1000
 	ply:SetSlowedUntil(start + time)
