@@ -1,5 +1,7 @@
 local pluto_chatbox_x = CreateConVar("pluto_chatbox_x", 0.05, FCVAR_ARCHIVE, "Pluto chatbox x position", 0, 1)
 local pluto_chatbox_y = CreateConVar("pluto_chatbox_y", 0.15, FCVAR_ARCHIVE, "Pluto chatbox y position", 0, 1)
+local pluto_chat_fade_sustain = CreateConVar("pluto_chat_fade_sustain", "5", FCVAR_ARCHIVE, "sustain", 0, 10)
+local pluto_chat_fade_length = CreateConVar("pluto_chat_fade_length", "0.5", FCVAR_ARCHIVE, "sustain", 0, 10)
 local cur_color
 
 local function reposition()
@@ -163,7 +165,7 @@ function pluto.chat.Add(content, channel, teamchat)
 		pluto.chat.Box:Text(channel, ": ")
 	end
 
-	pluto.chat.Box.Tabs.active:InsertFade(5, 0.5)
+	pluto.chat.Box:DefaultFade(pluto.chat.Box.Tabs.active.name)
 
 	for k,v in pairs(content) do
 		if (IsColor(v)) then
@@ -509,8 +511,6 @@ end
 
 function PANEL:AddTab(name, prefix)
 	local chat = self.Chatbox.Text:Add "RichText"
-	chat:InsertFade(5, 0.5)
-	chat:AppendText("Channel: " .. name .. "\n")
 	chat:Hide()
 	chat:Dock(FILL)
 	
@@ -557,6 +557,9 @@ function PANEL:AddTab(name, prefix)
 
 	self.Tabs.table[name] = chat
 	self.Tabs.prefixes[prefix] = name
+
+	self:DefaultFade(name)
+	chat:AppendText("Channel: " .. name .. "\n")
 end
 
 function PANEL:SelectTab(name)
@@ -575,7 +578,7 @@ end
 
 function PANEL:Text(channel, text)
 	MsgC(cur_color or white_text, text)
-	self.Tabs.table[channel]:InsertFade(5, 0.5)
+	self:DefaultFade(channel)
 	self.Tabs.table[channel]:AppendText(text)
 end
 
@@ -613,11 +616,15 @@ function PANEL:Cur(channel, cur)
 	self:Text(channel, cur.Name)
 	box:InsertClickableTextEnd()
 	self:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
-	self.Tabs.table[channel]:InsertFade(5, 0.5)
+	self:DefaultFade(channel)
+end
+
+function PANEL:DefaultFade(channel)
+	self.Tabs.table[channel]:InsertFade(pluto_chat_fade_sustain:GetFloat(), pluto_chat_fade_length:GetFloat())
 end
 
 function PANEL:Newline(channel)
-	self.Tabs.table[channel]:InsertFade(5, 0.5)
+	self:DefaultFade(channel)
 	self.Tabs.table[channel]:AppendText("\n")
 	MsgN ""
 end
