@@ -83,21 +83,6 @@ hook.Add("PlayerBindPress", "plutoChatBind", function(ply, bind, pressed)
 	return true
 end)
 
-surface.CreateFont("pluto_chat_font", {
-	font = "Roboto Bk",
-	size = 20,
-	bold = true,
-	weight = 100,
-})
-
-surface.CreateFont("pluto_chat_font_clickable", {
-	font = "Roboto Bk",
-	size = 20,
-	bold = true,
-	weight = 100,
-	underline = true,
-})
-
 local closed_alpha = 0
 local opened_alpha = .75 * 255
 

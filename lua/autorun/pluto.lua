@@ -21,6 +21,7 @@ pluto.files.load {
 		"models/cl_showhitgroups.lua",
 
 		"chat/cl_chat.lua",
+		"chat/cl_settings.lua",
 		"chat/cl_filter.lua",
 
 		"cosmetics/cl_test.lua",

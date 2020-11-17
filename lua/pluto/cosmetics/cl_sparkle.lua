@@ -23,14 +23,14 @@ game.AddParticles "particles/pluto_heart.pcf"
 pluto.sparklelist = pluto.sparklelist or setmetatable({}, {__mode = "k"})
 pluto.sparklemap = pluto.sparklemap or setmetatable({}, {__mode = "k"})
 
-function pluto.sparkle(what, particle, turnon)
+function pluto.sparkle(what, particle, turnon)--[[
 	pluto.sparklelist[what] = turnon or nil
 	local system = pluto.sparklemap[what]
 	if (IsValid(system) and not turnon) then
 		system:StopEmissionAndDestroyImmediately()
 	elseif (not IsValid(system) and turnon and IsValid(what)) then
 		pluto.sparklemap[what] = CreateParticleSystem(what, particle, PATTACH_ABSORIGIN_FOLLOW, 0)
-	end
+	end]]
 end
 
 timer.Create("pluto_sparkle_update", 0.5, 0, function()
