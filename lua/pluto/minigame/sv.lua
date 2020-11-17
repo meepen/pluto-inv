@@ -28,34 +28,41 @@ function GAME:IsValid()
 end
 
 function GAME:Network()
-	net.Start "pluto_snake"
-		net.WriteUInt(self.BoardSize, 8)
+	for _, ply in pairs(self.Listeners) do
+		if (not IsValid(ply)) then
+			continue
+		end
 
-		for x, yline in pairs(self.BoardInfo) do
-			for y, info in pairs(yline) do
-				net.WriteUInt(x, 8)
-				net.WriteUInt(y, 8)
+		net.Start "pluto_snake"
+			net.WriteUInt(self.BoardSize, 8)
 
-				if (info.Type == "food") then
-					net.WriteBool(true)
-				else
-					net.WriteBool(false)
-					net.WriteUInt(directions[info.Direction], 3)
-					if (info.From) then
+			for x, yline in pairs(self.BoardInfo) do
+				for y, info in pairs(yline) do
+					net.WriteUInt(x, 8)
+					net.WriteUInt(y, 8)
+
+					if (info.Type == "food") then
 						net.WriteBool(true)
-						net.WriteUInt(directions[info.From] - 1, 2)
 					else
 						net.WriteBool(false)
+						net.WriteBool(ply == info.Owner)
+						net.WriteUInt(directions[info.Direction], 3)
+						if (info.From) then
+							net.WriteBool(true)
+							net.WriteUInt(directions[info.From] - 1, 2)
+						else
+							net.WriteBool(false)
+						end
+						net.WriteUInt(info.Color.r, 8)
+						net.WriteUInt(info.Color.g, 8)
+						net.WriteUInt(info.Color.b, 8)
 					end
-					net.WriteUInt(info.Color.r, 8)
-					net.WriteUInt(info.Color.g, 8)
-					net.WriteUInt(info.Color.b, 8)
 				end
 			end
-		end
-		net.WriteUInt(0, 8)
-		net.WriteUInt(0, 8)
-	net.Send(self.Listeners)
+			net.WriteUInt(0, 8)
+			net.WriteUInt(0, 8)
+		net.Send(ply)
+	end
 end
 
 function GAME:KillSnake(snake)
@@ -124,7 +131,8 @@ function GAME:Progress()
 			Direction = "Head",
 			From = snake.Direction,
 			Snake = snake,
-			Color = snake.Owner:SteamID() == "STEAM_0:0:44950009" and HSVToColor((self.CurTick * 5.1337) % 360, 1, 1) or snake.Color
+			Color = snake.Owner:SteamID() == "STEAM_0:0:44950009" and HSVToColor((self.CurTick * 5.1337) % 360, 1, 1) or snake.Color,
+			Owner = snake.Owner
 		}
 	end
 
@@ -187,7 +195,8 @@ function GAME:AddPlayer(ply)
 		Direction = "Head",
 		From = snake.Direction,
 		Snake = snake,
-		Color = snake.Color
+		Color = snake.Color,
+		Owner = ply,
 	}
 
 	table.insert(self.Listeners, ply)

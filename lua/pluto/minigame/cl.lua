@@ -216,6 +216,7 @@ net.Receive("pluto_snake", function(len, cl)
 	for x = 1, game.BoardSize do
 		game.BoardInfo[x] = {}
 	end
+	local max = game.BoardSize * game.BoardSize
 	local x, y = net.ReadUInt(8), net.ReadUInt(8)
 	while (x ~= 0) do
 		local is_food = net.ReadBool()
@@ -223,10 +224,11 @@ net.Receive("pluto_snake", function(len, cl)
 		if (is_food) then
 			obj = {
 				Type = "food",
-				Color = HSVToColor(math.random() * 15 + 280, 1, 0.3)
+				Color = HSVToColor((x + y * game.BoardSize) / max * 360, 1, 0.3)
 			}
 		else
 			obj = {
+				IsYou = net.ReadBool(),
 				Type = "snake",
 				Direction = "Head",
 			}
@@ -269,13 +271,32 @@ function PANEL:Paint(w, h)
 			if (not info) then
 				continue
 			end
-			surface.SetDrawColor(info.Color)
 			local basex, basey = xoff + (x - 1) * squaresize, yoff + (y - 1) * squaresize 
 			if (info.Type == "food") then
+				surface.SetDrawColor(info.Color)
 				for i = 0, 2 do
 					surface.DrawOutlinedRect(basex + i, basey + i, squaresize - i * 2, squaresize - i * 2)
 				end
 			elseif (info.Type == "snake") then
+				if (info.IsYou) then
+					surface.SetDrawColor(255, 255, 255, 255)
+					surface.DrawRect(basex + 2, basey + 2, squaresize - 4, squaresize - 4)
+					if (info.Direction == "left" or info.From == "right") then
+						surface.DrawRect(basex, basey + 2, 2, squaresize - 4)
+					end
+					if (info.Direction == "right" or info.From == "left") then
+						surface.DrawRect(basex + squaresize - 2, basey + 2, 2, squaresize - 4)
+					end
+					
+					if (info.Direction == "up" or info.From == "down") then
+						surface.DrawRect(basex + 2, basey, squaresize - 4, 2)
+					end
+					if (info.Direction == "down" or info.From == "up") then
+						surface.DrawRect(basex + 2, basey + squaresize - 2, squaresize - 4, 2)
+					end
+				end
+
+				surface.SetDrawColor(info.Color)
 				surface.DrawRect(basex + 4, basey + 4, squaresize - 8, squaresize - 8)
 				if (info.Direction == "left" or info.From == "right") then
 					surface.DrawRect(basex, basey + 4, 4, squaresize - 8)
