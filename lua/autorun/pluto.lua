@@ -34,6 +34,8 @@ pluto.files.load {
 		"hitreg/cl_hitreg.lua",
 
 		"weapons/cl_hover.lua",
+
+		"minigame/cl.lua",
 	},
 	Shared = {
 		"co_net.lua",

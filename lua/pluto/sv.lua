@@ -46,6 +46,8 @@ pluto.files.load {
 		"hitreg/sv_hitreg.lua",
 
 		"sv/ammospawn.lua",
+
+		"minigame/sv.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty
