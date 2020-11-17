@@ -1450,6 +1450,32 @@ function PANEL:Init()
 	self:SetCurveBottomRight(false)
 	self:SetColor(inactive_tab)
 	self:SetWide(20)
+	self:SetCursor "hand"
+
+	self.Label = self:Add "DLabel"
+	self.Label:SetText "v"
+	self.Label:SetContentAlignment(5)
+	self.Label:Dock(FILL)
+end
+
+function PANEL:OnMousePressed(code)
+	if (code == MOUSE_LEFT) then
+		local m = DermaMenu()
+		local prnt = self:GetParent().Tabs
+		for _, pnl in ipairs(prnt.Tabs) do
+			local name
+			if (type(pnl.Tab.Name) == "string") then
+				name = pnl.Tab.Name
+			else -- convar
+				name = pnl.Tab.Name:GetString()
+			end
+
+			m:AddOption(name, function()
+				prnt:Select(pnl)
+			end)
+		end
+		m:Open()
+	end
 end
 
 vgui.Register("pluto_inventory_tab_selector", PANEL, "pluto_inventory_base")
@@ -1460,9 +1486,10 @@ function PANEL:Init()
 	self.Tabs = self:Add "pluto_inventory_tabs"
 	self.Tabs:Dock(FILL)
 
-	--self.Controller = self:Add "pluto_inventory_tab_selector"
-	--self.Controller:Dock(RIGHT)
-	--self.Controller:DockMargin(pad / 2, 0, 0, 0)
+	self.Controller = self:Add "pluto_inventory_tab_selector"
+	self.Controller:Dock(RIGHT)
+	self.Controller:DockMargin(pad / 2, 0, 0, 0)
+	self.Tabs:DockMargin(0, 0, pad, 0)
 
 	self:DockMargin(curve(2), 0, curve(2), 0)
 end
@@ -1721,10 +1748,12 @@ function PANEL:SetTabs(tabs, addtrade)
 		table.insert(t, pluto.tradetab)
 		table.insert(t, pluto.crafttab)
 		table.insert(t, pluto.questtab)
+		table.insert(t, pluto.minigametab)
 		--table.insert(t, pluto.passtab)
 	end
 
 	self.Tabs:SetTabs(t)
+	self.Tabs:DockMargin(0, 0, 22, 0)
 end
 
 function PANEL:SetWhere(leftright)
@@ -2479,6 +2508,15 @@ function pluto.inv.remakefake()
 	pluto.questtab = {
 		Type = "quest",
 		Name = CreateConVar("pluto_questtab_name", "Quests", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Quest tab name"),
+		ID = 0,
+		Items = {},
+		Currency = {},
+		FakeID = 3,
+	}
+
+	pluto.minigametab = {
+		Type = "minigame",
+		Name = CreateConVar("pluto_minigametab_name", "Minigames", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Minigames tab name"),
 		ID = 0,
 		Items = {},
 		Currency = {},
