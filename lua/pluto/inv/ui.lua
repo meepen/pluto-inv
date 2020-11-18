@@ -1305,7 +1305,9 @@ function PANEL:SetTab(tab)
 
 	local tabtype = pluto.tabs[tab.Type] or {element = "pluto_invalid_tab"}
 
-	pprintf("Creating tab %s (%s)...", tab.Type, tabtype.element)
+	if (not GetConVar("pluto_print_console"):GetBool()) then
+		pprintf("Creating tab %s (%s)...", tab.Type, tabtype.element)
+	end
 
 	self.Items = self:Add(tabtype.element)
 

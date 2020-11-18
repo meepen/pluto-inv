@@ -231,6 +231,7 @@ function ENT:EventHandle(...)
 				entFlame:SetParent(self)
 				entFlame:Fire("SetParentAttachment",att,0)
 				entFlame:SetDamageOwner(IsValid(self:GetDamageOwner()) and self:GetDamageOwner() or self)
+				entFlame:SetDamageType(DMG_BURN)
 				function entFlame:OnHit(ent,dist)
 					ent:slvIgnite(2, nil, self:GetDamageOwner())
 				end
