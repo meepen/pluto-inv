@@ -70,7 +70,9 @@ end)
 
 function ROUND:Prepare(state)
 	state.Start = CurTime()
-	EmitSound("pluto/dkrap.ogg", vector_origin, -2, CHAN_STATIC, 1)
+	timer.Simple(1, function()
+		EmitSound("pluto/dkrap.ogg", vector_origin, -2, CHAN_STATIC, 1)
+	end)
 end
 
 ROUND:Hook("HUDPaint", function(self, state)
