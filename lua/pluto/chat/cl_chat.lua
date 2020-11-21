@@ -57,6 +57,17 @@ pluto.chat.cl_commands = {
 			pluto.ui.toggle()
 		end
 	},
+	{
+		aliases = {
+			"mv",
+			"mapvote",
+		},
+		Run = function(channel)
+			if (pluto.mapvote) then
+				pluto.mapvote_create()
+			end
+		end
+	},
 }
 
 pluto.chat.cl_commands.byname = {}
@@ -146,6 +157,7 @@ function pluto.chat.Add(content, channel, teamchat)
 			pluto.chat.Add(content, channel, teamchat)
 		end
 	end
+	local from
 	pluto.chat.Box:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
 	if (type(content[1]) ~= "string" and IsValid(content[1]) and content[1]:IsPlayer()) then
 		from = table.remove(content, 1)
@@ -188,6 +200,7 @@ function pluto.chat.Add(content, channel, teamchat)
 			end
 		end
 	end
+
 	pluto.chat.Box:Newline(channel)
 end
 
@@ -395,10 +408,12 @@ function PANEL:Init()
 					local curcmd = text:sub(2)
 					local cmd = pluto.chat.cl_commands.byname[curcmd]
 					if (not cmd) then
-						cmd = hook.Run("PlutoGetChatCommand", cmd)
+						cmd = hook.Run("PlutoGetChatCommand", curcmd)
 					end
 					if (cmd) then
-						cmd.Run(pluto.chat.Box.Tabs.active.name)
+						if (not isbool(cmd)) then
+							cmd.Run(pluto.chat.Box.Tabs.active.name)
+						end
 						pluto.chat.Close()
 						return
 					end

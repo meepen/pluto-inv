@@ -648,16 +648,3 @@ end
 if (pluto.mapvote) then
 	pluto.mapvote_create()
 end
-
-local cmds = {
-	["!mapvote"] = true,
-	["!mv"] = true,
-	mv = true,
-	mapvote = true,
-}
-
-hook.Add("OnPlayerChat", "pluto_mapvote", function(p, t)
-	if (p == LocalPlayer() and pluto.mapvote and cmds[t]) then
-		pluto.mapvote_create()
-	end
-end)
