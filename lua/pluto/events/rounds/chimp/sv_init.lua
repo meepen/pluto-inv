@@ -2,10 +2,9 @@ resource.AddFile("sound/pluto/dkrap.ogg")
 
 ROUND.Name = "Monke Mania"
 ROUND.BananasPerPlayer = 6
-ROUND.KillSteal = 0.2
-ROUND.KillDrop = 0.1
+ROUND.KillSteal = 0.25
 ROUND.HealthPerBanana = 10
-ROUND.BananasPerEgg = 10
+ROUND.BananasPerEgg = 7
 ROUND.WinnerBonus = 2
 ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
 
@@ -25,7 +24,7 @@ function ROUND:Prepare(state)
 		end
 	end)
 
-	timer.Pause("tttrw_afk")
+	timer.Pause "tttrw_afk"
 end
 
 function ROUND:Finish()
@@ -90,19 +89,18 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	local banna = round.GetActivePlayersByRole "Banna Boss"
 	state.players = {}
 	state.playerscores = {}
+	state.rewarded = {}
+	state.lastactive = {}
 
 	for k, ply in pairs(monkes) do
-		state.playerscores[ply] = 0
 		table.insert(state.players, ply)
 		if (ply:Alive()) then
 			self:Initialize(state, ply)
 		end
-		ply:SetNWInt("MonkeScore", 0)
 	end
 
 	for k, ply in pairs(banna) do
 		state.leader = ply
-		state.playerscores[ply] = 0
 		table.insert(state.players, ply)
 		if (ply:Alive()) then
 			self:Initialize(state, ply)
@@ -113,6 +111,9 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 
 	for k, ply in ipairs(state.players) do
 		if IsValid(ply) then
+			state.playerscores[ply] = 0
+			state.lastactive[ply] = CurTime()
+			ply:SetNWInt("MonkeScore", 0)
 			local tospawn = self.BananasPerPlayer
 			while (tospawn > 0) do
 				tospawn = tospawn - 1
@@ -122,6 +123,20 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 			self:UpdateScore(state, ply, 0)
 		end
 	end
+
+	timer.Create("pluto_monke_timer", 5, 0, function()
+		for _, ply in ipairs(state.players) do
+			if (not IsValid(ply) or not state.lastactive[ply] or CurTime() - state.lastactive[ply] < 20)  then
+				continue
+			end
+			if (not state.playerscores[ply] or state.playerscores[ply] < 7) then
+				continue
+			end
+
+			pluto.statuses.bleed(ply, {Damage = 5})
+			ply:ChatPrint(white_text, "Monke get hurt for not fight!")
+		end
+	end)
 
 	net.Start "chimp_data"
 		net.WriteString "currency_left"
@@ -133,15 +148,9 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	GetConVar("ttt_karma"):SetBool(false)
 	
 	timer.Simple(1, function()
-		round.SetRoundEndTime(CurTime() + 166)
-		ttt.SetVisibleRoundEndTime(CurTime() + 166)
+		round.SetRoundEndTime(CurTime() + 167)
+		ttt.SetVisibleRoundEndTime(CurTime() + 167)
 	end)
-end)
-
-ROUND:Hook("TTTUpdatePlayerSpeed", function(self, state, ply, data)
-	if (state.playerscores and state.playerscores[ply]) then
-		data["chimp"] = 1 + math.min(0.3, (state.playerscores[ply] * 0.06))
-	end
 end)
 
 ROUND:Hook("PostPlayerDeath", function(self, state, ply)
@@ -179,7 +188,13 @@ end
 
 function ROUND:UpdateScore(state, ply, amt)
 	state.playerscores[ply] = (state.playerscores[ply] or 0) + amt
+	state.lastactive[ply] = CurTime()
 	ply:SetNWInt("MonkeScore", state.playerscores[ply])
+
+	if (state.playerscores[ply] >= 7 and not state.rewarded[ply]) then
+		state.rewarded[ply] = true
+		ply:ChatPrint(white_text, "Monke will get ", pluto.currency.byname.brainegg, white_text, " for getting 7 ", pluto.currency.byname._banna, white_text, " first time!")
+	end
 
 	net.Start "chimp_data"
 		net.WriteString "currency_collected"
@@ -201,6 +216,9 @@ function ROUND:Spawn(state, ply)
 	if (state.players and state.players[ply]) then
 		ply:SetHealth(100)
 		ply:SetMaxHealth(100)
+	end
+	if (state.lastactive) then
+		state.lastactive[ply] = CurTime()
 	end
 	ply.LastBannaAttacker = nil
 end
@@ -227,10 +245,13 @@ function ROUND:TTTEndRound(state)
 	state.leader:SetModelScale(1, 0)
 
 	for ply, score in pairs(state.playerscores) do
-		local togive = math.floor(score / self.BananasPerEgg)
-		if (score >= 5) then
-			togive = togive + 1
+		if (state.rewarded[ply]) then
+			pluto.db.instance(function(db)
+				pluto.inv.addcurrency(db, ply, "brainegg", 1)
+				ply:ChatPrint(white_text, "Monke get ", pluto.currency.byname.brainegg, white_text, " for havd 7 ", pluto.currency.byname._banna, white_text, " at one time!")
+			end)
 		end
+		local togive = math.floor(score / self.BananasPerEgg)
 		pluto.db.instance(function(db)
 			pluto.inv.addcurrency(db, ply, "brainegg", togive)
 			ply:ChatPrint(white_text, "Monke get ", togive, " ", pluto.currency.byname.brainegg, white_text, " for hav ", score, " ", pluto.currency.byname._banna, white_text, "!")
@@ -249,6 +270,7 @@ function ROUND:TTTEndRound(state)
 
 	GetConVar("ttt_karma"):Revert()
 
+	timer.Remove("pluto_monke_timer")
 	timer.UnPause("tttrw_afk")
 end
 
@@ -297,13 +319,14 @@ ROUND:Hook("EntityTakeDamage", function(self, state, targ, dmg)
 		return
 	end
 
-	if (state.playerscores[targ] > 0) then
+	if (state.playerscores[targ] >= 7) then
 		self:UpdateScore(state, targ, -1)
 		self:UpdateScore(state, atk, 1)
 		targ:ChatPrint(ttt.teams.traitor.Color, atk:Nick(), white_text, " stealed 1 banna!")
 		atk:ChatPrint(ttt.roles.Monke.Color, "Monke", white_text, " stealed 1 banna from ", targ:Nick(), "!")
-		atk:SetHealth(math.min(atk:GetMaxHealth(), atk:Health() + self.HealthPerBanana))
 	end
+
+	state.lastactive[atk] = CurTime()
 
 	targ.LastBannaAttacker = atk
 end)
@@ -327,9 +350,7 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 		return
 	end
 
-	local stolen = state.playerscores[vic] > 0 and math.ceil(self.KillSteal * state.playerscores[vic]) or 0
-	local dropped = state.playerscores[vic] > stolen and math.ceil(self.KillDrop * (state.playerscores[vic] - stolen)) or 0
-	local amt = stolen + dropped
+	local amt = state.playerscores[vic] > 0 and math.ceil(self.KillSteal * state.playerscores[vic]) or 0
 
 	if ((vic == atk or not IsValid(atk)) and IsValid(vic.LastBannaAttacker)) then
 		atk = vic.LastBannaAttacker
@@ -345,23 +366,15 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 		return
 	end
 
-	for i = 1, dropped do
-		table.insert(state.bananas, pluto.currency.spawnfor(vic, "_banna", nil, true))
-	end
-
 	self:UpdateScore(state, vic, -amt)
-	self:UpdateScore(state, atk, stolen)
+	self:UpdateScore(state, atk, amt)
 
-	if (stolen > 0) then
-		vic:ChatPrint(ttt.teams.traitor.Color, atk:Nick(), white_text, " stealed ", stolen, " banna!")
-		atk:ChatPrint(ttt.roles.Monke.Color, "Monke", white_text, " stealed ", stolen, " banna from ", vic:Nick(), "!")
+	if (amt > 0) then
+		vic:ChatPrint(ttt.teams.traitor.Color, atk:Nick(), white_text, " stealed ", amt, " banna!")
+		atk:ChatPrint(ttt.roles.Monke.Color, "Monke", white_text, " stealed ", amt, " banna from ", vic:Nick(), "!")
 		if (atk:Alive()) then
-			atk:SetHealth(math.min(atk:GetMaxHealth(), atk:Health() + stolen * self.HealthPerBanana))
+			atk:SetHealth(math.min(atk:GetMaxHealth(), atk:Health() + amt * self.HealthPerBanana))
 		end
-	end
-
-	if (dropped > 0) then
-		vic:ChatPrint(ttt.teams.traitor.Color, "Monke", white_text, " drop ", dropped, " banna!")
 	end
 
 	self:SendUpdateBananas(state)
