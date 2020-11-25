@@ -427,7 +427,7 @@ function PANEL:Init()
 		elseif (code == KEY_TAB) then
 			local text = string.Explode(" ", self:GetText():Trim())
 
-			if (not text or #text == 0 or (#text == 1 and select(1, string.find(text[1], "!")) == 1)) then
+			if (not text or #text == 0 or (#text == 1 and text[1][1] == "!" or text[1][1] == "/")) then
 				return
 			end
 
@@ -438,13 +438,13 @@ function PANEL:Init()
 			end
 
 			for _, ply in ipairs(player.GetAll()) do
-				if (not IsValid(ply) or select(1, string.find(ply:Nick(), complete)) ~= 1) then
+				if (not IsValid(ply) or not ply:Nick():lower():StartWith(complete:lower())) then
 					continue 
 				end
 
 				complete = ply:Nick()
 
-				if (select(1, string.find(text[1], "!")) == 1) then
+				if (text[1][1] == "!" or text[1][1] == "/") then
 					complete = "\"" .. complete .. "\""
 				end
 
