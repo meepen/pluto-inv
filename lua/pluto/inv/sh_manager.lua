@@ -21,6 +21,7 @@ pluto.inv.messages = {
 		"ui",
 		"unname",
 		"chat",
+		"gettrades",
 	},
 	sv2cl = {
 		[0] = "end",
@@ -48,6 +49,7 @@ pluto.inv.messages = {
 		"playermodel",
 		"playerexp",
 		"chatmessage",
+		"tradelogresults",
 	}
 }
 
@@ -307,15 +309,15 @@ local function ToRomanNumerals(s)
 end
 
 function ITEM:GetColor()
+	local col = color_white
 	if (self.Color) then
-		return self.Color
+		col = self.Color or col
 	elseif (self.Type == "Weapon") then
-		return self.Tier.Color
+		col = self.Tier.Color or col
 	elseif (self.Type == "Model") then
-		return self.Model.Color
-	else
-		return Color(0, 0, 0)
+		col = self.Model.Color or col
 	end
+	return col
 end
 
 function ITEM:GetDiscordEmbed()
