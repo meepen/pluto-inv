@@ -5,6 +5,26 @@ local SNAKE_MT = {
 }
 local SNAKE = SNAKE_MT.__index
 
+function SNAKE:ChangeDirection(direction)
+	if (direction == "up") then
+		if (self.LastDirection ~= "down") then
+			self.Direction = "up"
+		end
+	elseif (direction == "down") then
+		if (self.LastDirection ~= "up") then
+			self.Direction = "down"
+		end
+	elseif (direction == "left") then
+		if (self.LastDirection ~= "right") then
+			self.Direction = "left"
+		end
+	elseif (direction == "right") then
+		if (self.LastDirection ~= "left") then
+			self.Direction = "right"
+		end
+	end
+end
+
 local GAME_MT = {
 	__index = {}
 }
@@ -18,12 +38,20 @@ local directions = {
 	down = 4,
 }
 
+local bak_directions = {}
+for k, v in pairs(directions) do
+	bak_directions[v] = k
+end
+
 function GAME:IsValid()
-	for _, ply in pairs(self.Listeners) do
+	for ply in pairs(self.Snakes) do
 		if (IsValid(ply)) then
 			return true
 		end
 	end
+
+	snake.lobbies[self] = nil
+
 	return false
 end
 
@@ -102,6 +130,10 @@ function GAME:Progress()
 	end
 	for ply, snake in pairs(self.Snakes) do
 		moveto[snake.Pos.x][snake.Pos.y] = snake
+		if (snake.NextDirection) then
+			snake:ChangeDirection(snake.NextDirection)
+			snake.NextDirection = nil
+		end
 	end
 	for ply, snake in pairs(self.Snakes) do
 		snake.LastDirection = snake.Direction
@@ -204,6 +236,8 @@ function GAME:AddPlayer(ply)
 		return
 	end
 
+	snake.lobbies[self] = true
+
 	local snake = setmetatable({
 		Pos = spawnpoint,
 		Color = HSVToColor(math.random() * 360, 1, 1),
@@ -235,6 +269,8 @@ function GAME:AddPlayer(ply)
 end
 
 snake = snake or {}
+snake.lobbies = snake.lobbies or {}
+snake.lobbyid = snake.lobbyid or 0
 
 function snake.makegame(size)
 	local game = setmetatable({
@@ -244,12 +280,15 @@ function snake.makegame(size)
 		Snakes = {
 			-- [ply] = snake
 		},
-		BoardSize = size or 11,
+		BoardSize = math.max(7, math.min(127, size or 11)),
 		Listeners = {},
-		Speed = 0.25,
+		Speed = math.ceil(0.3 / engine.TickInterval()) * engine.TickInterval(),
 		LastTick = -math.huge,
 		CurTick = math.random(0xffff),
+		LobbyID = snake.lobbyid
 	}, GAME_MT)
+
+	snake.lobbyid = snake.lobbyid + 1
 
 	hook.Add("Tick", game, function(self)
 		local diff = CurTime() - self.LastTick
@@ -260,28 +299,9 @@ function snake.makegame(size)
 		end
 	end)
 
-	hook.Add("KeyPress", game, function(self, ply, key)
-		local snake = self.Snakes[ply]
-		if (not snake) then
-			return
-		end
-
-		if (key == IN_FORWARD) then
-			if (snake.LastDirection ~= "down") then
-				snake.Direction = "up"
-			end
-		elseif (key == IN_BACK) then
-			if (snake.LastDirection ~= "up") then
-				snake.Direction = "down"
-			end
-		elseif (key == IN_MOVELEFT) then
-			if (snake.LastDirection ~= "right") then
-				snake.Direction = "left"
-			end
-		elseif (key == IN_MOVERIGHT) then
-			if (snake.LastDirection ~= "left") then
-				snake.Direction = "right"
-			end
+	hook.Add("PlayerDisconnected", game, function(self, ply)
+		if (self.Snakes[ply]) then
+			self:KillSnake(self.Snakes[ply])
 		end
 	end)
 
@@ -298,7 +318,23 @@ function snake.getgame(cl)
 end
 
 net.Receive("pluto_snake", function(len, cl)
-	GetGame(cl)
+	local command = net.ReadUInt(3)
+	if (command == 0) then
+		local game = snake.getgame(cl)
+		local snake = game.Snakes[cl]
+		if (not snake) then
+			return
+		end
+
+		local direction = bak_directions[net.ReadUInt(3) + 1]
+
+		if (snake.Direction == snake.LastDirection) then
+			snake.NextDirection = nil
+			snake:ChangeDirection(direction)
+		else
+			snake.NextDirection = direction
+		end
+	end
 end)
 
 concommand.Add("test_minigame", function(ply, cmd, arg)

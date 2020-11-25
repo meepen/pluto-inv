@@ -1247,6 +1247,10 @@ function PANEL:SetText(t)
 	self.Text:SetWide(w + pad * 2)
 end
 function PANEL:OnMousePressed(key)
+	if (key == MOUSE_LEFT) then
+		hook.Add("Think", self, self.PressThink)
+	end
+
 	self:DoClick()
 	if (key == MOUSE_RIGHT) then
 		self.Entry = self:Add "pluto_inventory_rename_tab"
@@ -1254,6 +1258,53 @@ function PANEL:OnMousePressed(key)
 		self.Entry:SetZPos(1)
 		self.Entry:RequestFocus()
 	end
+end
+
+function PANEL:PushForward()
+	local other = self.Next
+	if (IsValid(self.Before)) then
+		self.Before.Next = other
+	end
+	self.Next = other.Next
+	other.Next = self
+	other.Before = self.Before
+	self.Before = other
+	other.Position, self.Position = self.Position, other.Position - self:GetWide() + other:GetWide()
+
+	if (self:GetParent().Next == self) then
+		self:GetParent().Next = other
+	end
+
+	if (self:GetParent().Last == other) then
+		self:GetParent().Last = self
+	end
+
+	local list = self:GetParent().TabList
+	for i, v in pairs(list) do
+		if (v.Element == self and list[i + 1]) then
+			list[i], list[i + 1] = list[i + 1], list[i]
+			break
+		end
+	end
+
+	self:GetParent():Recalculate(other)
+end
+
+function PANEL:PressThink()
+	if (not input.IsMouseDown(MOUSE_LEFT)) then
+		hook.Remove("Think", self)
+		return
+	end
+
+	local cur = self:GetParent().CurPos + self:GetParent():ScreenToLocal(gui.MousePos())
+
+	if (IsValid(self.Next) and cur > self.Next.Position) then
+		self:PushForward()
+	elseif (IsValid(self.Before) and cur < self.Before.Position + self.Before:GetWide()) then
+		self.Before:PushForward()
+	end
+
+	self:GetParent():SaveOrder()
 end
 
 function PANEL:DoClick()
@@ -1333,6 +1384,7 @@ local PANEL = {}
 function PANEL:Init()
 	self.Tabs = {}
 	self.CurPos = 0
+	self.TabList = {}
 end
 
 function PANEL:SetTab(tab)
@@ -1340,20 +1392,14 @@ function PANEL:SetTab(tab)
 end
 
 function PANEL:SetTabs(tabs)
-	table.sort(tabs, function(a, b)
-		if (a.FakeID or b.FakeID) then
-			if (a.FakeID and not b.FakeID) then
-				return false
-			elseif (b.FakeID and not a.FakeID) then
-				return true
-			else
-				return a.FakeID > b.FakeID
-			end
-		end
-		return a.ID < b.ID
-	end)
-	for _, tab in ipairs(tabs) do
-		self:AddTab("pluto_inventory_tab", tab)
+	for _, tabt in pairs(tabs) do
+		table.insert(self.TabList, {Tab = tabt})
+	end
+
+	self:Reorder()
+
+	for _, tab in pairs(self.TabList) do
+		tab.Element = self:AddTab("pluto_inventory_tab", tab.Tab)
 	end
 end
 
@@ -1432,6 +1478,47 @@ function PANEL:AddTab(class, tabt)
 	return tab
 end
 
+function PANEL:GetOrderConvar()
+	return CreateConVar("pluto_tab_order_" .. LocalPlayer():SteamID64() .. "_" .. self.ID, "[]", FCVAR_ARCHIVE)
+end
+
+function PANEL:Reorder()
+	local json = util.JSONToTable(self:GetOrderConvar():GetString()) or {}
+
+	local lookup = {}
+	for i, v in ipairs(json) do
+		lookup[tonumber(v)] = i
+	end
+
+	table.sort(self.TabList, function(a, b)
+		local aid = a.Tab.FakeID and -a.Tab.FakeID or a.Tab.ID
+		local bid = b.Tab.FakeID and -b.Tab.FakeID or b.Tab.ID
+
+		local al = lookup[aid]
+		local bl = lookup[bid]
+
+		if (al and not bl) then
+			return false
+		elseif (bl and not al) then
+			return true
+		elseif (bl and al) then
+			return al < bl
+		end
+
+		return aid < bid
+	end)
+
+	self:SaveOrder()
+end
+
+function PANEL:SaveOrder()
+	local list = {}
+	for _, tab in ipairs(self.TabList) do
+		table.insert(list, tab.Tab.FakeID and -tab.Tab.FakeID or tab.Tab.ID)
+	end
+	self:GetOrderConvar():SetString(util.TableToJSON(list))
+end
+
 function PANEL:OnMouseWheeled(delta)
 	local totalwide = self.Last.Position + self.Last:GetWide() - self:GetWide()
 	if (totalwide < 0) then
@@ -1501,6 +1588,7 @@ function PANEL:SetTab(tab)
 end
 
 function PANEL:SetTabs(tabs)
+	self.Tabs.ID = self.ID
 	self.Tabs:SetTabs(tabs)
 end
 
@@ -1754,8 +1842,10 @@ function PANEL:SetTabs(tabs, addtrade)
 		--table.insert(t, pluto.passtab)
 	end
 
+	
+	self.Tabs.ID = addtrade and 1 or 2
 	self.Tabs:SetTabs(t)
-	self.Tabs:DockMargin(0, 0, 22, 0)
+	self.Tabs:DockMargin(6, 0, 22, 0)
 end
 
 function PANEL:SetWhere(leftright)
@@ -2480,13 +2570,13 @@ end)
 
 
 function pluto.inv.remakefake()
-	pluto.currencytab = {
-		Type = "currency",
-		Name = CreateConVar("pluto_currencytab_name", "Currency", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Currency tab name"),
+	pluto.crafttab = {
+		Type = "craft",
+		Name = CreateConVar("pluto_crafttab_name", "Craft", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Craft tab name"),
 		ID = 0,
 		Items = {},
 		Currency = {},
-		FakeID = 4,
+		FakeID = 1,
 	}
 
 	pluto.tradetab = {
@@ -2498,15 +2588,6 @@ function pluto.inv.remakefake()
 		FakeID = 2,
 	}
 
-	pluto.crafttab = {
-		Type = "craft",
-		Name = CreateConVar("pluto_crafttab_name", "Craft", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Craft tab name"),
-		ID = 0,
-		Items = {},
-		Currency = {},
-		FakeID = 1,
-	}
-
 	pluto.questtab = {
 		Type = "quest",
 		Name = CreateConVar("pluto_questtab_name", "Quests", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Quest tab name"),
@@ -2515,14 +2596,13 @@ function pluto.inv.remakefake()
 		Currency = {},
 		FakeID = 3,
 	}
-
-	pluto.minigametab = {
-		Type = "minigame",
-		Name = CreateConVar("pluto_minigametab_name", "Minigames", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Minigames tab name"),
+	pluto.currencytab = {
+		Type = "currency",
+		Name = CreateConVar("pluto_currencytab_name", "Currency", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Currency tab name"),
 		ID = 0,
 		Items = {},
 		Currency = {},
-		FakeID = 3,
+		FakeID = 4,
 	}
 
 	pluto.passtab = {
@@ -2531,7 +2611,16 @@ function pluto.inv.remakefake()
 		ID = 0,
 		Items = {},
 		Currency = {},
-		FakeID = 4,
+		FakeID = 5,
+	}
+
+	pluto.minigametab = {
+		Type = "minigame",
+		Name = CreateConVar("pluto_minigametab_name", "Minigames", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Minigames tab name"),
+		ID = 0,
+		Items = {},
+		Currency = {},
+		FakeID = 6,
 	}
 end
 

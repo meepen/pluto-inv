@@ -9,12 +9,8 @@ function PANEL:Paint(w, h)
 	surface.SetDrawColor(255, 255, 255, 128)
 	surface.DrawOutlinedRect(xoff, yoff, snakesize, snakesize)
 
-	for x = 1, boardsize do
-		for y = 1, boardsize do
-			local info = self.BoardInfo[x][y]
-			if (not info) then
-				continue
-			end
+	for x, yline in pairs(self.BoardInfo) do
+		for y, info in pairs(yline) do
 			surface.SetDrawColor(info.Color)
 			local basex, basey = xoff + (x - 1) * squaresize, yoff + (y - 1) * squaresize 
 			if (info.Type == "food") then
@@ -251,9 +247,54 @@ function PANEL:Init()
 	snake_mp = self
 end
 
+function PANEL:OnMousePressed()
+	self.InputPanel = vgui.Create "EditablePanel"
+	function self.InputPanel:Paint()
+		if (not self.HasFocussed) then
+			self:RequestFocus()
+			self.HasFocussed = true
+			return
+		end
+	end
+
+	function self.InputPanel:OnKeyCodePressed(code)
+		if (code == KEY_W) then
+			net.Start "pluto_snake"
+				net.WriteUInt(0, 3)
+				net.WriteUInt(2, 3)
+			net.SendToServer()
+		elseif (code == KEY_S) then
+			net.Start "pluto_snake"
+				net.WriteUInt(0, 3)
+				net.WriteUInt(3, 3)
+			net.SendToServer()
+		elseif (code == KEY_A) then
+			net.Start "pluto_snake"
+				net.WriteUInt(0, 3)
+				net.WriteUInt(0, 3)
+			net.SendToServer()
+		elseif (code == KEY_D) then
+			net.Start "pluto_snake"
+				net.WriteUInt(0, 3)
+				net.WriteUInt(1, 3)
+			net.SendToServer()
+		end
+	end
+ 
+	hook.Add("VGUIMousePressed", self.InputPanel, function(self, p)
+		self:Remove()
+	end)
+
+	self.InputPanel:MakePopup()
+	self.InputPanel:SetMouseInputEnabled(false)
+end
+
 function PANEL:Paint(w, h)
 	local board = self.Board
 	if (not board) then
+		net.Start "pluto_snake"
+			net.WriteUInt(1, 3) -- get lobbies
+		net.SendToServer()
 		return
 	end
 
@@ -313,6 +354,19 @@ function PANEL:Paint(w, h)
 				end
 			end
 		end
+	end
+
+	if (not IsValid(self.InputPanel)) then
+		surface.SetTextColor(white_text)
+		surface.SetTextPos(2, 3)
+		surface.SetFont "BudgetLabel"
+		surface.DrawText "Click window to play!"
+	end
+end
+
+function PANEL:OnRemove()
+	if (IsValid(self.InputPanel)) then
+		self.InputPanel:Remove()
 	end
 end
 
