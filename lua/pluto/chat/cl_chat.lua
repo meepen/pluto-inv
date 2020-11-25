@@ -481,6 +481,35 @@ function PANEL:Init()
 
 	local pad = self.Inner:GetCurve() / 2
 	self.Inner:DockPadding(pad, 0, pad, pad)
+
+	
+	self.Buttons.Links = self.Buttons:Add "pluto_chatbox_button"
+	self.Buttons.Links:Dock(TOP)
+	self.Buttons.Links:SetImage("icon16/world_link.png")
+	local links = {
+		{
+			Name = "Discord",
+			URL = "https://discord.gg/pluto",
+			Icon = "icon16/email.png"
+		},
+		{
+			Name = "Website",
+			URL = "https://pluto.gg",
+			Icon = "icon16/world.png"
+		},
+		{
+			Name = "Wiki",
+			URL = "https://pluto.fandom.com/wiki/Pluto.gg_Wiki",
+			Icon = "icon16/newspaper.png"
+		},
+	}
+	function self.Buttons.Links:DoClick()
+		local mn = DermaMenu()
+		for _, link in ipairs(links) do
+			mn:AddOption(link.Name, function() gui.OpenURL(link.URL) end):SetImage(link.Icon)
+		end
+		mn:Open()
+	end
 end
 
 function PANEL:SetAlpha(a)
