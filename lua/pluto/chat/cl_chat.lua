@@ -380,7 +380,9 @@ function PANEL:Init()
 
 	function self.TextEntry:Think()
 		if (pluto.chat.isOpened and not self:HasFocus()) then
-			self:RequestFocus()
+			if (not IsValid(vgui.GetKeyboardFocus()) or vgui.GetKeyboardFocus():GetClassName() ~= "RichText") then
+				self:RequestFocus()
+			end
 		end
 	end
 
