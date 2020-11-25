@@ -15,10 +15,10 @@ end
 pluto.chat.cl_commands = {
 	{
 		aliases = {
+			"screenshot",
 			"ss",
 			"scr",
 			"srnsht",
-			"screenshot",
 			"capture",
 		},
 		Run = function(channel)
@@ -59,13 +59,36 @@ pluto.chat.cl_commands = {
 	},
 	{
 		aliases = {
-			"mv",
 			"mapvote",
+			"mv",
 		},
 		Run = function(channel)
 			if (pluto.mapvote) then
 				pluto.mapvote_create()
 			end
+		end
+	},
+	{
+		aliases = {
+			"commands",
+			"help",
+		},
+		Run = function(channel)
+			local commands = {}
+
+			for _, cmd in ipairs(pluto.chat.cl_commands) do
+				if (cmd.aliases[1]) then
+					table.insert(commands, ttt.roles.Innocent.Color)
+					table.insert(commands, cmd.aliases[1])
+					table.insert(commands, white_text)
+					table.insert(commands, ", ")
+				end
+			end
+
+			table.remove(commands)
+
+			chat.AddText("Here is a list of all ", ttt.roles.Innocent.Color, "chat ", white_text, "commands:")
+			chat.AddText(unpack(commands))
 		end
 	},
 }
