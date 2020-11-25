@@ -152,7 +152,7 @@ function PANEL:SetItem(item)
 
 	self.Type = item.Type
 
-	local maincol, matcol = pluto.inv.colors(item:GetColor())
+	local maincol, matcol = pluto.inv.colors(item.Color or item:GetColor())
 	self:SetColor(maincol)
 
 	self.MaterialColor = matcol:ToVector()
@@ -2246,7 +2246,7 @@ function PANEL:SetItem(item)
 		end
 		self.OriginalOwner:SizeToContentsY()
 
-		local h, s, l = ColorToHSL(item:GetColor())
+		local h, s, l = ColorToHSL(item.Color or item:GetColor())
 		l = l * 0.85
 
 		self.OriginalOwnerBackground:SetColor(HSLToColor(h, s, l))
@@ -2272,7 +2272,7 @@ function PANEL:SetItem(item)
 	self.ItemBackground:SetTall(self.ItemName:GetTall() * 1.5)
 	local pad = self.ItemName:GetTall() * 0.25
 	self.ItemBackground:DockPadding(pad, pad, pad, pad)
-	self.ItemBackground:SetColor(item:GetColor())
+	self.ItemBackground:SetColor(item.Color or item:GetColor())
 
 	self.ItemDesc:SetText(item.Description or "")
 	local subdesc = item.SubDescription or ""
