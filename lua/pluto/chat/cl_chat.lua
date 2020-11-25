@@ -399,8 +399,38 @@ function PANEL:Init()
 			self:SetText("")
 			gui.HideGameUI()
 			pluto.chat.Close()
+		elseif (code == KEY_TAB) then
+			local text = string.Explode(" ", self:GetText():Trim())
+
+			if (not text or #text == 0 or (#text == 1 and select(1, string.find(text[1], "!")) == 1)) then
+				return
+			end
+
+			local complete = text[#text]
+
+			if (select(1, string.find(complete, "\"")) == 1) then
+				complete = string.sub(complete, 2)
+			end
+
+			for _, ply in ipairs(player.GetAll()) do
+				if (not IsValid(ply) or select(1, string.find(ply:Nick(), complete)) ~= 1) then
+					continue 
+				end
+
+				complete = ply:Nick()
+
+				if (select(1, string.find(text[1], "!")) == 1) then
+					complete = "\"" .. complete .. "\""
+				end
+
+				break
+			end
+
+			text[#text] = complete
+
+			self:SetText(table.concat(text, " "))
 		elseif (code == KEY_ENTER) then
-			text = self:GetText():Trim()
+			local text = self:GetText():Trim()
 
 			self:SetText ""
 			if (text ~= "") then
