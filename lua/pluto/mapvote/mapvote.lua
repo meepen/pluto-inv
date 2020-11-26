@@ -4,6 +4,50 @@ local last_played = sql.Query("SELECT * from pluto_map_plays ORDER BY last_playe
 sql.Query("INSERT INTO pluto_map_plays (mapname, last_played) VALUES (" .. sql.SQLStr(game.GetMap()) .. ", CAST(strftime('%s', 'now') AS INT UNSIGNED)) ON CONFLICT(mapname) DO UPDATE SET last_played = CAST(strftime('%s', 'now') AS INT UNSIGNED)")
 
 pluto.mapvote = pluto.mapvote or {}
+pluto.mapvote.history = {}
+pluto.mapvote.popular = {}
+pluto.mapvote.liked = {}
+for _, map in pairs(sql.Query "SELECT mapname, CAST(strftime('%s', 'now') AS INT UNSIGNED) - last_played as ago FROM pluto_map_plays ORDER BY ago ASC") do
+	table.insert(pluto.mapvote.history, {
+		name = map.mapname,
+		ago = map.ago
+	})
+end
+
+
+local function init()
+	pluto.db.instance(function(db)
+		local data = {}
+		pluto.mapvote.data = data
+		
+		for _, info in pairs(mysql_query(db, "SELECT COUNT(*) as votes, liked, info.mapname, played FROM pluto_map_vote vote INNER JOIN pluto_map_info info ON vote.mapname = info.mapname GROUP BY liked, vote.mapname")) do
+			data[info.mapname] = {
+				played = info.played,
+				votes = info.votes,
+				liked = info.liked,
+				mapname = info.mapname
+			}
+		end
+
+		for mapname, info in pairs(data) do
+			table.insert(pluto.mapvote.popular, info)
+			table.insert(pluto.mapvote.liked, info)
+		end
+
+		table.sort(pluto.mapvote.popular, function(a, b)
+			return a.played > b.played
+		end)
+
+		table.sort(pluto.mapvote.liked, function(a, b)
+			return a.liked > b.liked
+		end)
+	end)
+end
+
+hook.Add("Initialize", "pluto_mapvote_init", init)
+if (gmod.GetGamemode()) then
+	init()
+end
 
 function pluto.mapvote.broadcast()
 	for _, ply in pairs(player.GetAll()) do
@@ -142,12 +186,62 @@ function pluto.mapvote.start()
 		return a[2] < b[2]
 	end)
 
-	for i = 9, #valid do
-		valid[i] = nil
+	for i in pairs(valid) do
+		valid[i] = valid[i][1]
 	end
 
+	-- one popular map
 	for i = 1, 8 do
-		valid[i] = valid[i][1]
+		local chosen = pluto.mapvote.popular[math.random(8)]
+
+		if (not chosen) then
+			continue
+		end
+
+		local gotten = false
+		
+		for i, map in pairs(valid) do
+			print(map, chosen.mapname)
+			if (map == chosen.mapname) then
+				table.remove(valid, i)
+				table.insert(valid, 1, map)
+				print("pop", map)
+				gotten = true
+				break
+			end
+		end
+
+		if (gotten) then
+			break
+		end
+	end
+
+	local mediums = 0
+	-- two medium popular
+	for i = 9, 20 do
+		local chosen = pluto.mapvote.popular[math.random(12) + 8]
+
+		if (not chosen) then
+			continue
+		end
+		
+		for i, map in pairs(valid) do
+			if (map == chosen.mapname) then
+				table.remove(valid, i)
+				table.insert(valid, 1, map)
+				mediums = mediums + 1
+				print("med", map)
+				break
+			end
+		end
+		
+		if (mediums >= 2) then
+			break
+		end
+	end
+
+	for i = 9, #valid do
+		valid[i] = nil
 	end
 
 	local state = {
