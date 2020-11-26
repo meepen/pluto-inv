@@ -71,6 +71,16 @@ local map_lookup = {
 	ttt_pluto_station = "2236114156",
 
 	ttt_pluto_bloodbath = "2220658788",
+
+	ttt_ascend = "570270318",
+	ttt_clue_2018_b7 = "1490186898",
+	ttt_concentration_b2 = "228509308",
+	ttt_freddy_the_ship_v3 = "119889220",
+	ttt_harbor = "362988826",
+	ttt_lttp_kakariko_a4 = "118937144",
+	ttt_pcworld95_final = "624717817",
+	ttt_vault = "422801063",
+	ttt_vessel = "121935805",
 }
 
 function pluto.GetValidMaps()
