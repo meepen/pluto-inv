@@ -13,7 +13,7 @@ function pluto.mapvote.broadcast()
 	end
 
 	
-	round.SetState(ttt.ROUNDSTATE_PREPARING, 15):_then(function()
+	round.SetState(ttt.ROUNDSTATE_ENDED, 15):_then(function()
 		local votes = {}
 		for map in pairs(pluto.mapvote.state.votable) do
 			votes[map] = 0
@@ -229,7 +229,7 @@ hook.Add("ChangeMap", "pluto_mapvote", function(reason)
         ply:ChatPrint("Server is changing map. Reason: " .. reason)
 	end
 
-	round.SetState(ttt.ROUNDSTATE_PREPARING, math.huge)
+	round.SetState(ttt.ROUNDSTATE_ENDED, math.huge)
 
 
 	timer.Simple(4, pluto.mapvote.start)
