@@ -89,7 +89,7 @@ local map_lookup = {
 	--ttt_tf2_kongking = "583102116",
 	--ttt_tf2_harvest = "578705850",
 	ttt_magma_v2b = "580870055",
-	ttt_offblast_v2 = "1768579522",
+	--ttt_offblast_v2 = "1768579522",
 }
 
 function pluto.GetValidMaps()
