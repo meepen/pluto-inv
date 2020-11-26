@@ -81,6 +81,15 @@ local map_lookup = {
 	ttt_pcworld95_final = "624717817",
 	ttt_vault = "422801063",
 	ttt_vessel = "121935805",
+
+	-- lime 2020
+	ttt_skeld = "2244147954",
+	ttt_mcdonalds_mds_v2 = "832254031",
+	ttt_de_dolls_2008_v3 = "662146255",
+	ttt_tf2_kongking = "583102116",
+	ttt_tf2_harvest = "578705850",
+	ttt_magma_v2b = "580870055",
+	ttt_offblast_v2 = "1768579522",
 }
 
 function pluto.GetValidMaps()
