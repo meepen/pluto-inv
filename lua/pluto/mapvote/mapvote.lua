@@ -1,5 +1,5 @@
 sql.Query "CREATE TABLE IF NOT EXISTS pluto_map_plays (mapname VARCHAR(32) NOT NULL PRIMARY KEY, last_played INT UNSIGNED NOT NULL)"
-local last_played = sql.Query("SELECT * from pluto_map_plays ORDER BY last_played desc limit 3") or {}
+local last_played = sql.Query("SELECT * from pluto_map_plays ORDER BY last_played desc limit 6") or {}
 
 sql.Query("INSERT INTO pluto_map_plays (mapname, last_played) VALUES (" .. sql.SQLStr(game.GetMap()) .. ", CAST(strftime('%s', 'now') AS INT UNSIGNED)) ON CONFLICT(mapname) DO UPDATE SET last_played = CAST(strftime('%s', 'now') AS INT UNSIGNED)")
 
