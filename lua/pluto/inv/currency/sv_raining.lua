@@ -6,9 +6,9 @@ hook.Add("TTTBeginRound", "pluto_falling_currency", function()
 
 	rain = false
 
-	ttt.chat(pluto.currency.byname.droplet.Color, "It's pouring outside!")
+	ttt.chat(white_text, "It's ", pluto.currency.byname.droplet.Color, "pouring", white_text, " outside!")
 
-	timer.Create("pluto_raining_currency", 1, 15, function()
+	timer.Create("pluto_raining_currency", 1.5, 15, function()
 		for _, ply in pairs(player.GetHumans()) do
 			if (not ply:Alive()) then
 				return
