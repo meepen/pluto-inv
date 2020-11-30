@@ -871,16 +871,58 @@ pluto.currency.navs = {
 
 		return ipairs(state)
 	end,
+	randomsingle = function()
+		for _, item in pluto.currency.navs.random() do
+			if (type(_) ~= "number") then
+				continue
+			end
+			return item
+		end
+	end
 }
 
+local std_mins, std_maxs = Vector(-16, -16, 0), Vector(16, 16, 48)
+
+
+function pluto.currency.initpositions()
+	if (pluto.currency.cached_positions) then
+		return
+	end
+
+	local cache = {}
+	local n = 1
+
+	for i = 1, 25000 do
+		local nav = pluto.currency.navs.randomsingle()
+		local pos = pluto.currency.validpos(nav, std_mins, std_maxs)
+		if (pos) then
+			cache[n] = pos
+			n = n + 1
+		end
+	end
+
+	pluto.currency.cached_positions = cache
+end
+
+timer.Simple(0, function()
+	pluto.currency.navs.start()
+	pluto.currency.initpositions()
+end)
+
 function pluto.currency.randompos(mins, maxs)
+	pluto.currency.navs.start()
+	if (not mins and not maxs) then
+		pluto.currency.initpositions()
+
+		return table.Random(pluto.currency.cached_positions)
+	end
+
 	if (not mins) then
 		mins = Vector(-16, -16, 0)
 	end
 	if (not maxs) then
 		maxs = Vector(16, 16, 48)
 	end
-	pluto.currency.navs.start()
 
 	for i, item in pluto.currency.navs.random() do
 		if (not isnumber(i)) then
@@ -946,7 +988,6 @@ function pluto.currency.spawnfor(ply, currency, pos, global)
 	if (not pos) then
 		for i = 1, 100 do
 			pos = pluto.currency.randompos()
-			local mins, maxs = ply:GetHull()
 			if (pos) then
 				break
 			end
