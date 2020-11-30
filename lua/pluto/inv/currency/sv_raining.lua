@@ -11,7 +11,7 @@ hook.Add("TTTBeginRound", "pluto_falling_currency", function()
 	timer.Create("pluto_raining_currency", 1.5, 15, function()
 		for _, ply in pairs(player.GetHumans()) do
 			if (not ply:Alive()) then
-				return
+				continue
 			end
 			for i = 1, 5 do
 				local e = pluto.currency.spawnfor(ply, pluto.inv.roll {
