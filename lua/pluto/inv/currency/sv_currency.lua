@@ -892,7 +892,7 @@ function pluto.currency.initpositions()
 	local cache = {}
 	local n = 1
 
-	for i = 1, 25000 do
+	for i = 1, 5000 do
 		local nav = pluto.currency.navs.randomsingle()
 		local pos = pluto.currency.validpos(nav, std_mins, std_maxs)
 		if (pos) then
