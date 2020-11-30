@@ -669,7 +669,7 @@ for name, values in pairs {
 		Shares = 0,
 	},
 	_banna = {
-		Shares = 2,
+		Shares = 0,
 		Global = true,
 		Pickup = function(ply)
 			if (ttt.GetCurrentRoundEvent() == "chimp" and ttt.GetRoundState() == ttt.ROUNDSTATE_ACTIVE) then
