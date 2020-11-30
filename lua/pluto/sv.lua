@@ -36,6 +36,7 @@ pluto.files.load {
 
 		"inv/currency/sv_currency.lua",
 		"inv/currency/sv_crossmap.lua",
+		"inv/currency/sv_raining.lua",
 
 		"events/sv_aprilfools.lua",
 

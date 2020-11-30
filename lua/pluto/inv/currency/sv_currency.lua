@@ -964,10 +964,12 @@ function pluto.currency.spawnfor(ply, currency, pos, global)
 	end
 
 	local e 
-	if (global or currency.Global) then
+	if (global == true or currency.Global) then
 		e = ents.Create "pluto_global_currency"
-	else
+	elseif (not global) then
 		e = ents.Create "pluto_currency"
+	else
+		e = ents.Create(global)
 	end
 
 	e:SetPos(pos + 20 * vector_up)
