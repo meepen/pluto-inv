@@ -50,6 +50,7 @@ pluto.inv.messages = {
 		"playerexp",
 		"chatmessage",
 		"tradelogresults",
+		"nodes",
 	}
 }
 

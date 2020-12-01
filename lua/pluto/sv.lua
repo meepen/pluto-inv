@@ -49,6 +49,8 @@ pluto.files.load {
 		"sv/ammospawn.lua",
 
 		"minigame/sv.lua",
+
+		"inv/nodes/sv_nodes.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty

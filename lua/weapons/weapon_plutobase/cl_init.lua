@@ -4,6 +4,39 @@ local pluto_inspect_lifespan = CreateConVar("pluto_inspect_lifespan", 0.2, FCVAR
 
 include "shared.lua"
 
+pluto.wpn = pluto.wpn or {
+	listeners = setmetatable({
+		real = {}
+	}, {
+		__newindex = function(self, k, v)
+			local data = pluto.wpn.list[k]
+			if (data) then
+				v(data)
+			else
+				local listeners = self.real[k]
+				if (not listeners) then
+					listeners = {}
+					self.real[k] = listeners
+				end
+
+				table.insert(listeners, v)
+			end
+		end
+	}),
+	list = setmetatable({}, {
+		__newindex = function(self, k, v)
+			rawset(self, k, v)
+			local listeners = pluto.wpn.listeners.real[k]
+			if (listeners) then
+				for _, listen in ipairs(listeners) do
+					listen(v)
+				end
+				pluto.wpn.listeners.real[k] = nil
+			end
+		end
+	})
+}
+
 net.Receive("pluto_wpn_db", function(len)
 	local ent = net.ReadInt(32)
 
@@ -17,18 +50,10 @@ net.Receive("pluto_wpn_db", function(len)
 
 	pluto.wpn_db[ent] = PlutoData
 
-	for _, e in pairs(ents.GetAll()) do
-		if (e.GetPlutoID and e:GetPlutoID() == ent) then
-			e:ReceivePlutoData()
-			break
-		end
+	pluto.wpn.listeners[ent] = function(wep)
+		wep:ReceivePlutoData()
 	end
 end)
-
-hook.Add("TTTPrepareRound", "pluto_wpn_db", function()
-	pluto.wpn_db = {}
-end)
-
 
 DEFINE_BASECLASS "weapon_tttbase_old"
 
@@ -57,11 +82,7 @@ function SWEP:Initialize()
 
 	self.Pluto = {}
 
-	local data = pluto.wpn_db[self:GetPlutoID()]
-
-	if (data) then
-		self:ReceivePlutoData(data)
-	end
+	pluto.wpn.list[self:GetPlutoID()] = self
 end
 
 function SWEP:DisplayPlutoData()
