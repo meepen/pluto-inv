@@ -4,5 +4,5 @@ NODE.Name = "Test"
 NODE.Description = "Test Node [developer]"
 
 function NODE:ModifyWeapon(wep, values)
-	wep:SetMaterial "error"
+	MakeGold(wep)
 end

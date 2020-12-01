@@ -13,8 +13,6 @@ function pluto.inv.readnodes()
 	local node = pluto.inv.readnode()
 
 	pluto.wpn.listeners[plutoid] = function(wep)
-		print "listened"
-		debug.Trace()
-		PrintTable(node)
+		node:ModifyWeapon(wep)
 	end
 end
