@@ -79,6 +79,8 @@ pluto.files.load {
 
 		"sv/promise.lua",
 
+		"treelib/sh.lua",
+
 		-- "unicode/init.lua",
 		-- "unicode/casefolding.lua",
 		-- -- "unicode/unicodedata.lua",

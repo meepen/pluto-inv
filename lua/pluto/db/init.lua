@@ -226,5 +226,25 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				INDEX (item_id)
 			)
 		]])
+
+		mysql_query(db, [[
+			CREATE TABLE IF NOT EXISTS pluto_item_nodes (
+				idx INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+				item_id INT UNSIGNED NOT NULL REFERENCES pluto_items(idx) ON DELETE CASCADE,
+
+				node_id INT UNSIGNED NOT NULL,
+				node_unlocked TINYINT UNSIGNED NOT NULL DEFAULT 0,
+				node_bubble SMALLINT UNSIGNED NOT NULL,
+
+				node_name VARCHAR(16) NOT NULL,
+
+				node_val1 FLOAT NULL,
+				node_val2 FLOAT NULL,
+				node_val3 FLOAT NULL,
+
+				INDEX (item_id),
+				UNIQUE (item_id, node_id)
+			)
+		]])
 	end)
 end)
