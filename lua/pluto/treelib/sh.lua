@@ -10,6 +10,10 @@ function STATE:Random(min, max)
 	return seed / (2^31) * (max - min) + min
 end
 
+function STATE:RandomInt(min, max)
+	return math.floor(self:Random(min, max + 1))
+end
+
 function STATE:shuffle(stuff)
 	local new = {}
 	for x, y in ipairs(stuff) do
@@ -34,37 +38,57 @@ function STATE:RandomInt(min, max)
 	return math.floor(self:Random(0, 1) * (max - min + 1) + min)
 end
 
-function tree.generatelayout(amount, connections, seed, name)
+function tree.generatelayout(amount, seed, name)
 	local state = setmetatable({
 		Seed = (util.CRC(name or "treelib") + (seed or math.random(0, 0xffffffff))) % 0x100000000
 	}, STATE_MT)
 
-	connections = math.max(connections or 0, amount - 1)
+	local connections = state:Random(0, math.max(0, math.floor(amount / 2) - 1))
 
 	local layout = {}
 
 	for i = 1, amount do
 		local node = {
 			connections = {},
-			x = state:Random(0, 480),
-			y = state:Random(0, 480),
-			size = state:Random(16, 24),
+			x = state:RandomInt(0, 480),
+			y = state:RandomInt(0, 480),
+			size = state:RandomInt(16, 24),
 		}
 		layout[#layout + 1] = node
 	end
 
-	local conn_left = connections
-	local amount_left = amount
-
 	local done = {}
 
 	local shuffled = state:shuffle(layout)
-	local main = shuffled[1]
-	table.remove(shuffled, 1)
 
-	for _, node in ipairs(shuffled) do
-		-- connect to main node for now??
-		node.connections[1] = main
+	for i, node in pairs(shuffled) do
+		shuffled[i] = {node}
+	end
+
+	while (#shuffled > 1) do
+		local r1 = state:RandomInt(1, #shuffled)
+		local group1 = shuffled[r1]
+		table.remove(shuffled, r1)
+
+		local r2 = state:RandomInt(1, #shuffled)
+		local group2 = shuffled[r2]
+		table.remove(shuffled, r2)
+
+		local node1 = group1[state:RandomInt(1, #group1)]
+		local node2 = group2[state:RandomInt(1, #group2)]
+
+
+		table.insert(node1.connections, node2)
+
+		for _, node in pairs(group2) do
+			table.insert(group1, node)
+		end
+		
+		table.insert(shuffled, group1)
+	end
+
+	while (connections > 0) do
+		connections = connections - 1
 	end
 
 	return layout
@@ -73,7 +97,7 @@ end
 local generated = tree.generatelayout(7)
 
 timer.Create("new_tree", 1, 0, function()
-	generated = tree.generatelayout(7)
+	--generated = tree.generatelayout(7)
 end)
 
 hook.Add("DrawOverlay", "visualize_node", function()
