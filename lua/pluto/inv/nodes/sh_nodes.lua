@@ -24,6 +24,10 @@ function NODE:ModifyWeapon(node, wep)
 	ErrorNoHalt("unimplemented ModifyWeapon: " .. self:GetName())
 end
 
+function NODE:GetExperienceCost(node)
+	return 10000
+end
+
 function pluto.nodes.get(name)
 	local node = pluto.nodes.byname[name]
 	if (not node) then

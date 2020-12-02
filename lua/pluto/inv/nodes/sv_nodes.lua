@@ -1,5 +1,13 @@
 for _, fname in pairs {
-	"test"
+	"test",
+
+	"damage",
+	"distance",
+	"firerate",
+	"mag",
+	"recoil",
+	"reloading",
+	"stub",
 } do
 	include("pluto/inv/nodes/list/" .. fname .. ".lua")
 end
@@ -33,7 +41,9 @@ concommand.Add("pluto_test_nodes", function(p)
 
 	local wep = p:GetActiveWeapon()
 
-	pluto.inv.message(p)
-		:write("nodes", wep)
-		:send()
+	for _, ply in pairs(player.GetHumans()) do
+		pluto.inv.message(ply)
+			:write("nodes", wep)
+			:send()
+	end
 end)
