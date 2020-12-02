@@ -149,6 +149,15 @@ local function getintersections(layout)
 	return count
 end
 
+function linelengths(layout)
+	local length = 0
+	for _, nodes in pairs(layout.connections) do
+		local a, b = nodes[1], nodes[2]
+		length = length + math.sqrt((a.x - b.x) ^ 2 + (a.y - b.y) ^ 2)
+	end
+	return lengths
+end
+
 function tree.generatelayout(amount, seed, name)
 	local state = setmetatable({
 		Seed = (util.CRC(name or "treelib") + (seed or math.random(0, 0xffffffff))) % 0x100000000
@@ -238,7 +247,7 @@ function tree.generatelayout(amount, seed, name)
 	end
 
 	for node, dist in pairs(best_node:GetDistances()) do
-		node.dist = dist / highest_distance
+		node.dist = dist / highest_distance / 100 -- divide to decompress later
 	end
 
 	for _, node in ipairs(layout) do
@@ -247,7 +256,7 @@ function tree.generatelayout(amount, seed, name)
 
 	for dist, nodes in pairs(by_distance) do
 		for i, node in ipairs(nodes) do
-			node.ang = math.rad((i - 1) / #nodes * 360 + 19 * dist)
+			node.ang = math.rad((i - 1) / #nodes * 360 + 52 * dist)
 		end
 	end
 
@@ -291,7 +300,7 @@ function tree.generatelayout(amount, seed, name)
 
 						-- midsection tests
 						local list = {node, conn, onode, oconn}
-						local best_change = {Intersections = getintersections(layout)}
+						local best_change = {Intersections = getintersections(layout), LineLength = linelengths(layout)}
 						table.sort(list, function(a, b)
 							return a.node_id < b.node_id
 						end)
@@ -305,9 +314,11 @@ function tree.generatelayout(amount, seed, name)
 								local ox, oy = other.x, other.y
 
 								local intersections = getintersections(layout)
-								if (not best_change or best_change.Intersections > intersections) then
+								local length = linelengths(layout)
+								if (not best_change or best_change.Intersections > intersections or (best_change.Intersections == intersections and length == best_change.LineLength)) then
 									best_change = {
 										Intersections = intersections,
+										LineLength = length,
 										Run = function(node)
 											current.x, current.y, other.x, other.y = other.x, other.y, current.x, current.y
 										end
@@ -331,9 +342,11 @@ function tree.generatelayout(amount, seed, name)
 
 							current.x, current.y = (other.x + hitx) / 2, (other.y + hity) / 2
 							local intersections = getintersections(layout)
-							if (not best_change or best_change.Intersections > intersections) then
+							local length = linelengths(layout)
+							if (not best_change or best_change.Intersections > intersections or (best_change.Intersections == intersections and length == best_change.LineLength)) then
 								best_change = {
 									Intersections = intersections,
+									LineLength = length,
 									Run = function()
 										current.x, current.y = (other.x + hitx) / 2, (other.y + hity) / 2
 									end
@@ -355,6 +368,23 @@ function tree.generatelayout(amount, seed, name)
 		end
 		-- this is done forever: micro optimization
 		-- doing[node] = nil
+	end
+
+
+	-- decompression of nodes
+	local most_length, most_node = -math.huge
+	for _, node in ipairs(layout) do
+		local length = node.x ^ 2 + node.y ^ 2
+		if (length > most_length) then
+			most_length, most_node = length, node
+		end
+	end
+
+	most_length = math.sqrt(most_length)
+
+	for _, node in ipairs(layout) do
+		node.x = node.x / most_length
+		node.y = node.y / most_length
 	end
 
 
