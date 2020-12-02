@@ -295,29 +295,6 @@ function tree.generatelayout(amount, seed, name)
 						table.sort(list, function(a, b)
 							return a.node_id < b.node_id
 						end)
-						for _, current in ipairs(list) do
-							local other = ({
-								[node] = conn,
-								[conn] = node,
-								[onode] = oconn,
-								[oconn] = onode,
-							})[current]
-
-							local cx, cy = current.x, current.y
-
-							current.x, current.y = (other.x + hitx) / 2, (other.y + hity) / 2
-							local intersections = getintersections(layout)
-							if (not best_change or best_change.Intersections > intersections) then
-								best_change = {
-									Intersections = intersections,
-									Run = function()
-										current.x, current.y = (other.x + hitx) / 2, (other.y + hity) / 2
-									end
-								}
-							end
-
-							current.x, current.y = cx, cy
-						end
 
 						for _, current in ipairs(list) do
 							for _, other in ipairs(list) do
@@ -342,6 +319,30 @@ function tree.generatelayout(amount, seed, name)
 							end
 						end
 
+						for _, current in ipairs(list) do
+							local other = ({
+								[node] = conn,
+								[conn] = node,
+								[onode] = oconn,
+								[oconn] = onode,
+							})[current]
+
+							local cx, cy = current.x, current.y
+
+							current.x, current.y = (other.x + hitx) / 2, (other.y + hity) / 2
+							local intersections = getintersections(layout)
+							if (not best_change or best_change.Intersections > intersections) then
+								best_change = {
+									Intersections = intersections,
+									Run = function()
+										current.x, current.y = (other.x + hitx) / 2, (other.y + hity) / 2
+									end
+								}
+							end
+
+							current.x, current.y = cx, cy
+						end
+
 						if (best_change.Run) then
 							best_change.Run()
 						end
@@ -364,7 +365,11 @@ if (not CLIENT) then
 	return
 end
 
-local generated = tree.generatelayout(11, 1337)
+local generated = tree.generatelayout(11)
+
+timer.Create("pluto_random_node", 1, 0, function()
+	generated = tree.generatelayout(11)
+end)
 
 hook.Add("DrawOverlay", "visualize_node", function()
 	local size = 480
