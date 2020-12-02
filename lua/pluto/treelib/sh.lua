@@ -90,12 +90,71 @@ function NODE:GetDistanceScore()
 	return amt
 end
 
+
+local function intersect(a, b, c, d)
+	local a1 = b.y - a.y
+	local b1 = a.x - b.x
+	local c1 = a1 * a.x + b1 * a.y
+
+	local a2 = d.y - c.y
+	local b2 = c.x - d.x
+	local c2 = a2 * c.x + b2 * c.y
+
+	local determinant = a1 * b2 - a2 * b1
+	if (determinant == 0) then
+		return false
+	end
+
+	local hitx = (b2 * c1 - b1 * c2) / determinant
+	local hity = (a1 * c2 - a2 * c1) / determinant
+
+	return hitx, hity
+end
+
+local function getintersections(layout)
+	local doing = {}
+
+	local count = 0
+	for _, a in ipairs(layout) do
+		doing[a] = true
+		for _, b in ipairs(a.connections) do
+			doing[b] = true
+			local high_x = math.max(a.x, b.x)
+			local low_x = math.min(a.x, b.x)
+			for _, node in ipairs(layout) do
+				doing[node] = true
+				for _, onode in ipairs(node.connections) do
+					if (doing[onode]) then
+						continue
+					end
+					doing[onode] = true
+
+					local ohigh_x = math.max(node.x, onode.x)
+					local olow_x = math.min(node.x, onode.x)
+
+					local hitx, hity = intersect(a, b, node, onode)
+					if (hitx and hitx < high_x and hitx > low_x and hitx < ohigh_x and hitx > olow_x) then
+						count = count + 1
+					end
+
+					doing[onode] = false
+				end
+				doing[node] = false
+			end
+			doing[b] = false
+		end
+		doing[a] = false
+	end
+
+	return count
+end
+
 function tree.generatelayout(amount, seed, name)
 	local state = setmetatable({
 		Seed = (util.CRC(name or "treelib") + (seed or math.random(0, 0xffffffff))) % 0x100000000
 	}, STATE_MT)
 
-	local connections = state:RandomInt(0, math.max(0, math.floor(amount * 0.7) - 1))
+	local connections = state:RandomInt(0, math.max(0, math.floor(amount * 0.2) - 1))
 
 	local layout = {
 		connections = {}
@@ -127,10 +186,8 @@ function tree.generatelayout(amount, seed, name)
 		local node1 = group1[state:RandomInt(1, #group1)]
 		local node2 = group2[state:RandomInt(1, #group2)]
 
-
 		table.insert(node1.connections, node2)
 		table.insert(node2.connections, node1)
-
 		table.insert(layout.connections, {node1, node2})
 
 		for _, node in pairs(group2) do
@@ -152,6 +209,8 @@ function tree.generatelayout(amount, seed, name)
 		end
 
 		table.insert(n1.connections, n2)
+		table.insert(n2.connections, n1)
+		table.insert(layout.connections, {n1, n2})
 
 		connections = connections - 1
 	end
@@ -188,7 +247,7 @@ function tree.generatelayout(amount, seed, name)
 
 	for dist, nodes in pairs(by_distance) do
 		for i, node in ipairs(nodes) do
-			node.ang = math.rad((i - 1) / #nodes * 360 + 30 * dist)
+			node.ang = math.rad((i - 1) / #nodes * 360 + 19 * dist)
 		end
 	end
 
@@ -197,6 +256,107 @@ function tree.generatelayout(amount, seed, name)
 		node.y = math.sin(node.ang) * node.dist
 	end
 
+	-- find intersections
+
+	local doing = {}
+	
+	for _, node in ipairs(layout) do
+		doing[node] = true
+		for _, conn in ipairs(node.connections) do
+			if (doing[conn]) then
+				continue
+			end
+			doing[conn] = true
+
+			local high_x = math.max(conn.x, node.x)
+			local low_x = math.min(conn.x, node.x)
+
+			for _, onode in ipairs(layout) do
+				if (doing[onode]) then
+					continue
+				end
+				doing[onode] = true
+				for _, oconn in ipairs(onode.connections) do
+					if (doing[oconn]) then
+						continue
+					end
+					local ohigh_x = math.max(oconn.x, onode.x)
+					local olow_x = math.min(oconn.x, onode.x)
+					doing[oconn] = true
+					local hitx, hity = intersect(node, conn, onode, oconn)
+					if (hitx and hitx < high_x and hitx > low_x and hitx < ohigh_x and hitx > olow_x) then
+						-- INTERSECTED
+						-- find lowest connections
+						-- brute force tests, attempt to first midsection from intersection and origin, then try swapping positions and go with lowest 
+
+						-- midsection tests
+						local list = {node, conn, onode, oconn}
+						local best_change = {Intersections = getintersections(layout)}
+						table.sort(list, function(a, b)
+							return a.node_id < b.node_id
+						end)
+						for _, current in ipairs(list) do
+							local other = ({
+								[node] = conn,
+								[conn] = node,
+								[onode] = oconn,
+								[oconn] = onode,
+							})[current]
+
+							local cx, cy = current.x, current.y
+
+							current.x, current.y = (other.x + hitx) / 2, (other.y + hity) / 2
+							local intersections = getintersections(layout)
+							if (not best_change or best_change.Intersections > intersections) then
+								best_change = {
+									Intersections = intersections,
+									Run = function()
+										current.x, current.y = (other.x + hitx) / 2, (other.y + hity) / 2
+									end
+								}
+							end
+
+							current.x, current.y = cx, cy
+						end
+
+						for _, current in ipairs(list) do
+							for _, other in ipairs(list) do
+								if (other == current) then
+									continue
+								end
+								local cx, cy = current.x, current.y
+								local ox, oy = other.x, other.y
+
+								local intersections = getintersections(layout)
+								if (not best_change or best_change.Intersections > intersections) then
+									best_change = {
+										Intersections = intersections,
+										Run = function(node)
+											current.x, current.y, other.x, other.y = other.x, other.y, current.x, current.y
+										end
+									}
+								end
+
+								other.x, other.y = ox, oy
+								current.x, current.y = cx, cy
+							end
+						end
+
+						if (best_change.Run) then
+							best_change.Run()
+						end
+					end
+					doing[oconn] = nil
+				end
+				doing[onode] = nil
+			end
+			doing[conn] = nil
+		end
+		-- this is done forever: micro optimization
+		-- doing[node] = nil
+	end
+
+
 	return layout
 end
 
@@ -204,8 +364,7 @@ if (not CLIENT) then
 	return
 end
 
-
-local generated = tree.generatelayout(11)
+local generated = tree.generatelayout(11, 1337)
 
 hook.Add("DrawOverlay", "visualize_node", function()
 	local size = 480
