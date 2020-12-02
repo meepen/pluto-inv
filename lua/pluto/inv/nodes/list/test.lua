@@ -3,7 +3,7 @@ local NODE = pluto.nodes.get "test"
 NODE.Name = "Test"
 NODE.Description = "Test Node [developer]"
 
-function NODE:ModifyWeapon(wep, values)
+function NODE:ModifyWeapon(node, wep)
 	wep:SetMaterial "models/player/shared/gold_player"
 	if (CLIENT) then
 		hook.Add("PreDrawViewModel", wep, function(self, vm, ply, wp)
