@@ -105,7 +105,6 @@ function tree.generatelayout(amount, seed, name)
 		local node = setmetatable({
 			connections = {},
 			ang = state:Random(-math.pi, math.pi),
-			dist = state:Random(0, 1),
 			size = 14,
 			node_id = i,
 		}, node_mt)
@@ -161,7 +160,21 @@ function tree.generatelayout(amount, seed, name)
 	local best_node, best_score = nil, math.huge
 
 	for i, node in ipairs(layout) do
-		print("distance", node, node:GetDistanceScore())
+		local score = node:GetDistanceScore()
+		if (score < best_score) then
+			best_node, best_score = node, score
+		end
+	end
+
+	local scores = best_node:GetDistances()
+
+	local highest_distance = -math.huge
+	for _, dist in pairs(scores) do
+		highest_distance = math.max(highest_distance, dist)
+	end
+
+	for node, dist in pairs(best_node:GetDistances()) do
+		node.dist = dist / highest_distance
 	end
 
 
@@ -173,7 +186,12 @@ function tree.generatelayout(amount, seed, name)
 	return layout
 end
 
-local generated = tree.generatelayout(5, 7)
+if (not CLIENT) then
+	return
+end
+
+
+local generated = tree.generatelayout(1000, 1337)
 
 hook.Add("DrawOverlay", "visualize_node", function()
 	local size = 480
