@@ -38,12 +38,24 @@ function STATE:RandomInt(min, max)
 	return math.floor(self:Random(0, 1) * (max - min + 1) + min)
 end
 
+local function pick(state, shuffled)
+	local rand = state:RandomInt(1, shuffled.size)
+	for i, group in ipairs(shuffled) do
+		rand = rand - #group
+		if (rand <= 0) then
+			table.remove(shuffled, i)
+			shuffled.size = shuffled.size - #group
+			return group
+		end
+	end
+end
+
 function tree.generatelayout(amount, seed, name)
 	local state = setmetatable({
 		Seed = (util.CRC(name or "treelib") + (seed or math.random(0, 0xffffffff))) % 0x100000000
 	}, STATE_MT)
 
-	local connections = state:Random(0, math.max(0, math.floor(amount / 2) - 1))
+	local connections = state:RandomInt(0, math.max(0, math.floor(amount / 2) - 1))
 
 	local layout = {}
 
@@ -65,14 +77,11 @@ function tree.generatelayout(amount, seed, name)
 		shuffled[i] = {node}
 	end
 
-	while (#shuffled > 1) do
-		local r1 = state:RandomInt(1, #shuffled)
-		local group1 = shuffled[r1]
-		table.remove(shuffled, r1)
+	shuffled.size = #shuffled
 
-		local r2 = state:RandomInt(1, #shuffled)
-		local group2 = shuffled[r2]
-		table.remove(shuffled, r2)
+	while (#shuffled > 1) do
+		local group1 = pick(state, shuffled)
+		local group2 = pick(state, shuffled)
 
 		local node1 = group1[state:RandomInt(1, #group1)]
 		local node2 = group2[state:RandomInt(1, #group2)]
@@ -85,20 +94,28 @@ function tree.generatelayout(amount, seed, name)
 		end
 		
 		table.insert(shuffled, group1)
+		shuffled.size = shuffled.size + #group1
 	end
 
 	while (connections > 0) do
+		local n1 = layout[state:RandomInt(1, #layout)]
+		local n2 = layout[state:RandomInt(1, #layout)]
+		if (n1 == n2) then
+			continue
+		end
+		if (table.HasValue(n1.connections, n2) or table.HasValue(n2.connections, n1)) then
+			continue
+		end
+
+		table.insert(n1.connections, n2)
+
 		connections = connections - 1
 	end
 
 	return layout
 end
 
-local generated = tree.generatelayout(7)
-
-timer.Create("new_tree", 1, 0, function()
-	--generated = tree.generatelayout(7)
-end)
+local generated = tree.generatelayout(7, 3)
 
 hook.Add("DrawOverlay", "visualize_node", function()
 	surface.SetDrawColor(20, 20, 20, 200)
