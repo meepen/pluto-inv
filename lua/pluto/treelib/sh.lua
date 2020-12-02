@@ -50,6 +50,46 @@ local function pick(state, shuffled)
 	end
 end
 
+local node_mt = {
+	__index = {},
+	__tostring = function(self)
+		return "node " .. self.node_id
+	end
+}
+
+local NODE = node_mt.__index
+
+function NODE:ToScreen(size)
+	return size / 2 + size / 2 * self.x, size / 2 + size / 2 * self.y
+end
+
+function NODE:GetDistances(depth, done)
+	done = done or {
+		[self] = 0,
+	}
+	depth = depth or 1
+	for _, conn in pairs(self.connections) do
+		local curscore = done[conn]
+		if (not curscore) then
+			done[conn] = depth
+			conn:GetDistances(depth + 1, done)
+		elseif (curscore > depth) then
+			done[conn] = depth
+			conn:GetDistances(depth + 1, done)
+		end
+	end
+	return done
+end
+
+function NODE:GetDistanceScore()
+	local done = self:GetDistances()
+	local amt = 0
+	for _, score in pairs(done) do
+		amt = amt + score
+	end
+	return amt
+end
+
 function tree.generatelayout(amount, seed, name)
 	local state = setmetatable({
 		Seed = (util.CRC(name or "treelib") + (seed or math.random(0, 0xffffffff))) % 0x100000000
@@ -57,15 +97,18 @@ function tree.generatelayout(amount, seed, name)
 
 	local connections = state:RandomInt(0, math.max(0, math.floor(amount / 2) - 1))
 
-	local layout = {}
+	local layout = {
+		connections = {}
+	}
 
 	for i = 1, amount do
-		local node = {
+		local node = setmetatable({
 			connections = {},
-			x = state:RandomInt(0, 480),
-			y = state:RandomInt(0, 480),
-			size = state:RandomInt(16, 24),
-		}
+			ang = state:Random(-math.pi, math.pi),
+			dist = state:Random(0, 1),
+			size = 14,
+			node_id = i,
+		}, node_mt)
 		layout[#layout + 1] = node
 	end
 
@@ -88,6 +131,9 @@ function tree.generatelayout(amount, seed, name)
 
 
 		table.insert(node1.connections, node2)
+		table.insert(node2.connections, node1)
+
+		table.insert(layout.connections, {node1, node2})
 
 		for _, node in pairs(group2) do
 			table.insert(group1, node)
@@ -103,7 +149,7 @@ function tree.generatelayout(amount, seed, name)
 		if (n1 == n2) then
 			continue
 		end
-		if (table.HasValue(n1.connections, n2) or table.HasValue(n2.connections, n1)) then
+		if (table.HasValue(n1.connections, n2)) then
 			continue
 		end
 
@@ -112,30 +158,44 @@ function tree.generatelayout(amount, seed, name)
 		connections = connections - 1
 	end
 
+	local best_node, best_score = nil, math.huge
+
+	for i, node in ipairs(layout) do
+		print("distance", node, node:GetDistanceScore())
+	end
+
+
+	for _, node in ipairs(layout) do
+		node.x = math.cos(node.ang) * node.dist
+		node.y = math.sin(node.ang) * node.dist
+	end
+
 	return layout
 end
 
-local generated = tree.generatelayout(7, 3)
+local generated = tree.generatelayout(5, 7)
 
 hook.Add("DrawOverlay", "visualize_node", function()
+	local size = 480
 	surface.SetDrawColor(20, 20, 20, 200)
-	surface.DrawRect(0, 0, 480, 480)
+	surface.DrawRect(0, 0, size, size)
 	
 	surface.SetFont "BudgetLabel"
 
-	for i, node in pairs(generated) do
+	for i, nodes in ipairs(generated.connections) do
+		local nx, ny = nodes[1]:ToScreen(size)
 		surface.SetDrawColor(0, 255, 0, 255)
-		for _, connection in ipairs(node.connections) do
-			surface.DrawLine(node.x, node.y, connection.x, connection.y)
-		end
+		local cx, cy = nodes[2]:ToScreen(size)
+		surface.DrawLine(nx, ny, cx, cy)
 	end
 
-	for i, node in pairs(generated) do
+	for i, node in ipairs(generated) do
+		local nx, ny = node:ToScreen(size)
 		surface.SetDrawColor(255, 0, 0, 255)
-		surface.DrawRect(node.x - node.size / 2, node.y - node.size / 2, node.size, node.size)
+		surface.DrawRect(nx - node.size / 2, ny - node.size / 2, node.size, node.size)
 
 		surface.SetTextColor(white_text)
-		surface.SetTextPos(node.x, node.y)
+		surface.SetTextPos(nx, ny)
 		surface.DrawText(tostring(i))
 	end
 end)
