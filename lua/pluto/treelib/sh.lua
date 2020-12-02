@@ -95,7 +95,7 @@ function tree.generatelayout(amount, seed, name)
 		Seed = (util.CRC(name or "treelib") + (seed or math.random(0, 0xffffffff))) % 0x100000000
 	}, STATE_MT)
 
-	local connections = state:RandomInt(0, math.max(0, math.floor(amount / 2) - 1))
+	local connections = state:RandomInt(0, math.max(0, math.floor(amount * 0.7) - 1))
 
 	local layout = {
 		connections = {}
@@ -104,7 +104,6 @@ function tree.generatelayout(amount, seed, name)
 	for i = 1, amount do
 		local node = setmetatable({
 			connections = {},
-			ang = state:Random(-math.pi, math.pi),
 			size = 14,
 			node_id = i,
 		}, node_mt)
@@ -173,10 +172,25 @@ function tree.generatelayout(amount, seed, name)
 		highest_distance = math.max(highest_distance, dist)
 	end
 
+	local by_distance = {}
+
+	for i = 0, highest_distance do
+		by_distance[i] = {}
+	end
+
 	for node, dist in pairs(best_node:GetDistances()) do
 		node.dist = dist / highest_distance
 	end
 
+	for _, node in ipairs(layout) do
+		table.insert(by_distance[scores[node]], node)
+	end
+
+	for dist, nodes in pairs(by_distance) do
+		for i, node in ipairs(nodes) do
+			node.ang = math.rad((i - 1) / #nodes * 360 + 30 * dist)
+		end
+	end
 
 	for _, node in ipairs(layout) do
 		node.x = math.cos(node.ang) * node.dist
@@ -191,7 +205,7 @@ if (not CLIENT) then
 end
 
 
-local generated = tree.generatelayout(1000, 1337)
+local generated = tree.generatelayout(11)
 
 hook.Add("DrawOverlay", "visualize_node", function()
 	local size = 480
