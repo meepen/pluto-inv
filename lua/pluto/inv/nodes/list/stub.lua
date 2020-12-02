@@ -1,4 +1,4 @@
-local NODE = pluto.nodes.get "test"
+local NODE = pluto.nodes.get "stub"
 
 NODE.Name = "Stub"
 NODE.Description = "Stubbed Node"
