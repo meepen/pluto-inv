@@ -88,6 +88,7 @@ function SWEP:RunModFunctionSequence(funcname, state, ...)
 	local args = {n = select("#", ...) + 1, ...}
 	args[args.n] = state or {}
 
+	hook.Run("PlutoPre" .. funcname, self, unpack(args, 1, args.n))
 	self:RunModFunctionSingle("Pre" .. funcname, unpack(args, 1, args.n))
 	self:RunModFunctionSingle("On" .. funcname, unpack(args, 1, args.n))
 	self:RunModFunctionSingle("Post" .. funcname, unpack(args, 1, args.n))

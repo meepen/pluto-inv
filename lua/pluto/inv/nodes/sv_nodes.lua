@@ -13,6 +13,9 @@ for _, fname in pairs {
 	"demon/speed",
 	"demon/heal",
 	"demon/damage",
+
+	"mortal/wound",
+	"mortal/wound_s",
 } do
 	include("pluto/inv/nodes/list/" .. fname .. ".lua")
 end
@@ -71,37 +74,13 @@ concommand.Add("pluto_test_nodes", function(p, c, a)
 
 	pluto.nodes.apply(wep, {
 		{
-			node_name = "demon_poss",
+			node_name = "mortal_wound",
 			node_val1 = math.random(),
 			node_id = 2,
 			node_bubble = 0,
 		},
 		{
-			node_name = "demon_speed",
-			node_val1 = math.random(),
-			node_id = 2,
-			node_bubble = 0,
-		},
-		{
-			node_name = "demon_speed",
-			node_val1 = math.random(),
-			node_id = 2,
-			node_bubble = 0,
-		},
-		{
-			node_name = "demon_speed",
-			node_val1 = math.random(),
-			node_id = 2,
-			node_bubble = 0,
-		},
-		{
-			node_name = "demon_heal",
-			node_val1 = math.random(),
-			node_id = 2,
-			node_bubble = 0,
-		},
-		{
-			node_name = "demon_damage",
+			node_name = "mortal_wound_s",
 			node_val1 = math.random(),
 			node_id = 2,
 			node_bubble = 0,
