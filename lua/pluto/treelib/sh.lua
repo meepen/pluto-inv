@@ -165,7 +165,7 @@ function tree.generatelayout(amount, seed, name)
 		Seed = (util.CRC(name or "treelib") + (seed or math.random(0, 0xffffffff))) % 0x100000000
 	}, STATE_MT)
 
-	local connections = state:RandomInt(0, math.max(0, math.floor(amount * 0.2) - 1))
+	local connections = state:RandomInt(0, math.max(0, math.floor(amount * 0.4) - 1))
 
 	local layout = {
 		connections = {}
@@ -406,15 +406,20 @@ local function make_bubbles(tree_count)
 		trees = {}
 	}
 	for i = 1, tree_count do
-		bubbles.trees[i] = tree.generatelayout(math.random(7, 9))
+		bubbles.trees[i] = tree.generatelayout(i == 1 and 6 or math.random(5, 7))
+		bubbles.trees[i].size = 200
+		if (i >= 2) then
+			bubbles.trees[i].ang = 45 + (360 / (tree_count - 1)) * (i - 2)
+			bubbles.trees[i].size = 256
+		end
 	end
 	return bubbles
 end
 
-bubbles = make_bubbles(2)
+bubbles = make_bubbles(3)
 
 timer.Create("pluto_new_tree", 1, 0, function()
-	bubbles = make_bubbles(2)
+	bubbles = make_bubbles(math.random(3, 6))
 end)
 
 local mat = CreateMaterial("pluto_node_line_real", "UnlitGeneric", {
@@ -536,6 +541,14 @@ local function DrawTree(generated, x, y, size)
 end
 
 hook.Add("DrawOverlay", "visualize_node", function()
-	DrawTree(bubbles.trees[1], 256, 256, 256)
-	DrawTree(bubbles.trees[2], 0, 0, 256)
+	local centerx, centery = 400, 400
+	local center = bubbles.trees[1]
+	DrawTree(center, centerx - center.size / 2, centery - center.size / 2, center.size)
+	for i = 2, #bubbles.trees do
+		local tree = bubbles.trees[i]
+		local ang = math.rad(tree.ang + CurTime() * 20)
+		local dc, ds = math.cos(ang), math.sin(ang)
+		local dist = center.size / 2 + tree.size / 2
+		DrawTree(tree, centerx + dist * dc - tree.size / 2, centery + dist * ds - tree.size / 2, tree.size)
+	end
 end)
