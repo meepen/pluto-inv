@@ -172,7 +172,7 @@ function tree.generatelayout(amount, seed, name)
 	for i = 1, amount do
 		local node = setmetatable({
 			connections = {},
-			size = 14,
+			size = 20,
 			node_id = i,
 		}, node_mt)
 		layout[#layout + 1] = node
@@ -256,7 +256,7 @@ function tree.generatelayout(amount, seed, name)
 
 	for dist, nodes in pairs(by_distance) do
 		for i, node in ipairs(nodes) do
-			node.ang = math.rad((i - 1) / #nodes * 360 + 52 * dist)
+			node.ang = math.rad((i - 1) / #nodes * 360 - 52 * dist)
 		end
 	end
 
@@ -387,6 +387,9 @@ function tree.generatelayout(amount, seed, name)
 		node.y = node.y / most_length
 	end
 
+	layout.x = state:Random(0, 1)
+	layout.y = state:Random(0, 1)
+	layout.background = state:RandomInt(1, 2)
 
 	return layout
 end
@@ -395,7 +398,10 @@ if (not CLIENT) then
 	return
 end
 
-local generated = tree.generatelayout(7, 10)
+local generated = tree.generatelayout(7)
+timer.Create("pluto_new_tree", 1, 0, function()
+	generated = tree.generatelayout(7)
+end)
 
 local mat = CreateMaterial("pluto_node_line_real", "UnlitGeneric", {
 	["$basetexture"] = "sprites/xbeam2",
@@ -406,12 +412,23 @@ local sun = CreateMaterial("pluto_glow_unlit_real", "UnlitGeneric", {
 	["$vertexalpha"] = "1",
 	["$translucent"] = "1"
 })
+local backgrounds = {
+	Material "pluto/hubble.png",
+	Material "pluto/eppen_stars.png",
+}
 
 hook.Add("DrawOverlay", "visualize_node", function()
-	sun:SetTexture("$basetexture", Material "pluto/star2.png":GetTexture "$basetexture")
+	sun:SetTexture("$basetexture", Material "pluto/star3.png":GetTexture "$basetexture")
 	local size = 480
-	surface.SetDrawColor(20, 20, 20, 200)
-	surface.DrawRect(0, 0, size, size)
+	local bg = backgrounds[generated.background]
+	surface.SetMaterial(bg)
+	surface.SetDrawColor(255, 255, 255, 255)
+	local img_w, img_h = bg:GetInt "$realwidth", bg:GetInt "$realheight"
+	local u_size = size / img_w
+	local v_size = size / img_h
+	local su = (img_w - size) * generated.x / img_w
+	local sv = (img_h - size) * generated.y / img_h
+	surface.DrawTexturedRectUV(0, 0, size, size, su, sv, su + u_size, sv + v_size)
 	
 	surface.SetFont "BudgetLabel"
 	surface.SetMaterial(mat)
@@ -426,8 +443,6 @@ hook.Add("DrawOverlay", "visualize_node", function()
 		local deg = math.rad(math.deg(ang) + 90)
 		local dc, ds = math.cos(deg) * thicc, math.sin(deg) * thicc
 
-		surface.SetDrawColor(255,255,255, 0)
-		surface.DrawLine(nx, ny, cx, cy)
 		surface.SetDrawColor(0, 0, 255, 255)
 		local centerx, centery = (nx + cx) / 2, (ny + cy) / 2
 		local points = {
@@ -457,7 +472,7 @@ hook.Add("DrawOverlay", "visualize_node", function()
 	surface.SetTextColor(white_text)
 
 	surface.SetMaterial(sun)
-	surface.SetDrawColor(255, 255, 100, 255)
+	surface.SetDrawColor(255, 255, 200, 255)
 
 	for i, node in ipairs(generated) do
 		local nx, ny = node:ToScreen(size)
