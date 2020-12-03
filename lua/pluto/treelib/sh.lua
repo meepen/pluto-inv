@@ -544,7 +544,7 @@ hook.Add("DrawOverlay", "visualize_node", function()
 
 	if (gun ~= bubble_gun) then
 		bubbles = tree.make_bubbles(5, gun:GetInventoryItem().ID)
-		bubbel_gun = gun
+		bubble_gun = gun
 	end
 	local centerx, centery = 400, 400
 	local center = bubbles.trees[1]
