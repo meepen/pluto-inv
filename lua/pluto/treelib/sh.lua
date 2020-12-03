@@ -437,7 +437,7 @@ local circle_cache = {}
 
 local function DrawTree(generated, x, y, size)
 	local c = circle_cache[size]
-	local outline = 5
+	local outline = 4
 	if (not c) then
 		c = {
 			stencil = circles.New(CIRCLE_FILLED, size / 2, size / 2, size / 2),
@@ -471,11 +471,9 @@ local function DrawTree(generated, x, y, size)
 			local sv = (img_y - size / 2) * generated.y / img_h
 			surface.DrawTexturedRectUV(0, 0, size, size, su, sv, su + u_size, sv + v_size)
 		render.SetStencilEnable(false)
-			
-		surface.SetFont "BudgetLabel"
+
 		surface.SetMaterial(mat)
-		surface.SetTextColor(128, 128, 128, 128)
-		local thicc = 3
+		local thicc = 2
 
 		for i, nodes in ipairs(generated.connections) do
 			local nx, ny = nodes[1]:ToScreen(size, outline * 2)
@@ -511,8 +509,6 @@ local function DrawTree(generated, x, y, size)
 			surface.DrawPoly(points)
 		end
 
-		surface.SetTextColor(white_text)
-
 		surface.SetMaterial(sun)
 		surface.SetDrawColor(255, 255, 200, 255)
 
@@ -521,10 +517,6 @@ local function DrawTree(generated, x, y, size)
 			surface.DrawTexturedRect(nx - node.size / 2, ny - node.size / 2, node.size, node.size)
 			surface.DrawTexturedRect(nx - node.size / 2, ny - node.size / 2, node.size, node.size)
 			surface.DrawTexturedRect(nx - node.size / 2, ny - node.size / 2, node.size, node.size)
-
-			surface.SetTextColor(white_text)
-			surface.SetTextPos(nx, ny)
-			surface.DrawText(tostring(i))
 		end
 
 		draw.NoTexture()
