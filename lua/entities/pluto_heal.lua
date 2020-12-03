@@ -12,7 +12,9 @@ function ENT:DoDamage()
 
 	local heal = math.min(p:GetMaxHealth(), p:Health() + 1)
 	
-	hook.Run("PlutoHealthGain", p, heal - p:Health())
+	if (hook.Run("PlutoHealthGain", p, heal - p:Health())) then
+		return
+	end
 
 	p:SetHealth(heal)
 end

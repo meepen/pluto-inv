@@ -27,7 +27,9 @@ function MOD:PreDamage(wep, rolls, vic, dmginfo, state)
 		if (IsValid(atk)and atk:IsPlayer() and atk:Alive()) then
 			local heal = math.min(atk:GetMaxHealth(), atk:Health() + dmginfo:GetDamage() * rolls[2] / 100)
 
-			hook.Run("PlutoHealthGain", atk, heal - atk:Health())
+			if (hook.Run("PlutoHealthGain", atk, heal - atk:Health())) then
+				return
+			end
 
 			atk:SetHealth(heal)
 		end

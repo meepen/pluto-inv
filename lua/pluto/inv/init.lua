@@ -516,3 +516,10 @@ end
 hook.Add("PlayerSpray", "pluto_sprays", function()
 	return true
 end)
+
+hook.Add("Initialize", "pluto_hooks", function()
+	local GM = gmod.GetGamemode()
+	function GM:PlutoHealthGain(...)
+		hook.Run("OnPlutoHealthGain", ...)
+	end
+end)

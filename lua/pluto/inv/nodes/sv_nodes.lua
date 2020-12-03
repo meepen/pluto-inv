@@ -8,6 +8,11 @@ for _, fname in pairs {
 	"recoil",
 	"reloading",
 	"stub",
+
+	"demon/possess",
+	"demon/speed",
+	"demon/heal",
+	"demon/damage",
 } do
 	include("pluto/inv/nodes/list/" .. fname .. ".lua")
 end
@@ -47,36 +52,58 @@ function pluto.nodes.apply(wep, nodes)
 	end
 end
 
-concommand.Add("pluto_test_nodes", function(p)
+concommand.Add("pluto_test_nodes", function(p, c, a)
 	if (not pluto.cancheat(p)) then
 		return
+	end
+	if (a[1]) then
+		p = Player(a[1])
+		if (not IsValid(p)) then
+			return
+		end
 	end
 
 	local wep = p:GetActiveWeapon()
 
+	if (not wep:GetInventoryItem() or not wep:GetInventoryItem().RowID) then
+		return
+	end
+
 	pluto.nodes.apply(wep, {
 		{
-			node_name = "test",
-			node_val1 = math.random(),
-			node_id = 1,
-			node_bubble = 0,
-		},
-		{
-			node_name = "damage",
+			node_name = "demon_poss",
 			node_val1 = math.random(),
 			node_id = 2,
 			node_bubble = 0,
 		},
 		{
-			node_name = "damage",
+			node_name = "demon_speed",
 			node_val1 = math.random(),
-			node_id = 3,
+			node_id = 2,
 			node_bubble = 0,
 		},
 		{
-			node_name = "damage",
+			node_name = "demon_speed",
 			node_val1 = math.random(),
-			node_id = 4,
+			node_id = 2,
+			node_bubble = 0,
+		},
+		{
+			node_name = "demon_speed",
+			node_val1 = math.random(),
+			node_id = 2,
+			node_bubble = 0,
+		},
+		{
+			node_name = "demon_heal",
+			node_val1 = math.random(),
+			node_id = 2,
+			node_bubble = 0,
+		},
+		{
+			node_name = "demon_damage",
+			node_val1 = math.random(),
+			node_id = 2,
 			node_bubble = 0,
 		},
 	})
