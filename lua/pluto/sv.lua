@@ -77,6 +77,8 @@ pluto.files.load {
 		"resource/fonts/Niconne-Regular.ttf",
 		"resource/fonts/Lateef-Regular.ttf",
 		"resource/fonts/Aladin-Regular.ttf",
+
+		"materials/pluto/star2.png",
 	},
 	Workshop = {
 		"2275087857",

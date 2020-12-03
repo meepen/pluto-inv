@@ -395,30 +395,75 @@ if (not CLIENT) then
 	return
 end
 
-local generated = tree.generatelayout(11)
+local generated = tree.generatelayout(7, 10)
 
-timer.Create("pluto_random_node", 1, 0, function()
-	generated = tree.generatelayout(11)
-end)
+local mat = CreateMaterial("pluto_node_line_real", "UnlitGeneric", {
+	["$basetexture"] = "sprites/xbeam2",
+	["$additive"] = 1
+})
+local sun = CreateMaterial("pluto_glow_unlit_real", "UnlitGeneric", {
+	["$vertexcolor"] = "1",
+	["$vertexalpha"] = "1",
+	["$translucent"] = "1"
+})
 
 hook.Add("DrawOverlay", "visualize_node", function()
+	sun:SetTexture("$basetexture", Material "pluto/star2.png":GetTexture "$basetexture")
 	local size = 480
 	surface.SetDrawColor(20, 20, 20, 200)
 	surface.DrawRect(0, 0, size, size)
 	
 	surface.SetFont "BudgetLabel"
+	surface.SetMaterial(mat)
+	surface.SetTextColor(128, 128, 128, 128)
+	local thicc = 3
 
 	for i, nodes in ipairs(generated.connections) do
 		local nx, ny = nodes[1]:ToScreen(size)
-		surface.SetDrawColor(0, 255, 0, 255)
 		local cx, cy = nodes[2]:ToScreen(size)
+
+		local ang = math.atan2(cy - ny, cx - nx)
+		local deg = math.rad(math.deg(ang) + 90)
+		local dc, ds = math.cos(deg) * thicc, math.sin(deg) * thicc
+
+		surface.SetDrawColor(255,255,255, 0)
 		surface.DrawLine(nx, ny, cx, cy)
+		surface.SetDrawColor(0, 0, 255, 255)
+		local centerx, centery = (nx + cx) / 2, (ny + cy) / 2
+		local points = {
+			{ x = nx - dc, y = ny - ds, u = 1, v = 0 },
+			{ x = nx + dc, y = ny + ds, u = 0, v = 1 },
+			{ x = cx - dc, y = cy - ds, u = 1, v = 0 },
+			{ x = cx + dc, y = cy + ds, u = 0, v = 1 },
+		}
+		table.sort(points, function(a, b)
+			local aa = a.ang
+			local ba = b.ang
+
+			if (not aa) then
+				aa = math.deg(math.atan2(a.y - centery, a.x - centerx))
+				a.ang = aa
+			end
+			if (not ba) then
+				ba = math.deg(math.atan2(b.y - centery, b.x - centerx))
+				b.ang = ba
+			end
+
+			return aa < ba
+		end)
+		surface.DrawPoly(points)
 	end
+
+	surface.SetTextColor(white_text)
+
+	surface.SetMaterial(sun)
+	surface.SetDrawColor(255, 255, 100, 255)
 
 	for i, node in ipairs(generated) do
 		local nx, ny = node:ToScreen(size)
-		surface.SetDrawColor(255, 0, 0, 255)
-		surface.DrawRect(nx - node.size / 2, ny - node.size / 2, node.size, node.size)
+		surface.DrawTexturedRect(nx - node.size / 2, ny - node.size / 2, node.size, node.size)
+		surface.DrawTexturedRect(nx - node.size / 2, ny - node.size / 2, node.size, node.size)
+		surface.DrawTexturedRect(nx - node.size / 2, ny - node.size / 2, node.size, node.size)
 
 		surface.SetTextColor(white_text)
 		surface.SetTextPos(nx, ny)
