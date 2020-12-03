@@ -76,6 +76,7 @@ pluto.files.load {
 		"events/sh_init.lua",
 
 		"thirdparty/sh_animations_api.lua",
+		"thirdparty/circles.lua",
 
 		"imgur/sh_imgur.lua",
 

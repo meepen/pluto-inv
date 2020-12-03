@@ -59,8 +59,10 @@ local node_mt = {
 
 local NODE = node_mt.__index
 
-function NODE:ToScreen(size)
-	return size / 2 + size / 2 * self.x, size / 2 + size / 2 * self.y
+function NODE:ToScreen(size, outline)
+	outline = (outline or 0) + 20
+	size = size - outline
+	return outline / 2 + size / 2 + size / 2 * self.x, outline / 2 + size / 2 + size / 2 * self.y
 end
 
 function NODE:GetDistances(depth, done)
@@ -256,7 +258,7 @@ function tree.generatelayout(amount, seed, name)
 
 	for dist, nodes in pairs(by_distance) do
 		for i, node in ipairs(nodes) do
-			node.ang = math.rad((i - 1) / #nodes * 360 - 52 * dist)
+			node.ang = math.rad((i - 1) / #nodes * 360 - 32 * dist)
 		end
 	end
 
@@ -398,9 +400,21 @@ if (not CLIENT) then
 	return
 end
 
-local generated = tree.generatelayout(7)
+local bubbles
+local function make_bubbles(tree_count)
+	local bubbles = {
+		trees = {}
+	}
+	for i = 1, tree_count do
+		bubbles.trees[i] = tree.generatelayout(math.random(7, 9))
+	end
+	return bubbles
+end
+
+bubbles = make_bubbles(2)
+
 timer.Create("pluto_new_tree", 1, 0, function()
-	generated = tree.generatelayout(7)
+	bubbles = make_bubbles(2)
 end)
 
 local mat = CreateMaterial("pluto_node_line_real", "UnlitGeneric", {
@@ -417,71 +431,111 @@ local backgrounds = {
 	Material "pluto/eppen_stars.png",
 }
 
-hook.Add("DrawOverlay", "visualize_node", function()
-	sun:SetTexture("$basetexture", Material "pluto/star3.png":GetTexture "$basetexture")
-	local size = 480
-	local bg = backgrounds[generated.background]
-	surface.SetMaterial(bg)
-	surface.SetDrawColor(255, 255, 255, 255)
-	local img_w, img_h = bg:GetInt "$realwidth", bg:GetInt "$realheight"
-	local u_size = size / img_w
-	local v_size = size / img_h
-	local su = (img_w - size) * generated.x / img_w
-	local sv = (img_h - size) * generated.y / img_h
-	surface.DrawTexturedRectUV(0, 0, size, size, su, sv, su + u_size, sv + v_size)
-	
-	surface.SetFont "BudgetLabel"
-	surface.SetMaterial(mat)
-	surface.SetTextColor(128, 128, 128, 128)
-	local thicc = 3
+local matr = Matrix()
+local circles = include "pluto/thirdparty/circles.lua"
 
-	for i, nodes in ipairs(generated.connections) do
-		local nx, ny = nodes[1]:ToScreen(size)
-		local cx, cy = nodes[2]:ToScreen(size)
+local circle_cache = {}
 
-		local ang = math.atan2(cy - ny, cx - nx)
-		local deg = math.rad(math.deg(ang) + 90)
-		local dc, ds = math.cos(deg) * thicc, math.sin(deg) * thicc
-
-		surface.SetDrawColor(0, 0, 255, 255)
-		local centerx, centery = (nx + cx) / 2, (ny + cy) / 2
-		local points = {
-			{ x = nx - dc, y = ny - ds, u = 1, v = 0 },
-			{ x = nx + dc, y = ny + ds, u = 0, v = 1 },
-			{ x = cx - dc, y = cy - ds, u = 1, v = 0 },
-			{ x = cx + dc, y = cy + ds, u = 0, v = 1 },
+local function DrawTree(generated, x, y, size)
+	local c = circle_cache[size]
+	local outline = 5
+	if (not c) then
+		c = {
+			stencil = circles.New(CIRCLE_FILLED, size / 2, size / 2, size / 2),
+			outline = circles.New(CIRCLE_OUTLINED, size / 2, size / 2, size / 2, outline)
 		}
-		table.sort(points, function(a, b)
-			local aa = a.ang
-			local ba = b.ang
-
-			if (not aa) then
-				aa = math.deg(math.atan2(a.y - centery, a.x - centerx))
-				a.ang = aa
-			end
-			if (not ba) then
-				ba = math.deg(math.atan2(b.y - centery, b.x - centerx))
-				b.ang = ba
-			end
-
-			return aa < ba
-		end)
-		surface.DrawPoly(points)
+		c.stencil:SetColor(Color(0, 0, 0, 255))
+		circle_cache[size] = c
 	end
+	matr:SetTranslation(Vector(x, y))
+	cam.PushModelMatrix(matr)
+		render.SetStencilEnable(true)
+		render.ClearStencil()
+			render.SetStencilCompareFunction(STENCIL_ALWAYS)
+			render.SetStencilFailOperation(STENCIL_ZERO)
+			render.SetStencilZFailOperation(STENCIL_ZERO)
+			render.SetStencilPassOperation(STENCIL_INCR)
+			render.SetStencilReferenceValue(1)
 
-	surface.SetTextColor(white_text)
+			c.stencil()
 
-	surface.SetMaterial(sun)
-	surface.SetDrawColor(255, 255, 200, 255)
+			render.SetStencilCompareFunction(STENCIL_EQUAL)
+			sun:SetTexture("$basetexture", Material "pluto/star3.png":GetTexture "$basetexture")
+			local bg = backgrounds[generated.background]
+			surface.SetMaterial(bg)
+			surface.SetDrawColor(255, 255, 255, 255)
+			local img_w, img_h = bg:GetInt "$realwidth", bg:GetInt "$realheight"
+			local img_x, img_y = (img_w - size) * generated.x + size / 2, (img_h - size) * generated.y + size / 2
+			local u_size = size / img_w
+			local v_size = size / img_h
+			local su = (img_x - size / 2) * generated.x / img_w
+			local sv = (img_y - size / 2) * generated.y / img_h
+			surface.DrawTexturedRectUV(0, 0, size, size, su, sv, su + u_size, sv + v_size)
+		render.SetStencilEnable(false)
+			
+		surface.SetFont "BudgetLabel"
+		surface.SetMaterial(mat)
+		surface.SetTextColor(128, 128, 128, 128)
+		local thicc = 3
 
-	for i, node in ipairs(generated) do
-		local nx, ny = node:ToScreen(size)
-		surface.DrawTexturedRect(nx - node.size / 2, ny - node.size / 2, node.size, node.size)
-		surface.DrawTexturedRect(nx - node.size / 2, ny - node.size / 2, node.size, node.size)
-		surface.DrawTexturedRect(nx - node.size / 2, ny - node.size / 2, node.size, node.size)
+		for i, nodes in ipairs(generated.connections) do
+			local nx, ny = nodes[1]:ToScreen(size, outline * 2)
+			local cx, cy = nodes[2]:ToScreen(size, outline * 2)
+
+			local ang = math.atan2(cy - ny, cx - nx)
+			local deg = math.rad(math.deg(ang) + 90)
+			local dc, ds = math.cos(deg) * thicc, math.sin(deg) * thicc
+
+			surface.SetDrawColor(0, 0, 255, 255)
+			local centerx, centery = (nx + cx) / 2, (ny + cy) / 2
+			local points = {
+				{ x = nx - dc, y = ny - ds, u = 1, v = 0 },
+				{ x = nx + dc, y = ny + ds, u = 0, v = 1 },
+				{ x = cx - dc, y = cy - ds, u = 1, v = 0 },
+				{ x = cx + dc, y = cy + ds, u = 0, v = 1 },
+			}
+			table.sort(points, function(a, b)
+				local aa = a.ang
+				local ba = b.ang
+
+				if (not aa) then
+					aa = math.deg(math.atan2(a.y - centery, a.x - centerx))
+					a.ang = aa
+				end
+				if (not ba) then
+					ba = math.deg(math.atan2(b.y - centery, b.x - centerx))
+					b.ang = ba
+				end
+
+				return aa < ba
+			end)
+			surface.DrawPoly(points)
+		end
 
 		surface.SetTextColor(white_text)
-		surface.SetTextPos(nx, ny)
-		surface.DrawText(tostring(i))
-	end
+
+		surface.SetMaterial(sun)
+		surface.SetDrawColor(255, 255, 200, 255)
+
+		for i, node in ipairs(generated) do
+			local nx, ny = node:ToScreen(size, outline * 2)
+			surface.DrawTexturedRect(nx - node.size / 2, ny - node.size / 2, node.size, node.size)
+			surface.DrawTexturedRect(nx - node.size / 2, ny - node.size / 2, node.size, node.size)
+			surface.DrawTexturedRect(nx - node.size / 2, ny - node.size / 2, node.size, node.size)
+
+			surface.SetTextColor(white_text)
+			surface.SetTextPos(nx, ny)
+			surface.DrawText(tostring(i))
+		end
+
+		draw.NoTexture()
+
+		surface.SetDrawColor(11, 12, 13, 255)
+		c.outline()
+	cam.PopModelMatrix()
+end
+
+hook.Add("DrawOverlay", "visualize_node", function()
+	DrawTree(bubbles.trees[1], 256, 256, 256)
+	DrawTree(bubbles.trees[2], 0, 0, 256)
 end)
