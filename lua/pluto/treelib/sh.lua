@@ -396,17 +396,13 @@ function tree.generatelayout(amount, seed, name)
 	return layout
 end
 
-if (not CLIENT) then
-	return
-end
-
-local bubbles
-local function make_bubbles(tree_count)
+function tree.make_bubbles(tree_count, seed, name)
+	seed = seed or 0
 	local bubbles = {
 		trees = {}
 	}
 	for i = 1, tree_count do
-		bubbles.trees[i] = tree.generatelayout(i == 1 and 6 or math.random(5, 7))
+		bubbles.trees[i] = tree.generatelayout(i == 1 and 5 or 7, seed + 0x1337 * i, name)
 		bubbles.trees[i].size = 200
 		if (i >= 2) then
 			bubbles.trees[i].ang = 45 + (360 / (tree_count - 1)) * (i - 2)
@@ -416,11 +412,9 @@ local function make_bubbles(tree_count)
 	return bubbles
 end
 
-bubbles = make_bubbles(3)
-
-timer.Create("pluto_new_tree", 1, 0, function()
-	bubbles = make_bubbles(math.random(3, 6))
-end)
+if (not CLIENT) then
+	return
+end
 
 local mat = CreateMaterial("pluto_node_line_real", "UnlitGeneric", {
 	["$basetexture"] = "sprites/xbeam2",
@@ -540,13 +534,24 @@ local function DrawTree(generated, x, y, size)
 	cam.PopModelMatrix()
 end
 
+local bubble_gun, bubbles
+
 hook.Add("DrawOverlay", "visualize_node", function()
+	local gun = ttt.GetHUDTarget():GetActiveWeapon()
+	if (not IsValid(gun) or not gun:GetInventoryItem() or not gun:GetInventoryItem().ID) then
+		return
+	end
+
+	if (gun ~= bubble_gun) then
+		bubbles = tree.make_bubbles(5, gun:GetInventoryItem().ID)
+		bubbel_gun = gun
+	end
 	local centerx, centery = 400, 400
 	local center = bubbles.trees[1]
 	DrawTree(center, centerx - center.size / 2, centery - center.size / 2, center.size)
 	for i = 2, #bubbles.trees do
 		local tree = bubbles.trees[i]
-		local ang = math.rad(tree.ang + CurTime() * 20)
+		local ang = math.rad(tree.ang)
 		local dc, ds = math.cos(ang), math.sin(ang)
 		local dist = center.size / 2 + tree.size / 2
 		DrawTree(tree, centerx + dist * dc - tree.size / 2, centery + dist * ds - tree.size / 2, tree.size)
