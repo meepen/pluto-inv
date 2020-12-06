@@ -435,7 +435,24 @@ local circles = include "pluto/thirdparty/circles.lua"
 
 local circle_cache = {}
 
-local function DrawTree(generated, x, y, size)
+local function GetHoveredNode(tree, offx, offy, size)
+	local low_dist, best_node = math.huge
+	local mx, my = gui.MousePos()
+	mx = mx - offx
+	my = my - offy
+	for i, node in ipairs(tree) do
+		local dx, dy = (size / 2 + node.x * size / 2) - mx, (size / 2 + node.y * size / 2) - my
+		local dist = math.sqrt(dx ^ 2 + dy ^ 2)
+
+		if (dist < low_dist) then
+			low_dist, best_node = dist, node
+		end
+	end
+
+	return best_node, low_dist
+end
+
+local function DrawTree(generated, x, y, size, hovered)
 	local c = circle_cache[size]
 	local outline = 4
 	if (not c) then
@@ -473,7 +490,7 @@ local function DrawTree(generated, x, y, size)
 		render.SetStencilEnable(false)
 
 		surface.SetMaterial(mat)
-		local thicc = 2
+		local thicc = 3
 
 		for i, nodes in ipairs(generated.connections) do
 			local nx, ny = nodes[1]:ToScreen(size, outline * 2)
@@ -514,9 +531,10 @@ local function DrawTree(generated, x, y, size)
 
 		for i, node in ipairs(generated) do
 			local nx, ny = node:ToScreen(size, outline * 2)
-			surface.DrawTexturedRect(nx - node.size / 2, ny - node.size / 2, node.size, node.size)
-			surface.DrawTexturedRect(nx - node.size / 2, ny - node.size / 2, node.size, node.size)
-			surface.DrawTexturedRect(nx - node.size / 2, ny - node.size / 2, node.size, node.size)
+			local size = node.size * (hovered == node and 2 or 1)
+			surface.DrawTexturedRect(nx - size / 2, ny - size / 2, size, size)
+			surface.DrawTexturedRect(nx - size / 2, ny - size / 2, size, size)
+			surface.DrawTexturedRect(nx - size / 2, ny - size / 2, size, size)
 		end
 
 		draw.NoTexture()
@@ -526,26 +544,71 @@ local function DrawTree(generated, x, y, size)
 	cam.PopModelMatrix()
 end
 
-local bubble_gun, bubbles
 
-hook.Add("DrawOverlay", "visualize_node", function()
-	local gun = ttt.GetHUDTarget():GetActiveWeapon()
-	if (not IsValid(gun) or not gun:GetInventoryItem() or not gun:GetInventoryItem().ID) then
+local PANEL = {}
+
+function PANEL:Init()
+	local ply = ttt.GetHUDTarget()
+	if (not IsValid(ply)) then
+		return
+	end
+	self.wep = ply:GetActiveWeapon()
+	local wep = self.wep
+
+	if (not IsValid(wep) or not wep:GetInventoryItem() or not wep:GetInventoryItem().ID) then
 		return
 	end
 
-	if (gun ~= bubble_gun) then
-		bubbles = tree.make_bubbles(5, gun:GetInventoryItem().ID)
-		bubble_gun = gun
+	self.bubbles = tree.make_bubbles(5, wep:GetInventoryItem().ID)
+end
+
+function PANEL:Paint(w, h)
+	local bubbles = self.bubbles
+	if (not bubbles) then
+		return
 	end
-	local centerx, centery = 400, 400
+
+	local offx, offy = self:LocalToScreen(0, 0)
+	local centerx, centery = w / 2, h / 2
+
 	local center = bubbles.trees[1]
-	DrawTree(center, centerx - center.size / 2, centery - center.size / 2, center.size)
+	local hovered, node_dist = GetHoveredNode(center, offx + centerx - center.size / 2, offy + centery - center.size / 2, center.size)
 	for i = 2, #bubbles.trees do
 		local tree = bubbles.trees[i]
 		local ang = math.rad(tree.ang)
 		local dc, ds = math.cos(ang), math.sin(ang)
 		local dist = center.size / 2 + tree.size / 2
-		DrawTree(tree, centerx + dist * dc - tree.size / 2, centery + dist * ds - tree.size / 2, tree.size)
+		local node, _dist = GetHoveredNode(tree, offx + centerx + dist * dc - tree.size / 2, offy + centery + dist * ds - tree.size / 2, tree.size)
+		if (_dist < node_dist) then
+			hovered, node_dist = node, _dist
+		end
 	end
-end)
+
+	if (node_dist > 40) then
+		hovered = nil
+	end
+
+	DrawTree(center, centerx - center.size / 2, centery - center.size / 2, center.size, hovered)
+	for i = 2, #bubbles.trees do
+		local tree = bubbles.trees[i]
+		local ang = math.rad(tree.ang)
+		local dc, ds = math.cos(ang), math.sin(ang)
+		local dist = center.size / 2 + tree.size / 2
+		DrawTree(tree, centerx + dist * dc - tree.size / 2, centery + dist * ds - tree.size / 2, tree.size, hovered)
+	end
+end
+
+PANEL = vgui.RegisterTable(PANEL, "EditablePanel")
+
+if (IsValid(pluto.stars)) then
+	pluto.stars:Remove()
+end
+pluto.stars = vgui.Create "DFrame"
+pluto.stars.bubbles = vgui.CreateFromTable(PANEL, pluto.stars)
+pluto.stars.bubbles:Dock(FILL)
+
+pluto.stars:SetPos(200, 0)
+pluto.stars:SetSize(600, 650)
+
+pluto.stars:MakePopup()
+pluto.stars:SetKeyboardInputEnabled(false)
