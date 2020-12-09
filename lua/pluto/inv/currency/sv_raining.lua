@@ -1,5 +1,5 @@
 local rain
-hook.Add("TTTBeginRound", "pluto_falling_currency", function()
+hook.Remove("TTTBeginRound", "pluto_falling_currency", function()
 	if (not rain and math.random(20) ~= 1) then
 		return
 	end
