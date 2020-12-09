@@ -7,5 +7,12 @@ GROUP.Guaranteed = {
 }
 
 GROUP.SmallNodes = {
-	gold_enchant = 1
+	gold_transform = {
+		Shares = 1,
+		Max = 1,
+	},
+	gold_spawns = {
+		Shares = 1,
+		Max = 1,
+	}
 }

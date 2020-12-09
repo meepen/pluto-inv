@@ -5,6 +5,7 @@ NODE.Description = "Your gun is plated in gold."
 
 function NODE:ModifyWeapon(node, wep)
 	wep:SetMaterial "models/player/shared/gold_player"
+	wep.GoldEnchant = true
 	if (CLIENT) then
 		local last_drawn
 		hook.Add("PreDrawViewModel", "pluto_vm_draw", function(vm, ply, wep)

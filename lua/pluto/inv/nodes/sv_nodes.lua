@@ -20,6 +20,8 @@ for _, fname in pairs {
 	"mortal/wound_s",
 
 	"gold/enchanted",
+	"gold/spawns",
+	"gold/transform",
 } do
 	include("pluto/inv/nodes/list/" .. fname .. ".lua")
 end

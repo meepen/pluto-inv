@@ -165,7 +165,7 @@ function tree.generatelayout(amount, seed, name)
 		Seed = (util.CRC(name or "treelib") + (seed or math.random(0, 0xffffffff))) % 0x100000000
 	}, STATE_MT)
 
-	local connections = state:RandomInt(0, math.max(0, math.floor(amount * 0.4) - 1))
+	local connections = state:RandomInt(0, math.max(0, math.floor(amount * 0.4)))
 
 	local layout = {
 		connections = {}

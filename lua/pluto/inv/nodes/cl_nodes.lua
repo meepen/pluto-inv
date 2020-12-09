@@ -88,6 +88,4 @@ function pluto.inv.readconstellations()
 	f.bubbles = tree.make_bubbles(constellations, item.ID, item.ClassName)
 	f.constellations = constellations
 	PLUTO_TREE:MakePopup()
-
-	PrintTable(constellations)
 end
