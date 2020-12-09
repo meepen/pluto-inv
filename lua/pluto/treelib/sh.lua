@@ -258,8 +258,10 @@ function tree.generatelayout(amount, seed, name)
 	end
 
 	for dist, nodes in pairs(by_distance) do
+		local cur_ang = 0
 		for i, node in ipairs(nodes) do
-			node.ang = math.rad((i - 1) / #nodes * 360 - 32 * dist)
+			cur_ang = cur_ang - state:Random(360 / #nodes * 0.75, 360 / #nodes)
+			node.ang = math.rad(cur_ang - state:Random(0, 360 / #nodes / 2) - 32 * dist)
 		end
 	end
 
