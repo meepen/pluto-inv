@@ -1,9 +1,9 @@
 local NODE = pluto.nodes.get "damage"
 
-NODE.Name = "Stub"
+NODE.Name = "Strength Increase"
 
 function NODE:GetDescription(node)
-	return "Damage is increased by " .. (node.node_val1 * 5) .. "%"
+	return string.format("Damage is increased by %.2f%%", 3 + node.node_val1 * 5)
 end
 
 function NODE:ModifyWeapon(node, wep)

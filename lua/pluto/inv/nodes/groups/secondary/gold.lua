@@ -7,4 +7,5 @@ GROUP.Guaranteed = {
 }
 
 GROUP.SmallNodes = {
+	gold_enchant = 1
 }

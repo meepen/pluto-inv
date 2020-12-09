@@ -176,6 +176,7 @@ function tree.generatelayout(amount, seed, name)
 			connections = {},
 			size = 20,
 			node_id = i,
+			bubble = layout
 		}, node_mt)
 		layout[#layout + 1] = node
 	end
@@ -396,16 +397,18 @@ function tree.generatelayout(amount, seed, name)
 	return layout
 end
 
-function tree.make_bubbles(tree_count, seed, name)
+function tree.make_bubbles(treedata, seed, name)
 	seed = seed or 0
 	local bubbles = {
 		trees = {}
 	}
-	for i = 1, tree_count do
-		bubbles.trees[i] = tree.generatelayout(i == 1 and 5 or 7, seed + 0x1337 * i, name)
+
+	for i, data in ipairs(treedata) do
+		bubbles.trees[i] = tree.generatelayout(#data, seed + 0x1337 * i, name)
 		bubbles.trees[i].size = 200
+		bubbles.trees[i].id = i
 		if (i >= 2) then
-			bubbles.trees[i].ang = 45 + (360 / (tree_count - 1)) * (i - 2)
+			bubbles.trees[i].ang = 45 + (360 / (#treedata - 1)) * (i - 2)
 			bubbles.trees[i].size = 256
 		end
 	end

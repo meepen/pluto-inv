@@ -130,21 +130,6 @@ end
 
 local PANEL = {}
 
-function PANEL:Init()
-	local ply = ttt.GetHUDTarget()
-	if (not IsValid(ply)) then
-		return
-	end
-	self.wep = ply:GetActiveWeapon()
-	local wep = self.wep
-
-	if (not IsValid(wep) or not wep:GetInventoryItem() or not wep:GetInventoryItem().ID) then
-		return
-	end
-
-	self.bubbles = tree.make_bubbles(5, wep:GetInventoryItem().ID)
-end
-
 function PANEL:Paint(w, h)
 	local bubbles = self.bubbles
 	if (not bubbles) then
@@ -179,6 +164,17 @@ function PANEL:Paint(w, h)
 		local dist = center.size / 2 + tree.size / 2
 		DrawTree(tree, centerx + dist * dc - tree.size / 2, centery + dist * ds - tree.size / 2, tree.size, hovered)
 	end
+
+	if (hovered) then
+		surface.SetTextColor(white_text)
+		surface.SetFont "BudgetLabel"
+		surface.SetTextPos(2, 3)
+		local star = self.constellations and self.constellations[hovered.bubble.id][hovered.node_id]
+		local w, h = surface.GetTextSize(star.Name)
+		surface.DrawText(star.Name)
+		surface.SetTextPos(2, 5 + h)
+		surface.DrawText(star.Desc)
+	end
 end
 
-PANEL = vgui.Register("pluto_tree", PANEL, "EditablePanel")
+vgui.Register("pluto_tree", PANEL, "EditablePanel")

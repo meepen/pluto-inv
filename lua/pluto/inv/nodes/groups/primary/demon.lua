@@ -9,11 +9,11 @@ GROUP.Guaranteed = {
 GROUP.SmallNodes = {
 	demon_damage = {
 		Shares = 1,
-		Max = 2,
+		Max = 1,
 	},
 	demon_heal = {
 		Shares = 1,
-		Max = 2
+		Max = 1
 	},
 	demon_speed = {
 		Shares = 1,

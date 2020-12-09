@@ -52,6 +52,7 @@ pluto.inv.messages = {
 		"tradelogresults",
 		"nodes",
 		"itemtree",
+		"constellations",
 	}
 }
 

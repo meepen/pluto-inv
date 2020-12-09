@@ -60,3 +60,34 @@ function pluto.inv.readitemtree()
 	pluto.stars:MakePopup()
 	pluto.stars:SetKeyboardInputEnabled(false)
 end
+
+function pluto.inv.readconstellations()
+	local item = pluto.inv.readitem()
+
+	local constellations = {}
+	for k = 1, net.ReadUInt(4) do
+		local constellation = {}
+		for bubble_id = 1, net.ReadUInt(8) do
+			constellation[bubble_id] = {
+				Name = net.ReadString(),
+				Desc = net.ReadString(),
+				Unlocked = net.ReadBool(),
+			}
+		end
+		constellations[k] = constellation
+	end
+
+	if (IsValid(PLUTO_TREE)) then
+		PLUTO_TREE:Remove()
+	end
+	PLUTO_TREE = vgui.Create "DFrame"
+	local f = PLUTO_TREE:Add "pluto_tree"
+	PLUTO_TREE:SetSize(600, 600)
+	PLUTO_TREE:Center()
+	f:Dock(FILL)
+	f.bubbles = tree.make_bubbles(constellations, item.ID, item.ClassName)
+	f.constellations = constellations
+	PLUTO_TREE:MakePopup()
+
+	PrintTable(constellations)
+end

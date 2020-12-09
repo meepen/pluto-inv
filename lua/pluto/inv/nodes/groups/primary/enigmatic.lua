@@ -11,7 +11,7 @@ GROUP.SmallNodes = {
 		Shares = 1,
 		Max = 1,
 	},
-	enigmatic_shoot = {
+	enigmatic_siren = {
 		Shares = 1,
 		Max = 1
 	},

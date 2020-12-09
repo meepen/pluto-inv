@@ -1,4 +1,4 @@
-local NODE = pluto.nodes.get "enigmatic_warn"
+local NODE = pluto.nodes.get "enigmatic_ground"
 
 NODE.Name = "Enigmatic Voice: HELP!"
 NODE.Description = "The voice inside this gun is afraid of beind alone. Calls for help when not being held."

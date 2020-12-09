@@ -6,6 +6,11 @@ for _, fname in pairs {
 	"stats/recoil",
 	"stats/reloading",
 
+	"enigmatic/voice",
+	"enigmatic/warn",
+	"enigmatic/siren",
+	"enigmatic/ground",
+
 	"demon/possess",
 	"demon/speed",
 	"demon/heal",
@@ -73,6 +78,10 @@ function GROUP:Generate()
 
 	for i = 1, amount do
 		local itemname, contents = pluto.inv.roll(rolls)
+		if (not itemname) then
+			break
+		end
+
 		if (istable(contents) and contents.Max) then
 			contents.Max = contents.Max - 1
 			if (contents.Max == 0) then
@@ -86,7 +95,6 @@ function GROUP:Generate()
 			node_val2 = math.random(),
 			node_val3 = math.random(),
 		})
-
 	end
 
 	return bubble
@@ -123,10 +131,26 @@ function pluto.inv.writenodes(ply, wep, nodes)
 	end
 end
 
+function pluto.inv.writeconstellations(ply, wep)
+	local constellations = pluto.nodes.generateweapon(wep:GetClass())
+
+	pluto.inv.writeitem(ply, wep:GetInventoryItem())
+
+	net.WriteUInt(#constellations, 4)
+	for _, constellation in ipairs(constellations) do
+		net.WriteUInt(#constellation, 8)
+		for _, node in ipairs(constellation) do
+			local NODE = pluto.nodes.get(node.node_name)
+			net.WriteString(NODE:GetName(node))
+			net.WriteString(NODE:GetDescription(node))
+			net.WriteBool(false) -- unlocked
+		end
+	end
+end
+
 function pluto.nodes.apply(wep, nodes)
 	for _, node in pairs(nodes) do
 		local NODE = pluto.nodes.get(node.node_name)
-		print(node)
 		NODE:ModifyWeapon(node, wep)
 	end
 
@@ -170,7 +194,6 @@ function pluto.nodes.generateweapon(class)
 	for i = 1, 4 do
 		local type = (i % 2) == 1 and "primary" or "secondary"
 		local name, roll = pluto.inv.roll(available[type])
-		print(type, roll)
 		table.insert(bubbles, roll:Generate())
 	end
 	
@@ -212,14 +235,22 @@ concommand.Add("pluto_test_nodes", function(p, c, a)
 		{
 			node_name = "gold_enchant",
 			node_val1 = math.random(),
-			node_id = 2,
-			node_bubble = 0,
 		},
 		{
 			node_name = "mortal_wound_s",
 			node_val1 = math.random(),
-			node_id = 2,
-			node_bubble = 0,
 		},
 	})
+end)
+
+concommand.Add("pluto_send_nodes", function(p, c, a)
+	local wep = p:GetActiveWeapon()
+
+	if (not wep:GetInventoryItem() or not wep:GetInventoryItem().RowID) then
+		return
+	end
+
+	pluto.inv.message(p)
+		:write("constellations", wep)
+		:send()
 end)

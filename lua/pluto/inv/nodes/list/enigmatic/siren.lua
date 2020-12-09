@@ -1,7 +1,7 @@
 local NODE = pluto.nodes.get "enigmatic_siren"
 
 NODE.Name = "Enigmatic Voice: Siren"
-NODE.Description = "The voice inside this gun warns when someone watches you from afar occasionally."
+NODE.Description = "Your gun makes siren noises when you are shooting."
 
 function NODE:ModifyWeapon(node, wep)
 	timer.Simple(0, function()
