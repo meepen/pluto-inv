@@ -26,6 +26,8 @@ for _, fname in pairs {
 	"steel/enchanted",
 	"steel/spawns",
 	"steel/transform",
+
+	"reserves/mythic",
 } do
 	include("pluto/inv/nodes/list/" .. fname .. ".lua")
 end
@@ -111,6 +113,7 @@ for _, fname in pairs {
 	"primary/enigmatic",
 	"primary/normal",
 	"primary/mortal",
+	"primary/reserves",
 	"secondary/gold",
 	"secondary/steel",
 } do
@@ -242,11 +245,7 @@ concommand.Add("pluto_test_nodes", function(p, c, a)
 
 	pluto.nodes.apply(wep, {
 		{
-			node_name = "gold_enchant",
-			node_val1 = math.random(),
-		},
-		{
-			node_name = "mortal_wound_s",
+			node_name = "mythic_reserves",
 			node_val1 = math.random(),
 		},
 	})
