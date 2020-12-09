@@ -81,6 +81,7 @@ pluto.files.load {
 		"materials/pluto/star3.png",
 		"materials/pluto/hubble.png",
 		"materials/pluto/eppen_stars.png",
+		"materials/pluto/colorful.png",
 	},
 	Workshop = {
 		"2275087857",

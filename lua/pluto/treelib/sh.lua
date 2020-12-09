@@ -392,7 +392,7 @@ function tree.generatelayout(amount, seed, name)
 
 	layout.x = state:Random(0, 1)
 	layout.y = state:Random(0, 1)
-	layout.background = state:RandomInt(1, 2)
+	layout.background = state:RandomInt(1, 3)
 
 	return layout
 end

@@ -5,12 +5,12 @@ GROUP.Guaranteed = {}
 GROUP.SmallNodes = {
 	damage = {
 		Shares = 1,
-		Max = 2,
+		Max = 1,
 	},
 	distance = 2,
 	firerate = {
 		Shares = 1,
-		Max = 2
+		Max = 1
 	},
 	mag = 1,
 	recoil = 1,

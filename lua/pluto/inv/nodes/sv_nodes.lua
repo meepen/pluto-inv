@@ -110,6 +110,7 @@ for _, fname in pairs {
 	"primary/demon",
 	"primary/enigmatic",
 	"primary/normal",
+	"primary/mortal",
 	"secondary/gold",
 	"secondary/steel",
 } do

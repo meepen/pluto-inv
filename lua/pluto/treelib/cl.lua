@@ -11,6 +11,7 @@ local sun = CreateMaterial("pluto_glow_unlit_real", "UnlitGeneric", {
 local backgrounds = {
 	Material "pluto/hubble.png",
 	Material "pluto/eppen_stars.png",
+	Material "pluto/colorful.png",
 }
 
 local matr = Matrix()
