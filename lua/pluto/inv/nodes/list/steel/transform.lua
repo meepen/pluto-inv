@@ -1,18 +1,18 @@
-local NODE = pluto.nodes.get "gold_transform"
+local NODE = pluto.nodes.get "steel_transform"
 
-NODE.Name = "Gold: Transform"
-NODE.Description = "Players killed with this gun transform to gold."
+NODE.Name = "Steel: Transform"
+NODE.Description = "Players killed with this gun transform to steel."
 
 function NODE:ModifyWeapon(node, wep)
 	timer.Simple(0, function()
 		if (not IsValid(wep)) then
 			return
 		end
-		if (not wep.GoldEnchant) then
+		if (not wep.SteelEnchant) then
 			return
 		end
 
-		local id = "gold_transform_" .. wep:GetPlutoID()
+		local id = "steel_transform_" .. wep:GetPlutoID()
 		hook.Add("PlayerRagdollCreated", id, function(ply, rag, atk, dmg)
 			if (not IsValid(wep)) then
 				hook.Remove("PlayerRagdollCreated", id)
@@ -20,7 +20,7 @@ function NODE:ModifyWeapon(node, wep)
 			end
 
 			if (dmg and dmg:GetInflictor() == wep) then
-				MakeGold(rag)
+				MakeGold(rag, "models/player/shared/steel_player")
 			end
 		end)
 	end)

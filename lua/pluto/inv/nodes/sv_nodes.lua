@@ -22,6 +22,10 @@ for _, fname in pairs {
 	"gold/enchanted",
 	"gold/spawns",
 	"gold/transform",
+
+	"steel/enchanted",
+	"steel/spawns",
+	"steel/transform",
 } do
 	include("pluto/inv/nodes/list/" .. fname .. ".lua")
 end
@@ -107,6 +111,7 @@ for _, fname in pairs {
 	"primary/enigmatic",
 	"primary/normal",
 	"secondary/gold",
+	"secondary/steel",
 } do
 	include("pluto/inv/nodes/groups/" .. fname .. ".lua")
 end
@@ -196,6 +201,7 @@ function pluto.nodes.generateweapon(class)
 	for i = 1, 4 do
 		local type = (i % 2) == 1 and "primary" or "secondary"
 		local name, roll = pluto.inv.roll(available[type])
+		available[type][name] = nil
 		table.insert(bubbles, roll:Generate())
 	end
 	

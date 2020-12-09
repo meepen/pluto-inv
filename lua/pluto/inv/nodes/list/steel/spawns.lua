@@ -1,9 +1,9 @@
-local NODE = pluto.nodes.get "gold_spawns"
+local NODE = pluto.nodes.get "steel_spawns"
 
-NODE.Name = "Gold: Coined"
+NODE.Name = "Steel: Coined"
 
 function NODE:GetDescription(node)
-	return string.format("%.2f%% more currency from this gun", 10 + node.node_val1 * 10)
+	return string.format("%.2f%% more currency from this gun", 5 + node.node_val1 * 10)
 end
 
 function NODE:ModifyWeapon(node, wep)
@@ -11,7 +11,7 @@ function NODE:ModifyWeapon(node, wep)
 		if (not IsValid(wep)) then
 			return
 		end
-		if (not wep.GoldEnchant) then
+		if (not wep.SteelEnchant) then
 			return
 		end
 
@@ -21,7 +21,7 @@ function NODE:ModifyWeapon(node, wep)
 				old(state)
 			end
 
-			state.Points = state.Points * (1 + (10 + node.node_val1 * 10) / 100)
+			state.Points = state.Points * (1 + (5 + node.node_val1 * 10) / 100)
 		end
 	end)
 end

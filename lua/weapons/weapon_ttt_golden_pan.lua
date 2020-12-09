@@ -23,7 +23,7 @@ SWEP.Ortho = {-5, 3, angle = Angle(30, -90, 90)}
 
 local mass = 12000
 
-function MakeGold(what)
+function MakeGold(what, tex)
     if (not IsValid(what)) then
         return
 	end
@@ -50,7 +50,7 @@ function MakeGold(what)
 		what:GetPhysicsObjectNum(bone):RecheckCollisionFilter()
 	end
 
-	what:SetMaterial(mat)
+	what:SetMaterial(tex or mat)
 
 	what:SetPos(what:GetPos() + vector_up * 100)
 
