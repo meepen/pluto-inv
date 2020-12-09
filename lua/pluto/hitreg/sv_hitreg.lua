@@ -36,10 +36,11 @@ net.Receive("pluto_hitreg", function(len, cl)
 
 	local hitboxes = entry.Hitboxes[hitent]
 
+--[[
 	if (not util.IntersectRayWithOBB(entry.StartPos, (hitpos - entry.StartPos):GetNormalized() * 160000, hitboxes.Origin, angle_zero, hitboxes.Mins * 1.5, hitboxes.Maxs * 1.5)) then
 		pwarnf("Player %s tried to hit %s (invalid)", cl:Nick(), hitent:Nick())
 		return
-	end
+	end]]
 
 	hitreg_pellets[shootent][bullet_num][pellet] = nil
 

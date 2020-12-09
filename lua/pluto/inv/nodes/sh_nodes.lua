@@ -8,7 +8,7 @@ pluto.nodes = pluto.nodes or {
 local NODE = pluto.nodes.mt.__index
 
 function NODE:GetName(node)
-	return self.Name or "Unknown"
+	return node.node_name or self.Name or "Unknown"
 end
 
 function NODE:GetDescription(node)
@@ -21,7 +21,8 @@ function NODE:GetDescription(node)
 end
 
 function NODE:ModifyWeapon(node, wep)
-	ErrorNoHalt("unimplemented ModifyWeapon: " .. self:GetName())
+	print(node, wep)
+	ErrorNoHalt("unimplemented ModifyWeapon: " .. self:GetName(node))
 end
 
 function NODE:GetExperienceCost(node)

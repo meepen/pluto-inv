@@ -51,6 +51,7 @@ pluto.inv.messages = {
 		"chatmessage",
 		"tradelogresults",
 		"nodes",
+		"itemtree",
 	}
 }
 

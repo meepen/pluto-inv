@@ -38,3 +38,25 @@ function pluto.inv.readnodes()
 		end
 	end
 end
+
+function pluto.inv.readitemtree()
+	if (not net.ReadBool()) then
+		return
+	end
+
+	local wep = pluto.inv.readitem()
+	
+	if (IsValid(pluto.stars)) then
+		pluto.stars:Remove()
+	end
+	pluto.stars = vgui.Create "DFrame"
+	pluto.stars.bubbles = pluto.stars:Add "pluto_tree"
+	pluto.stars.bubbles:Dock(FILL)
+
+	pluto.stars:SetPos(200, 0)
+	pluto.stars:SetSize(600, 650)
+	pluto.stars:Center()
+
+	pluto.stars:MakePopup()
+	pluto.stars:SetKeyboardInputEnabled(false)
+end

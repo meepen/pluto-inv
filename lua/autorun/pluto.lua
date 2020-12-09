@@ -38,6 +38,8 @@ pluto.files.load {
 		"minigame/cl.lua",
 
 		"inv/nodes/cl_nodes.lua",
+
+		"treelib/cl.lua",
 	},
 	Shared = {
 		"co_net.lua",
