@@ -24,21 +24,19 @@ function NODE:ModifyWeapon(node, wep)
 
 	wep.Pluto.Delay = wep.Pluto.Delay - 0.15
 
-	if (not SERVER) then
-		return
-	end
-
 	local id = "pluto_mythic_reserves" .. wep:GetPlutoID()
-	timer.Create(id, wep:GetDelay() * 3, 0, function()
+
+	local last_increase = ttt.GetRoundStateChangeTime()
+	hook.Add("Tick", id, function()
 		if (not IsValid(wep)) then
-			timer.Remove(id)
+			hook.Remove("Tick", id)
 			return
 		end
 
-		if (wep:Clip1() < wep:GetMaxClip1()) then
+
+		if (last_increase + wep:GetDelay() * 4 < CurTime()) then
+			last_increase = last_increase + wep:GetDelay() * 4
 			wep:SetClip1(math.min(wep:GetMaxClip1(), wep:Clip1() + 1))
-			return
 		end
-		local owner = wep:GetOwner()
 	end)
 end
