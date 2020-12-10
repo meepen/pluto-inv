@@ -50,6 +50,7 @@ pluto.inv.messages = {
 		"playerexp",
 		"chatmessage",
 		"tradelogresults",
+		"currencyspawn",
 	}
 }
 
@@ -104,31 +105,48 @@ end
 local a = {
 	__index = {
 		write = function(self, what, ...)
+			table.insert(self.Messages, {what = what, args = {n = select("#", ...), ...}})
+			return self
+		end,
+		writemessage = function(self, ply, what, ...)
 			if (SERVER) then
-				pluto.inv.send(self.Player, what, ...)
+				pluto.inv.send(ply, what, ...)
 			else
 				pluto.inv.send(what, ...)
 			end
 			return self
 		end,
-		send = function(self)
-			self:write("end")
+		writeto = function(self, ply)
+			co_net.Start("pluto_inv_data", function()
+				if (SERVER) then
+					net.Send(ply)
+				else
+					net.SendToServer()
+				end
+			end)
+			for _, msg in ipairs(self.Messages) do
+				self:writemessage(ply, msg.what, unpack(msg.args, 1, msg.args.n))
+			end
+			self:writemessage(ply, "end")
 			net.Finish()
+			return self
+		end,
+		send = function(self)
+			if (SERVER) then
+				for _, ply in pairs(self.Players) do
+					self:writeto(ply)
+				end
+			else
+				self:writeto(nil)
+			end
 		end
 	}
 }
 
 function pluto.inv.message(ply)
-	co_net.Start("pluto_inv_data", function()
-		if (SERVER) then
-			net.Send(ply)
-		else
-			net.SendToServer()
-		end
-	end)
-
 	return setmetatable({
-		Player = ply
+		Players = istable(ply) and ply or {ply},
+		Messages = {}
 	}, a)
 end
 
