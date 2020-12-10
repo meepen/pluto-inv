@@ -1125,7 +1125,11 @@ DEFINE_BASECLASS "pluto_inventory_base"
 function PANEL:Init()
 	BaseClass.Init(self)
 
-	self.Layout = self:Add "DIconLayout"
+
+	self.Scroller = self:Add "DScrollPanel"
+	self.Scroller:Dock(FILL)
+
+	self.Layout = self.Scroller:Add "DIconLayout"
 	self.Layout:Dock(FILL)
 
 	self.Currencies = {}
@@ -1144,7 +1148,7 @@ end
 function PANEL:PerformLayout(w, h)
 	local count = 3
 	local d = 1
-	local size = math.floor(w / (count + d) / count) * count
+	local size = math.floor((w - 20) / (count + d) / count) * count
 	local divide = size / (count + 2)
 
 	for _, item in pairs(self.Currencies) do
