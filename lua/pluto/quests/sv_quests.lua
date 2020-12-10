@@ -17,7 +17,6 @@ for _, id in pairs {
 	"melee",
 	"nojump",
 	"oneshot",
-	"stickcurr",
 	"traitors",
 	"floor",
 	"wepswitch",

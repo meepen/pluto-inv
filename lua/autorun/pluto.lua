@@ -10,6 +10,7 @@ pluto.files.load {
 		"cl/settings.lua",
 		"inv/ui.lua",
 		"inv/cl_manager.lua",
+		"inv/currency/object/cl_object.lua",
 		"trades/cl.lua",
 		"models/cl_models.lua",
 		"mapvote/cl_mapvote.lua",
@@ -45,6 +46,7 @@ pluto.files.load {
 		"inv/sh_manager.lua",
 		"inv/sh_tabs.lua",
 		"inv/currency/sh_currency.lua",
+		"inv/currency/object/sh_object.lua",
 
 		"quests/sh_quests.lua",
 	
