@@ -1013,7 +1013,7 @@ function pluto.currency.spawnfor(ply, currency, pos, global)
 
 	pluto.currency.spawned[ent] = ply
 
-	return e
+	return ent
 end
 
 pluto.currency.tospawn = pluto.currency.tospawn or {}

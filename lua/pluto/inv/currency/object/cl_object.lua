@@ -48,7 +48,7 @@ hook.Add("PostDrawTranslucentRenderables", "pluto_new_currency_render", function
 	local up_offset = vector_up * (math.sin(timing * math.pi) + 1) / 2 * 15 * 0.25
 
 	local dist = math.min(16000, LocalPlayer():GetCurrencyDistance())
-	local force_z = true or LocalPlayer():GetCurrencyTime() > CurTime() and dist > self:GetPos():Distance(LocalPlayer():GetPos())
+	local force_z = LocalPlayer():GetCurrencyTime() > CurTime() and dist > self:GetPos():Distance(LocalPlayer():GetPos())
 	
 	if (force_z) then
 		cam.IgnoreZ(true)

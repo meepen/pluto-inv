@@ -1,5 +1,5 @@
 local rain
-hook.Remove("TTTBeginRound", "pluto_falling_currency", function()
+hook.Add("TTTBeginRound", "pluto_falling_currency", function()
 	if (not rain and math.random(20) ~= 1) then
 		return
 	end
@@ -14,12 +14,14 @@ hook.Remove("TTTBeginRound", "pluto_falling_currency", function()
 				continue
 			end
 			for i = 1, 5 do
-				local e = pluto.currency.spawnfor(ply, pluto.inv.roll {
+				local e = pluto.currency.spawnfor(ply, (pluto.inv.roll {
 					droplet = 15,
 					pdrop = 1,
 					aciddrop = 1
-				}, nil, "pluto_falling_currency")
+				}))
 				e:SetPos(e:GetPos() + vector_up * 500)
+				e:SetMovementType(CURRENCY_MOVEDOWN)
+				e:Update()
 			end
 		end
 	end)

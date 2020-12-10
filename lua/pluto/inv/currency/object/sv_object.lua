@@ -121,10 +121,21 @@ hook.Add("Tick", "pluto_new_currency_pickup", function()
 
 
 	for id, cur in pairs(pluto.currency.object_list) do
+		local got = false
 		for _, e in pairs(cur.Listeners) do
 			if (cur:BoundsWithin(e)) then
-				cur:TryReward(e)
+				if (cur:TryReward(e)) then
+					got = true
+					break
+				end
 			end
+		end
+		if (got) then
+			continue
+		end
+
+		if (cur:GetPos().z < -10000) then
+			cur:Remove()
 		end
 	end
 end)

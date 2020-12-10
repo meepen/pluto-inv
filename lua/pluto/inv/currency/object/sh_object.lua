@@ -28,10 +28,14 @@ function CURRENCY:BoundsWithin(e)
 end
 
 CURRENCY_MOVESTILL = 0
+CURRENCY_MOVEDOWN = 1
 CURRENCY_MOVEMAX = 16
 
 local movements = {
-	[CURRENCY_MOVESTILL] = function(self) return self:GetNetworkedPosition() end
+	[CURRENCY_MOVESTILL] = function(self) return self:GetNetworkedPosition() end,
+	[CURRENCY_MOVEDOWN] = function(self)
+		return self:GetNetworkedPosition() - vector_up * 80 * (CurTime() - self:GetNetworkedPositionTime())
+	end,
 }
 
 function CURRENCY:GetPos()
