@@ -295,19 +295,27 @@ pluto.currency.list = {
 		end,
 	},
 	{
-		InternalName = "_lightsaber",
-		Name = "FAKE: Lightsaber",
-		Icon = "lightsaber/lightsaber_killicon.png",
-		Color = color_white,
-		Fake = true
-	},
-	{
 		InternalName = "eye",
 		Name = "Eye",
 		Icon = "pluto/currencies/eye.png",
 		Description = "Spawns a Void boss",
 		SubDescription = "I see the void envelop you, friend... embrace me.",
 		Color = Color(107, 25, 14),
+	},
+	{
+		InternalName = "stardust",
+		Name = "Stardust",
+		Icon = "pluto/currencies/stardust.png",
+		Description = "Currency in the God's Market",
+		SubDescription = "Dust from a star far away.",
+		Color = Color(254, 233, 105),
+	},
+	{
+		InternalName = "_lightsaber",
+		Name = "FAKE: Lightsaber",
+		Icon = "lightsaber/lightsaber_killicon.png",
+		Color = color_white,
+		Fake = true
 	},
 	{
 		InternalName = "_banna",
