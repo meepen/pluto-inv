@@ -59,7 +59,7 @@ pluto.tabs = {
 		size = 7,
 		element = "pluto_inventory_equip",
 	},
-	craft = {
+	market = {
 		canaccept = function(tabindex, item)
 			return item.TabID ~= 0
 		end,
@@ -67,7 +67,7 @@ pluto.tabs = {
 			return true
 		end,
 		size = 6,
-		element = "pluto_craft",
+		element = "pluto_divine_market",
 	},
 	trade = {
 		canaccept = function(tabindex, item)

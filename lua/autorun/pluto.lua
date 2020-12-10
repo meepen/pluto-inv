@@ -21,6 +21,9 @@ pluto.files.load {
 		"quests/cl_quests.lua",
 		"models/cl_showhitgroups.lua",
 
+		"divine/cl.lua",
+		"divine/cl_stardust_shop.lua",
+
 		"chat/cl_chat.lua",
 		"chat/cl_settings.lua",
 		"chat/cl_filter.lua",

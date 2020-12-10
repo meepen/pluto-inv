@@ -2575,8 +2575,8 @@ end)
 
 function pluto.inv.remakefake()
 	pluto.crafttab = {
-		Type = "craft",
-		Name = CreateConVar("pluto_crafttab_name", "Craft", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Craft tab name"),
+		Type = "market",
+		Name = CreateConVar("pluto_markettab_name", "Divine Market", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Market tab name"),
 		ID = 0,
 		Items = {},
 		Currency = {},

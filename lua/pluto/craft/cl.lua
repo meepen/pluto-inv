@@ -356,7 +356,7 @@ function PANEL:PlutoCraftResults(outcomes)
 	self.OutcomeLayer:InvalidateLayout(true)
 end
 
-vgui.Register("pluto_craft", PANEL, "pluto_inventory_base")
+vgui.Register("pluto_craft", PANEL, "EditablePanel")
 
 function pluto.inv.writecraftheader(items)
 	for i = 1, 7 do

@@ -79,6 +79,7 @@ pluto.files.load {
 		"resource/fonts/Niconne-Regular.ttf",
 		"resource/fonts/Lateef-Regular.ttf",
 		"resource/fonts/Aladin-Regular.ttf",
+		"resource/fonts/PermanentMarker-Regular.ttf",
 	},
 	Workshop = {
 		"2275087857",
