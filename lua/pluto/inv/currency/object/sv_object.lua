@@ -134,7 +134,8 @@ hook.Add("Tick", "pluto_new_currency_pickup", function()
 			continue
 		end
 
-		if (cur:GetPos().z < -10000) then
+		local mins = game.GetWorld():GetModelBounds()
+		if (cur:GetPos().z < mins.z) then
 			cur:Remove()
 		end
 	end
