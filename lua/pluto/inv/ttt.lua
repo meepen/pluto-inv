@@ -228,7 +228,7 @@ end)
 hook.Add("TTTRoundStart", "pluto_loadout_fallback", function(plys)
 	for _, ply in ipairs(plys) do
 		if (not ply:Alive()) then
-			return
+			continue
 		end
 
 		hook.Run("PlayerSetModel", ply)
