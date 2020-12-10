@@ -1,4 +1,4 @@
-local GROUP = pluto.nodes.groups.get("normal", 1)
+local GROUP = pluto.nodes.groups.get("reserves", 1)
 
 GROUP.Type = "primary"
 
