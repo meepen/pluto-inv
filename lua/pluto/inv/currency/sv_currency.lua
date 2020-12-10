@@ -986,16 +986,7 @@ end
 
 function pluto.currency.spawnfor(ply, currency, pos, global)
 	if (not pos) then
-		for i = 1, 100 do
-			pos = pluto.currency.randompos()
-			if (pos) then
-				break
-			end
-		end
-	end
-
-	if (not pos) then
-		return
+		pos = pluto.currency.randompos()
 	end
 
 	if (not currency) then
@@ -1004,27 +995,25 @@ function pluto.currency.spawnfor(ply, currency, pos, global)
 		currency = pluto.currency.byname[currency]
 	end
 
-	local e 
-	if (global == true or currency.Global) then
-		e = ents.Create "pluto_global_currency"
-	elseif (not global) then
-		e = ents.Create "pluto_currency"
-	else
-		e = ents.Create(global)
-	end
+	
 
-	e:SetPos(pos + 20 * vector_up)
-	e:SetOwner(ply)
-	e:SetCurrency(currency)
-	e:Spawn()
+	local ent = pluto.currency.entity()
+	ent:SetSize(22)
+	ent:SetPos(pos + vector_up * ent:GetSize())
+	ent:SetCurrencyType(currency.InternalName)
+	if (global == true or currency.Global) then
+		ent:AddListener(player.GetHumans())
+	else
+		ent:AddListener(ply)
+	end
 
 	if (currency.Shares and currency.Shares <= pluto.currency.byname.heart.Shares) then
 		ply:ChatPrint(currency.Color, "... ", white_text, "You feel the essence of a ", currency.Color, "rare currency ", white_text, "vibrate your soul")
 	end
 
-	pluto.currency.spawned[e] = ply
+	pluto.currency.spawned[ent] = ply
 
-	return e
+	return ent
 end
 
 pluto.currency.tospawn = pluto.currency.tospawn or {}
@@ -1138,7 +1127,11 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 	pluto.currency.navs.start()
 
 	for _, item in pairs(round.GetStartingPlayers()) do
-		if (item.Player.WasAFK or item.Player:GetRoleTeam() ~= "innocent") then
+		if (item.Player.WasAFK) then
+			pluto.currency.tospawn[item.Player] = 0
+			continue
+		end
+		if (item.Player:GetRoleTeam() ~= "innocent") then
 			continue
 		end
 
@@ -1185,14 +1178,4 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 			end
 		end)
 	end
-end)
-
-concommand.Add("pluto_spawn_cur", function(ply, cmd, args)
-	if (not pluto.cancheat(ply)) then
-		return
-	end
-
-	local pos = ply:GetEyeTrace().HitPos
-
-	pluto.currency.spawnfor(ply, args[1] or "droplet", pos, args[2])
 end)
