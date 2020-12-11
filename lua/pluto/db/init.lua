@@ -28,7 +28,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 
 				original_owner BIGINT UNSIGNED NOT NULL,
 
-				creation_method enum("DROPPED", "SPAWNED", "UNBOXED", "FOUND", "DELETE", "QUEST", "REWARD", "MIRROR", "CRAFT") NOT NULL DEFAULT "DROPPED",
+				creation_method enum("DROPPED", "SPAWNED", "UNBOXED", "FOUND", "DELETE", "QUEST", "REWARD", "MIRROR", "CRAFT", "BOUGHT") NOT NULL DEFAULT "DROPPED",
 
 				FOREIGN KEY(tab_id) REFERENCES pluto_tabs(idx) ON DELETE CASCADE,
 				UNIQUE INDEX (tab_id, tab_idx),
@@ -224,6 +224,16 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 
 				INDEX (trade_id),
 				INDEX (item_id)
+			)
+		]])
+
+		mysql_query(db, [[
+			CREATE TABLE IF NOT EXISTS pluto_stardust_shop (
+				id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+				item VARCHAR(64) NOT NULL,
+				price INT UNSIGNED NOT NULL,
+				endtime TIMESTAMP NOT NULL,
+				bought INT UNSIGNED NOT NULL DEFAULT 0
 			)
 		]])
 	end)

@@ -53,6 +53,7 @@ pluto.files.load {
 		"minigame/sv.lua",
 
 		"divine/sv_currency_exchange.lua",
+		"divine/sv_stardust_shop.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty

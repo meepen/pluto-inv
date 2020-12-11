@@ -26,6 +26,7 @@ function PANEL:Init()
 	self.LeftExpand:AddSelection("Stardust Shop", "pluto_stardust_shop")
 	self.LeftExpand:AddSelection("Currency Exchange", "pluto_stardust_exchange")
 	self.LeftExpand:AddSelection("Shard Crafting", "pluto_craft")
+	self.LeftExpand:AddSelection("Crafting Bench", "pluto_craft")
 end
 
 function PANEL:RecreateContents(tabtype)

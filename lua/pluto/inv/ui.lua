@@ -593,6 +593,9 @@ function PANEL:OnMousePressed(code)
 		if (code == MOUSE_RIGHT and LocalPlayer():GetUserGroup() == "developer") then
 			CreateMenu(self, self.Item)
 		end
+		if (code == MOUSE_LEFT and self.OverrideClick) then
+			self:OverrideClick()
+		end
 		return
 	end
 

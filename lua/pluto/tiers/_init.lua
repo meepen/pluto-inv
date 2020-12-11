@@ -172,6 +172,7 @@ for _, name in pairs {
 	"mystical",
 	"otherworldly",
 	"powerful",
+	"promised",
 	"shadowy",
 	"stable",
 	"tester",

@@ -84,10 +84,14 @@ function pluto.inv.readexchangestardust(cl)
 	end
 
 	local function revert()
-		lookup[forwhat].Amount = lookup[forwhat].Amount + howmany
+		if (lookup[forwhat]) then
+			lookup[forwhat].Amount = lookup[forwhat].Amount + howmany
+		end
 		pluto.divine.currency_exchange.update()
 	end
-	lookup[forwhat].Amount = lookup[forwhat].Amount - howmany
+	if (lookup[forwhat]) then
+		lookup[forwhat].Amount = lookup[forwhat].Amount - howmany
+	end
 	pluto.divine.currency_exchange.update()
 
 	pluto.db.transact(function(db)

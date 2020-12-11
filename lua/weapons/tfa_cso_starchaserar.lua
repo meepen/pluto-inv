@@ -1,7 +1,7 @@
 SWEP.Base				= "weapon_ttt_aug"
 SWEP.Category				= "TFA CS:O"
 SWEP.Author				= "Kamikaze"
-SWEP.PrintName				= "Star Chaser AR"
+SWEP.PrintName				= "Star Chaser"
 SWEP.Slot				= 2
 
 SWEP.Primary.Sound 			= "StarAR.Fire"
@@ -11,6 +11,7 @@ SWEP.ViewModel			= "models/weapons/tfa_cso/c_starchaserar.mdl"
 SWEP.ViewModelFOV			= 80
 SWEP.ViewModelFlip			= true
 SWEP.UseHands = true
+SWEP.NoPlayerModelHands = true
 
 SWEP.HoldType 				= "smg"
 
@@ -57,17 +58,16 @@ SWEP.Bullets = {
 	TracerName = "tfa_tracer_gauss"
 }
 
+function SWEP:Kill(something, atk, vic)
+	if (atk:GetRoleTeam() == vic:GetRoleTeam()) then
+		return
+	end
+
+	pluto.currency.spawnfor(atk, "stardust")
+end
+
 SWEP.MuzzleFlashEffect = "tfa_muzzleflash_sniper_energy"
 
 SWEP.Spawnable = false
 SWEP.AutoSpawnable = false
 SWEP.PlutoSpawnable = false
-
-DEFINE_BASECLASS(SWEP.Base)
-function SWEP:Reload()
-	if (self:GetIronsights()) then
-
-	else
-		BaseClass.Reload(self)
-	end
-end

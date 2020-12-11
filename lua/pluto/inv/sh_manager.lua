@@ -52,6 +52,7 @@ pluto.inv.messages = {
 		"chatmessage",
 		"tradelogresults",
 		"currencyspawn",
+		"stardustshop",
 	}
 }
 
