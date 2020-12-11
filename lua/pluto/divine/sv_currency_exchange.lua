@@ -79,13 +79,26 @@ function pluto.inv.readexchangestardust(cl)
 
 	local ratio = curr.StardustRatio or lookup[forwhat].Ratio
 
+	if (lookup[forwhat] and lookup[forwhat].Amount > howmany) then
+		return
+	end
+
+	local function revert()
+		lookup[forwhat].Amount = lookup[forwhat].Amount + howmany
+		pluto.divine.currency_exchange.update()
+	end
+	lookup[forwhat].Amount = lookup[forwhat].Amount - howmany
+	pluto.divine.currency_exchange.update()
+
 	pluto.db.transact(function(db)
 		if (not pluto.inv.addcurrency(db, cl, "stardust", math.ceil(-howmany * ratio))) then
+			revert()
 			mysql_rollback(db)
 			return
 		end
 
 		if (not pluto.inv.addcurrency(db, cl, forwhat, math.ceil(howmany))) then
+			revert()
 			mysql_rollback(db)
 			return
 		end
@@ -93,5 +106,4 @@ function pluto.inv.readexchangestardust(cl)
 		mysql_commit(db)
 		cl:ChatPrint("You traded " .. (math.ceil(howmany * ratio)) .. " ", pluto.currency.byname.stardust, " for " .. howmany .. " ", pluto.currency.byname[forwhat])
 	end)
-
 end
