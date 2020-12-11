@@ -51,6 +51,8 @@ pluto.files.load {
 		"sv/ammospawn.lua",
 
 		"minigame/sv.lua",
+
+		"divine/sv_currency_exchange.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty

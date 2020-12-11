@@ -22,6 +22,7 @@ pluto.inv.messages = {
 		"unname",
 		"chat",
 		"gettrades",
+		"exchangestardust",
 	},
 	sv2cl = {
 		[0] = "end",
