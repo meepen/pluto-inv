@@ -27,7 +27,7 @@ function PANEL:Init()
 
 	self.SpecialLabel = self:Add "DLabel"
 	self.SpecialLabel:Dock(TOP)
-	self.SpecialLabel:SetText "SPECIALS"
+	self.SpecialLabel:SetText "Limited Time"
 	self.SpecialLabel:SetFont "headline_font"
 	self.SpecialLabel:SetContentAlignment(5)
 	self.SpecialLabel:SizeToContents()

@@ -712,16 +712,20 @@ function PANEL:SetInfo(cur, amt, upd)
 
 	self.Currency = cur
 
-	if (not cur or amt == 0 or self.Modifiable and not upd and pluto.tradetab.Currency[cur]) then
-		self.Info = nil
+	if (self.OverrideInfo) then
+		self:OverrideInfo(cur, amt)
 	else
-		if (self.Modifiable) then
-			pluto.tradetab.Currency[cur] = amt
+		if (not cur or amt == 0 or self.Modifiable and not upd and pluto.tradetab.Currency[cur]) then
+			self.Info = nil
+		else
+			if (self.Modifiable) then
+				pluto.tradetab.Currency[cur] = amt
+			end
+			self.Info = {
+				Currency = cur,
+				Amount = amt,
+			}
 		end
-		self.Info = {
-			Currency = cur,
-			Amount = amt,
-		}
 	end
 
 	if (self.Modifiable and not upd) then

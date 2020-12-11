@@ -104,6 +104,25 @@ function pluto.inv.addcurrency(db, steamid, currency, amt)
 	return true
 end
 
+concommand.Add("pluto_set_zero_cur", function(p, c, a)
+	if (not pluto.cancheat(p)) then
+		return
+	end
+
+	pluto.db.transact(function(db)
+		mysql_stmt_run(db, "DELETE FROM pluto_currency_tab WHERE owner = ? AND currency = ?", pluto.db.steamid64(p), a[1])
+		
+		local ply = p
+		local currency = a[1]
+		if (IsValid(ply) and pluto.inv.currencies[ply]) then
+			pluto.inv.currencies[ply][currency] = 0
+			pluto.inv.message(ply)
+				:write("currencyupdate", currency)
+				:send()
+		end
+	end)
+end)
+
 local added_types = {"buffer"}
 
 function pluto.inv.retrievetabs(steamid, cb)

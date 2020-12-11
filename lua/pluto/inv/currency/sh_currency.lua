@@ -14,6 +14,7 @@ pluto.currency.list = {
 			Chance = 1 / 4,
 			Mod = "dropletted",
 		},
+		StardustRatio = 2,
 	},
 	{
 		InternalName = "aciddrop",
@@ -22,6 +23,7 @@ pluto.currency.list = {
 		Description = "Rerolls prefix modifiers on an item",
 		SubDescription = "What have Yaari done to you, my children?!",
 		Color = Color(11, 84, 51),
+		StardustRatio = 75,
 	},
 	{
 		InternalName = "pdrop",
@@ -30,6 +32,7 @@ pluto.currency.list = {
 		Description = "Rerolls suffix modifiers on an item",
 		SubDescription = "Back when these things first were created, the military bought them straight from the man himself... paid upwards to a million for a single liter. Nowadays they are shot straight up to the skies",
 		Color = Color(117, 28, 178),
+		StardustRatio = 100,
 	},
 	{
 		InternalName = "hand",
@@ -42,6 +45,7 @@ pluto.currency.list = {
 			Chance = 1 / 4,
 			Mod = "handed",
 		},
+		StardustRatio = 5,
 	},
 	{
 		InternalName = "dice",
@@ -54,6 +58,7 @@ pluto.currency.list = {
 			Chance = 1 / 3,
 			Mod = "diced",
 		},
+		StardustRatio = 4,
 	},
 	{
 		InternalName = "tome",
@@ -66,6 +71,7 @@ pluto.currency.list = {
 			Chance = 1 / 5,
 			Mod = "tomed",
 		},
+		StardustRatio = 90,
 	},
 	{
 		InternalName = "crate0",
@@ -144,6 +150,7 @@ pluto.currency.list = {
 			Chance = 1 / 3,
 			Mod = "hearted",
 		},
+		StardustRatio = 250,
 	},
 	{
 		InternalName = "coin",
@@ -157,6 +164,7 @@ pluto.currency.list = {
 			Chance = 0.5,
 			Mod = "coined",
 		},
+		StardustRatio = 6000,
 	},
 	{
 		InternalName = "mirror",
@@ -173,6 +181,7 @@ pluto.currency.list = {
 		Description = "Set an item's nickname",
 		SubDescription = "This glass quill was used by the inscribers to write history before it was even made. What will you do with it?",
 		Color = Color(23, 127, 105),
+		StardustRatio = 9000,
 		ClientsideUse = function(item)
 			if (item.Nickname) then
 				chat.AddText(white_text, "You must remove that item's name before naming it again!")
@@ -309,6 +318,9 @@ pluto.currency.list = {
 		Description = "Currency in the God's Market",
 		SubDescription = "Dust from a star far away.",
 		Color = Color(254, 233, 105),
+		NoTarget = true,
+		ClientsideUse = function()
+		end,
 	},
 	{
 		InternalName = "_lightsaber",
