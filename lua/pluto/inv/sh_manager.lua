@@ -23,6 +23,7 @@ pluto.inv.messages = {
 		"chat",
 		"gettrades",
 		"exchangestardust",
+		"auctionsearch",
 	},
 	sv2cl = {
 		[0] = "end",

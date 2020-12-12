@@ -84,17 +84,63 @@ function PANEL:Init()
 	self.PageLabel = self.Pages:Add "DLabel"
 	self.PageLabel:SetContentAlignment(5)
 	self.PageLabel:SetFont "stardust_shop_price"
-	self.PageLabel:SetText "Page 1 / 1"
+	self.PageLabel:SetText "Page 1 / ?"
 	self.PageLabel:Dock(FILL)
 
 	self.Search = self:Add "EditablePanel"
 	self.Search:Dock(FILL)
+
+	self.GoRight = self.Pages:Add "DButton"
+	self.GoRight:Dock(RIGHT)
+	self.GoRight:SetWide(64)
+	self.GoRight:SetText ">"
+	self.GoRight:SetTextColor(white_text)
+	function self.GoRight:Paint(w, h)
+	end
+
+	self.GoLeft = self.Pages:Add "DButton"
+	self.GoLeft:Dock(LEFT)
+	self.GoLeft:SetWide(64)
+	self.GoLeft:SetText "<"
+	self.GoLeft:SetTextColor(white_text)
+	function self.GoLeft:Paint(w, h)
+	end
+
+	function self.GoRight.DoClick()
+		self:SetPage(self:GetPage() + 1)
+	end
+	function self.GoLeft.DoClick()
+		self:SetPage(self:GetPage() - 1)
+	end
+
 	self.SearchLabel = self.Search:Add "DLabel"
 	self.SearchLabel:SetText "SEARCH AREA"
 	self.SearchLabel:Dock(FILL)
 	self.SearchLabel:SetContentAlignment(5)
 
 	hook.Add("PlutoReceiveAuctionData", self, self.PlutoReceiveAuctionData)
+
+	self:RunSearch()
+
+	self.Page = 1
+end
+
+function PANEL:SetPage(page)
+	self.Page = math.max(1, page)
+	self.PageLabel:SetText("Page " .. self.Page .. " / ?")
+	self:RunSearch()
+end
+
+function PANEL:GetPage()
+	return self.Page
+end
+
+function PANEL:RunSearch()
+	pluto.inv.message()
+		:write("auctionsearch", {
+			Page = self.Page
+		})
+		:send()
 end
 
 function PANEL:PlutoReceiveAuctionData(items)
@@ -116,4 +162,8 @@ function pluto.inv.readauctiondata()
 	end
 
 	hook.Run("PlutoReceiveAuctionData", items)
+end
+
+function pluto.inv.writeauctionsearch(data)
+	net.WriteUInt((data.Page or 1) - 1, 32)
 end

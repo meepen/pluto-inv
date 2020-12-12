@@ -59,12 +59,10 @@ concommand.Add("pluto_send_to_auction", function(p, c, a)
 end)
 
 pluto.divine = pluto.divine or {}
-pluto.divine.auction_list = {}
+pluto.divine.auction_list = pluto.divine.auction_list or {}
 
-concommand.Add("pluto_search_auction", function(p, c, a)
-	local page = tonumber(a[1]) or 1
-
-	page = math.max(1, page)
+function pluto.inv.readauctionsearch(p)
+	local page = net.ReadUInt(32)
 
 	pluto.db.transact(function(db)
 		local tab_id = get_auction_idx(db)
@@ -81,7 +79,7 @@ concommand.Add("pluto_search_auction", function(p, c, a)
 
 				WHERE tab_id = ?
 				ORDER BY tab_idx ASC
-				LIMIT 15 OFFSET ?]], tab_id, (page - 1) * 15)
+				LIMIT 15 OFFSET ?]], tab_id, page * 15)
 
 		local weapons = {}
 		local weapon_ids = {}
@@ -112,7 +110,7 @@ concommand.Add("pluto_search_auction", function(p, c, a)
 			:write("auctiondata", items)
 			:send()
 	end)
-end)
+end
 
 concommand.Add("pluto_auction_buy", function(p, c, a)
 	local itemid = tonumber(a[1])
@@ -127,7 +125,15 @@ concommand.Add("pluto_auction_buy", function(p, c, a)
 
 	pluto.db.transact(function(db)
 		local tab_id = get_auction_idx(db)
+		local tab = pluto.inv.invs[p].tabs.buffer
 		mysql_stmt_run(db, "SELECT * from pluto_items WHERE tab_id = ? FOR UPDATE", tab_id)
+
+		local data = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = 1 WHERE idx = ? AND tab_id = ?", tab.RowID, new_item.RowID, tab_id)
+		if (data.AFFECTED_ROWS ~= 1) then
+			mysql_rollback(db)
+			return
+		end
+
 		if (not pluto.inv.addcurrency(db, p, "stardust", -new_item.Price)) then
 			mysql_rollback(db)
 			return
@@ -137,14 +143,13 @@ concommand.Add("pluto_auction_buy", function(p, c, a)
 
 		pluto.inv.addcurrency(db, new_item.Lister, "stardust", new_item.Price)
 
-		local tab = pluto.inv.invs[p].tabs.buffer
 		pluto.inv.pushbuffer(db, p)
 	
 		new_item.TabID = tab.RowID
 		new_item.TabIndex = 1
 		new_item.Owner = p:SteamID64()
-	
-		mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = 1 WHERE idx = ?", tab.RowID, new_item.RowID)
+		pluto.itemids[new_item.RowID] = new_item
+
 		mysql_stmt_run(db, "DELETE FROM pluto_auction_info WHERE idx = ?", tab_idx)
 		pluto.inv.notifybufferitem(p, new_item)
 		tab.Items[1] = new_item
