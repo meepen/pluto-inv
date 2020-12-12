@@ -1881,7 +1881,9 @@ end
 function PANEL:PerformLayout(w, h)
 	local real_h = w * 0.07
 
-	self.Items:SetTall(h - real_h - pad)
+	if (IsValid(self.Items)) then
+		self.Items:SetTall(h - real_h - pad)
+	end
 
 	self.Tabs:SetTall(28)
 
