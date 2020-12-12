@@ -81,6 +81,7 @@ end
 
 vgui.Register("pluto_divine_market_selector", PANEL, "pluto_inventory_base")
 
+pluto.divine = pluto.divine or {}
 function pluto.divine.confirm(what, yesfn)
 	what = what or "Action"
 	if (IsValid(pluto.divine.confirmation)) then
