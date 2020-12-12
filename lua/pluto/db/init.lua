@@ -21,7 +21,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				exp INT UNSIGNED NOT NULL DEFAULT 0,
 
 				tab_id INT UNSIGNED NOT NULL,
-				tab_idx TINYINT UNSIGNED NOT NULL,
+				tab_idx INT UNSIGNED NOT NULL,
 
 				locked tinyint(1) NOT NULL DEFAULT 0,
 				untradeable tinyint(1) NOT NULL DEFAULT 0,
@@ -234,6 +234,19 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				price INT UNSIGNED NOT NULL,
 				endtime TIMESTAMP NOT NULL,
 				bought INT UNSIGNED NOT NULL DEFAULT 0
+			)
+		]])
+
+		mysql_query(db, [[
+			CREATE TABLE IF NOT EXISTS pluto_auction_info (
+				idx INT UNSIGNED NOT NULL PRIMARY KEY,
+				owner BIGINT UNSIGNED NOT NULL REFERENCES pluto_player_info(steamid),
+				price INT UNSIGNED NOT NULL,
+				listed TIMESTAMP NOT NULL,
+
+				INDEX USING HASH(owner),
+				INDEX(price),
+				INDEX(listed)
 			)
 		]])
 	end)

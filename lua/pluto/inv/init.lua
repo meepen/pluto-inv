@@ -285,6 +285,75 @@ function pluto.inv.getfreespace(ply, item)
 	end
 end
 
+function pluto.inv.itemfromrow(item)
+	local it = setmetatable({
+		RowID = item.idx,
+		TabIndex = item.tab_idx,
+		TabID = item.tab_id,
+		Tier = pluto.tiers.byname[item.tier] or pluto.tiers.byname.unique,
+		ClassName = item.class,
+		Owner = steamid,
+		SpecialName = item.special_name,
+		Experience = item.exp,
+		Nickname = item.nick,
+		Locked = tobool(item.locked),
+		OriginalOwner = item.original_owner,
+		OriginalOwnerName = item.original_name,
+		Untradeable = item.untradeable == 1,
+		CreationMethod = item.creation_method,
+	}, pluto.inv.item_mt)
+
+	it.Type = pluto.inv.itemtype(it)
+
+	if (it.Type == "Weapon") then
+		it.Mods = {
+			implicit = {},
+			prefix = {},
+			suffix = {},
+		}
+	elseif (it.Type == "Model") then
+		it.Model = pluto.models[it.ClassName:match"model_(.+)"]
+	end
+
+	if (item.tier == "crafted") then
+		it.Tier = pluto.tiers.craft {
+			item.tier1 or "unique",
+			item.tier2 or "unique",
+			item.tier3 or "unique",
+		}
+	end
+
+	return it
+end
+
+function pluto.inv.readmodrow(weapons, item)
+	local wpn = weapons[item.gun_index]
+
+	if (not wpn) then
+		pwarnf("Mod %i doesn't associate with weapon %i", item.idx, item.gun_index)
+		return
+	end
+
+	local mod = pluto.mods.byname[item.modname]
+
+	if (not mod or not wpn.Mods) then
+		return
+	end
+
+	wpn.Mods[mod.Type] = wpn.Mods[mod.Type] or {}
+
+	if (not item.tier) then
+		return
+	end
+
+	table.insert(wpn.Mods[mod.Type], {
+		Roll = { item.roll1, item.roll2, item.roll3 },
+		Mod = item.modname,
+		Tier = item.tier,
+		RowID = item.idx
+	})
+end
+
 function pluto.inv.retrieveitems(steamid, cb)
 	steamid = pluto.db.steamid64(steamid)
 	local ply = player.GetBySteamID64(steamid)
@@ -300,42 +369,7 @@ function pluto.inv.retrieveitems(steamid, cb)
 		local weapons = {}
 
 		for i, item in ipairs(d) do
-			local it = setmetatable({
-				RowID = item.idx,
-				TabIndex = item.tab_idx,
-				TabID = item.tab_id,
-				Tier = pluto.tiers.byname[item.tier] or pluto.tiers.byname.unique,
-				ClassName = item.class,
-				Owner = steamid,
-				SpecialName = item.special_name,
-				Experience = item.exp,
-				Nickname = item.nick,
-				Locked = tobool(item.locked),
-				OriginalOwner = item.original_owner,
-				OriginalOwnerName = item.original_name,
-				Untradeable = item.untradeable == 1,
-				CreationMethod = item.creation_method,
-			}, pluto.inv.item_mt)
-
-			it.Type = pluto.inv.itemtype(it)
-
-			if (it.Type == "Weapon") then
-				it.Mods = {
-					implicit = {},
-					prefix = {},
-					suffix = {},
-				}
-			elseif (it.Type == "Model") then
-				it.Model = pluto.models[it.ClassName:match"model_(.+)"]
-			end
-
-			if (item.tier == "crafted") then
-				it.Tier = pluto.tiers.craft {
-					item.tier1 or "unique",
-					item.tier2 or "unique",
-					item.tier3 or "unique",
-				}
-			end
+			local it = pluto.inv.itemfromrow(item)
 
 			weapons[item.idx] = it
 			pluto.itemids[it.RowID] = it
@@ -354,37 +388,7 @@ function pluto.inv.retrieveitems(steamid, cb)
 			end
 
 			for _, item in ipairs(d) do
-				local wpn = weapons[item.gun_index]
-
-				if (not wpn) then
-					pwarnf("Mod %i doesn't associate with weapon %i", item.idx, item.gun_index)
-					continue
-				end
-
-				local mod = pluto.mods.byname[item.modname]
-
-				if (not mod or not wpn.Mods) then
-					if (IsValid(ply)) then
-						ply:ChatPrint("Your item with id " .. item.gun_index .. " has mods when it shouldn't!")
-					end
-					continue
-				end
-
-				wpn.Mods[mod.Type] = wpn.Mods[mod.Type] or {}
-
-				if (not item.tier) then
-					if (IsValid(ply)) then
-						ply:ChatPrint("Your item with id " .. item.gun_index .. " has a mod with an invalid tier!")
-					end
-					continue
-				end
-
-				table.insert(wpn.Mods[mod.Type], {
-					Roll = { item.roll1, item.roll2, item.roll3 },
-					Mod = item.modname,
-					Tier = item.tier,
-					RowID = item.idx
-				})
+				pluto.inv.readmodrow(weapons, item)
 			end
 
 			pprintf("Returned mods of %s", steamid)

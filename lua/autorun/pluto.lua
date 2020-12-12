@@ -24,6 +24,8 @@ pluto.files.load {
 		"divine/cl.lua",
 		"divine/cl_stardust_shop.lua",
 		"divine/cl_currency_exchange.lua",
+		"divine/cl_crafting_bench.lua",
+		"divine/cl_auction_house.lua",
 
 		"chat/cl_chat.lua",
 		"chat/cl_settings.lua",

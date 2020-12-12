@@ -259,6 +259,8 @@ function pluto.inv.readtabupdate()
 	if (net.ReadBool()) then
 		item = pluto.inv.readitem()
 	end
+
+	print(tabid, tabindex, item)
 	pluto.cl_inv[tabid].Items[tabindex] = item
 
 	hook.Run("PlutoTabUpdate", tabid, tabindex, item)
