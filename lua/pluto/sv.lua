@@ -69,8 +69,6 @@ pluto.files.load {
 		"materials/pluto/icons/dislikednotvoted.png",
 		"materials/pluto/icons/likeanddislike.png",
 
-		"materials/pluto/currency/stardust.png",
-
 		"materials/pluto/newshard.png",
 		"materials/pluto/newshardbg.png",
 
