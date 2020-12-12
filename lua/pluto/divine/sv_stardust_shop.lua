@@ -192,7 +192,7 @@ function pluto.inv.writestardustshop(p)
 	for _, item in pairs(pluto.divine.stardust_shop.available) do
 		pluto.inv.writebaseitem(p, item.PreviewItem)
 		net.WriteUInt(item.Price, 32)
-		net.WriteUInt(item.EndTime - os.time(), 32)
+		net.WriteUInt(math.max(0, item.EndTime - os.time()), 32)
 	end
 end
 
