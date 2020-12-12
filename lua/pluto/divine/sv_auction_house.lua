@@ -11,6 +11,7 @@ local function get_auction_idx(db)
 		auction_id = mysql_query(db, "INSERT INTO pluto_tabs (name, owner, tab_type) VALUES ('auction_internal', " .. AUCTION_HOUSE_ID .. ", 'auction')").LAST_INSERT_ID
 	end
 
+	print(auction_id)
 	return auction_id
 end
 
@@ -21,7 +22,7 @@ concommand.Add("pluto_send_to_auction", function(p, c, a)
 	end
 
 	local gun = pluto.itemids[itemid]
-	if (not gun or gun.Owner ~= p:SteamID64()) then
+	if (not gun or gun.Owner ~= p:SteamID64() or gun.Untradeable) then
 		p:ChatPrint "no"
 		return
 	end
