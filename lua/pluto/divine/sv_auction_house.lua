@@ -128,8 +128,9 @@ concommand.Add("pluto_auction_buy", function(p, c, a)
 		local tab = pluto.inv.invs[p].tabs.buffer
 		mysql_stmt_run(db, "SELECT * from pluto_items WHERE tab_id = ? FOR UPDATE", tab_id)
 
-		local data = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = 1 WHERE idx = ? AND tab_id = ?", tab.RowID, new_item.RowID, tab_id)
-		if (data.AFFECTED_ROWS ~= 1) then
+		pluto.inv.pushbuffer(db, p)
+		local data, err = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = 1 WHERE idx = ? AND tab_id = ?", tab.RowID, new_item.RowID, tab_id)
+		if (not data or data.AFFECTED_ROWS ~= 1) then
 			mysql_rollback(db)
 			return
 		end
@@ -143,8 +144,6 @@ concommand.Add("pluto_auction_buy", function(p, c, a)
 
 		pluto.inv.addcurrency(db, new_item.Lister, "stardust", new_item.Price)
 
-		pluto.inv.pushbuffer(db, p)
-	
 		new_item.TabID = tab.RowID
 		new_item.TabIndex = 1
 		new_item.Owner = p:SteamID64()
