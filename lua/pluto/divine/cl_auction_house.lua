@@ -51,8 +51,10 @@ function PANEL:Init()
 				if (not self.Item) then
 					return
 				end
-				
-				RunConsoleCommand("pluto_auction_buy", self.Item.ID)
+
+				pluto.divine.confirm("Buy", function()
+					RunConsoleCommand("pluto_auction_buy", self.Item.ID)
+				end)
 			end
 
 			local label = container:Add "DLabel"
@@ -204,11 +206,33 @@ function PANEL:Init()
 	self.PriceLabel:SetText "Price"
 	self.PriceLabel:SetFont "stardust_shop_price"
 
-	self.Price = self:Add "DTextEntry"
-	self.Price:Dock(TOP)
-	self.Price:SetTall(20)
-	self.Price:DockMargin(8, 10, 8, 10)
+	self.PriceContainer = self:Add "EditablePanel"
+	self.PriceContainer:DockMargin(8, 10, 8, 10)
+	self.PriceContainer:Dock(TOP)
+	self.PriceContainer:SetTall(20)
+	self.Price = self.PriceContainer:Add "DTextEntry"
+	self.Price:Dock(FILL)
 	self.Price:SetFont "stardust_shop_price"
+	function self.Price:OnFocusChanged(b)
+		if (not b) then
+			local num = tonumber(self:GetText()) or 250
+			num = math.Clamp(num, 250, 25000)
+			self:SetText(num)
+			self.Tax:SetText("Tax: " .. math.ceil(num * 0.04) .. " (4%)")
+		end
+	end
+
+	self.Stardust = self.PriceContainer:Add "DImage"
+	self.Stardust:Dock(RIGHT)
+	self.Stardust:SetWide(20)
+	self.Stardust:SetImage(pluto.currency.byname.stardust.Icon)
+
+	self.Price.Tax = self.PriceContainer:Add "DLabel"
+	self.Price.Tax:Dock(RIGHT)
+	self.Price.Tax:SetFont "stardust_shop_price"
+	self.Price.Tax:SetWide(100)
+	self.Price.Tax:SetContentAlignment(6)
+	self.Price.Tax:SetText("Tax: 0 (4%)")
 
 	self.Rest = self:Add "EditablePanel"
 	self.Rest:Dock(FILL)

@@ -237,9 +237,11 @@ function PANEL:Init()
 	self.Rest.Inner:SetText "Trade Stardust"
 	self.Rest.Inner:SetSize(120, 24)
 	function self.Rest.Inner.DoClick()
-		pluto.inv.message()
-			:write("exchangestardust", self.Selector.Info.Currency, self.SliderNum:GetText())
-			:send()
+		pluto.divine.confirm("Exchange", function()
+			pluto.inv.message()
+				:write("exchangestardust", self.Selector.Info.Currency, self.SliderNum:GetText())
+				:send()
+		end)
 	end
 	self.Rest.Inner:Center()
 end

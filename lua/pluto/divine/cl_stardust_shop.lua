@@ -170,7 +170,9 @@ function PANEL:AddItem(itemt)
 	item:SetItem(itemt.Item, {Items = {}})
 
 	function item:OverrideClick()
-		RunConsoleCommand("pluto_buy_stardust_shop", itemt.ID)
+		pluto.divine.confirm("Buy", function()
+			RunConsoleCommand("pluto_buy_stardust_shop", itemt.ID)
+		end)
 	end
 
 	local pricelbl = p:Add "DLabel"

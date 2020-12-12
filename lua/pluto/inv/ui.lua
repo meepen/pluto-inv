@@ -1860,7 +1860,7 @@ function PANEL:SetTabs(tabs, addtrade)
 		table.insert(t, pluto.tradetab)
 		table.insert(t, pluto.crafttab)
 		table.insert(t, pluto.questtab)
-		table.insert(t, pluto.minigametab)
+		--table.insert(t, pluto.minigametab)
 		--table.insert(t, pluto.passtab)
 	end
 

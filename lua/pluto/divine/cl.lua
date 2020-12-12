@@ -80,3 +80,46 @@ function PANEL:OnCursorExited()
 end
 
 vgui.Register("pluto_divine_market_selector", PANEL, "pluto_inventory_base")
+
+function pluto.divine.confirm(what, yesfn)
+	what = what or "Action"
+	if (IsValid(pluto.divine.confirmation)) then
+		pluto.divine.confirmation:Remove()
+	end
+	pluto.divine.confirmation = vgui.Create "tttrw_base"
+	local pnl = vgui.Create "pluto_stardust_confirmation"
+	pnl.Yes = yesfn
+
+	pluto.divine.confirmation:AddTab("Confirm " .. what, pnl)
+
+	pluto.divine.confirmation:SetSize(400, 300)
+	pluto.divine.confirmation:Center()
+	pluto.divine.confirmation:MakePopup()
+end
+
+local PANEL = {}
+function PANEL:Init()
+	self:Dock(TOP)
+	self:SetTall(200)
+	self.Rest = self:Add "EditablePanel"
+	self.Rest:Dock(FILL)
+
+	function self.Rest:PerformLayout(w, h)
+		self.Inner:Center()
+	end
+
+	self.Rest.Inner = self.Rest:Add "ttt_curved_button"
+	self.Rest.Inner:SetCurve(4)
+	self.Rest.Inner:SetFont "pluto_trade_buttons"
+	self.Rest.Inner:SetColor(ttt.teams.traitor.Color)
+	self.Rest.Inner:SetTextColor(white_text) -- pluto_trade_buttons
+
+	self.Rest.Inner:SetSkin "tttrw"
+	self.Rest.Inner:SetText "Confirm Action"
+	self.Rest.Inner:SetSize(120, 24)
+	function self.Rest.Inner.DoClick()
+		self.Yes()
+		pluto.divine.confirmation:Remove()
+	end
+end
+vgui.Register("pluto_stardust_confirmation", PANEL, "EditablePanel")

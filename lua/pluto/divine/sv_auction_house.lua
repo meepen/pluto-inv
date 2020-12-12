@@ -26,7 +26,8 @@ concommand.Add("pluto_send_to_auction", function(p, c, a)
 		return
 	end
 
-	local price = tonumber(a[2])
+	local price = math.Clamp(tonumber(a[2]) or 0, 250, 25000)
+	local tax = math.ceil(price * 0.04)
 
 	if (price < 0 or price ~= price or price > 1000000000) then
 		p:ChatPrint "invalid price"
@@ -35,6 +36,11 @@ concommand.Add("pluto_send_to_auction", function(p, c, a)
 
 	pluto.db.transact(function(db)
 		local tab_id = get_auction_idx(db)
+
+		if (not pluto.inv.addcurrency(db, p, "stardust", -tax)) then
+			mysql_rollback(db)
+			return
+		end
 
 		mysql_stmt_run(db, "SELECT * from pluto_items WHERE tab_id = ? FOR UPDATE", tab_id)
 		local max = mysql_stmt_run(db, "SELECT MAX(tab_idx) as max FROM pluto_items WHERE tab_id = ?", tab_id)[1].max or 0
