@@ -93,6 +93,9 @@ function PANEL:Init()
 			end
 		end)
 	end
+	function self.Specials:PerformLayout()
+		self:OnChildAdded()
+	end
 	function self.Specials2:OnChildAdded(c)
 		timer.Simple(0, function()
 			local children = self:GetChildren()
@@ -109,6 +112,9 @@ function PANEL:Init()
 				cw = cw + 10 + child:GetWide()
 			end
 		end)
+	end
+	function self.Specials2:PerformLayout()
+		self:OnChildAdded()
 	end
 
 	self.BottomLine:Dock(TOP)

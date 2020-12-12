@@ -20,13 +20,12 @@ function PANEL:Init()
 	self.LeftExpand:SetWide(40)
 	self.LeftExpand:SetPos(0, 0)
 
-	self:RecreateContents "pluto_craft"
+	self:RecreateContents "pluto_stardust_shop"
 
 	self.LeftExpand:AddSelection("Auction House", "pluto_auction_house")
 	self.LeftExpand:AddSelection("Stardust Shop", "pluto_stardust_shop")
 	self.LeftExpand:AddSelection("Currency Exchange", "pluto_stardust_exchange")
 	self.LeftExpand:AddSelection("Shard Crafting", "pluto_craft")
-	self.LeftExpand:AddSelection("Crafting Bench", "pluto_divine_crafting")
 end
 
 function PANEL:RecreateContents(tabtype)

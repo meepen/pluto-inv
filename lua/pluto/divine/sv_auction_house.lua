@@ -62,6 +62,13 @@ pluto.divine = pluto.divine or {}
 pluto.divine.auction_list = pluto.divine.auction_list or {}
 
 function pluto.inv.readauctionsearch(p)
+	local last_search = p.LastAuctionSearch or -math.huge
+	if (last_search > CurTime() - 1) then
+		p:ChatPrint "You are searching too fast! Slow your roll!"
+		return
+	end
+
+	p.LastAuctionSearch = CurTime()
 	local page = net.ReadUInt(32)
 
 	pluto.db.transact(function(db)
