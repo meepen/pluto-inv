@@ -167,3 +167,64 @@ end
 function pluto.inv.writeauctionsearch(data)
 	net.WriteUInt((data.Page or 1) - 1, 32)
 end
+
+local PANEL = {}
+
+function PANEL:Init()
+	self:SetTall(310)
+	self:Dock(TOP)
+	self.ItemContainer = self:Add "EditablePanel"
+	self.ItemContainer:Dock(TOP)
+	self.ItemContainer:SetTall(150)
+	function self.ItemContainer.PerformLayout()
+		self.Item:Center()
+	end
+	self.Item = self.ItemContainer:Add "pluto_inventory_item"
+	self.Item:SetNoMove()
+	self.Item:SetSize(64, 64)
+	self.Item:Center()
+	self.Item:SetItem(nil, {Active = true, Items = {}, ID = 0})
+
+	self.PriceLabel = self:Add "DLabel"
+	self.PriceLabel:Dock(TOP)
+	self.PriceLabel:SetTall(20)
+	self.PriceLabel:DockMargin(8, 10, 8, 10)
+	self.PriceLabel:SetContentAlignment(5)
+	self.PriceLabel:SetText "Price"
+	self.PriceLabel:SetFont "stardust_shop_price"
+
+	self.Price = self:Add "DTextEntry"
+	self.Price:Dock(TOP)
+	self.Price:SetTall(20)
+	self.Price:DockMargin(8, 10, 8, 10)
+	self.Price:SetFont "stardust_shop_price"
+
+	self.Rest = self:Add "EditablePanel"
+	self.Rest:Dock(FILL)
+
+	function self.Rest:PerformLayout(w, h)
+		self.Inner:Center()
+	end
+
+
+	self.Rest.Inner = self.Rest:Add "ttt_curved_button"
+	self.Rest.Inner:SetCurve(4)
+	self.Rest.Inner:SetFont "pluto_trade_buttons"
+	self.Rest.Inner:SetColor(ttt.teams.innocent.Color)
+	self.Rest.Inner:SetTextColor(white_text) -- pluto_trade_buttons
+
+	self.Rest.Inner:SetSkin "tttrw"
+	self.Rest.Inner:SetText "List on BIN"
+	self.Rest.Inner:SetSize(120, 24)
+	function self.Rest.Inner.DoClick()
+		RunConsoleCommand("pluto_send_to_auction", self.Item.Item.ID, self.Price:GetText())
+		PLUTO_LIST_TEST:Remove()
+	end
+	self.Rest.Inner:Center()
+end
+
+function PANEL:SetItem(item)
+	self.Item:SetItem(item)
+end
+
+vgui.Register("pluto_list_auction_item", PANEL, "EditablePanel")

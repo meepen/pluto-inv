@@ -574,6 +574,21 @@ local function CreateMenu(self, item)
 		end):SetIcon("icon16/lock.png")
 	end
 
+	rightclick_menu:AddOption("Sell in Divine Market", function()
+		if (IsValid(PLUTO_LIST_TEST)) then
+			PLUTO_LIST_TEST:Remove()
+		end
+		PLUTO_LIST_TEST = vgui.Create "tttrw_base"
+		local pnl = vgui.Create "pluto_list_auction_item"
+		pnl:SetItem(self.Item)
+
+		PLUTO_LIST_TEST:AddTab("List Auction Item", pnl)
+
+		PLUTO_LIST_TEST:SetSize(640, 400)
+		PLUTO_LIST_TEST:Center()
+		PLUTO_LIST_TEST:MakePopup()
+	end):SetIcon("icon16/money.png")
+
 	if (LocalPlayer():GetUserGroup() == "developer") then
 		local dev = rightclick_menu:AddSubMenu "Developer"
 		dev:AddOption("Duplicate", function()
