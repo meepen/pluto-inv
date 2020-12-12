@@ -118,6 +118,17 @@ function PANEL:Init()
 	self.SearchLabel:Dock(FILL)
 	self.SearchLabel:SetContentAlignment(5)
 
+	self.RefreshArea = self.Search:Add "EditablePanel"
+	self.RefreshArea:Dock(RIGHT)
+	self.RefreshArea:SetWide(32)
+	self.Refresh = self.RefreshArea:Add "DImageButton"
+	self.Refresh:Dock(BOTTOM)
+	self.Refresh:SetTall(32)
+	self.Refresh:SetImage "icon16/tux.png"
+	function self.Refresh.DoClick()
+		self:RunSearch()
+	end
+
 	hook.Add("PlutoReceiveAuctionData", self, self.PlutoReceiveAuctionData)
 
 	self:RunSearch()
@@ -205,7 +216,6 @@ function PANEL:Init()
 	function self.Rest:PerformLayout(w, h)
 		self.Inner:Center()
 	end
-
 
 	self.Rest.Inner = self.Rest:Add "ttt_curved_button"
 	self.Rest.Inner:SetCurve(4)
