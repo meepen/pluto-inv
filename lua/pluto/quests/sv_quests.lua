@@ -91,8 +91,15 @@ pluto.quests.rewardhandlers = {
 			end
 
 			if (self.RandomImplicit) then
+				local implicits = {
+					Diced = true,
+					Handed = true,
+					Dropletted = true,
+					Hearted = true,
+				}
+
 				local mod = table.shuffle(pluto.mods.getfor(baseclass.Get(classname), function(m)
-					return m.Type == "implicit" and not m.PreventChange and not m.NoCoined
+					return (implicits[m.Name] or false)
 				end))[1]
 
 				pluto.weapons.addmod(new_item, mod.InternalName)
