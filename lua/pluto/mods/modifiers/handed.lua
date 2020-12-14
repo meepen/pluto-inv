@@ -16,6 +16,8 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
+MOD.Tomeable = true
+
 MOD.Description = "Mods roll one tier lower 50% of the time"
 
 MOD.Tiers = {
