@@ -123,7 +123,7 @@ hook.Add("Tick", "pluto_new_currency_pickup", function()
 	for id, cur in pairs(pluto.currency.object_list) do
 		local got = false
 		for _, e in pairs(cur.Listeners) do
-			if (not IsValid(e)) then
+			if (not IsValid(e) or not e:Alive()) then
 				continue
 			end
 
