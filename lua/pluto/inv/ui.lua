@@ -170,6 +170,7 @@ pluto.ui_cache = pluto.ui_cache or {}
 
 local spent = 0
 local error_model = ClientsideModel("models/error.mdl")
+error_model:SetNoDraw(true)
 
 function pluto.cached_model(mdl, type)
 	local m = pluto.ui_cache[mdl]
