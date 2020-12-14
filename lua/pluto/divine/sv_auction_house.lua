@@ -1,6 +1,21 @@
 local AUCTION_HOUSE_ID = "1152921504606846975"
 local AUCTION_TAB
 
+local function init()
+end
+
+concommand.Add("pluto_update_class_data", function(p)
+	if (IsValid(p)) then
+		return
+	end
+	pluto.db.instance(function(db)
+		for _, wep in pairs(weapons.GetList()) do
+			wep = baseclass.Get(wep.ClassName)
+			mysql_stmt_run(db, "INSERT INTO pluto_class_kv (class, k, v) VALUES (?, 'wep_slot', ?) ON DUPLICATE KEY UPDATE v = v", wep.ClassName, wep.Slot or 255)
+		end
+	end)
+end)
+
 local function get_auction_idx(db)
 	if (AUCTION_TAB) then
 		return AUCTION_TAB
@@ -79,10 +94,52 @@ local sorts = {
 	lowest_price = "ORDER BY price ASC",
 	highest_price = "ORDER BY price DESC",
 }
+local filters = {
+	primary = {
+		filter = "slot.v = 2",
+		join = "INNER JOIN pluto_class_kv slot ON slot.class = i.class AND slot.k = 'wep_slot'"
+	},
+	secondary = {
+		filter = "slot.v = 1",
+		join = "INNER JOIN pluto_class_kv slot ON slot.class = i.class AND slot.k = 'wep_slot'"
+	},
+	melee = {
+		filter = "slot.v = 0",
+		join = "INNER JOIN pluto_class_kv slot ON slot.class = i.class AND slot.k = 'wep_slot'"
+	},
+	shard = {
+		filter = "class = 'shard'"
+	},
+	model = {
+		filter = "class like 'model_%'"
+	}
+}
 
 function pluto.inv.readauctionsearch(p)
 	local page = net.ReadUInt(32)
 	local sort = sorts[net.ReadString()] or sorts.default
+	local filter = {}
+	local joins = {}
+	while (net.ReadBool()) do
+		local current = filters[net.ReadString()]
+		if (not current) then
+			continue
+		end
+		if (current.filter and not filter[current.filter]) then
+			table.insert(filter, current.filter)
+			filter[current.filter] = true
+		end
+		if (current.join and not joins[current.join]) then
+			table.insert(joins, current.join)
+			joins[current.join] = true
+		end
+	end
+
+	filter = table.concat(filter, " AND ")
+	joins = table.concat(joins, " ")
+	if (filter == "") then
+		filter = "1"
+	end
 
 	local last_search = p.LastAuctionSearch or -math.huge
 	if (last_search > CurTime() - 1) then
@@ -111,8 +168,8 @@ function pluto.inv.readauctionsearch(p)
 		pluto.db.instance(function(db)
 			pages = math.ceil(mysql_query(db, [[
 				SELECT COUNT(*) as amount
-					FROM pluto_items i
-					WHERE tab_id = ]] .. get_auction_idx(db))[1].amount / 15)
+					FROM pluto_items i ]] .. joins .. [[ 
+					WHERE tab_id = ]] .. get_auction_idx(db) .. [[ AND ]] .. filter)[1].amount / 15)
 			check_waiting()
 		end)
 		for _, row in ipairs(item_rows) do
@@ -140,19 +197,20 @@ function pluto.inv.readauctionsearch(p)
 	pluto.db.instance(function(db)
 		local tab_id = get_auction_idx(db)
 
-		local item_rows = mysql_stmt_run(db, [[
-			SELECT i.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable,
+		local item_rows, err = mysql_stmt_run(db, [[
+			SELECT i.idx as idx, tier, i.class as class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable,
 				CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method,
 				auction.price as price, CAST(auction.owner as CHAR(32)) as lister
 
 				FROM pluto_items i
 					LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner
 					LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx
-					INNER JOIN pluto_auction_info auction ON auction.idx = tab_idx
+					INNER JOIN pluto_auction_info auction ON auction.idx = tab_idx ]] .. joins .. [[
 
-				WHERE tab_id = ?
+				WHERE tab_id = ? AND ]] .. filter .. [[
 				]] .. sort .. [[
 				LIMIT 15 OFFSET ?]], tab_id, page * 15)
+				print(err)
 		runnext(item_rows)
 	end)
 end

@@ -306,7 +306,7 @@ function PANEL:FullPaint(w, h)
 				err:SetMaterial()
 			end
 			if (typ == "Weapon") then
-				local lookup = baseclass.Get(class).Ortho or {0, 0}
+				local lookup = weapons.GetStored(class).Ortho or {0, 0}
 
 				local x, y = self:LocalToScreen(0, 0)
 				local mins, maxs = err:GetModelBounds()

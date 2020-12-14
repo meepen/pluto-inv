@@ -117,15 +117,30 @@ function PANEL:Init()
 	end
 
 	self.SortBy = self.Search:Add "DComboBox"
-	self.SortBy:AddChoice("Oldest First", "oldest", false)
-	self.SortBy:AddChoice("Newest First", "newest", true)
-	self.SortBy:AddChoice("Least Expensive", "lowest_price", false)
+	self.SortBy:SetSortItems(false)
 	self.SortBy:AddChoice("Most Expensive", "highest_price", false)
+	self.SortBy:AddChoice("Least Expensive", "lowest_price", false)
+	self.SortBy:AddChoice("Newest First", "newest", true)
+	self.SortBy:AddChoice("Oldest First", "oldest", false)
 	self.SortBy:Dock(TOP)
-
 	self.SortBy.OnSelect = function()
 		self:RunSearch()
 	end
+
+
+	self.FilterType = self.Search:Add "DComboBox"
+	self.FilterType:SetSortItems(false)
+	self.FilterType:AddChoice("Any Items", "all", true)
+	self.FilterType:AddChoice("Primaries Only", "primary", false)
+	self.FilterType:AddChoice("Secondaries Only", "secondary", false)
+	self.FilterType:AddChoice("Melee Only", "melee", false)
+	self.FilterType:AddChoice("Shards Only", "shard", false)
+	self.FilterType:AddChoice("Models Only", "model", false)
+	self.FilterType:Dock(TOP)
+	self.FilterType.OnSelect = function()
+		self:RunSearch()
+	end
+
 
 	self.RefreshArea = self.Search:Add "EditablePanel"
 	self.RefreshArea:Dock(RIGHT)
@@ -160,6 +175,7 @@ function PANEL:RunSearch()
 		:write("auctionsearch", {
 			Page = self.Page,
 			Sort = self.SortBy:GetOptionData(self.SortBy:GetSelectedID()),
+			Filter = self.FilterType:GetOptionData(self.FilterType:GetSelectedID()),
 		})
 		:send()
 end
@@ -190,6 +206,9 @@ end
 function pluto.inv.writeauctionsearch(data)
 	net.WriteUInt((data.Page or 1) - 1, 32)
 	net.WriteString(data.Sort or "default")
+	net.WriteBool(true)
+	net.WriteString(data.Filter or "default")
+	net.WriteBool(false)
 end
 
 local PANEL = {}
