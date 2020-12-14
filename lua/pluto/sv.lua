@@ -85,6 +85,8 @@ pluto.files.load {
 
 		"materials/pluto/star3.png",
 		"materials/pluto/hubble.png",
+		"materials/pluto/hound1.png",
+		"materials/pluto/hound2.png",
 		"materials/pluto/eppen_stars.png",
 		"materials/pluto/colorful.png",
 		"resource/fonts/PermanentMarker-Regular.ttf",

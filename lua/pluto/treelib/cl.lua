@@ -12,6 +12,8 @@ local backgrounds = {
 	Material "pluto/hubble.png",
 	Material "pluto/eppen_stars.png",
 	Material "pluto/colorful.png",
+	Material "pluto/hound1.png",
+	Material "pluto/hound2.png",
 }
 
 local matr = Matrix()
