@@ -137,10 +137,7 @@ end
 function PANEL:SetItem(item)
 	self.PlutoMaterial = nil
 	self.Item = item
-	if (IsValid(self.Model)) then
-		self.Model = nil
-	end
-
+	self.ModelStr = nil
 	self.RealImage = nil
 
 	if (not item) then
@@ -171,15 +168,30 @@ end
 
 pluto.ui_cache = pluto.ui_cache or {}
 
-function pluto.cached_model(mdl)
+local spent = 0
+local error_model = ClientsideModel("models/error.mdl")
+
+function pluto.cached_model(mdl, type)
 	local m = pluto.ui_cache[mdl]
 	if (not m or not IsValid(m)) then
+		if (spent > 1 / 60) then
+			return error_model
+		end
+		local t = SysTime()
 		m = ClientsideModel(mdl)
 		m:SetNoDraw(true)
 		pluto.ui_cache[mdl] = m
+		spent = spent + SysTime() - t
+		if (IsValid(m) and type == "Model") then
+			m:ResetSequence(m:LookupSequence "idle_all_01")
+		end
 	end
 	return m
 end
+
+hook.Add("Think", "pluto_slow_load_models", function()
+	spent = 0
+end)
 
 local mech_bg = Material "pluto/item_bg_mech.png"
 local item_bg = Material "pluto/item_bg_real.png"
@@ -202,21 +214,32 @@ function PANEL:SetWeapon(item)
 		self.RealImage = Material(w.PlutoIcon)
 		self.RealColor = color_white
 	else
-		self.Model = pluto.cached_model(w.PlutoModel or w.WorldModel)
+		self.ModelType = "Weapon"
+		self.ModelStr = w.PlutoModel or w.WorldModel
 		self.PlutoMaterial = w.PlutoMaterial
 	end
 
 	self.Class = w.ClassName
 end
 
+function PANEL:GetCachedCurrentModel()
+	if (self.ModelStr) then
+		local mdl = pluto.cached_model(self.ModelStr, self.ModelType)
+		if (IsValid(mdl) and self.PlutoMaterial) then
+			mdl:SetMaterial(self.PlutoMaterial)
+		elseif (IsValid(mdl)) then
+			mdl:SetMaterial()
+		end
+
+		return mdl
+	end
+end
+
 function PANEL:SetModel(item)
 	self.Material = model_bg
 	local mdl = item.Model
-	self.Model = pluto.cached_model(mdl.Model)
-	if (IsValid(self.Model)) then
-		self.Model:SetNoDraw(true)
-		self.Model:ResetSequence(self.Model:LookupSequence "idle_all_01")
-	end
+	self.ModelStr = mdl.Model
+	self.ModelType = "Model"
 end
 
 DEFINE_BASECLASS "ttt_curved_panel"
@@ -242,7 +265,7 @@ function PANEL:FullPaint(w, h)
 		render.SetStencilCompareFunction(STENCIL_EQUAL)
 		local r, g, b = render.GetColorModulation()
 		render.SetColorModulation(1, 1, 1)
-		local err = self.Model
+		local err = self:GetCachedCurrentModel()
 		local typ = self.Type
 		local class = self.Class
 
@@ -250,13 +273,13 @@ function PANEL:FullPaint(w, h)
 			if (self.Material) then
 				self.Material:SetVector("$color", self.MaterialColor)
 				surface.SetMaterial(self.Material)
-				surface.SetDrawColor(255, 255, 255, err ~= self.DefaultModel and 255 or 1)
+				surface.SetDrawColor(255, 255, 255, err ~= self:GetCachedDefaultModel() and 255 or 1)
 				surface.DrawTexturedRect(0, 0, w, h)
 			end
 		end
 
 		if (not IsValid(err)) then
-			err = self.DefaultModel
+			err = self:GetCachedDefaultModel()
 			typ = self.DefaultType
 			class = self.DefaultClass
 			render.SetBlend(0.5)
@@ -353,20 +376,17 @@ function PANEL:SetDefault(class)
 	end
 
 	if (str) then
-		self.DefaultModel = pluto.cached_model(str)
-
-		if (IsValid(self.DefaultModel) and type == "Model") then
-			self.DefaultModel:ResetSequence(self.DefaultModel:LookupSequence "idle_all_01")
-		end
+		self.DefaultModelString = str
+		self.DefaultModelType = typ
 	end
 
 	self.DefaultType = type
 	self.DefaultClass = class
 end
 
-function PANEL:OnRemove()
-	if (IsValid(self.DefaultModel)) then
-		self.DefaultModel:Remove()
+function PANEL:GetCachedDefaultModel()
+	if (self.DefaultModelString) then
+		return pluto.cached_model(self.DefaultModelString, self.DefaultModelType)
 	end
 end
 
