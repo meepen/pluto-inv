@@ -215,8 +215,8 @@ function PANEL:Init()
 	self.Price:SetFont "stardust_shop_price"
 	function self.Price:OnFocusChanged(b)
 		if (not b) then
-			local num = tonumber(self:GetText()) or 250
-			num = math.Clamp(num, 250, 25000)
+			local num = tonumber(self:GetText()) or 100
+			num = math.Clamp(num, 100, 25000)
 			self:SetText(num)
 			self.Tax:SetText("Tax: " .. math.ceil(num * 0.04) .. " (4%)")
 		end

@@ -27,7 +27,7 @@ concommand.Add("pluto_send_to_auction", function(p, c, a)
 		return
 	end
 
-	local price = math.Clamp(tonumber(a[2]) or 0, 250, 25000)
+	local price = math.Clamp(tonumber(a[2]) or 0, 100, 25000)
 	local tax = math.ceil(price * 0.04)
 
 	if (price < 0 or price ~= price or price > 1000000000) then
