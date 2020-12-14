@@ -105,9 +105,9 @@ function pluto.inv.readauctionsearch(p)
 			item.Lister = row.lister
 			if (item.Type == "Weapon") then
 				weapons[item.RowID] = item
-				pluto.divine.auction_list[item.RowID] = item
 				table.insert(weapon_ids, item.RowID)
 			end
+			pluto.divine.auction_list[item.RowID] = item
 		end
 
 		if (#weapon_ids > 0) then
