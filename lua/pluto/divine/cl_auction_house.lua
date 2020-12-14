@@ -156,7 +156,8 @@ function PANEL:RunSearch()
 		:send()
 end
 
-function PANEL:PlutoReceiveAuctionData(items)
+function PANEL:PlutoReceiveAuctionData(items, pages)
+	self.PageLabel:SetText("Page " .. self.Page .. " / " .. pages)
 	for i, item in ipairs(self.Items) do
 		item:SetItem(items[i] or nil)
 		self.Prices[i]:SetText(items[i] and items[i].Price or "")
@@ -169,12 +170,13 @@ vgui.Register("pluto_auction_house", PANEL, "EditablePanel")
 function pluto.inv.readauctiondata()
 	local items = {}
 
+	local pages = net.ReadUInt(32)
 	for i = 1, net.ReadUInt(8) do
 		items[i] = pluto.inv.readitem()
 		items[i].Price = net.ReadUInt(32)
 	end
 
-	hook.Run("PlutoReceiveAuctionData", items)
+	hook.Run("PlutoReceiveAuctionData", items, pages)
 end
 
 function pluto.inv.writeauctionsearch(data)

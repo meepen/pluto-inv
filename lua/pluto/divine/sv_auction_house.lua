@@ -11,7 +11,6 @@ local function get_auction_idx(db)
 		auction_id = mysql_query(db, "INSERT INTO pluto_tabs (name, owner, tab_type) VALUES ('auction_internal', " .. AUCTION_HOUSE_ID .. ", 'auction')").LAST_INSERT_ID
 	end
 
-	print(auction_id)
 	return auction_id
 end
 
@@ -78,9 +77,42 @@ function pluto.inv.readauctionsearch(p)
 	p.LastAuctionSearch = CurTime()
 	local page = net.ReadUInt(32)
 
+	local function runnext(item_rows, pages)
+		local items = {}
+		local t = SysTime()
+		local function finalize()
+			print(SysTime() - t)
+			pluto.inv.message(p)
+				:write("auctiondata", items, pages)
+				:send()
+		end
+
+		local waiting_for = 0
+		for _, row in ipairs(item_rows) do
+			local item = pluto.inv.itemfromrow(row)
+			table.insert(items, item)
+			item.Price = row.price
+			item.Lister = row.lister
+			if (item.Type == "Weapon") then
+				waiting_for = waiting_for + 1
+				pluto.db.instance(function(db)
+					for _, mod in ipairs(mysql_query(db, "SELECT idx, gun_index, modname, tier, roll1, roll2, roll3 FROM pluto_mods WHERE gun_index = " .. item.RowID)) do
+						pluto.inv.readmodrow({[item.RowID] = item}, mod)
+					end
+					waiting_for = waiting_for - 1
+					if (waiting_for == 0) then
+						finalize()
+					end
+				end)
+			end
+			pluto.divine.auction_list[item.RowID] = item
+		end
+	end
+
 	pluto.db.transact(function(db)
 		local tab_id = get_auction_idx(db)
 
+		local t = SysTime()
 		local item_rows = mysql_stmt_run(db, [[
 			SELECT i.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable,
 				CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method,
@@ -95,34 +127,19 @@ function pluto.inv.readauctionsearch(p)
 				ORDER BY auction.listed DESC
 				LIMIT 15 OFFSET ?]], tab_id, page * 15)
 
-		local weapons = {}
-		local weapon_ids = {}
-		local items = {}
-		for _, row in ipairs(item_rows) do
-			local item = pluto.inv.itemfromrow(row)
-			table.insert(items, item)
-			item.Price = row.price
-			item.Lister = row.lister
-			if (item.Type == "Weapon") then
-				weapons[item.RowID] = item
-				table.insert(weapon_ids, item.RowID)
-			end
-			pluto.divine.auction_list[item.RowID] = item
-		end
+			print(SysTime() - t)
+		local pages = math.ceil(mysql_stmt_run(db, [[
+			SELECT COUNT(*) as amount
+			
+				FROM pluto_items i
+					LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner
+					LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx
+					INNER JOIN pluto_auction_info auction ON auction.idx = tab_idx
+				WHERE tab_id = ?
 
-		if (#weapon_ids > 0) then
-			local mods = mysql_stmt_run(db, [[
-				SELECT idx, gun_index, modname, tier, roll1, roll2, roll3 FROM pluto_mods
-				WHERE gun_index IN (]] .. string.rep("?,", #weapon_ids):sub(1, -2) .. [[)]], unpack(weapon_ids))
+		]], tab_id)[1].amount / 15)
 
-			for _, mod in ipairs(mods) do
-				pluto.inv.readmodrow(weapons, mod)
-			end
-		end
-
-		pluto.inv.message(p)
-			:write("auctiondata", items)
-			:send()
+		runnext(item_rows, pages)
 	end)
 end
 
@@ -170,7 +187,9 @@ concommand.Add("pluto_auction_buy", function(p, c, a)
 	end)
 end)
 
-function pluto.inv.writeauctiondata(p, items)
+function pluto.inv.writeauctiondata(p, items, pages)
+	net.WriteUInt(pages, 32)
+
 	net.WriteUInt(#items, 8)
 	for _, item in ipairs(items) do
 
