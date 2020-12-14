@@ -159,7 +159,7 @@ function PANEL:AddItem(itemt)
 	local hours = math.Round((itemt.EndTime - os.time()) / 60 / 60)
 	local text = hours .. "h left"
 	if (hours == 0) then
-		text = "Ending soon!"
+		text = "<1h left"
 	end
 	remaining:SetText(text)
 

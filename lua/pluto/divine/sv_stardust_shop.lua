@@ -7,7 +7,7 @@ local function buildoptions()
 	local options = {
 		ow_shard = {
 			Shares = 20,
-			Buy = function(ply, item)
+			Buy = function(ply, item, finish)
 				pluto.db.transact(function(db)
 					if (not pluto.inv.addcurrency(db, ply, "stardust", -item.Price)) then
 						mysql_rollback(db)
@@ -15,7 +15,6 @@ local function buildoptions()
 					end
 					pluto.inv.generatebuffershard(db, ply, "BOUGHT", "otherworldly")
 					mysql_stmt_run(db, "UPDATE pluto_stardust_shop SET endtime = endtime - INTERVAL 1 HOUR WHERE id = ?", item.rowid)
-					item.EndTime = item.EndTime - 60 * 60
 					mysql_commit(db)
 				end)
 			end,
@@ -27,7 +26,7 @@ local function buildoptions()
 		},
 		conf_shard = {
 			Shares = 20,
-			Buy = function(ply, item)
+			Buy = function(ply, item, finish)
 				pluto.db.transact(function(db)
 					if (not pluto.inv.addcurrency(db, ply, "stardust", -item.Price)) then
 						mysql_rollback(db)
@@ -35,8 +34,10 @@ local function buildoptions()
 					end
 					pluto.inv.generatebuffershard(db, ply, "BOUGHT", "confused")
 					mysql_stmt_run(db, "UPDATE pluto_stardust_shop SET endtime = endtime - INTERVAL 1 HOUR WHERE id = ?", item.rowid)
-					item.EndTime = item.EndTime - 60 * 60
 					mysql_commit(db)
+					if (finish) then
+						finish()
+					end
 				end)
 			end,
 			PreviewItem = {
@@ -47,7 +48,7 @@ local function buildoptions()
 		},
 		starar = {
 			Shares = 1,
-			Buy = function(ply, item)
+			Buy = function(ply, item, finish)
 				pluto.db.transact(function(db)
 					if (not pluto.inv.addcurrency(db, ply, "stardust", -item.Price)) then
 						mysql_rollback(db)
@@ -55,8 +56,10 @@ local function buildoptions()
 					end
 					pluto.inv.generatebufferweapon(db, ply, "BOUGHT", "unusual", "tfa_cso_starchaserar")
 					mysql_stmt_run(db, "UPDATE pluto_stardust_shop SET endtime = endtime - INTERVAL 1 HOUR WHERE id = ?", item.rowid)
-					item.EndTime = item.EndTime - 60 * 60
 					mysql_commit(db)
+					if (finish) then
+						finish()
+					end
 				end)
 			end,
 			PreviewItem = {
@@ -72,7 +75,7 @@ local function buildoptions()
 		},
 		starsr = {
 			Shares = 1,
-			Buy = function(ply, item)
+			Buy = function(ply, item, finish)
 				pluto.db.transact(function(db)
 					if (not pluto.inv.addcurrency(db, ply, "stardust", -item.Price)) then
 						mysql_rollback(db)
@@ -85,8 +88,8 @@ local function buildoptions()
 				
 					pluto.inv.savebufferitem(db, ply, new_item)
 					mysql_stmt_run(db, "UPDATE pluto_stardust_shop SET endtime = endtime - INTERVAL 1 HOUR WHERE id = ?", item.rowid)
-					item.EndTime = item.EndTime - 60 * 60
 					mysql_commit(db)
+					finish()
 				end)
 			end,
 			PreviewItem = {
@@ -113,7 +116,7 @@ local function buildoptions()
 	for _, wep in ipairs(pluto.weapons.guns) do
 		options["promised_" .. wep] = {
 			Shares = promised_shares / #pluto.weapons.guns,
-			Buy = function(ply, item)
+			Buy = function(ply, item, finish)
 				pluto.db.transact(function(db)
 					if (not pluto.inv.addcurrency(db, ply, "stardust", -item.Price)) then
 						mysql_rollback(db)
@@ -121,8 +124,10 @@ local function buildoptions()
 					end
 					pluto.inv.generatebufferweapon(db, ply, "BOUGHT", "promised", wep)
 					mysql_stmt_run(db, "UPDATE pluto_stardust_shop SET endtime = endtime - INTERVAL 1 HOUR WHERE id = ?", item.rowid)
-					item.EndTime = item.EndTime - 60 * 60
 					mysql_commit(db)
+					if (finish) then
+						finish()
+					end
 				end)
 			end,
 			PreviewItem = {
@@ -142,7 +147,7 @@ local function buildoptions()
 	for _, wep in ipairs(pluto.weapons.guns) do
 		options["seeker_" .. wep] = {
 			Shares = seeker_shares / #pluto.weapons.guns,
-			Buy = function(ply, item)
+			Buy = function(ply, item, finish)
 				pluto.db.transact(function(db)
 					if (not pluto.inv.addcurrency(db, ply, "stardust", -item.Price)) then
 						mysql_rollback(db)
@@ -157,8 +162,10 @@ local function buildoptions()
 					pluto.inv.savebufferitem(db, ply, new_item)
 					
 					mysql_stmt_run(db, "UPDATE pluto_stardust_shop SET endtime = endtime - INTERVAL 1 HOUR WHERE id = ?", item.rowid)
-					item.EndTime = item.EndTime - 60 * 60
 					mysql_commit(db)
+					if (finish) then
+						finish()
+					end
 				end)
 			end,
 			PreviewItem = {
@@ -212,8 +219,13 @@ concommand.Add("pluto_buy_stardust_shop", function(p, c, a)
 		p:ChatPrint("That item is no longer available. Reopen the shop.")
 		return
 	end
-	
-	item.Buy(p, item)
+
+	item.Buy(p, item, function()
+		item.EndTime = item.EndTime - 60 * 60
+		if (item.EndTime < os.time()) then
+			pluto.divine.stardust_shop = {}
+		end
+	end)
 end)
 
 concommand.Add("pluto_send_stardust_shop", function(p)
