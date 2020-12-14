@@ -689,7 +689,7 @@ for name, values in pairs {
 		end,
 	},
 	brainegg = {
-		Shares = 10,
+		Shares = 0,
 		Types = "None",
 		Contents = {
 			--model_ghostface = 1,
