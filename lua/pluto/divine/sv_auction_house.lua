@@ -92,7 +92,7 @@ function pluto.inv.readauctionsearch(p)
 					INNER JOIN pluto_auction_info auction ON auction.idx = tab_idx
 
 				WHERE tab_id = ?
-				ORDER BY tab_idx ASC
+				ORDER BY auction.listed DESC
 				LIMIT 15 OFFSET ?]], tab_id, page * 15)
 
 		local weapons = {}
