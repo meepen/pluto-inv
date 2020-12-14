@@ -269,7 +269,7 @@ concommand.Add("pluto_send_stardust_shop", function(p)
 			if (istable(data.Price)) then
 				data.Price = math.random(data.Price[1], data.Price[2])
 			end
-			data.EndTime = os.time() + 60 * 60 * 24
+			data.EndTime = os.time() + 60 * 60 * 5
 			data.rowid = mysql_stmt_run(db, "INSERT INTO pluto_stardust_shop (item, price, endtime) VALUES(?, ?, TIMESTAMPADD(HOUR, 5, CURRENT_TIMESTAMP))", id, data.Price).LAST_INSERT_ID
 		end
 
