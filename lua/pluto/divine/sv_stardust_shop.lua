@@ -224,6 +224,22 @@ concommand.Add("pluto_buy_stardust_shop", function(p, c, a)
 		item.EndTime = item.EndTime - 60 * 60
 		if (item.EndTime < os.time()) then
 			pluto.divine.stardust_shop = {}
+			local embed = item.PreviewItem:GetDiscordEmbed()
+			local time = math.Round((item.EndTime - os.time()) / (60 * 60))
+			discord.Message():AddEmbed(
+				embed
+					:SetAuthor("GONE!")
+					:SetTimestamp()
+			):Send "stardust-shop"
+		else
+			local embed = item.PreviewItem:GetDiscordEmbed()
+			local time = math.Round((item.EndTime - os.time()) / (60 * 60))
+			time = time < 1 and "<1 hour remaining now..." or time .. " hours remaining now..."
+			discord.Message():AddEmbed(
+				embed
+					:SetAuthor(time)
+					:SetTimestamp()
+			):Send "stardust-shop"
 		end
 	end)
 end)
@@ -266,9 +282,16 @@ concommand.Add("pluto_send_stardust_shop", function(p)
 			data.id = id
 			available[i] = data
 			setmetatable(data.PreviewItem, pluto.inv.item_mt)
+			data.PreviewItem.Type = pluto.inv.itemtype(data.PreviewItem)
 			if (istable(data.Price)) then
 				data.Price = math.random(data.Price[1], data.Price[2])
 			end
+			local embed = data.PreviewItem:GetDiscordEmbed()
+			discord.Message():AddEmbed(
+				embed
+					:SetAuthor("5 hours remaining...")
+					:SetTimestamp()
+			):Send "stardust-shop"
 			data.EndTime = os.time() + 60 * 60 * 5
 			data.rowid = mysql_stmt_run(db, "INSERT INTO pluto_stardust_shop (item, price, endtime) VALUES(?, ?, TIMESTAMPADD(HOUR, 5, CURRENT_TIMESTAMP))", id, data.Price).LAST_INSERT_ID
 		end
