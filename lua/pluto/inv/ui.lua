@@ -2263,6 +2263,7 @@ function PANEL:SetItem(item)
 				DROPPED = "Dropped by %s",
 				MIRROR = "Mirrored by %s",
 				CRAFT = "Crafted by %s",
+				BOUGHT = "Bought in the Divine Shop by %s",
 			})[item.CreationMethod] or item.CreationMethod .. " %s"
 			self.OriginalOwner:SetText(fmt:format(item.OriginalOwnerName))
 		else
