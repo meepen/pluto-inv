@@ -91,6 +91,7 @@ function PANEL:Init()
 
 	self.Search = self:Add "EditablePanel"
 	self.Search:Dock(FILL)
+	self.Search:DockMargin(8, 4, 8, 4)
 
 	self.GoRight = self.Pages:Add "DButton"
 	self.GoRight:Dock(RIGHT)
@@ -115,10 +116,16 @@ function PANEL:Init()
 		self:SetPage(self:GetPage() - 1)
 	end
 
-	self.SearchLabel = self.Search:Add "DLabel"
-	self.SearchLabel:SetText "SEARCH AREA"
-	self.SearchLabel:Dock(FILL)
-	self.SearchLabel:SetContentAlignment(5)
+	self.SortBy = self.Search:Add "DComboBox"
+	self.SortBy:AddChoice("Oldest First", "oldest", false)
+	self.SortBy:AddChoice("Newest First", "newest", true)
+	self.SortBy:AddChoice("Least Expensive", "lowest_price", false)
+	self.SortBy:AddChoice("Most Expensive", "highest_price", false)
+	self.SortBy:Dock(TOP)
+
+	self.SortBy.OnSelect = function()
+		self:RunSearch()
+	end
 
 	self.RefreshArea = self.Search:Add "EditablePanel"
 	self.RefreshArea:Dock(RIGHT)
@@ -151,7 +158,8 @@ end
 function PANEL:RunSearch()
 	pluto.inv.message()
 		:write("auctionsearch", {
-			Page = self.Page
+			Page = self.Page,
+			Sort = self.SortBy:GetOptionData(self.SortBy:GetSelectedID()),
 		})
 		:send()
 end
@@ -181,6 +189,7 @@ end
 
 function pluto.inv.writeauctionsearch(data)
 	net.WriteUInt((data.Page or 1) - 1, 32)
+	net.WriteString(data.Sort or "default")
 end
 
 local PANEL = {}
@@ -218,7 +227,7 @@ function PANEL:Init()
 	function self.Price:OnFocusChanged(b)
 		if (not b) then
 			local num = tonumber(self:GetText()) or 100
-			num = math.Clamp(num, 100, 25000)
+			num = math.Clamp(num, 100, 90000)
 			self:SetText(num)
 			self.Tax:SetText("Tax: " .. math.ceil(num * 0.04) .. " (4%)")
 		end

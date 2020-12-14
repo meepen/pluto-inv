@@ -93,6 +93,10 @@ function env.mysql_stmt_prepare(db, query)
 	return stmt, err
 end
 
+function env.mysql_ping(db)
+	return wait_promise(db:ping())
+end
+
 function env.mysql_stmt_execute(stmt, ...)
 	return wait_promise(stmt:execute(...))
 end

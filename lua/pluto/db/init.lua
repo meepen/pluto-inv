@@ -7,8 +7,9 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				color INT UNSIGNED NOT NULL DEFAULT 0,
 				tab_type varchar(16) NOT NULL DEFAULT "normal",
 				name VARCHAR(16) NOT NULL,
+
 				PRIMARY KEY(idx),
-				INDEX USING HASH(owner)
+				INDEX steamid(owner)
 			)
 		]])
 		mysql_query(db, [[
@@ -30,11 +31,8 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 
 				creation_method enum("DROPPED", "SPAWNED", "UNBOXED", "FOUND", "DELETE", "QUEST", "REWARD", "MIRROR", "CRAFT", "BOUGHT") NOT NULL DEFAULT "DROPPED",
 
-				FOREIGN KEY(tab_id) REFERENCES pluto_tabs(idx) ON DELETE CASCADE,
 				UNIQUE INDEX (tab_id, tab_idx),
-				INDEX USING HASH(tab_id),
-
-				INDEX USING HASH(idx)
+				INDEX itemid(idx)
 			)
 		]])
 		-- ALTER TABLE pluto_items DROP PRIMARY KEY;
@@ -50,9 +48,10 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				roll3 FLOAT,
 
 				deleted BOOLEAN NOT NULL DEFAULT FALSE,
+
 				PRIMARY KEY(idx),
-				UNIQUE(gun_index, modname),
-				INDEX USING HASH(gun_index),
+				UNIQUE INDEX one_mod(gun_index, modname),
+				INDEX itemid(gun_index),
 				FOREIGN KEY (gun_index) REFERENCES pluto_items(idx) ON DELETE CASCADE
 			)
 		]])
@@ -239,14 +238,17 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 
 		mysql_query(db, [[
 			CREATE TABLE IF NOT EXISTS pluto_auction_info (
-				idx INT UNSIGNED NOT NULL PRIMARY KEY,
+				idx INT UNSIGNED NOT NULL,
 				owner BIGINT UNSIGNED NOT NULL REFERENCES pluto_player_info(steamid),
 				price INT UNSIGNED NOT NULL,
 				listed TIMESTAMP NOT NULL,
 
 				INDEX USING HASH(owner),
 				INDEX(price),
-				INDEX(listed)
+				INDEX(listed),
+				UNIQUE INDEX(idx),
+				FOREIGN KEY(idx) REFERENCES pluteo_items(tab_idx)
+
 			)
 		]])
 	end)
