@@ -79,7 +79,7 @@ function pluto.inv.readexchangestardust(cl)
 
 	local ratio = curr.StardustRatio or lookup[forwhat].Ratio
 
-	if (lookup[forwhat] and lookup[forwhat].Amount > howmany) then
+	if (lookup[forwhat] and lookup[forwhat].Amount < howmany) then
 		return
 	end
 
