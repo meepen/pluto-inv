@@ -112,7 +112,7 @@ local function buildoptions()
 	}
 
 
-	local promised_shares = 300
+	local promised_shares = 200
 	for _, wep in ipairs(pluto.weapons.guns) do
 		options["promised_" .. wep] = {
 			Shares = promised_shares / #pluto.weapons.guns,
