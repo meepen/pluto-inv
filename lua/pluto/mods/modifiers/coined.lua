@@ -19,6 +19,7 @@ end
 MOD.Description = "Gives 15% more currency rewards per max modifier"
 
 MOD.NoCoined = true
+MOD.Tomeable = true
 
 MOD.Tiers = {
 	{ 1, 1 },

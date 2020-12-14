@@ -22,6 +22,8 @@ pluto.inv.messages = {
 		"unname",
 		"chat",
 		"gettrades",
+		"exchangestardust",
+		"auctionsearch",
 	},
 	sv2cl = {
 		[0] = "end",
@@ -54,6 +56,8 @@ pluto.inv.messages = {
 		"itemtree",
 		"constellations",
 		"currencyspawn",
+		"stardustshop",
+		"auctiondata",
 	}
 }
 

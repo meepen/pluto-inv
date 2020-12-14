@@ -16,6 +16,8 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
+MOD.Tomeable = true
+
 MOD.Description = "Droplets can roll max modifiers"
 
 MOD.Tiers = {

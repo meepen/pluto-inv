@@ -577,7 +577,7 @@ vgui.Register("pluto_chatbox_inner", PANEL, "ttt_curved_panel_outline")
 local PANEL = {}
 
 function PANEL:Init()
-	self:SetSize(ScrW()/4,ScrH()/4)
+	self:SetSize(math.max(450, ScrW()/4),math.max(300, ScrH()/4))
 	pluto.chat.Box = self
 	reposition()
 

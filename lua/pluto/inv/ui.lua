@@ -137,10 +137,7 @@ end
 function PANEL:SetItem(item)
 	self.PlutoMaterial = nil
 	self.Item = item
-	if (IsValid(self.Model)) then
-		self.Model = nil
-	end
-
+	self.ModelStr = nil
 	self.RealImage = nil
 
 	if (not item) then
@@ -171,15 +168,31 @@ end
 
 pluto.ui_cache = pluto.ui_cache or {}
 
-function pluto.cached_model(mdl)
+local spent = 0
+local error_model = ClientsideModel("models/error.mdl")
+error_model:SetNoDraw(true)
+
+function pluto.cached_model(mdl, type)
 	local m = pluto.ui_cache[mdl]
 	if (not m or not IsValid(m)) then
+		if (spent > 1 / 60) then
+			return error_model
+		end
+		local t = SysTime()
 		m = ClientsideModel(mdl)
 		m:SetNoDraw(true)
 		pluto.ui_cache[mdl] = m
+		spent = spent + SysTime() - t
+		if (IsValid(m) and type == "Model") then
+			m:ResetSequence(m:LookupSequence "idle_all_01")
+		end
 	end
 	return m
 end
+
+hook.Add("Think", "pluto_slow_load_models", function()
+	spent = 0
+end)
 
 local mech_bg = Material "pluto/item_bg_mech.png"
 local item_bg = Material "pluto/item_bg_real.png"
@@ -202,21 +215,32 @@ function PANEL:SetWeapon(item)
 		self.RealImage = Material(w.PlutoIcon)
 		self.RealColor = color_white
 	else
-		self.Model = pluto.cached_model(w.PlutoModel or w.WorldModel)
+		self.ModelType = "Weapon"
+		self.ModelStr = w.PlutoModel or w.WorldModel
 		self.PlutoMaterial = w.PlutoMaterial
 	end
 
 	self.Class = w.ClassName
 end
 
+function PANEL:GetCachedCurrentModel()
+	if (self.ModelStr) then
+		local mdl = pluto.cached_model(self.ModelStr, self.ModelType)
+		if (IsValid(mdl) and self.PlutoMaterial) then
+			mdl:SetMaterial(self.PlutoMaterial)
+		elseif (IsValid(mdl)) then
+			mdl:SetMaterial()
+		end
+
+		return mdl
+	end
+end
+
 function PANEL:SetModel(item)
 	self.Material = model_bg
 	local mdl = item.Model
-	self.Model = pluto.cached_model(mdl.Model)
-	if (IsValid(self.Model)) then
-		self.Model:SetNoDraw(true)
-		self.Model:ResetSequence(self.Model:LookupSequence "idle_all_01")
-	end
+	self.ModelStr = mdl.Model
+	self.ModelType = "Model"
 end
 
 DEFINE_BASECLASS "ttt_curved_panel"
@@ -242,7 +266,7 @@ function PANEL:FullPaint(w, h)
 		render.SetStencilCompareFunction(STENCIL_EQUAL)
 		local r, g, b = render.GetColorModulation()
 		render.SetColorModulation(1, 1, 1)
-		local err = self.Model
+		local err = self:GetCachedCurrentModel()
 		local typ = self.Type
 		local class = self.Class
 
@@ -250,13 +274,13 @@ function PANEL:FullPaint(w, h)
 			if (self.Material) then
 				self.Material:SetVector("$color", self.MaterialColor)
 				surface.SetMaterial(self.Material)
-				surface.SetDrawColor(255, 255, 255, err ~= self.DefaultModel and 255 or 1)
+				surface.SetDrawColor(255, 255, 255, err ~= self:GetCachedDefaultModel() and 255 or 1)
 				surface.DrawTexturedRect(0, 0, w, h)
 			end
 		end
 
 		if (not IsValid(err)) then
-			err = self.DefaultModel
+			err = self:GetCachedDefaultModel()
 			typ = self.DefaultType
 			class = self.DefaultClass
 			render.SetBlend(0.5)
@@ -282,7 +306,7 @@ function PANEL:FullPaint(w, h)
 				err:SetMaterial()
 			end
 			if (typ == "Weapon") then
-				local lookup = baseclass.Get(class).Ortho or {0, 0}
+				local lookup = weapons.GetStored(class).Ortho or {0, 0}
 
 				local x, y = self:LocalToScreen(0, 0)
 				local mins, maxs = err:GetModelBounds()
@@ -353,20 +377,17 @@ function PANEL:SetDefault(class)
 	end
 
 	if (str) then
-		self.DefaultModel = pluto.cached_model(str)
-
-		if (IsValid(self.DefaultModel) and type == "Model") then
-			self.DefaultModel:ResetSequence(self.DefaultModel:LookupSequence "idle_all_01")
-		end
+		self.DefaultModelString = str
+		self.DefaultModelType = typ
 	end
 
 	self.DefaultType = type
 	self.DefaultClass = class
 end
 
-function PANEL:OnRemove()
-	if (IsValid(self.DefaultModel)) then
-		self.DefaultModel:Remove()
+function PANEL:GetCachedDefaultModel()
+	if (self.DefaultModelString) then
+		return pluto.cached_model(self.DefaultModelString, self.DefaultModelType)
 	end
 end
 
@@ -574,6 +595,23 @@ local function CreateMenu(self, item)
 		end):SetIcon("icon16/lock.png")
 	end
 
+	if (not item.Untradeable) then
+		rightclick_menu:AddOption("Sell in Divine Market", function()
+			if (IsValid(PLUTO_LIST_TEST)) then
+				PLUTO_LIST_TEST:Remove()
+			end
+			PLUTO_LIST_TEST = vgui.Create "tttrw_base"
+			local pnl = vgui.Create "pluto_list_auction_item"
+			pnl:SetItem(self.Item)
+
+			PLUTO_LIST_TEST:AddTab("List Auction Item", pnl)
+
+			PLUTO_LIST_TEST:SetSize(640, 400)
+			PLUTO_LIST_TEST:Center()
+			PLUTO_LIST_TEST:MakePopup()
+		end):SetIcon("icon16/money.png")
+	end
+
 	if (LocalPlayer():GetUserGroup() == "developer") then
 		local dev = rightclick_menu:AddSubMenu "Developer"
 		dev:AddOption("Duplicate", function()
@@ -592,6 +630,9 @@ function PANEL:OnMousePressed(code)
 	if (self.NoMove) then
 		if (code == MOUSE_RIGHT and LocalPlayer():GetUserGroup() == "developer") then
 			CreateMenu(self, self.Item)
+		end
+		if (code == MOUSE_LEFT and self.OverrideClick) then
+			self:OverrideClick()
 		end
 		return
 	end
@@ -1125,7 +1166,11 @@ DEFINE_BASECLASS "pluto_inventory_base"
 function PANEL:Init()
 	BaseClass.Init(self)
 
-	self.Layout = self:Add "DIconLayout"
+
+	self.Scroller = self:Add "DScrollPanel"
+	self.Scroller:Dock(FILL)
+
+	self.Layout = self.Scroller:Add "DIconLayout"
 	self.Layout:Dock(FILL)
 
 	self.Currencies = {}
@@ -1144,7 +1189,7 @@ end
 function PANEL:PerformLayout(w, h)
 	local count = 3
 	local d = 1
-	local size = math.floor(w / (count + d) / count) * count
+	local size = math.floor((w - 20) / (count + d) / count) * count
 	local divide = size / (count + 2)
 
 	for _, item in pairs(self.Currencies) do
@@ -1838,7 +1883,7 @@ function PANEL:SetTabs(tabs, addtrade)
 		table.insert(t, pluto.tradetab)
 		table.insert(t, pluto.crafttab)
 		table.insert(t, pluto.questtab)
-		table.insert(t, pluto.minigametab)
+		--table.insert(t, pluto.minigametab)
 		--table.insert(t, pluto.passtab)
 	end
 
@@ -1859,7 +1904,9 @@ end
 function PANEL:PerformLayout(w, h)
 	local real_h = w * 0.07
 
-	self.Items:SetTall(h - real_h - pad)
+	if (IsValid(self.Items)) then
+		self.Items:SetTall(h - real_h - pad)
+	end
 
 	self.Tabs:SetTall(28)
 
@@ -2239,6 +2286,7 @@ function PANEL:SetItem(item)
 				DROPPED = "Dropped by %s",
 				MIRROR = "Mirrored by %s",
 				CRAFT = "Crafted by %s",
+				BOUGHT = "Bought in the Divine Shop by %s",
 			})[item.CreationMethod] or item.CreationMethod .. " %s"
 			self.OriginalOwner:SetText(fmt:format(item.OriginalOwnerName))
 		else
@@ -2571,8 +2619,8 @@ end)
 
 function pluto.inv.remakefake()
 	pluto.crafttab = {
-		Type = "craft",
-		Name = CreateConVar("pluto_crafttab_name", "Craft", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Craft tab name"),
+		Type = "market",
+		Name = CreateConVar("pluto_markettab_name", "Divine Market", {FCVAR_UNLOGGED, FCVAR_ARCHIVE}, "Market tab name"),
 		ID = 0,
 		Items = {},
 		Currency = {},

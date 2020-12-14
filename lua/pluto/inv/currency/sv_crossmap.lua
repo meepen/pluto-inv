@@ -33,7 +33,9 @@ hook.Add("ShutDown", "pluto_currency_crossmap", function()
 			list[ply] = plylist
 		end
 
-		plylist[ent.Currency.InternalName] = (plylist[ent.Currency.InternalName] or 0) + 1
+		local cur = ent:GetCurrencyType()
+
+		plylist[cur] = (plylist[cur] or 0) + 1
 	end
 
 	for _, ply in pairs(player.GetAll()) do

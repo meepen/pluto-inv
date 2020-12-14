@@ -16,6 +16,8 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
+MOD.Tomeable = true
+
 MOD.Description = "Has an extra affix slot"
 
 MOD.ExtraAffixes = 1

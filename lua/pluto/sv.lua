@@ -53,6 +53,9 @@ pluto.files.load {
 		"minigame/sv.lua",
 
 		"inv/nodes/sv_nodes.lua",
+		"divine/sv_currency_exchange.lua",
+		"divine/sv_stardust_shop.lua",
+		"divine/sv_auction_house.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty
@@ -84,6 +87,7 @@ pluto.files.load {
 		"materials/pluto/hubble.png",
 		"materials/pluto/eppen_stars.png",
 		"materials/pluto/colorful.png",
+		"resource/fonts/PermanentMarker-Regular.ttf",
 	},
 	Workshop = {
 		"2275087857",

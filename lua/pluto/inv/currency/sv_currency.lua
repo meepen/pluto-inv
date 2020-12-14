@@ -58,7 +58,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	droplet = {
-		Shares = 3000,
+		Shares = 1500,
 		Use = function(ply, item)
 			local affixes = item:GetMaxAffixes()
 
@@ -229,7 +229,7 @@ for name, values in pairs {
 						end
 
 						local mod = table.shuffle(pluto.mods.getfor(baseclass.Get(item.ClassName), function(mod)
-							return mod.Type == "implicit" and not mod.PreventChange and not notallowed[mod.InternalName]
+							return mod.Type == "implicit" and mod.Tomeable and not notallowed[mod.InternalName]
 						end))[1]
 
 						if (mod) then
@@ -759,6 +759,9 @@ for name, values in pairs {
 			model_markus_2 = 1,
 			model_detr_connor = 1,]]
 		},
+	},
+	stardust = {
+		Shares = 1500,
 	},
 } do
 	table.Merge(pluto.currency.byname[name], values)

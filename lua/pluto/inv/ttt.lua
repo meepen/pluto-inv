@@ -160,6 +160,8 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 	end
 end)
 
+local pluto_loaded = {}
+
 hook.Add("TTTPlayerGiveWeapons", "pluto_loadout", function(ply)
 	local event = pluto.rounds.getcurrent()
 	
@@ -217,5 +219,24 @@ hook.Add("TTTPlayerGiveWeapons", "pluto_loadout", function(ply)
 	if (i7) then
 		pluto.NextWeaponSpawn = i7
 		ply:Give(i7.ClassName)
+	end
+
+	pluto_loaded[ply:SteamID64()] = true
+	return true
+end)
+
+hook.Add("TTTRoundStart", "pluto_loadout_fallback", function(plys)
+	for _, ply in ipairs(plys) do
+		if (not ply:Alive()) then
+			continue
+		end
+
+		hook.Run("PlayerSetModel", ply)
+
+		if (not pluto_loaded[ply:SteamID64()]) then
+			ply:StripWeapons()
+			ply:StripAmmo()
+			hook.Run("PlayerLoadout", ply)
+		end
 	end
 end)

@@ -16,6 +16,8 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
+MOD.Tomeable = true
+
 MOD.Description = "Rolls better numbers on modifiers"
 
 MOD.Tiers = {

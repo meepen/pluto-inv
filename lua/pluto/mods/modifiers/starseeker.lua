@@ -1,0 +1,34 @@
+MOD.Type = "implicit"
+MOD.Name = "Star Seeker"
+MOD.Tags = {
+	"greed"
+}
+
+MOD.Color = Color(254, 233, 105)
+
+function MOD:IsNegative(roll)
+	return false
+end
+
+function MOD:CanRollOn(class)
+	return true
+end
+
+function MOD:FormatModifier(index, roll)
+	return string.format("%.2f", roll)
+end
+
+-- 39.37 units = 1 meter
+MOD.Description = "Stardust falls from the heavens after every kill."
+
+MOD.Tiers = {
+	{ 40, 50, 5, 10 },
+}
+
+function MOD:OnKill(wep, rolls, atk, vic)
+	if (atk:GetRoleTeam() ~= vic:GetRoleTeam()) then
+		pluto.currency.spawnfor(atk, "stardust")
+	end
+end
+
+return MOD

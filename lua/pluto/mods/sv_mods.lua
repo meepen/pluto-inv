@@ -39,6 +39,7 @@ for _, filename in pairs {
 	"recycle",
 	"shock",
 	-- "snipexp",
+	"starseeker",
 	"tomed",
 	"unchanging",
 	"zoomies",

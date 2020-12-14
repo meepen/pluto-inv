@@ -249,6 +249,22 @@ function pluto.inv.readcraft(cl)
 		},
 	}
 
+	local promised = false
+	for i = 4, 7 do
+		local item = items[i]
+		if (not item) then
+			continue
+		end
+		if (promised) then
+			promised = false
+			break
+		end
+
+		if (item.Tier.InternalName == "promised") then
+			promised = true
+		end
+	end
+
 	table.sort(tiers, function(a, b)
 		return a.r < b.r
 	end)
@@ -270,7 +286,14 @@ function pluto.inv.readcraft(cl)
 		end
 	end
 
-	local wpn = pluto.weapons.generatetier(pluto.tiers.craft(tiers), class)
+	local tier = pluto.tiers.craft(tiers)
+
+	if (promised and not class) then
+		class = "tfa_cso_sapientia"
+		tier = pluto.tiers.byname.unique
+	end
+
+	local wpn = pluto.weapons.generatetier(tier, class)
 
 	if (cur) then
 		local crafted = pluto.currency.byname[cur.Currency].Crafted
