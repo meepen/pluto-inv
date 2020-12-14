@@ -17,6 +17,7 @@ function MOD:FormatModifier(index, roll)
 end
 
 MOD.NoCoined = true
+MOD.Tomeable = true
 
 MOD.Description = "Touch of the Arcane"
 
