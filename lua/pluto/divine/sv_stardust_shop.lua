@@ -71,7 +71,7 @@ local function buildoptions()
 					suffix = {},
 				}
 			},
-			Price = {25000, 35000},
+			Price = {22000, 32000},
 		},
 		starsr = {
 			Shares = 1,
@@ -107,7 +107,7 @@ local function buildoptions()
 					suffix = {},
 				}
 			},
-			Price = {25000, 35000},
+			Price = {23000, 33000},
 		}
 	}
 
@@ -139,7 +139,7 @@ local function buildoptions()
 					suffix = {},
 				}
 			},
-			Price = {2500, 3000}
+			Price = {1750, 2000}
 		}
 	end
 
@@ -183,7 +183,7 @@ local function buildoptions()
 					suffix = {},
 				}
 			},
-			Price = {6000, 7000}
+			Price = {3000, 4000}
 		}
 	end
 
