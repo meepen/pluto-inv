@@ -3,11 +3,22 @@ local mat = CreateMaterial("pluto_node_line_real", "UnlitGeneric", {
 	["$basetexture"] = "sprites/xbeam2",
 	["$additive"] = 1
 })
-local sun = CreateMaterial("pluto_glow_unlit_real", "UnlitGeneric", {
-	["$vertexcolor"] = "1",
-	["$vertexalpha"] = "1",
-	["$translucent"] = "1"
-})
+
+function pluto.getsuntexture()
+	if (pluto.suntexture) then
+		return pluto.suntexture
+	end
+	pluto.suntexture = CreateMaterial("pluto_glow_unlit_real", "UnlitGeneric", {
+		["$vertexcolor"] = "1",
+		["$vertexalpha"] = "1",
+		["$translucent"] = "1"
+	})
+	
+	pluto.suntexture:SetTexture("$basetexture", Material "pluto/star3.png":GetTexture "$basetexture")
+
+	return pluto.suntexture
+end
+
 local backgrounds = {
 	Material "pluto/hubble.png",
 	Material "pluto/eppen_stars.png",
@@ -62,7 +73,6 @@ local function DrawTree(generated, x, y, size, hovered)
 			c.stencil()
 
 			render.SetStencilCompareFunction(STENCIL_EQUAL)
-			sun:SetTexture("$basetexture", Material "pluto/star3.png":GetTexture "$basetexture")
 			local bg = backgrounds[generated.background]
 			surface.SetMaterial(bg)
 			surface.SetDrawColor(255, 255, 255, 255)
@@ -112,7 +122,7 @@ local function DrawTree(generated, x, y, size, hovered)
 			surface.DrawPoly(points)
 		end
 
-		surface.SetMaterial(sun)
+		surface.SetMaterial(pluto.getsuntexture())
 		surface.SetDrawColor(255, 255, 200, 255)
 
 		for i, node in ipairs(generated) do
