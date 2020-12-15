@@ -602,6 +602,22 @@ local function CreateMenu(self, item)
 		end):SetIcon("icon16/lock.png")
 	end
 
+	if (item.constellations) then
+		rightclick_menu:AddOption("Open Constellations", function()
+			if (IsValid(PLUTO_TREE)) then
+				PLUTO_TREE:Remove()
+			end
+			PLUTO_TREE = vgui.Create "DFrame"
+			local f = PLUTO_TREE:Add "pluto_tree"
+			PLUTO_TREE:SetSize(600, 600)
+			PLUTO_TREE:Center()
+			f:Dock(FILL)
+			f.bubbles = tree.make_bubbles(item.constellations, item.ID, item.ClassName)
+			f.constellations = item.constellations
+			PLUTO_TREE:MakePopup()
+		end):SetIcon "icon16/star.png"
+	end
+
 	if (not item.Untradeable) then
 		rightclick_menu:AddOption("Sell in Divine Market", function()
 			if (IsValid(PLUTO_LIST_TEST)) then
