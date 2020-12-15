@@ -82,6 +82,11 @@ concommand.Add("pluto_send_to_auction", function(p, c, a)
 		gun.TabIndex = auction_id
 
 		mysql_commit(db)
+
+		discord.Message():AddEmbed(
+			gun:GetDiscordEmbed()
+				:SetAuthor("Listed for " .. price .. " stardust...")
+		):Send "auction-house"
 	end)
 end)
 
