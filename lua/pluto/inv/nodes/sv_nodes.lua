@@ -144,9 +144,7 @@ function pluto.inv.writenodes(ply, wep, nodes)
 	end
 end
 
-function pluto.inv.writeconstellations(ply, wep, constellations)
-	pluto.inv.writeitem(ply, wep)
-
+function pluto.inv.writeconstellations(ply, constellations)
 	net.WriteUInt(#constellations, 4)
 	for _, constellation in ipairs(constellations) do
 		net.WriteUInt(#constellation, 8)

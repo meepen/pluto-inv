@@ -62,8 +62,6 @@ function pluto.inv.readitemtree()
 end
 
 function pluto.inv.readconstellations()
-	local item = pluto.inv.readitem()
-
 	local constellations = {}
 	for k = 1, net.ReadUInt(4) do
 		local constellation = {}
@@ -77,15 +75,5 @@ function pluto.inv.readconstellations()
 		constellations[k] = constellation
 	end
 
-	if (IsValid(PLUTO_TREE)) then
-		PLUTO_TREE:Remove()
-	end
-	PLUTO_TREE = vgui.Create "DFrame"
-	local f = PLUTO_TREE:Add "pluto_tree"
-	PLUTO_TREE:SetSize(600, 600)
-	PLUTO_TREE:Center()
-	f:Dock(FILL)
-	f.bubbles = tree.make_bubbles(constellations, item.ID, item.ClassName)
-	f.constellations = constellations
-	PLUTO_TREE:MakePopup()
+	return constellations
 end
