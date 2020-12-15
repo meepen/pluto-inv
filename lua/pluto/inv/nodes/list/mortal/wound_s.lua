@@ -1,6 +1,6 @@
 local NODE = pluto.nodes.get "mortal_wound_s"
 
-NODE.Name = "Mortal Wound: Small"
+NODE.Name = "Minor Wound"
 NODE.Description = "Damage with this gun removes 5% of the damage's max health from enemy."
 
 function NODE:ModifyWeapon(node, wep)

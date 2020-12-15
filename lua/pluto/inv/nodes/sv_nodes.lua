@@ -170,6 +170,17 @@ function pluto.nodes.apply(wep, nodes)
 	end
 end
 
+function pluto.nodes.applyactive(wep, bubbles)
+	local active = {}
+	for i = 1, 3 do
+		for _, node in ipairs(bubbles[i]) do
+			table.insert(active, node)
+		end
+	end
+
+	pluto.nodes.apply(wep, active)
+end
+
 function pluto.nodes.generateweapon(class)
 	if (not istable(class)) then
 		class = baseclass.Get(class)

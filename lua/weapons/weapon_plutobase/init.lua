@@ -154,6 +154,16 @@ function SWEP:SetInventoryItem(gun)
 	pluto.wpn_db[self:GetPlutoID()] = gun
 
 	self:ReceivePlutoData()
+
+	timer.Simple(0, function()
+		if (not IsValid(self)) then
+			return
+		end
+
+		if (gun.constellations) then
+			pluto.nodes.applyactive(self, gun.constellations)
+		end
+	end)
 end
 
 hook.Add("EntityTakeDamage", "pluto_dmg_mods", function(targ, dmg)
