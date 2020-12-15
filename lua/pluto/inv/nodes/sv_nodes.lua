@@ -75,6 +75,7 @@ function GROUP:Generate()
 	for _, item in ipairs(self.Guaranteed or {}) do
 		table.insert(bubble, {
 			node_name = item,
+			node_id = #bubble + 1,
 			node_val1 = math.random(),
 			node_val2 = math.random(),
 			node_val3 = math.random(),
@@ -99,6 +100,7 @@ function GROUP:Generate()
 
 		table.insert(bubble, {
 			node_name = itemname,
+			node_id = #bubble + 1,
 			node_val1 = math.random(),
 			node_val2 = math.random(),
 			node_val3 = math.random(),
@@ -142,10 +144,8 @@ function pluto.inv.writenodes(ply, wep, nodes)
 	end
 end
 
-function pluto.inv.writeconstellations(ply, wep)
-	local constellations = pluto.nodes.generateweapon(wep:GetClass())
-
-	pluto.inv.writeitem(ply, wep:GetInventoryItem())
+function pluto.inv.writeconstellations(ply, wep, constellations)
+	pluto.inv.writeitem(ply, wep)
 
 	net.WriteUInt(#constellations, 4)
 	for _, constellation in ipairs(constellations) do
@@ -200,13 +200,22 @@ function pluto.nodes.generateweapon(class)
 		available[val.Type][itemname] = val
 	end
 
-	table.insert(bubbles, pluto.nodes.groups.byname.normal:Generate(class))
+	local rolls = pluto.nodes.groups.byname.normal:Generate(class)
+	for _, roll in pairs(rolls) do
+		roll.node_bubble = 1
+	end
+
+	table.insert(bubbles, rolls)
 
 	for i = 1, 4 do
 		local type = (i % 2) == 1 and "primary" or "secondary"
 		local name, roll = pluto.inv.roll(available[type])
 		available[type][name] = nil
-		table.insert(bubbles, roll:Generate())
+		local rolls = roll:Generate()
+		for _, mod in pairs(rolls) do
+			mod.node_bubble = i + 1
+		end
+		table.insert(bubbles, rolls)
 	end
 	
 	return bubbles
@@ -251,6 +260,36 @@ concommand.Add("pluto_test_nodes", function(p, c, a)
 	})
 end)
 
+function pluto.nodes.getfor(db, wep)
+	mysql_stmt_run(db, "SELECT * from pluto_item_nodes WHERE item_id = ? FOR UPDATE", wep.RowID)
+	local nodes = mysql_stmt_run(db, "SELECT * FROM pluto_item_nodes WHERE item_id = ?", wep.RowID)
+
+	local bubbles = {}
+
+	if (not nodes[1]) then
+		-- no nodes, generate :)))
+		bubbles = pluto.nodes.generateweapon(wep.ClassName)
+
+		for _, bubble in ipairs(bubbles) do
+			for _, node in ipairs(bubble) do
+				print(mysql_stmt_run(db, "INSERT INTO pluto_item_nodes (item_id, node_bubble, node_id, node_name, node_val1, node_val2, node_val3) VALUES(?, ?, ?, ?, ?, ?, ?)", wep.RowID, node.node_bubble, node.node_id, node.node_name, node.node_val1, node.node_val2, node.node_val3))
+			end
+		end
+	else
+		for _, node in ipairs(nodes) do
+			local bubble = bubbles[node.node_bubble]
+			if (not bubble) then
+				bubble = {}
+				bubbles[node.node_bubble] = bubble
+			end
+
+			bubble[node.node_id] = node
+		end
+	end
+
+	return bubbles
+end
+
 concommand.Add("pluto_send_nodes", function(p, c, a)
 	local wep = p:GetActiveWeapon()
 
@@ -258,7 +297,13 @@ concommand.Add("pluto_send_nodes", function(p, c, a)
 		return
 	end
 
-	pluto.inv.message(p)
-		:write("constellations", wep)
-		:send()
+	wep = wep:GetInventoryItem()
+
+	pluto.db.transact(function(db)
+		local bubbles = pluto.nodes.getfor(db, wep)
+		mysql_commit(db)
+		pluto.inv.message(p)
+			:write("constellations", wep, bubbles)
+			:send()
+	end)
 end)
