@@ -97,8 +97,13 @@ SWEP.Secondary.Attacks = {
 	}
 }
 
-
 DEFINE_BASECLASS(SWEP.Base)
+
+function SWEP:SetupDataTables()
+	BaseClass.SetupDataTables(self)
+
+	self:NetVar("Kills", "Int", 0)
+end
 
 function SWEP:Initialize()
 	BaseClass.Initialize(self)
@@ -109,6 +114,13 @@ end
 function SWEP:DoPlayerDeath(ply, atk, dmg)
 	if (dmg and dmg:GetInflictor() == self) then
 		ply:SetModel(pluto.models["chimp"].Model)
+		
+		self:SetKills(self:GetKills() + 1)
+
+		if (IsValid(atk) and self:GetKills() == 3) then
+			atk:SetModel(pluto.models["chimp"].Model)
+			atk:SetupHands()
+		end
 	end
 end
 
