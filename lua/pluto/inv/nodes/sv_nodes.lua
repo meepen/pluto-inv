@@ -302,23 +302,22 @@ function pluto.nodes.getfor(db, wep)
 	end
 
 	wep.constellations = bubbles
+	wep.LastUpdate = (wep.LastUpdate or 0) + 1
 	return bubbles
 end
 
-concommand.Add("pluto_send_nodes", function(p, c, a)
-	local wep = p:GetActiveWeapon()
-
-	if (not wep:GetInventoryItem() or not wep:GetInventoryItem().RowID) then
+concommand.Add("pluto_create_nodes", function(p, c, a)
+	local wep = pluto.itemids[tonumber(a[1])]
+	if (not wep or wep.Owner ~= p:SteamID64()) then
 		return
 	end
-
-	wep = wep:GetInventoryItem()
 
 	pluto.db.transact(function(db)
 		local bubbles = pluto.nodes.getfor(db, wep)
 		mysql_commit(db)
+
 		pluto.inv.message(p)
-			:write("constellations", wep, bubbles)
+			:write("item", wep)
 			:send()
 	end)
 end)
