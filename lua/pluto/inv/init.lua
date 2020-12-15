@@ -392,7 +392,15 @@ function pluto.inv.retrieveitems(steamid, cb)
 			end
 
 			pprintf("Returned mods of %s", steamid)
-			cb(weapons)
+
+			pprintf("Querying constellations for %s", steamid)
+			pluto.db.simplequery("SELECT nodes.* FROM pluto_item_nodes nodes INNER JOIN pluto_items i ON i.idx = nodes.item_id INNER JOIN pluto_tabs t ON i.tab_id = t.idx WHERE t.owner = ?", {steamid}, function(d, err)
+				local constellations = pluto.nodes.fromrows(d)
+				for id, bubbles in pairs(constellations) do
+					weapons[id].bubbles = bubbles
+				end
+				cb(weapons)
+			end)
 		end)
 	end)
 end

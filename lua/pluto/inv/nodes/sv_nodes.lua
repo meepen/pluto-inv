@@ -260,7 +260,31 @@ concommand.Add("pluto_test_nodes", function(p, c, a)
 	})
 end)
 
+function pluto.nodes.fromrows(rows)
+	local data = {}
+
+	for _, row in ipairs(rows) do
+		local bubbles = data[row.item_id]
+		if (not bubbles) then
+			bubbles = {}
+			data[row.item_id] = bubbles
+		end
+		local bubble = bubbles[row.node_bubble]
+		if (not bubble) then
+			bubble = {}
+			bubbles[row.node_bubble] = bubble
+		end
+		bubble[row.node_id] = row
+	end
+
+	return data
+end
+
 function pluto.nodes.getfor(db, wep)
+	if (wep.constellations) then
+		return wep.constellations
+	end
+
 	mysql_stmt_run(db, "SELECT * from pluto_item_nodes WHERE item_id = ? FOR UPDATE", wep.RowID)
 	local nodes = mysql_stmt_run(db, "SELECT * FROM pluto_item_nodes WHERE item_id = ?", wep.RowID)
 
@@ -272,21 +296,14 @@ function pluto.nodes.getfor(db, wep)
 
 		for _, bubble in ipairs(bubbles) do
 			for _, node in ipairs(bubble) do
-				print(mysql_stmt_run(db, "INSERT INTO pluto_item_nodes (item_id, node_bubble, node_id, node_name, node_val1, node_val2, node_val3) VALUES(?, ?, ?, ?, ?, ?, ?)", wep.RowID, node.node_bubble, node.node_id, node.node_name, node.node_val1, node.node_val2, node.node_val3))
+				mysql_stmt_run(db, "INSERT INTO pluto_item_nodes (item_id, node_bubble, node_id, node_name, node_val1, node_val2, node_val3) VALUES(?, ?, ?, ?, ?, ?, ?)", wep.RowID, node.node_bubble, node.node_id, node.node_name, node.node_val1, node.node_val2, node.node_val3)
 			end
 		end
 	else
-		for _, node in ipairs(nodes) do
-			local bubble = bubbles[node.node_bubble]
-			if (not bubble) then
-				bubble = {}
-				bubbles[node.node_bubble] = bubble
-			end
-
-			bubble[node.node_id] = node
-		end
+		bubbles = pluto.nodes.fromrows(nodes)[wep.RowID]
 	end
 
+	wep.constellations = bubbles
 	return bubbles
 end
 
