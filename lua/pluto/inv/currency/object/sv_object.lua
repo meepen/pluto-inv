@@ -16,7 +16,7 @@ function CURRENCY:TryReward(e)
 		return true
 	end
 	if (cur.Pickup) then
-		if (not cur.Pickup(e)) then
+		if (not cur.Pickup(e, self)) then
 			return false
 		end
 	end

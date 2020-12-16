@@ -327,14 +327,48 @@ pluto.currency.list = {
 		Name = "FAKE: Lightsaber",
 		Icon = "lightsaber/lightsaber_killicon.png",
 		Color = color_white,
-		Fake = true
+		Fake = true,
+		SkipNotify = true
 	},
 	{
 		InternalName = "_banna",
 		Name = "Banna",
 		Icon = "pluto/currencies/banna.png",
 		Color = Color(204, 180, 0),
-		Fake = true
+		Fake = true,
+		SkipNotify = true
+	},
+	{
+		InternalName = "_toy_blue",
+		Name = "Blue Toy",
+		Icon = "pluto/currencies/toy_blue.png",
+		Color = Color(0, 0, 255),
+		Fake = true,
+		SkipNotify = true
+	},
+	{
+		InternalName = "_toy_green",
+		Name = "Green Toy",
+		Icon = "pluto/currencies/toy_green.png",
+		Color = Color(0, 255, 0),
+		Fake = true,
+		SkipNotify = true
+	},
+	{
+		InternalName = "_toy_red",
+		Name = "Red Toy",
+		Icon = "pluto/currencies/toy_red.png",
+		Color = Color(255, 0, 0),
+		Fake = true,
+		SkipNotify = true
+	},
+	{
+		InternalName = "_toy_yellow",
+		Name = "Yellow Toy",
+		Icon = "pluto/currencies/toy_yellow.png",
+		Color = Color(255, 255, 0),
+		Fake = true,
+		SkipNotify = true
 	},
 }
 
