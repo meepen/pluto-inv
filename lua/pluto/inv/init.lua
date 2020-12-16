@@ -395,9 +395,8 @@ function pluto.inv.retrieveitems(steamid, cb)
 
 			pprintf("Querying constellations for %s", steamid)
 			pluto.db.simplequery("SELECT nodes.* FROM pluto_item_nodes nodes INNER JOIN pluto_items i ON i.idx = nodes.item_id INNER JOIN pluto_tabs t ON i.tab_id = t.idx WHERE t.owner = ?", {steamid}, function(d, err)
-				print(#d, "const")
 				local constellations = pluto.nodes.fromrows(d)
-				print(table.Count(constellations))
+
 				for id, bubbles in pairs(constellations) do
 					weapons[id].constellations = bubbles
 				end

@@ -401,7 +401,6 @@ concommand.Add("pluto_remove_nickname", function(ply, cmd, arg, args)
 			return
 		end
 	end)
-	PrintTable(item)
 
 	pluto.inv.message(owner)
 		:write("item", item)

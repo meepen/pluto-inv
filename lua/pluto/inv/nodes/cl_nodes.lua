@@ -19,7 +19,6 @@ function pluto.inv.readnode()
 		node.node_val3 = nil
 	end
 
-	PrintTable(node)
 	return node
 end
 
@@ -76,4 +75,27 @@ function pluto.inv.readconstellations()
 	end
 
 	return constellations
+end
+
+function pluto.ui.showconstellations(item)
+	if (not item.constellations) then
+		-- TODO: enable?
+		return
+	end
+
+	if (IsValid(PLUTO_TREE)) then
+		PLUTO_TREE:Remove()
+	end
+	PLUTO_TREE = vgui.Create "tttrw_base"
+	local f = vgui.Create "pluto_tree"
+	PLUTO_TREE:AddTab("Constellations", f)
+	PLUTO_TREE:SetSize(640, 690)
+	f:SetSize(600, 600)
+	PLUTO_TREE:Center()
+	f:Dock(FILL)
+	f.bubbles = tree.make_bubbles(item.constellations, item.ID, item.ClassName)
+	f.constellations = item.constellations
+	PLUTO_TREE:MakePopup()
+
+
 end

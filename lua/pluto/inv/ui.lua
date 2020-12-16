@@ -604,17 +604,7 @@ local function CreateMenu(self, item)
 
 	if (item.constellations) then
 		rightclick_menu:AddOption("Open Constellations", function()
-			if (IsValid(PLUTO_TREE)) then
-				PLUTO_TREE:Remove()
-			end
-			PLUTO_TREE = vgui.Create "DFrame"
-			local f = PLUTO_TREE:Add "pluto_tree"
-			PLUTO_TREE:SetSize(600, 600)
-			PLUTO_TREE:Center()
-			f:Dock(FILL)
-			f.bubbles = tree.make_bubbles(item.constellations, item.ID, item.ClassName)
-			f.constellations = item.constellations
-			PLUTO_TREE:MakePopup()
+			pluto.ui.showconstellations(self.Item)
 		end):SetIcon "icon16/star.png"
 	end
 
