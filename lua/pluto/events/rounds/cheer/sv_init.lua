@@ -2,10 +2,10 @@ resource.AddFile("sound/pluto/cheersong.ogg")
 
 ROUND.Name = "Operation Cheer"
 ROUND.MinPlayers = 6
-ROUND.BaseToys = 3
+ROUND.BaseToys = 3.5
 ROUND.ToysIncrement = 0.5
-ROUND.BaseMilestone = 7
-ROUND.MilestoneIncrement = 0.5
+ROUND.BaseMilestone = 6
+ROUND.MilestoneIncrement = 1
 ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
 ROUND.Reward = "stardust"
 
