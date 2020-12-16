@@ -152,7 +152,7 @@ function pluto.inv.writeconstellations(ply, constellations)
 			local NODE = pluto.nodes.get(node.node_name)
 			net.WriteString(NODE:GetName(node))
 			net.WriteString(NODE:GetDescription(node))
-			net.WriteBool(false) -- unlocked
+			net.WriteBool(node.node_unlocked == 1) -- unlocked
 		end
 	end
 end
@@ -172,9 +172,11 @@ end
 
 function pluto.nodes.applyactive(wep, bubbles)
 	local active = {}
-	for i = 1, 3 do
-		for _, node in ipairs(bubbles[i]) do
-			table.insert(active, node)
+	for _, bubble in ipairs(bubbles) do
+		for _, node in ipairs(bubble) do
+			if (node.node_unlocked == 1) then
+				table.insert(active, node)
+			end
 		end
 	end
 
@@ -303,9 +305,12 @@ function pluto.nodes.getfor(db, wep)
 		-- no nodes, generate :)))
 		bubbles = pluto.nodes.generateweapon(wep.ClassName)
 
+		local first = true
 		for _, bubble in ipairs(bubbles) do
 			for _, node in ipairs(bubble) do
-				mysql_stmt_run(db, "INSERT INTO pluto_item_nodes (item_id, node_bubble, node_id, node_name, node_val1, node_val2, node_val3) VALUES(?, ?, ?, ?, ?, ?, ?)", wep.RowID, node.node_bubble, node.node_id, node.node_name, node.node_val1, node.node_val2, node.node_val3)
+				node.node_unlocked = first and 1 or 0
+				mysql_stmt_run(db, "INSERT INTO pluto_item_nodes (item_id, node_bubble, node_id, node_name, node_val1, node_val2, node_val3, node_unlocked) VALUES(?, ?, ?, ?, ?, ?, ?, ?)", wep.RowID, node.node_bubble, node.node_id, node.node_name, node.node_val1, node.node_val2, node.node_val3, first and 1 or 0)
+				first = false
 			end
 		end
 	else

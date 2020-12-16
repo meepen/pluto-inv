@@ -241,7 +241,8 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				node_val2 FLOAT NULL,
 				node_val3 FLOAT NULL,
 
-				UNIQUE INDEX (item_id, node_bubble, node_id)
+				UNIQUE INDEX (item_id, node_bubble, node_id),
+				FOREIGN KEY(item_id) REFERENCES pluto_items(idx)
 			)
 		]])
 		
@@ -266,8 +267,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				INDEX(price),
 				INDEX(listed),
 				UNIQUE INDEX(idx),
-				FOREIGN KEY(idx) REFERENCES pluteo_items(tab_idx)
-
+				FOREIGN KEY(idx) REFERENCES pluto_items(tab_idx)
 			)
 		]])
 

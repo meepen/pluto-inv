@@ -92,40 +92,49 @@ local function DrawTree(generated, x, y, size, hovered)
 			local nx, ny = nodes[1]:ToScreen(size, outline * 2)
 			local cx, cy = nodes[2]:ToScreen(size, outline * 2)
 
-			local ang = math.atan2(cy - ny, cx - nx)
-			local deg = math.rad(math.deg(ang) + 90)
-			local dc, ds = math.cos(deg) * thicc, math.sin(deg) * thicc
+			if (nodes[1].node_unlocked or nodes[2].node_unlocked) then
 
-			surface.SetDrawColor(0, 0, 255, 255)
-			local centerx, centery = (nx + cx) / 2, (ny + cy) / 2
-			local points = {
-				{ x = nx - dc, y = ny - ds, u = 1, v = 0 },
-				{ x = nx + dc, y = ny + ds, u = 0, v = 1 },
-				{ x = cx - dc, y = cy - ds, u = 1, v = 0 },
-				{ x = cx + dc, y = cy + ds, u = 0, v = 1 },
-			}
-			table.sort(points, function(a, b)
-				local aa = a.ang
-				local ba = b.ang
+				local ang = math.atan2(cy - ny, cx - nx)
+				local deg = math.rad(math.deg(ang) + 90)
+				local dc, ds = math.cos(deg) * thicc, math.sin(deg) * thicc
 
-				if (not aa) then
-					aa = math.deg(math.atan2(a.y - centery, a.x - centerx))
-					a.ang = aa
-				end
-				if (not ba) then
-					ba = math.deg(math.atan2(b.y - centery, b.x - centerx))
-					b.ang = ba
-				end
+				local centerx, centery = (nx + cx) / 2, (ny + cy) / 2
+				local points = {
+					{ x = nx - dc, y = ny - ds, u = 1, v = 0 },
+					{ x = nx + dc, y = ny + ds, u = 0, v = 1 },
+					{ x = cx - dc, y = cy - ds, u = 1, v = 0 },
+					{ x = cx + dc, y = cy + ds, u = 0, v = 1 },
+				}
+				table.sort(points, function(a, b)
+					local aa = a.ang
+					local ba = b.ang
 
-				return aa < ba
-			end)
-			surface.DrawPoly(points)
+					if (not aa) then
+						aa = math.deg(math.atan2(a.y - centery, a.x - centerx))
+						a.ang = aa
+					end
+					if (not ba) then
+						ba = math.deg(math.atan2(b.y - centery, b.x - centerx))
+						b.ang = ba
+					end
+
+					return aa < ba
+				end)
+				surface.DrawPoly(points)
+			else
+				surface.SetDrawColor(255, 100, 120, 180)
+				surface.DrawLine(nx, ny, cx, cy)
+			end
 		end
 
 		surface.SetMaterial(pluto.getsuntexture())
-		surface.SetDrawColor(255, 255, 200, 255)
 
 		for i, node in ipairs(generated) do
+			if (node.node_unlocked) then
+				surface.SetDrawColor(255, 255, 200, 255)
+			else
+				surface.SetDrawColor(255, 155, 120, 100)
+			end
 			local nx, ny = node:ToScreen(size, outline * 2)
 			local size = node.size * (hovered == node and 1.5 or 1)
 			surface.DrawTexturedRect(nx - size / 2, ny - size / 2, size, size)

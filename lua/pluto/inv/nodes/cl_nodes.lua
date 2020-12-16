@@ -68,7 +68,7 @@ function pluto.inv.readconstellations()
 			constellation[bubble_id] = {
 				Name = net.ReadString(),
 				Desc = net.ReadString(),
-				Unlocked = net.ReadBool(),
+				node_unlocked = net.ReadBool(),
 			}
 		end
 		constellations[k] = constellation
@@ -96,6 +96,4 @@ function pluto.ui.showconstellations(item)
 	f.bubbles = tree.make_bubbles(item.constellations, item.ID, item.ClassName)
 	f.constellations = item.constellations
 	PLUTO_TREE:MakePopup()
-
-
 end

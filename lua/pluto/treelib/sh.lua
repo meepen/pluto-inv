@@ -407,6 +407,9 @@ function tree.make_bubbles(treedata, seed, name)
 
 	for i, data in ipairs(treedata) do
 		bubbles.trees[i] = tree.generatelayout(#data, seed + 0x1337 * i, name)
+		for k, node in ipairs(bubbles.trees[i]) do
+			node.node_unlocked = data[k].node_unlocked
+		end
 		bubbles.trees[i].size = 200
 		bubbles.trees[i].id = i
 		if (i >= 2) then
