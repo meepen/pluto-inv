@@ -1,3 +1,4 @@
+-- Author: add___123
 local chancedice = {}
 
 hook.Add("TTTBeginRound", "pluto_chance_dice", function()
