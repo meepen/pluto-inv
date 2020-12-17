@@ -1,4 +1,5 @@
 ROUND.PrintName = "Monke Mania"
+ROUND.Author = "add___123"
 
 function ROUND:TTTPrepareRoles(Team, Role)
 	Role("Banna Boss", "traitor")

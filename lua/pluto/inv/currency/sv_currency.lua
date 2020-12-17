@@ -763,6 +763,50 @@ for name, values in pairs {
 	stardust = {
 		Shares = 1500,
 	},
+	_toy_blue = {
+		Shares = 1,
+		Global = true,
+		Pickup = function(ply, cur)
+			hook.Run("PlutoToyPickup", ply, "blue", cur)
+			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
+				pluto.rounds.prepare "cheer"
+			end
+			return true
+		end,
+	},
+	_toy_green = {
+		Shares = 1,
+		Global = true,
+		Pickup = function(ply, cur)
+			hook.Run("PlutoToyPickup", ply, "green", cur)
+			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
+				pluto.rounds.prepare "cheer"
+			end
+			return true
+		end,
+	},
+	_toy_red = {
+		Shares = 1,
+		Global = true,
+		Pickup = function(ply, cur)
+			hook.Run("PlutoToyPickup", ply, "red", cur)
+			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
+				pluto.rounds.prepare "cheer"
+			end
+			return true
+		end,
+	},
+	_toy_yellow = {
+		Shares = 1,
+		Global = true,
+		Pickup = function(ply, cur)
+			hook.Run("PlutoToyPickup", ply, "yellow", cur)
+			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
+				pluto.rounds.prepare "cheer"
+			end
+			return true
+		end,
+	},
 } do
 	table.Merge(pluto.currency.byname[name], values)
 end
@@ -1010,7 +1054,7 @@ function pluto.currency.spawnfor(ply, currency, pos, global)
 		ent:AddListener(ply)
 	end
 
-	if (currency.Shares and currency.Shares <= pluto.currency.byname.heart.Shares) then
+	if (currency.Shares and currency.Shares <= pluto.currency.byname.heart.Shares and not currency.SkipNotify) then
 		ply:ChatPrint(currency.Color, "... ", white_text, "You feel the essence of a ", currency.Color, "rare currency ", white_text, "vibrate your soul")
 	end
 
