@@ -361,6 +361,9 @@ function pluto.inv.readunlocknode(cl)
 		return
 	end
 	local data = item.constellations[bubble_id][node_id]
+	if (data.node_unlocked == 1) then
+		return
+	end
 
 	local found = false
 	for _, node in pairs(node.connections) do
@@ -376,12 +379,9 @@ function pluto.inv.readunlocknode(cl)
 		return
 	end
 
-
 	print "client request unlock"
-
 	pluto.db.transact(function(db)
 		mysql_stmt_run(db, "SELECT * from pluto_item_nodes WHERE item_id = ? FOR UPDATE", id)
-
 		mysql_stmt_run(db, "UPDATE pluto_item_nodes SET node_unlocked = 1 WHERE item_id = ? AND node_bubble = ? AND node_id = ?", id, bubble_id, node_id)
 
 		mysql_commit(db)

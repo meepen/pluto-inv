@@ -237,7 +237,7 @@ function PANEL:OnMousePressed(code)
 
 	local hovered, nodetree = self:GetHoveredNode()
 
-	if (not hovered.node_unlocked) then
+	if (hovered and not hovered.node_unlocked) then
 		pluto.inv.message()
 			:write("unlocknode", self.item, nodetree, hovered)
 			:send()
