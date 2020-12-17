@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	"$basetexture"			"models/player/joheskiller/ghilliesuit_winter/ghilliesuit_winter04"
+	"$bumpmap"				"models/player/joheskiller/ghilliesuit_winter/ghilliesuit_winter_normal"
+	"$surfaceprop"			"flesh"
+	
+	// "$envmap"				"env_cubemap"
+	// "$normalmapalphaenvmapmask"	"1"
+	// "$envmapcontrast"		"0.3"
+	// "$envmapsaturation"		"0.7"
+	// "$envmaptint"			"[0.36 0.36 0.36]"
+}

@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\humans\suits/helo_shoes_D"
+	"$bumpmap" "models\humans\suits/helo_shoes_N"
+	"$model" "1"
+	"$phong" "1"
+	"$phongexponent" "15"
+	"$phongboost"	"1"
+	"$phongfresnelranges"	"[.5 3 48]"
+
+}

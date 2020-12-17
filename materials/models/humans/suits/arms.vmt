@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/humans/suits/arms"
+	"$bumpmap" "models\humans\suits/arms_N"
+	"$model" "1"
+	"$phong" "1"
+	"$phongexponent" "5"
+	"$phongboost"	"1"
+	"$phongfresnelranges"	"[.5 3 48]"
+        "$lightwarptexture" 	"models\humans\suits\Base_M_caucasian_wrp"
+}

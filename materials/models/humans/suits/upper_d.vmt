@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\humans\suits/upper_d"
+                "$bumpmap"    "models\humans\suits/upper_nm"
+	"$phong" "1"
+//	"$phongexponent" "4"
+	"$phongalbedotint" "1"
+	"$phongboost" "1"
+	"$phongfresnelranges"	"[.3 .5 15]"
+        "$lightwarptexture" 	"models\ninja/mgs4/Clothes_wrp"
+	"$phongexponenttexture" "models\ninja/mgs4/exp"
+	$halflambert 1
+	$nocull 1
+}
+
+

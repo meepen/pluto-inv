@@ -1,0 +1,11 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/krypto/spiderman/SpidermanPoppupian_D"
+	"$model" 1
+	"$phong" "1"
+	"$phongexponent" "20"
+	"$phongboost" "1.5"	
+	"$phongfresnelranges"	"[.25 1 3]"
+	"$halflambert" "1"
+
+}

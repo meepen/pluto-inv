@@ -1,0 +1,10 @@
+"VertexLitGeneric"
+{
+	$basetexture		"models/player/tr_natary/tr_natary"
+	$bumpmap			"models/player/tr_natary/tr_natary_normal"
+
+	$phong "1"
+	$phongboost "16"
+	$phongexponent "5"
+	$phongfresnelranges "[0.04 0.1 1.0]"
+}

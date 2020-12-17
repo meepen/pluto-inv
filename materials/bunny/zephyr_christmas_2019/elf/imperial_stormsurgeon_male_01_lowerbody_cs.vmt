@@ -1,0 +1,12 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "bunny/zephyr_christmas_2019/elf/imperial_stormsurgeon_male_01_lowerbody_cs_elf"
+	$bumpmap "bunny/zephyr_christmas_2019/shared/imperial_stormsurgeon_male_01_lowerbody_nm"
+	$color2 "[0.75 0.75 0.75]"
+
+	$phong 1
+    //$phongexponent 100 
+    $phongfresnelranges "[0.5 1.7 1.11]"
+    $phongalbedotint 1
+	$phongboost 2
+}

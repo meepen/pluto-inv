@@ -1,0 +1,14 @@
+"VertexLitGeneric"
+{
+	$basetexture		"models/player/tr_natary/tr_natary_hair"
+	$bumpmap			"models/player/tr_natary/tr_natary_hair_normal"
+
+	$phong "1"
+	$phongboost "32"
+	$phongexponent "6"
+	$phongfresnelranges "[0.06 0.1 1.0]"
+	$phongtint "[1.0 0.6 0.5]"
+
+	$alphatest "1"
+	$nocull "1"
+}

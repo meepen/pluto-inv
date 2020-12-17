@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$basetexture"			"models/player/joheskiller/ghilliesuit_winter/winter_meshes"
+	"$surfaceprop"			"foliage"
+	"$alphatest"			"1"
+	"$alphatestreference"	".4"
+	"$nocull"				"1"
+}
