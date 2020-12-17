@@ -227,5 +227,5 @@ if (SERVER) then
 else
 	net.Receive("mini_speed", function()
 		pluto.rounds.speeds[LocalPlayer()] = net.ReadFloat()
-	end
+	end)
 end
