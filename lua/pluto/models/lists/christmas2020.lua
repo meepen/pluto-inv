@@ -326,7 +326,7 @@ c "tfacso2natalie01" {
 	GenerateBodygroups = function(item)
 		local bg = BodyGroupRand({
 			hair = {
-				1
+				0
 			},
 		}, item.RowID or item.ID)
 		
