@@ -1,3 +1,4 @@
+-- Author: add___123
 hook.Add("TTTBeginRound", "pluto_shooting_stars", function()
     if (not pluto.rounds or not pluto.rounds.minis) then
 		return
@@ -16,7 +17,7 @@ hook.Add("TTTBeginRound", "pluto_shooting_stars", function()
 			if (not ply:Alive()) then
 				continue
 			end
-            local e = pluto.currency.spawnfor(ply, "_shootingstar")
+            local e = pluto.currency.spawnfor(ply, "_shootingstar", nil, true)
             local target = ply:GetPos() + Vector(math.random(-80, 80), math.random(-80, 80), 0)
             local start = target + Vector(math.random(-500, 500), math.random(-500, 500), 350)
             e:SetPos(start)

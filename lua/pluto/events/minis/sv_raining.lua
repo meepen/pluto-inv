@@ -11,21 +11,19 @@ hook.Add("TTTBeginRound", "pluto_falling_currency", function()
 
 	ttt.chat(white_text, "It's ", pluto.currency.byname.droplet.Color, "pouring", white_text, " outside!")
 
-	timer.Create("pluto_raining_currency", 1.5, 15, function()
+	timer.Create("pluto_raining_currency", 2, 25, function()
 		for _, ply in pairs(player.GetHumans()) do
 			if (not ply:Alive()) then
 				continue
 			end
-			for i = 1, 5 do
-				local e = pluto.currency.spawnfor(ply, (pluto.inv.roll {
-					droplet = 15,
-					pdrop = 1,
-					aciddrop = 1
-				}))
-				e:SetPos(e:GetPos() + vector_up * 500)
-				e:SetMovementType(CURRENCY_MOVEDOWN)
-				e:Update()
-			end
+			local e = pluto.currency.spawnfor(ply, (pluto.inv.roll {
+				droplet = 15,
+				pdrop = 1,
+				aciddrop = 1
+			}), nil, true)
+			e:SetPos(e:GetPos() + vector_up * 500)
+			e:SetMovementType(CURRENCY_MOVEDOWN)
+			e:Update()
 		end
 	end)
 end)
