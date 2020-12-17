@@ -49,6 +49,8 @@ local function GetHoveredNode(tree, offx, offy, size)
 	return best_node, low_dist
 end
 
+local enabled_color = Color(255, 255, 200, 255)
+local disabled_color = Color(255, 155, 120, 100)
 local function DrawTree(generated, x, y, size, hovered)
 	local c = circle_cache[size]
 	local outline = 4
@@ -131,9 +133,9 @@ local function DrawTree(generated, x, y, size, hovered)
 
 		for i, node in ipairs(generated) do
 			if (node.node_unlocked) then
-				surface.SetDrawColor(255, 255, 200, 255)
+				surface.SetDrawColor(enabled_color)
 			else
-				surface.SetDrawColor(255, 155, 120, 100)
+				surface.SetDrawColor(disabled_color)
 			end
 			local nx, ny = node:ToScreen(size, outline * 2)
 			local size = node.size * (hovered == node and 1.5 or 1)
@@ -163,6 +165,7 @@ function PANEL:Paint(w, h)
 
 	local center = bubbles.trees[1]
 	local hovered, node_dist = GetHoveredNode(center, offx + centerx - center.size / 2, offy + centery - center.size / 2, center.size)
+
 	for i = 2, #bubbles.trees do
 		local tree = bubbles.trees[i]
 		local ang = math.rad(tree.ang)
@@ -188,14 +191,18 @@ function PANEL:Paint(w, h)
 	end
 
 	if (hovered) then
-		surface.SetTextColor(white_text)
-		surface.SetFont "BudgetLabel"
-		surface.SetTextPos(2, 3)
 		local star = self.constellations and self.constellations[hovered.bubble.id][hovered.node_id]
-		local w, h = surface.GetTextSize(star.Name)
-		surface.DrawText(star.Name)
-		surface.SetTextPos(2, 5 + h)
-		surface.DrawText(star.Desc)
+		if (self.last_hovered ~= star) then
+			self.showcase = pluto.ui.showcase {
+				Name = star.Name,
+				Description = star.Desc,
+				Color = hovered.node_unlocked and enabled_color or disabled_color
+			}
+			self.showcase:SetPos(PLUTO_TREE:LocalToScreen(PLUTO_TREE:GetWide() / 2 - self.showcase:GetWide() / 2, PLUTO_TREE:GetTall()))
+			self.last_hovered = star
+		end
+	elseif (IsValid(self.showcase)) then
+		self.showcase:Remove()
 	end
 end
 
