@@ -323,6 +323,14 @@ pluto.currency.list = {
 		end,
 	},
 	{
+		InternalName = "_shootingstar",
+		Name = "Shooting Star",
+		Icon = "pluto/currencies/stardust.png",
+		Color = Color(254, 233, 105),
+		Fake = true,
+		SkipNotify = true
+	},
+	{
 		InternalName = "_lightsaber",
 		Name = "FAKE: Lightsaber",
 		Icon = "lightsaber/lightsaber_killicon.png",
@@ -335,6 +343,14 @@ pluto.currency.list = {
 		Icon = "pluto/currencies/banna.png",
 		Color = Color(204, 180, 0),
 		Fake = true
+	},
+	{
+		InternalName = "_chancedice",
+		Name = "Chance Dice",
+		Icon = "pluto/currencies/chancedice.png",
+		Color = Color(255, 208, 86),
+		Fake = true,
+		SkipNotify = true
 	},
 }
 
