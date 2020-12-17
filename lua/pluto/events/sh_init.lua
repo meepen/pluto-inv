@@ -208,6 +208,7 @@ hook.Add("TTTEndRound", "pluto_remove_speeds", function()
 end)
 
 if (SERVER) then
+	util.AddNetworkString "mini_speed"
 	concommand.Add("pluto_prepare_round", function(ply, cmd, args)
 		if (not pluto.cancheat(ply) or not args[1]) then
 			return
