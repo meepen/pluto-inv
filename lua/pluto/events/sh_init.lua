@@ -196,6 +196,16 @@ hook.Add("TTTEndRound", "pluto_event_manager", function()
 	ttt.SetCurrentRoundEvent ""
 end)
 
+pluto.rounds.speeds = {}
+
+hook.Add("TTTUpdatePlayerSpeed", "pluto_mini_speeds", function(ply, data)
+	data.mini = pluto.rounds.speeds[ply] or 1
+end)
+
+hook.Add("TTTEndRound", "pluto_remove_speeds", function()
+	pluto.rounds.speeds = {}
+end)
+
 if (SERVER) then
 	concommand.Add("pluto_prepare_round", function(ply, cmd, args)
 		if (not pluto.cancheat(ply) or not args[1]) then
@@ -205,9 +215,6 @@ if (SERVER) then
 		pluto.rounds.prepare(args[1])
 	end)
 
-	pluto.rounds.minis = {}
-	pluto.rounds.speeds = {}
-
 	concommand.Add("pluto_prepare_mini", function(ply, cmd, args)
 		if (not pluto.cancheat(ply) or not args[1]) then
 			return
@@ -216,12 +223,8 @@ if (SERVER) then
 		pluto.rounds.minis[args[1]] = true
 		print(args[1], "will be the next round")
 	end)
-
-	hook.Add("TTTUpdatePlayerSpeed", "pluto_mini_speeds", function(ply, data)
-		data.mini = pluto.rounds.speeds[ply] or 1
-	end)
-
-	hook.Add("TTTEndRound", "pluto_remove_speeds", function()
-		pluto.rounds.speeds = {}
-	end)
+else
+	net.Receive("mini_speed", function()
+		pluto.rounds.speeds[LocalPlayer()] = net.ReadFloat()
+	end
 end

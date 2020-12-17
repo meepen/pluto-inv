@@ -765,6 +765,7 @@ for name, values in pairs {
 	},
 	_shootingstar = {
 		Shares = 0,
+		Global = true,
 		Pickup = function(ply, self)
 			if (ply:Alive()) then
 				local dmg = DamageInfo()
@@ -783,6 +784,7 @@ for name, values in pairs {
 	},
 	_chancedice = {
 		Shares = 0,
+		Global = true,
 		Pickup = function(ply, self)
 			if (not ply:Alive()) then
 				return true
@@ -812,6 +814,9 @@ for name, values in pairs {
 				function()
 					if (pluto.rounds and pluto.rounds.speeds) then
 						pluto.rounds.speeds[ply] = (pluto.rounds.speeds[ply] or 1) + 0.1
+						net.Start "mini_speed"
+							net.WriteFloat(pluto.rounds.speeds[ply])
+						net.Send(ply)
 						ply:ChatPrint(white_text, "You gained speed!")
 					end
 				end,

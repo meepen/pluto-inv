@@ -18,7 +18,7 @@ hook.Add("TTTBeginRound", "pluto_chance_dice", function()
         if (not ply:Alive()) then
             continue
         end
-        for i = 1, 8 do
+        for i = 1, 10 do
             table.insert(chancedice, pluto.currency.spawnfor(ply, "_chancedice", nil, true))
         end
     end
