@@ -38,6 +38,7 @@ function pluto.inv.readcurrencyspawn()
 	cur:SetNetworkedPosition(net.ReadVector())
 	cur:SetNetworkedPositionTime(net.ReadFloat())
 	cur:SetMovementType(net.ReadUInt(4))
+	cur:SetMovementVector(net.ReadVector())
 	cur:SetSize(net.ReadFloat())
 	cur:SetCurrencyType(net.ReadString())
 end

@@ -804,6 +804,76 @@ for name, values in pairs {
 			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
 				pluto.rounds.prepare "cheer"
 			end
+		end
+	},
+	_shootingstar = {
+		Shares = 0,
+		Pickup = function(ply, self)
+			if (ply:Alive()) then
+				local dmg = DamageInfo()
+				dmg:SetDamageType(DMG_BURN)
+				dmg:SetDamage(math.random(3, 5))
+				ply:TakeDamageInfo(dmg)
+			end
+
+			pluto.db.instance(function(db)
+				pluto.inv.addcurrency(db, ply, "stardust", 1)
+				ply:ChatPrint(white_text, "You got a ", pluto.currency.byname.stardust, white_text, " but ouch, that burns!")
+			end)
+
+			return true
+		end,
+	},
+	_chancedice = {
+		Shares = 0,
+		Pickup = function(ply, self)
+			if (not ply:Alive()) then
+				return true
+			end
+
+			local chances = {
+				function()
+					ply:SetMaxHealth(ply:GetMaxHealth() + 10)
+					ply:SetHealth(ply:Health() + 10)
+					ply:ChatPrint(white_text, "You gained max health!!")
+				end,
+				function()
+					ply:SetJumpPower(ply:GetJumpPower() + 20)
+					ply:ChatPrint(white_text, "You gained jump power!")
+				end,
+				function()
+					ply:SetMaxArmor(ply:GetMaxArmor() + 10)
+					ply:SetArmor(ply:Armor() + 10)
+					ply:ChatPrint(white_text, "You gained 10 armor!!")
+				end,
+				function()
+					pluto.db.instance(function(db)
+						pluto.inv.addcurrency(db, ply, "dice", 10)
+						ply:ChatPrint(white_text, "You got an additional 10 ", pluto.currency.byname.dice, white_text, "!")
+					end)
+				end,
+				function()
+					if (pluto.rounds and pluto.rounds.speeds) then
+						pluto.rounds.speeds[ply] = (pluto.rounds.speeds[ply] or 1) + 0.1
+						ply:ChatPrint(white_text, "You gained speed!")
+					end
+				end,
+				function()
+					local dmg = DamageInfo()
+					dmg:SetDamageType(DMG_BURN)
+					dmg:SetDamage(math.random(25, 50))
+					ply:TakeDamageInfo(dmg)
+					ply:ChatPrint(white_text, "Uh oh, looks like that was a bad one!")
+				end,
+			}
+
+			pluto.db.instance(function(db)
+				pluto.inv.addcurrency(db, ply, "dice", 1)
+				ply:ChatPrint(white_text, "You got a ", pluto.currency.byname.dice, white_text, "!")
+			end)
+
+			chances[math.random(6)]()
+
 			return true
 		end,
 	},

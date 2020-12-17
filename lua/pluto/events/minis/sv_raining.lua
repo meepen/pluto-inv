@@ -1,10 +1,13 @@
-local rain
 hook.Add("TTTBeginRound", "pluto_falling_currency", function()
-	if (not rain and math.random(20) ~= 1) then
+    if (not pluto.rounds or not pluto.rounds.minis) then
 		return
 	end
 
-	rain = false
+	if (not pluto.rounds.minis.raining and math.random(20) ~= 1) then
+		return
+	end
+
+	pluto.rounds.minis.raining = nil
 
 	ttt.chat(white_text, "It's ", pluto.currency.byname.droplet.Color, "pouring", white_text, " outside!")
 
@@ -25,12 +28,4 @@ hook.Add("TTTBeginRound", "pluto_falling_currency", function()
 			end
 		end
 	end)
-end)
-
-concommand.Add("pluto_make_it_rain", function(p)
-	if (not pluto.cancheat(p)) then
-		return
-	end
-
-	rain = true
 end)
