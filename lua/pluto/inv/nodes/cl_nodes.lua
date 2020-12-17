@@ -95,5 +95,12 @@ function pluto.ui.showconstellations(item)
 	f:Dock(FILL)
 	f.bubbles = tree.make_bubbles(item.constellations, item.ID, item.ClassName)
 	f.constellations = item.constellations
+	f.item = item
 	PLUTO_TREE:MakePopup()
+end
+
+function pluto.inv.writeunlocknode(item, bubble, node)
+	net.WriteUInt(item.ID, 32)
+	net.WriteUInt(bubble, 32)
+	net.WriteUInt(node.node_id, 32)
 end

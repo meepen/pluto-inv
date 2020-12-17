@@ -154,6 +154,39 @@ end
 
 local PANEL = {}
 
+function PANEL:GetHoveredNode()
+	local bubbles = self.bubbles
+	if (not bubbles) then
+		return
+	end
+
+	local offx, offy = self:LocalToScreen(0, 0)
+	local centerx, centery = self:GetWide() / 2, self:GetTall() / 2
+
+	local center = bubbles.trees[1]
+	local hovered, node_dist = GetHoveredNode(center, offx + centerx - center.size / 2, offy + centery - center.size / 2, center.size)
+	local nodetree = 1
+
+	for i = 2, #bubbles.trees do
+		local tree = bubbles.trees[i]
+		local ang = math.rad(tree.ang)
+		local dc, ds = math.cos(ang), math.sin(ang)
+		local dist = center.size / 2 + tree.size / 2
+		local node, _dist = GetHoveredNode(tree, offx + centerx + dist * dc - tree.size / 2, offy + centery + dist * ds - tree.size / 2, tree.size)
+		if (_dist < node_dist) then
+			hovered, node_dist = node, _dist
+			nodetree = i
+		end
+	end
+
+	if (node_dist > 40) then
+		hovered = nil
+		nodetree = nil
+	end
+
+	return hovered, nodetree
+end
+
 function PANEL:Paint(w, h)
 	local bubbles = self.bubbles
 	if (not bubbles) then
@@ -164,22 +197,7 @@ function PANEL:Paint(w, h)
 	local centerx, centery = w / 2, h / 2
 
 	local center = bubbles.trees[1]
-	local hovered, node_dist = GetHoveredNode(center, offx + centerx - center.size / 2, offy + centery - center.size / 2, center.size)
-
-	for i = 2, #bubbles.trees do
-		local tree = bubbles.trees[i]
-		local ang = math.rad(tree.ang)
-		local dc, ds = math.cos(ang), math.sin(ang)
-		local dist = center.size / 2 + tree.size / 2
-		local node, _dist = GetHoveredNode(tree, offx + centerx + dist * dc - tree.size / 2, offy + centery + dist * ds - tree.size / 2, tree.size)
-		if (_dist < node_dist) then
-			hovered, node_dist = node, _dist
-		end
-	end
-
-	if (node_dist > 40) then
-		hovered = nil
-	end
+	local hovered, node_dist = self:GetHoveredNode()
 
 	DrawTree(center, centerx - center.size / 2, centery - center.size / 2, center.size, hovered)
 	for i = 2, #bubbles.trees do
@@ -196,13 +214,33 @@ function PANEL:Paint(w, h)
 			self.showcase = pluto.ui.showcase {
 				Name = star.Name,
 				Description = star.Desc,
-				Color = hovered.node_unlocked and enabled_color or disabled_color
+				Color = hovered.node_unlocked and enabled_color or disabled_color,
+				Experience = not hovered.node_unlocked and 1000 or nil,
 			}
 			self.showcase:SetPos(PLUTO_TREE:LocalToScreen(PLUTO_TREE:GetWide() / 2 - self.showcase:GetWide() / 2, PLUTO_TREE:GetTall()))
 			self.last_hovered = star
 		end
 	elseif (IsValid(self.showcase)) then
 		self.showcase:Remove()
+	end
+end
+
+function PANEL:OnMousePressed(code)
+	if (code ~= MOUSE_LEFT) then
+		return
+	end
+
+	local bubbles = self.bubbles
+	if (not bubbles) then
+		return
+	end
+
+	local hovered, nodetree = self:GetHoveredNode()
+
+	if (not hovered.node_unlocked) then
+		pluto.inv.message()
+			:write("unlocknode", self.item, nodetree, hovered)
+			:send()
 	end
 end
 

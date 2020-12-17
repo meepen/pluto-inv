@@ -337,3 +337,59 @@ concommand.Add("pluto_create_nodes", function(p, c, a)
 			:send()
 	end)
 end)
+
+function pluto.inv.readunlocknode(cl)
+	local id = net.ReadUInt(32)
+	local bubble_id = net.ReadUInt(32)
+	local node_id = net.ReadUInt(32)
+	
+	local item = pluto.itemids[id]
+	if (not item or item.Owner ~= cl:SteamID64() or not item.constellations) then
+		return
+	end
+
+	local trees = tree.make_bubbles(item.constellations, item.RowID, item.ClassName)
+	local tree = trees.trees[bubble_id]
+	if (not tree) then
+		print "no tree"
+		return
+	end
+
+	local node = tree[node_id]
+
+	if (not node) then
+		return
+	end
+	local data = item.constellations[bubble_id][node_id]
+
+	local found = false
+	for _, node in pairs(node.connections) do
+		local nodedata = item.constellations[bubble_id][node.node_id]
+		if (nodedata.node_unlocked == 1) then
+			found = nodedata
+			break
+		end
+	end
+
+	if (not found) then
+		print "no connections"
+		return
+	end
+
+
+	print "client request unlock"
+
+	pluto.db.transact(function(db)
+		mysql_stmt_run(db, "SELECT * from pluto_item_nodes WHERE item_id = ? FOR UPDATE", id)
+
+		mysql_stmt_run(db, "UPDATE pluto_item_nodes SET node_unlocked = 1 WHERE item_id = ? AND node_bubble = ? AND node_id = ?", id, bubble_id, node_id)
+
+		mysql_commit(db)
+
+		data.node_unlocked = 1
+		item.LastUpdate = (item.LastUpdate or 0) + 1
+		pluto.inv.message(cl)
+			:write("item", item)
+			:send()
+	end)
+end
