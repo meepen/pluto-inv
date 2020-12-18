@@ -11,6 +11,8 @@ function EFFECT:Init(data)
 	self.Entity = data:GetEntity()
 end
 
+local size = 0.075
+local min = 0.05
 function EFFECT:Think()
 	if (CurTime() < self.StartTime + self.Duration) then
 		return true
@@ -20,7 +22,7 @@ function EFFECT:Think()
 		endpos = self.EndPos + self.Normal
 	}
 
-	util.DecalEx(Material(util.DecalMaterial "PaintSplatBlue"), IsValid(tr.Entity) and tr.Entity or game.GetWorld(), self.EndPos, tr.HitNormal, Color(255, 255, 255, 255), 0.2, 0.2)
+	util.DecalEx(Material(util.DecalMaterial "PaintSplatBlue"), IsValid(tr.Entity) and tr.Entity or game.GetWorld(), self.EndPos, tr.HitNormal, Color(255, 255, 255, 255), min + math.random() * size, min + math.random() * size)
 	return false
 end
 

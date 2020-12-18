@@ -4,7 +4,7 @@ SWEP.Author = "Kamikaze"
 
 SWEP.Spawnable = false
 SWEP.AdminSpawnable = false
-SWEP.PlutoSpawnable = true
+SWEP.PlutoSpawnable = false
 SWEP.AutoSpawnable = false
 SWEP.DrawCrosshair = true
 
