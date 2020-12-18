@@ -217,6 +217,8 @@ if (SERVER) then
 		pluto.rounds.prepare(args[1])
 	end)
 
+	pluto.rounds.minis = {}
+
 	concommand.Add("pluto_prepare_mini", function(ply, cmd, args)
 		if (not pluto.cancheat(ply) or not args[1]) then
 			return
