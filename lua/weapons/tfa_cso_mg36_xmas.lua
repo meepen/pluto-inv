@@ -5,7 +5,7 @@ SWEP.Spawnable = false
 SWEP.AdminSpawnable = false
 SWEP.DrawCrosshair = true
 SWEP.PrintName = "Snowball Shooter"
-SWEP.Slot = 2
+SWEP.Slot = 1
 SWEP.HasScope = true
 
 SWEP.Primary.Sound = Sound("MG36XMAS.Fire")

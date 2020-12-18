@@ -1,0 +1,8 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/dewobedil/vocaloid/yowane_haku/palmer/armm"
+	"$nodecal" 1
+	"$nocull" 1
+	"$lightwarptexture" "models/dewobedil/vocaloid/yowane_haku/palmer/toon_armor"
+	"$phong" "1"
+}

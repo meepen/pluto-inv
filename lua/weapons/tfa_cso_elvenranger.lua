@@ -8,12 +8,12 @@ SWEP.PrintName = "AWP Elven Ranger"
 SWEP.Slot = 2
 
 SWEP.Primary.Sound = Sound("ElvenRanger.Fire")
-SWEP.Primary.Damage = 30
+SWEP.Primary.Damage = 45
 SWEP.HeadshotMultiplier = 100
 
-SWEP.Primary.ClipSize = 5
-SWEP.Primary.DefaultClip = 10
-SWEP.Primary.Delay = 1.33
+SWEP.Primary.ClipSize = 4
+SWEP.Primary.DefaultClip = 8
+SWEP.Primary.Delay = 1.7
 
 SWEP.ReloadSpeed = 0.5
 

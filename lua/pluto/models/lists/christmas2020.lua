@@ -150,11 +150,11 @@ c "treetrooper" {
 }
 
 c "ghilliewinter01" {
-	Name = "Ghillie Winter 01",
+	Name = "Ghillie Winter",
 	Model = "models/player/joheskiller/ghilliesuit_winter.mdl",
 	Hands = "models/weapons/c_arms_cstrike.mdl",
 	Color = ColorRand(),
-	SubDescription = "Ghillie Winter 01"
+	SubDescription = ""
 }
 
 c "snow1" {
@@ -292,12 +292,12 @@ c "snow7" {
 }
 
 
-c "imp" {
-	Name = "imp",
+c "xmas_imp" {
+	Name = "Imp (but christmas)",
 	Model = "Models/player/pizzaroll/imp.mdl",
 	Hands = "Models/weapons/imparms.mdl",
 	Color = ColorRand(),
-	SubDescription = "imp",
+	SubDescription = "Who says a spawn of the underlord can't celebrate Christmas?",
 	GenerateBodygroups = function(item)
 		local bg = BodyGroupRand({
 			Santa_Hat = {
@@ -310,7 +310,7 @@ c "imp" {
 }
 
 c "kleiaorgana" {
-	Name = "[K] Leia Organa",
+	Name = "Winter Leia",
 	Model = "models/kryptonite/sbf_leia/sbf_leia.mdl",
 	Hands = nil,
 	Color = ColorRand(),
@@ -318,11 +318,11 @@ c "kleiaorgana" {
 }
 
 c "tfacso2natalie01" {
-	Name = "TFA-CSO2-Natalie01",
+	Name = "CSO2 Natalie",
 	Model = "models/player/tfa_cso2/tr_natary01.mdl",
 	Hands = "models/weapons/tfa_cso2/arms/tr_natary01.mdl",
 	Color = ColorRand(),
-	SubDescription = "TFA-CSO2-Natalie01",
+	SubDescription = "",
 	GenerateBodygroups = function(item)
 		local bg = BodyGroupRand({
 			hair = {
@@ -334,12 +334,12 @@ c "tfacso2natalie01" {
 	end,
 }
 
-c "kspidermannewyear" {
-	Name = "[K] Spiderman New Year",
+c "xmas_spiderman" {
+	Name = "Christmas Spiderman",
 	Model = "models/kryptonite/spiderman_new_year/spiderman_new_year.mdl",
 	Hands = nil,
 	Color = ColorRand(),
-	SubDescription = "[K] Spiderman New Year",
+	SubDescription = "",
 	GenerateBodygroups = function(item)
 		local bg = BodyGroupRand({
 			Scarf = {

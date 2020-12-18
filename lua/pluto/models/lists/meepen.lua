@@ -19,3 +19,37 @@ c "2b" {
 	end,
 	Gender = "Female",
 }
+
+c "academy_ahri" {
+	Name = "Academy Ahri",
+	Model = "models/player/aileri_academy_ahri.mdl",
+	Hands = "models/weapons/aileri_academy_ahri_arms.mdl",
+	SubDescription = "memes",
+	Color = rare,
+	GenerateBodygroups = function(item)
+		local bg = BodyGroupRand({
+			Skin = {
+				0, 1, 2, 3, 4
+			},
+			Ears = {
+				0, 1
+			},
+			Tails = {
+				0, 1
+			},
+			Backpack = {
+				0, 1
+			}
+		}, item.RowID or item.ID)
+		
+		return bg
+	end,
+}
+
+c "kat_2" {
+	Name = "KAT WHY",
+	Model = "models/player/dewobedil/vocaloid/yowane_haku/palmer_p.mdl",
+	Hands = "models/player/dewobedil/vocaloid/yowane_haku/c_arms/palmer_p.mdl",
+	SubDescription = "why",
+	Color = rare,	
+}

@@ -1,0 +1,9 @@
+"UnlitGeneric"
+{
+	"$basetexture" "models/dewobedil/vocaloid/yowane_haku/palmer/purple"
+	"$model" 1
+	"$nodecal" 1
+	"$nocull" 1
+	"$lightwarptexture" "models/dewobedil/vocaloid/yowane_haku/palmer/toon_armor"
+	"$phong" "1"
+}

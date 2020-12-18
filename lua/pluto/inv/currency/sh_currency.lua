@@ -119,7 +119,7 @@ pluto.currency.list = {
 	},
 	{
 		InternalName = "crate1",
-		Name = "Present",
+		Name = "Present (2019)",
 		Icon = "pluto/currencies/crate1.png",
 		Description = "Contains a 2019 Holiday Item",
 		SubDescription = "Is that... it couldn't be... and what is he holding?",
@@ -133,6 +133,28 @@ pluto.currency.list = {
 			pluto.opener = vgui.Create "tttrw_base"
 
 			pluto.opener:AddTab("Open Present", vgui.Create "pluto_box_open" :SetCurrency "crate1")
+
+			pluto.opener:SetSize(640, 400)
+			pluto.opener:Center()
+			pluto.opener:MakePopup()
+		end,
+	},
+	{
+		InternalName = "xmas2020",
+		Name = "Present",
+		Icon = "pluto/currencies/toy_yellow.png",
+		Description = "Contains a 2020 Holiday Item",
+		SubDescription = "Joy to the world!",
+		NoTarget = true,
+		Color = Color(188, 2, 1),
+		ClientsideUse = function()
+			if (IsValid(pluto.opener)) then
+				pluto.opener:Remove()
+			end
+
+			pluto.opener = vgui.Create "tttrw_base"
+
+			pluto.opener:AddTab("Open Present", vgui.Create "pluto_box_open" :SetCurrency "xmas2020")
 
 			pluto.opener:SetSize(640, 400)
 			pluto.opener:Center()
