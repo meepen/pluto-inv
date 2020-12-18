@@ -13,6 +13,8 @@ for _, id in pairs {
 	"light1",
 	"light2",
 	"light3",
+	"cheer1",
+	"cheer2",
 
 	"melee",
 	"nojump",
