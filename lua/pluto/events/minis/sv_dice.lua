@@ -2,11 +2,15 @@
 local chancedice = {}
 
 hook.Add("TTTBeginRound", "pluto_chance_dice", function()
+	if (ttt.GetCurrentRoundEvent() ~= "") then
+		return
+	end
+
     if (not pluto.rounds or not pluto.rounds.minis) then
 		return
 	end
 
-	if (not pluto.rounds.minis.dice and math.random(20) ~= 1) then
+	if (not pluto.rounds.minis.dice and math.random(30) ~= 1) then
 		return
 	end
 
@@ -14,11 +18,13 @@ hook.Add("TTTBeginRound", "pluto_chance_dice", function()
 
 	ttt.chat(pluto.currency.byname.dice.Color, "Chance Dice", white_text, " have spawned around the map!")
 
+    local count = #player.GetHumans()
+
     for _, ply in pairs(player.GetHumans()) do
         if (not ply:Alive()) then
             continue
         end
-        for i = 1, 10 do
+        for i = 1, math.max(10 - count / 6, 5) do
             table.insert(chancedice, pluto.currency.spawnfor(ply, "_chancedice", nil, true))
         end
     end

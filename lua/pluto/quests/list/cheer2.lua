@@ -10,7 +10,9 @@ end
 
 function QUEST:Init(data)
 	data:Hook("PlutoToyDelivered", function(data, ply)
-		data:UpdateProgress(1)
+		if (IsValid(data.Player) and data.Player:Alive()) then
+			data:UpdateProgress(1)
+		end
 	end)
 end
 
