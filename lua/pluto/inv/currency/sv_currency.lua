@@ -367,14 +367,6 @@ for name, values in pairs {
 				Shares = 1,
 				Rare = true
 			},
-			model_elftrooper = {
-				Shares = 1,
-				Rare = true
-			},
-			model_santatrooper = {
-				Shares = 1,
-				Rare = true
-			},
 			model_xmas_spiderman = {
 				Shares = 1,
 				Rare = true
@@ -384,6 +376,8 @@ for name, values in pairs {
 				Shares = 20,
 			},
 
+			model_elftrooper = xmas2020_fill,
+			model_santatrooper = xmas2020_fill,
 			model_treetrooper = xmas2020_fill,
 			model_snowmantrooper = xmas2020_fill,
 			model_hannukahtrooper = xmas2020_fill,
