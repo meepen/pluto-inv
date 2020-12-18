@@ -48,3 +48,61 @@ SWEP.Ironsights = {
 	SlowDown = 0.8,
 	Zoom = 0.9,
 }
+
+function SWEP:Initialize()
+	BaseClass.Initialize(self)
+
+	hook.Add("DoPlayerDeath", self, self.DoPlayerDeath)
+end
+
+function SWEP:DoPlayerDeath(ply, atk, dmg)
+	if (dmg and dmg:GetInflictor() == self and IsValid(atk)) then
+		self.OldModel = atk:GetModel()
+		self.CurrentModel = pluto.models[(math.random() > 0.5 and "fe" or "") .. "male_child"].Model
+
+		atk:SetModel(self.CurrentModel)
+		atk:SetupHands()
+		atk:ChatPrint(white_text, "You burst alight with a child-like energy!")
+
+		net.Start "dart_speed"
+			net.WriteBool(true)
+		net.Send(atk)
+
+		hook.Add("TTTUpdatePlayerSpeed", "pluto_dart_" .. atk:Nick(), function(ply, data)
+			if (atk == ply) then
+				data.dart = 1.2
+			end
+		end)
+
+		timer.Create("dartpistol" .. atk:Nick(), 10, 1, function()
+			if (IsValid(atk) and atk:Alive()) then
+				net.Start "dart_speed"
+					net.WriteBool(false)
+				net.Send(atk)
+
+				hook.Remove("TTTUpdatePlayerSpeed", "pluto_dart_" .. atk:Nick())
+
+				if (atk:GetModel() == self.CurrentModel) then
+					atk:SetModel(self.OldModel)
+					atk:SetupHands()
+				end
+			end
+		end)
+	end
+end
+
+if (SERVER) then
+	util.AddNetworkString "dart_speed"
+else
+	net.Receive("dart_speed", function()
+		if (net.ReadBool()) then
+			hook.Add("TTTUpdatePlayerSpeed", "pluto_dart", function(ply, data)
+				if (ply == LocalPlayer()) then
+					data.dart = 1.2
+				end
+			end)
+		else
+			hook.Remove("TTTUpdatePlayerSpeed", "pluto_dart")
+		end
+	end)
+end
