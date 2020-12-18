@@ -49,6 +49,8 @@ SWEP.Ironsights = {
 	Zoom = 0.9,
 }
 
+DEFINE_BASECLASS(SWEP.Base)
+
 function SWEP:Initialize()
 	BaseClass.Initialize(self)
 

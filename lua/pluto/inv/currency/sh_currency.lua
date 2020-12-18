@@ -142,11 +142,11 @@ pluto.currency.list = {
 	{
 		InternalName = "xmas2020",
 		Name = "Present",
-		Icon = "pluto/currencies/toy_yellow.png",
+		Icon = "pluto/currencies/xmas2020.png",
 		Description = "Contains a 2020 Holiday Item",
 		SubDescription = "Joy to the world!",
 		NoTarget = true,
-		Color = Color(188, 2, 1),
+		Color = Color(17, 110, 191),
 		ClientsideUse = function()
 			if (IsValid(pluto.opener)) then
 				pluto.opener:Remove()

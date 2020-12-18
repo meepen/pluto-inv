@@ -61,25 +61,6 @@ pluto.files.load {
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty
 	Resources = {
-		"materials/pluto/item_bg_real.png",
-		"materials/pluto/trashcan_128.png",
-		"materials/pluto/icons/bluevoted.png",
-		"materials/pluto/icons/voted.png",
-		"materials/pluto/icons/liked.png",
-		"materials/pluto/icons/disliked.png",
-		"materials/pluto/icons/likednotvoted.png",
-		"materials/pluto/icons/dislikednotvoted.png",
-		"materials/pluto/icons/likeanddislike.png",
-
-		"materials/pluto/newshard.png",
-		"materials/pluto/newshardbg.png",
-
-		"materials/pluto/pluto-logo-header.png",
-		"materials/pluto/item_bg_mech.png",
-
-		"materials/pluto/bg_paint7.png",
-		"materials/pluto/bg_bunny4.png",
-
 		"resource/fonts/Niconne-Regular.ttf",
 		"resource/fonts/Lateef-Regular.ttf",
 		"resource/fonts/Aladin-Regular.ttf",
