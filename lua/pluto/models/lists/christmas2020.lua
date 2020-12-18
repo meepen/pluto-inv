@@ -111,7 +111,7 @@ c "santatrooper" {
 	Model = "models/player/bunny/zephyr_christmas_2019/santa/santa_trooper.mdl",
 	Hands = "models/player/bunny/zephyr_christmas_2019/santa/santa_hands.mdl",
 	Color = ColorRand(),
-	SubDescription = "Santa Trooper",
+	SubDescription = "Imagine santa, but like he just misses the chimney and smashes through the roof.",
 	HitboxOverride = {
 		[0] = {
 			[18] = {
@@ -125,7 +125,7 @@ c "elftrooper" {
 	Model = "models/player/bunny/zephyr_christmas_2019/elf/elf_trooper.mdl",
 	Hands = "models/player/bunny/zephyr_christmas_2019/elf/elf_hands.mdl",
 	Color = ColorRand(),
-	SubDescription = "Elf Trooper",
+	SubDescription = "Elf on the shelf? Beware of bullet holes on your walls.",
 	HitboxOverride = {
 		[0] = {
 			[18] = {
@@ -139,7 +139,7 @@ c "reindeertrooper" {
 	Model = "models/player/bunny/zephyr_christmas_2019/reindeer/reindeer_trooper.mdl",
 	Hands = "models/player/bunny/zephyr_christmas_2019/reindeer/reindeer_hands.mdl",
 	Color = ColorRand(),
-	SubDescription = "Reindeer Trooper",
+	SubDescription = "The red nose reindeer, had a very shiny gun.",
 	HitboxOverride = {
 		[0] = {
 			[18] = {
@@ -153,7 +153,7 @@ c "hannukahtrooper" {
 	Model = "models/player/bunny/zephyr_christmas_2019/hannukah/hannukah_trooper.mdl",
 	Hands = "models/player/bunny/zephyr_christmas_2019/hannukah/hannukah_hands.mdl",
 	Color = ColorRand(),
-	SubDescription = "Hannukah Trooper",
+	SubDescription = "Dreidel dreidel dreidel... *misses shots*",
 	HitboxOverride = {
 		[0] = {
 			[16] = {
@@ -167,7 +167,7 @@ c "snowmantrooper" {
 	Model = "models/player/bunny/zephyr_christmas_2019/snowman/snowman_trooper.mdl",
 	Hands = "models/player/bunny/zephyr_christmas_2019/snowman/snowman_hands.mdl",
 	Color = ColorRand(),
-	SubDescription = "Snowman Trooper",
+	SubDescription = "Is actually alive.",
 	HitboxOverride = {
 		[0] = {
 			[18] = {
@@ -181,7 +181,7 @@ c "treetrooper" {
 	Model = "models/player/bunny/zephyr_christmas_2019/tree/tree_trooper.mdl",
 	Hands = "models/player/bunny/zephyr_christmas_2019/tree/tree_hands.mdl",
 	Color = ColorRand(),
-	SubDescription = "Tree Trooper",
+	SubDescription = "The best disguise is a disguise in plain sight.",
 	HitboxOverride = {
 		[0] = {
 			[16] = {
@@ -196,15 +196,15 @@ c "ghilliewinter01" {
 	Model = "models/player/joheskiller/ghilliesuit_winter.mdl",
 	Hands = "models/weapons/c_arms_cstrike.mdl",
 	Color = ColorRand(),
-	SubDescription = ""
+	SubDescription = "Stay low and move slowly, we'll be impossible to spot in our ghillie suits."
 }
 
 c "snow1" {
-	Name = "Snow_1",
+	Name = "Snow Citizen",
 	Model = "models/player/portal/Male_02_Snow.mdl",
 	Hands = nil,
 	Color = ColorRand(),
-	SubDescription = "Snow_1",
+	SubDescription = "",
 	GenerateBodygroups = function(item)
 		local bg = BodyGroupRand({
 			hats = {
@@ -219,11 +219,11 @@ c "snow1" {
 	end,
 }
 c "snow2" {
-	Name = "Snow_2",
+	Name = "Snow Citizen",
 	Model = "models/player/portal/Male_04_Snow.mdl",
 	Hands = nil,
 	Color = ColorRand(),
-	SubDescription = "Snow_2",
+	SubDescription = "",
 	GenerateBodygroups = function(item)
 		local bg = BodyGroupRand({
 			hats = {
@@ -238,11 +238,11 @@ c "snow2" {
 	end,
 }
 c "snow3" {
-	Name = "Snow_3",
+	Name = "Snow Citizen",
 	Model = "models/player/portal/Male_05_Snow.mdl",
 	Hands = nil,
 	Color = ColorRand(),
-	SubDescription = "Snow_3",
+	SubDescription = "",
 	GenerateBodygroups = function(item)
 		local bg = BodyGroupRand({
 			hats = {
@@ -257,11 +257,11 @@ c "snow3" {
 	end,
 }
 c "snow4" {
-	Name = "Snow_4",
+	Name = "Snow Citizen",
 	Model = "models/player/portal/Male_06_Snow.mdl",
 	Hands = nil,
 	Color = ColorRand(),
-	SubDescription = "Snow_4",
+	SubDescription = "",
 	GenerateBodygroups = function(item)
 		local bg = BodyGroupRand({
 			hats = {
@@ -276,11 +276,11 @@ c "snow4" {
 	end,
 }
 c "snow5" {
-	Name = "Snow_5",
+	Name = "Snow Citizen",
 	Model = "models/player/portal/Male_07_Snow.mdl",
 	Hands = nil,
 	Color = ColorRand(),
-	SubDescription = "Snow_5",
+	SubDescription = "",
 	GenerateBodygroups = function(item)
 		local bg = BodyGroupRand({
 			hats = {
@@ -295,11 +295,11 @@ c "snow5" {
 	end,
 }
 c "snow6" {
-	Name = "Snow_6",
+	Name = "Snow Citizen",
 	Model = "models/player/portal/Male_08_Snow.mdl",
 	Hands = nil,
 	Color = ColorRand(),
-	SubDescription = "Snow_6",
+	SubDescription = "",
 	GenerateBodygroups = function(item)
 		local bg = BodyGroupRand({
 			hats = {
@@ -314,11 +314,11 @@ c "snow6" {
 	end,
 }
 c "snow7" {
-	Name = "Snow_7",
+	Name = "Snow Citizen",
 	Model = "models/player/portal/Male_09_Snow.mdl",
 	Hands = nil,
 	Color = ColorRand(),
-	SubDescription = "Snow_7",
+	SubDescription = "",
 	GenerateBodygroups = function(item)
 		local bg = BodyGroupRand({
 			hats = {
@@ -363,7 +363,7 @@ c "kleiaorgana" {
 	Model = "models/kryptonite/sbf_leia/sbf_leia.mdl",
 	Hands = nil,
 	Color = ColorRand(),
-	SubDescription = "[K] Leia Organa",
+	SubDescription = "Aren't you a little short for a stormtrooper?",
 	HitboxOverride = {
 		[0] = {
 			[21] = {
@@ -395,7 +395,7 @@ c "xmas_spiderman" {
 	Model = "models/kryptonite/spiderman_new_year/spiderman_new_year.mdl",
 	Hands = nil,
 	Color = ColorRand(),
-	SubDescription = "",
+	SubDescription = "T'was The Fight Before Christmas...",
 	GenerateBodygroups = function(item)
 		local bg = BodyGroupRand({
 			Scarf = {

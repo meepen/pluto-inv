@@ -23,7 +23,7 @@ local function UpdateAndDecrement(ply, item, currency)
 end
 
 local crate1_fill = 750 / (5 + 6 + 9)
-local xmas2020_fill = 7 / (7)
+local xmas2020_fill = 200 / (11)
 
 function pluto.inv.percents(contents)
 	local shares = 0
@@ -351,18 +351,39 @@ for name, values in pairs {
 	xmas2020 = {
 		Shares = 30,
 		Contents = {
-			model_tfacso2natalie01 = 1,
-			model_kleiaorgana = 1,
-			model_xmas_imp = 1,
-			model_ghilliewinter01 = 1,
-			model_treetrooper = 1,
-			model_snowmantrooper = 1,
-			model_hannukahtrooper = 1,
-			model_reindeertrooper = 1,
-			model_elftrooper = 1,
-			model_santatrooper = 1,
-			model_xmas_spiderman = 1,
+			model_tfacso2natalie01 = {
+				Shares = 1,
+				Rare = true
+			},
+			model_kleiaorgana = {
+				Shares = 1,
+				Rare = true
+			},
+			model_xmas_imp = {
+				Shares = 1,
+				Rare = true
+			},
+			model_ghilliewinter01 = {
+				Shares = 1,
+				Rare = true
+			},
+			model_elftrooper = {
+				Shares = 1,
+				Rare = true
+			},
+			model_santatrooper = {
+				Shares = 1,
+				Rare = true
+			},
+			model_xmas_spiderman = {
+				Shares = 1,
+				Rare = true
+			},
 
+			model_treetrooper = xmas2020_fill,
+			model_snowmantrooper = xmas2020_fill,
+			model_hannukahtrooper = xmas2020_fill,
+			model_reindeertrooper = xmas2020_fill,
 			model_snow7 = xmas2020_fill,
 			model_snow6 = xmas2020_fill,
 			model_snow5 = xmas2020_fill,
