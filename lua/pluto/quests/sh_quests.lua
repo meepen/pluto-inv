@@ -1,6 +1,6 @@
 pluto.quests = pluto.quests or {}
 
--- #83F52C, Daily #FBDB0C, Weekly #FF3030, Unquie #68228B
+-- #83F52C, Daily #FBDB0C, Weekly #FF3030, Unique #68228B
 
 pluto.quests.types = {
 	{
@@ -8,7 +8,7 @@ pluto.quests.types = {
 		RewardPool = "unique",
 		Time = 60 * 60 * 24 * 16,
 		Amount = 0,
-		Cooldown = 60 * 60 * 24,
+		Cooldown = 60 * 60 * 24 * 16,
 		Color = HexColor "a446d2",
 	},
 	{

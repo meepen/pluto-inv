@@ -301,6 +301,8 @@ function ROUND:UpdateScore(state, ply)
 		net.WriteString "bonus"
 		net.WriteUInt(state.bonus, 32)
 	net.Broadcast()
+
+	hook.Run("PlutoToyDelivered", ply)
 end
 
 ROUND:Hook("SetupMove", function(self, state, ply, mv)
