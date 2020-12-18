@@ -804,7 +804,7 @@ for name, values in pairs {
 			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
 				pluto.rounds.prepare "cheer"
 			end
-			return true
+			return true -- HERE?
 		end,
 	},
 } do
