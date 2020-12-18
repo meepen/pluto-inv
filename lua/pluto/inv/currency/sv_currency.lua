@@ -379,6 +379,10 @@ for name, values in pairs {
 				Shares = 1,
 				Rare = true
 			},
+			tfa_cso_m95_xmas = {
+				Tier = "festive",
+				Shares = 20,
+			},
 
 			model_treetrooper = xmas2020_fill,
 			model_snowmantrooper = xmas2020_fill,

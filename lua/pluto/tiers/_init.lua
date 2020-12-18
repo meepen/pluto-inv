@@ -166,6 +166,7 @@ for _, name in pairs {
 	"common",
 	"confused",
 	"easter_unique",
+	"festive",
 	"gamer",
 	"inevitable",
 	"junk",
