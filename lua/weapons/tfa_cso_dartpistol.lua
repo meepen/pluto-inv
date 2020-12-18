@@ -72,12 +72,14 @@ function SWEP:DoPlayerDeath(ply, atk, dmg)
 
 		hook.Add("TTTUpdatePlayerSpeed", "pluto_dart_" .. atk:Nick(), function(ply, data)
 			if (atk == ply) then
-				data.dart = 1.2
+				data.dart = 1.1
 			end
 		end)
 
-		timer.Create("dartpistol" .. atk:Nick(), 10, 1, function()
+		timer.Create("dartpistol" .. atk:Nick(), 6, 1, function()
 			if (IsValid(atk) and atk:Alive()) then
+				atk:ChatPrint(white_text, " The power of the dart gun fades...")
+
 				net.Start "dart_speed"
 					net.WriteBool(false)
 				net.Send(atk)
@@ -100,7 +102,7 @@ else
 		if (net.ReadBool()) then
 			hook.Add("TTTUpdatePlayerSpeed", "pluto_dart", function(ply, data)
 				if (ply == LocalPlayer()) then
-					data.dart = 1.2
+					data.dart = 1.1
 				end
 			end)
 		else
