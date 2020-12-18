@@ -43,7 +43,7 @@ TFA.AddWeaponSound( "Vulcanus11.Reload", "weapons/tfa_cso/vulcanus11/reload.ogg"
 TFA.AddWeaponSound( "Vulcanus11.Insert", "weapons/tfa_cso/vulcanus11/insert.ogg" )
 
 --M1887-Xmas
-TFA.AddFireSound( "M1887XMAS.Fire", "weapons/tfa_cso/m1887xmas/fire.ogg", false, "^" )
+TFA.AddFireSound( "M1887XMAS.Fire", "weapons/tfa_cso/m1887xmas/fire.ogg", false, "^", 0.4)
 TFA.AddWeaponSound( "M1887XMAS.Draw", "weapons/tfa_cso/m1887xmas/draw.ogg" )
 TFA.AddWeaponSound( "M1887XMAS.Start", "weapons/tfa_cso/m1887xmas/start.ogg" )
 TFA.AddWeaponSound( "M1887XMAS.Insert", "weapons/tfa_cso/m1887xmas/insert.ogg" )

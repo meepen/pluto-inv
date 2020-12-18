@@ -97,3 +97,17 @@ function SWEP:GetPrintNameColor()
 	
 	return cur
 end
+
+DEFINE_BASECLASS(SWEP.Base)
+
+function SWEP:Initialize()
+	BaseClass.Initialize(self)
+
+	hook.Add("PlayerRagdollCreated", self, self.PlayerRagdollCreated)
+end
+
+function SWEP:PlayerRagdollCreated(ply, rag, atk, dmg)
+	if (dmg and dmg:GetInflictor() == self) then
+		MakeGold(rag, "models/player/shared/ice_player")
+	end
+end

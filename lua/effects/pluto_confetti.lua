@@ -14,6 +14,12 @@ local function RandVector(spread)
     return vector_origin
 end
 
+local christmas_colors = {
+    Color(255, 255, 255),
+    Color(255, 50, 20),
+    Color(50, 255, 20)
+}
+
 function EFFECT:Init(data)
     local pos = data:GetStart()
     local dir = data:GetOrigin() - pos
@@ -26,9 +32,15 @@ function EFFECT:Init(data)
         return
     end
 
-    local is_grenade = bit.band(flags, CONFETTI_GRENADE) == CONFETTI_GRENADE
+    local speed = ({
+        [0] = 100,
+        [CONFETTI_GRENADE] = 250,
+        [CONFETTI_SHOT] = 2000,
+    })[bit.band(flags, 3)]
+
+    local is_christmas = bit.band(flags, 4) == 4
     
-    local endPoint = Vector(pos + dir * (is_grenade and 100 or 250))
+    local endPoint = Vector(pos + dir * speed)
 
     for i = 1, data:GetMagnitude() * 100 do
         local particle = emitter:Add(sprite, pos)
@@ -63,6 +75,10 @@ function EFFECT:Init(data)
                 particle:SetGravity(Vector(0, 0, -222))
             end
             local colour = HSVToColor(math.random() * 360, 1, 1)
+
+            if (is_christmas) then
+                colour = table.Random(christmas_colors)
+            end
             particle:SetColor(colour.r, colour.g, colour.b)
             particle:SetLighting(false)
             particle:SetCollide(true)
