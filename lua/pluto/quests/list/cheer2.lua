@@ -24,5 +24,5 @@ function QUEST:Reward(data)
 end
 
 function QUEST:GetProgressNeeded()
-	return 100
+	return 1000
 end
