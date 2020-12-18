@@ -790,7 +790,7 @@ for name, values in pairs {
 		Shares = 1500,
 	},
 	_toy_blue = {
-		Shares = 1,
+		Shares = 0.75,
 		Global = true,
 		Pickup = function(ply, cur)
 			hook.Run("PlutoToyPickup", ply, "blue", cur)
@@ -801,7 +801,7 @@ for name, values in pairs {
 		end,
 	},
 	_toy_green = {
-		Shares = 1,
+		Shares = 0.75,
 		Global = true,
 		Pickup = function(ply, cur)
 			hook.Run("PlutoToyPickup", ply, "green", cur)
@@ -812,7 +812,7 @@ for name, values in pairs {
 		end,
 	},
 	_toy_red = {
-		Shares = 1,
+		Shares = 0.75,
 		Global = true,
 		Pickup = function(ply, cur)
 			hook.Run("PlutoToyPickup", ply, "red", cur)
@@ -823,13 +823,15 @@ for name, values in pairs {
 		end,
 	},
 	_toy_yellow = {
-		Shares = 1,
+		Shares = 0.75,
 		Global = true,
 		Pickup = function(ply, cur)
 			hook.Run("PlutoToyPickup", ply, "yellow", cur)
 			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
 				pluto.rounds.prepare "cheer"
 			end
+
+			return true
 		end
 	},
 	_shootingstar = {

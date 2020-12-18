@@ -7,7 +7,7 @@ ROUND.ToysIncrement = 0.5
 ROUND.BaseMilestone = 5
 ROUND.MilestoneIncrement = 0.75
 ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
-ROUND.Reward = "stardust"
+ROUND.Reward = "xmas2020"
 
 util.AddNetworkString "cheer_data"
 
