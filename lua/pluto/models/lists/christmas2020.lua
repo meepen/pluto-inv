@@ -111,42 +111,84 @@ c "santatrooper" {
 	Model = "models/player/bunny/zephyr_christmas_2019/santa/santa_trooper.mdl",
 	Hands = "models/player/bunny/zephyr_christmas_2019/santa/santa_hands.mdl",
 	Color = ColorRand(),
-	SubDescription = "Santa Trooper"
+	SubDescription = "Santa Trooper",
+	HitboxOverride = {
+		[0] = {
+			[18] = {
+				HitGroup = HITGROUP_HEAD
+			},
+		},
+	}
 }
 c "elftrooper" {
 	Name = "Elf Trooper",
 	Model = "models/player/bunny/zephyr_christmas_2019/elf/elf_trooper.mdl",
 	Hands = "models/player/bunny/zephyr_christmas_2019/elf/elf_hands.mdl",
 	Color = ColorRand(),
-	SubDescription = "Elf Trooper"
+	SubDescription = "Elf Trooper",
+	HitboxOverride = {
+		[0] = {
+			[18] = {
+				HitGroup = HITGROUP_HEAD
+			},
+		},
+	}
 }
 c "reindeertrooper" {
 	Name = "Reindeer Trooper",
 	Model = "models/player/bunny/zephyr_christmas_2019/reindeer/reindeer_trooper.mdl",
 	Hands = "models/player/bunny/zephyr_christmas_2019/reindeer/reindeer_hands.mdl",
 	Color = ColorRand(),
-	SubDescription = "Reindeer Trooper"
+	SubDescription = "Reindeer Trooper",
+	HitboxOverride = {
+		[0] = {
+			[18] = {
+				HitGroup = HITGROUP_HEAD
+			},
+		},
+	}
 }
 c "hannukahtrooper" {
 	Name = "Hannukah Trooper",
 	Model = "models/player/bunny/zephyr_christmas_2019/hannukah/hannukah_trooper.mdl",
 	Hands = "models/player/bunny/zephyr_christmas_2019/hannukah/hannukah_hands.mdl",
 	Color = ColorRand(),
-	SubDescription = "Hannukah Trooper"
+	SubDescription = "Hannukah Trooper",
+	HitboxOverride = {
+		[0] = {
+			[16] = {
+				HitGroup = HITGROUP_HEAD
+			},
+		},
+	}
 }
 c "snowmantrooper" {
 	Name = "Snowman Trooper",
 	Model = "models/player/bunny/zephyr_christmas_2019/snowman/snowman_trooper.mdl",
 	Hands = "models/player/bunny/zephyr_christmas_2019/snowman/snowman_hands.mdl",
 	Color = ColorRand(),
-	SubDescription = "Snowman Trooper"
+	SubDescription = "Snowman Trooper",
+	HitboxOverride = {
+		[0] = {
+			[18] = {
+				HitGroup = HITGROUP_HEAD
+			},
+		},
+	}
 }
 c "treetrooper" {
 	Name = "Tree Trooper",
 	Model = "models/player/bunny/zephyr_christmas_2019/tree/tree_trooper.mdl",
 	Hands = "models/player/bunny/zephyr_christmas_2019/tree/tree_hands.mdl",
 	Color = ColorRand(),
-	SubDescription = "Tree Trooper"
+	SubDescription = "Tree Trooper",
+	HitboxOverride = {
+		[0] = {
+			[16] = {
+				HitGroup = HITGROUP_HEAD
+			},
+		},
+	}
 }
 
 c "ghilliewinter01" {
@@ -307,6 +349,13 @@ c "xmas_imp" {
 		
 		return bg
 	end,
+	HitboxOverride = {
+		[0] = {
+			[6] = {
+				HitGroup = HITGROUP_HEAD
+			},
+		},
+	}
 }
 
 c "kleiaorgana" {
@@ -314,7 +363,14 @@ c "kleiaorgana" {
 	Model = "models/kryptonite/sbf_leia/sbf_leia.mdl",
 	Hands = nil,
 	Color = ColorRand(),
-	SubDescription = "[K] Leia Organa"
+	SubDescription = "[K] Leia Organa",
+	HitboxOverride = {
+		[0] = {
+			[21] = {
+				HitGroup = HITGROUP_HEAD
+			},
+		},
+	}
 }
 
 c "tfacso2natalie01" {
@@ -352,4 +408,11 @@ c "xmas_spiderman" {
 		
 		return bg
 	end,
+	HitboxOverride = {
+		[0] = {
+			[5] = {
+				HitGroup = HITGROUP_HEAD
+			},
+		},
+	}
 }
