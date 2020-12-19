@@ -353,6 +353,7 @@ for name, values in pairs {
 		Contents = {
 			tfa_cso_m1887xmas = {
 				Shares = 0.2,
+				Tier = "unique",
 				Rare = true,
 			},
 			model_tfacso2natalie01 = {
