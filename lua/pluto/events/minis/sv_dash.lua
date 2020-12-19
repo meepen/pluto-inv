@@ -9,6 +9,9 @@ local devs = {
 local nextdev
 
 hook.Add("TTTEndRound", "pluto_prompt_dash", function()
+    hook.Remove("PlayerCanPickupWeapon", "pluto_dev_dash")
+    hook.Remove("DoPlayerDeath", "pluto_dev_dash")
+    
 	if (ttt.GetNextRoundEvent() ~= "") then
 		return
 	end
@@ -25,9 +28,6 @@ hook.Add("TTTEndRound", "pluto_prompt_dash", function()
             nextdev:ChatPrint(ttt.roles.Traitor.Color, "You will be the Dashing Developer next round! Everyone will try to kill you!")
         end
     end
-
-    hook.Remove("PlayerCanPickupWeapon", "pluto_dev_dash")
-    hook.Remove("DoPlayerDeath", "pluto_dev_dash")
 end)
 
 hook.Add("TTTBeginRound", "pluto_dev_dash", function()
