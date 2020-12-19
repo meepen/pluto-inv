@@ -64,7 +64,9 @@ hook.Add("TTTBeginRound", "pluto_dev_dash", function()
     end
 
     hook.Add("PlayerCanPickupWeapon", "pluto_dev_dash", function(ply, wep)
-        return (ply ~= curdev or wep:GetClass() == "weapon_ttt_unarmed")
+        if (ply ~= curdev) then
+            return wep:GetClass() == "weapon_ttt_unarmed"
+        end
     end)
 
     hook.Add("DoPlayerDeath", "pluto_dev_dash", function(ply, att, dmg)
