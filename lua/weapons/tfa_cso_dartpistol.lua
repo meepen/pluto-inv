@@ -59,12 +59,11 @@ end
 
 function SWEP:DoPlayerDeath(ply, atk, dmg)
 	if (dmg and dmg:GetInflictor() == self and IsValid(atk)) then
-		self.OldModel = atk:GetModel()
+		self.OldModel = self.OldModel or atk:GetModel()
 		self.CurrentModel = pluto.models[(math.random() > 0.5 and "fe" or "") .. "male_child"].Model
 
 		atk:SetModel(self.CurrentModel)
-		atk:SetupHands()
-		atk:ChatPrint(white_text, "You burst alight with a child-like energy!")
+		atk:ChatPrint(white_text, "You are filled with a child-like energy!")
 
 		net.Start "dart_speed"
 			net.WriteBool(true)
@@ -72,22 +71,26 @@ function SWEP:DoPlayerDeath(ply, atk, dmg)
 
 		hook.Add("TTTUpdatePlayerSpeed", "pluto_dart_" .. atk:Nick(), function(ply, data)
 			if (atk == ply) then
-				data.dart = 1.2
+				data.dart = 1.5
 			end
 		end)
 
-		timer.Create("dartpistol" .. atk:Nick(), 10, 1, function()
-			if (IsValid(atk) and atk:Alive()) then
+		timer.Create("dartpistol" .. atk:Nick(), 6, 1, function()
+			if (IsValid(atk)) then
+				atk:ChatPrint(white_text, " The power of the dart gun fades...")
+
 				net.Start "dart_speed"
 					net.WriteBool(false)
 				net.Send(atk)
 
 				hook.Remove("TTTUpdatePlayerSpeed", "pluto_dart_" .. atk:Nick())
 
-				if (atk:GetModel() == self.CurrentModel) then
+				if (atk:Alive() and atk:GetModel() == self.CurrentModel) then
 					atk:SetModel(self.OldModel)
-					atk:SetupHands()
 				end
+				
+				self.OldModel = nil
+				self.CurrentModel = nil
 			end
 		end)
 	end
@@ -100,7 +103,7 @@ else
 		if (net.ReadBool()) then
 			hook.Add("TTTUpdatePlayerSpeed", "pluto_dart", function(ply, data)
 				if (ply == LocalPlayer()) then
-					data.dart = 1.2
+					data.dart = 1.5
 				end
 			end)
 		else
