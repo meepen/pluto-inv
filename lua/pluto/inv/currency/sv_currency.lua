@@ -815,7 +815,7 @@ for name, values in pairs {
 		Shares = 1500,
 	},
 	_toy_blue = {
-		Shares = 0.75,
+		Shares = 1,
 		Global = true,
 		Pickup = function(ply, cur)
 			hook.Run("PlutoToyPickup", ply, "blue", cur)
@@ -826,7 +826,7 @@ for name, values in pairs {
 		end,
 	},
 	_toy_green = {
-		Shares = 0.75,
+		Shares = 1,
 		Global = true,
 		Pickup = function(ply, cur)
 			hook.Run("PlutoToyPickup", ply, "green", cur)
@@ -837,7 +837,7 @@ for name, values in pairs {
 		end,
 	},
 	_toy_red = {
-		Shares = 0.75,
+		Shares = 1,
 		Global = true,
 		Pickup = function(ply, cur)
 			hook.Run("PlutoToyPickup", ply, "red", cur)
@@ -848,7 +848,7 @@ for name, values in pairs {
 		end,
 	},
 	_toy_yellow = {
-		Shares = 0.75,
+		Shares = 1,
 		Global = true,
 		Pickup = function(ply, cur)
 			hook.Run("PlutoToyPickup", ply, "yellow", cur)
