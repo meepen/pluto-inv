@@ -17,7 +17,7 @@ hook.Add("TTTBeginRound", "pluto_falling_currency", function()
 
     local count = #player.GetHumans()
 
-	timer.Create("pluto_raining_currency", math.max(2, 1 + count / 8), math.max(20, 25 - count / 6), function()
+	timer.Create("pluto_raining_currency", math.max(0.5, 0.5 + count / 12), math.max(40, 50 - count / 12), function()
 		for _, ply in pairs(player.GetHumans()) do
 			if (not ply:Alive()) then
 				continue
@@ -26,7 +26,7 @@ hook.Add("TTTBeginRound", "pluto_falling_currency", function()
 				droplet = 15,
 				pdrop = 1,
 				aciddrop = 1
-			}), nil, true)
+			}))
 			e:SetPos(e:GetPos() + vector_up * 500)
 			e:SetMovementType(CURRENCY_MOVEDOWN)
 			e:Update()

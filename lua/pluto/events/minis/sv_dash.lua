@@ -19,7 +19,7 @@ hook.Add("TTTEndRound", "pluto_prompt_dash", function()
 
     pluto.rounds.minis.dash = nil
 
-    for k, ply in ipairs(player.GetHumans()) do
+    for k, ply in ipairs(table.shuffle(player.GetHumans())) do
         if (devs[ply:SteamID64()]) then
             nextdev = ply
             nextdev:ChatPrint(ttt.roles.Traitor.Color, "You will be the Dashing Developer next round! Everyone will try to kill you!")
@@ -64,7 +64,9 @@ hook.Add("TTTBeginRound", "pluto_dev_dash", function()
     end
 
     hook.Add("PlayerCanPickupWeapon", "pluto_dev_dash", function(ply, wep)
-        return (ply ~= curdev or wep:GetClass() == "weapon_ttt_unarmed")
+        if (ply == curdev) then
+            return wep:GetClass() == "weapon_ttt_unarmed"
+        end
     end)
 
     hook.Add("DoPlayerDeath", "pluto_dev_dash", function(ply, att, dmg)
