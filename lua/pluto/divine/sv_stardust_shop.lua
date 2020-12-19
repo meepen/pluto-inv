@@ -292,7 +292,7 @@ concommand.Add("pluto_send_stardust_shop", function(p)
 				local embed = data.PreviewItem:GetDiscordEmbed()
 				msg:AddEmbed(
 					embed
-						:SetAuthor("For " .. item.Price .. " stardust; 5 hours remaining...")
+						:SetAuthor("For " .. data.Price .. " stardust; 5 hours remaining...")
 						:SetTimestamp()
 				)
 				data.EndTime = os.time() + 60 * 60 * 5
