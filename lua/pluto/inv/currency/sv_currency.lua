@@ -351,6 +351,10 @@ for name, values in pairs {
 	xmas2020 = {
 		Shares = 30,
 		Contents = {
+			tfa_cso_m1887xmas = {
+				Shares = 0.2,
+				Rare = true,
+			},
 			model_tfacso2natalie01 = {
 				Shares = 1,
 				Rare = true
