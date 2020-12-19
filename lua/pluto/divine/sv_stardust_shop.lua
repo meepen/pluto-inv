@@ -22,7 +22,7 @@ local function buildoptions()
 				ClassName = "shard",
 				Tier = pluto.tiers.byname.otherworldly,
 			},
-			Price = {5000, 7000},
+			Price = {800, 1500},
 		},
 		conf_shard = {
 			Shares = 20,
@@ -44,7 +44,7 @@ local function buildoptions()
 				ClassName = "shard",
 				Tier = pluto.tiers.byname.confused,
 			},
-			Price = {2000, 3000}
+			Price = {600, 800}
 		},
 		starar = {
 			Shares = 1,
@@ -71,7 +71,7 @@ local function buildoptions()
 					suffix = {},
 				}
 			},
-			Price = {22000, 32000},
+			Price = {22000, 27000},
 		},
 		starsr = {
 			Shares = 1,
@@ -107,7 +107,7 @@ local function buildoptions()
 					suffix = {},
 				}
 			},
-			Price = {23000, 33000},
+			Price = {23000, 28000},
 		}
 	}
 
@@ -139,7 +139,7 @@ local function buildoptions()
 					suffix = {},
 				}
 			},
-			Price = {1750, 2000}
+			Price = {800, 1200}
 		}
 	end
 
@@ -183,7 +183,7 @@ local function buildoptions()
 					suffix = {},
 				}
 			},
-			Price = {3000, 4000}
+			Price = {2300, 2800}
 		}
 	end
 
