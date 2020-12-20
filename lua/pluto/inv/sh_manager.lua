@@ -26,6 +26,7 @@ pluto.inv.messages = {
 		"auctionsearch",
 		"unlocknode",
 		"unlockmajors",
+		"unlockconstellations",
 	},
 	sv2cl = {
 		[0] = "end",

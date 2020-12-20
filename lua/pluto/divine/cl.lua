@@ -96,6 +96,8 @@ function pluto.divine.confirm(what, yesfn)
 	pluto.divine.confirmation:SetSize(400, 300)
 	pluto.divine.confirmation:Center()
 	pluto.divine.confirmation:MakePopup()
+
+	return pnl.Rest
 end
 
 local PANEL = {}

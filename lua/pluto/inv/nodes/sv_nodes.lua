@@ -28,6 +28,7 @@ for _, fname in pairs {
 
 	"steel/enchanted",
 	"steel/spawns",
+	"steel/share",
 	"steel/transform",
 
 	"reserves/mythic",
@@ -329,7 +330,7 @@ end
 
 concommand.Add("pluto_create_nodes", function(p, c, a)
 	local wep = pluto.itemids[tonumber(a[1])]
-	if (not wep or wep.Owner ~= p:SteamID64()) then
+	if (not wep or wep.Owner ~= p:SteamID64() or not pluto.cancheat(p)) then
 		return
 	end
 
@@ -374,9 +375,9 @@ function pluto.inv.readunlockmajors(cl)
 		mysql_stmt_run(db, "SELECT * from pluto_item_nodes WHERE item_id = ? FOR UPDATE", id)
 
 		local ret, err = mysql_stmt_run(db, "UPDATE pluto_items SET exp = exp - ? WHERE idx = ? AND exp > ?", exp, item.RowID, exp)
-		if (not ret or ret.AFFECTED_ROWS ~= 1 or not pluto.cancheat(cl)) then
-			--mysql_rollback(db)
-			--return
+		if ((not ret or ret.AFFECTED_ROWS ~= 1) and not pluto.cancheat(cl)) then
+			mysql_rollback(db)
+			return
 		end
 
 		mysql_stmt_run(db, "UPDATE pluto_item_nodes SET node_unlocked = 1 WHERE item_id = ? AND node_bubble = ? AND node_id = ?", itemid, one, 1)
@@ -439,9 +440,9 @@ function pluto.inv.readunlocknode(cl)
 		mysql_stmt_run(db, "SELECT * from pluto_item_nodes WHERE item_id = ? FOR UPDATE", id)
 
 		local ret, err = mysql_stmt_run(db, "UPDATE pluto_items SET exp = exp - ? WHERE idx = ? AND exp > ?", exp, item.RowID, exp)
-		if (not ret or ret.AFFECTED_ROWS ~= 1 or not pluto.cancheat(cl)) then
-			--mysql_rollback(db)
-			--return
+		if ((not ret or ret.AFFECTED_ROWS ~= 1) and not pluto.cancheat(cl)) then
+			mysql_rollback(db)
+			return
 		end
 
 		mysql_stmt_run(db, "UPDATE pluto_item_nodes SET node_unlocked = 1 WHERE item_id = ? AND node_bubble = ? AND node_id = ?", id, bubble_id, node_id)
@@ -451,6 +452,28 @@ function pluto.inv.readunlocknode(cl)
 		data.node_unlocked = 1
 		item.LastUpdate = (item.LastUpdate or 0) + 1
 		item.Experience = item.Experience - exp
+		pluto.inv.message(cl)
+			:write("item", item)
+			:send()
+	end)
+end
+
+function pluto.inv.readunlockconstellations(cl)
+	local item = pluto.itemids[net.ReadUInt(32)]
+
+	if (not item or item.Owner ~= cl:SteamID64() or item.constellations or item.Type ~= "Weapon" or item.Tier and item.Tier.InternalName == "unique") then
+		return
+	end
+
+	pluto.db.transact(function(db)
+		if (not pluto.inv.addcurrency(db, cl, "stardust", -500)) then
+			mysql_rollback(db)
+			return
+		end
+
+		local bubbles = pluto.nodes.getfor(db, item)
+		mysql_commit(db)
+
 		pluto.inv.message(cl)
 			:write("item", item)
 			:send()

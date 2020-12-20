@@ -1,11 +1,11 @@
 local NODE = pluto.nodes.get "steel_enchant"
 
-NODE.Name = "Enchanted: Steel"
+NODE.Name = "Enchanted: Ice"
 NODE.Description = "Your gun is plated in steel."
 NODE.Experience = 5300
 
 function NODE:ModifyWeapon(node, wep)
-	wep:SetMaterial "models/player/shared/steel_player"
+	wep:SetMaterial "models/player/shared/ice_player"
 	wep.SteelEnchant = true
 	if (CLIENT) then
 		local last_drawn
@@ -23,7 +23,7 @@ function NODE:ModifyWeapon(node, wep)
 
 		function wep:PlutoOverrideViewModel(vm)
 			for i in pairs(vm:GetMaterials()) do
-				vm:SetSubMaterial(i - 1, "models/player/shared/steel_player")
+				vm:SetSubMaterial(i - 1, "models/player/shared/ice_player")
 			end
 		end
 	end

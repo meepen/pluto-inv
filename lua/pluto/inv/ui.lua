@@ -602,7 +602,7 @@ local function CreateMenu(self, item)
 		end):SetIcon("icon16/lock.png")
 	end
 
-	if (item.constellations) then
+	if (item.Type == "Weapon") then
 		rightclick_menu:AddOption("Open Constellations", function()
 			pluto.ui.showconstellations(self.Item)
 		end):SetIcon "icon16/star.png"

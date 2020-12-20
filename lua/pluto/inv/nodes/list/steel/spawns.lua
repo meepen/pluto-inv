@@ -1,6 +1,6 @@
 local NODE = pluto.nodes.get "steel_spawns"
 
-NODE.Name = "Steel: Coined"
+NODE.Name = "Ice: Coined"
 NODE.Experience = 5400
 
 function NODE:GetDescription(node)

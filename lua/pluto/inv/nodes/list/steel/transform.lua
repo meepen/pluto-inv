@@ -1,6 +1,6 @@
 local NODE = pluto.nodes.get "steel_transform"
 
-NODE.Name = "Steel: Transform"
+NODE.Name = "Ice: Transform"
 NODE.Description = "Players killed with this gun transform to steel."
 NODE.Experience = 1200
 
@@ -21,7 +21,7 @@ function NODE:ModifyWeapon(node, wep)
 			end
 
 			if (dmg and dmg:GetInflictor() == wep) then
-				MakeGold(rag, "models/player/shared/steel_player")
+				MakeGold(rag, "models/player/shared/ice_transform")
 			end
 		end)
 	end)

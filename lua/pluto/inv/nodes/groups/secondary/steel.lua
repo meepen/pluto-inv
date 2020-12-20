@@ -3,7 +3,8 @@ local GROUP = pluto.nodes.groups.get("steel_enchant", 1)
 GROUP.Type = "secondary"
 
 GROUP.Guaranteed = {
-	"steel_enchant"
+	"steel_enchant",
+	"steel_share",
 }
 
 GROUP.SmallNodes = {

@@ -80,7 +80,19 @@ end
 
 function pluto.ui.showconstellations(item)
 	if (not item.constellations) then
-		-- TODO: enable?
+		local p = pluto.divine.confirm("Add Constellations", function()
+			pluto.inv.message()
+				:write("unlockconstellations", item)
+				:send()
+		end)
+
+		local txt = p:Add "DLabel"
+		txt:Dock(TOP)
+		txt:SetText "This action will cost 500 stardust."
+		txt:SetFont "pluto_trade_buttons"
+		txt:SetContentAlignment(5)
+		txt:SetTextColor(Color(255, 20, 25))
+		txt:SizeToContentsY()
 		return
 	end
 
@@ -107,4 +119,9 @@ end
 function pluto.inv.writeunlockmajors(item, bubble)
 	net.WriteUInt(item.ID, 32)
 	net.WriteUInt(bubble, 32)
+end
+
+
+function pluto.inv.writeunlockconstellations(item)
+	net.WriteUInt(item.ID, 32)
 end
