@@ -23,6 +23,9 @@ for _, fname in pairs {
 	"gold/spawns",
 	"gold/transform",
 
+	"piercer/mini",
+	"piercer/pierce",
+
 	"steel/enchanted",
 	"steel/spawns",
 	"steel/transform",
@@ -59,7 +62,7 @@ pluto.nodes.groups.mt = pluto.nodes.groups.mt or {
 
 local GROUP = pluto.nodes.groups.mt.__index
 
-function GROUP:CanRollOn()
+function GROUP:CanRollOn(class)
 	return true
 end
 
@@ -116,6 +119,7 @@ for _, fname in pairs {
 	"primary/normal",
 	"primary/mortal",
 	"primary/reserves",
+	"primary/piercer",
 	"secondary/gold",
 	"secondary/steel",
 } do

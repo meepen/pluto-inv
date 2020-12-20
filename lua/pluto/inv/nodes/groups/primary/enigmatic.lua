@@ -6,6 +6,10 @@ GROUP.Guaranteed = {
 	"enigmatic_voice"
 }
 
+function GROUP:CanRollOn(class)
+	return false
+end
+
 GROUP.SmallNodes = {
 	enigmatic_ground = {
 		Shares = 1,
