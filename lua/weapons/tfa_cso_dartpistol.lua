@@ -10,8 +10,8 @@ SWEP.Slot = 1
 
 SWEP.Primary.Sound = Sound("Dartpistol.Fire")
 
-SWEP.Primary.Delay = 60 / 70
-SWEP.Primary.Damage = 33
+SWEP.Primary.Delay = 60 / 80
+SWEP.Primary.Damage = 40
 
 SWEP.Primary.ClipSize = 5
 SWEP.Primary.DefaultClip = 30

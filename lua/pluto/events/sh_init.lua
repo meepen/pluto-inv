@@ -102,7 +102,7 @@ function pluto.rounds.prepare(name)
 		return false, "Event already prepared"
 	end
 
-	if (GetConVar "ttt_round_limit":GetInt() <= ttt.GetRoundNumber() + 1) then
+	if (GetConVar "ttt_round_limit":GetInt() <= ttt.GetRoundNumber()) then
 		return false, "Round limit"
 	end
 

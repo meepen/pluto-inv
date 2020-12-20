@@ -427,11 +427,11 @@ ROUND:Hook("PlayerDisconnected", function(self, state, ply)
 	table.RemoveByValue(state.players, ply)
 
 	for k, _ply in ipairs(state.players) do
-		if (state.target[ply] and state.target[ply].Player == _ply) then
+		if (state.target[_ply] and state.target[_ply].Player == ply) then
 			local targets = table.Copy(state.players)
 			table.remove(targets, k)
 
-			state.target[ply] = {
+			state.target[_ply] = {
 				Player = table.Random(targets),
 				Color = table.Random(colors),
 			}
@@ -443,6 +443,14 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 	if (not IsValid(vic) or not state.collected or not state.collected[vic]) then
 		return
 	end
+
+	local targets = table.Copy(state.players)
+	table.remove(targets, vic)
+
+	state.target[vic] = {
+		Player = table.Random(targets),
+		Color = table.Random(colors),
+	}
 
 	state.collected[vic] = nil
 	
