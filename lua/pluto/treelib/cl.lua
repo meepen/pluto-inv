@@ -154,6 +154,10 @@ end
 
 local PANEL = {}
 
+function PANEL:Init()
+	hook.Add("PlutoItemUpdate", self, self.PlutoItemUpdate)
+end
+
 function PANEL:GetHoveredNode()
 	local bubbles = self.bubbles
 	if (not bubbles) then
@@ -239,8 +243,21 @@ function PANEL:OnMousePressed(code)
 
 	if (hovered and not hovered.node_unlocked) then
 		pluto.inv.message()
-			:write("unlocknode", self.item, nodetree, hovered)
+			:write("unlocknode", self.Item, nodetree, hovered)
 			:send()
+	end
+end
+
+function PANEL:SetItem(item)
+	self.bubbles = tree.make_bubbles(item.constellations, item.ID, item.ClassName)
+	self.constellations = item.constellations
+	self.Item = item
+end
+
+function PANEL:PlutoItemUpdate(item)
+	print(item, self.Item, "UPD")
+	if (item == self.Item) then
+		self:SetItem(item)
 	end
 end
 

@@ -25,6 +25,7 @@ pluto.inv.messages = {
 		"exchangestardust",
 		"auctionsearch",
 		"unlocknode",
+		"unlockmajors",
 	},
 	sv2cl = {
 		[0] = "end",

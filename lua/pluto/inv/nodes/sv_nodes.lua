@@ -338,6 +338,15 @@ concommand.Add("pluto_create_nodes", function(p, c, a)
 	end)
 end)
 
+function pluto.inv.readunlockmajors(cl)
+	-- does the highest or 1
+	local bubble_one = net.ReadUInt(4)
+	local bubble_two = (bubble_one - 2) % 4 + 1
+	print(bubble_one, bubble_two)
+
+	
+end
+
 function pluto.inv.readunlocknode(cl)
 	local id = net.ReadUInt(32)
 	local bubble_id = net.ReadUInt(32)

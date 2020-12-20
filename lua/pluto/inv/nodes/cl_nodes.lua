@@ -93,9 +93,7 @@ function pluto.ui.showconstellations(item)
 	f:SetSize(600, 600)
 	PLUTO_TREE:Center()
 	f:Dock(FILL)
-	f.bubbles = tree.make_bubbles(item.constellations, item.ID, item.ClassName)
-	f.constellations = item.constellations
-	f.item = item
+	f:SetItem(item)
 	PLUTO_TREE:MakePopup()
 end
 
