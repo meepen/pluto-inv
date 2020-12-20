@@ -229,7 +229,7 @@ end
 function SWEP:DoFireBullets(...)
 	if (self.Primary and self.Primary.PenetrationValue) then
 		self:PenetrateBullet(self:GetOwner():GetAimVector(), self:GetOwner():GetShootPos(), 8192, 4, self:GetDamage(),
-			0.99, self.PenetrationValue, 8000)
+			0.99, self.Primary.PenetrationValue, 8000)
 		return 1
 	else
 		return BaseClass.DoFireBullets(self, ...)

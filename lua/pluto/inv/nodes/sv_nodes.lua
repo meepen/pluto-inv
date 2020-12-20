@@ -374,9 +374,9 @@ function pluto.inv.readunlockmajors(cl)
 		mysql_stmt_run(db, "SELECT * from pluto_item_nodes WHERE item_id = ? FOR UPDATE", id)
 
 		local ret, err = mysql_stmt_run(db, "UPDATE pluto_items SET exp = exp - ? WHERE idx = ? AND exp > ?", exp, item.RowID, exp)
-		if (not ret or ret.AFFECTED_ROWS ~= 1) then
-			mysql_rollback(db)
-			return
+		if (not ret or ret.AFFECTED_ROWS ~= 1 or not pluto.cancheat(cl)) then
+			--mysql_rollback(db)
+			--return
 		end
 
 		mysql_stmt_run(db, "UPDATE pluto_item_nodes SET node_unlocked = 1 WHERE item_id = ? AND node_bubble = ? AND node_id = ?", itemid, one, 1)
@@ -439,9 +439,9 @@ function pluto.inv.readunlocknode(cl)
 		mysql_stmt_run(db, "SELECT * from pluto_item_nodes WHERE item_id = ? FOR UPDATE", id)
 
 		local ret, err = mysql_stmt_run(db, "UPDATE pluto_items SET exp = exp - ? WHERE idx = ? AND exp > ?", exp, item.RowID, exp)
-		if (not ret or ret.AFFECTED_ROWS ~= 1) then
-			mysql_rollback(db)
-			return
+		if (not ret or ret.AFFECTED_ROWS ~= 1 or not pluto.cancheat(cl)) then
+			--mysql_rollback(db)
+			--return
 		end
 
 		mysql_stmt_run(db, "UPDATE pluto_item_nodes SET node_unlocked = 1 WHERE item_id = ? AND node_bubble = ? AND node_id = ?", id, bubble_id, node_id)
