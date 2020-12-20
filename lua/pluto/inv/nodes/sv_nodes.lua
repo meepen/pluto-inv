@@ -462,6 +462,7 @@ function pluto.inv.readunlockconstellations(cl)
 	local item = pluto.itemids[net.ReadUInt(32)]
 
 	if (not item or item.Owner ~= cl:SteamID64() or item.constellations or item.Type ~= "Weapon" or item.Tier and item.Tier.InternalName == "unique") then
+		cl:ChatPrint("That item is not able to have constellations.")
 		return
 	end
 
