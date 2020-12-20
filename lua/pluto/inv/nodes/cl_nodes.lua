@@ -102,3 +102,8 @@ function pluto.inv.writeunlocknode(item, bubble, node)
 	net.WriteUInt(bubble, 32)
 	net.WriteUInt(node.node_id, 32)
 end
+
+function pluto.inv.writeunlockmajors(item, bubble)
+	net.WriteUInt(item.ID, 32)
+	net.WriteUInt(bubble, 32)
+end

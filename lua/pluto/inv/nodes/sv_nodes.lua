@@ -340,18 +340,49 @@ end)
 
 function pluto.inv.readunlockmajors(cl)
 	-- does the highest or 1
-	local bubble_one = net.ReadUInt(4)
-	local bubble_two = (bubble_one - 2) % 4 + 1
-	print(bubble_one, bubble_two)
+	local itemid = net.ReadUInt(32)
+	local item = pluto.itemids[itemid]
+	if (not item or item.Owner ~= cl:SteamID64() or not item.constellations) then
+		return
+	end
 
-	
+	local one = (net.ReadUInt(32) - 1) % 4 + 1
+	local two = ((one - 2) % 4) + 1
+	one, two = one + 1, two + 1
+
+	local trees = tree.make_bubbles(item.constellations, item.RowID, item.ClassName)
+
+	for i = 2, 5 do
+		local tree = trees.trees[i]
+		if (tree[1].node_unlocked == 1) then
+			return
+		end
+	end
+
+	local tree_one = item.constellations[one]
+	local tree_two = item.constellations[two]
+
+	tree_one[1].node_unlocked = 1
+	tree_two[1].node_unlocked = 1
+	item.LastUpdate = (item.LastUpdate or 0) + 1
+	pluto.inv.message(cl)
+		:write("item", item)
+		:send()
+
+	pluto.db.transact(function(db)
+		mysql_stmt_run(db, "SELECT * from pluto_item_nodes WHERE item_id = ? FOR UPDATE", id)
+		mysql_stmt_run(db, "UPDATE pluto_item_nodes SET node_unlocked = 1 WHERE item_id = ? AND node_bubble = ? AND node_id = ?", itemid, one, 1)
+		mysql_stmt_run(db, "UPDATE pluto_item_nodes SET node_unlocked = 1 WHERE item_id = ? AND node_bubble = ? AND node_id = ?", itemid, two, 1)
+
+		mysql_commit(db)
+	end)
 end
 
 function pluto.inv.readunlocknode(cl)
 	local id = net.ReadUInt(32)
 	local bubble_id = net.ReadUInt(32)
 	local node_id = net.ReadUInt(32)
-	
+
 	local item = pluto.itemids[id]
 	if (not item or item.Owner ~= cl:SteamID64() or not item.constellations) then
 		return
@@ -360,7 +391,6 @@ function pluto.inv.readunlocknode(cl)
 	local trees = tree.make_bubbles(item.constellations, item.RowID, item.ClassName)
 	local tree = trees.trees[bubble_id]
 	if (not tree) then
-		print "no tree"
 		return
 	end
 
@@ -384,21 +414,19 @@ function pluto.inv.readunlocknode(cl)
 	end
 
 	if (not found) then
-		print "no connections"
 		return
 	end
 
-	print "client request unlock"
+	data.node_unlocked = 1
+	item.LastUpdate = (item.LastUpdate or 0) + 1
+	pluto.inv.message(cl)
+		:write("item", item)
+		:send()
+
 	pluto.db.transact(function(db)
 		mysql_stmt_run(db, "SELECT * from pluto_item_nodes WHERE item_id = ? FOR UPDATE", id)
 		mysql_stmt_run(db, "UPDATE pluto_item_nodes SET node_unlocked = 1 WHERE item_id = ? AND node_bubble = ? AND node_id = ?", id, bubble_id, node_id)
 
 		mysql_commit(db)
-
-		data.node_unlocked = 1
-		item.LastUpdate = (item.LastUpdate or 0) + 1
-		pluto.inv.message(cl)
-			:write("item", item)
-			:send()
 	end)
 end

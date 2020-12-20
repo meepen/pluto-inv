@@ -226,6 +226,7 @@ function PANEL:Paint(w, h)
 		end
 	elseif (IsValid(self.showcase)) then
 		self.showcase:Remove()
+		self.last_hovered = nil
 	end
 end
 
@@ -251,14 +252,44 @@ end
 function PANEL:SetItem(item)
 	self.bubbles = tree.make_bubbles(item.constellations, item.ID, item.ClassName)
 	self.constellations = item.constellations
+
+	self.Opens = self.Opens or {}
+	for _, p in ipairs(self.Opens) do
+		p:Remove()
+	end
+
+	local center = self.bubbles[1]
+	for i = 1, 4 do
+		local ang = math.rad((i - 1) * 90)
+		local c, s = math.cos(ang), math.sin(ang)
+
+		self.Opens[i] = self:Add "pluto_open_tree"
+		local p = self.Opens[i]
+		p:SetSize(48, 48)
+		local dist = 150
+		p:SetPos(self:GetWide() / 2 + c * dist - p:GetWide() / 2, self:GetTall() / 2 + s * dist - p:GetTall() / 2)
+		local one = i
+		local two = (i - 2) % 4 + 1
+		p:SetText(one .. " + " .. two)
+
+		function p.DoClick()
+			pluto.inv.message()
+				:write("unlockmajors", self.Item, one)
+				:send()
+		end
+
+	end
 	self.Item = item
 end
 
 function PANEL:PlutoItemUpdate(item)
-	print(item, self.Item, "UPD")
 	if (item == self.Item) then
 		self:SetItem(item)
 	end
 end
 
 vgui.Register("pluto_tree", PANEL, "EditablePanel")
+
+local PANEL = {}
+
+vgui.Register("pluto_open_tree", PANEL, "DButton")
