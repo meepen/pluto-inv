@@ -257,10 +257,26 @@ end
 function PANEL:SetItem(item)
 	self.bubbles = tree.make_bubbles(item.constellations, item.ID, item.ClassName)
 	self.constellations = item.constellations
+	self.Item = item
 
 	self.Opens = self.Opens or {}
 	for _, p in ipairs(self.Opens) do
 		p:Remove()
+	end
+
+	local needs_open = true
+
+	for i = 2, 5 do
+		for _, node in ipairs(self.constellations[i]) do
+			if (node.node_unlocked) then
+				needs_open = false
+				break
+			end
+		end
+	end
+
+	if (not needs_open) then
+		return
 	end
 
 	local center = self.bubbles[1]
@@ -285,7 +301,6 @@ function PANEL:SetItem(item)
 				:send()
 		end
 	end
-	self.Item = item
 end
 
 function PANEL:PlutoItemUpdate(item)
