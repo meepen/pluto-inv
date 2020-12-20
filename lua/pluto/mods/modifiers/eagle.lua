@@ -41,16 +41,6 @@ function MOD:ModifyWeapon(wep, rolls)
 		return
 	end
 
-	local norender = {
-		prop_door_rotating = true,
-		func_door = true,
-		["class C_BaseEntity"] = true,
-		func_tracktrain = true,
-		phys_bone_follower = true,
-		func_breakable = true,
-		func_door_rotating = true,
-	}
-
 	local dist = rolls[1] * 39.37
 
 	local ang = math.cos(math.rad(15))
@@ -72,12 +62,7 @@ function MOD:ModifyWeapon(wep, rolls)
 
 		for i = #es, 1, -1 do
 			local e = es[i]
-			if (norender[e:GetClass()]) then
-				table.remove(es, i)
-				continue
-			end
-	
-			if (e:IsPlayer() and not e:Alive()) then
+			if (not e:IsPlayer() or not e:Alive()) then
 				table.remove(es, i)
 				continue
 			end

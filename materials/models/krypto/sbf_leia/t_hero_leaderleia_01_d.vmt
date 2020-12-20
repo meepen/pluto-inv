@@ -1,0 +1,26 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/krypto/sbf_leia/t_hero_leaderleia_01_d"
+	"$bumpmap" "models/krypto/sbf_leia/t_hero_leaderleia_01_n"
+                "$phongexponenttexture" "models/krypto/sbf_leia/t_hero_leaderleia_01_s"
+
+"$phong" "1"
+"$phongboost" ".5"
+"$phongfresnelranges" "[0.15 0.5 1]"
+
+"$color2" "[0.9 0.9 0.9]"
+"$detail" "models/krypto/sbf_leia/t_hero_leaderleia_01_ao"
+"$detailscale" "1"	
+"$detailblendmode" "0"
+"$detailblendfactor" "0.4"
+
+"$model" "1"
+"$ambientocclusion" "1"
+"$ambientoccltexture" "models/krypto/sbf_leia/t_hero_leaderleia_01_ao"
+"$ambientocclusiontexture" "models/krypto/sbf_leia/t_hero_leaderleia_01_ao"
+
+"$rimlight" "1" 
+"$rimlightexponent" "1" 
+"$rimlightboost" "1" 
+"$rimmask" "1"
+}

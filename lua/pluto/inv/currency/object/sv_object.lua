@@ -16,7 +16,7 @@ function CURRENCY:TryReward(e)
 		return true
 	end
 	if (cur.Pickup) then
-		if (not cur.Pickup(e)) then
+		if (not cur.Pickup(e, self)) then
 			return false
 		end
 	end
@@ -83,6 +83,7 @@ function pluto.inv.writecurrencyspawn(ply, cur)
 	net.WriteVector(cur:GetNetworkedPosition())
 	net.WriteFloat(cur:GetNetworkedPositionTime())
 	net.WriteUInt(cur:GetMovementType(), 4)
+	net.WriteVector(cur:GetMovementVector() or vector_up)
 	net.WriteFloat(cur:GetSize())
 	net.WriteString(cur:GetCurrencyType())
 end

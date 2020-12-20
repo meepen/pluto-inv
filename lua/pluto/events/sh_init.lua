@@ -7,6 +7,7 @@ pluto.rounds.byname = pluto.rounds.byname or {}
 for _, event in pairs {
 	"posteaster",
 	"chimp",
+	"cheer",
 } do
 	local folder = "pluto/events/rounds/" .. event .. "/"
 
@@ -196,12 +197,38 @@ hook.Add("TTTEndRound", "pluto_event_manager", function()
 	ttt.SetCurrentRoundEvent ""
 end)
 
+pluto.rounds.speeds = {}
+
+hook.Add("TTTUpdatePlayerSpeed", "pluto_mini_speeds", function(ply, data)
+	data.mini = pluto.rounds.speeds[ply] or 1
+end)
+
+hook.Add("TTTEndRound", "pluto_remove_speeds", function()
+	pluto.rounds.speeds = {}
+end)
+
 if (SERVER) then
+	util.AddNetworkString "mini_speed"
 	concommand.Add("pluto_prepare_round", function(ply, cmd, args)
-		if (not pluto.cancheat(ply)) then
+		if (not pluto.cancheat(ply) or not args[1]) then
 			return
 		end
 
 		pluto.rounds.prepare(args[1])
+	end)
+
+	pluto.rounds.minis = {}
+
+	concommand.Add("pluto_prepare_mini", function(ply, cmd, args)
+		if (not pluto.cancheat(ply) or not args[1]) then
+			return
+		end
+
+		pluto.rounds.minis[args[1]] = true
+		print(args[1], "will be the next round")
+	end)
+else
+	net.Receive("mini_speed", function()
+		pluto.rounds.speeds[LocalPlayer()] = net.ReadFloat()
 	end)
 end

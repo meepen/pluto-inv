@@ -90,6 +90,7 @@ runfile "lists/halloween2020.lua"
 runfile "lists/meepen.lua"
 runfile "lists/orangeegg.lua"
 runfile "lists/random.lua"
+runfile "lists/christmas2020.lua"
 
 function pluto.updatemodel(ent, item)
 	if (not item or not item.Model) then

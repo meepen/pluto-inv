@@ -111,7 +111,7 @@ const resize_to = 512;
 		}
 	}
 })();
-
+/*
 // SOUNDS
 (async () => {
 	for await (const f of getFiles("sound")) {
@@ -125,4 +125,4 @@ const resize_to = 512;
 				.run();
 		}
 	}
-})();
+})();*/

@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/krypto/toxin/Venom_Toxin_diff"
+	"$bumpmap" "models/krypto/toxin/Venom_Toxin_norm"
+}

@@ -46,6 +46,11 @@ hook.Add("PlayerSetModel", "pluto_model", function(ply)
 		local m = pluto.models[ply:GetInfo "pluto_model"]
 		if (m) then
 			ply:SetModel(m.Model)
+			pluto.updatemodel(ply, {
+				Model = m,
+				RowID = math.random(0, 0xffffffff),
+				Owner = ply:SteamID64(),
+			})
 			return true
 		end
 	end

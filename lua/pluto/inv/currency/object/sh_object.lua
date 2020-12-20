@@ -9,9 +9,10 @@ AccessorFunc(CURRENCY, "ID", "ID", FORCE_NUMBER)
 AccessorFunc(CURRENCY, "NetworkedPosition", "NetworkedPosition")
 AccessorFunc(CURRENCY, "NetworkedPositionTime", "NetworkedPositionTime")
 AccessorFunc(CURRENCY, "MovementType", "MovementType", FORCE_NUMBER)
+AccessorFunc(CURRENCY, "MovementVector", "MovementVector")
 AccessorFunc(CURRENCY, "Currency", "CurrencyType", FORCE_STRING)
 AccessorFunc(CURRENCY, "Size", "Size", FORCE_NUMBER)
-AccessorFunc(CURRENCY, "ShouldSeeThroughWalls", "ShouldSeeThroughWalls", FORCE_BOOLEAN)
+AccessorFunc(CURRENCY, "ShouldSeeThroughWalls", "ShouldSeeThroughWalls", FORCE_BOOL)
 
 function CURRENCY:IsValid()
 	return pluto.currency.object_list[self:GetID()]
@@ -29,6 +30,7 @@ end
 
 CURRENCY_MOVESTILL = 0
 CURRENCY_MOVEDOWN = 1
+CURRENCY_MOVEVECTOR = 2
 CURRENCY_MOVEMAX = 16
 
 local movements = {
@@ -36,6 +38,9 @@ local movements = {
 	[CURRENCY_MOVEDOWN] = function(self)
 		return self:GetNetworkedPosition() - vector_up * 80 * (CurTime() - self:GetNetworkedPositionTime())
 	end,
+	[CURRENCY_MOVEVECTOR] = function(self)
+		return self:GetNetworkedPosition() + (self:GetMovementVector() or - vector_up) * 80 * (CurTime() - self:GetNetworkedPositionTime())
+	end
 }
 
 function CURRENCY:GetPos()

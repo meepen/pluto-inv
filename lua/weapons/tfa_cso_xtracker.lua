@@ -70,7 +70,6 @@ SWEP.AutoDetectMuzzleAttachment = true
 
 SWEP.MuzzleFlashEffect = "muz_xtracker"
 SWEP.Tracer				= 0
-SWEP.TracerName 		= "tra_xtracker_sniper"
 SWEP.TracerCount 		= 1
 
 local pow = 1.4
@@ -91,4 +90,6 @@ SWEP.Bullets = {
 	DamageDropoffRangeMax = 6520,
 	DamageMinimumPercent = 0.1,
 	Spread = Vector(0.01, 0.015, 0),
+	Tracer = 1,
+	TracerName = "tfa_xtracker_sniper"
 }

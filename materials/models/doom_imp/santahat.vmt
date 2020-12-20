@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models\doom_imp\santahat"
+	"$surfaceprop" "plastic"
+}

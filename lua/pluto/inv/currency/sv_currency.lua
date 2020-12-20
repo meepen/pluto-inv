@@ -23,6 +23,7 @@ local function UpdateAndDecrement(ply, item, currency)
 end
 
 local crate1_fill = 750 / (5 + 6 + 9)
+local xmas2020_fill = 200 / (11)
 
 function pluto.inv.percents(contents)
 	local shares = 0
@@ -344,6 +345,55 @@ for name, values in pairs {
 				Tier = "unique",
 				Shares = 0.5,
 			},
+		},
+		Types = "None",
+	},
+	xmas2020 = {
+		Shares = 30,
+		Contents = {
+			tfa_cso_m1887xmas = {
+				Shares = 0.2,
+				Tier = "unique",
+				Rare = true,
+			},
+			model_tfacso2natalie01 = {
+				Shares = 1,
+				Rare = true
+			},
+			model_kleiaorgana = {
+				Shares = 1,
+				Rare = true
+			},
+			model_xmas_imp = {
+				Shares = 1,
+				Rare = true
+			},
+			model_ghilliewinter01 = {
+				Shares = 1,
+				Rare = true
+			},
+			model_xmas_spiderman = {
+				Shares = 1,
+				Rare = true
+			},
+			tfa_cso_m95_xmas = {
+				Tier = "festive",
+				Shares = 20,
+			},
+
+			model_elftrooper = xmas2020_fill,
+			model_santatrooper = xmas2020_fill,
+			model_treetrooper = xmas2020_fill,
+			model_snowmantrooper = xmas2020_fill,
+			model_hannukahtrooper = xmas2020_fill,
+			model_reindeertrooper = xmas2020_fill,
+			model_snow7 = xmas2020_fill,
+			model_snow6 = xmas2020_fill,
+			model_snow5 = xmas2020_fill,
+			model_snow4 = xmas2020_fill,
+			model_snow3 = xmas2020_fill,
+			model_snow2 = xmas2020_fill,
+			model_snow1 = xmas2020_fill,
 		},
 		Types = "None",
 	},
@@ -763,6 +813,127 @@ for name, values in pairs {
 	stardust = {
 		Shares = 1500,
 	},
+	_toy_blue = {
+		Shares = 1,
+		Global = true,
+		Pickup = function(ply, cur)
+			hook.Run("PlutoToyPickup", ply, "blue", cur)
+			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
+				pluto.rounds.prepare "cheer"
+			end
+			return true
+		end,
+	},
+	_toy_green = {
+		Shares = 1,
+		Global = true,
+		Pickup = function(ply, cur)
+			hook.Run("PlutoToyPickup", ply, "green", cur)
+			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
+				pluto.rounds.prepare "cheer"
+			end
+			return true
+		end,
+	},
+	_toy_red = {
+		Shares = 1,
+		Global = true,
+		Pickup = function(ply, cur)
+			hook.Run("PlutoToyPickup", ply, "red", cur)
+			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
+				pluto.rounds.prepare "cheer"
+			end
+			return true
+		end,
+	},
+	_toy_yellow = {
+		Shares = 1,
+		Global = true,
+		Pickup = function(ply, cur)
+			hook.Run("PlutoToyPickup", ply, "yellow", cur)
+			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
+				pluto.rounds.prepare "cheer"
+			end
+
+			return true
+		end
+	},
+	_shootingstar = {
+		Shares = 0,
+		Global = true,
+		Pickup = function(ply, self)
+			if (ply:Alive()) then
+				local dmg = DamageInfo()
+				dmg:SetDamageType(DMG_BURN)
+				dmg:SetDamage(math.random(3, 5))
+				ply:TakeDamageInfo(dmg)
+			end
+
+			pluto.db.instance(function(db)
+				pluto.inv.addcurrency(db, ply, "stardust", 1)
+				ply:ChatPrint(white_text, "You got a ", pluto.currency.byname.stardust, white_text, " but ouch, that burns!")
+			end)
+
+			return true
+		end,
+	},
+	_chancedice = {
+		Shares = 0,
+		Global = true,
+		Pickup = function(ply, self)
+			if (not ply:Alive()) then
+				return true
+			end
+
+			local chances = {
+				function()
+					ply:SetMaxHealth(ply:GetMaxHealth() + 10)
+					ply:SetHealth(ply:Health() + 10)
+					ply:ChatPrint(white_text, "You gained max health!!")
+				end,
+				function()
+					ply:SetJumpPower(ply:GetJumpPower() + 20)
+					ply:ChatPrint(white_text, "You gained jump power!")
+				end,
+				function()
+					ply:SetMaxArmor(ply:GetMaxArmor() + 10)
+					ply:SetArmor(ply:Armor() + 10)
+					ply:ChatPrint(white_text, "You gained 10 armor!!")
+				end,
+				function()
+					pluto.db.instance(function(db)
+						pluto.inv.addcurrency(db, ply, "dice", 10)
+						ply:ChatPrint(white_text, "You got an additional 10 ", pluto.currency.byname.dice, white_text, "!")
+					end)
+				end,
+				function()
+					if (pluto.rounds and pluto.rounds.speeds) then
+						pluto.rounds.speeds[ply] = (pluto.rounds.speeds[ply] or 1) + 0.1
+						net.Start "mini_speed"
+							net.WriteFloat(pluto.rounds.speeds[ply])
+						net.Send(ply)
+						ply:ChatPrint(white_text, "You gained speed!")
+					end
+				end,
+				function()
+					local dmg = DamageInfo()
+					dmg:SetDamageType(DMG_BURN)
+					dmg:SetDamage(math.random(25, 50))
+					ply:TakeDamageInfo(dmg)
+					ply:ChatPrint(white_text, "Uh oh, looks like that was a bad one!")
+				end,
+			}
+
+			pluto.db.instance(function(db)
+				pluto.inv.addcurrency(db, ply, "dice", 1)
+				ply:ChatPrint(white_text, "You got a ", pluto.currency.byname.dice, white_text, "!")
+			end)
+
+			chances[math.random(6)]()
+
+			return true
+		end,
+	},
 } do
 	table.Merge(pluto.currency.byname[name], values)
 end
@@ -1010,7 +1181,7 @@ function pluto.currency.spawnfor(ply, currency, pos, global)
 		ent:AddListener(ply)
 	end
 
-	if (currency.Shares and currency.Shares <= pluto.currency.byname.heart.Shares) then
+	if (currency.Shares and currency.Shares <= pluto.currency.byname.heart.Shares and not currency.SkipNotify) then
 		ply:ChatPrint(currency.Color, "... ", white_text, "You feel the essence of a ", currency.Color, "rare currency ", white_text, "vibrate your soul")
 	end
 

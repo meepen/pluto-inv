@@ -230,6 +230,13 @@ function pluto.inv.sendfullupdate(ply)
 	end)
 end
 
+concommand.Add("pluto_fullupdate", function(ply, cmd, args)
+	if (not pluto.cancheat(ply)) then
+		return
+	end
+	pluto.inv.sendfullupdate(ply)
+end)
+
 function pluto.inv.writetabupdate(ply, tabid, tabindex)
 	local tab = pluto.inv.invs[ply][tabid]
 

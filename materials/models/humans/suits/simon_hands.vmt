@@ -1,0 +1,13 @@
+"VertexLitGeneric"
+{
+	// Original shader: VertexLitTexture
+	"$basetexture" "models\humans\suits/simon_hands"
+	"$bumpmap" "models\humans\suits/simon_hands_n"
+                "$phong" "1"
+	"$phongexponent" "5"
+	"$phongboost" ".2"	
+	"$phongfresnelranges"	"[.1 0.2 1]"
+	"$halflambert" "1"
+	"$nocull" 1
+	"$blendtintbybasealpha" 1
+}

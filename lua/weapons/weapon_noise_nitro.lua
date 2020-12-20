@@ -1,6 +1,7 @@
 -- HACK: effect flags here
 
 CONFETTI_GRENADE = 1
+CONFETTI_SHOT = 2
 
 
 SWEP.Base = "weapon_tttbase"

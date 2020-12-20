@@ -1,0 +1,10 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/krypto/sbf_leia/t_heads_leia_c"
+	"$bumpmap" "models/krypto/sbf_leia/t_heads_leia_n"
+                "$phongexponenttexture" "models/krypto/sbf_leia/t_heads_femalegeneric_s"
+
+"$phong" "1"
+"$phongboost" ".5"
+"$phongfresnelranges" "[0.15 0.5 1]"
+}

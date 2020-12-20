@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\humans\suits/Jack_def"
+	"$bumpmap" "models\humans\suits/Jack_nrm"
+}

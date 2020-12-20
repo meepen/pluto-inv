@@ -150,6 +150,8 @@ local function StringToLong(str)
 	return a + bit.lshift(b, 8) + bit.lshift(c, 16) + bit.lshift(d, 24)
 end
 
+local zero = Vector(0.0001, 0.0001, 0.0001)
+
 concommand.Add("pluto_update_hitgroups", function(ply, cmd, args, arg)
 	local model = ply:GetModel()
 
@@ -212,15 +214,11 @@ concommand.Add("pluto_update_hitgroups", function(ply, cmd, args, arg)
 
 
 			-- model specific changes (update as needed)
-			if (hitbox == 3 or hitbox == 3) then
-				mins, maxs = mins * 0.8, maxs * 0.8
+			if (hitbox == 18) then
+				mins.z = 9
+				maxs.x = 7.4
 			end
-			if (hitbox == 0) then
-				mins, maxs = mins * 0.6, maxs * 0.6
-			end
-			if (hitbox < 48 and hitbox > 42) then
-				mins, maxs = Vector(0.01, 0.01, 0.01), Vector(0.01, 0.01, 0.01)
-			end
+
 
 			for i = 1, 3 do
 				new:WriteFloat(mins[i])

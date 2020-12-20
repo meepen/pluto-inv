@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$basetexture"			"models/player/joheskiller/ghilliesuit_winter/winter_camo_suit_branches"
+	"$surfaceprop"			"foliage"
+	"$alphatest"			"1"
+	"$alphatestreference"	".2"	//.4
+	"$nocull"				"1"
+}

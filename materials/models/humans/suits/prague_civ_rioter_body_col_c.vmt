@@ -1,0 +1,19 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\humans\suits/prague_civ_rioter_body_col_c"
+	"$bumpmap" "models\humans\suits/prague_civ_rioter_body_nml"
+
+	"$nocull" "1"
+	"$phong" "1"
+	"$phongexponent" "30"
+	"$phongboost" "0.3"
+	"$phongfresnelranges" "[0.1 2.1 5.1]"
+	"$phongalbedotint" "1"
+
+// Rim lighting parameters
+	"$rimlight" "0"												// To enable rim lighting (requires phong)
+	"$rimlightexponent" "1"										// Exponent for phong component of rim lighting	
+	"$rimlightboost" "0.1"	
+	$nocull 1
+
+}

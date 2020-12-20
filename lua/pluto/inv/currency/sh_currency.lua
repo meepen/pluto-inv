@@ -119,7 +119,7 @@ pluto.currency.list = {
 	},
 	{
 		InternalName = "crate1",
-		Name = "Present",
+		Name = "Present (2019)",
 		Icon = "pluto/currencies/crate1.png",
 		Description = "Contains a 2019 Holiday Item",
 		SubDescription = "Is that... it couldn't be... and what is he holding?",
@@ -133,6 +133,28 @@ pluto.currency.list = {
 			pluto.opener = vgui.Create "tttrw_base"
 
 			pluto.opener:AddTab("Open Present", vgui.Create "pluto_box_open" :SetCurrency "crate1")
+
+			pluto.opener:SetSize(640, 400)
+			pluto.opener:Center()
+			pluto.opener:MakePopup()
+		end,
+	},
+	{
+		InternalName = "xmas2020",
+		Name = "Present",
+		Icon = "pluto/currencies/xmas2020.png",
+		Description = "Contains a 2020 Holiday Item",
+		SubDescription = "Joy to the world!",
+		NoTarget = true,
+		Color = Color(17, 110, 191),
+		ClientsideUse = function()
+			if (IsValid(pluto.opener)) then
+				pluto.opener:Remove()
+			end
+
+			pluto.opener = vgui.Create "tttrw_base"
+
+			pluto.opener:AddTab("Open Present", vgui.Create "pluto_box_open" :SetCurrency "xmas2020")
 
 			pluto.opener:SetSize(640, 400)
 			pluto.opener:Center()
@@ -323,18 +345,68 @@ pluto.currency.list = {
 		end,
 	},
 	{
+		InternalName = "_shootingstar",
+		Name = "Shooting Star",
+		Icon = "pluto/currencies/stardust.png",
+		Color = Color(254, 233, 105),
+		Fake = true,
+		SkipNotify = true
+	},
+	{
 		InternalName = "_lightsaber",
 		Name = "FAKE: Lightsaber",
 		Icon = "lightsaber/lightsaber_killicon.png",
 		Color = color_white,
-		Fake = true
+		Fake = true,
+		SkipNotify = true
 	},
 	{
 		InternalName = "_banna",
 		Name = "Banna",
 		Icon = "pluto/currencies/banna.png",
 		Color = Color(204, 180, 0),
-		Fake = true
+		Fake = true,
+		SkipNotify = true
+	},
+	{
+		InternalName = "_toy_blue",
+		Name = "Blue Toy",
+		Icon = "pluto/currencies/toy_blue.png",
+		Color = Color(0, 0, 255),
+		Fake = true,
+		SkipNotify = true
+	},
+	{
+		InternalName = "_toy_green",
+		Name = "Green Toy",
+		Icon = "pluto/currencies/toy_green.png",
+		Color = Color(0, 255, 0),
+		Fake = true,
+		SkipNotify = true
+	},
+	{
+		InternalName = "_toy_red",
+		Name = "Red Toy",
+		Icon = "pluto/currencies/toy_red.png",
+		Color = Color(255, 0, 0),
+		Fake = true,
+		SkipNotify = true
+	},
+	{
+		InternalName = "_toy_yellow",
+		Name = "Yellow Toy",
+		Icon = "pluto/currencies/toy_yellow.png",
+		Color = Color(255, 255, 0),
+		Fake = true,
+		SkipNotify = true
+	},
+	{
+		InternalName = "_chancedice",
+		Name = "Chance Dice",
+		Icon = "pluto/currencies/chancedice.png",
+		Color = Color(255, 208, 86),
+		Fake = true,
+		SkipNotify = true
 	},
 }
 

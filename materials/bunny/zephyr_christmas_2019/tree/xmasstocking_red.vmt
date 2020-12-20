@@ -1,0 +1,10 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "bunny/zephyr_christmas_2019/tree/xmasstocking_red"
+	"$phong" "1"
+	"$basemapalphaphongmask" "1"
+	"$phongexponent" "1"
+	"$phongboost" "0.015"	
+	"$phongfresnelranges"	"[1 1 1]"
+	"$surfaceprop" "carpet"
+}

@@ -22,7 +22,7 @@ local function buildoptions()
 				ClassName = "shard",
 				Tier = pluto.tiers.byname.otherworldly,
 			},
-			Price = {5000, 7000},
+			Price = {800, 1500},
 		},
 		conf_shard = {
 			Shares = 20,
@@ -44,7 +44,7 @@ local function buildoptions()
 				ClassName = "shard",
 				Tier = pluto.tiers.byname.confused,
 			},
-			Price = {2000, 3000}
+			Price = {600, 800}
 		},
 		starar = {
 			Shares = 1,
@@ -71,7 +71,7 @@ local function buildoptions()
 					suffix = {},
 				}
 			},
-			Price = {22000, 32000},
+			Price = {22000, 27000},
 		},
 		starsr = {
 			Shares = 1,
@@ -107,7 +107,7 @@ local function buildoptions()
 					suffix = {},
 				}
 			},
-			Price = {23000, 33000},
+			Price = {23000, 28000},
 		}
 	}
 
@@ -139,7 +139,7 @@ local function buildoptions()
 					suffix = {},
 				}
 			},
-			Price = {1750, 2000}
+			Price = {800, 1200}
 		}
 	end
 
@@ -183,7 +183,7 @@ local function buildoptions()
 					suffix = {},
 				}
 			},
-			Price = {3000, 4000}
+			Price = {2300, 2800}
 		}
 	end
 
@@ -234,7 +234,7 @@ concommand.Add("pluto_buy_stardust_shop", function(p, c, a)
 		else
 			local embed = item.PreviewItem:GetDiscordEmbed()
 			local time = math.Round((item.EndTime - os.time()) / (60 * 60))
-			time = time < 1 and "<1 hour remaining now..." or time .. " hours remaining now..."
+			time = "For " .. item.Price .. " stardust; " .. time < 1 and "<1 hour remaining now..." or time .. " hours remaining now..."
 			discord.Message():AddEmbed(
 				embed
 					:SetAuthor(time)
@@ -275,25 +275,31 @@ concommand.Add("pluto_send_stardust_shop", function(p)
 			setmetatable(data.PreviewItem, pluto.inv.item_mt)
 			table.insert(available, data)
 		end
+
+		if (#available < 8) then
+			local msg = discord.Message()
 	
-		for i = #available + 1, 8 do
-			local id, data = pluto.inv.roll(options)
-			data = table.Copy(data)
-			data.id = id
-			available[i] = data
-			setmetatable(data.PreviewItem, pluto.inv.item_mt)
-			data.PreviewItem.Type = pluto.inv.itemtype(data.PreviewItem)
-			if (istable(data.Price)) then
-				data.Price = math.random(data.Price[1], data.Price[2])
+			for i = #available + 1, 8 do
+				local id, data = pluto.inv.roll(options)
+				data = table.Copy(data)
+				data.id = id
+				available[i] = data
+				setmetatable(data.PreviewItem, pluto.inv.item_mt)
+				data.PreviewItem.Type = pluto.inv.itemtype(data.PreviewItem)
+				if (istable(data.Price)) then
+					data.Price = math.random(data.Price[1], data.Price[2])
+				end
+				local embed = data.PreviewItem:GetDiscordEmbed()
+				msg:AddEmbed(
+					embed
+						:SetAuthor("For " .. data.Price .. " stardust; 5 hours remaining...")
+						:SetTimestamp()
+				)
+				data.EndTime = os.time() + 60 * 60 * 5
+				data.rowid = mysql_stmt_run(db, "INSERT INTO pluto_stardust_shop (item, price, endtime) VALUES(?, ?, TIMESTAMPADD(HOUR, 5, CURRENT_TIMESTAMP))", id, data.Price).LAST_INSERT_ID
 			end
-			local embed = data.PreviewItem:GetDiscordEmbed()
-			discord.Message():AddEmbed(
-				embed
-					:SetAuthor("5 hours remaining...")
-					:SetTimestamp()
-			):Send "stardust-shop"
-			data.EndTime = os.time() + 60 * 60 * 5
-			data.rowid = mysql_stmt_run(db, "INSERT INTO pluto_stardust_shop (item, price, endtime) VALUES(?, ?, TIMESTAMPADD(HOUR, 5, CURRENT_TIMESTAMP))", id, data.Price).LAST_INSERT_ID
+
+			msg:Send "stardust-shop"
 		end
 
 		mysql_query(db, "UNLOCK TABLES")

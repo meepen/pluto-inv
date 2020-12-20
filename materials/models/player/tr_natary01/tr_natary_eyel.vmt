@@ -1,0 +1,14 @@
+"VertexLitGeneric"
+{
+	$basetexture		"models/player/tr_natary/tr_natary_eyel"
+	$bumpmap			"null-bumpmap"
+
+	$phong "1"
+	$phongboost "4"
+	$phongexponent "12"
+	$phongfresnelranges "[0.04 0.1 1.0]"
+
+	$translucent "1"
+
+	$nocull "1"
+}

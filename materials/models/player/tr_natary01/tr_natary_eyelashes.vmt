@@ -1,0 +1,30 @@
+"CSO2Generic"
+//"CSO2Model"
+//"VertexLitGeneric"
+{
+// 베이스 텍스쳐 (알비도) 그리고 노말맵
+	"$baseTexture" "models\player\tr_natary/tr_natary_eyel"	
+        $translucent  1
+//	$alphatest 1
+//	$nocull 1
+	//$ALPHATESTREFERENCE	0.1
+//========================================반사 환경맵 관련===================================
+//	"$envmaptint" "[ 0.08 0.08 0.08 ]"
+// -- From here down is new stuff which will only be applied if $phong is set to 1 --
+	"$phongtint" "[1 1 1]"	           // 퐁효과에 더해질 (R,G,B)값
+//	"$phongfresnelranges"	"[0.36 0.36 0.36]"
+
+//=================림라이트(스폿라이트와 상관없이 지속적으로 표시되는 림라이트)==============
+//$usegeneralattr 1
+
+	"$rimlight" 1
+	"$rimlightboost" 0
+	Proxies
+	{
+		cso2_blink
+		{
+		}
+	}
+	$ShadowSilouette	0
+	$usecharacterfog	1
+}

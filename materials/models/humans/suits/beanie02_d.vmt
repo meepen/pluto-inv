@@ -1,0 +1,17 @@
+"VertexlitGeneric"
+{
+	"$basetexture" 	"models\humans\suits\beanie02_d"
+	"$bumpmap"		"models\humans\suits\beanie02_n"	
+	//"$alphatest"	"1"
+	"$nocull"		"1"
+	//"$translucent"	"1"
+
+	"$phong" 		"1"
+	"$phongboost"	"1"	
+	"$phongfresnelranges" "[0.3 0.1 0.1]"
+	"$phongexponent" "5"
+	
+	$rimlight 					1										
+	$rimlightexponent 			50								
+	$rimlightboost 				0.25
+}

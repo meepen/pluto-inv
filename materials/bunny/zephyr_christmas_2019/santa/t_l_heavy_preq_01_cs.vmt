@@ -1,0 +1,13 @@
+"VertexlitGeneric"
+{
+	$basetexture "bunny/zephyr_christmas_2019/santa/t_l_heavy_preq_01_cs"
+	$bumpmap "bunny/zephyr_christmas_2019/santa/t_l_heavy_preq_01_nm"
+	$color2 "[0.75 0.75 0.75]"
+
+	$phong 1
+    //$phongexponent 100 
+    $phongexponenttexture "bunny/zephyr_christmas_2019/santa/t_l_heavy_preq_01_gs"
+    $phongfresnelranges "[0.5 1.7 1.11]"
+    $phongalbedotint 1
+	$phongboost 1.8
+}

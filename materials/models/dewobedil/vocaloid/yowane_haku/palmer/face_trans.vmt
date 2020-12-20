@@ -1,0 +1,8 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/dewobedil/vocaloid/yowane_haku/palmer/face_Haku_R"
+	"$nodecal" 1
+	"$translucent" 1
+	"$lightwarptexture" "models/dewobedil/vocaloid/yowane_haku/palmer/toon_head"
+	"$phong" "1"
+}

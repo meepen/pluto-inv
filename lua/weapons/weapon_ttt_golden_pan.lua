@@ -10,8 +10,8 @@ SWEP.Primary.Range = 75
 SWEP.Primary.Extents = Vector(1.1, 1.1, 1.1)
 
 SWEP.PlutoModel = "models/weapons/c_models/c_frying_pan/c_frying_pan.mdl"
-local mat = "models/player/shared/gold_player"
-SWEP.PlutoMaterial = mat
+local gold = "models/player/shared/gold_player"
+SWEP.PlutoMaterial = gold
 
 SWEP.PlutoSpawnable = false
 SWEP.AutoSpawnable = false
@@ -23,7 +23,8 @@ SWEP.Ortho = {-5, 3, angle = Angle(30, -90, 90)}
 
 local mass = 12000
 
-function MakeGold(what, tex)
+function MakeGold(what, mat)
+	mat = mat or gold
     if (not IsValid(what)) then
         return
 	end

@@ -1,3 +1,147 @@
+local soundData = {
+	name		= "M249EP.BoxIn" ,
+	channel	 = CHAN_WEAPON,
+	volume	  = 1,
+	soundlevel  = 80,
+	pitchstart  = 100,
+	pitchend	= 100,
+	sound	   = "weapons/tfa_cso/m249ep/boxin.ogg"
+}
+ 
+sound.Add(soundData)
+ 
+local soundData = {
+	name		= "M249EP.BoxOut" ,
+	channel	 = CHAN_WEAPON,
+	volume	  = 1,
+	soundlevel  = 80,
+	pitchstart  = 100,
+	pitchend	= 100,
+	sound	   = "weapons/tfa_cso/m249ep/boxout.ogg"
+}
+ 
+sound.Add(soundData)
+ 
+local soundData = {
+	name		= "M249EP.Chain" ,
+	channel	 = CHAN_WEAPON,
+	volume	  = 1,
+	soundlevel  = 80,
+	pitchstart  = 100,
+	pitchend	= 100,
+	sound	   = "weapons/tfa_cso/m249ep/chain.ogg"
+}
+ 
+sound.Add(soundData)
+
+local soundData = {
+	name		= "M249EP.CoverDown" ,
+	channel	 = CHAN_WEAPON,
+	volume	  = 1,
+	soundlevel  = 80,
+	pitchstart  = 100,
+	pitchend	= 100,
+	sound	   = "weapons/tfa_cso/m249ep/coverdown.ogg"
+}
+ 
+sound.Add(soundData)
+ 
+local soundData = {
+	name		= "M249EP.CoverUp" ,
+	channel	 = CHAN_WEAPON,
+	volume	  = 1,
+	soundlevel  = 80,
+	pitchstart  = 100,
+	pitchend	= 100,
+	sound	   = "weapons/tfa_cso/m249ep/coverup.ogg"
+}
+ 
+sound.Add(soundData)
+
+local soundData = {
+	name		= "M249.Draw" ,
+	channel	 = CHAN_WEAPON,
+	volume	  = 1,
+	soundlevel  = 80,
+	pitchstart  = 100,
+	pitchend	= 100,
+	sound	   = "weapons/tfa_cso/m249ep/draw.ogg"
+}
+ 
+sound.Add(soundData)
+ 
+local soundData = {
+	name		= "M249EP.Fire" ,
+	channel	 = CHAN_USER_BASE+11,
+	volume	  = 1,
+	soundlevel  = 80,
+	pitchstart  = 100,
+	pitchend	= 100,
+	sound	   = "weapons/tfa_cso/m249ep/fire1.ogg"
+}
+ 
+sound.Add(soundData)
+
+local soundData = {
+	name		= "M249EP.Fire2" ,
+	channel	 = CHAN_USER_BASE+11,
+	volume	  = 1,
+	soundlevel  = 80,
+	pitchstart  = 100,
+	pitchend	= 100,
+	sound	   = "weapons/tfa_cso/m249ep/fire2.ogg"
+}
+ 
+sound.Add(soundData)
+
+local soundData = {
+	name		= "M249EP.Hit" ,
+	channel	 = CHAN_USER_BASE+11,
+	volume	  = 1,
+	soundlevel  = 80,
+	pitchstart  = 100,
+	pitchend	= 100,
+	sound	   = "weapons/tfa_cso/m249ep/hit1.ogg"
+}
+ 
+sound.Add(soundData)
+
+local soundData = {
+	name		= "M249EP.Hit2" ,
+	channel	 = CHAN_USER_BASE+11,
+	volume	  = 1,
+	soundlevel  = 80,
+	pitchstart  = 100,
+	pitchend	= 100,
+	sound	   = "weapons/tfa_cso/m249ep/hit2.ogg"
+}
+ 
+sound.Add(soundData)
+
+local soundData = {
+	name		= "M249EP.Shoot3" ,
+	channel	 = CHAN_USER_BASE+11,
+	volume	  = 1,
+	soundlevel  = 80,
+	pitchstart  = 100,
+	pitchend	= 100,
+	sound	   = "weapons/tfa_cso/m249ep/shoot3.ogg"
+}
+ 
+sound.Add(soundData)
+
+local soundData = {
+	name		= "M249EP.Shoot4" ,
+	channel	 = CHAN_USER_BASE+11,
+	volume	  = 1,
+	soundlevel  = 80,
+	pitchstart  = 100,
+	pitchend	= 100,
+	sound	   = "weapons/tfa_cso/m249ep/shoot4.ogg"
+}
+ 
+sound.Add(soundData)
+
 SWEP.Base				= "tfa_gun_base"
 SWEP.Category				= "TFA CS:O" --The category.  Please, just choose something generic or something I've already done if you plan on only doing like one swep.
 SWEP.Author				= "Kamikaze" --Author Tooltip
@@ -8,7 +152,7 @@ SWEP.Spawnable				= true --Can you, as a normal user, spawn this?
 SWEP.AdminSpawnable			= true --Can an adminstrator spawn this?  Does not tie into your admin mod necessarily, unless its coded to allow for GMod's default ranks somewhere in its code.  Evolve and ULX should work, but try to use weapon restriction rather than these.
 SWEP.DrawCrosshair			= true		-- Draw the crosshair?
 SWEP.PrintName				= "M249 Red"		-- Weapon name (Shown on HUD)
-SWEP.Slot				= 3				-- Slot in the weapon selection menu.  Subtract 1, as this starts at 0.
+SWEP.Slot				= 2				-- Slot in the weapon selection menu.  Subtract 1, as this starts at 0.
 SWEP.SlotPos				= 73			-- Position in the slot
 SWEP.DrawAmmo				= true		-- Should draw the default HL2 ammo counter if enabled in the GUI.
 SWEP.DrawWeaponInfoBox			= false		-- Should draw the weapon info box
