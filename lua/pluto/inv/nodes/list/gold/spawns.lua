@@ -1,6 +1,7 @@
 local NODE = pluto.nodes.get "gold_spawns"
 
 NODE.Name = "Gold: Coined"
+NODE.Experience = 6969
 
 function NODE:GetDescription(node)
 	return string.format("%.2f%% more currency from this gun", 10 + node.node_val1 * 10)

@@ -2,6 +2,7 @@ local NODE = pluto.nodes.get "steel_transform"
 
 NODE.Name = "Steel: Transform"
 NODE.Description = "Players killed with this gun transform to steel."
+NODE.Experience = 1200
 
 function NODE:ModifyWeapon(node, wep)
 	timer.Simple(0, function()

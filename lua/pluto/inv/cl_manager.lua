@@ -175,6 +175,8 @@ function pluto.inv.readitem()
 	item.Untradeable = net.ReadBool()
 	if (net.ReadBool()) then
 		item.constellations = pluto.inv.readconstellations()
+	else
+		item.constellations = nil
 	end
 
 	pluto.received.item[id] = item

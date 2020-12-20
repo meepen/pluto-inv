@@ -2,6 +2,7 @@ local NODE = pluto.nodes.get "demon_poss"
 
 NODE.Name = "Demonic Possession"
 NODE.Description = "This gun is possessed by a demon. 40% of your life force is taken. You cannot heal. This gun cannot be dropped."
+NODE.Experience = 0
 
 function NODE:ModifyWeapon(node, wep)
 	if (wep.DemonicPossession) then

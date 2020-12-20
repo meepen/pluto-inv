@@ -1,6 +1,7 @@
 local NODE = pluto.nodes.get "mag"
 
 NODE.Name = "Magazine Size"
+NODE.Experience = 1300
 
 function NODE:GetDescription(node)
 	return string.format("Magazine is increased by %.2f%%", 4 + node.node_val1 * 12)

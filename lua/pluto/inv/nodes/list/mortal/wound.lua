@@ -2,6 +2,7 @@ local NODE = pluto.nodes.get "mortal_wound"
 
 NODE.Name = "Mortal Wound"
 NODE.Description = "Damage with this gun removes 20% of the damage's max health from enemy."
+NODE.Experience = 5750
 
 function NODE:ModifyWeapon(node, wep)
 	wep.MortalWound = (wep.MortalWound or 0) + 0.2

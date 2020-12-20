@@ -2,6 +2,7 @@ local NODE = pluto.nodes.get "demon_speed"
 
 NODE.Name = "Demonic Possession: Speed"
 NODE.Description = "Once your gun is possessed, gain 10% movement speed."
+NODE.Experience = 2800
 
 function NODE:ModifyWeapon(node, wep)
 	timer.Simple(0, function()

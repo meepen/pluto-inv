@@ -2,6 +2,7 @@ local NODE = pluto.nodes.get "steel_enchant"
 
 NODE.Name = "Enchanted: Steel"
 NODE.Description = "Your gun is plated in steel."
+NODE.Experience = 5300
 
 function NODE:ModifyWeapon(node, wep)
 	wep:SetMaterial "models/player/shared/steel_player"

@@ -69,6 +69,7 @@ function pluto.inv.readconstellations()
 				Name = net.ReadString(),
 				Desc = net.ReadString(),
 				node_unlocked = net.ReadBool(),
+				Experience = net.ReadUInt(32),
 			}
 		end
 		constellations[k] = constellation

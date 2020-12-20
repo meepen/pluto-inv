@@ -159,6 +159,11 @@ function PANEL:Init()
 end
 
 function PANEL:GetHoveredNode()
+	local hovered = vgui.GetHoveredPanel()
+	if (IsValid(hovered) and hovered:GetParent() == self) then
+		return nil
+	end
+
 	local bubbles = self.bubbles
 	if (not bubbles) then
 		return
@@ -219,7 +224,7 @@ function PANEL:Paint(w, h)
 				Name = star.Name,
 				Description = star.Desc,
 				Color = hovered.node_unlocked and enabled_color or disabled_color,
-				Experience = not hovered.node_unlocked and 1000 or nil,
+				Experience = not hovered.node_unlocked and star.Experience or nil,
 			}
 			self.showcase:SetPos(PLUTO_TREE:LocalToScreen(PLUTO_TREE:GetWide() / 2 - self.showcase:GetWide() / 2, PLUTO_TREE:GetTall()))
 			self.last_hovered = star
@@ -268,16 +273,17 @@ function PANEL:SetItem(item)
 		p:SetSize(48, 48)
 		local dist = 150
 		p:SetPos(self:GetWide() / 2 + c * dist - p:GetWide() / 2, self:GetTall() / 2 + s * dist - p:GetTall() / 2)
-		local one = i
-		local two = (i - 2) % 4 + 1
-		p:SetText(one .. " + " .. two)
+		p:SetDirection(i)
+
+		local t1, t2 = self.constellations[i + 1][1], self.constellations[(i - 2) % 4 + 2][1]
+		
+		p:SetText(t1.Experience + t2.Experience)
 
 		function p.DoClick()
 			pluto.inv.message()
-				:write("unlockmajors", self.Item, one)
+				:write("unlockmajors", self.Item, i)
 				:send()
 		end
-
 	end
 	self.Item = item
 end
@@ -292,4 +298,69 @@ vgui.Register("pluto_tree", PANEL, "EditablePanel")
 
 local PANEL = {}
 
-vgui.Register("pluto_open_tree", PANEL, "DButton")
+function PANEL:Init()
+	self:SetCursor "hand"
+end
+
+function PANEL:SetDirection(dir)
+	self.direction = dir
+	self.Text = ""
+end
+
+function PANEL:Paint(w, h)
+	draw.NoTexture()
+	surface.SetTextColor(12, 13, 15)
+	surface.SetFont "pluto_item_showcase_id"
+	local tw, th = surface.GetTextSize(self.Text)
+	local p1, p2, p3
+	if (self.direction == 1) then
+		p1 = {x = 0, y = 0}
+		p2 = {x = w, y = h / 2}
+		p3 = {x = 0, y = h}
+
+		surface.SetTextPos(2, h / 2 - th / 2)
+		tx, ty = 0, w / 3
+	elseif (self.direction == 2) then
+		p1 = {x = 0, y = 0}
+		p2 = {x = w, y = 0}
+		p3 = {x = w / 2, y = h}
+
+		surface.SetTextPos(w / 2 - tw / 2, h / 5 - th / 2)
+	elseif (self.direction == 3) then
+		p1 = {x = w, y = 0}
+		p2 = {x = w, y = h}
+		p3 = {x = 0, y = h / 2}
+
+		surface.SetTextPos(w - tw - 2, h / 2 - th / 2)
+	elseif (self.direction == 4) then
+		p1 = {x = 0, y = h}
+		p2 = {x = w / 2, y = 0}
+		p3 = {x = w, y = h}
+
+		surface.SetTextPos(w / 2 - tw / 2, h * 4 / 5 - th / 2)
+
+	else
+		return
+	end
+
+	surface.SetDrawColor(disabled_color)
+	surface.DrawPoly {
+		p1, p2, p3
+	}
+
+	surface.DrawText(self.Text)
+end
+
+function PANEL:OnMousePressed(mouse)
+	if (mouse ~= MOUSE_LEFT) then
+		return
+	end
+
+	self:DoClick()
+end
+
+function PANEL:SetText(t)
+	self.Text = t
+end
+
+vgui.Register("pluto_open_tree", PANEL, "EditablePanel")

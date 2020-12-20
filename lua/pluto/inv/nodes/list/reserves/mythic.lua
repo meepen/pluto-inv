@@ -1,6 +1,7 @@
 local NODE = pluto.nodes.get "mythic_reserves"
 
 NODE.Name = "Mythic Reserves"
+NODE.Experience = 5600
 NODE.Description = "Every few seconds generate a bullet for this weapon. This weapon cannot reload. This weapon has 50% more mag size. This gun shoots 15% slower."
 
 function NODE:ModifyWeapon(node, wep)

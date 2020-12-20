@@ -2,6 +2,7 @@ local NODE = pluto.nodes.get "demon_damage"
 
 NODE.Name = "Demonic Possession: Damage"
 NODE.Description = "Once your gun is possessed, deal 20% increased damage; start with 50% health."
+NODE.Experience = 5000
 
 function NODE:ModifyWeapon(node, wep)
 	timer.Simple(0, function()

@@ -153,6 +153,7 @@ function pluto.inv.writeconstellations(ply, constellations)
 			net.WriteString(NODE:GetName(node))
 			net.WriteString(NODE:GetDescription(node))
 			net.WriteBool(node.node_unlocked == 1) -- unlocked
+			net.WriteUInt(NODE.Experience or 1337133713, 32)
 		end
 	end
 end
@@ -362,19 +363,30 @@ function pluto.inv.readunlockmajors(cl)
 	local tree_one = item.constellations[one]
 	local tree_two = item.constellations[two]
 
-	tree_one[1].node_unlocked = 1
-	tree_two[1].node_unlocked = 1
-	item.LastUpdate = (item.LastUpdate or 0) + 1
-	pluto.inv.message(cl)
-		:write("item", item)
-		:send()
+
+	local exp = pluto.nodes.get(tree_one[1].node_name).Experience + pluto.nodes.get(tree_two[1].node_name).Experience
 
 	pluto.db.transact(function(db)
 		mysql_stmt_run(db, "SELECT * from pluto_item_nodes WHERE item_id = ? FOR UPDATE", id)
+
+		local ret, err = mysql_stmt_run(db, "UPDATE pluto_items SET exp = exp - ? WHERE idx = ? AND exp > ?", exp, item.RowID, exp)
+		if (not ret or ret.AFFECTED_ROWS ~= 1) then
+			mysql_rollback(db)
+			return
+		end
+
 		mysql_stmt_run(db, "UPDATE pluto_item_nodes SET node_unlocked = 1 WHERE item_id = ? AND node_bubble = ? AND node_id = ?", itemid, one, 1)
 		mysql_stmt_run(db, "UPDATE pluto_item_nodes SET node_unlocked = 1 WHERE item_id = ? AND node_bubble = ? AND node_id = ?", itemid, two, 1)
 
 		mysql_commit(db)
+
+		tree_one[1].node_unlocked = 1
+		tree_two[1].node_unlocked = 1
+		item.Experience = item.Experience - exp
+		item.LastUpdate = (item.LastUpdate or 0) + 1
+		pluto.inv.message(cl)
+			:write("item", item)
+			:send()
 	end)
 end
 
@@ -416,17 +428,27 @@ function pluto.inv.readunlocknode(cl)
 	if (not found) then
 		return
 	end
-
-	data.node_unlocked = 1
-	item.LastUpdate = (item.LastUpdate or 0) + 1
-	pluto.inv.message(cl)
-		:write("item", item)
-		:send()
+	local NODE = pluto.nodes.get(data.node_name)
+	local exp = NODE.Experience
 
 	pluto.db.transact(function(db)
 		mysql_stmt_run(db, "SELECT * from pluto_item_nodes WHERE item_id = ? FOR UPDATE", id)
+
+		local ret, err = mysql_stmt_run(db, "UPDATE pluto_items SET exp = exp - ? WHERE idx = ? AND exp > ?", exp, item.RowID, exp)
+		if (not ret or ret.AFFECTED_ROWS ~= 1) then
+			mysql_rollback(db)
+			return
+		end
+
 		mysql_stmt_run(db, "UPDATE pluto_item_nodes SET node_unlocked = 1 WHERE item_id = ? AND node_bubble = ? AND node_id = ?", id, bubble_id, node_id)
 
 		mysql_commit(db)
+
+		data.node_unlocked = 1
+		item.LastUpdate = (item.LastUpdate or 0) + 1
+		item.Experience = item.Experience - exp
+		pluto.inv.message(cl)
+			:write("item", item)
+			:send()
 	end)
 end

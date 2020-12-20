@@ -1,6 +1,7 @@
 local NODE = pluto.nodes.get "reloading"
 
 NODE.Name = "Reloading Speed"
+NODE.Experience = 1350
 
 function NODE:GetDescription(node)
 	return string.format("Reloading is %.2f%% faster", 2 + node.node_val1 * 8)

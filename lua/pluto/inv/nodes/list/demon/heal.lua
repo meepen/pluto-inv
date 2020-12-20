@@ -2,6 +2,7 @@ local NODE = pluto.nodes.get "demon_heal"
 
 NODE.Name = "Demonic Possession: Regen"
 NODE.Description = "Once your gun is possessed, full heal on kill."
+NODE.Experience = 7500
 
 function NODE:ModifyWeapon(node, wep)
 	timer.Simple(0, function()
