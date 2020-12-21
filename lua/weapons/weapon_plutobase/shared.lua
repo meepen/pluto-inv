@@ -142,6 +142,7 @@ function SWEP:PenetrateBullet(dir, vecStart, flDistance, iPenetration, iDamage,
 		Num = 1,
 		IgnoreEntity = lasthit,
 		Callback = function( hitent , trace , dmginfo )
+			self:TracerEffect(trace, dmginfo)
 			--TODO: penetration
 			--unfortunately this can't be done with a static function or we'd need to set global variables for range and shit
 
