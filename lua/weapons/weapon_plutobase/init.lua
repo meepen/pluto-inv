@@ -98,11 +98,6 @@ function SWEP:RunModFunctionSequence(funcname, state, ...)
 	end
 end
 
-function SWEP:DoFireBullets(...)
-	self:RunModFunctionSequence("Fire", nil, tr, dmginfo)
-	BaseClass.DoFireBullets(self, ...)
-end
-
 function SWEP:FireBulletsCallback(tr, dmginfo)
 	BaseClass.FireBulletsCallback(self, tr, dmginfo)
 

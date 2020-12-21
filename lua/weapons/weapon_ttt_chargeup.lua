@@ -94,6 +94,10 @@ function SWEP:SetupDataTables()
 	self:NetVar("StartShot", "Float", -math.huge)
 end
 
+function SWEP:GetPenetration()
+	return self:GetCharge() * 100
+end
+
 function SWEP:PrimaryAttack()
 	if (self:CanPrimaryAttack() and self:GetStartShot() == -math.huge) then
 		self:SetStartShot(CurTime())
@@ -109,9 +113,7 @@ function SWEP:Think()
 					self:EmitSound(self.Primary.Sound, self.Primary.SoundLevel or 1)
 				end
 
-				self:ShootBullet {
-					Penetration = 0,
-				}
+				self:ShootBullet()
 
 				self:TakePrimaryAmmo(1)
 				reset = true
@@ -163,17 +165,4 @@ function SWEP:DrawHUD()
 	surface.DrawRect(left + 1, top + 1 + (h - 2) - real_tall, w - 2, real_tall)
 
 	BaseClass.DrawHUD(self)
-end
-
-function SWEP:FireBulletsCallback(tr, dmg, data)
-	dmg:SetDamage(self:GetDamage())
-
-	local lifetime = 5
-	if (IsValid(tr.Entity) and tr.Entity:IsPlayer() and data.Penetration <= 2 and self:GetCharge() > 0.5) then
-		data.Penetration = data.Penetration + 1
-		data.IgnoreEntity = tr.Entity
-		self:ScaleDamage(tr.HitGroup, dmg)
-		dmg:SetDamageCustom(tr.HitGroup)
-		self:DoFireBullets(tr.HitPos, tr.Normal, data)
-	end
 end

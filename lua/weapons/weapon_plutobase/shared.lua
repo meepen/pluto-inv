@@ -226,10 +226,22 @@ function SWEP:PenetrateBullet(dir, vecStart, flDistance, iPenetration, iDamage,
 	}
 end
 
-function SWEP:DoFireBullets(...)
+function SWEP:GetPenetration()
 	if (self.Primary and self.Primary.PenetrationValue) then
+		return self.Primary.PenetrationValue
+	end
+	return 0
+end
+
+function SWEP:DoFireBullets(...)
+	if (SERVER) then
+		self:RunModFunctionSequence("Fire")
+	end
+
+	local pen = self:GetPenetration()
+	if (pen ~= 0) then
 		self:PenetrateBullet(self:GetOwner():GetAimVector(), self:GetOwner():GetShootPos(), 8192, 4, self:GetDamage(),
-			0.99, self.Primary.PenetrationValue, 8000)
+			0.99, pen, 8000)
 		return 1
 	else
 		return BaseClass.DoFireBullets(self, ...)
