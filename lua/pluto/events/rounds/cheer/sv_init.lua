@@ -79,6 +79,7 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 
 	state.collected = {}
 	state.target = {}
+	state.scores = {}
 
 	state.speed = 1.1
 	state.reward = 0
@@ -174,6 +175,8 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		local targets = table.Copy(state.players)
 		table.remove(targets, k)
 
+		state.scores[ply] = 0
+
 		state.target[ply] = {
 			Player = table.Random(targets),
 			Color = table.Random(colors),
@@ -268,6 +271,8 @@ function ROUND:UpdateScore(state, ply)
 	state.cheer = state.cheer + 1
 	state.bonus = state.bonus - 1
 
+	state.scores[ply] = state.scores[ply] + 1
+
 	if (state.bonus < 1) then
 		state.bonus = self.BaseMilestone + math.floor((#state.players - self.MinPlayers) * self.MilestoneIncrement)
 		if (state.rewards[1]) then
@@ -354,10 +359,16 @@ function ROUND:TTTEndRound(state)
 
 	if (state.reward > 0) then
 		for k, ply in ipairs(state.players) do
+			local togive = state.reward
+
+			if (state.scores[ply] + math.random(0, 1) <= 4) then
+				togive = math.min(state.scores[ply], state.reward)
+			end
+
 			ply:ChatPrint(white_text, "For the way your team did work, have a gift as a perk!")
 			pluto.db.instance(function(db)
-				pluto.inv.addcurrency(db, ply, self.Reward, state.reward)
-				ply:ChatPrint(white_text, state.reward, " ", pluto.currency.byname[self.Reward], state.reward > 1 and "s" or "", white_text, state.reward > 1 and " are" or " is", " now yours for reaching such a level of scores")
+				pluto.inv.addcurrency(db, ply, self.Reward, togive)
+				ply:ChatPrint(white_text, togive, " ", pluto.currency.byname[self.Reward], togive > 1 and "s" or "", white_text, togive > 1 and " are" or " is", " now yours for reaching such a level of scores")
 			end)
 		end
 	end
