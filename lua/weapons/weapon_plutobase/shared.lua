@@ -190,7 +190,7 @@ function SWEP:PenetrateBullet(dir, vecStart, flDistance, iPenetration, iDamage,
 			end
 
 			local tr = util.TraceLine{
-				start = penetrationEnd + trace.Normal * 2,
+				start = penetrationEnd + trace.Normal * 0.00000001,
 				endpos = trace.HitPos,
 				mask = MASK_SHOT,
 				collisiongroup = COLLISION_GROUP_NONE,
@@ -221,6 +221,14 @@ function SWEP:PenetrateBullet(dir, vecStart, flDistance, iPenetration, iDamage,
 			iDamage = iDamage * flDamageModifier
 
 			iPenetration = iPenetration - 1
+
+			if (trace.MatType == MAT_GLASS or tr.MatType == MAT_GLASS) then
+				local glass = trace.MatType == MAT_GLASS and trace.MatType or tr.MatType
+				local other = trace.MatType == glass and tr.MatType or trace.MatType
+				if (glass ~= other and other ~= MAT_FLESH) then
+					return
+				end
+			end
 
 			self:PenetrateBullet(dir, vecStart, flDistance, iPenetration, iDamage, flRangeModifier, fPenetrationPower, flPenetrationDistance, flCurrentDistance, alreadyHit)
 		end
