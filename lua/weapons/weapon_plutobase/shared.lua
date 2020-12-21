@@ -190,7 +190,7 @@ function SWEP:PenetrateBullet(dir, vecStart, flDistance, iPenetration, iDamage,
 			end
 
 			local tr = util.TraceLine{
-				start = penetrationEnd + trace.Normal * 0.00000001,
+				start = penetrationEnd + trace.Normal * 0.1,
 				endpos = trace.HitPos,
 				mask = MASK_SHOT,
 				collisiongroup = COLLISION_GROUP_NONE,
