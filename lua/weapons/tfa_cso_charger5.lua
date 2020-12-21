@@ -112,6 +112,10 @@ end
 function SWEP:FireBulletsCallback(tr, dmginfo)
 	BaseClass.FireBulletsCallback(self, tr, dmginfo)
 
+	if (not SERVER) then
+		return
+	end
+
 	if (IsValid(tr.Entity) and dmginfo:GetDamage() > 0 and tr.Entity:IsPlayer() and math.random() > 0.8) then
 
 		-- do electrical effect

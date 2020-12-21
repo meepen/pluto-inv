@@ -51,7 +51,7 @@ function MakeGold(what, mat)
 		what:GetPhysicsObjectNum(bone):RecheckCollisionFilter()
 	end
 
-	what:SetMaterial(mat)
+	what:SetMaterial(tex or mat)
 
 	what:SetPos(what:GetPos() + vector_up * 100)
 

@@ -55,6 +55,7 @@ pluto.files.load {
 
 		"minigame/sv.lua",
 
+		"inv/nodes/sv_nodes.lua",
 		"divine/sv_currency_exchange.lua",
 		"divine/sv_stardust_shop.lua",
 		"divine/sv_auction_house.lua",
@@ -65,6 +66,13 @@ pluto.files.load {
 		"resource/fonts/Niconne-Regular.ttf",
 		"resource/fonts/Lateef-Regular.ttf",
 		"resource/fonts/Aladin-Regular.ttf",
+
+		"materials/pluto/star3.png",
+		"materials/pluto/hubble.png",
+		"materials/pluto/hound1.png",
+		"materials/pluto/hound2.png",
+		"materials/pluto/eppen_stars.png",
+		"materials/pluto/colorful.png",
 		"resource/fonts/PermanentMarker-Regular.ttf",
 	},
 	Workshop = {

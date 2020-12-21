@@ -540,17 +540,3 @@ function pluto.inv.writetradelogresults(recv, trades)
 		net.WriteString(trade.snapshot)
 	end
 end
-
-concommand.Add("pluto_print_trade", function(ply, _, args)
-	if (not pluto.cancheat(ply)) then
-		return	
-	end
-	
-	local id = tonumber(args[1])
-
-	pluto.db.instance(function(db)
-		PrintTable(mysql_stmt_run(db, "SELECT CAST(player AS CHAR(32)) as player FROM pluto_trades_players WHERE trade_id = ?", id))
-		PrintTable(mysql_stmt_run(db, "SELECT item_id FROM pluto_trades_items WHERE trade_id = ?", id))
-		PrintTable(mysql_stmt_run(db, "SELECT CAST(snapshot as CHAR(100000)) as snapshot FROM pluto_trades WHERE idx = ?", id))
-	end)
-end)

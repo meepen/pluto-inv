@@ -358,10 +358,17 @@ end
 function PANEL:Paint(w, h)
 	self:FullPaint(w, h)
 
-	if (self.Item and self.Item.Locked and (pluto.ui.ghost == self:GetParent() and pluto.ui.ghost.paintover or pluto.ui.ghost ~= self:GetParent())) then
-		surface.SetDrawColor(color_white)
-		surface.SetMaterial(lock)
-		surface.DrawTexturedRect(w - 15, 5, 10, 10)
+	if (self.Item and (pluto.ui.ghost == self:GetParent() and pluto.ui.ghost.paintover or pluto.ui.ghost ~= self:GetParent())) then
+		if (self.Item.Locked) then
+			surface.SetDrawColor(color_white)
+			surface.SetMaterial(lock)
+			surface.DrawTexturedRect(w - 15, 5, 10, 10)
+		end
+		if (self.Item.constellations) then
+			surface.SetDrawColor(color_white)
+			surface.SetMaterial(pluto.getsuntexture(self.rotate))
+			surface.DrawTexturedRect(5, 5, 12, 12)
+		end
 	end
 end
 
@@ -593,6 +600,12 @@ local function CreateMenu(self, item)
 				:write("itemlock", self.Item.ID)
 				:send()
 		end):SetIcon("icon16/lock.png")
+	end
+
+	if (item.Type == "Weapon") then
+		rightclick_menu:AddOption("Open Constellations", function()
+			pluto.ui.showconstellations(self.Item)
+		end):SetIcon "icon16/star.png"
 	end
 
 	if (not item.Untradeable) then

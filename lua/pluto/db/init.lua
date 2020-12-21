@@ -227,6 +227,26 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 		]])
 
 		mysql_query(db, [[
+			CREATE TABLE IF NOT EXISTS pluto_item_nodes (
+				idx INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+				item_id INT UNSIGNED NOT NULL REFERENCES pluto_items(idx) ON DELETE CASCADE,
+
+				node_bubble SMALLINT UNSIGNED NOT NULL,
+				node_id SMALLINT UNSIGNED NOT NULL,
+				node_unlocked TINYINT UNSIGNED NOT NULL DEFAULT 0,
+
+				node_name VARCHAR(16) NOT NULL,
+
+				node_val1 FLOAT NULL,
+				node_val2 FLOAT NULL,
+				node_val3 FLOAT NULL,
+
+				UNIQUE INDEX (item_id, node_bubble, node_id),
+				FOREIGN KEY(item_id) REFERENCES pluto_items(idx)
+			)
+		]])
+		
+		mysql_query(db, [[
 			CREATE TABLE IF NOT EXISTS pluto_stardust_shop (
 				id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 				item VARCHAR(64) NOT NULL,
@@ -247,8 +267,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				INDEX(price),
 				INDEX(listed),
 				UNIQUE INDEX(idx),
-				FOREIGN KEY(idx) REFERENCES pluteo_items(tab_idx)
-
+				FOREIGN KEY(idx) REFERENCES pluto_items(tab_idx)
 			)
 		]])
 

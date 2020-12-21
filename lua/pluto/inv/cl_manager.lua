@@ -173,6 +173,11 @@ function pluto.inv.readitem()
 	item.OriginalOwnerName = net.ReadString()
 	item.CreationMethod = net.ReadString()
 	item.Untradeable = net.ReadBool()
+	if (net.ReadBool()) then
+		item.constellations = pluto.inv.readconstellations()
+	else
+		item.constellations = nil
+	end
 
 	pluto.received.item[id] = item
 

@@ -43,6 +43,10 @@ pluto.files.load {
 		"weapons/cl_hover.lua",
 
 		"minigame/cl.lua",
+
+		"inv/nodes/cl_nodes.lua",
+
+		"treelib/cl.lua",
 	},
 	Shared = {
 		"co_net.lua",
@@ -82,10 +86,15 @@ pluto.files.load {
 		"events/sh_init.lua",
 
 		"thirdparty/sh_animations_api.lua",
+		"thirdparty/circles.lua",
 
 		"imgur/sh_imgur.lua",
 
 		"sv/promise.lua",
+
+		"treelib/sh.lua",
+
+		"inv/nodes/sh_nodes.lua",
 
 		-- "unicode/init.lua",
 		-- "unicode/casefolding.lua",

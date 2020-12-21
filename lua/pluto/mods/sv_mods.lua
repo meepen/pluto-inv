@@ -44,6 +44,8 @@ for _, filename in pairs {
 	"unchanging",
 	"zoomies",
 
+	"new_coined",
+
 	"grenades/grendelay",
 	"grenades/elasticity",
 	"grenades/smokeclr",

@@ -88,6 +88,7 @@ function SWEP:RunModFunctionSequence(funcname, state, ...)
 	local args = {n = select("#", ...) + 1, ...}
 	args[args.n] = state or {}
 
+	hook.Run("PlutoPre" .. funcname, self, unpack(args, 1, args.n))
 	self:RunModFunctionSingle("Pre" .. funcname, unpack(args, 1, args.n))
 	self:RunModFunctionSingle("On" .. funcname, unpack(args, 1, args.n))
 	self:RunModFunctionSingle("Post" .. funcname, unpack(args, 1, args.n))
@@ -95,11 +96,6 @@ function SWEP:RunModFunctionSequence(funcname, state, ...)
 	if (self[funcname]) then
 		self[funcname](self, state, ...)
 	end
-end
-
-function SWEP:DoFireBullets(...)
-	self:RunModFunctionSequence("Fire", nil, tr, dmginfo)
-	BaseClass.DoFireBullets(self, ...)
 end
 
 function SWEP:FireBulletsCallback(tr, dmginfo)
@@ -153,6 +149,16 @@ function SWEP:SetInventoryItem(gun)
 	pluto.wpn_db[self:GetPlutoID()] = gun
 
 	self:ReceivePlutoData()
+
+	timer.Simple(0, function()
+		if (not IsValid(self)) then
+			return
+		end
+
+		if (gun.constellations) then
+			pluto.nodes.applyactive(self, gun.constellations)
+		end
+	end)
 end
 
 hook.Add("EntityTakeDamage", "pluto_dmg_mods", function(targ, dmg)

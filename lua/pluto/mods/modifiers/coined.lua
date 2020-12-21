@@ -16,7 +16,7 @@ function MOD:FormatModifier(index, roll)
 	return ""
 end
 
-MOD.Description = "Gives 12% more currency rewards per modifier"
+MOD.Description = "Gives 10% more currency rewards per modifier"
 
 MOD.NoCoined = true
 MOD.Tomeable = true
@@ -40,7 +40,7 @@ function MOD:OnUpdateSpawnPoints(wep, rolls, atk, vic, state)
 			end
 		end
 
-		state.Points = state.Points * (1 + 0.12 * mod_count)
+		state.Points = state.Points * (1 + 0.11 * mod_count)
 	end
 end
 
