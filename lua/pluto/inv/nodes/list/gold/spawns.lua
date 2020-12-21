@@ -19,7 +19,7 @@ function NODE:ModifyWeapon(node, wep)
 		local old = wep.UpdateSpawnPoints
 		function wep:UpdateSpawnPoints(state)
 			if (old) then
-				old(state)
+				old(self, state)
 			end
 
 			state.Points = state.Points * (1 + (10 + node.node_val1 * 10) / 100)

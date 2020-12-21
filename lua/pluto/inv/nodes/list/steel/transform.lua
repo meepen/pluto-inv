@@ -21,7 +21,7 @@ function NODE:ModifyWeapon(node, wep)
 			end
 
 			if (dmg and dmg:GetInflictor() == wep) then
-				MakeGold(rag, "models/player/shared/ice_transform")
+				MakeGold(rag, "models/player/shared/ice_player")
 			end
 		end)
 	end)
