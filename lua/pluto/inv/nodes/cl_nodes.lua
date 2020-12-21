@@ -88,7 +88,7 @@ function pluto.ui.showconstellations(item)
 
 		local txt = p:Add "DLabel"
 		txt:Dock(TOP)
-		txt:SetText "This action will cost 500 stardust."
+		txt:SetText "This action will cost 250 stardust."
 		txt:SetFont "pluto_trade_buttons"
 		txt:SetContentAlignment(5)
 		txt:SetTextColor(Color(255, 20, 25))

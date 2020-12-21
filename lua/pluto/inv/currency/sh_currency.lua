@@ -184,7 +184,7 @@ pluto.currency.list = {
 		NoTarget = true,
 		Crafted = {
 			Chance = 0.5,
-			Mod = "coined",
+			Mod = "new_coined",
 		},
 		StardustRatio = 6000,
 	},

@@ -467,7 +467,7 @@ function pluto.inv.readunlockconstellations(cl)
 	end
 
 	pluto.db.transact(function(db)
-		if (not pluto.inv.addcurrency(db, cl, "stardust", -500)) then
+		if (not pluto.inv.addcurrency(db, cl, "stardust", -250)) then
 			mysql_rollback(db)
 			return
 		end
