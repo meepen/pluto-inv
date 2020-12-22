@@ -1,5 +1,5 @@
 QUEST.Name = "The Greater Good"
-QUEST.Description = "Use Inevitables and Unusuals in crafting"
+QUEST.Description = "Use Inevitable, Unusual, and Promised in crafting"
 QUEST.Color = Color(170, 0, 255)
 QUEST.RewardPool = "weekly"
 
@@ -10,7 +10,7 @@ function QUEST:Init(data)
 		end
 
 		for _, item in pairs(items) do
-			if (item.Tier and item.Tier.InternalName and (item.Tier.InternalName == "inevitable" or item.Tier.InternalName == "unusual")) then
+			if (item.Tier and item.Tier.InternalName and (item.Tier.InternalName == "inevitable" or item.Tier.InternalName == "unusual" or item.Tier.InternalName == "promised")) then
 				data:UpdateProgress(1)
 			end
 		end
@@ -18,5 +18,5 @@ function QUEST:Init(data)
 end
 
 function QUEST:GetProgressNeeded()
-	return math.random(15, 20)
+	return math.random(13, 17)
 end
