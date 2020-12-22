@@ -36,6 +36,8 @@ for _, id in pairs {
 	"sacrifices",
 	"burn",
 	"postround",
+	"minis",
+	"identify",
 
 	"halloween_nade",
 } do
@@ -138,7 +140,11 @@ pluto.quests.rewardhandlers = {
 				table.insert(append, " a random implicit")
 			end
 			if (self.ModMin and self.ModMax) then
-				table.insert(append, " between " .. tostring(self.ModMin) .. " and " .. tostring(self.ModMax) .. " mods")
+				if (self.ModMin == self.ModMax) then
+					table.insert(append, " " .. tostring(self.ModMin) .. " mods")
+				else
+					table.insert(append, " between " .. tostring(self.ModMin) .. " and " .. tostring(self.ModMax) .. " mods")
+				end
 			elseif (self.ModMin) then
 				table.insert(append, " at least " .. tostring(self.ModMin) .. " mods")
 			elseif (self.ModMax) then
@@ -181,12 +187,16 @@ pluto.quests.rewardhandlers = {
 			local smalltext = "shard"
 
 			if (self.Tier) then
-				smalltext = pluto.tiers.byname[self.Tier].Name .. " "
+				smalltext = pluto.tiers.byname[self.Tier].Name .. " " .. smalltext
 			end
 
 			local append = {}
 			if (self.ModMin and self.ModMax) then
-				table.insert(append, " between " .. tostring(self.ModMin) .. " and " .. tostring(self.ModMax) .. " mods")
+				if (self.ModMin == self.ModMax) then
+					table.insert(append, " " .. tostring(self.ModMin) .. " mods")
+				else
+					table.insert(append, " between " .. tostring(self.ModMin) .. " and " .. tostring(self.ModMax) .. " mods")
+				end
 			elseif (self.ModMin) then
 				table.insert(append, " at least " .. tostring(self.ModMin) .. " mods")
 			elseif (self.ModMax) then
@@ -219,19 +229,25 @@ pluto.quests.rewards = {
 			Type = "currency",
 			Currency = "crate3_n",
 			Amount = 1,
-			Shares = 1,
+			Shares = 0.75,
 		},
 		{
 			Type = "currency",
 			Currency = "crate3",
 			Amount = 1,
-			Shares = 1,
+			Shares = 0.75,
 		},
 		{
 			Type = "currency",
 			Currency = "crate1",
 			Amount = 1,
-			Shares = 1,
+			Shares = 0.75,
+		},
+		{
+			Type = "currency",
+			Currency = "brainegg",
+			Amount = 1,
+			Shares = 0.75,
 		},
 		{
 			Type = "currency",
@@ -246,10 +262,16 @@ pluto.quests.rewards = {
 			Shares = 1,
 		},
 		{
+			Type = "currency",
+			Currency = "stardust",
+			Amount = 25,
+			Shares = 1.5,
+		},
+		{
 			Type = "weapon",
 			RandomImplicit = true,
-			ModMax = 4,
-			ModMin = 3,
+			ModMax = 5,
+			ModMin = 4,
 			Shares = 2,
 		},
 		{
@@ -271,6 +293,11 @@ pluto.quests.rewards = {
 			Type = "shard",
 			ModMin = 4,
 			Shares = 2,
+		},
+		{
+			Type = "shard",
+			Tier = "promised",
+			Shares = 1,
 		},
 	},
 	daily = {
@@ -297,6 +324,12 @@ pluto.quests.rewards = {
 			Currency = "crate1",
 			Amount = 5,
 			Shares = 1,
+		},
+		{
+			Type = "currency",
+			Currency = "stardust",
+			Amount = 125,
+			Shares = 1.5,
 		},
 		{
 			Type = "weapon",
@@ -379,10 +412,15 @@ pluto.quests.rewards = {
 			Shares = 1,
 		},
 		{
+			Type = "currency",
+			Currency = "stardust",
+			Amount = 500,
+			Shares = 1,
+		},
+		{
 			Type = "weapon",
 			ModMin = 6,
 			ModMax = 6,
-			Small = "gun with 6 mods",
 			Shares = 1,
 		},
 		{
@@ -393,8 +431,14 @@ pluto.quests.rewards = {
 			Shares = 1,
 		},
 		{
+			Type = "weapon",
+			Tier = "promised",
+			Shares = 1,
+		},
+		{
 			Type = "shard",
 			ModMin = 6,
+			ModMax = 6,
 			Shares = 1,
 		},
 	},
@@ -770,7 +814,6 @@ function pluto.quests.delete(idx)
 end
 
 function pluto.quests.reset(ply)
-	ply:ChatPrint "reloading quests"
 	for type, quests in pairs(pluto.quests.byperson[ply] or {}) do
 		for _, quest in pairs(quests) do
 			quest.Dead = true
@@ -783,7 +826,7 @@ function pluto.quests.reset(ply)
 		end
 
 		pluto.quests.init(ply, function()
-			ply:ChatPrint "reloaded"
+			ply:ChatPrint "Reloaded Quests."
 		end)
 	end)
 end
@@ -807,11 +850,10 @@ function pluto.quests.reloadfor(ply)
 	ply.QuestsReloading = true
 
 	timer.Simple(5, function()
-		ply:ChatPrint "reloading quests"
 		ply.QuestsReloading = 1
 		pluto.quests.init_nocache(ply, function()
 			ply.QuestsReloading = nil
-			ply:ChatPrint "reloaded"
+			ply:ChatPrint "Reloaded Quests."
 		end)
 	end)
 
@@ -873,7 +915,7 @@ concommand.Add("pluto_add_quest", function(ply, cmd, args)
 	end
 
 	if (IsValid(target)) then
-		local progress = tonumber(args[2]) or 1
+		local progress = tonumber(args[2]) or 1000
 		ply:ChatPrint("Found quest. Adding " .. progress .. " progress.")
 
 		target:UpdateProgress(progress)
