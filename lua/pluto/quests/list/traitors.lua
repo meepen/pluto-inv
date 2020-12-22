@@ -19,6 +19,7 @@ function QUEST:Init(data)
 		if (good) then
 			data:UpdateProgress(1)
 		end
+		good = false
 	end)
 end
 

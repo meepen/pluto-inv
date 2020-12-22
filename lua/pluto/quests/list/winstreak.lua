@@ -11,7 +11,7 @@ function QUEST:Init(data)
 	end)
 	data:Hook("PlayerDeath", function(data, vic, inf, atk)
 		if (data.Player == vic and ttt.GetRoundState() == ttt.ROUNDSTATE_ACTIVE) then
-			data:UpdateProgress(-1 * (data.TotalProgress - data.ProgressLeft))
+			data:UpdateProgress(data.ProgressLeft - data.TotalProgress)
 		end
 	end)
 end

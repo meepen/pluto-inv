@@ -24,12 +24,14 @@ for _, id in pairs {
 	"wepswitch",
 	"nomove",
 	"winstreak",
+	"killstreak",
 
 	"nodamage",
 	"credits",
 	"pcrime",
 	"crusher",
 	"healthgain",
+	"lowhealth",
 
 	"dnatrack",
 	"fourcraft",
@@ -297,7 +299,7 @@ pluto.quests.rewards = {
 		{
 			Type = "shard",
 			Tier = "promised",
-			Shares = 1,
+			Shares = 0.5,
 		},
 	},
 	daily = {
