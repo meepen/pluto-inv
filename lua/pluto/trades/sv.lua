@@ -529,6 +529,29 @@ function pluto.inv.readgettrades(ply)
 	end)
 end
 
+function pluto.inv.readgettradesnapshot(cl)
+	local trade_id = net.ReadUInt(32)
+	local sid64 = pluto.db.steamid64(cl)
+
+	pluto.db.instance(function(db)
+		local logs = mysql_stmt_run(db, [[select CAST(tr.snapshot AS CHAR(1000000)) as snapshot
+			from pluto_trades tr ]] .. (admin.hasperm(cl:GetUserGroup(), "tradelogs") and "" or "inner join pluto_trades_players search on tr.idx = search.trade_id and search.player = ?)") .. [[
+				where tr.idx = ?
+			]],
+			admin.hasperm(cl:GetUserGroup(), "tradelogs") and trade_id or sid64,
+			not admin.hasperm(cl:GetUserGroup(), "tradelogs") and trade_id or nil
+		)
+		if (not logs[1]) then
+			cl:ChatPrint "You aren't allowed to access that."
+			return
+		end
+
+		pluto.inv.message(cl)
+			:write("tradelogsnapshot", trade_id, logs[1].snapshot)
+			:send()
+	end)
+end
+
 function pluto.inv.writetradelogresults(recv, trades)
 	net.WriteUInt(#trades, 32)
 	for _, trade in ipairs(trades) do
@@ -537,6 +560,12 @@ function pluto.inv.writetradelogresults(recv, trades)
 		net.WriteString(trade.p1steamid)
 		net.WriteString(trade.p2name)
 		net.WriteString(trade.p2steamid)
-		net.WriteString(trade.snapshot)
 	end
+end
+
+function pluto.inv.writetradelogsnapshot(cl, id, snapshot)
+	net.WriteUInt(id, 32)
+	local comp = util.Compress(snapshot)
+	net.WriteUInt(#comp, 32)
+	net.WriteData(comp, #comp)
 end

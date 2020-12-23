@@ -27,6 +27,7 @@ pluto.inv.messages = {
 		"unlocknode",
 		"unlockmajors",
 		"unlockconstellations",
+		"gettradesnapshot",
 	},
 	sv2cl = {
 		[0] = "end",
@@ -60,6 +61,7 @@ pluto.inv.messages = {
 		"currencyspawn",
 		"stardustshop",
 		"auctiondata",
+		"tradelogsnapshot",
 	}
 }
 

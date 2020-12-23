@@ -236,6 +236,18 @@ function pluto.inv.writetraderequest(ply)
 	net.WriteEntity(ply)
 end
 
+function pluto.inv.writegettradesnapshot(id)
+	net.WriteUInt(id, 32)
+end
+
+function pluto.inv.readtradelogsnapshot()
+	local id = net.ReadUInt(32)
+	local len = net.ReadUInt(32)
+	local data = util.Decompress(net.ReadData(len))
+
+	hook.Run("PlutoTradeLogSnapshot", id, data)
+end
+
 function pluto.inv.readtradelogresults(recv, trades)
 	local trades = {}
 	for i = 1, net.ReadUInt(32) do
@@ -246,10 +258,18 @@ function pluto.inv.readtradelogresults(recv, trades)
 		trade.p1steamid = net.ReadString()
 		trade.p2name = net.ReadString()
 		trade.p2steamid = net.ReadString()
-		trade.snapshot = net.ReadString()
 	end
 
 	local frame = vgui.Create "DFrame"
+	hook.Add("PlutoTradeLogSnapshot", frame, function(_, id, snapshot)
+		for _, trade in pairs(trades) do
+			if (trade.ID == id) then
+				chat.AddText("Data retrieved for trade " .. trade.ID)
+				trade.snapshot = snapshot
+				break
+			end
+		end
+	end)
 
 	frame:SetSize(480, 600)
 	frame:Center()
@@ -267,6 +287,14 @@ function pluto.inv.readtradelogresults(recv, trades)
 	end
 
 	function list:OnRowSelected(index)
+		local trade = trades[index]
+		if (not trade.snapshot) then
+			pluto.inv.message()
+				:write("gettradesnapshot", trade.ID)
+				:send()
+			chat.AddText("Retrieving data for trade " .. trade.ID .. "...")
+			return
+		end
 		local frame = vgui.Create "pluto_trade_log"
 		frame:SetTrade(trades[index])
 	end
