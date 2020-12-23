@@ -18,6 +18,6 @@ function NODE:ModifyWeapon(node, wep)
 			return
 		end
 
-		targ:SetMaxHealth(targ:GetMaxHealth() - math.floor(dmg:GetDamage() * wep.MortalWound))
+		vic:SetMaxHealth(vic:GetMaxHealth() - math.floor(dmg:GetDamage() * wep.MortalWound))
 	end)
 end

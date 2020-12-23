@@ -32,6 +32,13 @@ sound.Add({
 	sound = 			"weapons/executioner/close.ogg"
 })
 
+sound.Add({
+	name = 			"Weapon_BO2_Judge.Fire",
+	channel = 		CHAN_ITEM,
+	volume = 		1.0,
+	sound = 			"weapons/executioner/fire.ogg"
+})
+
 -- Main Settings
 -------------------
 SWEP.PrintName					= "Executioner"
@@ -58,7 +65,7 @@ SWEP.ViewModelFlip				= false
 
 -- TTT settings
 -------------------
-SWEP.Slot         				= 1							
+SWEP.Slot         				= 2
 SWEP.SlotPos					= 1	
 SWEP.AutoSpawnable				= false
 SWEP.AllowDrop 					= true
@@ -68,7 +75,7 @@ SWEP.Base 						= "weapon_tttbase"
 
 -- Primary fire settings
 -------------------
-SWEP.Primary.Sound 				= "weapons/executioner/fire.ogg" 
+SWEP.Primary.Sound 				= "Weapon_BO2_Judge.Fire" 
 SWEP.Primary.Damage				= 6
 SWEP.Primary.NumShots			= 5
 SWEP.Primary.Spread				= 0.09
