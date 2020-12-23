@@ -57,7 +57,7 @@ function pluto.mapvote.broadcast()
 	end
 
 	
-	round.SetState(ttt.ROUNDSTATE_PREPARING, 15):_then(function()
+	round.SetState(ttt.ROUNDSTATE_ENDED, 15):_then(function()
 		local votes = {}
 		for map in pairs(pluto.mapvote.state.votable) do
 			votes[map] = 0
