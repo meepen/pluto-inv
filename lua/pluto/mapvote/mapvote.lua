@@ -4,6 +4,11 @@ local last_played = sql.Query("SELECT * from pluto_map_plays ORDER BY last_playe
 sql.Query("INSERT INTO pluto_map_plays (mapname, last_played) VALUES (" .. sql.SQLStr(game.GetMap()) .. ", CAST(strftime('%s', 'now') AS INT UNSIGNED)) ON CONFLICT(mapname) DO UPDATE SET last_played = CAST(strftime('%s', 'now') AS INT UNSIGNED)")
 
 pluto.mapvote = pluto.mapvote or {}
+pluto.mapvote.blacklisted = pluto.mapvote.blacklisted or {}
+for _, map in pairs(last_played) do
+	pluto.mapvote.blacklisted[map.mapname] = true
+end
+pluto.mapvote.boosts = pluto.mapvote.boosts or {}
 pluto.mapvote.history = {}
 pluto.mapvote.popular = {}
 pluto.mapvote.liked = {}
@@ -14,6 +19,19 @@ for _, map in pairs(sql.Query "SELECT mapname, CAST(strftime('%s', 'now') AS INT
 	})
 end
 
+function pluto.mapvote.boost(map)
+	if (#pluto.mapvote.boosts > 2) then
+		return false
+	end
+
+	if (table.HasValue(pluto.mapvote.boosts, map)) then
+		return false
+	end
+
+	table.insert(pluto.mapvote.boosts, map)
+
+	return true
+end
 
 local function init()
 	pluto.db.instance(function(db)
@@ -201,11 +219,9 @@ function pluto.mapvote.start()
 		local gotten = false
 		
 		for i, map in pairs(valid) do
-			print(map, chosen.mapname)
 			if (map == chosen.mapname) then
 				table.remove(valid, i)
 				table.insert(valid, 1, map)
-				print("pop", map)
 				gotten = true
 				break
 			end
@@ -243,6 +259,15 @@ function pluto.mapvote.start()
 	for i = 9, #valid do
 		valid[i] = nil
 	end
+
+	for i, boost in pairs(pluto.mapvote.boosts) do
+		if (table.HasValue(valid, boost)) then
+			continue
+		end
+
+		valid[9 - i] = boost
+	end
+
 
 	local state = {
 		maps = {},
