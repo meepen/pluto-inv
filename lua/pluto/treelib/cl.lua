@@ -226,7 +226,11 @@ function PANEL:Paint(w, h)
 				Color = hovered.node_unlocked and enabled_color or disabled_color,
 				Experience = not hovered.node_unlocked and star.Experience or nil,
 			}
-			self.showcase:SetPos(PLUTO_TREE:LocalToScreen(PLUTO_TREE:GetWide() / 2 - self.showcase:GetWide() / 2, PLUTO_TREE:GetTall()))
+			if (hovered.bubble.id == 3 or hovered.bubble.id == 2) then
+				self.showcase:SetPos(self:LocalToScreen(0, 0))
+			else
+				self.showcase:SetPos(self:LocalToScreen(self:GetWide() - self.showcase:GetWide(), self:GetTall() - self.showcase:GetTall()))
+			end
 			self.last_hovered = star
 		end
 	elseif (IsValid(self.showcase)) then
