@@ -534,13 +534,24 @@ function pluto.inv.readgettradesnapshot(cl)
 	local sid64 = pluto.db.steamid64(cl)
 
 	pluto.db.instance(function(db)
-		local logs = mysql_stmt_run(db, [[select CAST(tr.snapshot AS CHAR(1000000)) as snapshot
-			from pluto_trades tr ]] .. (admin.hasperm(cl:GetUserGroup(), "tradelogs") and "" or "inner join pluto_trades_players search on tr.idx = search.trade_id and search.player = ?)") .. [[
-				where tr.idx = ?
-			]],
-			admin.hasperm(cl:GetUserGroup(), "tradelogs") and trade_id or sid64,
-			not admin.hasperm(cl:GetUserGroup(), "tradelogs") and trade_id or nil
-		)
+		local logs
+		if (admin.hasperm(cl:GetUserGroup(), "tradelogs")) then
+			logs = mysql_stmt_run(db, [[select CAST(tr.snapshot AS CHAR(1000000)) as snapshot
+				from pluto_trades tr 
+					where tr.idx = ?
+				]],
+				trade_id
+			)
+		else
+			logs = mysql_stmt_run(db, [[select CAST(tr.snapshot AS CHAR(1000000)) as snapshot
+				from pluto_trades tr
+				inner join pluto_trades_players search on tr.idx = search.trade_id and search.player = ?
+					where tr.idx = ?
+				]],
+				sid64,
+				trade_id
+			)
+		end
 		if (not logs[1]) then
 			cl:ChatPrint "You aren't allowed to access that."
 			return

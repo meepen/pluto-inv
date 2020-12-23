@@ -264,7 +264,7 @@ function pluto.inv.readtradelogresults(recv, trades)
 	hook.Add("PlutoTradeLogSnapshot", frame, function(_, id, snapshot)
 		for _, trade in pairs(trades) do
 			if (trade.ID == id) then
-				chat.AddText("Data retrieved for trade " .. trade.ID)
+				chat.AddText("Data retrieved for trade " .. trade.ID .. ". You can open it now.")
 				trade.snapshot = snapshot
 				break
 			end
