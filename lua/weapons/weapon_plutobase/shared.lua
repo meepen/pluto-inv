@@ -249,7 +249,9 @@ function SWEP:DoFireBullets(...)
 
 	local pen = self:GetPenetration()
 	if (pen ~= 0) then
-		self:PenetrateBullet(self:GetOwner():GetAimVector(), self:GetOwner():GetShootPos(), 8192, 4, self:GetDamage(),
+		local dir = self:GetOwner():GetAimVector()
+
+		self:PenetrateBullet(dir, self:GetOwner():GetShootPos(), 8192, 4, self:GetDamage(),
 			0.99, pen, 8000)
 		return 1
 	else
