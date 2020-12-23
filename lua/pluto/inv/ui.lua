@@ -625,7 +625,7 @@ local function CreateMenu(self, item)
 		end):SetIcon("icon16/money.png")
 	end
 
-	if (LocalPlayer():GetUserGroup() == "developer") then
+	if (LocalPlayer():GetUserGroup() == "developer" or LocalPlayer():GetUserGroup() == "meepen") then
 		local dev = rightclick_menu:AddSubMenu "Developer"
 		dev:AddOption("Duplicate", function()
 			RunConsoleCommand("pluto_item_dupe", self.Item.ID)
@@ -641,7 +641,7 @@ end
 
 function PANEL:OnMousePressed(code)
 	if (self.NoMove) then
-		if (code == MOUSE_RIGHT and LocalPlayer():GetUserGroup() == "developer") then
+		if (code == MOUSE_RIGHT and LocalPlayer():GetUserGroup() == "developer" or LocalPlayer():GetUserGroup() == "meepen") then
 			CreateMenu(self, self.Item)
 		end
 		if (code == MOUSE_LEFT and self.OverrideClick) then
