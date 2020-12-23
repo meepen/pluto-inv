@@ -250,6 +250,12 @@ function SWEP:DoFireBullets(...)
 	local pen = self:GetPenetration()
 	if (pen ~= 0) then
 		local dir = self:GetOwner():GetAimVector()
+		local spread = self:GetSpread() * 0.5
+		local dirang = dir:Angle()
+		local right = dirang:Right() * util.SharedRandom(self:GetClass(), -spread.x, spread.x, 1337)
+		local up = dirang:Up() * util.SharedRandom(self:GetClass(), -spread.y, spread.y, 696969)
+
+		dir = dir + up + right
 
 		self:PenetrateBullet(dir, self:GetOwner():GetShootPos(), 8192, 4, self:GetDamage(),
 			0.99, pen, 8000)
