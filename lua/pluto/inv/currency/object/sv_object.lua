@@ -15,6 +15,9 @@ function CURRENCY:TryReward(e)
 		self:Remove()
 		return true
 	end
+
+	hook.Run("PlutoCurrencyPickup", self, e)
+
 	if (cur.Pickup) then
 		if (not cur.Pickup(e, self)) then
 			return false

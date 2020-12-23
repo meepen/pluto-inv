@@ -1,28 +1,37 @@
 QUEST.Name = "Traitor Tracker"
-QUEST.Description = "Kill traitors whose DNA you were following"
+QUEST.Description = "Find the DNA of living traitors from their victims"
 QUEST.Color = Color(21, 128, 0)
 QUEST.RewardPool = "weekly"
 
 function QUEST:Init(data)
-	data:Hook("PlayerDeath", function(data, vic, inf, atk)
-		if (ttt.GetRoundState() == ttt.ROUNDSTATE_ACTIVE and atk == data.Player and atk:GetRoleTeam() ~= "traitor" and vic:GetRoleTeam() == "traitor") then
-			local scanner = atk:GetWeapon("weapon_ttt_dna")
-			local own
+	local collected = {}
 
-			if (IsValid(scanner) and IsValid(scanner:GetCurrentDNA())) then
-				own = scanner:GetCurrentDNA():GetDNAOwner()
-				if (own:GetClass() == "prop_ragdoll" and own.HiddenState) then
-					own = own.HiddenState:GetPlayer()
-				end
-			end
+	data:Hook("TTTFoundDNA", function(data, ply, own, ent)
+		if (not IsValid(ply) or not IsValid(own) or not IsValid(ent)) then
+			return
+		end
 
-			if (IsValid(own) and own == vic) then
-				data:UpdateProgress(1)
-			end
+		if (data.Player ~= ply or ent:GetClass() ~= "prop_ragdoll") then
+			return
+		end
+
+		if (not own:IsPlayer() or own:GetRoleTeam() ~= "traitor") then
+			return
+		end
+
+		collected[own] = true
+	end)
+
+	data:Hook("TTTEndRound", function(data)
+		local count = table.Count(collected)
+		collected = {}
+
+		if (count > 0) then
+			data:UpdateProgress(count)
 		end
 	end)
 end
 
 function QUEST:GetProgressNeeded()
-	return math.random(25, 30)
+	return math.random(15, 20)
 end
