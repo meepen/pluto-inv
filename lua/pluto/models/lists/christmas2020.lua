@@ -336,8 +336,8 @@ c "snow7" {
 
 c "xmas_imp" {
 	Name = "Imp (but christmas)",
-	Model = "Models/player/pizzaroll/imp.mdl",
-	Hands = "Models/weapons/imparms.mdl",
+	Model = "models/player/pizzaroll/imp.mdl",
+	Hands = "models/weapons/imparms.mdl",
 	Color = ColorRand(),
 	SubDescription = "Who says a spawn of the underlord can't celebrate Christmas?",
 	GenerateBodygroups = function(item)
