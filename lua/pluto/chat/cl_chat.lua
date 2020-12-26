@@ -613,6 +613,7 @@ end
 function PANEL:AddTab(name, prefix)
 	local chat = self.Chatbox.Text:Add "pluto_text"
 	chat:SetDefaultFont "pluto_chat_font"
+	chat:SetDefaultRenderSystem "shadow"
 	chat:SetDefaultTextColor(white_text)
 	chat:Hide()
 	chat:Dock(FILL)
