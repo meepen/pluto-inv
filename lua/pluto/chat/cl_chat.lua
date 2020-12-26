@@ -403,7 +403,7 @@ function PANEL:Init()
 
 	function self.TextEntry:Think()
 		if (pluto.chat.isOpened and not self:HasFocus()) then
-			if (not IsValid(vgui.GetKeyboardFocus()) or vgui.GetKeyboardFocus():GetClassName() ~= "RichText") then
+			if (not IsValid(vgui.GetKeyboardFocus()) or vgui.GetKeyboardFocus():GetClassName() ~= "pluto_text") then
 				self:RequestFocus()
 			end
 		end
@@ -611,7 +611,9 @@ function PANEL:SetAlpha(a)
 end
 
 function PANEL:AddTab(name, prefix)
-	local chat = self.Chatbox.Text:Add "RichText"
+	local chat = self.Chatbox.Text:Add "pluto_text"
+	chat:SetDefaultFont "pluto_chat_font"
+	chat:SetDefaultTextColor(white_text)
 	chat:Hide()
 	chat:Dock(FILL)
 	
@@ -701,9 +703,7 @@ end
 function PANEL:Item(channel, item)
 	local box = self.Tabs.table[channel]
 	self:Color(channel, item.Color)
-	box:InsertClickableTextStart(util.TableToJSON({type = "item", val = item.ID}))
-	self:Text(channel, item:GetPrintName())
-	box:InsertClickableTextEnd()
+	self:InsertShowcaseItem(channel, item)
 	self:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
 end
 
@@ -712,10 +712,7 @@ function PANEL:Cur(channel, cur)
 
 	if not cur then return end
 
-	self:Color(channel, cur.Color)
-	box:InsertClickableTextStart(util.TableToJSON({type = "currency", val = cur.InternalName}))
-	self:Text(channel, cur.Name)
-	box:InsertClickableTextEnd()
+	self:InsertShowcaseItem(channel, cur)
 	self:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
 	self:DefaultFade(channel)
 end
@@ -728,6 +725,11 @@ function PANEL:Newline(channel)
 	self:DefaultFade(channel)
 	self.Tabs.table[channel]:AppendText("\n")
 	MsgN ""
+end
+
+function PANEL:InsertShowcaseItem(channel, item)
+	self:DefaultFade(channel)
+	self.Tabs.table[channel]:InsertShowcaseItem(item)
 end
 
 function PANEL:ResetFade(enable)

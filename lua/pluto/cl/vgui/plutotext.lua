@@ -76,6 +76,10 @@ function PANEL:AppendText(...)
 	end
 end
 
+function PANEL:InsertColorChange(r, g, b, a)
+	self:SetCurrentTextColor(Color(r, g, b, a))
+end
+
 function PANEL:FetchLabel()
 	if (not IsValid(self.LastLabel)) then
 		self.LastLabel = self:Add "pluto_label"
@@ -142,16 +146,12 @@ function PANEL:NewLine()
 end
 
 function PANEL:AddText(what)
-	local has_newlined = false
 	surface.SetFont(self:GetCurrentFont())
 
-	for m in what:gmatch "([^\r\n]+)" do
-		if (has_newlined) then
-			self:NewLine()
-		end
+	for nl1, m, nl2, npos in what:gmatch "([\r\n]*)([^\r\n]*)([\r\n]*)()" do
 		local lbl = self:FetchLabel()
 
-		for n, i in m:gmatch "([^ ]+)()" do
+		for n, spaces in m:gmatch "( *[^ ]+)( *)" do
 			local tw, th = surface.GetTextSize(n)
 
 			local newposx = lbl:GetWide() + self.CurPos.x + tw
@@ -162,14 +162,16 @@ function PANEL:AddText(what)
 
 			lbl:SetText(lbl:GetText() .. n)
 
-			local space = m:sub(i, i)
-			if (space ~= "") then
-				lbl:SetText(lbl:GetText() .. space)
+			if (spaces ~= "") then
+				lbl:SetText(lbl:GetText() .. spaces)
 				-- check if overwhelmed now?
 			end
 			lbl:SizeToContentsX()
 		end
-		has_newlined = true
+
+		for i = 1, nl1:len() + nl2:len() do
+			self:NewLine()
+		end
 	end
 end
 
