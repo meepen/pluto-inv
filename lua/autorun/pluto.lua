@@ -47,6 +47,12 @@ pluto.files.load {
 		"inv/nodes/cl_nodes.lua",
 
 		"treelib/cl.lua",
+
+		"cl/fontstuff.lua",
+
+		"cl/vgui/plutotext.lua",
+		"cl/vgui/plutolabel.lua",
+		"cl/vgui/plutoimage.lua",
 	},
 	Shared = {
 		"co_net.lua",
