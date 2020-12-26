@@ -68,7 +68,7 @@ function PANEL:AppendText(...)
 		elseif (istable(data)) then
 			local mt = getmetatable(data)
 			if (mt.__colorprint) then
-				print "TODO(meepen): mt.__colorprint"
+				self:AppendText(unpack(mt.__colorprint(data)))
 			end
 		elseif (isstring(data)) then
 			self:AddText(data)
@@ -308,6 +308,16 @@ function PANEL:OnMousePressed(m)
 		end
 		SetClipboardText(text)
 	end
+end
+
+function PANEL:InsertShowcaseItem(item)
+	self:InsertClickableTextStart(function()
+		pluto.ui.showcase(item)
+	end)
+
+	self:AppendText(item)
+
+	self:InsertClickableTextEnd()
 end
 
 function PANEL:GetDraggedElements()
