@@ -50,6 +50,7 @@ function PANEL:Init()
 	self.CurPos = {x = 0, y = 0}
 	self.Lines = {}
 	self:NewLine()
+	self:SetCursor "beam"
 end
 
 function PANEL:LayoutText()
@@ -126,7 +127,7 @@ end
 
 function PANEL:NewLine()
 	if (not self.CurrentLine) then
-		self.CurrentLine = {y = self.CurPos.y, Height = 0}
+		self.CurrentLine = {y = self.CurPos.y, Height = 0, LineNumber = 1}
 		return
 	end
 	
@@ -134,10 +135,10 @@ function PANEL:NewLine()
 
 	local pos = self.CurPos
 	local line = self.CurrentLine
+	table.insert(self.Lines, line)
 
-	print ("line height", line.Height)
 	self.CurPos = {x = 0, y = self.CurPos.y + line.Height}
-	self.CurrentLine = {y = self.CurPos.y, Height = 0}
+	self.CurrentLine = {y = self.CurPos.y, Height = 0, LineNumber = #self.Lines + 1}
 end
 
 function PANEL:AddText(what)
@@ -204,7 +205,114 @@ function PANEL:EnsureLineHeight(pnl)
 		pnl:SetTall(line.Height)
 	end
 
+	pnl.PanelNumber = #line + 1
+
 	table.insert(line, pnl)
+end
+
+function PANEL:GetLineAt(mx, my)
+	for _, line in ipairs(self.Lines) do
+		if (line.y < my and my - line.y <= line.Height) then
+			return line
+		end
+	end
+end
+function PANEL:GetHoveredElement()
+	local mx, my = self:ScreenToLocal(gui.MousePos())
+	local line = self:GetLineAt(mx, my)
+
+	if (not line and my > 0) then
+		line = self.Lines[#self.Lines]
+		local pnl = line[#line]
+		return pnl, line, utf8.force(pnl:GetText()):len()
+	elseif (not line and my <= 0) then
+		line = self.Lines[1]
+		local pnl = line[#line]
+		return pnl, line, 1
+	end
+
+	local x = 0
+	for _, pnl in ipairs(line) do
+		if (x < mx and mx - x <= pnl:GetWide()) then
+			if (pnl:GetText() == "") then
+				return
+			end
+
+			local txt = utf8.force(pnl:GetText())
+			local tx = 0
+			local ele = 1
+			surface.SetFont(pnl:GetFont())
+			for _, code in utf8.codes(txt) do
+				local chr = utf8.char(code)
+				local tw, th = surface.GetTextSize(chr)
+				if (tx + x < mx and mx - tx - x <= tw) then
+
+					return pnl, line, ele
+				end
+				ele = ele + 1
+				tx = tx + tw
+			end
+		end
+		x = x + pnl:GetWide()
+	end
+end
+
+function PANEL:OnMousePressed(m)
+	self.StartDrag = {self:GetHoveredElement()}
+
+	hook.Add("Think", self, self.TestMouseRelease)
+end
+
+function PANEL:TestMouseRelease()
+	if (not input.IsMouseDown(MOUSE_LEFT)) then
+
+		local startpnl, startline, startele = unpack(self.StartDrag)
+		local endpnl, endline, endele = self:GetHoveredElement()
+
+		if (endline.LineNumber < startline.LineNumber or endline == startline and endpnl.PanelNumber < startpnl.PanelNumber or endpnl == startpnl and endele < startele) then
+			startpnl, startline, startele, endpnl, endline, endele = endpnl, endline, endele, startpnl, startline, startele
+		end
+
+		local text
+		if (endpnl == startpnl) then
+			text = utf8.force(endpnl:GetText()):sub(startele, endele)
+		else
+			-- starting
+			text = utf8.force(startpnl:GetText()):sub(startele)
+
+			local found = false
+			for _, ele in ipairs(startline) do
+				if (ele == startpnl) then
+					found = true
+				elseif (found) then
+					text = text .. ele:GetText()
+				end
+			end
+
+			for i = startline.LineNumber + 1, endline.LineNumber - 1 do
+				local curline = self.Lines[i]
+				for _, ele in ipairs(curline) do
+					text = text .. ele:GetText()
+				end
+				text = text .. "\n"
+			end
+
+			for _, ele in ipairs(endline) do
+				if (endpnl == ele) then
+					text = text .. utf8.force(ele:GetText()):sub(1, endele)
+					break
+				else
+					text = text .. ele:GetText()
+				end
+			end
+		end
+
+
+		print(text)
+
+		hook.Remove("Think", self)
+		return
+	end
 end
 
 

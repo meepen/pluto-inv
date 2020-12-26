@@ -2,6 +2,7 @@ local PANEL = {}
 AccessorFunc(PANEL, "TextColor", "TextColor")
 function PANEL:Init()
 	self.Image = self:Add "DImage"
+	self:SetCursor "beam"
 end
 
 function PANEL:SetMaterial(mat)
@@ -47,6 +48,10 @@ function PANEL:Paint(w, h)
 		surface.SetDrawColor(self:GetTextColor())
 		surface.DrawLine(0, h - 1, w - 1, h - 1)
 	end
+end
+
+function PANEL:GetText()
+	return ""
 end
 
 vgui.Register("pluto_image", PANEL, "EditablePanel")

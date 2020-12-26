@@ -5,6 +5,11 @@ AccessorFunc(PANEL, "TextColor", "TextColor")
 AccessorFunc(PANEL, "Text", "Text")
 AccessorFunc(PANEL, "surface", "RenderSystem")
 
+function PANEL:Init()
+	self:SetCursor "beam"
+	self:SetMouseInputEnabled(false)
+end
+
 function PANEL:GetRenderSystem()
 	return self.surface or pluto.fonts.systems.default
 end
