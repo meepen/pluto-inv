@@ -68,7 +68,14 @@ function PANEL:AppendText(...)
 		elseif (istable(data)) then
 			local mt = getmetatable(data)
 			if (mt.__colorprint) then
-				self:AppendText(unpack(mt.__colorprint(data)))
+				local prints = mt.__colorprint(data)
+				local oldsystem
+				if (prints.rendersystem) then
+					oldsystem = self:GetCurrentRenderSystem()
+					self:SetCurrentRenderSystem(prints.rendersystem)
+				end	
+				self:AppendText(unpack(prints))
+				self:SetCurrentRenderSystem(oldsystem)
 			end
 		elseif (isstring(data)) then
 			self:AddText(data)

@@ -172,7 +172,7 @@ end
 
 
 pluto.inv.item_mt.__colorprint = function(self)
-	return {self:GetColor(), self:GetPrintName()}
+	return {rendersystem = self.RenderSystem or "bouncy", self:GetColor(), self:GetPrintName()}
 end
 
 function ITEM:GetPrintName()

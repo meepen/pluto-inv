@@ -1,9 +1,11 @@
 pluto.fonts = pluto.fonts or {
-	systems = {}
+	systems = {},
+	lookup = {}
 }
 
 function pluto.fonts.registersystem(name, system)
 	pluto.fonts.systems[name] = system
+	pluto.fonts.lookup[system] = name
 end
 
 pluto.fonts.registersystem("default", surface)
