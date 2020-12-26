@@ -93,15 +93,19 @@ end
 
 RICHTEXT = vgui.Create "DFrame"
 local rt = RICHTEXT:Add "pluto_text"
-
 rt:Dock(FILL)
+RICHTEXT:SetSize(800, 600)
+RICHTEXT:Center()
+RICHTEXT:MakePopup()
+RICHTEXT:InvalidateLayout(true)
+
 rt:SetDefaultFont "BudgetLabel"
 rt:SetDefaultTextColor(Color(0, 255, 255))
 rt:SetDefaultRenderSystem "default"
 
 rt:AppendText("Hello, this i-")
 rt:NewLine()
-rt:AppendText(white_text, "Hello, this " .. string.rep("a", 100) .. "\nis a ")
+rt:AppendText(white_text, "Hello, this " .. string.rep("a ", 100) .. "\nis a ")
 rt:SetCurrentFont "pluto_chat_font"
 rt:SetCurrentRenderSystem "bouncy"
 rt:InsertClickableTextStart(function()
@@ -112,10 +116,5 @@ rt:AddImage(Material "icon16/cross.png", 64, 64)
 rt:InsertClickableTextEnd()
 rt:ResetTextSettings()
 rt:AppendText(" of tests")
-rt:AppendText(string.rep("ha", 128) .. " ha")
+rt:AppendText(string.rep("ha", 64) .. " ha that was jheok")
 rt:NewLine()
-
-
-RICHTEXT:SetSize(800, 600)
-RICHTEXT:Center()
-RICHTEXT:MakePopup()

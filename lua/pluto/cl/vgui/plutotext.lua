@@ -135,19 +135,39 @@ function PANEL:NewLine()
 	local pos = self.CurPos
 	local line = self.CurrentLine
 
+	print ("line height", line.Height)
 	self.CurPos = {x = 0, y = self.CurPos.y + line.Height}
 	self.CurrentLine = {y = self.CurPos.y, Height = 0}
 end
 
 function PANEL:AddText(what)
 	local has_newlined = false
+	surface.SetFont(self:GetCurrentFont())
+
 	for m in what:gmatch "([^\r\n]+)" do
 		if (has_newlined) then
 			self:NewLine()
 		end
 		local lbl = self:FetchLabel()
-		
-		lbl:SetText(lbl:GetText() .. m)
+
+		for n, i in m:gmatch "([^ ]+)()" do
+			local tw, th = surface.GetTextSize(n)
+
+			local newposx = lbl:GetWide() + self.CurPos.x + tw
+			if (newposx > self:GetWide() and tw < self:GetWide() * 0.25) then
+				self:NewLine()
+				lbl = self:FetchLabel()
+			end
+
+			lbl:SetText(lbl:GetText() .. n)
+
+			local space = m:sub(i, i)
+			if (space ~= "") then
+				lbl:SetText(lbl:GetText() .. space)
+				-- check if overwhelmed now?
+			end
+			lbl:SizeToContentsX()
+		end
 		has_newlined = true
 	end
 end
@@ -179,11 +199,11 @@ function PANEL:EnsureLineHeight(pnl)
 		for _, ele in ipairs(self.CurrentLine) do
 			ele:SetTall(height)
 		end
+		line.Height = height
 	else
 		pnl:SetTall(line.Height)
 	end
 
-	line.Height = height
 	table.insert(line, pnl)
 end
 
