@@ -87,6 +87,13 @@ pluto.fonts.registersystem("bouncy", bind {
 	end
 })
 
+surface.CreateFont("pluto_test_font", {
+	font = "Roboto",
+	size = 16,
+	bold = true,
+	weight = 800,
+})
+
 if (IsValid(RICHTEXT)) then
 	RICHTEXT:Remove()
 end
@@ -99,9 +106,9 @@ RICHTEXT:Center()
 RICHTEXT:MakePopup()
 RICHTEXT:InvalidateLayout(true)
 
-rt:SetDefaultFont "BudgetLabel"
+rt:SetDefaultFont "pluto_test_font"
 rt:SetDefaultTextColor(Color(0, 255, 255))
-rt:SetDefaultRenderSystem "default"
+rt:SetDefaultRenderSystem "shadow"
 
 rt:AppendText("Hello, this i-")
 rt:NewLine()

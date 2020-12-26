@@ -353,6 +353,7 @@ function PANEL:PaintOver(w, h)
 			if (endpnl:GetText() == "") then
 				return
 			end
+			local surface = endpnl:GetRenderSystem()
 			surface.SetFont(endpnl:GetFont())
 			local txt = utf8.force(endpnl:GetText())
 			local tsx = surface.GetTextSize(txt:sub(1, startele - 1)) + endpnl:GetPos()
@@ -362,6 +363,7 @@ function PANEL:PaintOver(w, h)
 
 			-- highlight start ele to end
 			if (startpnl:GetText() ~= "") then
+				local surface = startpnl:GetRenderSystem()
 				surface.SetFont(startpnl:GetFont())
 				local txt = utf8.force(startpnl:GetText())
 				local tsx = surface.GetTextSize(txt:sub(1, startele - 1))
@@ -402,6 +404,7 @@ function PANEL:PaintOver(w, h)
 
 			-- highlight end ele from start
 			if (endpnl:GetText() ~= "") then
+				local surface = endpnl:GetRenderSystem()
 				surface.SetFont(endpnl:GetFont())
 				txt = utf8.force(endpnl:GetText())
 				local tex = surface.GetTextSize(txt:sub(1, endele)) + endpnl:GetPos()
