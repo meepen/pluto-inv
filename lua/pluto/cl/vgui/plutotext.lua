@@ -231,11 +231,15 @@ function PANEL:GetHoveredElement()
 		return pnl, line, 1
 	end
 
+	if (mx <= 0) then
+		return line[1], line, 1
+	end
+
 	local x = 0
 	for _, pnl in ipairs(line) do
 		if (x < mx and mx - x <= pnl:GetWide()) then
 			if (pnl:GetText() == "") then
-				return
+				return pnl, line, 1
 			end
 
 			local txt = utf8.force(pnl:GetText())
@@ -255,23 +259,19 @@ function PANEL:GetHoveredElement()
 		end
 		x = x + pnl:GetWide()
 	end
+
+	return line[#line], line, utf8.force(line[#line]:GetText()):len()
 end
 
 function PANEL:OnMousePressed(m)
-	self.StartDrag = {self:GetHoveredElement()}
+	if (m == MOUSE_LEFT) then
+		self.StartDrag = {Time = SysTime(), self:GetHoveredElement()}
+		self.EndDrag = nil
 
-	hook.Add("Think", self, self.TestMouseRelease)
-end
-
-function PANEL:TestMouseRelease()
-	if (not input.IsMouseDown(MOUSE_LEFT)) then
-
-		local startpnl, startline, startele = unpack(self.StartDrag)
-		local endpnl, endline, endele = self:GetHoveredElement()
-
-		if (endline.LineNumber < startline.LineNumber or endline == startline and endpnl.PanelNumber < startpnl.PanelNumber or endpnl == startpnl and endele < startele) then
-			startpnl, startline, startele, endpnl, endline, endele = endpnl, endline, endele, startpnl, startline, startele
-		end
+		hook.Add("Think", self, self.TestMouseRelease)
+	elseif (m == MOUSE_RIGHT and self.EndDrag and self.StartDrag) then
+		local startpnl, startline, startele, endpnl, endline, endele = self:GetDraggedElements()
+		self.StartDrag, self.EndDrag = nil, nil
 
 		local text
 		if (endpnl == startpnl) then
@@ -306,12 +306,108 @@ function PANEL:TestMouseRelease()
 				end
 			end
 		end
+		SetClipboardText(text)
+	end
+end
 
+function PANEL:GetDraggedElements()
+	local startpnl, startline, startele = unpack(self.StartDrag)
+	local endpnl, endline, endele
+	if (self.EndDrag) then
+		endpnl, endline, endele = unpack(self.EndDrag)
+	else
+		endpnl, endline, endele = self:GetHoveredElement()
+	end
 
-		print(text)
+	if (endline.LineNumber < startline.LineNumber or endline == startline and endpnl.PanelNumber < startpnl.PanelNumber or endpnl == startpnl and endele < startele) then
+		startpnl, startline, startele, endpnl, endline, endele = endpnl, endline, endele, startpnl, startline, startele
+	end
 
-		hook.Remove("Think", self)
+	return startpnl, startline, startele, endpnl, endline, endele
+end
+
+function PANEL:TestMouseRelease()
+	if (input.IsMouseDown(MOUSE_LEFT)) then
 		return
+	end
+
+	hook.Remove("Think", self)
+	if ((SysTime() - self.StartDrag.Time) < 0.2) then
+		self.StartDrag = nil
+		self.EndDrag = nil
+		return
+	end
+	self.EndDrag = {self:GetHoveredElement()}
+end
+
+function PANEL:PaintOver(w, h)
+	if (self.StartDrag) then
+		surface.SetDrawColor(255, 0, 0, 100)
+		local startpnl, startline, startele, endpnl, endline, endele = self:GetDraggedElements()
+		local sx, sy = startpnl:GetPos()
+		local sw, sh = startpnl:GetSize()
+		local ex, ey = endpnl:GetPos()
+		local ew, eh = endpnl:GetSize()
+
+		if (endpnl == startpnl) then
+			if (endpnl:GetText() == "") then
+				return
+			end
+			surface.SetFont(endpnl:GetFont())
+			local txt = utf8.force(endpnl:GetText())
+			local tsx = surface.GetTextSize(txt:sub(1, startele - 1)) + endpnl:GetPos()
+			local tex = surface.GetTextSize(txt:sub(1, endele)) + endpnl:GetPos()
+			surface.DrawRect(tsx, ey, tex - tsx, eh)
+		else
+
+			-- highlight start ele to end
+			if (startpnl:GetText() ~= "") then
+				surface.SetFont(startpnl:GetFont())
+				local txt = utf8.force(startpnl:GetText())
+				local tsx = surface.GetTextSize(txt:sub(1, startele - 1))
+				surface.DrawRect(startpnl:GetPos() + tsx, sy, sw - tsx, sh)
+			end
+
+			-- highlight between
+
+			local found = false
+			for _, ele in ipairs(startline) do
+				if (ele == startpnl) then
+					found = true
+				elseif (found) then
+					local x, y = ele:GetPos()
+					local w, h = ele:GetSize()
+					surface.DrawRect(x, y, w, h)
+				end
+			end
+
+			for i = startline.LineNumber + 1, endline.LineNumber - 1 do
+				local curline = self.Lines[i]
+				for _, ele in ipairs(curline) do
+					local x, y = ele:GetPos()
+					local w, h = ele:GetSize()
+					surface.DrawRect(x, y, w, h)
+				end
+			end
+
+			for _, ele in ipairs(endline) do
+				if (endpnl == ele) then
+					break
+				else
+					local x, y = ele:GetPos()
+					local w, h = ele:GetSize()
+					surface.DrawRect(x, y, w, h)
+				end
+			end
+
+			-- highlight end ele from start
+			if (endpnl:GetText() ~= "") then
+				surface.SetFont(endpnl:GetFont())
+				txt = utf8.force(endpnl:GetText())
+				local tex = surface.GetTextSize(txt:sub(1, endele)) + endpnl:GetPos()
+				surface.DrawRect(ex, ey, tex - ex, eh)
+			end
+		end
 	end
 end
 
