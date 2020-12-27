@@ -92,8 +92,6 @@ function SWEP:DisplayPlutoData()
 
 	local data = self:GetInventoryItem()
 	data.ClassName = self:GetClass()
-
-	MsgC(data:GetColor(), data:GetTextMessage())
 end
 
 function SWEP:Deploy()

@@ -3,7 +3,6 @@ AddCSLuaFile()
 ENT.PrintName = "Map Blocker"
 
 ENT.Type = "anim"
-ENT.Base = "base_brush"
 
 function ENT:SetupDataTables()
 	self:NetworkVar("Vector", 0, "Mins")

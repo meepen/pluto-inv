@@ -53,8 +53,6 @@ local function Initialize()
 		for _, fn in ipairs(init) do
 			fn()
 		end
-
-		pprintf("Registered %s event round", event)
 	end
 end
 
