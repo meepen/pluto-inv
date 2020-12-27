@@ -149,6 +149,7 @@ function SWEP:PenetrateBullet(dir, vecStart, flDistance, iPenetration, iDamage,
 			if flRangeModifier then
 				--Jvs: the damage modifier valve actually uses
 				local flCurrentDistance = trace.Fraction * flDistance
+				dmginfo:SetDamageType(DMG_BULLET)
 				dmginfo:SetDamage( dmginfo:GetDamage() * math.pow( flRangeModifier, ( flCurrentDistance / 500 ) ) )
 			end
 
