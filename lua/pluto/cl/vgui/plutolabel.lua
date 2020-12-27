@@ -8,7 +8,6 @@ AccessorFunc(PANEL, "surface", "RenderSystem")
 function PANEL:Init()
 	self:SetCursor "beam"
 	self:SetMouseInputEnabled(false)
-	self:SetFade(1, -1, true)
 end
 
 function PANEL:GetRenderSystem()

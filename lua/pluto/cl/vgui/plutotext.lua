@@ -104,6 +104,7 @@ function PANEL:FetchLabel()
 		self.LastLabel:SetClickable(self.Clickable)
 		self.LastLabel:SetRenderSystem(self:GetCurrentRenderSystem())
 		if (self.Fade) then
+			print "FADE DETECTED"
 			self.LastLabel:SetFade(self.Fade.Sustain, self.Fade.Length)
 		end
 	end

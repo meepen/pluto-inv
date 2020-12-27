@@ -677,7 +677,7 @@ function PANEL:SelectTab(name)
 	self.Tabs.active = self.Tabs.table[name]
 
 	self.Chatbox.Text:InvalidateLayout()
-	pluto.chat.Box:ResetFade(true)
+	pluto.chat.Box:ResetFade(false)
 end
 
 function PANEL:Text(channel, text)
@@ -735,7 +735,7 @@ end
 
 function PANEL:ResetFade(enable)
 	if (self.Tabs.active ~= nil) then
-		self.Tabs.active:ResetAllFades(enable, false, enable and -1 or 4)
+		self.Tabs.active:ResetAllFades(enable, false, enable and -1 or pluto_chat_fade_sustain:GetFloat())
 	end
 end
 
