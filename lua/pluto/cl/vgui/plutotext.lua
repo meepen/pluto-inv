@@ -510,6 +510,9 @@ function Proxy(what)
 	PANEL[what] = function(self, ...)
 		local t = pack(self.Inner[what](self.Inner, ...))
 		self:RedoScroll()
+		if (self.AtBottom) then
+			self.Scrollbar:SetScroll(self.Inner.CurrentLine.y + self.Inner.CurrentLine.Height)
+		end
 		return unpack(t, 1, t.n)
 	end
 end
@@ -524,6 +527,7 @@ function PANEL:Init()
 	self.Scrollbar = self:Add "DVScrollBar"
 	self.Scrollbar:Dock(RIGHT)
 	self.Scrollbar:SetWide(12)
+	self.AtBottom = true
 	self:RedoScroll()
 end
 
@@ -537,6 +541,7 @@ end
 
 function PANEL:OnVScroll(offset)
 	self.Inner:SetScrollOffset(-offset)
+	self.AtBottom = (self.Inner.CurrentLine.y + self.Inner.CurrentLine.Height - self.Inner:GetTall()) == -offset
 end
 
 vgui.Register("pluto_text", PANEL, "EditablePanel")
