@@ -104,6 +104,7 @@ pluto.fonts.registersystem("rainbow", bind {
 		for pos, code in utf8.codes(text) do
 			local chr = utf8.char(code)
 			local col = HSVToColor(interval * 360, 1, 1)
+			col.a = self.Color.a
 			surface.SetTextColor(col)
 			interval = interval + 0.13
 			surface.DrawText(chr)
