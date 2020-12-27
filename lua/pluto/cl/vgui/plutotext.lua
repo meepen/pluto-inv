@@ -104,7 +104,6 @@ function PANEL:FetchLabel()
 		self.LastLabel:SetClickable(self.Clickable)
 		self.LastLabel:SetRenderSystem(self:GetCurrentRenderSystem())
 		if (self.Fade) then
-			print "FADE DETECTED"
 			self.LastLabel:SetFade(self.Fade.Sustain, self.Fade.Length)
 		end
 	end
@@ -225,6 +224,10 @@ function PANEL:EnsureLineHeight(pnl)
 		line.Height = height
 	else
 		pnl:SetTall(line.Height)
+	end
+
+	if (self.Fade) then
+		pnl:SetFade(self.Fade.Sustain, self.Fade.Length, true)
 	end
 
 	pnl.PanelNumber = #line + 1
