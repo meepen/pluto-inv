@@ -48,6 +48,7 @@ end
 
 function PANEL:Init()
 	self.CurPos = {x = 0, y = 0}
+	self.ScrollPos = {x = 0, y = 0}
 	self.Lines = {}
 	self:NewLine()
 	self:SetCursor "beam"
@@ -91,6 +92,10 @@ function PANEL:FetchLabel()
 	if (not IsValid(self.LastLabel)) then
 		self.LastLabel = self:Add "pluto_label"
 		self.LastLabel:SetPos(self.CurPos.x, self.CurPos.y)
+		self.LastLabel.CurPos = {
+			x = self.CurPos.x,
+			y = self.CurPos.y,
+		}
 		self.LastLabel:SetFont(self:GetCurrentFont())
 		self.LastLabel:SetTextColor(self:GetCurrentTextColor())
 		self.LastLabel:SetContentAlignment(2)
@@ -191,6 +196,10 @@ function PANEL:AddImage(img, w, h)
 
 	local pnl = self:Add "pluto_image"
 	pnl:SetPos(self.CurPos.x, self.CurPos.y)
+	pnl.CurPos = {
+		x = self.CurPos.x,
+		y = self.CurPos.y,
+	}
 	pnl:SetMaterial(img)
 	pnl:SetImageSize(w, h)
 	pnl:SetClickable(self.Clickable)
@@ -221,7 +230,7 @@ end
 
 function PANEL:GetLineAt(mx, my)
 	for _, line in ipairs(self.Lines) do
-		if (line.y < my and my - line.y <= line.Height) then
+		if (line.y <= my and my - line.y <= line.Height) then
 			return line
 		end
 	end
@@ -433,5 +442,101 @@ function PANEL:PaintOver(w, h)
 	end
 end
 
+function PANEL:SetScrollOffset(offset)
+	for _, child in pairs(self:GetChildren()) do
+		child:SetVisible(false)
+	end
+
+	self.ScrollPosition = offset
+
+	local startline = self:GetLineAt(0, offset)
+
+	local found = false
+	for _, line in ipairs(self.Lines) do
+		if (line ~= startline and not found) then
+			continue
+		end
+
+		found = true
+
+		for _, pnl in ipairs(line) do
+			pnl:SetVisible(true)
+			pnl:SetPos(pnl.CurPos.x, pnl.CurPos.y - offset)
+		end
+
+		if (line.y -self:GetTall() > offset) then
+			break
+		end
+	end
+end
+
+vgui.Register("pluto_text_inner", PANEL, "EditablePanel")
+
+local PANEL = {}
+local function Proxy(what)
+	PANEL[what] = function(self, ...)
+		return self.Inner[what](self.Inner, ...)
+	end
+end
+Proxy "SetDefaultFont"
+Proxy "GetDefaultFont"
+
+Proxy "SetDefaultTextColor"
+Proxy "GetDefaultTextColor"
+
+Proxy "SetDefaultRenderSystem"
+Proxy "GetDefaultRenderSystem"
+
+Proxy "SetCurrentTextColor"
+Proxy "GetCurrentTextColor"
+
+Proxy "SetCurrentRenderSystem"
+Proxy "GetCurrentRenderSystem"
+
+Proxy "SetCurrentFont"
+Proxy "GetCurrentFont"
+
+Proxy "ResetTextSettings"
+Proxy "InsertColorChange"
+Proxy "InsertClickableTextStart"
+Proxy "InsertClickableTextEnd"
+
+Proxy "NewLine"
+
+local function pack(...)
+	return {n = select("#", ...), ...}
+end
+function Proxy(what)
+	PANEL[what] = function(self, ...)
+		local t = pack(self.Inner[what](self.Inner, ...))
+		self:RedoScroll()
+		return unpack(t, 1, t.n)
+	end
+end
+Proxy "AppendText"
+Proxy "AddImage"
+Proxy "InsertShowcaseItem"
+
+function PANEL:Init()
+	self.Inner = self:Add "pluto_text_inner"
+	self.Inner:Dock(FILL)
+
+	self.Scrollbar = self:Add "DVScrollBar"
+	self.Scrollbar:Dock(RIGHT)
+	self.Scrollbar:SetWide(12)
+	self:RedoScroll()
+end
+
+function PANEL:OnMouseWheeled(delta)
+	self.Scrollbar:OnMouseWheeled(delta)
+end
+
+function PANEL:RedoScroll()
+	self.Scrollbar:SetUp(self:GetTall(), self.Inner.CurrentLine.y + self.Inner.CurrentLine.Height)
+end
+
+function PANEL:OnVScroll(offset)
+	self.Inner:SetScrollOffset(-offset)
+end
 
 vgui.Register("pluto_text", PANEL, "EditablePanel")
