@@ -86,7 +86,7 @@ for k, v in pairs(pluto.inv.messages.sv2cl) do
 end
 
 co_net.Receive("pluto_inv_data", function(len, cl)
-	if (SERVER or not GetConVar("pluto_print_console"):GetBool()) then
+	if (SERVER or GetConVar("pluto_print_console"):GetBool()) then
 		pprintf("Collecting %i bits of inventory data...", len)
 	end
 
