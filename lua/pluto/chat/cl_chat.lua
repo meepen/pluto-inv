@@ -608,6 +608,7 @@ end
 function PANEL:SetAlpha(a)
 	self.Tabs:SetAlpha(a)
 	self.Chatbox:SetAlpha(a)
+	self.Tabs.active.Scrollbar:SetAlpha(a)
 end
 
 function PANEL:AddTab(name, prefix)
