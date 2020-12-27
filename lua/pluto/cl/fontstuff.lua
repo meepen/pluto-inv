@@ -89,44 +89,30 @@ pluto.fonts.registersystem("bouncy", bind {
 	end
 })
 
+pluto.fonts.registersystem("rainbow", bind {
+	Text = function(self, text)
+		return utf8.force(text)
+	end,
+	SetTextColor = function(self, col)
+		self.Color = col
+	end,
+	DrawText = function(self, text)
+		text = self:Text(text)
+		local speed = 4
+		local interval = ((CurTime() % speed) / speed + util.CRC(text) / (2 ^ 32))
+		for pos, code in utf8.codes(text) do
+			local chr = utf8.char(code)
+			local col = HSVToColor(interval * 360, 1, 1)
+			surface.SetTextColor(col)
+			interval = interval + 0.13
+			surface.DrawText(chr)
+		end
+	end,
+})
+
 surface.CreateFont("pluto_test_font", {
 	font = "Roboto",
 	size = 16,
 	bold = true,
 	weight = 800,
 })
-
-if (IsValid(RICHTEXT)) then
-	RICHTEXT:Remove()
-end
-
-RICHTEXT = vgui.Create "DFrame"
-local rt = RICHTEXT:Add "pluto_text"
-rt:Dock(FILL)
-RICHTEXT:SetSize(800, 600)
-RICHTEXT:Center()
-RICHTEXT:MakePopup()
-RICHTEXT:InvalidateLayout(true)
-
-rt:SetDefaultFont "pluto_test_font"
-rt:SetDefaultTextColor(Color(0, 255, 255))
-rt:SetDefaultRenderSystem "shadow"
-
-rt:AppendText("Hello, this i-")
-rt:NewLine()
-rt:AppendText(white_text, "Hello, this " .. string.rep("a ", 100) .. "\nis a ")
-rt:SetCurrentFont "pluto_chat_font"
-rt:SetCurrentRenderSystem "bouncy"
-rt:InsertClickableTextStart(function()
-	print "yes u clik"
-end)
-rt:AppendText(Color(255, 0, 0), "CLICKABLE TEST")
-rt:AddImage(Material "icon16/cross.png", 64, 64)
-rt:InsertClickableTextEnd()
-rt:ResetTextSettings()
-rt:AppendText(" of tests")
-rt:AppendText(string.rep("ha", 64) .. " ha that was jheok")
-rt:NewLine()
-rt:AppendText("Check out my ")
-rt:InsertShowcaseItem(pluto.currency.byname.crate3)
-rt:NewLine()
