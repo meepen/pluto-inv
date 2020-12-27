@@ -31,25 +31,24 @@ local people = {
 }
 
 hook.Add("Think", "pluto_credits", function()
-	if (not gui.IsConsoleVisible()) then
-		return
-	end
-
-	MsgN "\n\n"
-	MsgC(white_text, msg)
-	local line_sep = "|" .. string.rep("-", people[1]:len() - 2) .. "|\n"
-	for _, line in RandomPairs(people) do
-		MsgC(white_text, "|")
-		MsgC(HSVToColor(math.random() * 360, 1, 1), line:sub(2, 19))
-		MsgC(white_text, line:sub(20) .. "\n")
+	local is_visible = gui.IsConsoleVisible()
+	if (is_visible ~= was_visible and is_visible) then
+		MsgN "\n\n"
+		MsgC(white_text, msg)
+		local line_sep = "|" .. string.rep("-", people[1]:len() - 2) .. "|\n"
+		for _, line in RandomPairs(people) do
+			MsgC(white_text, "|")
+			MsgC(HSVToColor(math.random() * 360, 1, 1), line:sub(2, 19))
+			MsgC(white_text, line:sub(20) .. "\n")
+			MsgC(white_text, line_sep)
+		end
+		MsgC(white_text, "| All the temporary staff from the beginning when there wasn't even a staff team.          |\n")
 		MsgC(white_text, line_sep)
+		MsgC(white_text, "| Everyone who believed in me from the start. I don't think I would have made it without   |\n| all of you.                                                                              |\n")
+		MsgC(white_text, line_sep)
+		MsgC(white_text, "| Anyone I've missed - my memory and ability to think on the spot is not good.             |\n")
+		MsgC(white_text, line_sep)
+		MsgN "\n\n"
 	end
-	MsgC(white_text, "| All the temporary staff from the beginning when there wasn't even a staff team.          |\n")
-	MsgC(white_text, line_sep)
-	MsgC(white_text, "| Everyone who believed in me from the start. I don't think I would have made it without   |\n| all of you.                                                                              |\n")
-	MsgC(white_text, line_sep)
-	MsgC(white_text, "| Anyone I've missed - my memory and ability to think on the spot is not good.             |\n")
-	MsgC(white_text, string.rep("-", line_sep:len()))
-	MsgN "\n\n"
-	hook.Remove("Think", "pluto_credits")
+	was_visible = is_visible
 end)
