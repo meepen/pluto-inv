@@ -103,6 +103,9 @@ function PANEL:FetchLabel()
 
 		self.LastLabel:SetClickable(self.Clickable)
 		self.LastLabel:SetRenderSystem(self:GetCurrentRenderSystem())
+		if (self.Fade) then
+			self.LastLabel:SetFade(self.Fade.Sustain, self.Fade.Length)
+		end
 	end
 
 	return self.LastLabel
@@ -470,6 +473,30 @@ function PANEL:SetScrollOffset(offset)
 	end
 end
 
+function PANEL:InsertFade(sustain, length)
+	self.Fade = {
+		Sustain = sustain,
+		Length = length
+	}
+end
+
+function PANEL:ResetAllFades(hold, expiredOnly, newSustain)
+	for _, pnl in ipairs(self:GetChildren()) do
+		local fade = pnl.Fade
+		if (fade and expiredOnly and (pnl.Creation + fade.Sustain + fade.Length) < CurTime()) then
+			continue
+		end
+
+		if (hold) then
+			pnl:ResetFade()
+		end
+
+		if (newSustain) then
+			pnl:SetFade(newSustain, pnl:GetFadeLength(), true)
+		end
+	end
+end
+
 vgui.Register("pluto_text_inner", PANEL, "EditablePanel")
 
 local PANEL = {}
@@ -502,6 +529,9 @@ Proxy "InsertClickableTextStart"
 Proxy "InsertClickableTextEnd"
 
 Proxy "NewLine"
+
+Proxy "InsertFade"
+Proxy "ResetAllFades"
 
 local function pack(...)
 	return {n = select("#", ...), ...}

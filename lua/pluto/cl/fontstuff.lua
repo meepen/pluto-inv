@@ -34,6 +34,7 @@ pluto.fonts.registersystem("shadow", bind {
 		return surface.GetTextSize(text)
 	end,
 	DrawText = function(self, text)
+		shadow_col.a = self.Color.a
 		surface.SetTextColor(shadow_col)
 		surface.SetTextPos(self.TextPosX, self.TextPosY)
 		surface.DrawText(text)

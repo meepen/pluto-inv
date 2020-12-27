@@ -8,6 +8,7 @@ AccessorFunc(PANEL, "surface", "RenderSystem")
 function PANEL:Init()
 	self:SetCursor "beam"
 	self:SetMouseInputEnabled(false)
+	self:SetFade(1, -1, true)
 end
 
 function PANEL:GetRenderSystem()
@@ -51,9 +52,15 @@ function PANEL:SizeToContentsY()
 end
 
 function PANEL:Paint(w, h)
+	local col = self:GetTextColor()
+
+	if (self:GetFadeLength() ~= -1 and self:GetFadeSustain() ~= -1 and self.Creation + self:GetFadeSustain() < CurTime()) then
+		col = ColorAlpha(col, col.a * (1 - math.min(1, (CurTime() - self.Creation - self:GetFadeSustain()) / self:GetFadeLength())))
+	end
+
 	local surface = self:GetRenderSystem()
 	surface.SetFont(self:GetFont())
-	surface.SetTextColor(self:GetTextColor())
+	surface.SetTextColor(col)
 	local txt = self:GetText()
 	local tw, th = surface.GetTextSize(txt)
 
@@ -62,7 +69,7 @@ function PANEL:Paint(w, h)
 	surface.DrawText(txt)
 
 	if (self.Clickable) then
-		surface.SetDrawColor(self:GetTextColor())
+		surface.SetDrawColor(col)
 		surface.DrawLine(w / 2 - tw / 2, h - 1, w / 2 + tw / 2, h - 1)
 	end
 end
@@ -71,6 +78,28 @@ function PANEL:OnMousePressed(m)
 	if (m == MOUSE_LEFT) then
 		self:DoClick()
 	end
+end
+
+function PANEL:SetFade(sustain, length, reset)
+	self.Fade = {
+		Sustain = sustain,
+		Length = length
+	}
+	if (reset) then
+		self:ResetFade()
+	end
+end
+
+function PANEL:GetFadeLength()
+	return self.Fade and self.Fade.Length or -1
+end
+
+function PANEL:GetFadeSustain()
+	return self.Fade and self.Fade.Sustain or -1
+end
+
+function PANEL:ResetFade()
+	self.Creation = CurTime()
 end
 
 vgui.Register("pluto_label", PANEL, "EditablePanel")
