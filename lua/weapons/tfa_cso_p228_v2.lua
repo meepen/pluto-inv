@@ -18,21 +18,27 @@ SWEP.HoldType 				= "pistol"
 
 SWEP.Offset = { --Procedural world model animation, defaulted for CS:S purposes.
 	Pos = {
-        Up = -3,
-        Right = 1.5,
-        Forward = 5,
+		Up = -3,
+		Right = 1.5,
+		Forward = 5,
 	},
 	Ang = {
-        Up = -90,
-        Right = 0,
-        Forward = 170
+		Up = -90,
+		Right = 0,
+		Forward = 170
 	},
 	Scale = 1.25
 }
 
 
-SWEP.IronSightsPos = Vector(4.24, -1.407, 1.608)
-SWEP.IronSightsAng = Vector(0.703, -2.1, -4.222)
+SWEP.Ironsights = {
+	Pos = Vector(5.9, 0, 1.608),
+	Angle = Vector(2, 0, 0),
+	TimeTo = 0.1,
+	TimeFrom = 0.15,
+	SlowDown = 0.9,
+	Zoom = 0.85,
+}
 
 SWEP.MuzzleAttachment			= "1" 		-- Should be "1" for CSS models or "muzzle" for hl2 models
 --SWEP.MuzzleAttachmentRaw = 1 --This will override whatever string you gave.  This is the raw attachment number.  This is overridden or created when a gun makes a muzzle event.
