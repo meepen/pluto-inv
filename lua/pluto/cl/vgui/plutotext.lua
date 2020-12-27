@@ -527,6 +527,11 @@ function PANEL:Init()
 	self.Scrollbar = self:Add "DVScrollBar"
 	self.Scrollbar:Dock(RIGHT)
 	self.Scrollbar:SetWide(12)
+
+	self.Padding = self:Add "EditablePanel"
+	self.Padding:Dock(BOTTOM)
+	self.Padding:SetTall(16)
+
 	self.AtBottom = true
 	self:RedoScroll()
 end
@@ -536,7 +541,7 @@ function PANEL:OnMouseWheeled(delta)
 end
 
 function PANEL:RedoScroll()
-	self.Scrollbar:SetUp(self:GetTall(), self.Inner.CurrentLine.y + self.Inner.CurrentLine.Height)
+	self.Scrollbar:SetUp(self.Inner:GetTall(), self.Inner.CurrentLine.y + self.Inner.CurrentLine.Height)
 end
 
 function PANEL:OnVScroll(offset)
