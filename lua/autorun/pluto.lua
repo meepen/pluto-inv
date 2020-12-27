@@ -53,6 +53,8 @@ pluto.files.load {
 		"cl/vgui/plutotext.lua",
 		"cl/vgui/plutolabel.lua",
 		"cl/vgui/plutoimage.lua",
+
+		"cl/credits.lua",
 	},
 	Shared = {
 		"co_net.lua",
