@@ -3,7 +3,7 @@ local pluto_chatbox_y = CreateConVar("pluto_chatbox_y", 0.15, FCVAR_ARCHIVE, "Pl
 local pluto_chat_fade_enable = CreateConVar("pluto_chat_fade_enable", "1", FCVAR_ARCHIVE, "enable", 0, 1)
 local pluto_chat_fade_sustain = CreateConVar("pluto_chat_fade_sustain", "5", FCVAR_ARCHIVE, "sustain", 0, 10)
 local pluto_chat_fade_length = CreateConVar("pluto_chat_fade_length", "0.5", FCVAR_ARCHIVE, "length", 0, 10)
-local pluto_chat_closed_alpha = CreateConVar("pluto_chat_closed_alpha", "0.1", FCVAR_ARCHIVE, "alpha", 0, 0.75)
+local pluto_chat_closed_alpha = CreateConVar("pluto_chat_closed_alpha", "0", FCVAR_ARCHIVE, "alpha", 0, 0.75)
 local cur_color
 
 local function reposition()
