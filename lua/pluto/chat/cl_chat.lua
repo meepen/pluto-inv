@@ -751,6 +751,7 @@ if (IsValid(pluto.chat.Box)) then
 	if (IsValid(pluto.chat.Box.Showcase)) then
 		pluto.chat.Box.Showcase:Remove()
 	end
+	pluto.chat:Close()
 	pluto.chat.Box:Remove()
 	pluto.chat.Box = vgui.Create "pluto_chatbox"
 end

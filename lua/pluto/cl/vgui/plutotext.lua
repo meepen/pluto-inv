@@ -318,6 +318,7 @@ function PANEL:OnMousePressed(m)
 					text = text .. ele:GetText()
 				end
 			end
+			text = text .. "\n"
 
 			for i = startline.LineNumber + 1, endline.LineNumber - 1 do
 				local curline = self.Lines[i]
@@ -503,6 +504,9 @@ end
 function PANEL:SignalClose()
 	if (IsValid(self.Showcase)) then
 		self.Showcase:Remove()
+		self.DragStart = nil
+		hook.Remove("Think", self)
+		self.DragEnd = nil
 	end
 end
 
