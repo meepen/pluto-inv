@@ -169,3 +169,12 @@ function pluto.inv.writechatmessage(ply, content, channel, teamchat)
 	end
 	net.WriteUInt(pluto.chat.type.NONE, 4)
 end
+
+function pluto.inv.readchatopen(cl)
+	local opened = net.ReadBool()
+	if (not opened) then
+		cl:StopAnimation()
+	else
+		cl:StartAnimation(ACT_GMOD_IN_CHAT)
+	end
+end

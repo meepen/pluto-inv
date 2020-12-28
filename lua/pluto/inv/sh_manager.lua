@@ -28,6 +28,7 @@ pluto.inv.messages = {
 		"unlockmajors",
 		"unlockconstellations",
 		"gettradesnapshot",
+		"chatopen",
 	},
 	sv2cl = {
 		[0] = "end",

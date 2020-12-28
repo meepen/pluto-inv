@@ -236,6 +236,12 @@ function pluto.chat.Open(teamchat)
 	pluto.chat.Box:SetAlpha(opened_alpha)
 	pluto.chat.Box:ResetFade(true)
 
+	if (not teamchat) then
+		pluto.inv.message()
+			:write("chatopen", true)
+			:send()
+	end
+
 	pluto.chat.Box:MakePopup()
 	pluto.chat.Box.Chatbox.TextEntry:RequestFocus()
 end
@@ -250,8 +256,18 @@ function pluto.chat.Close()
 	pluto.chat.Box:SignalClose()
 	timer.Remove "AlphaSetChatbox"
 
+	if (not teamchat) then
+		pluto.inv.message()
+			:write("chatopen", false)
+			:send()
+	end
+
 	pluto.chat.Box:SetMouseInputEnabled(false)
 	pluto.chat.Box:SetKeyboardInputEnabled(false)
+end
+
+function pluto.inv.writechatopen(b)
+	net.WriteBool(b)
 end
 
 local PANEL = {}
