@@ -235,7 +235,6 @@ function pluto.chat.Open(teamchat)
 
 	pluto.chat.Box:SetAlpha(opened_alpha)
 	pluto.chat.Box:ResetFade(true)
-	pluto.chat.Box:Scrollbar(true)
 
 	pluto.chat.Box:MakePopup()
 	pluto.chat.Box.Chatbox.TextEntry:RequestFocus()
@@ -247,9 +246,8 @@ function pluto.chat.Close()
 
 	pluto.chat.Box:SetAlpha(closed_alpha * pluto_chat_closed_alpha:GetFloat())
 	pluto.chat.Box:ResetFade(false)
+	pluto.chat.Box:ScrollToBottom()
 	timer.Remove "AlphaSetChatbox"
-
-	pluto.chat.Box:Scrollbar(false)
 
 	pluto.chat.Box:SetMouseInputEnabled(false)
 	pluto.chat.Box:SetKeyboardInputEnabled(false)
@@ -598,8 +596,6 @@ function PANEL:Init()
 
 	self:SelectTab(pluto.chat.channels[1].Name)
 
-	self.Tabs.active:SetVerticalScrollbarEnabled(false)
-
 	self:SetAlpha(closed_alpha * pluto_chat_closed_alpha:GetFloat())
 
 	self.Showcase = nil
@@ -740,10 +736,8 @@ function PANEL:ResetFade(enable)
 	end
 end
 
-function PANEL:Scrollbar(bool)
-	if (self.Tabs.active ~= nil) then
-		self.Tabs.active:SetVerticalScrollbarEnabled(bool)
-	end
+function PANEL:ScrollToBottom()
+	self.Tabs.active:ScrollToBottom()
 end
 
 vgui.Register("pluto_chatbox", PANEL, "EditablePanel")

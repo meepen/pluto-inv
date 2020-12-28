@@ -31,8 +31,7 @@ local people = {
 }
 
 hook.Add("Think", "pluto_credits", function()
-	local is_visible = gui.IsConsoleVisible()
-	if (is_visible ~= was_visible and is_visible) then
+	if (gui.IsConsoleVisible()) then
 		MsgN "\n\n"
 		MsgC(white_text, msg)
 		local line_sep = "|" .. string.rep("-", people[1]:len() - 2) .. "|\n"
@@ -49,6 +48,6 @@ hook.Add("Think", "pluto_credits", function()
 		MsgC(white_text, "| Anyone I've missed - my memory and ability to think on the spot is not good.             |\n")
 		MsgC(white_text, line_sep)
 		MsgN "\n\n"
+		hook.Remove("Think", "pluto_credits")
 	end
-	was_visible = is_visible
 end)

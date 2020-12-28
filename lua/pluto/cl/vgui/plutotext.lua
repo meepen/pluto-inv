@@ -578,6 +578,10 @@ function PANEL:RedoScroll()
 	self.Scrollbar:SetUp(self.Inner:GetTall(), self.Inner.CurrentLine.y + self.Inner.CurrentLine.Height)
 end
 
+function PANEL:ScrollToBottom()
+	self.Scrollbar:SetScroll(self.Inner.CurrentLine.y + self.Inner.CurrentLine.Height - self.Inner:GetTall())
+end
+
 function PANEL:OnVScroll(offset)
 	self.Inner:SetScrollOffset(-offset)
 	self.AtBottom = (self.Inner.CurrentLine.y + self.Inner.CurrentLine.Height - self.Inner:GetTall()) == -offset
