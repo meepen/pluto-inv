@@ -717,7 +717,7 @@ function PANEL:Cur(channel, cur)
 end
 
 function PANEL:DefaultFade(channel)
-	self.Tabs.table[channel]:InsertFade(pluto_chat_fade_enable:GetBool() and pluto_chat_fade_sustain:GetFloat() or -1, pluto_chat_fade_length:GetFloat())
+	self.Tabs.table[channel]:InsertFade(pluto.chat.isOpened and -1 or pluto_chat_fade_enable:GetBool() and pluto_chat_fade_sustain:GetFloat() or -1, pluto_chat_fade_length:GetFloat())
 end
 
 function PANEL:Newline(channel)
