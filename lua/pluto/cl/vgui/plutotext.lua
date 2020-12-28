@@ -164,6 +164,10 @@ function PANEL:AddText(what)
 	surface.SetFont(self:GetCurrentFont())
 
 	for nl1, m, nl2, npos in what:gmatch "([\r\n]*)([^\r\n]*)([\r\n]*)()" do
+		for i = 1, nl1:len() do
+			self:NewLine()
+		end
+
 		local lbl = self:FetchLabel()
 
 		for n, spaces in m:gmatch "( *[^ ]+)( *)" do
@@ -184,7 +188,7 @@ function PANEL:AddText(what)
 			lbl:SizeToContentsX()
 		end
 
-		for i = 1, nl1:len() + nl2:len() do
+		for i = 1, nl2:len() do
 			self:NewLine()
 		end
 	end
