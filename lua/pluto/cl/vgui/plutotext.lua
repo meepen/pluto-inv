@@ -244,6 +244,7 @@ function PANEL:GetLineAt(mx, my)
 end
 function PANEL:GetHoveredElement()
 	local mx, my = self:ScreenToLocal(gui.MousePos())
+	my = my + (self.ScrollPosition or 0)
 	local line = self:GetLineAt(mx, my)
 
 	if (not line and my > 0) then
