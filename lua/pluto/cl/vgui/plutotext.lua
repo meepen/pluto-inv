@@ -289,6 +289,10 @@ function PANEL:GetHoveredElement()
 end
 
 function PANEL:OnMousePressed(m)
+	if (IsValid(self.Showcase)) then
+		self.Showcase:Remove()
+	end
+
 	if (m == MOUSE_LEFT) then
 		self.StartDrag = {Time = SysTime(), self:GetHoveredElement()}
 		self.EndDrag = nil
@@ -337,7 +341,18 @@ end
 
 function PANEL:InsertShowcaseItem(item)
 	self:InsertClickableTextStart(function()
-		pluto.ui.showcase(item)
+		local showcase = pluto.ui.showcase(item)
+		local posx, posy = self:LocalToScreen(self:GetWide(), 0)
+		posx = posx + 50
+		posy = posy - 50
+		if (showcase:GetTall() + posy > ScrH()) then
+			posy = ScrH() - showcase:GetTall()
+		end
+		if (showcase:GetWide() + posx > ScrW()) then
+			posx = ScrW() - showcase:GetWide()
+		end
+		showcase:SetPos(posx, posy)
+		self.Showcase = showcase
 	end)
 
 	self:AppendText(item)
@@ -484,6 +499,12 @@ function PANEL:InsertFade(sustain, length)
 	}
 end
 
+function PANEL:SignalClose()
+	if (IsValid(self.Showcase)) then
+		self.Showcase:Remove()
+	end
+end
+
 function PANEL:ResetAllFades(hold, expiredOnly, newSustain)
 	for _, pnl in ipairs(self:GetChildren()) do
 		local fade = pnl.Fade
@@ -554,6 +575,7 @@ Proxy "AppendText"
 Proxy "AddImage"
 Proxy "InsertShowcaseItem"
 
+
 function PANEL:Init()
 	self.Inner = self:Add "pluto_text_inner"
 	self.Inner:Dock(FILL)
@@ -568,6 +590,9 @@ function PANEL:Init()
 
 	self.AtBottom = true
 	self:RedoScroll()
+end
+function PANEL:SignalClose()
+	self.Inner:SignalClose()
 end
 
 function PANEL:OnMouseWheeled(delta)

@@ -247,6 +247,7 @@ function pluto.chat.Close()
 	pluto.chat.Box:SetAlpha(closed_alpha * pluto_chat_closed_alpha:GetFloat())
 	pluto.chat.Box:ResetFade(false)
 	pluto.chat.Box:ScrollToBottom()
+	pluto.chat.Box:SignalClose()
 	timer.Remove "AlphaSetChatbox"
 
 	pluto.chat.Box:SetMouseInputEnabled(false)
@@ -740,13 +741,16 @@ function PANEL:ScrollToBottom()
 	self.Tabs.active:ScrollToBottom()
 end
 
+function PANEL:SignalClose()
+	self.Tabs.active:SignalClose()
+end
+
 vgui.Register("pluto_chatbox", PANEL, "EditablePanel")
 
 if (IsValid(pluto.chat.Box)) then
 	if (IsValid(pluto.chat.Box.Showcase)) then
 		pluto.chat.Box.Showcase:Remove()
 	end
-	pluto.chat.Close()
 	pluto.chat.Box:Remove()
 	pluto.chat.Box = vgui.Create "pluto_chatbox"
 end
