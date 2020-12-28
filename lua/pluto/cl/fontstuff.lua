@@ -59,6 +59,47 @@ pluto.fonts.registersystem("shadow", bind {
 	end
 })
 
+pluto.fonts.registersystem("lightsaber_shadow", bind {
+	GetTextSize = function(self, text)
+		return surface.GetTextSize(text)
+	end,
+	DrawText = function(self, text)
+		local w, h = surface.GetTextSize(text)
+		surface.SetDrawColor(self.Color)
+		local cx, cy = self.TextPosX + w / 2, self.TextPosY + h / 2
+		local lifetime = 3
+
+		local deg = ((CurTime() % lifetime) + util.CRC(text) / (2^32) * lifetime) * 360 % 360
+		local s, c = math.sin(math.rad(deg)), math.cos(math.rad(deg))
+		surface.DrawLine(cx, cy, cx + s * w / 2, cy + c * h / 2)
+
+
+
+		shadow_col.a = self.Color.a
+		surface.SetTextColor(shadow_col)
+		surface.SetTextPos(self.TextPosX, self.TextPosY)
+		surface.DrawText(text)
+		surface.SetTextPos(self.TextPosX - 1, self.TextPosY - 1)
+		surface.SetTextColor(self.Color)
+		surface.DrawText(text)
+	end,
+	SetFont = function(self, font)
+		self.Font = font
+		surface.SetFont(font)
+	end,
+	SetTextPos = function(self, x, y)
+		self.TextPosX, self.TextPosY = x, y
+		surface.SetTextPos(x, y)
+	end,
+	SetTextColor = function(self, r, ...)
+		local col = r
+		if (not istable(r)) then
+			col = Color(r, ...)
+		end
+		self.Color = col
+	end
+})
+
 pluto.fonts.registersystem("bouncy", bind {
 	Text = function(self, text)
 		return utf8.force(text)

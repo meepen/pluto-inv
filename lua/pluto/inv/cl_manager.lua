@@ -389,3 +389,50 @@ end
 function pluto.inv.writeui(b)
 	net.WriteBool(b)
 end
+
+
+hook.Add("TTTRWDrawWeaponName", "pluto_name", function(wep, w, h)
+	local item = wep:GetInventoryItem()
+	if (not item) then
+		return
+	end
+
+	local mt = getmetatable(item).__colorprint
+	if (not mt) then
+		return
+	end
+
+	local data = mt(item)
+	if (IsColor(data[1])) then
+		table.remove(data, 1)
+	end
+	local fulltext = {}
+	for _, v in ipairs(data) do
+		if (isstring(v)) then
+			table.insert(fulltext, v)
+		end
+	end
+
+	fulltext = table.concat(fulltext)
+
+	local surface = surface
+	if (data.rendersystem) then
+		surface = pluto.fonts.systems[data.rendersystem] or surface
+	end
+
+	surface.SetFont "ttt_weapon_select_font"
+	local tw, th = surface.GetTextSize(fulltext)
+	local x, y = w / 2 - tw / 2, h / 2 - th / 2
+	surface.SetTextPos(x, y)
+	surface.SetTextColor(wep:GetPrintNameColor())
+
+	for _, v in ipairs(data) do
+		if (isstring(v)) then
+			surface.DrawText(v)
+		else
+			surface.SetTextColor(v)
+		end
+	end
+
+	return true
+end)
