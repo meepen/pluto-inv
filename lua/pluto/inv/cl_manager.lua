@@ -443,10 +443,37 @@ hook.Add("CalcMainActivity", "pluto_inventory", function(ply)
 		return
 	end
 
-	if (ply:GetNW2Bool("InInventory")) then
+	if (ply:GetNW2Bool "InInventory") then
 		wep.PlutoRealHoldType = wep.PlutoRealHoldType or wep:GetHoldType()
 		wep:SetHoldType "magic"
 	elseif (wep.PlutoRealHoldType) then
 		wep:SetHoldType(wep.PlutoRealHoldType)
 	end
+end)
+local test_frame = vgui.Create "EditablePanel"
+function test_frame:Paint(w, h)
+	surface.SetDrawColor(12, 13, 14, 200)
+	surface.DrawRect(0, 0, w, h)
+end
+test_frame:SetSize(64, 64)
+test_frame:SetPaintedManually(true)
+
+local ui_frame = 0
+hook.Add("PreRender", "pluto_inventory_pnl", function()
+	ui_frame = ui_frame + 1
+end)
+
+hook.Add("PostPlayerDraw", "pluto_inventory", function(ply)
+	if (not ply:GetNW2Bool "InInventory" or ply.LastInventoryDraw == ui_frame) then
+		return
+	end
+	ply.LastInventoryDraw = ui_frame
+
+	local ang = ply:EyeAngles()
+	local pos = ply:EyePos() + ply:GetAimVector() * 35 - ang:Up() * 15
+	ang:RotateAroundAxis(ang:Right(), 90)
+	
+	vgui.Start3D2D(pos, ang, 0.2)
+		test_frame:Paint3D2D()
+	vgui.End3D2D()
 end)
