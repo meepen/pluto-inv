@@ -436,3 +436,17 @@ hook.Add("TTTRWDrawWeaponName", "pluto_name", function(wep, w, h)
 
 	return true
 end)
+
+hook.Add("CalcMainActivity", "pluto_inventory", function(ply)
+	local wep = ply:GetActiveWeapon()
+	if (not IsValid(wep)) then
+		return
+	end
+
+	if (ply:GetNW2Bool("InInventory")) then
+		wep.PlutoRealHoldType = wep.PlutoRealHoldType or wep:GetHoldType()
+		wep:SetHoldType "magic"
+	elseif (wep.PlutoRealHoldType) then
+		wep:SetHoldType(wep.PlutoRealHoldType)
+	end
+end)

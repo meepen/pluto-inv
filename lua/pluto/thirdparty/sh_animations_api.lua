@@ -23,29 +23,17 @@ Documentation:
 if SERVER then
 	local PLAYER = FindMetaTable("Player")
 
-	function PLAYER:StartAnimation(anim, freeze, callback, HasTime, time)
+	function PLAYER:StartAnimation(anim, isidle)
 		self:StopAnimation()
 
-		if type(anim) == "number" then
+		self:SetNW2Bool("anims_isidle", isidle)
+		if (type(anim) == "number") then
 			self:SetNW2Int("anims_act", anim)
-			self:SetNW2Int("anims_seq", -1)
-		elseif type(anim) == "string" then
-			local seqid = self:LookupSequence(anim)
-
-			if seqid then
-				self:SetNW2Int("anims_act", -1)
-				self:SetNW2Int("anims_seq", seqid)
-			else
-				return
-			end
-		end
-
-		if freeze then
-			self:SetNW2Bool("anims_freeze", true)
-		end
-
-		if type(callback) == "function" then
-			self.AnimCallback = callback
+		elseif (type(anim) == "string" and self:LookupSequence(anim)) then
+			self:SetNW2Int("anims_act", self:GetSequenceActivity(self:LookupSequence(anim)))
+		else
+			self:SetNW2Int("anims_act", -1)
+			return
 		end
 
 		if HasTime then
@@ -54,18 +42,10 @@ if SERVER then
 		else
 			time = -1
 		end
-		self:SetNW2Float("anims_time", time)
-		self:SetNW2Bool("anims_start", true)
-		self:SetNW2Bool("anims_hasanim", true)
 	end
 
 	function PLAYER:StopAnimation()
-		self:SetNW2Bool("anims_hasanim", false)
 		self:SetNW2Int("anims_act", -1)
-		self:SetNW2Int("anims_seq", -1)
-		self:SetNW2Bool("anims_freeze", false)
-
-		self:AnimRestartMainSequence()
 	end
 
 	function PLAYER:GetAnimationLength(anim)
@@ -81,46 +61,25 @@ if SERVER then
 	end
 end
 
-hook.Add("CalcMainActivity", "AnimationsAPI", function(ply, velocity)
-	if (ply.IsProne and ply:IsProne()) or not ply:GetNW2Bool("anims_hasanim", false) then
+hook.Add("UpdateAnimation", "AnimationsAPI", function(ply)
+	local act = ply:GetNW2Int("anims_act", -1)
+
+	ply.AnimationAPIWeight = ply.AnimationAPIWeight or 0
+
+	-- Don't show this when we're playing a taunt!
+	if (ply:IsPlayingTaunt() or ply:GetNW2Bool("anims_isidle", false)) then
 		return
 	end
 
-	local act = ply:GetNW2Int("anims_act", -1)
-	local seqid = ply:GetNW2Int("anims_seq", -1)
-	local time = ply:GetNW2Float("anims_time", -1)
-
-	if ply:GetNW2Bool("anims_start", false) then
-		ply:SetNW2Bool("anims_start", false)
-		ply:SetCycle(0)
+	if (act ~= -1) then
+		ply.AnimationAPIWeight = math.Approach(ply.AnimationAPIWeight, 1, FrameTime() * 5.0)
+		ply.LastAnimationAPIAct = act
+	else
+		ply.AnimationAPIWeight = math.Approach(ply.AnimationAPIWeight, 0, FrameTime() * 5.0)
 	end
 
-	if time >= 0 and CurTime() >= time then
-		if SERVER then
-			if type(ply.AnimCallback) == "function" then
-				ply:AnimCallback()
-			end
-			ply:StopAnimation()
-			return
-		end
-	end
-
-	if type(act) == "number" and act > -1 then
-		return act, -1
-	elseif type(seqid) == "number" and seqid > -1 then
-		return -1, seqid
-	end
-end)
-
-hook.Add("UpdateAnimation", "AnimationsAPI", function(ply, velocity, maxSeqGroundSpeed)
-	if ply:GetNW2Bool("anims_hasanim", false) then
-		ply:SetPlaybackRate(1)
-	end
-end)
-
-hook.Add("SetupMove", "AnimationsAPI", function(ply, cmd)
-	if ply:GetNW2Bool("anims_freeze", false) then
-		cmd:SetForwardSpeed(0)
-		cmd:SetSideSpeed(0)
+	if (ply.AnimationAPIWeight > 0) then
+		ply:AnimRestartGesture(GESTURE_SLOT_CUSTOM, act ~= -1 and act or ply.LastAnimationAPIAct, true)
+		ply:AnimSetGestureWeight(GESTURE_SLOT_CUSTOM, ply.AnimationAPIWeight)
 	end
 end)
