@@ -43,6 +43,23 @@ function pluto.inv.readcurrencyspawn()
 	cur:SetCurrencyType(net.ReadString())
 end
 
+local function getlist()
+	local t = {}
+	local n = 1
+	local lpos = LocalPlayer():GetPos()
+	for _, obj in pairs(pluto.currency.object_list) do
+		obj.CurrentDistance = obj:GetPos():Distance(lpos)
+		t[n] = obj
+		n = n + 1
+	end
+
+	table.sort(t, function(a, b)
+		return a.CurrentDistance > b.CurrentDistance
+	end)
+
+	return t
+end
+
 hook.Add("PostDrawTranslucentRenderables", "pluto_new_currency_render", function()
 	local wait = 1.5
 	local timing = 1 - ((wait + CurTime()) % wait) / wait * 2
@@ -50,9 +67,9 @@ hook.Add("PostDrawTranslucentRenderables", "pluto_new_currency_render", function
 
 	local dist = math.min(16000, LocalPlayer():GetCurrencyDistance())
 
-	for _, self in pairs(pluto.currency.object_list) do
+	for _, self in pairs(getlist()) do
 		cam.IgnoreZ(LocalPlayer():GetCurrencyTime() > CurTime() and dist > self:GetPos():Distance(LocalPlayer():GetPos()))
-		
+
 		render.SetMaterial(self:GetMaterial())
 		local pos = self:GetPos()
 		
