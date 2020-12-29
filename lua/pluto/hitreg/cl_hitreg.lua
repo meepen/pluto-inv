@@ -21,7 +21,7 @@ hook.Add("EntityFireBullets", "pluto_hitreg", function(ent, data)
 			return
 		end
 
-		net.Start("pluto_hitreg", true)
+		net.Start("pluto_hitreg")
 			net.WriteEntity(ent)
 			net.WriteVector(tr.HitPos)
 			net.WriteEntity(tr.Entity)

@@ -45,7 +45,7 @@ for k, v in pairs(hitgroup_translate) do
 end
 
 hook.Add("PostPlayerDraw", "pluto_showhitgroups", function(ply)
-	if (not pluto_showhitgroups:GetBool() or ply:IsDormant() or ply:IsBot()) then
+	if (not pluto_showhitgroups:GetBool() or ply:IsDormant()) then
 		return
 	end
 

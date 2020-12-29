@@ -49,12 +49,13 @@ net.Receive("pluto_hitreg", function(len, cl)
 	dmg:SetAttacker(cl)
 	dmg:SetInflictor(shootent)
 	dmg:SetDamage(entry.Damage)
-	dmg:SetDamageCustom(hitboxes[hitbox].Group)
 	dmg:SetDamagePosition(hitpos)
 	dmg:SetDamageType(entry.DamageType)
 
 	entry.Trace.HitPos = hitpos
-
+	entry.Trace.HitGroup = hitboxes[hitbox].Group
+	entry.Trace.HitBox = hitbox
+	entry.Trace.HitregHitregCallback = true
 	entry.Callback(shootent, entry.Trace, dmg)
 
 	hitent:TakeDamageInfo(dmg)
