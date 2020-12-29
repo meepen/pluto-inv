@@ -19,7 +19,11 @@ for _, map in pairs(sql.Query "SELECT mapname, CAST(strftime('%s', 'now') AS INT
 	})
 end
 
-function pluto.mapvote.boost(map)
+function pluto.mapvote.boost(map, ply)
+	if (ply.HasMapBoosted) then
+		return false
+	end
+
 	if (#pluto.mapvote.boosts > 2) then
 		return false
 	end
@@ -29,6 +33,7 @@ function pluto.mapvote.boost(map)
 	end
 
 	table.insert(pluto.mapvote.boosts, map)
+	ply.HasMapBoosted = true
 
 	return true
 end
