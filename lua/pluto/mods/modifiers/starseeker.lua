@@ -28,6 +28,10 @@ MOD.Tiers = {
 function MOD:OnKill(wep, rolls, atk, vic)
 	if (atk:GetRoleTeam() ~= vic:GetRoleTeam()) then
 		pluto.currency.spawnfor(atk, "stardust")
+		pluto.currency.spawnfor(atk, "stardust")
+		if (math.random(2) == 1) then
+			pluto.currency.spawnfor(atk, "stardust")
+		end
 	end
 end
 
