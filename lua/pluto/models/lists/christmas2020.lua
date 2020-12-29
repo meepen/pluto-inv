@@ -156,7 +156,7 @@ c "hannukahtrooper" {
 	SubDescription = "Dreidel dreidel dreidel... *misses shots*",
 	HitboxOverride = {
 		[0] = {
-			[16] = {
+			[18] = {
 				HitGroup = HITGROUP_HEAD
 			},
 		},
