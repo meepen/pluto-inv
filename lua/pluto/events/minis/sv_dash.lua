@@ -1,80 +1,97 @@
 -- Author: add___123
-local devs = {
-	["76561198050165746"] = true, -- Meepen
-	["76561198055769267"] = true, -- Jared
-	["76561198188070674"] = true, -- CROSSMAN
-	["76561198110055555"] = true, -- add___123
-}
+util.AddNetworkString "pluto_mini_dash"
 
-local nextdev
+local dasher
+local time = 0
 
-hook.Add("TTTEndRound", "pluto_prompt_dash", function()
-    hook.Remove("PlayerCanPickupWeapon", "pluto_dev_dash")
-    hook.Remove("DoPlayerDeath", "pluto_dev_dash")
-    
-	if (ttt.GetNextRoundEvent() ~= "") then
-		return
-	end
+hook.Add("TTTEndRound", "pluto_mini_dash", function()
+    hook.Remove("PlayerCanPickupWeapon", "pluto_mini_dash")
+    hook.Remove("DoPlayerDeath", "pluto_mini_dash")
 
-	if (not pluto.rounds.minis.dash and math.random(100) ~= 1) then
-		return
-	end
-
-    pluto.rounds.minis.dash = nil
-
-    for k, ply in ipairs(table.shuffle(player.GetHumans())) do
-        if (devs[ply:SteamID64()]) then
-            nextdev = ply
-            nextdev:ChatPrint(ttt.roles.Traitor.Color, "You will be the Dashing Developer next round! Everyone will try to kill you!")
-        end
-    end
+    dasher = nil
 end)
 
-hook.Add("TTTBeginRound", "pluto_dev_dash", function()
-    local curdev = nextdev
-    nextdev = nil
-
-	if (not IsValid(curdev) or not curdev:Alive()) then
+hook.Add("TTTBeginRound", "pluto_mini_dash", function()
+	if (ttt.GetCurrentRoundEvent() ~= "") then
 		return
 	end
 
-    curdev:SetMaxHealth(250)
-    curdev:SetHealth(250)
-    curdev:SetJumpPower(curdev:GetJumpPower() + 100)
-    curdev:StripWeapons()
-	pluto.NextWeaponSpawn = false
-	curdev:Give "weapon_ttt_unarmed"
+	if (not pluto.rounds.minis.dash and math.random(32) ~= 1) then
+		return
+	end
     
-    pluto.rounds.speeds[curdev] = (pluto.rounds.speeds[curdev] or 1) + 0.75
-    net.Start "mini_speed"
-        net.WriteFloat(pluto.rounds.speeds[curdev])
-    net.Send(curdev)
+    pluto.rounds.minis.dash = nil
 
-	ttt.chat(ttt.roles.Traitor.Color, curdev:Nick(), " has stolen your models! Kill them to get back your look!")
+    if (pluto.rounds.args and pluto.rounds.args[2]) then
+        for k, ply in ipairs(player.GetHumans()) do
+            if (ply:SteamID64() == pluto.rounds.args[2]) then
+                dasher = ply
+                break
+            end
+        end
+    else
+        for k, ply in ipairs(table.shuffle(round.GetActivePlayersByRole "Innocent")) do
+            if (not IsValid(ply) or not ply:Alive() or ply:IsBot()) then
+                continue
+            end
+            dasher = ply
+            break
+        end
+    end
+
+    if (not IsValid(dasher)) then
+        return
+    end
+
+    net.Start "pluto_mini_dash"
+    net.Send(dasher)
+    time = CurTime() + 15
+
+	pluto.rounds.args = {}
+end)
+
+net.Receive("pluto_mini_dash", function(len, ply)
+    if (not IsValid(ply) or not IsValid(dasher) or not dasher:Alive() or ply ~= dasher or time < CurTime()) then
+        return 
+    end
+
+    dasher:SetMaxHealth(250)
+    dasher:SetHealth(250)
+    dasher:SetJumpPower(dasher:GetJumpPower() + 125)
+    dasher:StripWeapons()
+	pluto.NextWeaponSpawn = false
+	dasher:Give "weapon_ttt_unarmed"
+
+    pluto.rounds.speeds[dasher] = (pluto.rounds.speeds[dasher] or 1) + 1
+    net.Start "mini_speed"
+        net.WriteFloat(pluto.rounds.speeds[dasher])
+    net.Send(dasher)
+
+	ttt.chat(ttt.roles.Traitor.Color, dasher:Nick(), " has stolen your models! Kill them to get back your look!")
 
     local models = {}
 
     for _, ply in pairs(player.GetAll()) do
-        if (not ply:Alive() or ply == curdev) then
+        if (not ply:Alive() or ply == dasher) then
             continue
         end
 
         models[ply] = ply:GetModel()
-        ply:SetModel(curdev:GetModel())
+        ply:SetModel(dasher:GetModel())
     end
 
-    hook.Add("PlayerCanPickupWeapon", "pluto_dev_dash", function(ply, wep)
-        if (ply == curdev) then
+    hook.Add("PlayerCanPickupWeapon", "pluto_mini_dash", function(ply, wep)
+        if (ply == dasher) then
             return wep:GetClass() == "weapon_ttt_unarmed"
         end
     end)
 
-    hook.Add("DoPlayerDeath", "pluto_dev_dash", function(ply, att, dmg)
-        if (not IsValid(ply) or ply ~= curdev) then
+    hook.Add("DoPlayerDeath", "pluto_mini_dash", function(ply, att, dmg)
+        if (not IsValid(ply) or ply ~= dasher) then
             return
         end
         
-	    ttt.chat(ttt.roles.Traitor.Color, curdev:Nick(), " has been vanquished! Your model has been returned.")
+	    ttt.chat(ttt.roles.Traitor.Color, dasher:Nick(), " has been vanquished! Your model has been returned.")
 
         for _, ply in ipairs(player.GetAll()) do
             if (IsValid(ply) and ply:Alive() and models[ply]) then
@@ -82,6 +99,6 @@ hook.Add("TTTBeginRound", "pluto_dev_dash", function()
             end
         end
 
-        hook.Remove("DoPlayerDeath", "pluto_dev_dash")
+        hook.Remove("DoPlayerDeath", "pluto_mini_dash")
     end)
 end)
