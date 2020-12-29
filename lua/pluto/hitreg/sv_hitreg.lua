@@ -1,48 +1,61 @@
 util.AddNetworkString "pluto_hitreg"
 
-
+local RunCallback -- function(cldata, svdata)
+local hitreg_queue = {}
+local queue_length = 0.5
 -- hitreg_pellets[gun][bullet][pellet]
 local hitreg_pellets = setmetatable({}, {
-	__index = function(self, k)
+	__index = function(self, shootent)
 		local data = setmetatable({}, {
-			__index = function(self, k)
-				local data = {}
-				self[k] = data
+			__index = function(self, bullet_num)
+				local data = setmetatable({}, {
+					__newindex = function(self, pellet, data)
+						local queue = hitreg_queue[shootent]
+						if (queue) then
+							queue = queue[bullet_num]
+							if (queue) then
+								queue = queue[pellet]
+								if (queue) then
+									return RunCallback(queue, data)
+								end
+							end
+						end
+
+						rawset(self, pellet, data)
+					end
+				})
+				self[bullet_num] = data
 				return data
 			end,
 		})
 
-		self[k] = data
+		self[shootent] = data
 		return data
 	end,
 })
 
-net.Receive("pluto_hitreg", function(len, cl)
-	local shootent = net.ReadEntity()
-	local hitpos = net.ReadVector()
-	local hitent = net.ReadEntity()
-	local bullet_num = net.ReadUInt(8)
-	local pellet = net.ReadUInt(8)
-	local hitbox = net.ReadUInt(8)
-
-	local entry = hitreg_pellets[shootent][bullet_num][pellet]
-	if (not entry or entry.Attacker ~= cl) then
+function RunCallback(cldata, entry)
+	if (entry.Attacker ~= cldata.cl) then
 		return
 	end
+	local shootent = cldata.shootent
+	local cl = cldata.cl
+	local hitpos = cldata.hitpos
+	local hitent = cldata.hitent
+	local hitbox = cldata.hitbox
 
-	if (not IsValid(hitent) or not hitent:IsPlayer() or not hitent:Alive()) then
+	if (not IsValid(shootent) or not IsValid(hitent) or not shootent:IsWeapon() or not hitent:IsPlayer() or not hitent:Alive()) then
 		return
 	end
-
-	local hitboxes = entry.Hitboxes[hitent]
 
 --[[
 	if (not util.IntersectRayWithOBB(entry.StartPos, (hitpos - entry.StartPos):GetNormalized() * 160000, hitboxes.Origin, angle_zero, hitboxes.Mins * 1.5, hitboxes.Maxs * 1.5)) then
 		pwarnf("Player %s tried to hit %s (invalid)", cl:Nick(), hitent:Nick())
 		return
-	end]]
+	end
+]]
 
-	hitreg_pellets[shootent][bullet_num][pellet] = nil
+	local hitboxes = entry.Hitboxes[hitent]
 
 	local dmg = DamageInfo()
 
@@ -60,6 +73,44 @@ net.Receive("pluto_hitreg", function(len, cl)
 
 	hitent:TakeDamageInfo(dmg)
 	hook.Run("PlutoHitregOverride", shootent)
+end
+
+net.Receive("pluto_hitreg", function(len, cl)
+	local shootent = net.ReadEntity()
+	local hitpos = net.ReadVector()
+	local hitent = net.ReadEntity()
+	local bullet_num = net.ReadUInt(8)
+	local pellet = net.ReadUInt(8)
+	local hitbox = net.ReadUInt(8)
+
+	local cldata = {
+		shootent = shootent,
+		hitpos = hitpos,
+		hitent = hitent,
+		hitbox = hitbox,
+		cl = cl
+	}
+
+	local entry = hitreg_pellets[shootent][bullet_num][pellet]
+	if (not entry) then
+		local cldata1 = hitreg_queue[shootent]
+		if (not cldata1) then
+			cldata1 = {}
+			hitreg_queue[shootent] = cldata1
+		end
+		local cldata2 = cldata1[bullet_num]
+		if (not cldata2) then
+			cldata2 = {}
+			cldata1[bullet_num] = cldata2
+		end
+
+		cldata2[pellet] = cldata
+		return
+	end
+	hitreg_pellets[shootent][bullet_num][pellet] = nil
+
+	RunCallback(cldata, entry)
+
 end)
 
 local function SnapshotHitboxes()
