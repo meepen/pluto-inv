@@ -1,3 +1,4 @@
+-- Author: Meepen
 hook.Add("TTTBeginRound", "pluto_falling_currency", function()
 	if (ttt.GetCurrentRoundEvent() ~= "") then
 		return

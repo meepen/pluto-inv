@@ -201,7 +201,7 @@ hook.Add("TTTUpdatePlayerSpeed", "pluto_mini_speeds", function(ply, data)
 	data.mini = pluto.rounds.speeds[ply] or 1
 end)
 
-hook.Add("TTTEndRound", "pluto_remove_speeds", function()
+hook.Add("TTTEndRound", "pluto_remove_minis", function()
 	pluto.rounds.speeds = {}
 end)
 
@@ -223,10 +223,7 @@ if (SERVER) then
 		end
 
 		pluto.rounds.minis[args[1]] = true
-		print(args[1], "will be the next round")
-	end)
-else
-	net.Receive("mini_speed", function()
-		pluto.rounds.speeds[LocalPlayer()] = net.ReadFloat()
+		pluto.rounds.args = args
+		ply:ChatPrint("The " .. tostring(args[1]) .. " mini-event will take place next round.")
 	end)
 end

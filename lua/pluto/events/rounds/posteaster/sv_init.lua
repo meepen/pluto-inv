@@ -216,6 +216,7 @@ end
 
 function ROUND:ProcessNavAreasNear(output, nav, max_distance, target, cur_distance)
 	local list = {{output, nav, max_distance, target, cur_distance}}
+	--[[ THIS IS WHERE IT MESSES UP MEEPEN! IT GOES INTO AN INFINITE LOOP AND FREEZES THE SERVER
 	while (#list > 0) do
 		local run = coroutine.create(self.ProcessNav)
 		output, nav, max_distance, target, cur_distance = unpack(list[#list])
@@ -230,7 +231,7 @@ function ROUND:ProcessNavAreasNear(output, nav, max_distance, target, cur_distan
 				pwarnf("ERROR %s", debug.traceback(run))
 			end
 		end
-	end
+	end--]]
 
 	output.processed = nil
 end
@@ -256,6 +257,11 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		random, nav = pluto.currency.randompos()
 
 		if (random) then
+			if (not nav) then
+				nav = navmesh.GetNavArea(random)
+			else
+				nav = navmesh.GetNavAreaByID(nav)
+			end
 			local cluster = {random}
 
 			local navs = {}
