@@ -37,16 +37,17 @@ function WS:onMessage(msg)
 end
 
 function WS:onError(err)
-	print "err"
-	print(err)
+	pluto.WS = nil
 end
 
 function WS:onConnected()
 	print "connectado"
+	pluto.WS = WS
 end
 
 function WS:onDisconnected()
 	print "disconnectado"
+	pluto.WS = nil
 end
 
 WS:open()
@@ -57,6 +58,10 @@ WS:write(util.TableToJSON {
 })
 
 hook.Add("OnPlayerSay", "pluto_cross_chat", function(ply, content)
+	if (not pluto.WS) then
+		return
+	end
+
 	local texts = {}
 	for i = 2, #content do
 		local data = content[i]
@@ -81,7 +86,7 @@ hook.Add("OnPlayerSay", "pluto_cross_chat", function(ply, content)
 	local text = table.concat(texts, "")
 
 	if (text and text ~= "") then
-		WS:write(util.TableToJSON {
+		pluto.WS:write(util.TableToJSON {
 			type = "msg",
 			author = ply:Nick(),
 			content = text,
