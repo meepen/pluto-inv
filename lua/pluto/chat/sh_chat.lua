@@ -19,6 +19,10 @@ pluto.chat.channels = {
 			"Server",
 		}
 	},
+	{
+		Name = "Cross",
+		Prefix = "#",
+	},
 	byname = {}
 }
 

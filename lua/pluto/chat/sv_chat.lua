@@ -105,6 +105,10 @@ hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 		table.insert(content, replace:sub(last_pos, last_pos + math.max(0, MAX_LENGTH - length)))
 	end
 
+	if (hook.Run("OnPlayerSay", from, content)) then
+		return ""
+	end
+
 	for _,ply in pairs(player.GetAll()) do
 		local canSee = hook.Run("PlayerCanSeePlayersChat", texts, teamchat, ply, from)
 		if canSee then

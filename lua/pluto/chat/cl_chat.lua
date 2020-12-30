@@ -177,7 +177,7 @@ function pluto.chat.Add(content, channel, teamchat)
 	end
 	if (data.Relay) then
 		for _, channel in pairs(data.Relay) do
-			pluto.chat.Add(content, channel, teamchat)
+			pluto.chat.Add(table.Copy(content), channel, teamchat)
 		end
 	end
 	local from
