@@ -2,7 +2,7 @@ local NODE = pluto.nodes.get "mythic_reserves"
 
 NODE.Name = "Mythic Reserves"
 NODE.Experience = 5600
-NODE.Description = "Every few seconds generate a bullet for this weapon. This weapon cannot reload. This weapon has 35% more mag size. This gun shoots 15% slower."
+NODE.Description = "Every few seconds generate a bullet for this weapon while not firing. This weapon cannot reload. This weapon has 35% more mag size. This gun shoots 15% slower."
 
 function NODE:ModifyWeapon(node, wep)
 	wep.Primary.ClipSize_Original = wep.Primary.ClipSize_Original or wep.Primary.ClipSize
@@ -35,7 +35,7 @@ function NODE:ModifyWeapon(node, wep)
 		end
 
 
-		if (last_increase + wep:GetDelay() * 4 < CurTime()) then
+		if (wep:GetRealLastShootTime() < CurTime() - 2 and last_increase + wep:GetDelay() * 4 < CurTime()) then
 			last_increase = last_increase + wep:GetDelay() * 4
 			wep:SetClip1(math.min(wep:GetMaxClip1(), wep:Clip1() + 1))
 		end
