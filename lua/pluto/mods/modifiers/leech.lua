@@ -15,9 +15,9 @@ end
 MOD.Description = "Damage is lowered by %s. %s of damage is returned as health."
 
 MOD.Tiers = {
-	{ 8, 15, 25, 35 },
 	{ 8, 15, 15, 25 },
 	{ 8, 15, 10, 15 },
+	{ 8, 15, 5, 10 },
 }
 
 function MOD:PreDamage(wep, rolls, vic, dmginfo, state)

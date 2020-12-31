@@ -17,7 +17,6 @@ local WS = pluto.WS
 
 function WS:onMessage(msg)
 	local json = util.JSONToTable(msg)
-	print(msg)
 	if (not json) then
 		return
 	end
