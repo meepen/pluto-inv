@@ -32,6 +32,8 @@ for _, fname in pairs {
 	"steel/transform",
 
 	"reserves/mythic",
+
+	"pusher/push",
 } do
 	include("pluto/inv/nodes/list/" .. fname .. ".lua")
 end
@@ -120,6 +122,7 @@ for _, fname in pairs {
 	"primary/normal",
 	"primary/mortal",
 	"primary/reserves",
+	"primary/newtonian",
 	"primary/piercer",
 	"secondary/gold",
 	"secondary/steel",

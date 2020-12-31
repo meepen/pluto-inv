@@ -92,7 +92,6 @@ hook.Add("OnPlayerSay", "pluto_cross_chat", function(ply, content)
 			from = cross_id:GetString(),
 			avatar = ply.AvatarURL,
 		})
-		print(ply.AvatarURL)
 	end
 
 	pluto.inv.message(player.GetAll())
@@ -102,7 +101,7 @@ hook.Add("OnPlayerSay", "pluto_cross_chat", function(ply, content)
 end)
 
 local function get_for_player(ply)
-	if (ply.AvatarURL) then
+	if (ply.AvatarURL or ply:IsBot()) then
 		return
 	end
 

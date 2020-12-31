@@ -29,8 +29,6 @@ function NODE:ModifyWeapon(node, wep)
 				end
 
 				owner:SetHealth(owner:Health() * 0.5)
-
-				return true
 			end)
 		end
 

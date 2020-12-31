@@ -15,6 +15,6 @@ GROUP.SmallNodes = {
 		Shares = 1.5,
 		Max = 2,
 	},
-	firerate = 1
+	firerate = 1,
 	mag = 3,
 }
