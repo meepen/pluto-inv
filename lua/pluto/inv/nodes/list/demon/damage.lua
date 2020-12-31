@@ -22,8 +22,16 @@ function NODE:ModifyWeapon(node, wep)
 		end)
 
 		if (SERVER) then
-			local owner = wep:GetOwner()
-			owner:SetHealth(owner:Health() * 0.5)
+			hook.Add("TTTRWSetHealth", wep, function(self, ply)
+				local owner = wep:GetOwner()
+				if (not IsValid(owner) or owner ~= ply) then
+					return
+				end
+
+				owner:SetHealth(owner:Health() * 0.5)
+
+				return true
+			end)
 		end
 
 		if (CLIENT and LocalPlayer() == wep:GetOwner()) then
