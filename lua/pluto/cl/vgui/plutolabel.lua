@@ -9,6 +9,7 @@ function PANEL:Init()
 	self:SetCursor "beam"
 	self:SetMouseInputEnabled(false)
 	self:SetFade(0, -1, true)
+	self.Alignment = 2
 end
 
 function PANEL:GetRenderSystem()
@@ -51,6 +52,10 @@ function PANEL:SizeToContentsY()
 	self:SetTall(select(2, surface.GetTextSize(self:GetText())))
 end
 
+function PANEL:SetContentAlignment(alignment)
+	self.Alignment = alignment
+end
+
 function PANEL:Paint(w, h)
 	local col = self:GetTextColor()
 
@@ -65,7 +70,11 @@ function PANEL:Paint(w, h)
 	local tw, th = surface.GetTextSize(txt)
 
 
-	surface.SetTextPos(w / 2 - tw / 2, h - th)
+	if (self.Alignment == 2) then
+		surface.SetTextPos(w / 2 - tw / 2, h - th)
+	else -- if (self.Alignment == 5) then
+		surface.SetTextPos(w / 2 - tw / 2, h / 2 - th / 2 + 1)
+	end
 	surface.DrawText(txt)
 
 	if (self.Clickable) then

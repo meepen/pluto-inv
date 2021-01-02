@@ -1,0 +1,91 @@
+local PANEL = {}
+
+local item_size = 56
+local inner_area = 5
+local outer_area = 10
+
+function PANEL:Init()
+	self:SetWide(item_size * 6 + inner_area * 5 + outer_area * 2)
+	self.UpperArea = self:Add "EditablePanel"
+	self.UpperArea:Dock(TOP)
+	self.UpperArea:SetTall(22)
+
+	self.Upper = self.UpperArea:Add "ttt_curved_panel"
+	self.Upper:Dock(LEFT)
+	self.Upper:SetWide(100)
+	self.Upper:DockPadding(0, 4, 0, 3)
+
+	self.UpperLabel = self.Upper:Add "pluto_label"
+	self.UpperLabel:SetContentAlignment(5)
+	self.UpperLabel:SetFont "pluto_inventory_font"
+	self.UpperLabel:SetTextColor(Color(255, 255, 255))
+	self.UpperLabel:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.UpperLabel:Dock(FILL)
+
+	self.Container = self:Add "ttt_curved_panel"
+	self.Container:Dock(FILL)
+	self.ItemContainer = self.Container:Add "EditablePanel"
+	self.ItemContainer:SetSize(item_size * 6 + inner_area * 5, item_size * 6 + inner_area * 5)
+
+	function self.Container.PerformLayout(s, w, h)
+		self.ItemContainer:Center()
+	end
+
+	self.ItemRows = {}
+	self.Items = {}
+
+	for i = 1, 6 do
+		local row = self.ItemContainer:Add "EditablePanel"
+		self.ItemRows[i] = row
+
+		for j = 1, 6 do
+			local item = row:Add "pluto_inventory_item"
+			item:Dock(LEFT)
+			if (j ~= 6) then
+				item:DockMargin(0, 0, inner_area, 0)
+			end
+		end
+
+		row:Dock(TOP)
+		row:SetTall(56)
+		if (i ~= 6) then
+			row:DockMargin(0, 0, 0, inner_area)
+		end
+	end
+
+
+	self.Container:SetCurveTopLeft(false)
+	self.Upper:SetCurveBottomLeft(false)
+	self.Upper:SetCurveBottomRight(false)
+
+	self:SetText "Storage"
+end
+
+function PANEL:SetText(t)
+	self.UpperLabel:SetText(t)
+	
+	local surface = self.UpperLabel:GetRenderSystem() or surface
+	surface.SetFont(self.UpperLabel:GetFont())
+	local tw, th = surface.GetTextSize(t)
+
+	self.Upper:SetWide(tw + 24)
+end
+
+function PANEL:SetCurve(curve)
+	self.Container:SetCurve(curve)
+	self.Upper:SetCurve(curve)
+end
+
+function PANEL:SetColor(col)
+	self.Container:SetColor(col)
+	self.Upper:SetColor(col)
+end
+
+vgui.Register("pluto_storage_area", PANEL, "EditablePanel")
+
+local PANEL = {}
+
+function PANEL:Init()
+end
+
+vgui.Register("pluto_storage_items", PANEL, "EditablePanel")

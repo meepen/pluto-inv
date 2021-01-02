@@ -28,7 +28,7 @@ local function bind(metatbl)
 	return t
 end
 
-local shadow_col = Color(12, 13, 14)
+local shadow_col = Color(12, 13, 14, 128)
 pluto.fonts.registersystem("shadow", bind {
 	GetTextSize = function(self, text)
 		return surface.GetTextSize(text)
@@ -36,9 +36,9 @@ pluto.fonts.registersystem("shadow", bind {
 	DrawText = function(self, text)
 		shadow_col.a = self.Color.a
 		surface.SetTextColor(shadow_col)
-		surface.SetTextPos(self.TextPosX, self.TextPosY)
+		surface.SetTextPos(self.TextPosX + 1, self.TextPosY + 1)
 		surface.DrawText(text)
-		surface.SetTextPos(self.TextPosX - 1, self.TextPosY - 1)
+		surface.SetTextPos(self.TextPosX, self.TextPosY)
 		surface.SetTextColor(self.Color)
 		surface.DrawText(text)
 	end,
