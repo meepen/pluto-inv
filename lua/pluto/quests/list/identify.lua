@@ -19,7 +19,7 @@ function QUEST:Init(data)
 			return
 		end
 
-		if (kills[vic] and CurTime() <= kills[vic] + 3) then
+		if (kills[vic] and CurTime() <= kills[vic] + 5) then
 			kills[vic] = nil
 			data:UpdateProgress(1)
 		end
