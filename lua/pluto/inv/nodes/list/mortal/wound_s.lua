@@ -1,11 +1,11 @@
 local NODE = pluto.nodes.get "mortal_wound_s"
 
 NODE.Name = "Minor Wound"
-NODE.Description = "Damage with this gun removes 10% of the damage's max health from enemy."
+NODE.Description = "Damage with this gun removes 5% of the damage's max health from enemy."
 NODE.Experience = 3900
 
 function NODE:ModifyWeapon(node, wep)
-	wep.MortalWound = (wep.MortalWound or 0) + 0.1
+	wep.MortalWound = (wep.MortalWound or 0) + 0.05
 	local id = "pluto_mortal_wound_" .. wep:GetPlutoID()
 
 	hook.Add("PlutoPreDamage", id, function(shooter, vic, dmg)
