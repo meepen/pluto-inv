@@ -120,6 +120,30 @@ function PANEL:Init()
 	self.Container:SetCurve(4)
 	self.Container:DockPadding(15, 9, 15, 9)
 
+	self.StorageContainer = self.Container:Add "EditablePanel"
+	self.Storage = self.StorageContainer:Add "pluto_storage_area"
+
+	self.Storage:Dock(RIGHT)
+	self.Storage:DockMargin(12, 0, 0, 0)
+	self.Storage:SetColor(inner_color)
+	self.Storage:SetCurve(4)
+
+	self.RestOfStorage = self.StorageContainer:Add "EditablePanel"
+	self.RestOfStorage:Dock(FILL)
+
+	self.EmptyContainer = self.Container:Add "EditablePanel"
+
+	function self.Container.PerformLayout(s, w, h)
+		local x, y = 15, 9
+		w = w - 30
+		h = h - 18
+
+		for _, child in pairs(s:GetChildren()) do
+			child:SetPos(x, y)
+			child:SetSize(w, h)
+		end
+	end
+
 	self.StorageLabel = self.SidePanel:Add "pluto_label"
 	self.StorageLabel:SetTall(self.TopSize)
 	self.StorageLabel:Dock(TOP)
@@ -150,24 +174,17 @@ function PANEL:Init()
 	self.ActiveTab = nil
 
 	self:AddTab("Loadout", function(container)
-		local storage = container:Add "pluto_storage_area"
-
-		storage:Dock(RIGHT)
-		storage:DockMargin(12, 0, 0, 0)
-		storage:SetColor(inner_color)
-		storage:SetCurve(4)
-
 		local other = container:Add "pluto_inventory_equip"
 		other:SetCurve(4)
 		other:Dock(FILL)
 		other:SetColor(inner_color)
-	end)
+	end, true)
 
 	self:AddTab("Crafting", function(container)
-	end)
+	end, true)
 
 	self:AddTab("Currency", function(container)
-	end)
+	end, true)
 
 	self:AddTab("Quests", function(container)
 	end)
@@ -187,11 +204,41 @@ function PANEL:ClearContainer()
 	end
 end
 
-function PANEL:AddTab(name, func)
+function PANEL:ChangeToTab(name)
+	if (self.ActiveTab == name) then
+		return
+	end
+	self.ActiveTab = name
+
+	local tab = self.Tabs[name]
+	if (not tab) then
+		return
+	end
+
+	local pnl
+	if (tab.HasStorage) then
+		pnl = self.RestOfStorage
+		self.StorageContainer:SetVisible(true)
+		self.EmptyContainer:SetVisible(false)
+	else
+		pnl = self.EmptyContainer
+		self.StorageContainer:SetVisible(false)
+		self.EmptyContainer:SetVisible(true)
+	end
+
+	for _, child in pairs(pnl:GetChildren()) do
+		child:Remove()
+	end
+
+	tab.Populate(pnl)
+end
+
+function PANEL:AddTab(name, func, has_storage)
 	local lbl = self.TabContainer:Add "pluto_label"
 	self.Tabs[name] = {
 		Label = lbl,
-		Populate = func
+		Populate = func,
+		HasStorage = has_storage
 	}
 
 	lbl:Dock(LEFT)
@@ -211,15 +258,11 @@ function PANEL:AddTab(name, func)
 			return
 		end
 
-		self.ActiveTab = name
-		self:ClearContainer()
-		func(self.Container)
+		self:ChangeToTab(name)
 	end
 
 	if (not self.ActiveTab) then
-		self.ActiveTab = name
-		self:ClearContainer()
-		func(self.Container)
+		self:ChangeToTab(name)
 	end
 end
 

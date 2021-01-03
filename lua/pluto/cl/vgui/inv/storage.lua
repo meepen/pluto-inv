@@ -40,6 +40,7 @@ function PANEL:Init()
 
 		for j = 1, 6 do
 			local item = row:Add "pluto_inventory_item"
+			table.insert(self.Items, item)
 			item:Dock(LEFT)
 			if (j ~= 6) then
 				item:DockMargin(0, 0, inner_area, 0)
@@ -59,6 +60,19 @@ function PANEL:Init()
 	self.Upper:SetCurveBottomRight(false)
 
 	self:SetText "Storage"
+
+	for id, tab in pairs(pluto.cl_inv) do
+		if (tab.Type == "normal") then
+			self:AddTab(tab)
+		end
+	end
+end
+
+function PANEL:AddTab(tab)
+	if (not self.ActiveTab) then
+		self:PopulateFromTab(tab)
+		self.ActiveTab = tab
+	end
 end
 
 function PANEL:SetText(t)
@@ -69,6 +83,18 @@ function PANEL:SetText(t)
 	local tw, th = surface.GetTextSize(t)
 
 	self.Upper:SetWide(tw + 24)
+end
+
+function PANEL:PopulateFromTab(tab)
+	if (tab.Type ~= "normal") then
+		ErrorNoHalt("unknown how to process tab type " .. tab.Type)
+		return
+	end
+
+	for i = 1, 36 do
+		local item = tab.Items[i]
+		self.Items[i]:SetItem(item)
+	end
 end
 
 function PANEL:SetCurve(curve)
