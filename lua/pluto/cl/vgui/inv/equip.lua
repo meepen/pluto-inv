@@ -1,4 +1,5 @@
 local PANEL = {}
+DEFINE_BASECLASS "pluto_inventory_component"
 
 local item_size = 56
 local inner_area = 5
@@ -80,7 +81,7 @@ function PANEL:Init()
 	self.PlayerModel = self.Inner:Add "PlutoPlayerModel"
 	self.PlayerModel:Dock(FILL)
 	self.PlayerModel:SetPlutoModel(pluto.models.default)
-	self.PlayerModel:SetFOV(40)
+	self.PlayerModel:SetFOV(38)
 
 	self.Items = {}
 
@@ -109,7 +110,8 @@ function PANEL:Init()
 	end
 end
 function PANEL:PerformLayout(w, h)
+	BaseClass.PerformLayout(self, w, h)
 	self.Dropdown:SetPos(w - self.Dropdown:GetWide(), 0)
 end
 
-vgui.Register("pluto_inventory_equip", PANEL, "ttt_curved_panel")
+vgui.Register("pluto_inventory_equip", PANEL, "pluto_inventory_component")

@@ -22,12 +22,14 @@ function PANEL:Init()
 	self.UpperLabel:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.UpperLabel:Dock(FILL)
 
-	self.Container = self:Add "ttt_curved_panel"
+	self.Container = self:Add "pluto_inventory_component"
+	DEFINE_BASECLASS "pluto_inventory_component"
 	self.Container:Dock(FILL)
 	self.ItemContainer = self.Container:Add "EditablePanel"
 	self.ItemContainer:SetSize(item_size * 6 + inner_area * 5, item_size * 6 + inner_area * 5)
 
 	function self.Container.PerformLayout(s, w, h)
+		BaseClass.PerformLayout(s, w, h)
 		self.ItemContainer:Center()
 	end
 

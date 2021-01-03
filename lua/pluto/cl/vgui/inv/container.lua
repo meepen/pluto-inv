@@ -46,7 +46,8 @@ function PANEL:Init()
 
 	self.SidePanelSize = 180
 	self.TopSize = 22
-	self:SetSize(700 + self.SidePanelSize, 450)
+	self.BottomSize = 11
+	self:SetSize(700 + self.SidePanelSize, 450 + self.BottomSize)
 
 	self.SidePanel = self:Add "ttt_curved_panel"
 	self.SidePanel:SetWide(self.SidePanelSize + 10)
@@ -159,7 +160,7 @@ function PANEL:Init()
 
 		for _, child in pairs(s:GetChildren()) do
 			child:SetPos(x, y)
-			child:SetSize(w, h)
+			child:SetSize(w, h - self.BottomSize)
 		end
 	end
 
