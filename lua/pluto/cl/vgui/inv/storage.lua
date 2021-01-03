@@ -40,6 +40,7 @@ function PANEL:Init()
 
 		for j = 1, 6 do
 			local item = row:Add "pluto_inventory_item"
+			item:SetCanPickup()
 			table.insert(self.Items, item)
 			item:Dock(LEFT)
 			if (j ~= 6) then
@@ -87,6 +88,7 @@ function PANEL:PopulateFromTab(tab)
 
 	for i = 1, 36 do
 		local item = tab.Items[i]
+		self.Items[i]:SetUpdateFrom(tab.ID, i)
 		self.Items[i]:SetItem(item)
 	end
 end

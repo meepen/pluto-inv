@@ -4,6 +4,51 @@ local item_size = 56
 local inner_area = 5
 local outer_area = 10
 
+local filters = {
+	[1] = function(item)
+		if (item.Type ~= "Weapon") then
+			return false
+		end
+		local class = baseclass.Get(item.ClassName)
+		return class.Slot == 2
+	end,
+	[2] = function(item)
+		if (item.Type ~= "Weapon") then
+			return false
+		end
+		local class = baseclass.Get(item.ClassName)
+		return class.Slot == 1
+	end,
+	[3] = function(item)
+		if (item.Type ~= "Weapon") then
+			return false
+		end
+		local class = baseclass.Get(item.ClassName)
+		return class.Slot == 0
+	end,
+	[4] = function(item)
+		if (item.Type ~= "Weapon") then
+			return false
+		end
+		local class = baseclass.Get(item.ClassName)
+		return class.Slot == 3
+	end,
+	[5] = function(item)
+		if (item.Type ~= "Weapon") then
+			return false
+		end
+		local class = baseclass.Get(item.ClassName)
+		return class.Slot == 4
+	end,
+	[6] = function(item)
+		if (item.Type ~= "Weapon") then
+			return false
+		end
+		local class = baseclass.Get(item.ClassName)
+		return class.Slot == 5
+	end,
+}
+
 function PANEL:Init()
 	self:DockPadding(6, 2, 6, 2)
 
@@ -49,9 +94,17 @@ function PANEL:Init()
 		item2:SetAlpha(128)
 
 		local item = container:Add "pluto_inventory_item"
+		function item:CanClickWith(other)
+			return filters[i] and filters[i](other.Item)
+		end
+		function item:ClickedWith(other)
+			self:SetItem(other.Item)
+		end
+	
 		self.Items[i] = item
 		if (i ~= 6) then
 			item:DockMargin(0, 0, 0, 5)
+			item2:DockMargin(0, 0, 0, 5)
 		end
 	end
 end

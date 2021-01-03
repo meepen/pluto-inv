@@ -25,28 +25,31 @@ function PANEL:Init()
 	self.ItemPanel:DockMargin(1, 1, 1, 1)
 	self.ItemPanel:SetMouseInputEnabled(false)
 
-	self.ItemPanel.Paint = function(s, w, h)
-		self:PaintInner(s, w, h)
+	self.ItemPanel.Paint = function(s, w, h, x, y)
+		self:PaintInner(s, w, h, x, y)
 	end
 
 	self:SetCurve(4)
 	self:SetMouseInputEnabled(true)
 end
 
-function PANEL:PaintInner(pnl, w, h)
+function PANEL:PaintInner(pnl, w, h, x, y)
 	if (not self.Item) then
 		return
 	end
 
 	surface.SetDrawColor(self.Item:GetColor())
-	surface.DrawRect(0, 0, w, h)
+	surface.DrawRect(x or 0, y or 0, w, h)
 
 	local mdl = self:GetCachedCurrentModel()
 	if (not IsValid(mdl)) then
 		return
 	end
 
-	local x, y = pnl:LocalToScreen(0, 0)
+	if (not x or not y) then
+		x, y = pnl:LocalToScreen(0, 0)
+	end
+
 	local mins, maxs = mdl:GetModelBounds()
 
 	if (self.Item.Type == "Weapon") then
@@ -68,10 +71,10 @@ function PANEL:PaintInner(pnl, w, h)
 			cam.EndOrthoView()
 		cam.End3D()
 	elseif (self.Item.Type == "Model") then
-		cam.Start3D(Vector(50, 0, (maxs.z - mins.z) / 2), Angle(0, -180), 90, x, y, pnl:GetSize())
+		cam.Start3D(Vector(50, 0, (maxs.z - mins.z) / 2), Angle(0, -180), 90, x, y, w, h)
 			render.SuppressEngineLighting(true)
 
-				mdl:SetAngles(Angle(0, (-50 * CurTime()) % 360))
+				mdl:SetAngles(Angle(0, (30 * CurTime()) % 360))
 				mdl:DrawModel()
 
 			render.SuppressEngineLighting(false)
@@ -168,6 +171,10 @@ function PANEL:GetCachedCurrentModel()
 	return mdl
 end
 
+function PANEL:SetCanPickup()
+	self.CanPickup = true
+end
+
 function PANEL:RemoveShowcase()
 	if (IsValid(self.Showcase)) then
 		self.Showcase:Remove()
@@ -191,6 +198,16 @@ function PANEL:StartShowcase()
 	self.Showcase:SetPos(x, y)
 end
 
+function PANEL:OnMousePressed(m)
+	if (self.CanPickup and m == MOUSE_LEFT and not IsValid(pluto.ui.pickedupitem)) then
+		pluto.ui.pickupitem(self)
+	end
+
+	if (m == MOUSE_RIGHT) then
+		print "b"
+	end
+end
+
 function PANEL:OnCursorEntered()
 	self:StartShowcase()
 end
@@ -199,4 +216,75 @@ function PANEL:OnCursorExited()
 	self:RemoveShowcase()
 end
 
+function PANEL:Dropdown()
+end
+
+function PANEL:CanClickOn(other)
+	return true
+end
+
+function PANEL:CanClickWith(other)
+	return true
+end
+
+function PANEL:ClickedOn(other)
+	if (not self.TabID or not other.TabID) then
+		return
+	end
+
+	pluto.inv.message()
+		:write("tabswitch", self.TabID, self.TabIndex, other.TabID, other.TabIndex)
+		:send()
+
+	local item = self.Item
+	self:SetItem(other.Item)
+	other:SetItem(item)
+end
+
+function PANEL:ClickedWith(other)
+end
+
 vgui.Register("pluto_inventory_item", PANEL, "EditablePanel")
+
+function pluto.ui.pickupitem(item)
+	if (IsValid(pluto.ui.pickedupitem)) then
+		pluto.ui.pickedupitem:Dropdown()
+		pluto.ui.pickedupitem = nil
+	end
+
+	pluto.ui.pickedupitem = item
+end
+
+hook.Add("PostRenderVGUI", "pluto_item_pickup", function()
+	if (not IsValid(pluto.ui.pickedupitem)) then
+		return
+	end
+
+	local w, h = pluto.ui.pickedupitem.ItemPanel:GetSize()
+	local x, y = gui.MousePos()
+	x = x - w / 2
+	y = y - h / 2
+
+	pluto.ui.pickedupitem:PaintInner(nil, w, h, x, y)
+end)
+
+hook.Add("VGUIMousePressAllowed", "pluto_item_pickup", function( m)
+	if (not IsValid(pluto.ui.pickedupitem)) then
+		return
+	end
+
+	local pnl = vgui.GetHoveredPanel()
+
+	if (IsValid(pnl) and pnl.ClassName == "pluto_inventory_item") then
+		local other = pluto.ui.pickedupitem
+		if (pnl:CanClickWith(other) and other:CanClickOn(pnl)) then
+			other:ClickedOn(pnl)
+			pnl:ClickedWith(other)
+		else
+			return true
+		end
+	end
+
+	pluto.ui.pickupitem(nil)
+	return true
+end)
