@@ -1,5 +1,6 @@
 local PANEL = {}
 
+local default_color = Color(53, 53, 60)
 function PANEL:Init()
 	self:SetSize(56, 56)
 
@@ -17,7 +18,7 @@ function PANEL:Init()
 
 	self.Inner = self.InnerBorder:Add "ttt_curved_panel"
 	self.Inner:Dock(FILL)
-	self.Inner:SetColor(Color(53, 53, 60))
+	self.Inner:SetColor(default_color)
 	self.Inner:SetMouseInputEnabled(false)
 
 	self.ItemPanel = self.Inner:Add "EditablePanel"
@@ -48,9 +49,6 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 
 	x = x or 0
 	y = y or 0
-
-	surface.SetDrawColor(self.Item:GetColor())
-	surface.DrawRect(x, y, w, h)
 
 	local sx, sy = x, y
 	if (IsValid(pnl)) then
@@ -127,9 +125,12 @@ function PANEL:SetItem(item)
 
 	if (item) then
 		self:SetCursor "hand"
+		self.Inner:SetColor(item:GetColor())
 	else
 		self:SetCursor "arrow"
+		self.Inner:SetColor(default_color)
 	end
+
 end
 
 function PANEL:GetCurrentModel()

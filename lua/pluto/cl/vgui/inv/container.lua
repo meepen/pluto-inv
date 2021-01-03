@@ -324,7 +324,7 @@ function PANEL:AddTab(name, func, has_storage)
 	function lbl.Paint(s, w, h)
 		if (self.ActiveTab == name) then
 			surface.SetMaterial(gradient_up)
-			surface.SetDrawColor(255, 255, 255, 20)
+			surface.SetDrawColor(255, 255, 255, 10)
 			surface.DrawTexturedRect(0, 0, w, h)
 		end
 

@@ -61,7 +61,6 @@ pluto.files.load {
 		"cl/vgui/inv/equip.lua",
 		"cl/vgui/inv/item.lua",
 		"cl/vgui/inv/storage.lua",
-		"cl/vgui/inv/tabs.lua",
 		"cl/vgui/inv/container.lua",
 
 		"cl/credits.lua",

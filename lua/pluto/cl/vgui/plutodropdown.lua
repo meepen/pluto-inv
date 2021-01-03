@@ -90,6 +90,45 @@ function PANEL:PopulateFrom(original)
 	self.HoveredPanel:SetColor(original:GetColor())
 	self.HoveredPanel:SetCurve(4)
 
+	function self.HoveredPanel:Approach(x, y)
+		self.ApproachPosition = {x, y}
+	end
+
+	local old_think = self.HoveredPanel.Think
+	function self.HoveredPanel:Think()
+
+		if (self.ApproachPosition) then
+			local x, y
+			if (self.RealPosition) then
+				x, y = self.RealPosition[1], self.RealPosition[2]
+			else
+				x, y = self:GetPos()
+			end
+			
+			local tox, toy = self.ApproachPosition[1], self.ApproachPosition[2]
+			local dx, dy = tox - x, toy - y
+			local speed
+			local total_dist = math.sqrt(dx * dx + dy * dy)
+			if (total_dist > 20) then
+				speed = 500
+			elseif (total_dist > 10) then
+				speed = 200
+			else
+				speed = 150
+			end
+			self.RealPosition = {
+				x + math.min(math.abs(dx), speed * FrameTime()) * (dx < 0 and -1 or 1),
+				y + math.min(math.abs(dy), speed * FrameTime()) * (dy < 0 and -1 or 1),
+			}
+			self:SetPos(self.RealPosition[1], self.RealPosition[2])
+		end
+
+
+		if (old_think) then
+			return old_think(self)
+		end
+	end
+
 	self:SetCurveTopLeft(original:GetCurveTopLeft())
 	self:SetCurveTopRight(original:GetCurveTopRight())
 	self:SetCurveBottomLeft(original:GetCurveBottomLeft())
@@ -123,7 +162,7 @@ function PANEL:PopulateFrom(original)
 end
 
 function PANEL:ChoiceHovered(what)
-	self.HoveredPanel:SetPos(what:GetPos())
+	self.HoveredPanel:Approach(what:GetPos())
 end
 
 function PANEL:ChoiceSelected(choice)
