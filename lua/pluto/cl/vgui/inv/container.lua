@@ -166,6 +166,9 @@ function PANEL:Init()
 	self:AddTab("Crafting", function(container)
 	end)
 
+	self:AddTab("Currency", function(container)
+	end)
+
 	self:AddTab("Quests", function(container)
 	end)
 

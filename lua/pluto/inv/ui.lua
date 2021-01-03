@@ -891,7 +891,7 @@ function PANEL:LayoutEntity(e)
 
 		self.LastX = now_x
 	elseif (not self.StopRotate) then
-		e:SetAngles(e:GetAngles() - Angle(0, 50) * FrameTime())
+		e:SetAngles(e:GetAngles() - Angle(0, -30) * FrameTime())
 	end
 end
 
