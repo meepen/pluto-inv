@@ -35,6 +35,7 @@ end
 
 local newshard = Material "pluto/newshard.png"
 local newshardadd = Material "pluto/newshardbg.png"
+local lock = Material "icon16/lock.png"
 
 function PANEL:PaintInner(pnl, w, h, x, y)
 	if (not self.Item) then
@@ -77,7 +78,7 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 				render.SuppressEngineLighting(false)
 			cam.EndOrthoView()
 		cam.End3D()
-	elseif (self.Item.Type == "Model") then
+	elseif (IsValid(mdl) and self.Item.Type == "Model") then
 		local mins, maxs = mdl:GetModelBounds()
 		cam.Start3D(Vector(50, 0, (maxs.z - mins.z) / 2), Angle(0, -180), 90, sx, sy, w, h)
 			render.SuppressEngineLighting(true)
@@ -96,6 +97,18 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 		surface.DrawTexturedRect(x, y, w, h)
 		surface.SetMaterial(newshardadd)
 		surface.DrawTexturedRect(x, y, w, h)
+	end
+
+	if (self.Item.Locked) then
+		surface.SetDrawColor(color_white)
+		surface.SetMaterial(lock)
+		surface.DrawTexturedRect(x + w - 15, y + 5, 10, 10)
+	end
+
+	if (self.Item.constellations) then
+		surface.SetDrawColor(color_white)
+		surface.SetMaterial(pluto.getsuntexture(0))
+		surface.DrawTexturedRect(x + 3, y + 3, 12, 12)
 	end
 end
 
