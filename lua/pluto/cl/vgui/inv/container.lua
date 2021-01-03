@@ -283,12 +283,20 @@ function PANEL:ChangeToTab(name)
 	if (self.ActiveTab == name) then
 		return
 	end
+
+	local old = self.Tabs[self.ActiveTab]
+	if (old) then
+		old.Label:SetTextColor(Color(255, 255, 255))
+	end
+
 	self.ActiveTab = name
 
 	local tab = self.Tabs[name]
 	if (not tab) then
 		return
 	end
+
+	tab.Label:SetTextColor(Color(28, 198, 244))
 
 	local pnl
 	if (tab.HasStorage) then
@@ -308,8 +316,22 @@ function PANEL:ChangeToTab(name)
 	tab.Populate(pnl)
 end
 
+local gradient_up = Material "gui/gradient_up"
+
 function PANEL:AddTab(name, func, has_storage)
 	local lbl = self.TabContainer:Add "pluto_label"
+	local old_paint = lbl.Paint
+	function lbl.Paint(s, w, h)
+		if (self.ActiveTab == name) then
+			surface.SetMaterial(gradient_up)
+			surface.SetDrawColor(255, 255, 255, 20)
+			surface.DrawTexturedRect(0, 0, w, h)
+		end
+
+		if (old_paint) then
+			old_paint(s, w, h)
+		end
+	end
 	self.Tabs[name] = {
 		Label = lbl,
 		Populate = func,
@@ -379,13 +401,14 @@ function PANEL:AddStorageTab(tab)
 	img:SetMouseInputEnabled(false)
 
 	local lbl = pnl:Add "pluto_label"
+	pnl.Label = lbl
 	lbl:Dock(FILL)
 	lbl:SetContentAlignment(4)
 	lbl:SetFont "pluto_inventory_font"
 	lbl:SetTall(22)
 	lbl:SetRenderSystem(pluto.fonts.systems.shadow)
 	lbl:SetTextColor(Color(255, 255, 255))
-	lbl:SetText(tostring(tab.Name))
+	lbl:SetText(tab.Name)
 	lbl:SetMouseInputEnabled(false)
 
 	function pnl.OnMousePressed(s, m)
