@@ -101,11 +101,14 @@ function PANEL:SetColor(col)
 	self.Upper:SetColor(col)
 end
 
-vgui.Register("pluto_storage_area", PANEL, "EditablePanel")
-
-local PANEL = {}
-
-function PANEL:Init()
+function PANEL:SetStorageHandler(pnl)
+	self.Handler = pnl
 end
 
-vgui.Register("pluto_storage_items", PANEL, "EditablePanel")
+function PANEL:OnMouseWheeled(wheel)
+	if (IsValid(self.Handler)) then
+		self.Handler:HandleStorageScroll(wheel)
+	end
+end
+
+vgui.Register("pluto_storage_area", PANEL, "EditablePanel")

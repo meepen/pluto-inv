@@ -20,12 +20,12 @@ function PANEL:Init()
 	self.Inner:SetColor(Color(53, 53, 60))
 	self.Inner:SetMouseInputEnabled(false)
 
-	self.Item = self.Inner:Add "EditablePanel"
-	self.Item:Dock(FILL)
-	self.Item:DockMargin(1, 1, 1, 1)
-	self.Item:SetMouseInputEnabled(false)
+	self.ItemPanel = self.Inner:Add "EditablePanel"
+	self.ItemPanel:Dock(FILL)
+	self.ItemPanel:DockMargin(1, 1, 1, 1)
+	self.ItemPanel:SetMouseInputEnabled(false)
 
-	self.Item.Paint = function(s, w, h)
+	self.ItemPanel.Paint = function(s, w, h)
 		self:PaintInner(s, w, h)
 	end
 
@@ -38,13 +38,13 @@ function PANEL:PaintInner(pnl, w, h)
 		return
 	end
 
+	surface.SetDrawColor(self.Item:GetColor())
+	surface.DrawRect(0, 0, w, h)
+
 	local mdl = self:GetCachedCurrentModel()
 	if (not IsValid(mdl)) then
 		return
 	end
-
-	surface.SetDrawColor(self.Item:GetColor())
-	surface.DrawRect(0, 0, w, h)
 
 	local x, y = pnl:LocalToScreen(0, 0)
 	local mins, maxs = mdl:GetModelBounds()
@@ -91,6 +91,12 @@ function PANEL:SetItem(item)
 	end
 
 	self.Item = item
+
+	if (item) then
+		self:SetCursor "hand"
+	else
+		self:SetCursor "arrow"
+	end
 end
 
 function PANEL:GetCurrentModel()
@@ -100,9 +106,22 @@ function PANEL:GetCurrentModel()
 	end
 
 	if (item.Type == "Weapon") then
-		return baseclass.Get(item.ClassName).WorldModel
+		local class = baseclass.Get(item.ClassName)
+		return class.PlutoModel or class.WorldModel
 	elseif (item.Type == "Model") then
 		return item.Model.Model
+	end
+end
+
+function PANEL:GetCurrentModelMaterial()
+	local item = self.Item
+	if (not item) then
+		return
+	end
+
+	if (item.Type == "Weapon") then
+		local class = baseclass.Get(item.ClassName)
+		return class.PlutoMaterial
 	end
 end
 
@@ -134,8 +153,10 @@ function PANEL:GetCachedCurrentModel()
 	end
 
 	mdl = pluto.cached_model(mdl, self.Item.Type)
-	if (IsValid(mdl) and self.PlutoMaterial) then
-		mdl:SetMaterial(self.PlutoMaterial)
+	local mat = self:GetCurrentModelMaterial()
+
+	if (IsValid(mdl) and mat) then
+		mdl:SetMaterial(mat)
 	elseif (IsValid(mdl)) then
 		mdl:SetMaterial()
 	end

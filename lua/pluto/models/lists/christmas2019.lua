@@ -246,7 +246,7 @@ c "metro_female_1" {
 	Hands = "models/half-dead/metroll/c_arms_male1.mdl",
 	SubDescription = metro_desc(20),
 	Color = CHRISTMAS(0),
-	GenerateBodygroups = generic_male,
+	GenerateBodygroups = generic_female,
 	Gender = "Female",
 }
 c "metro_female_5" {
@@ -255,7 +255,7 @@ c "metro_female_5" {
 	Hands = "models/half-dead/metroll/c_arms_male1.mdl",
 	SubDescription = metro_desc(21),
 	Color = CHRISTMAS(0),
-	GenerateBodygroups = generic_male,
+	GenerateBodygroups = generic_female,
 	Gender = "Female",
 }
 

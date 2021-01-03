@@ -137,6 +137,7 @@ function PANEL:Init()
 
 	self.StorageContainer = self.Container:Add "EditablePanel"
 	self.Storage = self.StorageContainer:Add "pluto_storage_area"
+	self.Storage:SetStorageHandler(self)
 
 	self.Storage:Dock(RIGHT)
 	self.Storage:DockMargin(12, 0, 0, 0)
@@ -346,6 +347,18 @@ function PANEL:Center()
 	end
 
 	self:SetPos(pw / 2 - (self:GetWide() - self.SidePanelSize) / 2, ph / 2 - self:GetTall() / 2)
+end
+
+function PANEL:HandleStorageScroll(wheeled)
+	local current_position
+	for i, tab in ipairs(self.TabList) do
+		if (tab.Tab == self.ActiveStorageTab) then
+			current_position = i
+			break
+		end
+	end
+	current_position = math.Clamp(current_position + (wheeled < 0 and 1 or -1), 1, #self.TabList)
+	self:SelectTab(self.TabList[current_position].Tab)
 end
 
 function PANEL:AddStorageTab(tab)
