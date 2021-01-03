@@ -21,6 +21,17 @@ function PANEL:Init()
 	self.Inner:SetColor(default_color)
 	self.Inner:SetMouseInputEnabled(false)
 
+	local perform = self.Inner.PerformLayout
+	function self.Inner.PerformLayout(s, w, h)
+		self.ItemBackground:SetSize(w, h)
+		if (perform) then
+			perform(s, w, h)
+		end
+	end
+
+	self.ItemBackground = vgui.Create "ttt_curved_panel"
+	self.ItemBackground:SetPaintedManually(true)
+
 	self.ItemPanel = self.Inner:Add "EditablePanel"
 	self.ItemPanel:Dock(FILL)
 	self.ItemPanel:DockMargin(1, 1, 1, 1)
@@ -53,10 +64,16 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 	local sx, sy = x, y
 	if (IsValid(pnl)) then
 		sx, sy = pnl:LocalToScreen(x, y)
+		sx = sx - 1
+		sy = sy - 1
 	end
+
+	self.ItemBackground:PaintAt(sx, sy)
 
 	local mdl = self:GetCachedCurrentModel()
 
+	local r, g, b = render.GetColorModulation()
+	render.SetColorModulation(1, 1, 1)
 	if (IsValid(mdl) and self.Item.Type == "Weapon") then
 		local mins, maxs = mdl:GetModelBounds()
 		local lookup = weapons.GetStored(self.Item.ClassName).Ortho or {0, 0}
@@ -96,6 +113,7 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 		surface.SetMaterial(newshardadd)
 		surface.DrawTexturedRect(x, y, w, h)
 	end
+	render.SetColorModulation(r, g, b)
 
 	if (self.Item.Locked) then
 		surface.SetDrawColor(color_white)
@@ -114,6 +132,7 @@ function PANEL:SetCurve(curve)
 	self.InnerBorder:SetCurve(curve)
 	self.OuterBorder:SetCurve(curve)
 	self.Inner:SetCurve(curve)
+	self.ItemBackground:SetCurve(curve)
 end
 
 function PANEL:SetItem(item)
@@ -125,10 +144,9 @@ function PANEL:SetItem(item)
 
 	if (item) then
 		self:SetCursor "hand"
-		self.Inner:SetColor(item:GetColor())
+		self.ItemBackground:SetColor(item:GetColor())
 	else
 		self:SetCursor "arrow"
-		self.Inner:SetColor(default_color)
 	end
 
 end
@@ -275,6 +293,10 @@ function PANEL:ClickedWith(other)
 	other:SetItem(item)
 end
 
+function PANEL:OnRemove()
+	self.ItemBackground:Remove()
+end
+
 vgui.Register("pluto_inventory_item", PANEL, "EditablePanel")
 
 function pluto.ui.pickupitem(item)
@@ -355,7 +377,6 @@ hook.Add("VGUIMousePressAllowed", "pluto_item_pickup", function(m)
 			other:ClickedOn(pnl)
 			pnl:ClickedWith(other)
 
-			print(other.Item)
 			if (pnl.CanPickup and other.Item) then
 				pluto.ui.pickupitem(other)
 				return true
