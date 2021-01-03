@@ -278,33 +278,43 @@ end
 vgui.Register("pluto_inventory_item", PANEL, "EditablePanel")
 
 function pluto.ui.pickupitem(item)
+	local itemdata, tabid, tabidx, clickedon, clickedwith, canclickon, canclickwith
+
+	if (IsValid(item)) then
+		itemdata, tabid, tabidx = item.Item, item.TabID, item.TabIndex
+		clickedon, clickedwith = item.ClickedWithReal or item.ClickedWith, item.ClickedOnReal or item.ClickedOn
+		canclickon, canclickwith = item.CanClickOn, item.CanClickWith
+	end
+
 	if (IsValid(pluto.ui.pickedupitem)) then
 		pluto.ui.pickedupitem:Remove()
 		pluto.ui.pickedupitem = nil
 		pluto.ui.realpickedupitem = nil
 	end
 
-	if (IsValid(item)) then
+	if (itemdata) then
 		pluto.ui.realpickedupitem = item
 		pluto.ui.pickedupitem = vgui.Create "pluto_inventory_item"
 		local p = pluto.ui.pickedupitem
 		p:SetPaintedManually(true)
-		p.CanClickOn = item.CanClickOn
-		p.CanClickWith = item.CanClickWith
-		p:SetItem(item.Item)
+		p:SetItem(itemdata)
 
-		local tabid, tabidx = item.TabID, item.TabIndex
+		p.CanClickOn = canclickon
+		p.CanClickWith = canclickwith
 		p.TabID, p.TabIndex = tabid, tabidx
+		p.ClickedWithReal = clickedwith
+		p.ClickedOnReal = clickedon
 
 		function p:ClickedOn(other)
 			if (IsValid(item) and other ~= item and item.TabID == tabid and item.TabIndex == tabidx) then
-				item:ClickedOn(other)
+				self.ClickedOnReal(item, other)
 			end
 		end
 
+
 		function p:ClickedWith(other)
 			if (IsValid(item) and other ~= item and item.TabID == tabid and item.TabIndex == tabidx) then
-				item:ClickedWith(other)
+				self.ClickedWithReal(item, other)
 			end
 		end
 	else
@@ -345,6 +355,7 @@ hook.Add("VGUIMousePressAllowed", "pluto_item_pickup", function(m)
 			other:ClickedOn(pnl)
 			pnl:ClickedWith(other)
 
+			print(other.Item)
 			if (pnl.CanPickup and other.Item) then
 				pluto.ui.pickupitem(other)
 				return true
