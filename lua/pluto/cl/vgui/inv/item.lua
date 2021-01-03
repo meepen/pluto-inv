@@ -7,25 +7,30 @@ function PANEL:Init()
 	self.OuterBorder:Dock(FILL)
 	self.OuterBorder:SetColor(Color(95, 96, 102))
 	self.OuterBorder:DockPadding(1, 1, 1, 1)
+	self.OuterBorder:SetMouseInputEnabled(false)
 
 	self.InnerBorder = self.OuterBorder:Add "ttt_curved_panel"
 	self.InnerBorder:Dock(FILL)
 	self.InnerBorder:SetColor(Color(41, 43, 54))
 	self.InnerBorder:DockPadding(1, 1, 1, 1)
+	self.InnerBorder:SetMouseInputEnabled(false)
 
 	self.Inner = self.InnerBorder:Add "ttt_curved_panel"
 	self.Inner:Dock(FILL)
 	self.Inner:SetColor(Color(53, 53, 60))
+	self.Inner:SetMouseInputEnabled(false)
 
 	self.Item = self.Inner:Add "EditablePanel"
 	self.Item:Dock(FILL)
 	self.Item:DockMargin(1, 1, 1, 1)
+	self.Item:SetMouseInputEnabled(false)
 
 	self.Item.Paint = function(s, w, h)
 		self:PaintInner(s, w, h)
 	end
 
 	self:SetCurve(4)
+	self:SetMouseInputEnabled(true)
 end
 
 function PANEL:PaintInner(pnl, w, h)
@@ -81,10 +86,11 @@ function PANEL:SetCurve(curve)
 end
 
 function PANEL:SetItem(item)
-	self.Item = item
-	if (not item) then
-		return
+	if (item ~= self.Item) then
+		self:RemoveShowcase()
 	end
+
+	self.Item = item
 end
 
 function PANEL:GetCurrentModel()
@@ -139,6 +145,37 @@ function PANEL:GetCachedCurrentModel()
 	end
 
 	return mdl
+end
+
+function PANEL:RemoveShowcase()
+	if (IsValid(self.Showcase)) then
+		self.Showcase:Remove()
+	end
+end
+
+function PANEL:StartShowcase()
+	if (IsValid(self.Showcase) or not self.Item) then
+		return
+	end
+
+	self.Showcase = pluto.ui.showcase(self.Item)
+
+	local x, y = self:LocalToScreen(self:GetWide(), 0)
+	if (x + self.Showcase:GetWide() > ScrW()) then
+		x = self:LocalToScreen(0) - self.Showcase:GetWide()
+	end
+	if (y + self.Showcase:GetTall() > ScrH()) then
+		y = ScrH() - self.Showcase:GetTall()
+	end
+	self.Showcase:SetPos(x, y)
+end
+
+function PANEL:OnCursorEntered()
+	self:StartShowcase()
+end
+
+function PANEL:OnCursorExited()
+	self:RemoveShowcase()
 end
 
 vgui.Register("pluto_inventory_item", PANEL, "EditablePanel")
