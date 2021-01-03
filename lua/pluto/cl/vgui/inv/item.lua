@@ -239,7 +239,6 @@ function PANEL:ClickedWith(other)
 		:write("tabswitch", self.TabID, self.TabIndex, other.TabID, other.TabIndex)
 		:send()
 
-	print(self, other, self.TabID, self.TabIndex, other.TabID, other.TabIndex)
 	local item = self.Item
 	self:SetItem(other.Item)
 	other:SetItem(item)
@@ -313,6 +312,8 @@ hook.Add("VGUIMousePressAllowed", "pluto_item_pickup", function(m)
 		end
 	end
 
-	pluto.ui.pickupitem(nil)
-	return true
+	if (not pnl.AllowClickThrough) then
+		pluto.ui.pickupitem(nil)
+		return true
+	end
 end)

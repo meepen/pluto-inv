@@ -91,6 +91,7 @@ function PANEL:Init()
 	self.StorageExpander:DockMargin(0, 0, 4, 4)
 	self.StorageExpander:SetCursor "hand"
 	self.StorageExpander:SetMouseInputEnabled(true)
+	self.StorageExpander.AllowClickThrough = true
 	function self.StorageExpander.OnMousePressed(s, m)
 		if (m == MOUSE_LEFT) then
 			s.Toggled = not s.Toggled
@@ -120,6 +121,7 @@ function PANEL:Init()
 	self.CloseButton:SetCursor "hand"
 	self.CloseButton:SetMouseInputEnabled(true)
 	self.CloseButton:SizeToContentsX()
+	self.CloseButton.AllowClickThrough = true
 	function self.CloseButton.OnMousePressed(s, m)
 		if (m == MOUSE_LEFT) then
 			self:Remove()
@@ -364,6 +366,7 @@ end
 function PANEL:AddStorageTab(tab)
 	self.Storage:AddTab(tab)
 	local pnl = self.StorageTabList:Add "EditablePanel"
+	pnl.AllowClickThrough = true
 	self.StorageTabs[tab] = pnl
 	pnl:Dock(TOP)
 	pnl:SetTall(20)
@@ -405,6 +408,10 @@ function PANEL:SelectTab(tab)
 		self.ActiveStorageTab = tab
 		self.Storage:PopulateFromTab(tab)
 	end
+end
+
+function PANEL:OnRemove()
+	pluto.ui.pickupitem()
 end
 
 vgui.Register("pluto_inv", PANEL, "EditablePanel")
