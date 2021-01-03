@@ -91,6 +91,7 @@ function PANEL:PopulateFromTab(tab)
 		self.Items[i]:SetUpdateFrom(tab.ID, i)
 		self.Items[i]:SetItem(item)
 	end
+	pluto.ui.realpickedupitem = nil
 end
 
 function PANEL:SetCurve(curve)
