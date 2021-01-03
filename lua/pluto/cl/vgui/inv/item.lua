@@ -38,6 +38,10 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 		return
 	end
 
+	if (self == pluto.ui.realpickedupitem and IsValid(pnl)) then
+		return
+	end
+
 	surface.SetDrawColor(self.Item:GetColor())
 	surface.DrawRect(x or 0, y or 0, w, h)
 

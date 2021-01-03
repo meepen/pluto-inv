@@ -92,6 +92,12 @@ function PANEL:PopulateFromTab(tab)
 		self.Items[i]:SetItem(item)
 	end
 	pluto.ui.realpickedupitem = nil
+	if (IsValid(pluto.ui.pickedupitem)) then
+		local p = pluto.ui.pickedupitem
+		if (p.TabID  == tab.ID) then
+			pluto.ui.realpickedupitem = self.Items[p.TabIndex]
+		end
+	end
 end
 
 function PANEL:SetCurve(curve)
