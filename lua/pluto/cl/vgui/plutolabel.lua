@@ -76,7 +76,7 @@ function PANEL:Paint(w, h)
 		surface.SetTextPos(0, h / 2 - th / 2 + 1)
 
 	else -- if (self.Alignment == 5) then
-		surface.SetTextPos(w / 2 - tw / 2, h / 2 - th / 2 + 1)
+		surface.SetTextPos(w / 2 - tw / 2 + 1, h / 2 - th / 2 + 1)
 	end
 	surface.DrawText(txt)
 
