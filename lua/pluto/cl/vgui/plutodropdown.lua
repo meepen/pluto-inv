@@ -2,7 +2,7 @@ local PANEL = {}
 
 function PANEL:Init()
 	self:SetCursor "hand"
-	self:SetColor(Color(37, 37, 37))
+	self:SetColor(Color(54, 54, 54))
 	self:SetCurve(4)
 	self.TextLabel = self:Add "pluto_label"
 	self.TextLabel:SetText "Unknown"

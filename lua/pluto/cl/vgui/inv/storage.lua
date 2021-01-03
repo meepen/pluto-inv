@@ -60,12 +60,6 @@ function PANEL:Init()
 	self.Upper:SetCurveBottomRight(false)
 
 	self:SetText "Storage"
-
-	for id, tab in pairs(pluto.cl_inv) do
-		if (tab.Type == "normal") then
-			self:AddTab(tab)
-		end
-	end
 end
 
 function PANEL:AddTab(tab)

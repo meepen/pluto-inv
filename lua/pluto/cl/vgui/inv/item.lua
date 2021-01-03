@@ -41,11 +41,12 @@ function PANEL:PaintInner(pnl, w, h)
 	surface.SetDrawColor(self.Item:GetColor())
 	surface.DrawRect(0, 0, w, h)
 
+	local x, y = pnl:LocalToScreen(0, 0)
+	local mins, maxs = mdl:GetModelBounds()
+
 	if (self.Item.Type == "Weapon") then
 		local lookup = weapons.GetStored(self.Item.ClassName).Ortho or {0, 0}
 
-		local x, y = pnl:LocalToScreen(0, 0)
-		local mins, maxs = mdl:GetModelBounds()
 		local angle = Angle(0, -90)
 		local size = mins:Distance(maxs) / 2.5 * (lookup.size or 1) * 1.1
 
@@ -60,6 +61,15 @@ function PANEL:PaintInner(pnl, w, h)
 					render.PopFilterMin()
 				render.SuppressEngineLighting(false)
 			cam.EndOrthoView()
+		cam.End3D()
+	elseif (self.Item.Type == "Model") then
+		cam.Start3D(Vector(50, 0, (maxs.z - mins.z) / 2), Angle(0, -180), 90, x, y, pnl:GetSize())
+			render.SuppressEngineLighting(true)
+
+				mdl:SetAngles(Angle(0, (-50 * CurTime()) % 360))
+				mdl:DrawModel()
+
+			render.SuppressEngineLighting(false)
 		cam.End3D()
 	end
 end
@@ -85,6 +95,8 @@ function PANEL:GetCurrentModel()
 
 	if (item.Type == "Weapon") then
 		return baseclass.Get(item.ClassName).WorldModel
+	elseif (item.Type == "Model") then
+		return item.Model.Model
 	end
 end
 
@@ -105,7 +117,6 @@ function PANEL:PlutoItemUpdate(item)
 	end
 
 	if (item ~= self.Item) then
-		print "pls update"
 		self:SetItem(item)
 	end
 end
@@ -121,6 +132,10 @@ function PANEL:GetCachedCurrentModel()
 		mdl:SetMaterial(self.PlutoMaterial)
 	elseif (IsValid(mdl)) then
 		mdl:SetMaterial()
+	end
+
+	if (self.Item.Type == "Model") then
+		pluto.updatemodel(mdl, self.Item)
 	end
 
 	return mdl

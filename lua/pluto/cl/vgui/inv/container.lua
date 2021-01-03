@@ -42,7 +42,9 @@ vgui.Register("pluto_inv_border", PANEL, "EditablePanel")
 local PANEL = {}
 
 function PANEL:Init()
-	self.SidePanelSize = 100
+	self.StorageTabs = {}
+
+	self.SidePanelSize = 180
 	self.TopSize = 22
 	self:SetSize(700 + self.SidePanelSize, 450)
 
@@ -53,6 +55,19 @@ function PANEL:Init()
 	self.SidePanelContainer = self.SidePanel:Add "ttt_curved_panel"
 	self.SidePanelContainer:Dock(FILL)
 	self.SidePanelContainer:SetCurve(4)
+
+	self.StorageTabList = self.SidePanelContainer:Add "EditablePanel"
+	self.StorageTabList:Dock(FILL)
+	local w_spacing = 5
+	self.StorageTabList:DockPadding(10 + w_spacing, 12, w_spacing, 4)
+
+	function self.StorageTabList.PerformLayout(s, w, h)
+		self:SelectTab(self.ActiveStorageTab)
+	end
+
+	self.ActiveStorageTabBackground = self.StorageTabList:Add "ttt_curved_panel"
+	self.ActiveStorageTabBackground:SetCurve(4)
+	self.ActiveStorageTabBackground:SetColor(Color(106, 107, 112))
 
 	self.SidePanelBorderContainer = self.SidePanelContainer:Add "pluto_inv_border"
 	self.SidePanelBorderContainer:Dock(TOP)
@@ -191,6 +206,61 @@ function PANEL:Init()
 
 	self:AddTab("Divine Market", function(container)
 	end)
+
+	self.TabList = {}
+
+	for id, tab in pairs(pluto.cl_inv) do
+		if (tab.Type == "normal") then
+			table.insert(self.TabList, {
+				Tab = tab
+			})
+		end
+	end
+
+	for _, item in ipairs(self.TabList) do
+		self:AddStorageTab(item.Tab)
+	end
+end
+
+function PANEL:GetOrderConvar()
+	return CreateConVar("pluto_tab_order_" .. LocalPlayer():SteamID64() .. "_" .. self.ID, "[]", FCVAR_ARCHIVE)
+end
+
+function PANEL:Reorder()
+	local json = util.JSONToTable(self:GetOrderConvar():GetString()) or {}
+
+	local lookup = {}
+	for i, v in ipairs(json) do
+		lookup[tonumber(v)] = i
+	end
+
+	table.sort(self.TabList, function(a, b)
+		local aid = a.Tab.FakeID and -a.Tab.FakeID or a.Tab.ID
+		local bid = b.Tab.FakeID and -b.Tab.FakeID or b.Tab.ID
+
+		local al = lookup[aid]
+		local bl = lookup[bid]
+
+		if (al and not bl) then
+			return false
+		elseif (bl and not al) then
+			return true
+		elseif (bl and al) then
+			return al < bl
+		end
+
+		return aid < bid
+	end)
+
+	self:SaveOrder()
+end
+
+function PANEL:SaveOrder()
+	local list = {}
+	for _, tab in ipairs(self.TabList) do
+		table.insert(list, tab.Tab.FakeID and -tab.Tab.FakeID or tab.Tab.ID)
+	end
+	self:GetOrderConvar():SetString(util.TableToJSON(list))
 end
 
 function PANEL:PerformLayout(w, h)
@@ -276,6 +346,52 @@ function PANEL:Center()
 	end
 
 	self:SetPos(pw / 2 - (self:GetWide() - self.SidePanelSize) / 2, ph / 2 - self:GetTall() / 2)
+end
+
+function PANEL:AddStorageTab(tab)
+	self.Storage:AddTab(tab)
+	local pnl = self.StorageTabList:Add "EditablePanel"
+	self.StorageTabs[tab] = pnl
+	pnl:Dock(TOP)
+	pnl:SetTall(20)
+
+	local img = pnl:Add "DImage"
+	img:SetSize(pnl:GetTall(), pnl:GetTall())
+	img:Dock(LEFT)
+	img:SetMouseInputEnabled(false)
+
+	local lbl = pnl:Add "pluto_label"
+	lbl:Dock(FILL)
+	lbl:SetContentAlignment(4)
+	lbl:SetFont "pluto_inventory_font"
+	lbl:SetTall(22)
+	lbl:SetRenderSystem(pluto.fonts.systems.shadow)
+	lbl:SetTextColor(Color(255, 255, 255))
+	lbl:SetText(tostring(tab.Name))
+	lbl:SetMouseInputEnabled(false)
+
+	function pnl.OnMousePressed(s, m)
+		if (m == MOUSE_RIGHT) then
+			-- start rename
+		end
+		self:SelectTab(tab)
+	end
+
+	if (not self.ActiveStorageTab) then
+		self:SelectTab(tab)
+	end
+end
+
+function PANEL:SelectTab(tab)
+	self.ActiveStorageTabBackground:SetTall(22)
+	local fg = self.StorageTabs[tab]
+	self.ActiveStorageTabBackground:SetWide(fg:GetWide())
+	self.ActiveStorageTabBackground:SetPos(fg:GetPos())
+
+	if (tab ~= self.ActiveStorageTab) then
+		self.ActiveStorageTab = tab
+		self.Storage:PopulateFromTab(tab)
+	end
 end
 
 vgui.Register("pluto_inv", PANEL, "EditablePanel")
