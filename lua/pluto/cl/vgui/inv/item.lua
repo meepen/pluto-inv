@@ -33,6 +33,9 @@ function PANEL:Init()
 	self:SetMouseInputEnabled(true)
 end
 
+local newshard = Material "pluto/newshard.png"
+local newshardadd = Material "pluto/newshardbg.png"
+
 function PANEL:PaintInner(pnl, w, h, x, y)
 	if (not self.Item) then
 		return
@@ -42,27 +45,27 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 		return
 	end
 
+	x = x or 0
+	y = y or 0
+
 	surface.SetDrawColor(self.Item:GetColor())
-	surface.DrawRect(x or 0, y or 0, w, h)
+	surface.DrawRect(x, y, w, h)
+
+	local sx, sy = x, y
+	if (IsValid(pnl)) then
+		sx, sy = pnl:LocalToScreen(x, y)
+	end
 
 	local mdl = self:GetCachedCurrentModel()
-	if (not IsValid(mdl)) then
-		return
-	end
 
-	if (not x or not y) then
-		x, y = pnl:LocalToScreen(0, 0)
-	end
-
-	local mins, maxs = mdl:GetModelBounds()
-
-	if (self.Item.Type == "Weapon") then
+	if (IsValid(mdl) and self.Item.Type == "Weapon") then
+		local mins, maxs = mdl:GetModelBounds()
 		local lookup = weapons.GetStored(self.Item.ClassName).Ortho or {0, 0}
 
 		local angle = Angle(0, -90)
 		local size = mins:Distance(maxs) / 2.5 * (lookup.size or 1) * 1.1
 
-		cam.Start3D(vector_origin, lookup.angle or angle, 90, x, y, w, h)
+		cam.Start3D(vector_origin, lookup.angle or angle, 90, sx, sy, w, h)
 			cam.StartOrthoView(lookup[1] + -size, lookup[2] + size, lookup[1] + size, lookup[2] + -size)
 				render.SuppressEngineLighting(true)
 					mdl:SetAngles(Angle(-40, 10, 10))
@@ -75,7 +78,8 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 			cam.EndOrthoView()
 		cam.End3D()
 	elseif (self.Item.Type == "Model") then
-		cam.Start3D(Vector(50, 0, (maxs.z - mins.z) / 2), Angle(0, -180), 90, x, y, w, h)
+		local mins, maxs = mdl:GetModelBounds()
+		cam.Start3D(Vector(50, 0, (maxs.z - mins.z) / 2), Angle(0, -180), 90, sx, sy, w, h)
 			render.SuppressEngineLighting(true)
 
 				mdl:SetAngles(Angle(0, (30 * CurTime()) % 360))
@@ -83,6 +87,15 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 
 			render.SuppressEngineLighting(false)
 		cam.End3D()
+	elseif (self.Item.Type == "Shard") then
+		local RealColor, AddColor = pluto.inv.colors(self.Item.Color)
+		newshard:SetVector("$color", RealColor:ToVector())
+		newshardadd:SetVector("$color", AddColor:ToVector())
+		surface.SetDrawColor(255, 255, 255, 255)
+		surface.SetMaterial(newshard)
+		surface.DrawTexturedRect(x, y, w, h)
+		surface.SetMaterial(newshardadd)
+		surface.DrawTexturedRect(x, y, w, h)
 	end
 end
 
