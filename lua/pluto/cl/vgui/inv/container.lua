@@ -15,6 +15,12 @@ surface.CreateFont("pluto_inventory_x", {
 	weight = 1000,
 })
 
+surface.CreateFont("pluto_inventory_storage", {
+	font = "Verdana",
+	size = 15,
+	weight = 100,
+})
+
 local text_color = Color(255, 255, 255)
 local inner_color = Color(64, 66, 74)
 
@@ -42,6 +48,7 @@ function PANEL:Init()
 
 	self.SidePanel = self:Add "ttt_curved_panel"
 	self.SidePanel:SetWide(self.SidePanelSize + 10)
+	self.SidePanel:SetVisible(false)
 
 	self.SidePanelContainer = self.SidePanel:Add "ttt_curved_panel"
 	self.SidePanelContainer:Dock(FILL)
@@ -59,6 +66,34 @@ function PANEL:Init()
 	self.TabContainer:SetTall(self.TopSize)
 	self.TabContainer:DockMargin(4, 0, 0, 0)
 
+	self.StorageExpander = self.TabContainer:Add "pluto_label"
+	self.StorageExpander:Dock(RIGHT)
+	self.StorageExpander:SetFont "pluto_inventory_storage"
+	self.StorageExpander:SetText ">>"
+	self.StorageExpander:SetTextColor(Color(255, 255, 255))
+	self.StorageExpander:SetContentAlignment(5)
+	self.StorageExpander:SizeToContentsX()
+	self.StorageExpander:DockMargin(0, 0, 4, 4)
+	self.StorageExpander:SetCursor "hand"
+	self.StorageExpander:SetMouseInputEnabled(true)
+	function self.StorageExpander.OnMousePressed(s, m)
+		if (m == MOUSE_LEFT) then
+			s.Toggled = not s.Toggled
+
+			self.SidePanel:SetVisible(s.Toggled)
+		end
+	end
+
+	self.Divider = self.TabContainer:Add "EditablePanel"
+	self.Divider:Dock(RIGHT)
+	self.Divider:SetWide(1)
+	self.Divider:DockMargin(4, 0, 4, 0)
+
+	function self.Divider:Paint(w, h)
+		surface.SetDrawColor(58, 58, 58)
+		surface.DrawLine(w / 2, 2, w / 2, h - 2)
+	end
+
 	self.CloseButton = self.TabContainer:Add "pluto_label"
 	self.CloseButton:Dock(RIGHT)
 	self.CloseButton:SetSize(self.TopSize, self.TopSize)
@@ -69,6 +104,7 @@ function PANEL:Init()
 	self.CloseButton:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.CloseButton:SetCursor "hand"
 	self.CloseButton:SetMouseInputEnabled(true)
+	self.CloseButton:SizeToContentsX()
 	function self.CloseButton.OnMousePressed(s, m)
 		if (m == MOUSE_LEFT) then
 			self:Remove()
