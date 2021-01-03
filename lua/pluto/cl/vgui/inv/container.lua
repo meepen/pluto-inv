@@ -97,6 +97,7 @@ function PANEL:Init()
 			s.Toggled = not s.Toggled
 
 			self.SidePanel:SetVisible(s.Toggled)
+			self.StorageExpander:SetText(s.Toggled and "<<" or ">>")
 		end
 	end
 
