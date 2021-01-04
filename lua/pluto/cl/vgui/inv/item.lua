@@ -23,14 +23,15 @@ function PANEL:Init()
 
 	local perform = self.Inner.PerformLayout
 	function self.Inner.PerformLayout(s, w, h)
-		self.ItemBackground:SetSize(w, h)
+		if (IsValid(self.ItemBackground)) then
+			self.ItemBackground:Destroy()
+		end
+
+		self.ItemBackground = hud.BuildCurvedMesh(s:GetCurve() or 0, 0, 0, w, h, s:GetNoCurveTopLeft(), s:GetNoCurveTopRight(), s:GetNoCurveBottomLeft(), s:GetNoCurveBottomRight(), color_white)
 		if (perform) then
 			perform(s, w, h)
 		end
 	end
-
-	self.ItemBackground = vgui.Create "ttt_curved_panel"
-	self.ItemBackground:SetPaintedManually(true)
 
 	self.ItemPanel = self.Inner:Add "EditablePanel"
 	self.ItemPanel:Dock(FILL)
@@ -48,6 +49,8 @@ end
 local newshard = Material "pluto/newshard.png"
 local newshardadd = Material "pluto/newshardbg.png"
 local lock = Material "icon16/lock.png"
+local translate = Matrix()
+local color_mat = Material "color"
 
 function PANEL:PaintInner(pnl, w, h, x, y)
 	if (not self.Item) then
@@ -67,12 +70,17 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 		sx = sx - 1
 		sy = sy - 1
 	end
+	local r, g, b = render.GetColorModulation()
 
-	self.ItemBackground:PaintAt(sx, sy)
+	translate:SetTranslation(Vector(sx, sy))
+	color_mat:SetVector("$color", self.Item:GetColor():ToVector())
+	render.SetColorMaterial()
+	cam.PushModelMatrix(translate)
+	self.ItemBackground:Draw()
+	cam.PopModelMatrix(translate)
 
 	local mdl = self:GetCachedCurrentModel()
 
-	local r, g, b = render.GetColorModulation()
 	render.SetColorModulation(1, 1, 1)
 	if (IsValid(mdl) and self.Item.Type == "Weapon") then
 		local mins, maxs = mdl:GetModelBounds()
@@ -132,7 +140,6 @@ function PANEL:SetCurve(curve)
 	self.InnerBorder:SetCurve(curve)
 	self.OuterBorder:SetCurve(curve)
 	self.Inner:SetCurve(curve)
-	self.ItemBackground:SetCurve(curve)
 end
 
 function PANEL:SetItem(item)
@@ -144,7 +151,6 @@ function PANEL:SetItem(item)
 
 	if (item) then
 		self:SetCursor "hand"
-		self.ItemBackground:SetColor(item:GetColor())
 	else
 		self:SetCursor "arrow"
 	end
@@ -294,7 +300,9 @@ function PANEL:ClickedWith(other)
 end
 
 function PANEL:OnRemove()
-	self.ItemBackground:Remove()
+	if (IsValid(self.ItemBackground)) then
+		self.ItemBackground:Destroy()
+	end
 end
 
 vgui.Register("pluto_inventory_item", PANEL, "EditablePanel")
