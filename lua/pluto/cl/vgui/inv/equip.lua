@@ -11,7 +11,6 @@ sql.Query [[
 	);
 ]]
 
-
 for i = tonumber(sql.QueryValue "SELECT COUNT(*) FROM pluto_loadouts") + 1, 3 do
 	sql.Query([[
 		INSERT INTO pluto_loadouts (name) VALUES ('Loadout ]] .. i .. [[');
@@ -26,6 +25,34 @@ for i = 1, 6 do
 	loadout_slot_convars[i] = CreateConVar("pluto_loadout_slot" .. i, "NULL", {FCVAR_USERINFO})
 end
 
+local function GetLoadoutItems(idx)
+	local items = sql.Query("SELECT * from pluto_loadouts WHERE idx = " .. sql.SQLStr(idx) .. ";")
+	PrintTable(items or {"NONE"})
+	if (not items) then
+		return
+	end
+	items = items[1]
+
+	local ret = {}
+
+	for i = 1, 6 do
+		local id = items["slot" .. i]
+
+		local wep
+		if (id ~= "NULL") then
+			wep = pluto.received.item[tonumber(id)]
+		end
+
+		ret[i] = wep
+
+		loadout_slot_convars[i]:SetString(id)
+	end
+
+	return ret
+end
+
+GetLoadoutItems(pluto_last_loadout:GetInt())
+
 local PANEL = {}
 DEFINE_BASECLASS "pluto_inventory_component"
 
@@ -39,7 +66,7 @@ local filters = {
 			return false
 		end
 		local class = baseclass.Get(item.ClassName)
-		return class.Slot == 2
+		return class.Slot == 0
 	end,
 	[2] = function(item)
 		if (item.Type ~= "Weapon") then
@@ -53,7 +80,7 @@ local filters = {
 			return false
 		end
 		local class = baseclass.Get(item.ClassName)
-		return class.Slot == 0
+		return class.Slot == 2
 	end,
 	[4] = function(item)
 		if (item.Type ~= "Weapon") then
@@ -152,22 +179,9 @@ end
 function PANEL:LoadLoadout(idx)
 	pluto_last_loadout:SetInt(idx)
 	self.ActiveLoadout = idx
-	local items = sql.Query("SELECT * from pluto_loadouts WHERE idx = " .. sql.SQLStr(idx) .. ";")
-	if (not items) then
-		return
-	end
-	items = items[1]
 
-	for i = 1, 6 do
-		local id = items["slot" .. i]
-
-		local wep
-		if (id ~= "NULL") then
-			wep = pluto.received.item[tonumber(id)]
-		end
-
+	for i, wep in pairs(GetLoadoutItems(idx)) do
 		self.Items[i]:SetItem(wep)
-		loadout_slot_convars[i]:SetString(wep and wep.ID or "NULL")
 	end
 end
 

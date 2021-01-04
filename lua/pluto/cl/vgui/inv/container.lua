@@ -215,7 +215,7 @@ function PANEL:Init()
 	self.TabList = {}
 
 	for id, tab in pairs(pluto.cl_inv) do
-		if (tab.Type == "normal") then
+		if (tab.Type == "normal" or tab.Type == "equip") then
 			table.insert(self.TabList, {
 				Tab = tab
 			})
@@ -457,5 +457,5 @@ end
 
 if (IsValid(pluto.ui.pnl)) then
 	pluto.ui.pnl:Remove()
+	pluto.ui.toggle()
 end
-pluto.ui.toggle()

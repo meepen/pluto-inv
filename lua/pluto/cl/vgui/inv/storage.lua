@@ -83,8 +83,9 @@ function PANEL:SetText(t)
 end
 
 function PANEL:PopulateFromTab(tab)
-	if (tab.Type ~= "normal") then
-		ErrorNoHalt("unknown how to process tab type " .. tab.Type)
+	local tabtype = pluto.tabs[tab.Type]
+	if (not tabtype) then
+		ErrorNoHalt("unknown how to handle tab type " .. tab.Type)
 		return
 	end
 
@@ -92,6 +93,10 @@ function PANEL:PopulateFromTab(tab)
 		local item = tab.Items[i]
 		self.Items[i]:SetUpdateFrom(tab.ID, i)
 		self.Items[i]:SetItem(item)
+
+		self.Items[i].CanClickWith = function(s, other)
+			return tabtype.canaccept(i, other.Item)
+		end
 	end
 	pluto.ui.realpickedupitem = nil
 	if (IsValid(pluto.ui.pickedupitem)) then
