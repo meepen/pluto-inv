@@ -1,3 +1,24 @@
+sql.Query [[
+	CREATE TABLE IF NOT EXISTS pluto_loadouts (
+		idx INTEGER PRIMARY KEY AUTOINCREMENT,
+		name VARCHAR(16),
+		slot1 INT UNSIGNED DEFAULT NULL,
+		slot2 INT UNSIGNED DEFAULT NULL,
+		slot3 INT UNSIGNED DEFAULT NULL,
+		slot4 INT UNSIGNED DEFAULT NULL,
+		slot5 INT UNSIGNED DEFAULT NULL,
+		slot6 INT UNSIGNED DEFAULT NULL
+	);
+]]
+
+for i = tonumber(sql.QueryValue "SELECT COUNT(*) FROM pluto_loadouts") + 1, 3 do
+	sql.Query([[
+		INSERT INTO pluto_loadouts (name) VALUES ('Loadout ]] .. i .. [[');
+	]])
+end
+
+local pluto_last_loadout = CreateConVar("pluto_last_loadout", "1", {FCVAR_ARCHIVE, FCVAR_UNREGISTERED, FCVAR_NEVER_AS_STRING})
+
 local PANEL = {}
 DEFINE_BASECLASS "pluto_inventory_component"
 
@@ -67,12 +88,6 @@ function PANEL:Init()
 	self.Dropdown:SetCurveTopLeft(false)
 	self.Dropdown:SetCurveBottomRight(false)
 
-	self.Dropdown:AddOption "Loadout 1"
-	self.Dropdown:AddOption "Loadout 2"
-	self.Dropdown:AddOption "Loadout 3"
-	self.Dropdown:AddOption "Loadout 4"
-
-
 	self.ItemContainer = self.Inner:Add "EditablePanel"
 	self.ItemContainer:Dock(LEFT)
 	self.ItemContainer:SetWide(64)
@@ -98,8 +113,9 @@ function PANEL:Init()
 		function item:CanClickWith(other)
 			return filters[i] and filters[i](other.Item)
 		end
-		function item:ClickedWith(other)
-			self:SetItem(other.Item)
+		function item.ClickedWith(s, other)
+			sql.Query([[UPDATE pluto_loadouts SET slot]] .. i .. [[ = ]] .. (other.Item and other.Item.ID or "NULL") .. [[ WHERE idx = ]] .. self.ActiveLoadout)
+			s:SetItem(other.Item)
 		end
 	
 		self.Items[i] = item
@@ -108,7 +124,36 @@ function PANEL:Init()
 			item2:DockMargin(0, 0, 0, 5)
 		end
 	end
+
+	for _, loadout in ipairs(sql.Query [[SELECT idx, name FROM pluto_loadouts ORDER BY idx ASC]]) do
+		self.Dropdown:AddOption(loadout.name, function()
+			self:LoadLoadout(tonumber(loadout.idx))
+		end)
+	end
+
+	self:LoadLoadout(pluto_last_loadout:GetInt())
 end
+
+function PANEL:LoadLoadout(idx)
+	self.ActiveLoadout = idx
+	local items = sql.Query("SELECT * from pluto_loadouts WHERE idx = " .. sql.SQLStr(idx) .. ";")
+	if (not items) then
+		return
+	end
+	items = items[1]
+
+	for i = 1, 6 do
+		local id = items["slot" .. i]
+
+		local wep
+		if (id ~= "NULL") then
+			wep = pluto.received.item[tonumber(id)]
+		end
+
+		self.Items[i]:SetItem(wep)
+	end
+end
+
 function PANEL:PerformLayout(w, h)
 	BaseClass.PerformLayout(self, w, h)
 	self.Dropdown:SetPos(w - self.Dropdown:GetWide(), 0)

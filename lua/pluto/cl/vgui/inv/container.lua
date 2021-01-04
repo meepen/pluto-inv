@@ -441,9 +441,6 @@ end
 
 vgui.Register("pluto_inv", PANEL, "EditablePanel")
 
-if (IsValid(pluto.ui.pnl)) then
-	pluto.ui.pnl:Remove()
-end
 
 function pluto.ui.toggle()
 	if (IsValid(pluto.ui.pnl)) then
@@ -458,4 +455,7 @@ function pluto.ui.toggle()
 	pluto.ui.pnl:SetKeyboardInputEnabled(false)
 end
 
+if (IsValid(pluto.ui.pnl)) then
+	pluto.ui.pnl:Remove()
+end
 pluto.ui.toggle()
