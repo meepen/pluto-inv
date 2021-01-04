@@ -11,6 +11,7 @@ sql.Query [[
 	);
 ]]
 
+
 for i = tonumber(sql.QueryValue "SELECT COUNT(*) FROM pluto_loadouts") + 1, 3 do
 	sql.Query([[
 		INSERT INTO pluto_loadouts (name) VALUES ('Loadout ]] .. i .. [[');
@@ -125,16 +126,24 @@ function PANEL:Init()
 		end
 	end
 
+	local chosen
+
 	for _, loadout in ipairs(sql.Query [[SELECT idx, name FROM pluto_loadouts ORDER BY idx ASC]]) do
 		self.Dropdown:AddOption(loadout.name, function()
 			self:LoadLoadout(tonumber(loadout.idx))
 		end)
+		if (not chosen or pluto_last_loadout:GetInt() == tonumber(loadout.idx)) then
+			chosen = #self.Dropdown.Options
+		end
 	end
 
-	self:LoadLoadout(pluto_last_loadout:GetInt())
+	if (chosen) then
+		self.Dropdown:ChooseOption(chosen)
+	end
 end
 
 function PANEL:LoadLoadout(idx)
+	pluto_last_loadout:SetInt(idx)
 	self.ActiveLoadout = idx
 	local items = sql.Query("SELECT * from pluto_loadouts WHERE idx = " .. sql.SQLStr(idx) .. ";")
 	if (not items) then

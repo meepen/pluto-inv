@@ -303,6 +303,8 @@ function PANEL:OnRemove()
 	if (IsValid(self.ItemBackground)) then
 		self.ItemBackground:Destroy()
 	end
+
+	self:RemoveShowcase()
 end
 
 vgui.Register("pluto_inventory_item", PANEL, "EditablePanel")
