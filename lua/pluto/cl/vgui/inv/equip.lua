@@ -20,6 +20,12 @@ end
 
 local pluto_last_loadout = CreateConVar("pluto_last_loadout", "1", {FCVAR_ARCHIVE, FCVAR_UNREGISTERED, FCVAR_NEVER_AS_STRING})
 
+local loadout_slot_convars = {}
+
+for i = 1, 6 do
+	loadout_slot_convars[i] = CreateConVar("pluto_loadout_slot" .. i, "NULL", {FCVAR_USERINFO})
+end
+
 local PANEL = {}
 DEFINE_BASECLASS "pluto_inventory_component"
 
@@ -116,6 +122,7 @@ function PANEL:Init()
 		end
 		function item.ClickedWith(s, other)
 			sql.Query([[UPDATE pluto_loadouts SET slot]] .. i .. [[ = ]] .. (other.Item and other.Item.ID or "NULL") .. [[ WHERE idx = ]] .. self.ActiveLoadout)
+			loadout_slot_convars[i]:SetString(other.Item and other.Item.ID or "NULL")
 			s:SetItem(other.Item)
 		end
 	
@@ -160,6 +167,7 @@ function PANEL:LoadLoadout(idx)
 		end
 
 		self.Items[i]:SetItem(wep)
+		loadout_slot_convars[i]:SetString(wep and wep.ID or "NULL")
 	end
 end
 
