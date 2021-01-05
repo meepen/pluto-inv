@@ -334,6 +334,12 @@ pluto.quests.rewards = {
 			Shares = 1.5,
 		},
 		{
+			Type = "heart",
+			Currency = "heart",
+			Amount = 2,
+			Shares = 1.5,
+		},
+		{
 			Type = "weapon",
 			ClassName = "weapon_cod4_ak47_silencer",
 			Tier = "uncommon",
