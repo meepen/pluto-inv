@@ -256,6 +256,8 @@ end
 function PANEL:OnMousePressed(m)
 	if (self.CanPickup and m == MOUSE_LEFT and not IsValid(pluto.ui.pickedupitem) and self.Item) then
 		pluto.ui.pickupitem(self)
+	elseif (m == MOUSE_LEFT and not self.CanPickup) then
+		self:OnLeftClick()
 	end
 
 	if (m == MOUSE_RIGHT) then
@@ -264,6 +266,10 @@ function PANEL:OnMousePressed(m)
 end
 
 function PANEL:OnRightClick()
+	-- derma menu??? idk
+end
+
+function PANEL:OnLeftClick()
 	-- derma menu??? idk
 end
 

@@ -153,6 +153,11 @@ function PANEL:Init()
 			s:SetItem(other.Item)
 		end
 		function item.OnRightClick(s)
+			sql.Query([[UPDATE pluto_loadouts SET slot]] .. i .. [[ = NULL WHERE idx = ]] .. self.ActiveLoadout)
+			loadout_slot_convars[i]:SetString "NULL"
+			s:SetItem()
+		end
+		function item.OnLeftClick(s)
 			if (not s.Item) then
 				return
 			end
