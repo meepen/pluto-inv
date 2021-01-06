@@ -199,7 +199,7 @@ PANEL.FilterTypes = {
 		return item.Type == text
 	end,
 	name = function(item, text)
-		return item:GetPrintName():lower():find(text)
+		return item:GetPrintName():lower():find(text, nil, true)
 	end,
 	slot = function(item, text)
 		text = (tonumber(text) or -1) - 1
@@ -209,6 +209,18 @@ PANEL.FilterTypes = {
 
 		local class = baseclass.Get(item.ClassName)
 		return class and class.Slot == text
+	end,
+	class = function(item, text)
+		if (item.Type ~= "Weapon") then
+			return false
+		end
+
+		if (item.ClassName == text) then
+			return
+		end
+
+		local class = baseclass.Get(item.ClassName)
+		return class and class.PrintName:lower():find(text, nil, true)
 	end
 }
 
