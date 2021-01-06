@@ -193,6 +193,25 @@ function PANEL:PaintOver()
 	end
 end
 
+PANEL.FilterTypes = {
+	type = function(item, text)
+		text = text:sub(1, 1):upper() .. text:sub(2):lower()
+		return item.Type == text
+	end,
+	name = function(item, text)
+		return item:GetPrintName():lower():find(text)
+	end,
+	slot = function(item, text)
+		text = (tonumber(text) or -1) - 1
+		if (item.Type ~= "Weapon") then
+			return false
+		end
+
+		local class = baseclass.Get(item.ClassName)
+		return class and class.Slot == text
+	end
+}
+
 function PANEL:SearchItems(text)
 	self.ItemHighlights = {}
 	if (text == "") then
@@ -201,13 +220,47 @@ function PANEL:SearchItems(text)
 
 	self.SearchText = text
 
+	local removals = {}
+
+	local filters = {}
+
+	for pos1, typ, txt, pos2 in text:gmatch "%s*()([^%s:]+):(%S*)%s*()" do
+		filters[typ] = txt
+		table.insert(removals, {pos1, pos2})
+	end
+
+	for i = #removals, 1, -1 do
+		local positions = removals[i]
+
+		text = text:sub(1, positions[1] - 1) .. text:sub(positions[2])
+	end
+
+	text = text:Trim()
+	if (text ~= "") then
+		filters.name = text
+	end
+
 	for i, pnl in pairs(self.Items) do
 		local item = pnl.Item
 		if (not item) then
 			continue
 		end
 
-		if (item:GetPrintName():lower():find(text, nil, true)) then
+		local good = true
+
+		for filtername, filterdata in pairs(filters) do
+			local filter = self.FilterTypes[filtername]
+			if (not filter) then
+				continue
+			end
+
+			if (not filter(item, filterdata)) then
+				good = false
+				break
+			end
+		end
+
+		if (good) then
 			self:HighlightItem(i, math.huge)
 		end
 	end
