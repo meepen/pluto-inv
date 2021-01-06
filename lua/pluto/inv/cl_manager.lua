@@ -235,6 +235,7 @@ function pluto.inv.readtab()
 
 	tab.Name = net.ReadString()
 	tab.Type = net.ReadString()
+	tab.Shape = net.ReadString()
 	local col = net.ReadUInt(24)
 	local r = bit.band(bit.rshift(col, 16), 0xff)
 	local g = bit.band(bit.rshift(col, 8), 0xff)

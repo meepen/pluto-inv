@@ -129,7 +129,7 @@ function pluto.inv.retrievetabs(steamid, cb)
 	steamid = pluto.db.steamid64(steamid)
 
 	pluto.db.instance(function(db)
-		local d, err = mysql_stmt_run(db, "SELECT idx, color, name, tab_type FROM pluto_tabs WHERE owner = ?", steamid)
+		local d, err = mysql_stmt_run(db, "SELECT idx, color, name, tab_type, tab_shape FROM pluto_tabs WHERE owner = ?", steamid)
 		if (not d) then
 			pwarnf("NO TABS FOR %s: %s", steamid, err)
 			return cb(false)
@@ -152,6 +152,7 @@ function pluto.inv.retrievetabs(steamid, cb)
 				Name = tab.name,
 				Owner = steamid,
 				Type = tab.tab_type,
+				Shape = tab.tab_shape,
 			})
 		end
 
@@ -185,7 +186,7 @@ function pluto.inv.addtabs(db, steamid, types)
 	for i = 1, #types do
 		local type = types[i]
 		mysql_stmt_run(db, "INSERT INTO pluto_tabs (name, owner, tab_type) SELECT CAST(COUNT(*) + 1 as CHAR), ?, ? FROM pluto_tabs WHERE owner = ?", steamid, type or "normal", steamid)
-		local tab = mysql_query(db, "SELECT idx, color, name, tab_type FROM pluto_tabs WHERE idx = LAST_INSERT_ID()")[1]
+		local tab = mysql_query(db, "SELECT idx, color, name, tab_type, tab_shape FROM pluto_tabs WHERE idx = LAST_INSERT_ID()")[1]
 
 		tabs[i] = {
 			RowID = tab.idx,
@@ -193,6 +194,7 @@ function pluto.inv.addtabs(db, steamid, types)
 			Name = tab.name,
 			Owner = steamid,
 			Type = tab.tab_type,
+			Shape = tab.tab_shape,
 		}
 	end
 

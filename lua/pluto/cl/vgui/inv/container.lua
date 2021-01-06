@@ -398,6 +398,8 @@ function PANEL:AddStorageTab(tab)
 	local img = pnl:Add "pluto_inventory_shape"
 	img:SetSize(pnl:GetTall(), pnl:GetTall())
 	img:Dock(LEFT)
+	img:SetShape(tab.Shape)
+	img:SetColor(tab.Color)
 	img:SetMouseInputEnabled(false)
 
 	local lbl = pnl:Add "pluto_label"

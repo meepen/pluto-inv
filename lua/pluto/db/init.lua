@@ -6,6 +6,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				owner BIGINT UNSIGNED NOT NULL,
 				color INT UNSIGNED NOT NULL DEFAULT 0,
 				tab_type varchar(16) NOT NULL DEFAULT "normal",
+				tab_shape varchar(16) NOT NULL DEFAULT "square"
 				name VARCHAR(16) NOT NULL,
 
 				PRIMARY KEY(idx),
