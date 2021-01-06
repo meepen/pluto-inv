@@ -180,7 +180,10 @@ function PANEL:LoadLoadout(idx)
 	pluto_last_loadout:SetInt(idx)
 	self.ActiveLoadout = idx
 
-	for i, wep in pairs(GetLoadoutItems(idx)) do
+	local items = GetLoadoutItems(idx)
+
+	for i = 1, 6 do
+		local wep = items[i]
 		self.Items[i]:SetItem(wep)
 	end
 end
