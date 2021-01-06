@@ -27,7 +27,7 @@ end
 
 local function GetLoadoutItems(idx)
 	local items = sql.Query("SELECT * from pluto_loadouts WHERE idx = " .. sql.SQLStr(idx) .. ";")
-	PrintTable(items or {"NONE"})
+
 	if (not items) then
 		return
 	end

@@ -10,6 +10,40 @@ function PANEL:Init()
 	self.UpperArea:Dock(TOP)
 	self.UpperArea:SetTall(22)
 
+	self.SearchyBoiText = self.UpperArea:Add "DTextEntry"
+	self.SearchyBoiText:Dock(RIGHT)
+	self.SearchyBoiText:SetWide(100)
+	self.SearchyBoiText:SetFont "pluto_inventory_font"
+	self.SearchyBoiText:SetKeyboardInputEnabled(true)
+
+	function self.SearchyBoiText:OnMousePressed(m)
+		if (m == MOUSE_LEFT) then
+			pluto.ui.pnl:SetKeyboardInputEnabled(true)
+		end
+	end
+
+	function self.SearchyBoiText.OnFocusChanged(s, gained)
+		if (not gained) then
+			pluto.ui.pnl:SetKeyboardInputEnabled(false)
+		end
+	end
+
+	function self.SearchyBoiText.OnChange(s)
+		self:SearchItems(s:GetValue())
+	end
+
+	self.SearchyBoiText:DockMargin(0, 4, 0, 3)
+
+	self.SearchyBoi = self.UpperArea:Add "pluto_label"
+	self.SearchyBoi:Dock(RIGHT)
+	self.SearchyBoi:SetTextColor(Color(255, 255, 255))
+	self.SearchyBoi:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.SearchyBoi:SetFont "pluto_inventory_font"
+	self.SearchyBoi:SetText "Search"
+	self.SearchyBoi:DockMargin(0, 4, 5, 3)
+	self.SearchyBoi:SizeToContentsX()
+
+
 	self.Upper = self.UpperArea:Add "ttt_curved_panel"
 	self.Upper:Dock(LEFT)
 	self.Upper:SetWide(100)
@@ -107,6 +141,10 @@ function PANEL:PopulateFromTab(tab)
 			pluto.ui.realpickedupitem = self.Items[p.TabIndex]
 		end
 	end
+
+	if (self.SearchText) then
+		self:SearchItems(self.SearchText)
+	end
 end
 
 function PANEL:SetCurve(curve)
@@ -129,11 +167,11 @@ function PANEL:OnMouseWheeled(wheel)
 	end
 end
 
-function PANEL:HighlightItem(item)
+function PANEL:HighlightItem(item, lifetime)
 	table.insert(self.ItemHighlights, {
 		StartTime = CurTime(),
 		TabIndex = item,
-		Lifetime = 2,
+		Lifetime = lifetime or 2,
 	})
 end
 
@@ -152,6 +190,26 @@ function PANEL:PaintOver()
 		local w, h = pnl:GetSize()
 		surface.SetDrawColor(255, 255, 255, (1 - frac) * 255)
 		surface.DrawOutlinedRect(x, y, w, h, 4)
+	end
+end
+
+function PANEL:SearchItems(text)
+	self.ItemHighlights = {}
+	if (text == "") then
+		return
+	end
+
+	self.SearchText = text
+
+	for i, pnl in pairs(self.Items) do
+		local item = pnl.Item
+		if (not item) then
+			continue
+		end
+
+		if (item:GetPrintName():lower():find(text, nil, true)) then
+			self:HighlightItem(i, math.huge)
+		end
 	end
 end
 
