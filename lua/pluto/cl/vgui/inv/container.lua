@@ -395,7 +395,7 @@ function PANEL:AddStorageTab(tab)
 	pnl:Dock(TOP)
 	pnl:SetTall(20)
 
-	local img = pnl:Add "DImage"
+	local img = pnl:Add "pluto_inventory_shape"
 	img:SetSize(pnl:GetTall(), pnl:GetTall())
 	img:Dock(LEFT)
 	img:SetMouseInputEnabled(false)

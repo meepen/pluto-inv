@@ -58,6 +58,7 @@ pluto.files.load {
 		"cl/vgui/plutodropdown.lua",
 
 		"cl/vgui/inv/component.lua",
+		"cl/vgui/inv/shape.lua",
 		"cl/vgui/inv/equip.lua",
 		"cl/vgui/inv/item.lua",
 		"cl/vgui/inv/storage.lua",
