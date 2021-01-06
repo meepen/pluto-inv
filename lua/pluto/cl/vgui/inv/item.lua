@@ -259,8 +259,12 @@ function PANEL:OnMousePressed(m)
 	end
 
 	if (m == MOUSE_RIGHT) then
-		print "b"
+		self:OnRightClick()
 	end
+end
+
+function PANEL:OnRightClick()
+	-- derma menu??? idk
 end
 
 function PANEL:OnCursorEntered()

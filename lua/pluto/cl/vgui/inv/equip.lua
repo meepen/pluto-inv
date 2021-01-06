@@ -152,6 +152,12 @@ function PANEL:Init()
 			loadout_slot_convars[i]:SetString(other.Item and other.Item.ID or "NULL")
 			s:SetItem(other.Item)
 		end
+		function item.OnRightClick(s)
+			if (not s.Item) then
+				return
+			end
+			pluto.ui.highlight(s.Item)
+		end
 	
 		self.Items[i] = item
 		if (i ~= 6) then

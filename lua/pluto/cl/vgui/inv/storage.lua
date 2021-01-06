@@ -35,6 +35,7 @@ function PANEL:Init()
 
 	self.ItemRows = {}
 	self.Items = {}
+	self.ItemHighlights = {}
 
 	for i = 1, 6 do
 		local row = self.ItemContainer:Add "EditablePanel"
@@ -83,6 +84,7 @@ function PANEL:SetText(t)
 end
 
 function PANEL:PopulateFromTab(tab)
+	self.ItemHighlights = {}
 	local tabtype = pluto.tabs[tab.Type]
 	if (not tabtype) then
 		ErrorNoHalt("unknown how to handle tab type " .. tab.Type)
@@ -124,6 +126,32 @@ end
 function PANEL:OnMouseWheeled(wheel)
 	if (IsValid(self.Handler)) then
 		self.Handler:HandleStorageScroll(wheel)
+	end
+end
+
+function PANEL:HighlightItem(item)
+	table.insert(self.ItemHighlights, {
+		StartTime = CurTime(),
+		TabIndex = item,
+		Lifetime = 2,
+	})
+end
+
+function PANEL:PaintOver()
+	for i = #self.ItemHighlights, 1, -1 do
+		local item = self.ItemHighlights[i]
+		if (item.StartTime + item.Lifetime < CurTime()) then
+			table.remove(self.ItemHighlights, i)
+			continue
+		end
+		
+		local pnl = self.Items[item.TabIndex]
+		local frac = (CurTime() - item.StartTime) / item.Lifetime
+
+		local x, y = self:ScreenToLocal(pnl:LocalToScreen(0, 0))
+		local w, h = pnl:GetSize()
+		surface.SetDrawColor(255, 255, 255, (1 - frac) * 255)
+		surface.DrawOutlinedRect(x, y, w, h, 4)
 	end
 end
 

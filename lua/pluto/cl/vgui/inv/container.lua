@@ -437,6 +437,10 @@ function PANEL:SelectTab(tab)
 	end
 end
 
+function PANEL:HighlightItem(tabidx)
+	self.Storage:HighlightItem(tabidx)
+end
+
 function PANEL:OnRemove()
 	pluto.ui.pickupitem()
 end
@@ -455,6 +459,19 @@ function pluto.ui.toggle()
 	pluto.ui.pnl:MakePopup()
 	pluto.ui.pnl:SetPopupStayAtBack(true)
 	pluto.ui.pnl:SetKeyboardInputEnabled(false)
+end
+
+function pluto.ui.highlight(item)
+	if (not IsValid(pluto.ui.pnl)) then
+		return
+	end
+
+	if (not item or not item.TabID) then
+		return
+	end
+
+	pluto.ui.pnl:SelectTab(pluto.cl_inv[item.TabID])
+	pluto.ui.pnl:HighlightItem(item.TabIndex)
 end
 
 if (IsValid(pluto.ui.pnl)) then
