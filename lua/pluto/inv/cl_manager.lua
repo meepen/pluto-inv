@@ -246,6 +246,8 @@ function pluto.inv.readtab()
 		local tabindex = net.ReadUInt(8)
 		local item = pluto.inv.readitem()
 		tab.Items[tabindex] = item
+		item.TabID = id
+		item.TabIndex = tabindex
 	end
 
 	return true
@@ -266,8 +268,9 @@ function pluto.inv.readtabupdate()
 		item = pluto.inv.readitem()
 	end
 
-	print(tabid, tabindex, item)
 	pluto.cl_inv[tabid].Items[tabindex] = item
+	item.TabID = tabid
+	item.TabIndex = tabindex
 
 	hook.Run("PlutoTabUpdate", tabid, tabindex, item)
 end
@@ -300,6 +303,14 @@ function pluto.inv.writetabswitch(tabid1, tabindex1, tabid2, tabindex2)
 	local tab1, tab2 = pluto.cl_inv[tabid1], pluto.cl_inv[tabid2]
 
 	tab1.Items[tabindex1], tab2.Items[tabindex2] = tab2.Items[tabindex2], tab1.Items[tabindex1]
+
+	local item1, item2 = tab1.Items[tabindex1], tab2.Items[tabindex2]
+	if (item1) then
+		item1.TabID, item1.TabIndex = tabid1, tabindex1
+	end
+	if (item2) then
+		item2.TabID, item2.TabIndex = tabid2, tabindex2
+	end
 
 	net.WriteUInt(tabid1, 32)
 	net.WriteUInt(tabindex1, 8)
