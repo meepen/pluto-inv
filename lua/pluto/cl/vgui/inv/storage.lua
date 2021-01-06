@@ -226,11 +226,10 @@ PANEL.FilterTypes = {
 
 function PANEL:SearchItems(text)
 	self.ItemHighlights = {}
+	self.SearchText = text
 	if (text == "") then
 		return
 	end
-
-	self.SearchText = text
 
 	local removals = {}
 
