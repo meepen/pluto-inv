@@ -84,7 +84,7 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 	render.SetColorModulation(1, 1, 1)
 	if (IsValid(mdl) and self.Item.Type == "Weapon") then
 		local mins, maxs = mdl:GetModelBounds()
-		local lookup = weapons.GetStored(self.Item.ClassName).Ortho or {0, 0}
+		local lookup = weapons.GetStored(self.Item.ClassName).Ortho or baseclass.Get(self.Item.ClassName).Ortho or {0, 0}
 
 		local angle = Angle(0, -90)
 		local size = mins:Distance(maxs) / 2.5 * (lookup.size or 1) * 1.1

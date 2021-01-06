@@ -30,3 +30,5 @@ function SWEP:Think()
 
 	return r
 end
+
+SWEP.Ortho = {-4.5, 3}

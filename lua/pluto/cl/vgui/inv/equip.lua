@@ -66,7 +66,7 @@ local filters = {
 			return false
 		end
 		local class = baseclass.Get(item.ClassName)
-		return class.Slot == 0
+		return class.Slot == 2
 	end,
 	[2] = function(item)
 		if (item.Type ~= "Weapon") then
@@ -80,7 +80,7 @@ local filters = {
 			return false
 		end
 		local class = baseclass.Get(item.ClassName)
-		return class.Slot == 2
+		return class.Slot == 0
 	end,
 	[4] = function(item)
 		if (item.Type ~= "Weapon") then
