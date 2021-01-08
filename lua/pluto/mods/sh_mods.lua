@@ -32,6 +32,10 @@ function MOD:GetTierName(tier)
 	return self:GetPrintName() .. " " .. pluto.toroman(tier)
 end
 
+function MOD:GetMinMax()
+	return self.Tiers[#self.Tiers][1], self.Tiers[1][2]
+end
+
 function pluto.mods.getrolls(mod, tier, rolls)
 	local retn = {}
 

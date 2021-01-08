@@ -104,16 +104,20 @@ function PANEL:AddPrefix(prefix, item)
 	name:SetRenderSystem(pluto.fonts.systems.shadow)
 	name:SetText ""
 	name:SetTextColor(Color(255, 255, 255))
-	name:SetText(MOD.Name)
+	name:SetText(MOD:GetTierName(prefix.Tier))
 	name:SizeToContentsY(2)
 	name:SetContentAlignment(4)
 
 	local bar = container:Add "pluto_showcase_bar"
 	bar:Dock(FILL)
 	local rolls = pluto.mods.getrolls(MOD, prefix.Tier, prefix.Roll)
-	bar:AddFilling(0.5, pluto.mods.getstatvalue(baseclass.Get(item.ClassName), MOD.StatModifier), Color(128, 128, 120)) -- MOD:FormatModifier(1, rolls[1])
+	bar:AddFilling(0.35, pluto.mods.getstatvalue(baseclass.Get(item.ClassName), MOD.StatModifier), Color(128, 128, 120)) -- MOD:FormatModifier(1, rolls[1])
 	local txt = MOD:FormatModifier(1, rolls[1])
-	bar:AddFilling(math.random() * 0.15 + 0.2, txt:sub(1, 1) == "-" and txt or "+" .. txt)
+	local min, max = MOD:GetMinMax()
+
+	
+
+	bar:AddFilling(0.2 + 0.45 * (rolls[1] - min) / (max - min), txt:sub(1, 1) == "-" and txt or "+" .. txt)
 
 
 	if (IsValid(self.LastAddedPrefix)) then

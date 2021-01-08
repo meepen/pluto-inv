@@ -6,11 +6,11 @@ MOD.Tags = {
 }
 
 function MOD:IsNegative(roll)
-	return roll < 0
+	return roll > 0
 end
 
 function MOD:FormatModifier(index, roll)
-	return string.format("%.01f%%", -roll)
+	return string.format("%.01f%%", roll)
 end
 
 function MOD:GetDescription(rolls)
