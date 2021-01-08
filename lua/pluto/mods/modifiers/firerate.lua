@@ -1,5 +1,6 @@
 MOD.Type = "prefix"
-MOD.Name = "Cycle"
+MOD.Name = "RPM"
+MOD.StatModifier = "Delay"
 MOD.Tags = {
 	"rpm", "speed"
 }
@@ -23,17 +24,5 @@ MOD.Tiers = {
 	{ -1, 2.5 },
 	{ -4, -1 },
 }
-
-function MOD:ModifyWeapon(wep, rolls)
-	wep:DefinePlutoOverrides("Delay", 0, function(old, pct)
-		local rpm = 60 / old
-
-		rpm = rpm + pct * rpm
-
-		return 60 / rpm
-	end)
-
-	wep.Pluto.Delay = wep.Pluto.Delay + rolls[1] / 100
-end
 
 return MOD

@@ -64,6 +64,10 @@ pluto.files.load {
 		"cl/vgui/inv/storage.lua",
 		"cl/vgui/inv/container.lua",
 
+		"cl/vgui/showcase/init.lua",
+		"cl/vgui/showcase/weapon/container.lua",
+		"cl/vgui/showcase/weapon/bar.lua",
+
 		"cl/credits.lua",
 	},
 	Shared = {

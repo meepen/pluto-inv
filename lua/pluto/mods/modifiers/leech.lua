@@ -1,5 +1,6 @@
 MOD.Type = "suffix"
 MOD.Name = "The Leech"
+MOD.Color = Color(3, 211, 97)
 MOD.Tags = {
 	"damage", "heal"
 }

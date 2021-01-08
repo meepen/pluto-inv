@@ -13,14 +13,6 @@ function NODE:ModifyWeapon(node, wep)
 	wep.Primary.ClipSize = round(wep.Primary.ClipSize_Original * wep.Pluto.ClipSize)
 	wep.Primary.DefaultClip = round(wep.Primary.DefaultClip_Original * wep.Pluto.ClipSize)
 
-	wep:DefinePlutoOverrides("Delay", 0, function(old, pct)
-		local rpm = 60 / old
-
-		rpm = rpm + pct * rpm
-
-		return 60 / rpm
-	end)
-
 	wep.NoReload = true
 
 	wep.Pluto.Delay = wep.Pluto.Delay - 0.15

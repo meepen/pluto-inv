@@ -1,5 +1,6 @@
 MOD.Type = "suffix"
 MOD.Name = "Marksmanship"
+MOD.Color = Color(211, 152, 3)
 MOD.Tags = {
 	"precise", "damage",
 }

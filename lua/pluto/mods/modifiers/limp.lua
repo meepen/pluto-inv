@@ -1,5 +1,6 @@
 MOD.Type = "suffix"
 MOD.Name = "Crippling"
+MOD.Color = Color(211, 3, 79)
 MOD.Tags = {
 	"damage", "hinder",
 }

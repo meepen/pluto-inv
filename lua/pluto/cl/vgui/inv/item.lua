@@ -241,7 +241,7 @@ function PANEL:StartShowcase()
 		return
 	end
 
-	self.Showcase = pluto.ui.showcase(self.Item)
+	self.Showcase = pluto.ui.newshowcase(self.Item)
 
 	local x, y = self:LocalToScreen(self:GetWide(), 0)
 	if (x + self.Showcase:GetWide() > ScrW()) then

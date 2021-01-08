@@ -4,6 +4,8 @@ MOD.Tags = {
 	"damage", "poison", "dot"
 }
 
+MOD.Color = Color(211, 3, 211)
+
 function MOD:IsNegative(roll)
 	return roll < 0
 end

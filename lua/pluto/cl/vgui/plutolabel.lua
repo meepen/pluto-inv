@@ -34,22 +34,23 @@ function PANEL:DoClick()
 	end
 end
 
-function PANEL:SizeToContentsX()
+function PANEL:SizeToContentsX(add)
+	add = add or 0
 	local surface = self:GetRenderSystem()
 	surface.SetFont(self:GetFont())
-	self:SetWide((surface.GetTextSize(self:GetText())))
+	self:SetWide(surface.GetTextSize(self:GetText()) + 1 + add)
 end
 
 function PANEL:SizeToContents()
-	local surface = self:GetRenderSystem()
-	surface.SetFont(self:GetFont())
-	self:SetSize(surface.GetTextSize(self:GetText()))
+	self:SizeToContentsX(1)
+	self:SizeToContentsY(1)
 end
 
-function PANEL:SizeToContentsY()
+function PANEL:SizeToContentsY(add)
+	add = add or 0
 	local surface = self:GetRenderSystem()
 	surface.SetFont(self:GetFont())
-	self:SetTall(select(2, surface.GetTextSize(self:GetText())))
+	self:SetTall(select(2, surface.GetTextSize(self:GetText())) + 1 + add)
 end
 
 function PANEL:SetContentAlignment(alignment)

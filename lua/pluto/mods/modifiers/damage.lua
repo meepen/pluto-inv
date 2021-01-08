@@ -1,5 +1,6 @@
 MOD.Type = "prefix"
-MOD.Name = "Strength"
+MOD.Name = "Damage"
+MOD.StatModifier = "Damage"
 MOD.Tags = {
 	"damage"
 }
@@ -26,10 +27,5 @@ MOD.Tiers = {
 	{ 3, 6 },
 	{ -3, 3 },
 }
-
-function MOD:ModifyWeapon(wep, rolls)
-	wep:DefinePlutoOverrides "Damage"
-	wep.Pluto.Damage = wep.Pluto.Damage + wep:ScaleRollType("damage", rolls[1] / 100, true)
-end
 
 return MOD

@@ -51,6 +51,7 @@ function pluto.inv.readmod(item)
 		mod.Type = net.ReadString()
 		mod.Name = net.ReadString()
 
+		ReadIfExists(mod, "StatModifier")
 		ReadIfExists(mod, "Color")
 		ReadIfExists(mod, "FormatModifier")
 		ReadIfExists(mod, "GetDescription")

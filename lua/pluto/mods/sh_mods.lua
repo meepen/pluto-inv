@@ -109,3 +109,39 @@ function pluto.mods.formatdescription(mod_data, item, format)
 
 	return string.formatsafe(desc, unpack(format))
 end
+
+local function getrawvalue(wep, name)
+	local s, c = pcall(wep["Get" .. name], wep)
+	if (s) then
+		return c
+	end
+
+	if (wep.Primary and wep.Primary[name]) then
+		return wep.Primary[name]
+	end
+
+	if (wep[name]) then
+		return wep[name]
+	end
+end
+
+function pluto.mods.getstatvalue(wep, name)
+	if (name == "ReloadAnimationSpeed" or name == "Recoil" or name == "ViewPunchAngles") then
+		return ""
+	end
+
+	local val = getrawvalue(wep, name)
+	if (name == "Delay") then
+		return math.Round(60 / val)
+	end
+
+	if (name == "Damage" and wep.Bullets and wep.Bullets.Num and wep.Bullets.Num > 1) then
+		return math.Round(val, 1) .. "*" .. wep.Bullets.Num
+	end
+
+	if (type(val) == "Vector") then
+		return val:Length()
+	end
+
+	return tostring(val or "unknown")
+end

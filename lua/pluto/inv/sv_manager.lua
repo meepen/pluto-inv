@@ -56,6 +56,7 @@ function pluto.inv.writemod(ply, item, gun)
 		net.WriteString(mod.Type)
 		net.WriteString(mod.Name)
 
+		WriteIfExists(mod, "StatModifier")
 		WriteIfExists(mod, "Color")
 		WriteIfExists(mod, "FormatModifier")
 		WriteIfExists(mod, "GetDescription")

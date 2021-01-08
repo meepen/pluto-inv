@@ -1,5 +1,6 @@
 MOD.Type = "prefix"
-MOD.Name = "Vision"
+MOD.Name = "Range"
+MOD.StatModifier = "DamageDropoffRangeMax"
 MOD.Tags = {
 	"range"
 }
@@ -20,10 +21,5 @@ MOD.Tiers = {
 	{ 10, 20 },
 	{ 0.1, 10 },
 }
-
-function MOD:ModifyWeapon(wep, roll)
-	wep:DefinePlutoOverrides "DamageDropoffRangeMax"
-	wep.Pluto.DamageDropoffRangeMax = wep.Pluto.DamageDropoffRangeMax + roll[1] / 100
-end
 
 return MOD

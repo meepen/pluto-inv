@@ -8,6 +8,5 @@ function NODE:GetDescription(node)
 end
 
 function NODE:ModifyWeapon(node, wep)
-	wep:DefinePlutoOverrides "ViewPunchAngles"
 	wep.Pluto.ViewPunchAngles = wep.Pluto.ViewPunchAngles - (4 + node.node_val1 * 12) / 100
 end

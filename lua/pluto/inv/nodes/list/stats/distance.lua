@@ -8,6 +8,5 @@ function NODE:GetDescription(node)
 end
 
 function NODE:ModifyWeapon(node, wep)
-	wep:DefinePlutoOverrides "DamageDropoffRangeMax"
 	wep.Pluto.DamageDropoffRangeMax = wep.Pluto.DamageDropoffRangeMax + (5 + node.node_val1 * 5) / 100
 end

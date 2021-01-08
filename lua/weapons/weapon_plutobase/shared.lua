@@ -13,9 +13,32 @@ end
 
 pluto.wpn_db = pluto.wpn_db or {}
 
+function SWEP:PlutoInitialize()
+	self.Pluto = {}
+
+	self:DefinePlutoOverrides "ReloadAnimationSpeed"
+	self:DefinePlutoOverrides "Damage"
+	self:DefinePlutoOverrides "DamageDropoffRangeMax"
+	self:DefinePlutoOverrides "ViewPunchAngles"
+	self:DefinePlutoOverrides "Spread"
+	self:DefinePlutoOverrides "DamageDropoffRangeMax"
+	self:DefinePlutoOverrides "DamageDropoffRange"
+	self:DefinePlutoOverrides("Delay", 0, function(old, pct)
+		local rpm = 60 / old
+
+		rpm = rpm + pct * rpm
+
+		return 60 / rpm
+	end)
+end
+
 function WEAPON:GetInventoryItem()
 	return pluto.wpn_db[self:GetPlutoID()]
 end
+
+SWEP.StatModifierLookups = {
+	
+}
 
 function SWEP:ReceivePlutoData()
 	if (self.AlreadyReceived) then
@@ -36,6 +59,10 @@ function SWEP:ReceivePlutoData()
 			local mod = pluto.mods.byname[mod_data.Mod]
 			if (mod and mod.ModifyWeapon) then
 				mod:ModifyWeapon(self, pluto.mods.getrolls(mod, mod_data.Tier, mod_data.Roll))
+			elseif (mod.StatModifier) then
+				local roll = pluto.mods.getrolls(mod, mod_data.Tier, mod_data.Roll)[1]
+
+				self.Pluto[mod.StatModifier] = (self.Pluto[mod.StatModifier] or 0) + roll / 100
 			end
 		end
 	end
