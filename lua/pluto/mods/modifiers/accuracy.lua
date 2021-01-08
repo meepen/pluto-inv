@@ -1,5 +1,5 @@
 MOD.Type = "prefix"
-MOD.Name = "Accuracy"
+MOD.Name = "Spread"
 MOD.StatModifier = "Spread"
 MOD.Tags = {
 	"accuracy"
@@ -10,7 +10,7 @@ function MOD:IsNegative(roll)
 end
 
 function MOD:FormatModifier(index, roll)
-	return string.format("%.01f%%", -roll)
+	return string.format("%.01f%%", roll)
 end
 
 MOD.Description = "Accuracy is increased by %s"

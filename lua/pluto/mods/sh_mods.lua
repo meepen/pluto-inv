@@ -140,7 +140,7 @@ function pluto.mods.getstatvalue(wep, name)
 	end
 
 	if (type(val) == "Vector") then
-		return val:Length()
+		return math.Round(val:Length() * 100, 1)
 	end
 
 	return tostring(val or "unknown")

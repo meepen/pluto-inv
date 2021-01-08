@@ -1,5 +1,5 @@
 MOD.Type = "prefix"
-MOD.Name = "Range"
+MOD.Name = "Min. Range"
 MOD.StatModifier = "DamageDropoffRange"
 MOD.Tags = {
 	"range"
