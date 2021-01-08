@@ -72,13 +72,18 @@ function PANEL:Init()
 	self.EXPLabel:SizeToContentsX()
 	self.EXPLabel:SetContentAlignment(5)
 
-	self.ModContainer = self:Add "ttt_curved_panel"
-	self.ModContainer:SetCurve(0)
-	self.ModContainer:SetCurveTopRight(false)
-	self.ModContainer:SetCurveTopLeft(false)
-	self.ModContainer:SetColor(Color(30, 30, 30))
+	self.ModContainer = self:Add "EditablePanel"
 	self.ModContainer:Dock(TOP)
 	self.ModContainer:SetTall(0)
+
+
+	function self.ModContainer:Paint(w, h)
+		surface.SetDrawColor(30, 30, 30)
+		surface.DrawRect(0, 0, w, h - 1)
+		surface.SetDrawColor(20, 20, 20)
+		surface.DrawRect(0, h - 1, w, 1)
+	end
+
 
 	self:MakePopup()
 	self:SetKeyboardInputEnabled(false)
