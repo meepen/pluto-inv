@@ -115,8 +115,6 @@ function PANEL:AddPrefix(prefix, item)
 	local txt = MOD:FormatModifier(1, rolls[1])
 	local min, max = MOD:GetMinMax()
 
-	
-
 	bar:AddFilling(0.2 + 0.45 * (rolls[1] - min) / (max - min), txt:sub(1, 1) == "-" and txt or "+" .. txt)
 
 
@@ -180,7 +178,7 @@ function PANEL:AddSuffix(suffix, item)
 	modtext:SetRenderSystem(pluto.fonts.systems.shadow)
 	modtext:SetContentAlignment(5)
 
-	modname:SetText(MOD:GetPrintName())
+	modname:SetText(MOD:GetTierName(suffix.Tier))
 	modtext:SetText(pluto.mods.formatdescription(suffix, item, fmt))
 	modname:SizeToContentsY(2)
 	modtext:SizeToContentsY(2)
