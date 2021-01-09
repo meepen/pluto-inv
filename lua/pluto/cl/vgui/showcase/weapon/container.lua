@@ -183,6 +183,8 @@ function PANEL:AddSuffix(suffix, item)
 	modname:SetTextColor(MOD.Color or Color(222, 111, 3))
 	modname:SetRenderSystem(pluto.fonts.systems.shadow)
 	modname:SetContentAlignment(5)
+	modname:SetText(MOD:GetTierName(suffix.Tier))
+	modname:SizeToContentsY(2)
 	if (self.HasSuffix) then
 		modname:DockMargin(0, 5, 0, 5)
 		size = size + 10
@@ -191,20 +193,45 @@ function PANEL:AddSuffix(suffix, item)
 		size = size + 10
 	end
 
-	local modtext = self.InfoContainer:Add "pluto_label"
-	modtext:Dock(TOP)
-	modtext:SetFont "pluto_showcase_suffix_text"
-	modtext:SetTextColor(Color(255, 255, 255))
-	modtext:SetRenderSystem(pluto.fonts.systems.shadow)
-	modtext:SetContentAlignment(5)
+	local curtext
+	local desc = pluto.mods.formatdescription(suffix, item, fmt)
+	surface.SetFont "pluto_showcase_suffix_text"
 
-	modname:SetText(MOD:GetTierName(suffix.Tier))
-	modtext:SetText(pluto.mods.formatdescription(suffix, item, fmt))
-	modname:SizeToContentsY(2)
-	modtext:SizeToContentsY(2)
+	local function addtext()
+		local modtext = self.InfoContainer:Add "pluto_label"
+		modtext:Dock(TOP)
+		modtext:SetFont "pluto_showcase_suffix_text"
+		modtext:SetTextColor(Color(255, 255, 255))
+		modtext:SetRenderSystem(pluto.fonts.systems.shadow)
+		modtext:SetContentAlignment(5)
+		modtext:SetText(curtext)
+		modtext:SizeToContentsY(2)
+
+		size = size + modtext:GetTall()
+	end
+
+	for m in desc:gmatch "%S+" do
+		local nexttext = curtext
+		if (curtext) then
+			nexttext = curtext .. " " .. m
+			local tw, th = surface.GetTextSize(nexttext)
+			if (tw > self:GetWide() - 20) then
+				addtext()
+				curtext = m
+			else
+				curtext = nexttext
+			end
+		else
+			curtext = m
+		end
+	end
+
+	if (curtext) then
+		addtext()
+	end
 
 	self.HasSuffix = true
-	self:SetTall(self:GetTall() + modname:GetTall() + modtext:GetTall() + size)
+	self:SetTall(self:GetTall() + modname:GetTall() + size)
 end
 
 function PANEL:SetItem(item)
