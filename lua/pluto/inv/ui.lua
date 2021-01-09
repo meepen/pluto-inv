@@ -2515,7 +2515,7 @@ end
 
 vgui.Register("pluto_item_showcase", PANEL, "ttt_curved_panel_outline")
 
-function pluto.ui.showcase(item)
+function pluto.ui.oldshowcase(item)
 	if (IsValid(pluto.ui.showcasepnl)) then
 		pluto.ui.showcasepnl:Remove()
 	end

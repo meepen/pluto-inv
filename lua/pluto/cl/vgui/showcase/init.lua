@@ -16,7 +16,7 @@ surface.CreateFont("pluto_showcase_suffix_text", {
 	weight = 450,
 })
 
-function pluto.ui.newshowcase(item)
+function pluto.ui.showcase(item)
 	if (item.Type == "Weapon") then
 		-- do
 
@@ -25,6 +25,6 @@ function pluto.ui.newshowcase(item)
 
 		return container
 	else
-		return pluto.ui.showcase(item)
+		return pluto.ui.oldshowcase(item)
 	end
 end

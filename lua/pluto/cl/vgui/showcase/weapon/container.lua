@@ -54,6 +54,15 @@ function PANEL:Init()
 	self.IDLabel:SizeToContentsX()
 	self.IDLabel:SetContentAlignment(5)
 
+	self.ModLabel = self.TopLine:Add "pluto_label"
+	self.ModLabel:SetFont "pluto_showcase_small"
+	self.ModLabel:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.ModLabel:SetTextColor(Color(174, 174, 174))
+	self.ModLabel:SetText ""
+	self.ModLabel:Dock(LEFT)
+	self.ModLabel:SizeToContentsX()
+	self.ModLabel:SetContentAlignment(5)
+
 	self.CreatedLabel = self.BottomLine:Add "pluto_label"
 	self.CreatedLabel:SetFont "pluto_showcase_small"
 	self.CreatedLabel:SetRenderSystem(pluto.fonts.systems.shadow)
@@ -117,10 +126,16 @@ function PANEL:AddPrefix(prefix, item)
 	bar:Dock(FILL)
 	local rolls = pluto.mods.getrolls(MOD, prefix.Tier, prefix.Roll)
 	bar:AddFilling(0.35, pluto.mods.getstatvalue(baseclass.Get(item.ClassName), MOD.StatModifier), Color(128, 128, 120)) -- MOD:FormatModifier(1, rolls[1])
+	local left = 1 - 0.35 - 0.2
 	local txt = MOD:FormatModifier(1, rolls[1])
 	local min, max = MOD:GetMinMax()
+	local tier_min = 0.2 + left * (MOD.Tiers[prefix.Tier][1] - min) / (max - min)
+	local cur_value = 0.2 + left * (rolls[1] - min) / (max - min)
+	local tier_max = 0.2 + left * (MOD.Tiers[prefix.Tier][2] - min) / (max - min)
 
-	bar:AddFilling(0.2 + 0.45 * (rolls[1] - min) / (max - min), txt:sub(1, 1) == "-" and txt or "+" .. txt)
+	bar:AddFilling(tier_min, "", Color(59, 200, 64))
+	bar:AddFilling(cur_value - tier_min, txt:sub(1, 1) == "-" and txt or "+" .. txt, Color(59, 255, 64))
+	bar:AddFilling(tier_max - cur_value, "", Color(169, 169, 169, 0))
 
 
 	if (IsValid(self.LastAddedPrefix)) then
@@ -214,6 +229,19 @@ function PANEL:SetItem(item)
 	if (item.Experience) then
 		self.EXPLabel:SetText("EXP: " .. item.Experience)
 		self.EXPLabel:SizeToContentsX()
+	end
+
+	if (item:GetMaxAffixes() > 0) then
+		local num_mods = 0
+		for type, tbl in pairs(item.Mods) do
+			if (type == "implicit") then
+				continue
+			end
+
+			num_mods = num_mods + #tbl
+		end
+		self.ModLabel:SetText(num_mods .. " / " .. item:GetMaxAffixes() .. " mods")
+		self.ModLabel:SizeToContentsX()
 	end
 
 	if (item.CreationMethod) then
