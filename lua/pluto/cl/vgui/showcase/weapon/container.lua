@@ -203,7 +203,7 @@ function PANEL:AddSuffix(suffix, item)
 		modtext:SetFont "pluto_showcase_suffix_text"
 		modtext:SetTextColor(Color(255, 255, 255))
 		modtext:SetRenderSystem(pluto.fonts.systems.shadow)
-		modtext:SetContentAlignment(5)
+		modtext:SetContentAlignment(4)
 		modtext:SetText(curtext)
 		modtext:SizeToContentsY(2)
 
