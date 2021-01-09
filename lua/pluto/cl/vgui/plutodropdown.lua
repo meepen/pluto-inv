@@ -47,6 +47,7 @@ function PANEL:DoClick()
 	self.Popover:SetPos(2, 3)
 	self.Popover:PopulateFrom(self)
 	self.Popover:MakePopup()
+	self.Popover:SetKeyboardInputEnabled(false)
 end
 
 function PANEL:OnRemove()

@@ -33,19 +33,23 @@ hook.Add("PostDrawTranslucentRenderables", "pluto_hover", function()
 		if (IsValid(test_frame)) then
 			test_frame:Remove()
 		end
-		test_frame = vgui.Create "pluto_item_showcase"
+		test_frame = vgui.Create "pluto_showcase_weapon"
 		test_frame:SetItem(item)
 	end
 
-	local pos = tr.Entity:GetPos() + vector_up * test_frame:GetTall() * pct * 0.5 - ang:Right() * test_frame:GetWide() * pct / 2 + vector_up * 30
+	local pos = tr.Entity:GetPos() + vector_up * test_frame:GetTall() * pct * 0.5 - ang:Right() * test_frame:GetWide() * pct / 2 + vector_up * 25
 	ang:RotateAroundAxis(ang:Up(), 90)
 	ang:RotateAroundAxis(ang:Forward(), -90)
 	ang:RotateAroundAxis(ang:Up(), 180)
 	ang.r = 60
+
+	print(render.GetColorModulation())
 
 	cam.IgnoreZ(true)
 		vgui.Start3D2D(pos, ang, pct)
 			test_frame:Paint3D2D()
 		vgui.End3D2D()
 	cam.IgnoreZ(false)
+
+	print(render.GetColorModulation())
 end)

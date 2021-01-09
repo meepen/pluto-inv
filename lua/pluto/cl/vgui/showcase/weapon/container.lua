@@ -155,8 +155,10 @@ function PANEL:AddSuffix(suffix, item)
 	local fmt = pluto.mods.format(suffix, item)
 	local minmaxs = pluto.mods.getminmaxs(suffix, item)
 
-	for i = 1, #fmt do
-		fmt[i] = string.format("%s (%s to %s)", fmt[i], minmaxs[i].Mins, minmaxs[i].Maxs)
+	if (input.IsKeyDown(KEY_LCONTROL)) then
+		for i = 1, #fmt do
+			fmt[i] = string.format("%s (%s to %s)", fmt[i], minmaxs[i].Mins, minmaxs[i].Maxs)
+		end
 	end
 
 	local size = 0
@@ -182,7 +184,7 @@ function PANEL:AddSuffix(suffix, item)
 	modname:SetFont "pluto_showcase_suffix_text"
 	modname:SetTextColor(MOD.Color or Color(222, 111, 3))
 	modname:SetRenderSystem(pluto.fonts.systems.shadow)
-	modname:SetContentAlignment(5)
+	modname:SetContentAlignment(4)
 	modname:SetText(MOD:GetTierName(suffix.Tier))
 	modname:SizeToContentsY(2)
 	if (self.HasSuffix) then

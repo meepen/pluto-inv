@@ -127,10 +127,10 @@ function PANEL:Init()
 	self.ItemContainer:SetWide(64)
 
 
-	self.PlayerModel = self.Inner:Add "PlutoPlayerModel"
+	self.PlayerModel = self.Inner:Add "pluto_inventory_playermodel"
 	self.PlayerModel:Dock(FILL)
 	self.PlayerModel:SetPlutoModel(pluto.models.default)
-	self.PlayerModel:SetFOV(38)
+	self.PlayerModel:SetFOV(40)
 
 	self.Items = {}
 
@@ -162,6 +162,12 @@ function PANEL:Init()
 				return
 			end
 			pluto.ui.highlight(s.Item)
+		end
+
+		function item.OnSetItem(s, item)
+			if (i == 1) then
+				self.PlayerModel:SetPlutoWeapon(item)
+			end
 		end
 	
 		self.Items[i] = item

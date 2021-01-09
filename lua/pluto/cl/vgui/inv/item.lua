@@ -155,6 +155,10 @@ function PANEL:SetItem(item)
 		self:SetCursor "arrow"
 	end
 
+	self:OnSetItem(item)
+end
+
+function PANEL:OnSetItem(item)
 end
 
 function PANEL:GetCurrentModel()
