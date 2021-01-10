@@ -349,7 +349,7 @@ for name, values in pairs {
 		Types = "None",
 	},
 	xmas2020 = {
-		Shares = 30,
+		Shares = 0,
 		Contents = {
 			tfa_cso_m1887xmas = {
 				Shares = 0.2,
