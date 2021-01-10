@@ -55,34 +55,10 @@ hook.Add("PlayerSetModel", "pluto_model", function(ply)
 		end
 	end
 
-	if (not pluto.inv.invs[ply]) then
-		return
-	end
-
-	local equip_tab
-
-	for _, tab in pairs(pluto.inv.invs[ply]) do
-		if (tab.Type == "equip") then
-			equip_tab = tab
-			break
-		end
-	end
-
-	if (not equip_tab) then
-		pwarnf("Player doesn't have equip tab!")
-		return
-	end
-
-	local mdl = equip_tab.Items[3]
-
-	if (mdl and mdl.Type == "Model") then
-		ply:SetModel(mdl.Model.Model)
-		pluto.updatemodel(ply, mdl)
-		for _, other in pairs(player.GetHumans()) do
-			pluto.inv.message(other)
-				:write("playermodel", ply, mdl)
-				:send()
-		end
+	local itemid = tonumber(ply:GetInfo("pluto_cosmetic_slot1", nil))
+	local item = pluto.itemids[itemid]
+	if (item) then
+		ply:SetModel(item.Model.Model)
 		return true
 	end
 end)
