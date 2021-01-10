@@ -197,7 +197,7 @@ function PANEL:OnMousePressed(m)
 			else
 				Derma_Query("Really use " .. curtype.Name .. "? " .. curtype.Description, "Confirm use", "Yes", function()
 					pluto.inv.message()
-						:write("currencyuse", self.Currency)
+						:write("currencyuse", self.Currency.InternalName)
 						:send()
 				end, "No", function() end)
 			end

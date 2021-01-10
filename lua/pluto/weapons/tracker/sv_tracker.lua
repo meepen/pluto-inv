@@ -54,7 +54,7 @@ hook.Add("PlayerPostLoadout", "pluto_tracker", function(ply)
 end)
 
 hook.Add("PlayerCurrencyUse", "pluto_tracker", function(ply, wep, currency)
-	if (wep.Type ~= "Weapon") then
+	if (not wep or wep.Type ~= "Weapon") then
 		return
 	end
 
