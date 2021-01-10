@@ -179,9 +179,13 @@ function PANEL:GetPickupSize()
 end
 
 function PANEL:ItemSelected(item)
-	pluto.inv.message()
-		:write("currencyuse", self.Currency.InternalName, item)
-		:send()
+	if (self.Currency.ClientsideUse) then
+		self.Currency.ClientsideUse(item)
+	else
+		pluto.inv.message()
+			:write("currencyuse", self.Currency.InternalName, item)
+			:send()
+	end
 end
 
 function PANEL:OnMousePressed(m)
@@ -189,7 +193,7 @@ function PANEL:OnMousePressed(m)
 		local curtype = self.Currency
 		if (curtype and curtype.NoTarget) then
 			if (curtype.ClientsideUse) then
-				curtype.ClientsideUse()
+				curtype.ClientsideUse(self.Item)
 			else
 				Derma_Query("Really use " .. curtype.Name .. "? " .. curtype.Description, "Confirm use", "Yes", function()
 					pluto.inv.message()
