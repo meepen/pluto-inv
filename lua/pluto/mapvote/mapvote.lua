@@ -251,7 +251,6 @@ function pluto.mapvote.start()
 				table.remove(valid, i)
 				table.insert(valid, 1, map)
 				mediums = mediums + 1
-				print("med", map)
 				break
 			end
 		end

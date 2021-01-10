@@ -263,7 +263,6 @@ function ITEM:GetModCount(includeimplicit)
 	local count = 0
 
 	for type, modlist in pairs(self.Mods) do
-		print(type)
 		if (type == "implicit" and not includeimplicit) then
 			continue
 		end

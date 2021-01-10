@@ -351,7 +351,6 @@ function pluto.inv.init(ply, cb2)
 	end
 
 	local function InitTabs()
-		print(ply, tabs, items)
 		if (not tabs or not items) then
 			return
 		end

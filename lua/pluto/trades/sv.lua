@@ -308,7 +308,6 @@ function pluto.trades.accept(ply)
 							if (succ) then
 								mysql_rollback(db)
 							end
-							print(item.TabID, item.TabIndex, tab2.RowID, tab2slot)
 							reloadall("swapped: " .. swapped)
 							return
 						end

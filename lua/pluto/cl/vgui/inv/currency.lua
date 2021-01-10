@@ -216,3 +216,29 @@ function pluto.ui.pickupcurrency(item)
 	pluto.ui.pickedupitem:SetPaintedManually(true)
 	pluto.ui.pickedupitem:SetCurrency(item)
 end
+
+
+if (true) then
+	return
+end
+
+for i = 1, 16 do
+	surface.CreateFont("pluto_inventory_font" .. i, {
+		font = "Roboto Lt",
+		size = i,
+		weight = 100,
+	})
+end
+
+hook.Remove("DrawOverlay", "test", function()
+	surface.SetDrawColor(0, 0, 0)
+	surface.SetTextColor(255, 255, 255)
+	surface.DrawRect(0, 0, ScrW() / 2, ScrH() / 2)
+	local y = 2
+	for i = 1, 16 do
+		surface.SetFont("pluto_inventory_font" .. i)
+		surface.SetTextPos(4, y)
+		surface.DrawText(string.format("(%i): The quick brown fox jumps over the lazy dog", i))
+		y = y + i + 4
+	end
+end)

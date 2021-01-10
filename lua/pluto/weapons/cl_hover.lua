@@ -43,13 +43,9 @@ hook.Add("PostDrawTranslucentRenderables", "pluto_hover", function()
 	ang:RotateAroundAxis(ang:Up(), 180)
 	ang.r = 60
 
-	print(render.GetColorModulation())
-
 	cam.IgnoreZ(true)
 		vgui.Start3D2D(pos, ang, pct)
 			test_frame:Paint3D2D()
 		vgui.End3D2D()
 	cam.IgnoreZ(false)
-
-	print(render.GetColorModulation())
 end)

@@ -298,7 +298,6 @@ function PANEL:RefreshQuests()
 		end
 
 		local quest = pnl.Quest
-		print(pnl)
 		if (not needed[quest.ID]) then
 			pnl:Remove()
 		else
