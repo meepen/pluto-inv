@@ -204,6 +204,10 @@ function PANEL:Init()
 	end, true)
 
 	self:AddTab("Currency", function(container)
+		local other = container:Add "pluto_inventory_currency"
+		other:SetCurve(4)
+		other:Dock(FILL)
+		other:SetColor(inner_color)
 	end, true)
 
 	self:AddTab("Quests", function(container)
