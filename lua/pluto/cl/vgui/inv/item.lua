@@ -2,6 +2,7 @@ local PANEL = {}
 
 local default_color = Color(53, 53, 60)
 function PANEL:Init()
+	hook.Add("PlutoItemUpdate", self, self.PlutoItemUpdate)
 	self:SetSize(56, 56)
 
 	self.OuterBorder = self:Add "ttt_curved_panel"
@@ -189,10 +190,14 @@ end
 
 function PANEL:SetUpdateFrom(tabid, tabidx)
 	self.TabID, self.TabIndex = tabid, tabidx
-	hook.Add("PlutoItemUpdate", self, self.PlutoItemUpdate)
 end
 
 function PANEL:PlutoItemUpdate(item)
+	if (self.Item == item and IsValid(self.Showcase)) then
+		self:RemoveShowcase()
+		self:StartShowcase()
+	end
+
 	local tab = pluto.cl_inv[self.TabID]
 	if (not tab) then
 		return
