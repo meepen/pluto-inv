@@ -420,6 +420,11 @@ hook.Add("VGUIMousePressAllowed", "pluto_item_pickup", function(m)
 			end
 		elseif (pluto.ui.pickedupitem.ClassName == "pluto_inventory_currency_item") then
 			pluto.ui.pickedupitem:ItemSelected(pnl.Item)
+
+			if (not input.IsKeyDown(KEY_LSHIFT)) then
+				pluto.ui.unsetpickup()
+			end
+			return true
 		end
 	end
 
