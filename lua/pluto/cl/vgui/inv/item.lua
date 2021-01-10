@@ -321,7 +321,19 @@ function PANEL:OnRemove()
 	self:RemoveShowcase()
 end
 
+function PANEL:GetPickupSize()
+	return self.ItemPanel:GetSize()
+end
+
 vgui.Register("pluto_inventory_item", PANEL, "EditablePanel")
+
+function pluto.ui.unsetpickup()
+	if (IsValid(pluto.ui.pickedupitem)) then
+		pluto.ui.pickedupitem:Remove()
+		pluto.ui.pickedupitem = nil
+		pluto.ui.realpickedupitem = nil
+	end
+end
 
 function pluto.ui.pickupitem(item)
 	local itemdata, tabid, tabidx, clickedon, clickedwith, canclickon, canclickwith
@@ -332,11 +344,7 @@ function pluto.ui.pickupitem(item)
 		canclickon, canclickwith = item.CanClickOn, item.CanClickWith
 	end
 
-	if (IsValid(pluto.ui.pickedupitem)) then
-		pluto.ui.pickedupitem:Remove()
-		pluto.ui.pickedupitem = nil
-		pluto.ui.realpickedupitem = nil
-	end
+	pluto.ui.unsetpickup()
 
 	if (itemdata) then
 		pluto.ui.realpickedupitem = item
@@ -363,9 +371,6 @@ function pluto.ui.pickupitem(item)
 				self.ClickedWithReal(item, other)
 			end
 		end
-	else
-		pluto.ui.realpickedupitem = nil
-		pluto.ui.pickedupitem = nil
 	end
 end
 
@@ -374,7 +379,7 @@ hook.Add("PostRenderVGUI", "pluto_item_pickup", function()
 		return
 	end
 
-	local w, h = pluto.ui.pickedupitem.ItemPanel:GetSize()
+	local w, h = pluto.ui.pickedupitem:GetPickupSize()
 	local x, y = gui.MousePos()
 	x = x - w / 2
 	y = y - h / 2
@@ -390,28 +395,31 @@ hook.Add("VGUIMousePressAllowed", "pluto_item_pickup", function(m)
 	local pnl = vgui.GetHoveredPanel()
 
 	if (pnl == pluto.ui.pickedupitem or pnl == pluto.ui.realpickedupitem) then
-		pluto.ui.pickupitem(nil)
+		pluto.ui.unsetpickup()
 		return true
 	end
 
-
 	if (m == MOUSE_LEFT and IsValid(pnl) and pnl.ClassName == "pluto_inventory_item") then
-		local other = IsValid(pluto.ui.realpickedupitem) and pluto.ui.realpickedupitem or pluto.ui.pickedupitem
-		if (pnl:CanClickWith(other) and other:CanClickOn(pnl)) then
-			other:ClickedOn(pnl)
-			pnl:ClickedWith(other)
+		if (pluto.ui.pickedupitem.ClassName == "pluto_inventory_item") then
+			local other = IsValid(pluto.ui.realpickedupitem) and pluto.ui.realpickedupitem or pluto.ui.pickedupitem
+			if (pnl:CanClickWith(other) and other:CanClickOn(pnl)) then
+				other:ClickedOn(pnl)
+				pnl:ClickedWith(other)
 
-			if (pnl.CanPickup and other.Item) then
-				pluto.ui.pickupitem(other)
+				if (pnl.CanPickup and other.Item) then
+					pluto.ui.pickupitem(other)
+					return true
+				end
+			else
 				return true
 			end
-		else
-			return true
+		elseif (pluto.ui.pickedupitem.ClassName == "pluto_inventory_currency_item") then
+			pluto.ui.pickedupitem:ItemSelected(pnl.Item)
 		end
 	end
 
 	if (not pnl.AllowClickThrough) then
-		pluto.ui.pickupitem(nil)
+		pluto.ui.unsetpickup()
 		return true
 	end
 end)

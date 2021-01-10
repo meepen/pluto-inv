@@ -89,7 +89,7 @@ function PANEL:AddTab(text, add_rest)
 		current_row = current:Add "EditablePanel"
 		current_row:Dock(TOP)
 		current_row:SetTall(64)
-		current_row:DockMargin(0, 0, 0, 5)
+		current_row:DockMargin(0, 0, 0, 12)
 		current_row.Count = 0
 	end
 	createrow()
@@ -139,6 +139,7 @@ function PANEL:Init()
 	self.Container:SetColor(Color(95, 96, 102))
 	self.Container:Dock(BOTTOM)
 	self.Container:SetTall(16)
+	self:SetCursor "hand"
 end
 
 function PANEL:SetCurrency(cur)
@@ -146,11 +147,14 @@ function PANEL:SetCurrency(cur)
 	self.Currency = cur
 end
 
+local Circle = circles.New(CIRCLE_FILLED, {18, 4}, 24, 43)
+Circle:SetDistance(3)
+
 function PANEL:Paint(w, h)
-	surface.SetDrawColor(255, 255, 255)
-	surface.SetMaterial(self.Material)
-	local pad = 6
-	surface.DrawTexturedRect(pad, 0, w - pad * 2, w - pad * 2)
+	surface.SetDrawColor(45, 47, 53)
+	draw.NoTexture()
+	Circle()
+	self:PaintInner(self, w, h, 0, 0)
 
 	local x, y = self:ScreenToLocal(self.Container:LocalToScreen(self.Container:GetWide() / 2, self.Container:GetTall() / 2))
 	local surface = pluto.fonts.systems.shadow
@@ -163,4 +167,48 @@ function PANEL:Paint(w, h)
 	surface.DrawText(text)
 end
 
+function PANEL:PaintInner(pnl, w, h, x, y)
+	surface.SetDrawColor(255, 255, 255)
+	surface.SetMaterial(self.Material)
+	local pad = 6
+	surface.DrawTexturedRect(x + pad, y, w - pad * 2, w - pad * 2)
+end
+
+function PANEL:GetPickupSize()
+	return 48, 48
+end
+
+function PANEL:ItemSelected(item)
+	pluto.inv.message()
+		:write("currencyuse", self.Currency.InternalName, item)
+		:send()
+end
+
+function PANEL:OnMousePressed(m)
+	if (m == MOUSE_LEFT) then
+		local curtype = self.Currency
+		if (curtype and curtype.NoTarget) then
+			if (curtype.ClientsideUse) then
+				curtype.ClientsideUse()
+			else
+				Derma_Query("Really use " .. curtype.Name .. "? " .. curtype.Description, "Confirm use", "Yes", function()
+					pluto.inv.message()
+						:write("currencyuse", self.Currency)
+						:send()
+				end, "No", function() end)
+			end
+		else
+			pluto.ui.pickupcurrency(self.Currency)
+		end
+	end
+end
+
 vgui.Register("pluto_inventory_currency_item", PANEL, "EditablePanel")
+
+function pluto.ui.pickupcurrency(item)
+	pluto.ui.unsetpickup()
+
+	pluto.ui.pickedupitem = vgui.Create "pluto_inventory_currency_item"
+	pluto.ui.pickedupitem:SetPaintedManually(true)
+	pluto.ui.pickedupitem:SetCurrency(item)
+end
