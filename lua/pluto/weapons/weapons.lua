@@ -112,8 +112,6 @@ function pluto.weapons.update(db, item)
 	end
 
 	mysql_stmt_run(db, "DELETE FROM pluto_mods WHERE gun_index = ? and deleted = TRUE", item.RowID)
-
-	item.LastUpdate = (item.LastUpdate or 0) + 1
 end
 
 function pluto.weapons.save(db, item, owner)

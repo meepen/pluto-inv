@@ -58,7 +58,7 @@ function PANEL:AddTab(text, add_rest)
 	curve.Label:Dock(FILL)
 
 	curve:SetCursor "hand"
-	curve:DockMargin(0, 0, 12, 0)
+	curve:DockMargin(0, 0, 8, 0)
 
 	self.Tabs[curve] = self.Inner:Add "EditablePanel"
 	if (not self.ActiveTab) then
@@ -179,6 +179,10 @@ function PANEL:GetPickupSize()
 end
 
 function PANEL:ItemSelected(item)
+	if (not item) then
+		return
+	end
+
 	if (self.Currency.ClientsideUse) then
 		self.Currency.ClientsideUse(item)
 	else

@@ -7,6 +7,8 @@ local currency_per_round = 3
 local pluto_currency_spawnrate = CreateConVar("pluto_currency_spawnrate", "0.9")
 
 local function UpdateAndDecrement(ply, item, currency)
+	item.LastUpdate = (item.LastUpdate or 0) + 1
+
 	pluto.db.transact(function(db)
 		pluto.weapons.update(db, item)
 		if (pluto.inv.addcurrency(db, ply, currency, -1)) then
@@ -19,7 +21,6 @@ local function UpdateAndDecrement(ply, item, currency)
 	pluto.inv.message(ply)
 		:write("item", item)
 		:send()
-
 end
 
 local crate1_fill = 750 / (5 + 6 + 9)

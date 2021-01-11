@@ -80,6 +80,7 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 	self.ItemBackground:Draw()
 	cam.PopModelMatrix(translate)
 
+	cam.IgnoreZ(true)
 	local mdl = self:GetCachedCurrentModel()
 
 	render.SetColorModulation(1, 1, 1)
@@ -123,6 +124,7 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 		surface.DrawTexturedRect(x, y, w, h)
 	end
 	render.SetColorModulation(r, g, b)
+	cam.IgnoreZ(false)
 
 	if (self.Item.Locked) then
 		surface.SetDrawColor(color_white)
