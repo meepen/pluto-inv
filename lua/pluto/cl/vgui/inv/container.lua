@@ -3,6 +3,7 @@ surface.CreateFont("pluto_inventory_font", {
 	size = 13,
 	weight = 450,
 })
+
 surface.CreateFont("pluto_inventory_font_lg", {
 	font = "Roboto Lt",
 	size = 15,
@@ -419,7 +420,30 @@ function PANEL:AddStorageTab(tab)
 
 	function pnl.OnMousePressed(s, m)
 		if (m == MOUSE_RIGHT) then
-			-- start rename
+			self.TextEntry = s:Add "DTextEntry"
+			self.TextEntry:Dock(FILL)
+			self.TextEntry:SetFont "pluto_inventory_font"
+			self.TextEntry:SetText(lbl:GetText())
+			pluto.ui.pnl:SetKeyboardInputEnabled(true)
+			function self.TextEntry:Think()
+				if (vgui.GetKeyboardFocus() == self) then
+					self.WasFocussed = true
+				elseif (not self.WasFocussed) then
+					self:RequestFocus()
+				end
+
+				if (self.WasFocussed and not self:HasFocus()) then
+					lbl:SetText(self:GetText())
+					tab.Name = self:GetText()
+					
+					pluto.inv.message()
+						:write("tabrename", tab.ID, self:GetText())
+						:send()
+
+					self:Remove()
+					pluto.ui.pnl:SetKeyboardInputEnabled(false)
+				end
+			end
 		end
 		self:SelectTab(tab)
 	end
