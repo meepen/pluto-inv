@@ -656,6 +656,27 @@ function pluto.inv.readtabrename(ply)
 	pluto.inv.renametab(tab, function() end)
 end
 
+function pluto.inv.readchangetabdata(ply)
+	local id = net.ReadUInt(32)
+	local col = net.ReadColor()
+	col = col.b + bit.lshift(col.g, 8) + bit.lshift(col.r, 16)
+	local shape = net.ReadString()
+
+	local tab = pluto.inv.invs[ply][id]
+	if (not tab) then
+		return
+	end
+
+	tab.Shape = shape
+	tab.Color = col
+
+	timer.Create("changetabdata" .. id, 2, 1, function()
+		pluto.db.instance(function(db)
+			mysql_stmt_run(db, "UPDATE pluto_tabs SET color = ?, tab_shape = ? WHERE idx = ?", col, shape, id)
+		end)
+	end)
+end
+
 function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
 	local bufferid = net.ReadUInt(32)
 	local tabid = net.ReadUInt(32)

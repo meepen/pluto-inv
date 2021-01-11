@@ -11,7 +11,7 @@ function PANEL:Init()
 end
 
 local shadow_color = Color(0, 0, 0, 128)
-PANEL.DrawingTypes = {
+local DrawingTypes = {
 	square = function(self, w, h)
 		surface.SetDrawColor(shadow_color)
 		surface.DrawRect(w / 4 + 1, h / 4 + 1, w / 2, h / 2)
@@ -34,36 +34,128 @@ PANEL.DrawingTypes = {
 	end,
 	triangle = function(self, w, h)
 		draw.NoTexture()
-		surface.SetDrawColor(self:GetColor())
-
-		surface.DrawPoly {
-			{ x = w / 2, y = h / 4 },
-			{ x = w * 3 / 4, y = h * 3 / 4 },
-			{ x = w / 4, y = h * 3 / 4 },
-		}
-
 		surface.SetDrawColor(shadow_color)
-
 		surface.DrawPoly {
 			{ x = 1 + w / 2, y = h / 3 + 1},
 			{ x = 1 + w * 3 / 4, y = h * 2 / 3 + 1 },
 			{ x = 1 + w / 4, y = h * 2 / 3 + 1 },
+		}
+
+		surface.SetDrawColor(self:GetColor())
+		surface.DrawPoly {
+			{ x = w / 2, y = h / 4 },
+			{ x = w * 3 / 4, y = h * 3 / 4 },
+			{ x = w / 4, y = h * 3 / 4 },
 		}
 	end,
 	diamond = function(self, w, h)
 		draw.NoTexture()
 		surface.SetDrawColor(self:GetColor())
 		surface.DrawPoly {
-			{ x = w / 2, y = h / 4 },
+			{ x = w / 2,     y = h / 5 },
 			{ x = w * 3 / 4, y = h / 2 },
-			{ x = w / 2, y = h * 3 / 4 },
-			{ x = w / 4, y = h / 2 },
+			{ x = w / 2,     y = h * 4 / 5 },
+			{ x = w / 4,     y = h / 2 },
 		}
 	end,
 }
+
+PANEL.DrawingTypes = DrawingTypes
 
 function PANEL:Paint(w, h)
 	(self.DrawingTypes[self:GetShape()] or self.DrawingTypes.square)(self, w, h)
 end
 
 vgui.Register("pluto_inventory_shape", PANEL, "EditablePanel")
+
+local PANEL = {}
+
+function PANEL:Init()
+	self:SetCurve(2)
+	self:SetColor(Color(146, 146, 149))
+	self:DockPadding(1, 1, 1, 1)
+
+
+	self.Inner = self:Add "ttt_curved_panel"
+	self.Inner:Dock(FILL)
+	self.Inner:SetCurve(2)
+	self.Inner:SetColor(Color(38, 38, 38))
+
+	self.MixerBackground = self.Inner:Add "ttt_curved_panel"
+	self.MixerBackground:SetColor(Color(54, 54, 54))
+	self.MixerBackground:SetPos(8, 8)
+	self.MixerBackground:SetSize(136, 63)
+	self.MixerBackground:DockPadding(1, 1, 1, 1)
+
+
+	self.Mixer = self.MixerBackground:Add "DColorCube"
+	self.Mixer:Dock(FILL)
+
+	self.PickerBackground = self.Inner:Add "ttt_curved_panel"
+	self.PickerBackground:SetColor(Color(54, 54, 54))
+	self.PickerBackground:SetPos(8 + 136 + 8, 8)
+	self.PickerBackground:SetSize(16, 63)
+	self.PickerBackground:DockPadding(1, 1, 1, 1)
+	self.Picker = self.PickerBackground:Add "DRGBPicker"
+	self.Picker:Dock(FILL)
+
+	function self.Picker.OnChange(s, col)
+		self.Mixer:SetBaseRGB(col)
+		self.Mixer:OnUserChanged(self.Mixer:GetRGB())
+	end
+
+	function self.Mixer.OnUserChanged(s, col)
+		self:OnColorChanged(Color(col.r, col.g, col.b))
+		for _, shape in pairs(self.Shapes) do
+			shape:SetColor(col)
+		end
+	end
+
+	self:SetSize(250, 79 + 2 + 8 + 20 + 2)
+
+	self.ShapeContainer = self.Inner:Add "EditablePanel"
+
+	self.ShapeContainer:SetPos(8, 79)
+	self.ShapeContainer:SetWide(self:GetWide() - 16)
+	self.ShapeContainer:SetTall(20)
+	self.ShapeContainer:DockPadding(1, 1, 1, 1)
+
+	self.Shapes = {}
+
+	for shape in pairs(DrawingTypes) do
+		local cur_shape = self.ShapeContainer:Add "pluto_inventory_shape"
+		cur_shape:Dock(LEFT)
+		cur_shape:SetWide(18)
+		cur_shape:SetShape(shape)
+		cur_shape:SetCursor "hand"
+		function cur_shape.OnMousePressed(s, m)
+			self:OnShapeChanged(shape)
+		end
+		self.Shapes[shape] = cur_shape
+		local seperator = self.ShapeContainer:Add "EditablePanel"
+		seperator:SetWide(1)
+		seperator:Dock(LEFT)
+	end
+end
+
+function PANEL:OnColorChanged(col)
+	PrintTable(col)
+end
+
+function PANEL:OnShapeChanged(shape)
+	print(shape)
+end
+
+function PANEL:SetRGB(col)
+	self.Mixer:SetBaseRGB(col)
+	self.Picker:SetRGB(col)
+	self.Mixer:OnUserChanged(self.Mixer:GetRGB())
+	for _, shape in pairs(self.Shapes) do
+		shape:SetColor(col)
+	end
+end
+
+function PANEL:SetShape(shape)
+end
+
+vgui.Register("pluto_inventory_shape_change", PANEL, "ttt_curved_panel")

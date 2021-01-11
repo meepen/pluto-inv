@@ -147,7 +147,7 @@ function PANEL:SetCurrency(cur)
 	self.Currency = cur
 end
 
-local Circle = circles.New(CIRCLE_FILLED, {18, 4}, 24, 43)
+local Circle = circles.New(CIRCLE_FILLED, {18, 4}, 24, 41)
 Circle:SetDistance(3)
 
 function PANEL:Paint(w, h)

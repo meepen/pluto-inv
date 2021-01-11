@@ -245,8 +245,8 @@ function PANEL:Reorder()
 	end
 
 	table.sort(self.TabList, function(a, b)
-		local aid = a.Tab.FakeID and -a.Tab.FakeID or a.Tab.ID
-		local bid = b.Tab.FakeID and -b.Tab.FakeID or b.Tab.ID
+		local aid = a.Tab.ID
+		local bid = b.Tab.ID
 
 		local al = lookup[aid]
 		local bl = lookup[bid]
@@ -405,7 +405,48 @@ function PANEL:AddStorageTab(tab)
 	img:Dock(LEFT)
 	img:SetShape(tab.Shape)
 	img:SetColor(tab.Color)
-	img:SetMouseInputEnabled(false)
+	img:SetMouseInputEnabled(true)
+	img:SetCursor "hand"
+	function img.OnMousePressed(s, m)
+		if (m == MOUSE_LEFT) then
+			s:GetParent():OnMousePressed(m)
+		elseif (m == MOUSE_RIGHT) then
+			if (IsValid(s.ImageChanger)) then
+				s.ImageChanger:Remove()
+			end
+			s.ImageChanger = vgui.Create "pluto_inventory_shape_change"
+			s.ImageChanger:MakePopup()
+			s.ImageChanger:SetRGB(tab.Color)
+			local x, y = s:LocalToScreen(-s.ImageChanger:GetWide(), 0)
+			s.ImageChanger:SetPos(x, y)
+
+			function s.ImageChanger.OnColorChanged(_, col)
+				tab.Color = col
+				timer.Create("changetabdata" .. tab.ID, 1, 1, function()
+					pluto.inv.message()
+						:write("changetabdata", tab)
+						:send()
+				end)
+				img:SetColor(col)
+			end
+			function s.ImageChanger.OnShapeChanged(_, shape)
+				tab.Shape = shape
+				timer.Create("changetabdata" .. tab.ID, 1, 1, function()
+					pluto.inv.message()
+						:write("changetabdata", tab)
+						:send()
+				end)
+				img:SetShape(shape)
+			end
+			s:GetParent():OnMousePressed(MOUSE_LEFT)
+		end
+	end
+
+	function img:OnRemove()
+		if (IsValid(self.ImageChanger)) then
+			self.ImageChanger:Remove()
+		end
+	end
 
 	local lbl = pnl:Add "pluto_label"
 	pnl.Label = lbl
@@ -505,4 +546,10 @@ end
 if (IsValid(pluto.ui.pnl)) then
 	pluto.ui.pnl:Remove()
 	pluto.ui.toggle()
+end
+
+function pluto.inv.writechangetabdata(tab)
+	net.WriteUInt(tab.ID, 32)
+	net.WriteColor(tab.Color)
+	net.WriteString(tab.Shape)
 end
