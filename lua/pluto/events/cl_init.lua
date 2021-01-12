@@ -7,11 +7,12 @@ local PANEL = {}
 
 function PANEL:Init()
 	self:SetSize(350, 75)
-	self:SetFont("mini_dash")
+	self:SetFont("pluto_mini_button")
 	self:SetContentAlignment(5)
-	self:SetTextColor(ttt.roles.Traitor.Color)
+	self:SetTextColor(Color(0, 0, 0))
 	self:ChangeText("Click Me")
-	self.FillColor = Color(0, 0, 0)
+	self.BorderColor = Color(0, 0, 0)
+	self.FillColor = Color(255, 255, 255)
 	self.Mini = ""
 end
 
@@ -26,10 +27,6 @@ function PANEL:DoClick()
 	net.Start("pluto_mini_" .. self.Mini)
 	net.SendToServer()
 	self:Remove()
-end	
-
-function PANEL:ChangeColor(color)
-	self.FillColor = color
 end
 
 function PANEL:ChangeMini(mini)
@@ -37,23 +34,12 @@ function PANEL:ChangeMini(mini)
 end
 
 function PANEL:Paint(w, h)
-	draw.RoundedBox(20, 0, 0, w, h, self.FillColor)
+	draw.RoundedBox(20, 0, 0, w, h, self.BorderColor)
+	draw.RoundedBox(20, 2, 2, w - 4, h - 4, self.FillColor)
 end
 
 vgui.Register("pluto_mini_button", PANEL, "DButton")
 
 net.Receive("mini_speed", function()
 	pluto.rounds.speeds[LocalPlayer()] = net.ReadFloat()
-end)
-
-net.Receive("pluto_mini_dash", function()
-	local dashbutton = vgui.Create "pluto_mini_button"
-	dashbutton:ChangeText "Click to steal all models! (KOSable)"
-	dashbutton:ChangeMini "dash"
-
-	timer.Simple(14, function()
-		if (IsValid(dashbutton)) then
-			dashbutton:Remove()
-		end
-	end)
 end)
