@@ -4,7 +4,7 @@ pluto.rounds.files = pluto.rounds.files or {}
 
 pluto.rounds.byname = pluto.rounds.byname or {}
 
-for _, event in pairs {
+for _, event in ipairs {
 	"posteaster",
 	"chimp",
 	"cheer",
@@ -32,6 +32,24 @@ for _, event in pairs {
 			end
 		end
 	end
+end
+
+for _, mini in ipairs {
+	"aprilfools",
+	"raining",
+	"dice",
+	"stars",
+	"dash",
+} do
+	local fname = "pluto/events/minis/sh_" .. mini .. ".lua"
+	if (not file.Exists (fname, "LUA")) then
+		continue
+	end
+
+	if (SERVER) then
+		AddCSLuaFile(fname)
+	end
+	include(fname)
 end
 
 local ROUND_DATA = {}

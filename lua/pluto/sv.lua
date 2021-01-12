@@ -38,12 +38,6 @@ pluto.files.load {
 		"inv/currency/sv_crossmap.lua",
 
 		"inv/currency/object/sv_object.lua",
-	
-		"events/minis/sv_raining.lua",
-		"events/minis/sv_dice.lua",
-		"events/minis/sv_stars.lua",
-		"events/minis/sv_dash.lua",
-		"events/sv_aprilfools.lua",
 
 		"chat/sv_chat.lua",
 
