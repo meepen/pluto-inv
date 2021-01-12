@@ -17,8 +17,11 @@ function NODE:ModifyWeapon(node, wep)
 			if (atk ~= self:GetOwner()) then
 				return
 			end
+
+			local amt = atk:GetMaxHealth() - atk:Health()
+			hook.Run("OnPlutoHealthGain", atk, amt)
 			
-			self:GetOwner():SetHealth(self:GetOwner():GetMaxHealth())
+			atk:SetHealth(atk:GetMaxHealth())
 		end)
 
 		if (CLIENT and LocalPlayer() == wep:GetOwner()) then

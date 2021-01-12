@@ -1,5 +1,5 @@
 QUEST.Name = "Last Stand"
-QUEST.Description = "Get kills while under 20 health"
+QUEST.Description = "Get kills while under 30 health"
 QUEST.Credits = "Froggy"
 QUEST.Color = Color(204, 255, 25)
 QUEST.RewardPool = "daily"
@@ -10,7 +10,7 @@ function QUEST:Init(data)
 			return
 		end
 
-		if (atk:Alive() and atk:Health() < 20) then
+		if (atk:Alive() and atk:Health() < 30) then
 			data:UpdateProgress(1)
 		end
 	end)
