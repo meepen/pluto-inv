@@ -5,12 +5,12 @@ QUEST.RewardPool = "weekly"
 
 function QUEST:Init(data)
 	data:Hook("PlayerDeath", function(data, vic, inf, atk)
-		if (ttt.GetRoundState() == ttt.ROUNDSTATE_ENDED and atk == data.Player) then
+		if (ttt.GetRoundState() == ttt.ROUNDSTATE_ENDED and atk == data.Player and atk ~= vic) then
 			data:UpdateProgress(1)
 		end
 	end)
 end
 
 function QUEST:GetProgressNeeded()
-	return math.random(60, 80)
+	return math.random(50, 60)
 end
