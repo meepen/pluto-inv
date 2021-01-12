@@ -919,7 +919,7 @@ for name, values in pairs {
 				function()
 					local dmg = DamageInfo()
 					dmg:SetDamageType(DMG_BURN)
-					dmg:SetDamage(math.random(25, 50))
+					dmg:SetDamage(math.random(20, 40))
 					ply:TakeDamageInfo(dmg)
 					ply:ChatPrint(white_text, "Uh oh, looks like that was a bad one!")
 				end,
