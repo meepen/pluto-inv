@@ -111,9 +111,7 @@ else
         local dashbutton = vgui.Create "pluto_mini_button"
         dashbutton:ChangeText "Click to steal all models! (KOSable)"
         dashbutton:ChangeMini "dash"
-        dashbutton.BorderColor = Color(255, 128, 0)
-        dashbutton.FillColor = Color(0, 0, 0)
-        dashbutton:SetTextColor(Color(255, 128, 0))
+        dashbutton.FillColor = Color(255, 128, 0)
 
         timer.Simple(14, function()
             if (IsValid(dashbutton)) then
