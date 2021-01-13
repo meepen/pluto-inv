@@ -2,6 +2,8 @@ local pluto_fov = CreateConVar("pluto_fov", GetConVar "fov_desired":GetFloat(), 
 local pluto_trash_speed = CreateConVar("pluto_trash_speed", 1, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Speed multiplier for item trashing", 1, 5)
 local pluto_open_speed = CreateConVar("pluto_open_speed", 1, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Speed multiplier for item opening", 1, 5)
 local pluto_print_console = CreateConVar("pluto_print_console", 0, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Disable pluto inv console prints")
+local pluto_quest_hud = CreateConVar("pluto_quest_hud", 0, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Show plut quest hud")
+local pluto_inactive_quests = CreateConVar("pluto_inactive_quests", 0, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Show inactive quests in pluto quest hud")
 
 hook.Add("TTTPopulateSettingsMenu", "pluto_settings", function()
 	local cat = vgui.Create "ttt_settings_category"
@@ -16,6 +18,8 @@ hook.Add("TTTPopulateSettingsMenu", "pluto_settings", function()
 	cat:AddCheckBox("Make +inspect menu toggleable", "pluto_inspect_toggle")
 	cat:AddSlider("Toggle mode +inspect's lifespan (0=forever)", "pluto_inspect_toggle_autoclose")
 	cat:AddSlider("+inspect animation speed", "pluto_inspect_lifespan")
+	cat:AddCheckBox("Show quest hud", "pluto_quest_hud")
+	cat:AddCheckBox("Show inactive quests", "pluto_inactive_quests")
 	cat:InvalidateLayout(true)
 	cat:SizeToContents()
 	ttt.settings:AddTab("Pluto", cat)
