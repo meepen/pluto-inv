@@ -41,7 +41,7 @@ hook.Add("PostDrawTranslucentRenderables", "pluto_hover", function()
 	ang:RotateAroundAxis(ang:Up(), 90)
 	ang:RotateAroundAxis(ang:Forward(), -90)
 	ang:RotateAroundAxis(ang:Up(), 180)
-	ang.r = 60
+	--ang.r = 60
 
 	cam.IgnoreZ(true)
 		vgui.Start3D2D(pos, ang, pct)
