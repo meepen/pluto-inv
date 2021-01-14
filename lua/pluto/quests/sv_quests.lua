@@ -340,7 +340,7 @@ pluto.quests.rewards = {
 			Shares = 1.5,
 		},
 		{
-			Type = "heart",
+			Type = "currency",
 			Currency = "heart",
 			Amount = 2,
 			Shares = 1.5,
