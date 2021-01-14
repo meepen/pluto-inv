@@ -1,4 +1,4 @@
-SWEP.Base = "tfa_gun_base"
+SWEP.Base = "weapon_tttbase"
 SWEP.Category = "TFA CS:O"
 SWEP.Author = "Kamikaze"
 
@@ -10,8 +10,10 @@ SWEP.Slot = 1
 
 SWEP.Primary.Sound = Sound("Dartpistol.Fire")
 
-SWEP.Primary.Delay = 60 / 80
+SWEP.Primary.Delay = 60 / 90
 SWEP.Primary.Damage = 40
+SWEP.Primary.Recoil = 1
+SWEP.Primary.RecoilTiming  = 0.2
 
 SWEP.Primary.ClipSize = 5
 SWEP.Primary.DefaultClip = 30
@@ -75,7 +77,7 @@ function SWEP:DoPlayerDeath(ply, atk, dmg)
 			end
 		end)
 
-		timer.Create("dartpistol" .. atk:Nick(), 6, 1, function()
+		timer.Create("dartpistol" .. atk:Nick(), 8, 1, function()
 			if (IsValid(atk)) then
 				atk:ChatPrint(white_text, " The power of the dart gun fades...")
 
@@ -111,3 +113,8 @@ else
 		end
 	end)
 end
+
+SWEP.RecoilInstructions = {
+	Interval = 1,
+	Angle(-10),
+}

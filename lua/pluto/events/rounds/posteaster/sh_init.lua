@@ -1,4 +1,5 @@
 ROUND.PrintName = "Bunny Attack"
+ROUND.Type = "Special"
 
 function ROUND:TTTPrepareRoles(Team, Role)
 	Role("Bunny", "traitor")

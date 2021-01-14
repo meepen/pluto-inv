@@ -1,5 +1,6 @@
 ROUND.PrintName = "Operation Cheer"
 ROUND.Author = "add___123"
+ROUND.Type = "Special"
 
 function ROUND:TTTPrepareRoles(Team, Role)
 	Role("S.A.N.T.A. Agent", "innocent")
