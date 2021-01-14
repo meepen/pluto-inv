@@ -97,7 +97,7 @@ function PANEL:Init()
 	self.Upper:SetCurveBottomLeft(false)
 	self.Upper:SetCurveBottomRight(false)
 
-	self:SetText "Storage"
+	self:SetText "Inventory"
 end
 
 function PANEL:AddTab(tab)
