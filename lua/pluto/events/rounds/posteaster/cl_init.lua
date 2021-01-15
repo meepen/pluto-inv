@@ -8,12 +8,14 @@ surface.CreateFont("posteaster_small", {
 	size = math.max(16, ScrH() * 0.025),
 })
 
+local outline_text = Color(12, 13, 15)
+
 local function RenderHeader()
 	local y = ScrH() / 10
-	local _, h = draw.SimpleTextOutlined("The bunnies want their eggs back...", "posteaster_header", ScrW() / 2, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(12, 13, 15))
+	local _, h = draw.SimpleTextOutlined("The bunnies want their eggs back...", "posteaster_header", ScrW() / 2, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, outline_text)
 	y = y + h
 
-	local _, h = draw.SimpleTextOutlined("Children have misused the treasures inside of their eggs and now they want them back.", "posteaster_small", ScrW() / 2, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+	_, h = draw.SimpleTextOutlined("Children have misused the treasures inside of their eggs and now they want them back.", "posteaster_small", ScrW() / 2, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
 end
 
 local function RenderRole()
@@ -27,19 +29,20 @@ local function RenderRole()
 
 	local y = ScrH() / 10
 	local x = ScrW() / 2
+	local _, h
 	if (team == "innocent") then
-		local _, h = draw.SimpleTextOutlined("You are a child.", "posteaster_header", x, y, data.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(12, 13, 15))
+		_, h = draw.SimpleTextOutlined("You are a child.", "posteaster_header", x, y, data.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, outline_text)
 		y = y + h
 	
-		_, h = draw.SimpleTextOutlined("Protect your eggs at all costs.", "posteaster_small", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+		_, h = draw.SimpleTextOutlined("Protect your eggs at all costs.", "posteaster_small", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
 	else
-		local _, h = draw.SimpleTextOutlined("You are a bunny.", "posteaster_header", x, y, data.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(12, 13, 15))
+		_, h = draw.SimpleTextOutlined("You are a bunny.", "posteaster_header", x, y, data.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, outline_text)
 		y = y + h
 	
-		_, h = draw.SimpleTextOutlined("Take your eggs back.", "posteaster_small", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+		_, h = draw.SimpleTextOutlined("Take your eggs back.", "posteaster_small", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
 		y = y + h
 
-		_, h = draw.SimpleTextOutlined("Cooperate with other bunnies to succeed.", "posteaster_small", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+		_, h = draw.SimpleTextOutlined("Cooperate with other bunnies to succeed.", "posteaster_small", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
 		y = y + h
 	end
 end
@@ -47,18 +50,19 @@ end
 local function RenderStats(state)
 	local y = ScrH() / 5
 	local x = 4
+	local _, h
 	if (state.total_lives_left) then
-		local _, h = draw.SimpleTextOutlined(string.format("%i bunnies remaining", state.total_lives_left), "posteaster_small", x, y, ttt.roles.Bunny.Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+		_, h = draw.SimpleTextOutlined(string.format("%i bunnies remaining", state.total_lives_left), "posteaster_small", x, y, ttt.roles.Bunny.Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, outline_text)
 		y = y + h
 	end
 
 	if (state.currency_left) then
-		local _, h = draw.SimpleTextOutlined(string.format("%i eggs remaining", state.currency_left), "posteaster_small", x, y, ttt.roles.Child.Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+		_, h = draw.SimpleTextOutlined(string.format("%i eggs remaining", state.currency_left), "posteaster_small", x, y, ttt.roles.Child.Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, outline_text)
 		y = y + h
 	end
 
 	if (state.Start) then
-		local _, h = draw.SimpleTextOutlined(string.format("%is until next wave", 11 - math.ceil((CurTime() - state.Start) % 10)), "posteaster_small", x, y, ttt.roles.Bunny.Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+		_, h = draw.SimpleTextOutlined(string.format("%is until next wave", 11 - math.ceil((CurTime() - state.Start) % 10)), "posteaster_small", x, y, ttt.roles.Bunny.Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, outline_text)
 		y = y + h
 	end
 end

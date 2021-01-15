@@ -195,12 +195,12 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 
 	net.Start "cheer_data"
 		net.WriteString "cheer"
-		net.WriteUInt(state.cheer, 32)
+		net.WriteUInt(0, 32)
 	net.Broadcast()
 
 	net.Start "cheer_data"
 		net.WriteString "collected"
-		net.WriteBool(state.collected[ply] or false)
+		net.WriteBool(false)
 	net.Broadcast()
 
 	net.Start "cheer_data"
@@ -257,15 +257,6 @@ ROUND:Hook("PostPlayerDeath", function(self, state, ply)
 	ply:Extinguish()
 	return true
 end)
-
-function ROUND:Initialize(state, ply)
-	self:PlayerSetModel(state, ply)
-	self:Spawn(state, ply)
-	local pos = self:ResetPosition(state, ply)
-	if (pos) then
-		ply.ForcePos = pos
-	end
-end
 
 function ROUND:UpdateScore(state, ply)
 	state.cheer = state.cheer + 1
@@ -330,7 +321,7 @@ ROUND:Hook("PlayerSpawn", ROUND.Spawn)
 local hull_mins, hull_maxs = Vector(-22, -22, 0), Vector(22, 22, 90)
 
 function ROUND:ResetPosition(state, ply)
-	return select(1, pluto.currency.randompos(hull_mins, hull_maxs))
+	return pluto.currency.randompos(hull_mins, hull_maxs)
 end
 
 ROUND:Hook("PlayerSelectSpawnPosition", ROUND.ResetPosition)
