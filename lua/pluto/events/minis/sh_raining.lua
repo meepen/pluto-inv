@@ -30,6 +30,7 @@ if (SERVER) then
 					pdrop = 1,
 					aciddrop = 1
 				}))
+				e.SkipCrossmap = true
 				e:SetPos(e:GetPos() + vector_up * 500)
 				e:SetMovementType(CURRENCY_MOVEDOWN)
 				e:Update()
