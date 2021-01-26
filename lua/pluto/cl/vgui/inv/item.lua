@@ -22,18 +22,6 @@ function PANEL:Init()
 	self.Inner:SetColor(default_color)
 	self.Inner:SetMouseInputEnabled(false)
 
-	local perform = self.Inner.PerformLayout
-	function self.Inner.PerformLayout(s, w, h)
-		if (IsValid(self.ItemBackground)) then
-			self.ItemBackground:Destroy()
-		end
-
-		self.ItemBackground = hud.BuildCurvedMesh(s:GetCurve() or 0, 0, 0, w, h, s:GetNoCurveTopLeft(), s:GetNoCurveTopRight(), s:GetNoCurveBottomLeft(), s:GetNoCurveBottomRight(), color_white)
-		if (perform) then
-			perform(s, w, h)
-		end
-	end
-
 	self.ItemPanel = self.Inner:Add "EditablePanel"
 	self.ItemPanel:Dock(FILL)
 	self.ItemPanel:DockMargin(1, 1, 1, 1)
@@ -50,17 +38,18 @@ end
 local newshard = Material "pluto/newshard.png"
 local newshardadd = Material "pluto/newshardbg.png"
 local lock = Material "icon16/lock.png"
-local translate = Matrix()
-local color_mat = Material "color"
 
 function PANEL:PaintInner(pnl, w, h, x, y)
 	if (not self.Item) then
+		self.Inner:SetColor(default_color)
 		return
 	end
 
 	if (self == pluto.ui.realpickedupitem and IsValid(pnl)) then
+		self.Inner:SetColor(default_color)
 		return
 	end
+	self.Inner:SetColor(self.Item:GetColor())
 
 	x = x or 0
 	y = y or 0
@@ -70,15 +59,12 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 		sx, sy = pnl:LocalToScreen(x, y)
 		sx = sx - 1
 		sy = sy - 1
+	else
+		surface.SetDrawColor(self.Item:GetColor())
+		ttt.DrawCurvedRect(x, y, w, h, self.Inner:GetCurve())
 	end
-	local r, g, b = render.GetColorModulation()
 
-	translate:SetTranslation(Vector(sx, sy))
-	color_mat:SetVector("$color", self.Item:GetColor():ToVector())
-	render.SetColorMaterial()
-	cam.PushModelMatrix(translate)
-	self.ItemBackground:Draw()
-	cam.PopModelMatrix(translate)
+	local r, g, b = render.GetColorModulation()
 
 	cam.IgnoreZ(true)
 	local mdl = self:GetCachedCurrentModel()
@@ -321,10 +307,6 @@ function PANEL:ClickedWith(other)
 end
 
 function PANEL:OnRemove()
-	if (IsValid(self.ItemBackground)) then
-		self.ItemBackground:Destroy()
-	end
-
 	self:RemoveShowcase()
 end
 

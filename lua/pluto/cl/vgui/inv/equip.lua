@@ -165,8 +165,9 @@ local cosmetic_filters = {
 function PANEL:Init()
 	self:DockPadding(6, 2, 6, 2)
 
-	self.Inner = self:Add "EditablePanel"
+	self.Inner = self:Add "pluto_inventory_playermodel"
 	self.Inner:Dock(FILL)
+	self.PlayerModel = self.Inner
 
 	self.Upper = self.Inner:Add "EditablePanel"
 	self.Upper:Dock(TOP)
@@ -193,23 +194,29 @@ function PANEL:Init()
 	self.ItemContainer:Dock(LEFT)
 	self.ItemContainer:SetWide(64)
 
+	self.CosmeticsContainer = self.ItemContainer:Add "EditablePanel"
+	self.CosmeticsContainer:SetSize(56, 56 * 6 + 6 * 5)
+	self.CosmeticsContainer:SetPos(6, 8)
+	self.CosmeticsContainer:SetMouseInputEnabled(false)
+	self.CosmeticsContainer:SetAlpha(128)
 
-	self.PlayerModel = self.Inner:Add "pluto_inventory_playermodel"
+	self.LoadoutContainer = self.ItemContainer:Add "EditablePanel"
+	self.LoadoutContainer:SetSize(56, 56 * 6 + 6 * 5)
+	self.LoadoutContainer:SetPos(0, 0)
+
 	self.PlayerModel:Dock(FILL)
 	self.PlayerModel:SetPlutoModel(pluto.models.default)
-	self.PlayerModel:SetFOV(40)
+	self.PlayerModel:SetFOV(45)
+	self.PlayerModel:SetLookAt(Vector(0, -12, 40))
 
 	self.Items = {}
 	self.Cosmetics = {}
 
 	for i = 1, 6 do
-		local container = self.ItemContainer:Add "EditablePanel"
-		container:Dock(TOP)
-		container:SetTall(62)
-
-		local item2 = container:Add "pluto_inventory_item"
-		item2:SetPos(8, 6)
-		item2:SetAlpha(128)
+		local item2 = self.CosmeticsContainer:Add "pluto_inventory_item"
+		local item = self.LoadoutContainer:Add "pluto_inventory_item"
+		item:Dock(TOP)
+		item2:Dock(TOP)
 
 		function item2:CanClickWith(other)
 			return cosmetic_filters[i] and cosmetic_filters[i](other.Item)
@@ -237,7 +244,6 @@ function PANEL:Init()
 			end
 		end
 
-		local item = container:Add "pluto_inventory_item"
 		function item:CanClickWith(other)
 			return filters[i] and filters[i](other.Item)
 		end
@@ -311,17 +317,15 @@ function PANEL:OnCosmeticToggled(b)
 	pluto_equip_cosmetics:SetBool(b)
 	local front_tbl = b and self.Cosmetics or self.Items
 	local back_tbl = b and self.Items or self.Cosmetics
-	for i = 1, 6 do
-		local front = front_tbl[i]
-		local back = back_tbl[i]
-		front:SetPos(0, 0)
-		back:SetPos(8, 6)
-		front:SetAlpha(255)
-		back:SetAlpha(128)
-		front:SetZPos(2)
-		back:SetZPos(1)
-	end
-	
+
+	self.CosmeticsContainer:SetZPos(b and 1 or 0)
+	self.LoadoutContainer:SetZPos(b and 0 or 1)
+
+	self.CosmeticsContainer:SetMouseInputEnabled(b)
+	self.CosmeticsContainer:SetAlpha(b and 255 or 128)
+	self.LoadoutContainer:SetMouseInputEnabled(not b)
+	self.LoadoutContainer:SetAlpha(b and 128 or 255)
+
 	self.Dropdown:SetVisible(not b)
 	self.CosmeticDropdown:SetVisible(b)
 end
