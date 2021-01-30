@@ -15,5 +15,5 @@ ROUND:Hook("TTTUpdatePlayerSpeed", function(self, state, ply, data)
 		return
 	end
 
-	data.speed = state.speed
+	data.cheer = state.speed
 end)

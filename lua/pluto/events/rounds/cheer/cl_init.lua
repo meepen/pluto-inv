@@ -11,6 +11,8 @@ surface.CreateFont("cheer_small", {
 	size = math.max(16, ScrH() * 0.025),
 })
 
+local outline_text = Color(12, 13, 15)
+
 local color_words = {
 	blue = "blue, delivered by you!",
 	green = "green, they are quite keen!",
@@ -23,32 +25,32 @@ local indicator = surface.GetTextureID("effects/select_ring")
 
 local function RenderIntro()
 	local y = ScrH() / 10
-	local _, h = draw.SimpleTextOutlined("This, hard, hard year has drained us of cheer.", "cheer_header", ScrW() / 2, y, ttt.roles.Child.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(12, 13, 15))
+	local _, h = draw.SimpleTextOutlined("This, hard, hard year has drained us of cheer.", "cheer_header", ScrW() / 2, y, ttt.roles.Child.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, outline_text)
 	y = y + h
 
-	local _, h = draw.SimpleTextOutlined("Find and deliver toys to bring back our joys!", "cheer_medium", ScrW() / 2, y, ttt.roles["S.A.N.T.A. Agent"].Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+	_, h = draw.SimpleTextOutlined("Find and deliver toys to bring back our joys!", "cheer_medium", ScrW() / 2, y, ttt.roles["S.A.N.T.A. Agent"].Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
 end
 
 local function RenderHeader(state)
 	local y = ScrH() / 10
 	local x = ScrW() / 2
 
-	local _, h = draw.SimpleTextOutlined("Find and deliver toys to bring back our joys!", "cheer_header", x, y, ttt.roles["S.A.N.T.A. Agent"].Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(12, 13, 15))
+	local _, h = draw.SimpleTextOutlined("Find and deliver toys to bring back our joys!", "cheer_header", x, y, ttt.roles["S.A.N.T.A. Agent"].Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, outline_text)
 	y = y + h
 
 	if (state.bonus) then
-		_, h = draw.SimpleTextOutlined(string.format("You need %i more scored to get a reward!", state.bonus), "cheer_small", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+		_, h = draw.SimpleTextOutlined(string.format("You need %i more scored to get a reward!", state.bonus), "cheer_small", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
 		y = y + h
 	end
 
 	if (state.target and state.color) then
-		_, h = draw.SimpleTextOutlined(state.target .. " needs a toy of " .. color_words[state.color], "cheer_small", x, y, pluto.currency.byname["_toy_" .. state.color].Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+		_, h = draw.SimpleTextOutlined(state.target .. " needs a toy of " .. color_words[state.color], "cheer_small", x, y, pluto.currency.byname["_toy_" .. state.color].Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
 		y = y + h
 	end
 
 	if (state.message) then
 		y = y + h / 2
-		_, h = draw.SimpleTextOutlined(state.message, "cheer_medium", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+		_, h = draw.SimpleTextOutlined(state.message, "cheer_medium", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
 		y = y + h
 	end
 end
@@ -57,15 +59,15 @@ local function RenderStats(state)
 	local y = ScrH() / 5
 	local x = 4
 	if (state.cheer) then
-		local _, h = draw.SimpleTextOutlined(string.format("Cheer Level: %i!", state.cheer), "cheer_small", x, y, ttt.roles["S.A.N.T.A. Agent"].Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+		local _, h = draw.SimpleTextOutlined(string.format("Cheer Level: %i!", state.cheer), "cheer_small", x, y, ttt.roles["S.A.N.T.A. Agent"].Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, outline_text)
 		y = y + h
 	end
 
 	if (state.found and state.target) then
-		local _, h = draw.SimpleTextOutlined("Give your toy to " .. state.target .. "!", "cheer_small", x, y, pluto.currency.byname["_toy_" .. state.color].Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+		_, h = draw.SimpleTextOutlined("Give your toy to " .. state.target .. "!", "cheer_small", x, y, pluto.currency.byname["_toy_" .. state.color].Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, outline_text)
 		y = y + h
 	elseif (state.color) then
-		local _, h = draw.SimpleTextOutlined("Find a " .. state.color .. " toy!", "cheer_small", x, y, pluto.currency.byname["_toy_" .. state.color].Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+		_, h = draw.SimpleTextOutlined("Find a " .. state.color .. " toy!", "cheer_small", x, y, pluto.currency.byname["_toy_" .. state.color].Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, outline_text)
 		y = y + h
 	end
 end

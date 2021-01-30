@@ -7,12 +7,14 @@ surface.CreateFont("chimp_small", {
 	size = math.max(16, ScrH() * 0.025),
 })
 
+local outline_text = Color(12, 13, 15)
+
 local function RenderHeader()
 	local y = ScrH() / 10
-	local _, h = draw.SimpleTextOutlined("The chimps are trying to decide who is the Monke King", "chimp_header", ScrW() / 2, y, ttt.roles.Monke.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(12, 13, 15))
+	local _, h = draw.SimpleTextOutlined("The chimps are trying to decide who is the Monke King", "chimp_header", ScrW() / 2, y, ttt.roles.Monke.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, outline_text)
 	y = y + h
 
-	local _, h = draw.SimpleTextOutlined("Collect the most bananas to rise up above the rest of the chimps", "chimp_small", ScrW() / 2, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+	_, h = draw.SimpleTextOutlined("Collect the most bananas to rise up above the rest of the chimps", "chimp_small", ScrW() / 2, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
 end
 
 local function RenderRole()
@@ -26,31 +28,32 @@ local function RenderRole()
 	local y = ScrH() / 10
 	local x = ScrW() / 2
 
-	local _, h = draw.SimpleTextOutlined("Monke... Want... BANNA!", "chimp_header", x, y, ttt.roles.Monke.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(12, 13, 15))
+	local _, h = draw.SimpleTextOutlined("Monke... Want... BANNA!", "chimp_header", x, y, ttt.roles.Monke.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, outline_text)
 	y = y + h
 
-	_, h = draw.SimpleTextOutlined("Find yummy banna! Grab yummy banna!", "chimp_small", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+	_, h = draw.SimpleTextOutlined("Find yummy banna! Grab yummy banna!", "chimp_small", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
 	y = y + h
 
-	_, h = draw.SimpleTextOutlined("Kill monke to steal yummy banna!", "chimp_small", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+	_, h = draw.SimpleTextOutlined("Kill monke to steal yummy banna!", "chimp_small", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
 	y = y + h
 end
 
 local function RenderStats(state)
 	local y = ScrH() / 5
 	local x = 4
+	local _, h
 	if (state.current_leader) then
-		local _, h = draw.SimpleTextOutlined(state.current_leader, "chimp_small", x, y, ttt.roles["Banna Boss"].Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+		_, h = draw.SimpleTextOutlined(state.current_leader, "chimp_small", x, y, ttt.roles["Banna Boss"].Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, outline_text)
 		y = y + h
 	end
 
 	if (state.currency_left and state.currency_left >= 0 and state.currency_left <= 256) then
-		local _, h = draw.SimpleTextOutlined(string.format("%i banna left", state.currency_left), "chimp_small", x, y, ttt.roles.Child.Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+		_, h = draw.SimpleTextOutlined(string.format("%i banna left", state.currency_left), "chimp_small", x, y, ttt.roles.Child.Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, outline_text)
 		y = y + h
 	end
 
 	if (state.currency_collected) then
-		local _, h = draw.SimpleTextOutlined(string.format("%i banna finded", state.currency_collected), "chimp_small", x, y, ttt.roles.Monke.Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(12, 13, 15))
+		_, h = draw.SimpleTextOutlined(string.format("%i banna finded", state.currency_collected), "chimp_small", x, y, ttt.roles.Monke.Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, outline_text)
 		y = y + h
 	end
 end
