@@ -79,16 +79,16 @@ function SWEP:FireBulletsCallback(tr, dmginfo, data)
 			return
 		end
 
-		pluto.statuses.poison(own, {
-			Weapon = self,
-			Damage = 10
-		})
-
 		local ent = tr.Entity
 
 		if (not IsValid(ent) or not ent:IsPlayer()) then
 			return 
 		end
+
+		pluto.statuses.poison(own, {
+			Weapon = self,
+			Damage = 10
+		})
 
 		self.Damaged[ent] = (self.Damaged[ent] or 0) + 10
 	end

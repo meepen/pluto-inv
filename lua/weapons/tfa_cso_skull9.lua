@@ -8,12 +8,13 @@ SWEP.WorldModel = "models/weapons/tfa_cso/w_skull_9.mdl"
 SWEP.ViewModelFlip = false
 SWEP.ViewModelFOV = 100
 SWEP.UseHands = true
+SWEP.HoldType = "melee2"
 
 SWEP.Spawnable = false
 SWEP.AdminSpawnable = false
 SWEP.DrawCrosshair = true
 
-SWEP.Primary.Range           = 100
+SWEP.Primary.Range           = 130
 SWEP.Primary.Delay           = 1.2
 SWEP.Primary.Damage          = 60
 SWEP.Secondary.Damage        = 60
@@ -31,7 +32,7 @@ SWEP.Primary.Attacks = {
 		['snd_delay'] = 1,
 		["viewpunch"] = Angle(0,0,0), --viewpunch angle
 		['end'] = 0, --time before next attack
-		['hull'] = 24, --Hullsize
+		['hull'] = 256, --Hullsize
 		['direction'] = "F", --Swing dir,
 		['hitflesh'] = "SKULL9.HitFlesh",
 		['hitworld'] = "SKULL9.HitWorld"
@@ -58,6 +59,43 @@ SWEP.Secondary.Attacks = {
 		['maxhits'] = 1
 	}
 }
+
+sound.Add({
+	['name'] = "SKULL9.Draw",
+	['channel'] = CHAN_STATIC,
+	['sound'] = { "weapons/tfa_cso/skull9/draw.ogg" },
+	['pitch'] = {95,105}
+})
+sound.Add({
+	['name'] = "SKULL9.Slash1",
+	['channel'] = CHAN_STATIC,
+	['sound'] = { "weapons/tfa_cso/skull9/slash_1.ogg" },
+	['pitch'] = {95,105}
+})
+sound.Add({
+	['name'] = "SKULL9.Slash2",
+	['channel'] = CHAN_STATIC,
+	['sound'] = { "weapons/tfa_cso/skull9/slash_2.ogg" },
+	['pitch'] = {95,105}
+})
+sound.Add({
+	['name'] = "SKULL9.HitFlesh",
+	['channel'] = CHAN_STATIC,
+	['sound'] = { "weapons/tfa_cso/skull9/hit_flesh.ogg" },
+	['pitch'] = {95,105}
+})
+sound.Add({
+	['name'] = "SKULL9.HitWorld",
+	['channel'] = CHAN_STATIC,
+	['sound'] = { "weapons/tfa_cso/skull9/hit_wall.ogg" },
+	['pitch'] = {95,105}
+})
+sound.Add({
+	['name'] = "TFABaseMelee.Null",
+	['channel'] = CHAN_STATIC,
+	['sound'] = { "common/null.ogg" },
+	['pitch'] = {95,105}
+})
 
 DEFINE_BASECLASS(SWEP.Base)
 
