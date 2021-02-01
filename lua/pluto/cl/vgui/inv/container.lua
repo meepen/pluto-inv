@@ -439,6 +439,18 @@ function PANEL:AddStorageTab(tab)
 				img:SetShape(shape)
 			end
 			s:GetParent():OnMousePressed(MOUSE_LEFT)
+
+			hook.Add("VGUIMousePressed", s.ImageChanger, function(self, opnl)
+				while (IsValid(opnl)) do
+					if (opnl == self) then
+						return
+					end
+
+					opnl = opnl:GetParent()
+				end
+
+				self:Remove()
+			end)
 		end
 	end
 

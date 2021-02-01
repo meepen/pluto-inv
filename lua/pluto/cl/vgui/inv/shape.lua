@@ -10,6 +10,26 @@ function PANEL:Init()
 	self:SetColor(Color(255, 0, 0))
 end
 
+local shape_font = setmetatable({},{
+	__index = function(self, k)
+		if (k ~= math.Round(k)) then
+			return self[math.Round(k)]
+		end
+
+		local fontname = "pluto_shape_font_" .. k
+
+		surface.CreateFont(fontname, {
+			font = "Arial",
+			size = k,
+			extended = true
+		})
+
+		self[k] = fontname
+
+		return fontname
+	end
+})
+
 local shadow_color = Color(0, 0, 0, 128)
 local DrawingTypes = {
 	square = function(self, w, h)
@@ -57,6 +77,56 @@ local DrawingTypes = {
 			{ x = w / 2,     y = h * 4 / 5 },
 			{ x = w / 4,     y = h / 2 },
 		}
+	end,
+	plus = function(self, w, h)
+		local cx, cy = math.Round(w / 2), math.Round(h / 2)
+		local sw = math.Round(w / 2 / 2) * 2
+		surface.SetDrawColor(shadow_color)
+		surface.DrawLine(cx - sw / 2, cy + 1, cx + sw / 2, cy + 1)
+		surface.DrawLine(cx, cy - sw / 2 + 1, cx, cy + sw / 2 + 1)
+		surface.SetDrawColor(self:GetColor())
+		surface.DrawLine(cx - sw / 2, cy, cx + sw / 2, cy)
+		surface.DrawLine(cx, cy - sw / 2, cx, cy + sw / 2)
+	end,
+	heart = function(self, w, h)
+		local surface = pluto.fonts.systems.shadow
+		local font = shape_font[w]
+		local c = "♥"
+		surface.SetTextColor(self:GetColor())
+		surface.SetFont(font)
+		local tw, th = surface.GetTextSize(c)
+		surface.SetTextPos(w / 2 - tw / 2 - 1, h / 2 - th / 2 - 1)
+		surface.DrawText(c)
+	end,
+	music = function(self, w, h)
+		local surface = pluto.fonts.systems.shadow
+		local font = shape_font[w]
+		local c = "♪"
+		surface.SetTextColor(self:GetColor())
+		surface.SetFont(font)
+		local tw, th = surface.GetTextSize(c)
+		surface.SetTextPos(w / 2 - tw / 2 - 1, h / 2 - th / 2 - 1)
+		surface.DrawText(c)
+	end,
+	club = function(self, w, h)
+		local surface = pluto.fonts.systems.shadow
+		local font = shape_font[w]
+		local c = "♣"
+		surface.SetTextColor(self:GetColor())
+		surface.SetFont(font)
+		local tw, th = surface.GetTextSize(c)
+		surface.SetTextPos(w / 2 - tw / 2 - 1, h / 2 - th / 2 - 1)
+		surface.DrawText(c)
+	end,
+	spade = function(self, w, h)
+		local surface = pluto.fonts.systems.shadow
+		local font = shape_font[w]
+		local c = "♠"
+		surface.SetTextColor(self:GetColor())
+		surface.SetFont(font)
+		local tw, th = surface.GetTextSize(c)
+		surface.SetTextPos(w / 2 - tw / 2 - 1, h / 2 - th / 2 - 1)
+		surface.DrawText(c)
 	end,
 }
 
@@ -109,9 +179,12 @@ function PANEL:Init()
 		for _, shape in pairs(self.Shapes) do
 			shape:SetColor(col)
 		end
+		if (self.Shapes.circle.CircleShape) then
+			self.Shapes.circle.CircleShape:SetColor(Color(col.r, col.g, col.b))
+		end
 	end
 
-	self:SetSize(250, 79 + 2 + 8 + 20 + 2)
+	self:SetSize(190, 79 + 2 + 8 + 20 + 2)
 
 	self.ShapeContainer = self.Inner:Add "EditablePanel"
 
@@ -139,11 +212,9 @@ function PANEL:Init()
 end
 
 function PANEL:OnColorChanged(col)
-	PrintTable(col)
 end
 
 function PANEL:OnShapeChanged(shape)
-	print(shape)
 end
 
 function PANEL:SetRGB(col)
