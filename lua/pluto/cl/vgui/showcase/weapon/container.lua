@@ -2,7 +2,7 @@ local PANEL = {}
 
 function PANEL:Init()
 	self:SetColor(Color(84, 86, 90, 255))
-	self:SetSize(220, 68)
+	self:SetSize(220, 68 + 12)
 	self:SetCurve(4)
 	self:DockPadding(1, 1, 1, 1)
 
@@ -71,7 +71,7 @@ function PANEL:Init()
 
 	self.PrefixContainer = self:Add "EditablePanel"
 	self.PrefixContainer:Dock(TOP)
-	self.PrefixContainer:SetTall(0)
+	self.PrefixContainer:SetTall(12)
 
 	self.ItemInformationLine = self:Add "EditablePanel"
 	self.ItemInformationLine:Dock(TOP)
@@ -88,7 +88,7 @@ function PANEL:AddPrefix(prefix, item)
 	local added_size = 0
 	if (not self.HasPrefix) then
 		self.PrefixContainer:DockPadding(7, 12, 7, 12)
-		added_size = added_size + 24
+		added_size = added_size + 12
 	end
 	self.HasPrefix = true
 
