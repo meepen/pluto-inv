@@ -2,7 +2,7 @@ local PANEL = {}
 
 function PANEL:Init()
 	self:SetColor(Color(84, 86, 90, 255))
-	self:SetSize(220, 68 + 12)
+	self:SetSize(220, 56 + 12)
 	self:SetCurve(4)
 	self:DockPadding(1, 1, 1, 1)
 
@@ -224,6 +224,7 @@ function PANEL:SetItem(item)
 		self.RealNameLabel:SetTall(18)
 		self.RealNameLabel:SetText(item:GetRawName())
 		self.NameContainer:SetTall(self.NameContainer:GetTall() + self.RealNameLabel:GetTall())
+		self:SetTall(self:GetTall() + self.RealNameLabel:GetTall())
 	end
 
 	if (item.ID) then
