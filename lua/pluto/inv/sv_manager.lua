@@ -180,7 +180,7 @@ function pluto.inv.writefullupdate(ply)
 
 		local tabtype = pluto.tabs[tab.Type]
 
-		if (not tabtype or not tabtype.element) then
+		if (not tabtype) then
 			continue
 		end
 

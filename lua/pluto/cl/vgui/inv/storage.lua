@@ -118,6 +118,10 @@ function PANEL:SetText(t)
 end
 
 function PANEL:PopulateFromTab(tab)
+	if (self.BufferActive and tab.Type ~= "buffer") then
+		return
+	end
+
 	self.ItemHighlights = {}
 	local tabtype = pluto.tabs[tab.Type]
 	if (not tabtype) then
@@ -273,6 +277,37 @@ function PANEL:SearchItems(text)
 
 		if (good) then
 			self:HighlightItem(i, math.huge)
+		end
+	end
+end
+
+function PANEL:SwapToBuffer(enable)
+	if (not not self.BufferActive == enable) then
+		return
+	end
+	
+	self.BufferActive = not self.BufferActive
+	if (self.BufferActive) then
+		for _, tab in pairs(pluto.cl_inv) do
+			if (tab.Type == "buffer") then
+				self:PopulateFromTab(tab)
+			end
+		end
+
+		self:SetText "Buffer"
+		hook.Add("PlutoBufferChanged", self, self.PlutoBufferChanged)
+	else
+		self:PopulateFromTab(self.ActiveTab)
+		self:SetText "Inventory"
+	end
+end
+
+function PANEL:PlutoBufferChanged()
+	if (self.BufferActive) then
+		for _, tab in pairs(pluto.cl_inv) do
+			if (tab.Type == "buffer") then
+				self:PopulateFromTab(tab)
+			end
 		end
 	end
 end

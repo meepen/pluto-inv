@@ -16,8 +16,6 @@ pluto.received = pluto.received or {
 	item = {},
 }
 
-pluto.buffer = pluto.buffer or {}
-
 pluto.inv = pluto.inv or {
 	status = "uninitialized",
 }
@@ -195,7 +193,6 @@ end
 
 function pluto.inv.readfullupdate()
 	pluto.cl_inv = {}
-	pluto.buffer = {}
 	pluto.cl_currency = {}
 	if (IsValid(pluto.ui.pnl)) then
 		pluto.ui.pnl:Remove()
@@ -251,6 +248,10 @@ function pluto.inv.readtab()
 		item.TabIndex = tabindex
 	end
 
+	if (tab.Type == "buffer") then
+		pluto.buffer = tab.Items
+	end
+
 	return true
 end
 
@@ -279,11 +280,11 @@ end
 function pluto.inv.readbufferitem()
 	local item = pluto.inv.readitem()
 
-	table.insert(pluto.buffer, item)
-	if (#pluto.buffer > 5) then
-		table.remove(pluto.buffer, 1)
+	table.insert(pluto.buffer, 1, item)
+	for i = 37, #pluto.buffer do
+		pluto.buffer[i] = nil
 	end
-	hook.Run("PlutoBufferChanged")
+	hook.Run "PlutoBufferChanged"
 end
 
 function pluto.inv.writeitemdelete(tabid, tabindex, itemid)

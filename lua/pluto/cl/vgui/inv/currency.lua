@@ -34,11 +34,11 @@ function PANEL:Init()
 	self.CurrencyDone = {}
 
 	self:AddTab "Modify"
-	self:AddTab "Item Boxes"
+	self:AddTab("Item Boxes", false, true)
 	self:AddTab("Misc.", true)
 end
 
-function PANEL:AddTab(text, add_rest)
+function PANEL:AddTab(text, add_rest, buffer)
 	local curve = self.UpperArea:Add "ttt_curved_panel"
 	curve:Dock(LEFT)
 	curve:SetWide(100)
@@ -76,6 +76,7 @@ function PANEL:AddTab(text, add_rest)
 				self.ActiveTab:SetColor(inactive_color)
 				self.Tabs[self.ActiveTab]:SetVisible(false)
 			end
+			self.Storage:SwapToBuffer(buffer)
 			s:SetColor(active_color)
 			self.Tabs[s]:SetVisible(true)
 			self.ActiveTab = s
@@ -126,6 +127,14 @@ end
 
 function PANEL:SetColor(col)
 	self.Inner:SetColor(col)
+end
+
+function PANEL:OnRemove()
+	if (not IsValid(self.Storage)) then
+		return
+	end
+
+	self.Storage:SwapToBuffer(false)
 end
 
 vgui.Register("pluto_inventory_currency", PANEL, "EditablePanel")

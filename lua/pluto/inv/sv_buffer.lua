@@ -12,18 +12,14 @@ function pluto.inv.pushbuffer(db, ply)
 	end
 
 	mysql_stmt_run(db, "SELECT idx FROM pluto_items WHERE tab_id = ? FOR UPDATE", tab.RowID)
-	mysql_stmt_run(db, "DELETE FROM pluto_items where tab_id = ? and tab_idx = 5", tab.RowID)
-	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 4", tab.RowID)
-	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 3", tab.RowID)
-	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 2", tab.RowID)
-	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 1", tab.RowID)
-
-	for i = 4, 1, -1 do
+	mysql_stmt_run(db, "DELETE FROM pluto_items where tab_id = ? and tab_idx = 36", tab.RowID)
+	for i = 35, 1, -1 do
 		local item = tab.Items[i]
 		tab.Items[i + 1] = item
 		if (item) then
 			item.TabIndex = i + 1
 		end
+		mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = ?", tab.RowID, i)
 	end
 end
 
@@ -36,7 +32,7 @@ function pluto.inv.popbuffer(db, ply, index)
 		return false
 	end
 
-	for i = index + 1, 5 do
+	for i = index + 1, 36 do
 		mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx - 1 where tab_id = ? and tab_idx = ?", tab.RowID, i)
 		local item = tab.Items[i]
 		tab.Items[i - 1] = item
@@ -44,7 +40,7 @@ function pluto.inv.popbuffer(db, ply, index)
 			tab.Items[i - 1].TabIndex = i - 1
 		end
 	end
-	tab.Items[5] = nil
+	tab.Items[36] = nil
 end
 
 function pluto.inv.savebufferitem(db, ply, new_item)

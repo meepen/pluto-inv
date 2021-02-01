@@ -210,11 +210,12 @@ function PANEL:Init()
 	self:AddTab("Crafting", function(container)
 	end, true)
 
-	self:AddTab("Currency", function(container)
+	self:AddTab("Currency", function(container, storage)
 		local other = container:Add "pluto_inventory_currency"
 		other:SetCurve(4)
 		other:Dock(FILL)
 		other:SetColor(inner_color)
+		other.Storage = storage
 	end, true)
 
 	self:AddTab("Quests", function(container)
@@ -324,7 +325,7 @@ function PANEL:ChangeToTab(name)
 		child:Remove()
 	end
 
-	tab.Populate(pnl)
+	tab.Populate(pnl, self.Storage)
 end
 
 local gradient_up = Material "gui/gradient_up"
