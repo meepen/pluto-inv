@@ -129,23 +129,48 @@ local function getrawvalue(wep, name)
 	end
 end
 
+function pluto.mods.humanreadablestat(statname, wep, value)
+	if (statname == "Delay") then
+		return math.Round(60 / value), "RPM"
+	end
+
+	if (statname == "Damage" and wep.Bullets and wep.Bullets.Num and wep.Bullets.Num > 1) then
+		return math.Round(value, 1) .. "*" .. wep.Bullets.Num, "DMG"
+	end
+
+	if (type(value) == "Vector") then
+		return math.Round(value:Length() * 100, 1), "??"
+	end
+
+	if (type(value) == "number") then
+		return math.Round(value, 1)
+	end
+
+	return tostring(value), "?"
+end
+
 function pluto.mods.getstatvalue(wep, name)
-	if (name == "ReloadAnimationSpeed" or name == "Recoil" or name == "ViewPunchAngles") then
-		return ""
+	return pluto.mods.humanreadablestat(name, wep, getrawvalue(wep, name))
+end
+
+function pluto.mods.getitemvalue(item, name)
+	local wep = baseclass.Get(item.ClassName)
+
+	local value = getrawvalue(wep, name)
+	if (not value) then
+		return "IDK XD"
 	end
 
-	local val = getrawvalue(wep, name)
-	if (name == "Delay") then
-		return math.Round(60 / val)
-	end
+	local override, modifier = pluto.stattranslate(name)
+	for _, mod in pairs(item.Mods.prefix) do
+		local MOD = pluto.mods.byname[mod.Mod]
+		if (MOD.StatModifier ~= name) then
+			continue
+		end
 
-	if (name == "Damage" and wep.Bullets and wep.Bullets.Num and wep.Bullets.Num > 1) then
-		return math.Round(val, 1) .. "*" .. wep.Bullets.Num
+		local rolls = pluto.mods.getrolls(MOD, mod.Tier, mod.Roll)
+		modifier = modifier + rolls[1] / 100
 	end
-
-	if (type(val) == "Vector") then
-		return math.Round(val:Length() * 100, 1)
-	end
-
-	return tostring(val or "unknown")
+	
+	return pluto.mods.humanreadablestat(name, wep, override(value, modifier))
 end

@@ -13,9 +13,7 @@ end
 
 pluto.wpn_db = pluto.wpn_db or {}
 
-function SWEP:PlutoInitialize()
-	self.Pluto = {}
-
+local function Override(self)
 	self:DefinePlutoOverrides "ReloadAnimationSpeed"
 	self:DefinePlutoOverrides "Damage"
 	self:DefinePlutoOverrides "DamageDropoffRangeMax"
@@ -30,6 +28,39 @@ function SWEP:PlutoInitialize()
 
 		return 60 / rpm
 	end)
+end
+
+local function default_translate(old, pct)
+	if (pct < 0) then
+		pct = 1 / (2 - pct)
+	end
+	return old * pct
+end
+
+function pluto.stattranslate(stat)
+	local function override_func(num)
+		return num
+	end
+	local _default = 0
+	local function DefinePlutoOverrides(self, type, default, translate)
+		if (type ~= stat) then
+			return
+		end
+
+		_default = default or 1
+		translate = translate or default_translate
+		function override_func(num, value)
+			return translate(num, value)
+		end
+	end
+	Override({DefinePlutoOverrides = DefinePlutoOverrides})
+	return override_func, _default
+end
+
+function SWEP:PlutoInitialize()
+	self.Pluto = {}
+
+	Override(self)
 end
 
 function WEAPON:GetInventoryItem()
@@ -76,13 +107,6 @@ function SWEP:SetupDataTables()
 		self:SetPlutoID(pluto.CurrentID)
 		pluto.CurrentID = pluto.CurrentID + 1
 	end
-end
-
-local function default_translate(old, pct)
-	if (pct < 0) then
-		pct = 1 / (2 - pct)
-	end
-	return old * pct
 end
 
 function SWEP:DefinePlutoOverrides(type, default, translate)
