@@ -256,6 +256,11 @@ function PANEL:SetItem(item)
 	self.NameContainer:SetColor(item:GetColor())
 
 	self.NameLabel:SetText(item:GetPrintName())
+	do
+		local surface = self.NameLabel:GetRenderSystem()
+		surface.SetFont(self.NameLabel:GetFont())
+		self:SetWide(math.max(surface.GetTextSize(item:GetPrintName()) + 20, self:GetWide()))
+	end
 
 	if (item:GetPrintName() ~= item:GetRawName()) then
 		self.RealNameLabel:SetTall(18)
