@@ -86,6 +86,30 @@ pluto.currency.list = {
 		Category = "Modify",
 	},
 	{
+		InternalName = "endround",
+		Name = "End-round Crate",
+		Icon = "pluto/currencies/crate0.png",
+		Description = "Contains an item",
+		SubDescription = "",
+		NoTarget = true,
+		Color = Color(71, 170, 222),
+		ClientsideUse = function()
+			if (IsValid(pluto.opener)) then
+				pluto.opener:Remove()
+			end
+
+			pluto.opener = vgui.Create "tttrw_base"
+
+			pluto.opener:AddTab("Open Box", vgui.Create "pluto_box_open" :SetCurrency "endround")
+
+			pluto.opener:SetSize(640, 400)
+			pluto.opener:Center()
+			pluto.opener:MakePopup()
+		end,
+
+		Category = "Item Boxes",
+	},
+	{
 		InternalName = "crate0",
 		Name = "Blue Egg",
 		Icon = "pluto/currencies/crate0_new.png",

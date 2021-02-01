@@ -142,20 +142,9 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 		if (not IsValid(ply) or math.random() > pluto_weapon_droprate:GetFloat()) then
 			continue
 		end
-		pluto.db.transact(function(db)
-			local item = pluto.inv.generatebufferweapon(db, ply, "DROPPED")
-
-			if (item:GetMaxAffixes() >= 5) then
-				local msg = discord.Message()
-
-				msg:AddEmbed(item:GetDiscordEmbed()
-					:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
-				)
-				msg:Send "drops"
-			end
-
-			ply:ChatPrint("You have received a ", item, white_text, "! Check your inventory.")
-			mysql_commit(db)
+		pluto.db.instance(function(db)
+			pluto.inv.addcurrency(db, ply, "endround", 1)
+			ply:ChatPrint(white_text, "You obtained a ", pluto.currency.byname.endround)
 		end)
 	end
 end)

@@ -211,7 +211,6 @@ function pluto.inv.readfullupdate()
 	end
 
 	pluto.inv.readstatus()
-	pluto.inv.remakefake()
 end
 
 function pluto.inv.readtab()
