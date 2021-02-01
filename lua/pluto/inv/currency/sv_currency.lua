@@ -540,16 +540,17 @@ for name, values in pairs {
 		Use = function(ply)
 			pluto.db.transact(function(db)
 				local item = pluto.inv.generatebufferweapon(db, ply, "DROPPED")
-	
+
 				if (item:GetMaxAffixes() >= 5) then
 					local msg = discord.Message()
-	
+
 					msg:AddEmbed(item:GetDiscordEmbed()
 						:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
 					)
 					msg:Send "drops"
 				end
-	
+
+				pluto.inv.addcurrency(db, ply, "endround", -1)
 				ply:ChatPrint("You have received a ", item, white_text, "!")
 				mysql_commit(db)
 			end)
