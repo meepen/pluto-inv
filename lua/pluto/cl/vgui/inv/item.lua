@@ -263,6 +263,11 @@ function PANEL:OnMousePressed(m)
 end
 
 function PANEL:OnRightClick()
+	if (not self.Item) then
+		return
+	end
+
+	pluto.ui.rightclickmenu(self.Item)
 	-- derma menu??? idk
 end
 

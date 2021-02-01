@@ -227,9 +227,17 @@ function PANEL:Init()
 			s:SetItem(other.Item)
 		end
 		function item2.OnRightClick(s)
-			sql.Query([[UPDATE pluto_cosmetic_loadouts SET slot]] .. i .. [[ = NULL WHERE idx = ]] .. self.ActiveCosmeticLoadout)
-			cosmetic_slot_convars[i]:SetString "NULL"
-			s:SetItem()
+			if (not s.Item) then
+				return
+			end
+
+			pluto.ui.rightclickmenu(s.Item, function(menu)
+				menu:AddOption("Unequip", function()
+					sql.Query([[UPDATE pluto_cosmetic_loadouts SET slot]] .. i .. [[ = NULL WHERE idx = ]] .. self.ActiveCosmeticLoadout)
+					cosmetic_slot_convars[i]:SetString "NULL"
+					s:SetItem()
+				end):SetIcon("icon16/cancel.png")
+			end)
 		end
 		function item2.OnLeftClick(s)
 			if (not s.Item) then
@@ -253,9 +261,17 @@ function PANEL:Init()
 			s:SetItem(other.Item)
 		end
 		function item.OnRightClick(s)
-			sql.Query([[UPDATE pluto_loadouts SET slot]] .. i .. [[ = NULL WHERE idx = ]] .. self.ActiveLoadout)
-			loadout_slot_convars[i]:SetString "NULL"
-			s:SetItem()
+			if (not s.Item) then
+				return
+			end
+
+			pluto.ui.rightclickmenu(s.Item, function(menu)
+				menu:AddOption("Unequip", function()
+					sql.Query([[UPDATE pluto_loadouts SET slot]] .. i .. [[ = NULL WHERE idx = ]] .. self.ActiveLoadout)
+					loadout_slot_convars[i]:SetString "NULL"
+					s:SetItem()
+				end):SetIcon("icon16/cancel.png")
+			end)
 		end
 		function item.OnLeftClick(s)
 			if (not s.Item) then

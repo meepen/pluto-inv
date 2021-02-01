@@ -65,6 +65,7 @@ pluto.files.load {
 		"cl/vgui/inv/playermodel.lua",
 		"cl/vgui/inv/currency.lua",
 		"cl/vgui/inv/container.lua",
+		"cl/vgui/inv/rightclick.lua",
 
 		"cl/vgui/showcase/init.lua",
 		"cl/vgui/showcase/weapon/container.lua",
