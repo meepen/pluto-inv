@@ -195,6 +195,9 @@ end
 function PANEL:OnMousePressed(m)
 	if (m == MOUSE_LEFT) then
 		local curtype = self.Currency
+		if ((pluto.cl_currency[curtype.InternalName] or 0) <= 0) then
+			return
+		end
 		if (curtype and curtype.NoTarget) then
 			if (curtype.ClientsideUse) then
 				curtype.ClientsideUse(self.Item)
