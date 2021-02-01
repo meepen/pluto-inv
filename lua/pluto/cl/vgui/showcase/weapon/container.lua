@@ -2,10 +2,42 @@ local PANEL = {}
 
 function PANEL:Init()
 	self:SetColor(Color(84, 86, 90, 255))
-	self:SetSize(220, 56 + 12)
 	self:SetCurve(4)
 	self:DockPadding(1, 1, 1, 1)
 
+	self:Think()
+	self:CreateInners()
+
+	self:MakePopup()
+	self:SetKeyboardInputEnabled(false)
+	self:SetMouseInputEnabled(false)
+end
+
+function PANEL:GetControlState()
+	return input.IsKeyDown(KEY_LCONTROL)
+end
+
+function PANEL:Think()
+	if (self.LastControlState == nil) then
+		self.LastControlState = self:GetControlState()
+		return
+	end
+
+	if (self.LastControlState == self:GetControlState()) then
+		return
+	end
+
+	self.LastControlState = self:GetControlState()
+
+	self:CreateInners()
+end
+
+function PANEL:CreateInners()
+	for _, child in pairs(self:GetChildren()) do
+		child:Remove()
+	end
+
+	self:SetSize(220, 56 + 12)
 	self.NameContainer = self:Add "ttt_curved_panel"
 	self.NameContainer:Dock(TOP)
 	self.NameContainer:SetTall(30)
@@ -78,9 +110,13 @@ function PANEL:Init()
 	self.ItemInformationLine:SetTall(0)
 	self.ItemInformationLine:DockPadding(7, 0, 7, 0)
 
-	self:MakePopup()
-	self:SetKeyboardInputEnabled(false)
-	self:SetMouseInputEnabled(false)
+	self:InvalidateLayout(true)
+
+	if (self.Item) then
+		self.HasPrefix = false
+		self.HasSuffix = false
+		self:SetItem(self.Item)
+	end
 end
 
 function PANEL:AddPrefix(prefix, item)
@@ -139,7 +175,7 @@ function PANEL:AddSuffix(suffix, item)
 	local fmt = pluto.mods.format(suffix, item)
 	local minmaxs = pluto.mods.getminmaxs(suffix, item)
 
-	if (input.IsKeyDown(KEY_LCONTROL)) then
+	if (self:GetControlState()) then
 		for i = 1, #fmt do
 			fmt[i] = string.format("%s (%s to %s)", fmt[i], minmaxs[i].Mins, minmaxs[i].Maxs)
 		end
@@ -216,6 +252,7 @@ local function TextColorizer(t)
 end
 
 function PANEL:SetItem(item)
+	self.Item = item
 	self.NameContainer:SetColor(item:GetColor())
 
 	self.NameLabel:SetText(item:GetPrintName())
@@ -305,10 +342,29 @@ function PANEL:SetItem(item)
 		end
 	end
 
+	local inspect = self.StatArea:Add "pluto_label"
+	inspect:Dock(TOP)
+	inspect:SetText "Hold LCTRL to inspect"
+	inspect:SetFont "pluto_showcase_suffix_text"
+	inspect:SetTextColor(Color(255, 255, 255))
+	inspect:SetRenderSystem(pluto.fonts.systems.shadow)
+	inspect:SizeToContents()
+	inspect:SetContentAlignment(5)
+	inspect:DockMargin(0, 0, 0, 7)
+
+	function inspect:PaintOver(w, h)
+		local surface = self:GetRenderSystem() or surface
+		surface.SetFont(self:GetFont())
+		local tw, th = surface.GetTextSize(self:GetText())
+
+		surface.SetDrawColor(90, 91, 95)
+		surface.DrawLine(0, h / 2, w / 2 - tw / 2 - 7, h / 2)
+		surface.DrawLine(w / 2 + tw / 2 + 7, h / 2, w, h / 2)
+	end
+
+	self.StatArea:SetTall(self.StatArea:GetTall() + inspect:GetTall() + 7)
+
 	if (item.Type == "Weapon") then
-
-		-- gather stats (for now)
-
 		local dmg_text = pluto.mods.getitemvalue(item, "Damage")
 		local dmg, pellets = tostring(dmg_text):match "^([%d%.]+)%*?(%d*)$"
 		pellets = pellets == "" and 1 or pellets
