@@ -1,3 +1,5 @@
+local pluto_storage_toggled = CreateConVar("pluto_storage_toggled", 0)
+
 surface.CreateFont("pluto_inventory_font", {
 	font = "Roboto Lt",
 	size = 13,
@@ -97,10 +99,14 @@ function PANEL:Init()
 	function self.StorageExpander.OnMousePressed(s, m)
 		if (m == MOUSE_LEFT) then
 			s.Toggled = not s.Toggled
+			pluto_storage_toggled:SetBool(s.Toggled)
 
 			self.SidePanel:SetVisible(s.Toggled)
 			self.StorageExpander:SetText(s.Toggled and "<<" or ">>")
 		end
+	end
+	if (pluto_storage_toggled:GetBool()) then
+		self.StorageExpander:OnMousePressed(MOUSE_LEFT)
 	end
 
 	self.Divider = self.TabContainer:Add "EditablePanel"
