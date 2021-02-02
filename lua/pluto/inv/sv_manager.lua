@@ -468,7 +468,6 @@ function pluto.inv.readtabswitch(ply)
 	if (tab1.Type == "buffer" or tab2.Type == "buffer") then
 		local buffer = tab1.Type == "buffer" and tab1 or tab2
 		local bufferindex = tab1 == buffer and tabindex1 or tabindex2
-		print "buffer detectado"
 		
 		pluto.db.transact(function(db)
 			if (not pluto.inv.switchtab(db, tabid1, tabindex1, tabid2, tabindex2)) then
