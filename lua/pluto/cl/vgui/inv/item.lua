@@ -223,8 +223,8 @@ function PANEL:GetCachedCurrentModel()
 	return mdl
 end
 
-function PANEL:SetCanPickup()
-	self.CanPickup = true
+function PANEL:SetCanPickup(b)
+	self.CanPickup = b
 end
 
 function PANEL:RemoveShowcase()
@@ -365,6 +365,8 @@ function pluto.ui.pickupitem(item)
 				self.ClickedWithReal(item, other)
 			end
 		end
+
+		return p
 	end
 end
 

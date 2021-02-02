@@ -77,11 +77,29 @@ function PANEL:Init()
 
 		for j = 1, 6 do
 			local item = row:Add "pluto_inventory_item"
-			item:SetCanPickup()
+			item:SetCanPickup(true)
 			table.insert(self.Items, item)
 			item:Dock(LEFT)
 			if (j ~= 6) then
 				item:DockMargin(0, 0, inner_area, 0)
+			end
+
+			function item.OnLeftClick(s)
+				-- this is claiming a buffer item (for now)
+				local p = pluto.ui.pickupitem(s)
+				if (not IsValid(p)) then
+					return
+				end
+
+				function p.ClickedOn(_, other)
+					timer.Simple(0, function()
+						self:SwapToBuffer(true)
+					end)
+					print "DONE"
+				end
+
+				self:SwapToBuffer(false)
+
 			end
 		end
 
@@ -296,9 +314,16 @@ function PANEL:SwapToBuffer(enable)
 
 		self:SetText "Buffer"
 		hook.Add("PlutoBufferChanged", self, self.PlutoBufferChanged)
+
+		for _, item in pairs(self.Items) do
+			item:SetCanPickup(false)
+		end
 	else
 		self:PopulateFromTab(self.ActiveTab)
 		self:SetText "Inventory"
+		for _, item in pairs(self.Items) do
+			item:SetCanPickup(true)
+		end
 	end
 end
 
