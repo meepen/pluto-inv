@@ -2,6 +2,19 @@ local function ornull(n)
 	return n and SQLStr(n) or "NULL"
 end
 
+function pluto.inv.lockbuffer(db, ply)
+	mysql_cmysql()
+	local tab = pluto.inv.invs[ply].tabs.buffer
+	mysql_stmt_run(db, "SELECT idx FROM pluto_items WHERE tab_id = ? FOR UPDATE", tab.RowID)
+end
+
+function pluto.inv.waitbuffer(db, ply)
+	mysql_cmysql()
+	local tab = pluto.inv.invs[ply].tabs.buffer
+	mysql_stmt_run(db, "SELECT 1 FROM pluto_items WHERE tab_id = ? LIMIT 1", tab.RowID)
+end
+
+
 function pluto.inv.pushbuffer(db, ply)
 	mysql_cmysql()
 
@@ -11,7 +24,7 @@ function pluto.inv.pushbuffer(db, ply)
 		return false
 	end
 
-	mysql_stmt_run(db, "SELECT idx FROM pluto_items WHERE tab_id = ? FOR UPDATE", tab.RowID)
+	pluto.inv.lockbuffer(db, ply)
 	mysql_stmt_run(db, "DELETE FROM pluto_items where tab_id = ? and tab_idx = 36", tab.RowID)
 	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 50 where tab_id = ?", tab.RowID)
 	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx - 49 where tab_id = ?", tab.RowID)

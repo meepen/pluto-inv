@@ -539,6 +539,12 @@ for name, values in pairs {
 		Shares = 0,
 		Use = function(ply)
 			pluto.db.transact(function(db)
+				pluto.inv.lockbuffer(db, ply)
+				pluto.inv.waitbuffer(db, ply)
+				if (not pluto.inv.addcurrency(db, ply, "endround", -1)) then
+					mysql_rollback(db)
+				end
+
 				local item = pluto.inv.generatebufferweapon(db, ply, "DROPPED")
 
 				if (item:GetMaxAffixes() >= 5) then
@@ -550,7 +556,6 @@ for name, values in pairs {
 					msg:Send "drops"
 				end
 
-				pluto.inv.addcurrency(db, ply, "endround", -1)
 				ply:ChatPrint("You have received a ", item, white_text, "!")
 				mysql_commit(db)
 			end)

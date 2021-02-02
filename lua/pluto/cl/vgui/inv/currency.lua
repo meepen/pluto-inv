@@ -154,6 +154,10 @@ function PANEL:AddTab(text, add_rest, buffer)
 		slider:DockMargin(7, 0, 7, 0)
 
 		function open:DoClick()
+			if (not opener.Currency) then
+				return
+			end
+
 			local msg = pluto.inv.message()
 			for i = 1, open.Amount do
 				msg:write("currencyuse", opener.Currency.InternalName)

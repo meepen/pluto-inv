@@ -588,6 +588,14 @@ function pluto.inv.readcurrencyuse(ply)
 		local type = pluto.inv.itemtype(gotten)
 
 		pluto.db.transact(function(db)
+			pluto.inv.lockbuffer(db, ply)
+			pluto.inv.waitbuffer(db, ply)
+
+			if (not pluto.inv.addcurrency(db, ply, currency, -1)) then
+				mysql_rollback(db)
+				return
+			end
+
 			local wpn
 			if (type == "Model") then -- model
 				wpn = pluto.inv.generatebuffermodel(db, ply, "UNBOXED", gotten:match "^model_(.+)$")
@@ -595,20 +603,11 @@ function pluto.inv.readcurrencyuse(ply)
 				wpn = pluto.inv.generatebufferweapon(db, ply, "UNBOXED", istable(data) and data.Tier or cur.DefaultTier or "unique", gotten)
 			end
 
-			if (not wpn) then
-				print(gotten)
-			end
-
 			if (istable(data) and data.Rare) then
 				discord.Message():AddEmbed(
 					wpn:GetDiscordEmbed()
 						:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
 				):Send "drops"
-			end
-
-			if (not pluto.inv.addcurrency(db, ply, currency, -1)) then
-				mysql_rollback(db)
-				return
 			end
 
 			mysql_commit(db)
