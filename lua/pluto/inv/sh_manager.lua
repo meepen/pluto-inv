@@ -7,7 +7,6 @@ pluto.inv.messages = {
 		"itemdelete",
 		"currencyuse",
 		"tabrename",
-		"claimbuffer",
 		"tradeupdate",
 		"trademessage",
 		"traderequest",

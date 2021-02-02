@@ -193,14 +193,6 @@ function pluto.inv.writefullupdate(ply)
 		pluto.inv.writecurrencyupdate(ply, currency)
 	end
 
-	local buffer = pluto.inv.getbufferitems(ply)
-
-	net.WriteUInt(#buffer, 8)
-	for i = #buffer, 1, -1 do
-		local item = buffer[i]
-		pluto.inv.writebufferitem(ply, item)
-	end
-	
 	pluto.inv.writestatus(ply, "ready")
 end
 
@@ -311,10 +303,6 @@ function pluto.inv.writebaseitem(ply, item)
 			net.WriteBool(false)
 		end
 	end
-end
-
-function pluto.inv.writebufferitem(ply, item)
-	pluto.inv.writeitem(ply, item)
 end
 
 local function noop() end
@@ -477,32 +465,32 @@ function pluto.inv.readtabswitch(ply)
 		i2.TabID, i2.TabIndex = tabid1, tabindex1
 	end
 
-	local equip
-	if (tab1.Type == "equip") then
-		equip = tab1
-	elseif (tab2.Type == "equip") then
-		equip = tab2
-	end
-
-	if (equip) then
-		timer.Simple(0, function()
-			if (IsValid(ply) and ply:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE and ply.LastLoadout ~= ttt.GetRoundNumber()) then
-				ply:StripWeapons()
-				ply:StripAmmo()
-				hook.Run("PlayerLoadout", ply)
-
-				ply.LastLoadout = ttt.GetRoundNumber()
+	if (tab1.Type == "buffer" or tab2.Type == "buffer") then
+		local buffer = tab1.Type == "buffer" and tab1 or tab2
+		local bufferindex = tab1 == buffer and tabindex1 or tabindex2
+		print "buffer detectado"
+		
+		pluto.db.transact(function(db)
+			if (not pluto.inv.switchtab(db, tabid1, tabindex1, tabid2, tabindex2)) then
+				pluto.inv.reloadfor(ply)
+				return
 			end
+
+			pluto.inv.popbuffer(db, ply, bufferindex)
+			table.remove(buffer.Items, bufferindex)
+
+			mysql_commit(db)
+
+		end)
+	else
+		pluto.db.transact(function(db)
+			if (not pluto.inv.switchtab(db, tabid1, tabindex1, tabid2, tabindex2)) then
+				pluto.inv.reloadfor(ply)
+				return
+			end
+			mysql_commit(db)
 		end)
 	end
-
-	pluto.db.transact(function(db)
-		if (not pluto.inv.switchtab(db, tabid1, tabindex1, tabid2, tabindex2)) then
-			pluto.inv.reloadfor(ply)
-			return
-		end
-		mysql_commit(db)
-	end)
 end
 
 function pluto.inv.readitemdelete(ply)
@@ -678,6 +666,10 @@ function pluto.inv.readchangetabdata(ply)
 end
 
 function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
+	if (true) then
+		return
+	end
+
 	local bufferid = net.ReadUInt(32)
 	local tabid = net.ReadUInt(32)
 	local tabindex = net.ReadUInt(8)

@@ -399,8 +399,8 @@ hook.Add("VGUIMousePressAllowed", "pluto_item_pickup", function(m)
 		if (pluto.ui.pickedupitem.ClassName == "pluto_inventory_item") then
 			local other = IsValid(pluto.ui.realpickedupitem) and pluto.ui.realpickedupitem or pluto.ui.pickedupitem
 			if (pnl:CanClickWith(other) and other:CanClickOn(pnl)) then
-				other:ClickedOn(pnl)
-				pnl:ClickedWith(other)
+				local data = other:ClickedOn(pnl)
+				pnl:ClickedWith(other, data)
 
 				if (pnl.CanPickup and other.Item) then
 					pluto.ui.pickupitem(other)

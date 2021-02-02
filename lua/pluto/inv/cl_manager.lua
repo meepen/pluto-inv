@@ -206,10 +206,6 @@ function pluto.inv.readfullupdate()
 		pluto.inv.readcurrencyupdate()
 	end
 
-	for i = 1, net.ReadUInt(8) do
-		pluto.inv.readbufferitem()
-	end
-
 	pluto.inv.readstatus()
 end
 

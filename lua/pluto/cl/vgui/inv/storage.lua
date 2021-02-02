@@ -93,13 +93,13 @@ function PANEL:Init()
 
 				function p.ClickedOn(_, other)
 					timer.Simple(0, function()
+						table.remove(pluto.buffer, s.TabIndex)
+						hook.Run "PlutoBufferChanged"
 						self:SwapToBuffer(true)
 					end)
-					print "DONE"
 				end
 
 				self:SwapToBuffer(false)
-
 			end
 		end
 
