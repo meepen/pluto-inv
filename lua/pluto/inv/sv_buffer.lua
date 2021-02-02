@@ -13,13 +13,14 @@ function pluto.inv.pushbuffer(db, ply)
 
 	mysql_stmt_run(db, "SELECT idx FROM pluto_items WHERE tab_id = ? FOR UPDATE", tab.RowID)
 	mysql_stmt_run(db, "DELETE FROM pluto_items where tab_id = ? and tab_idx = 36", tab.RowID)
+	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 50 where tab_id = ?", tab.RowID)
+	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx - 49 where tab_id = ?", tab.RowID)
 	for i = 35, 1, -1 do
 		local item = tab.Items[i]
 		tab.Items[i + 1] = item
 		if (item) then
 			item.TabIndex = i + 1
 		end
-		mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = ?", tab.RowID, i)
 	end
 end
 

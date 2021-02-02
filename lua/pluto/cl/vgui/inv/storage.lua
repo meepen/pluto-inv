@@ -138,6 +138,8 @@ end
 function PANEL:PopulateFromTab(tab)
 	if (self.BufferActive and tab.Type ~= "buffer") then
 		return
+	elseif (tab.Type ~= "buffer") then
+		self.ActiveTab = tab
 	end
 
 	self.ItemHighlights = {}
@@ -303,7 +305,7 @@ function PANEL:SwapToBuffer(enable)
 	if (not not self.BufferActive == enable) then
 		return
 	end
-	
+
 	self.BufferActive = not self.BufferActive
 	if (self.BufferActive) then
 		for _, tab in pairs(pluto.cl_inv) do
