@@ -43,7 +43,6 @@ pluto.inv.messages = {
 		"trademessage",
 		"tradeaccept",
 		"fullupdate",
-		"crate_id",
 		"mapvote",
 		"mapvotes",
 		"craftresults",

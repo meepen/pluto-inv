@@ -112,6 +112,10 @@ function pluto.inv.notifybufferitem(ply, i)
 		:send()
 end
 
+function pluto.inv.writebufferitem(ply, i)
+	pluto.inv.writeitem(ply, i)
+end
+
 function pluto.inv.getbufferitems(owner)
 	return pluto.inv.invs[owner].tabs.buffer.Items
 end

@@ -611,9 +611,6 @@ function pluto.inv.readcurrencyuse(ply)
 				return
 			end
 
-			pluto.inv.message(ply)
-				:write("crate_id", wpn.RowID)
-				:send()
 			mysql_commit(db)
 		end)
 	end
@@ -727,10 +724,6 @@ end
 
 function pluto.inv.readend()
 	return true
-end
-
-function pluto.inv.writecrate_id(ply, id)
-	net.WriteInt(id, 32)
 end
 
 function pluto.inv.writeexpupdate(cl, item)

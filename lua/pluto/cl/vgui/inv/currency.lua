@@ -110,9 +110,74 @@ function PANEL:AddTab(text, add_rest, buffer)
 			item:DockMargin(0, 0, padding_x, 0)
 			item:SetCurrency(cur)
 
+			function item.SelectItemBox(_, cur)
+				self:SelectItemBox(cur)
+			end
+
 			if (current_row.Count >= 4) then
 				createrow()
 			end
+		end
+	end
+
+	if (buffer) then
+		local opener = current:Add "EditablePanel"
+		opener:Dock(BOTTOM)
+		opener:SetTall(110)
+		opener:DockPadding(14, 0, 14, 0)
+
+		local image_container = opener:Add "EditablePanel"
+		image_container:Dock(TOP)
+		image_container:SetTall(56)
+
+		local image = image_container:Add "DImage"
+		image:SetSize(56, 56)
+		function image_container:PerformLayout(w, h)
+			image:Center()
+		end
+
+		local open = opener:Add "ttt_curved_button"
+		open:SetText ""
+		open:Dock(BOTTOM)
+		open:SetCurve(4)
+		open:SetColor(Color(0, 0, 0))
+		local text = open:Add "pluto_label"
+		text:SetRenderSystem(pluto.fonts.systems.shadow)
+		text:SetFont "pluto_inventory_font"
+		text:SetText "Open"
+		text:SetTextColor(Color(255, 255, 255))
+		text:SetContentAlignment(5)
+		text:Dock(FILL)
+	
+		local slider = opener:Add "DSlider"
+		slider:Dock(BOTTOM)
+		slider:DockMargin(7, 0, 7, 0)
+
+		function open:DoClick()
+			local msg = pluto.inv.message()
+			for i = 1, open.Amount do
+				msg:write("currencyuse", opener.Currency.InternalName)
+			end
+
+			msg:send()
+		end
+
+		function slider:TranslateValues(x, y)
+			if (opener.Currency) then
+				local amt = x * math.min(pluto.cl_currency[opener.Currency.InternalName] or 0, 36)
+				open.Amount = math.Round(amt)
+				text:SetText("Open " .. open.Amount .. " " .. opener.Currency.Name)
+			end
+			return x, y
+		end
+
+		function self:SelectItemBox(currency)
+			image:SetImage(currency.Icon)
+			slider:SetSlideX(0)
+			open:SetColor(currency.Color)
+			text:SetText("Open 1 " .. currency.Name)
+			opener.Currency = currency
+			open.Amount = 1
 		end
 	end
 end
@@ -214,7 +279,9 @@ function PANEL:OnMousePressed(m)
 			return
 		end
 		if (curtype and curtype.NoTarget) then
-			if (curtype.ClientsideUse) then
+			if (curtype.Category == "Item Boxes") then
+				self:SelectItemBox(curtype)
+			elseif (curtype.ClientsideUse) then
 				curtype.ClientsideUse(self.Item)
 			else
 				Derma_Query("Really use " .. curtype.Name .. "? " .. curtype.Description, "Confirm use", "Yes", function()
@@ -238,29 +305,3 @@ function pluto.ui.pickupcurrency(item)
 	pluto.ui.pickedupitem:SetPaintedManually(true)
 	pluto.ui.pickedupitem:SetCurrency(item)
 end
-
-
-if (true) then
-	return
-end
-
-for i = 1, 16 do
-	surface.CreateFont("pluto_inventory_font" .. i, {
-		font = "Roboto Lt",
-		size = i,
-		weight = 100,
-	})
-end
-
-hook.Remove("DrawOverlay", "test", function()
-	surface.SetDrawColor(0, 0, 0)
-	surface.SetTextColor(255, 255, 255)
-	surface.DrawRect(0, 0, ScrW() / 2, ScrH() / 2)
-	local y = 2
-	for i = 1, 16 do
-		surface.SetFont("pluto_inventory_font" .. i)
-		surface.SetTextPos(4, y)
-		surface.DrawText(string.format("(%i): The quick brown fox jumps over the lazy dog", i))
-		y = y + i + 4
-	end
-end)

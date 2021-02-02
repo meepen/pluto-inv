@@ -351,11 +351,6 @@ function pluto.inv.readend()
 	return true
 end
 
-function pluto.inv.readcrate_id()
-	hook.Run("CrateOpenResponse", net.ReadInt(32))
-end
-
-
 function pluto.inv.readexpupdate()
 	local itemid = net.ReadUInt(32)
 	local exp = net.ReadUInt(32)
