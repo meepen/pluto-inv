@@ -76,7 +76,7 @@ function PANEL:AddTab(text, add_rest, buffer)
 				self.ActiveTab:SetColor(inactive_color)
 				self.Tabs[self.ActiveTab]:SetVisible(false)
 			end
-			self.Storage:SwapToBuffer(buffer)
+			self.Storage:SwapToBuffer(not not buffer)
 			s:SetColor(active_color)
 			self.Tabs[s]:SetVisible(true)
 			self.ActiveTab = s
@@ -180,6 +180,12 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 	surface.SetDrawColor(255, 255, 255)
 	surface.SetMaterial(self.Material)
 	local pad = 6
+	if (IsValid(pnl) and self == vgui.GetHoveredPanel()) then
+		local wait = 1.5
+		local timing = 1 - ((wait + CurTime()) % wait) / wait * 2
+		local up_offset = (math.sin(timing * math.pi) + 1) / 2 * 15 * 0.25
+		y = y + up_offset
+	end
 	surface.DrawTexturedRect(x + pad, y, w - pad * 2, w - pad * 2)
 end
 
