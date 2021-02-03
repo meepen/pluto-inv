@@ -1,3 +1,5 @@
+local last_tab_id = CreateConVar("pluto_last_tab_opened", "0", FCVAR_ARCHIVE)
+
 local pluto_storage_toggled = CreateConVar("pluto_storage_toggled", 0)
 
 surface.CreateFont("pluto_inventory_font", {
@@ -72,7 +74,7 @@ function PANEL:Init()
 	self.StorageTabList:DockPadding(10 + w_spacing, 12, w_spacing, 4)
 
 	function self.StorageTabList.PerformLayout(s, w, h)
-		self:SelectTab(self.ActiveStorageTab)
+		self:SelectTab(self.ActiveStorageTab, true)
 	end
 
 	self.ActiveStorageTabBackground = self.StorageTabList:Add "ttt_curved_panel"
@@ -246,6 +248,9 @@ function PANEL:Init()
 
 	for _, item in ipairs(self.TabList) do
 		self:AddStorageTab(item.Tab)
+		if (item.Tab.ID == last_tab_id:GetInt()) then
+			self:SelectTab(item.Tab)
+		end
 	end
 end
 
@@ -519,11 +524,14 @@ function PANEL:AddStorageTab(tab)
 	end
 
 	if (not self.ActiveStorageTab) then
-		self:SelectTab(tab)
+		self:SelectTab(tab, true)
 	end
 end
 
-function PANEL:SelectTab(tab)
+function PANEL:SelectTab(tab, noupdate)
+	if (not noupdate) then
+		last_tab_id:SetInt(tab.ID)
+	end
 	self.ActiveStorageTabBackground:SetTall(22)
 	local fg = self.StorageTabs[tab]
 	self.ActiveStorageTabBackground:SetWide(fg:GetWide())

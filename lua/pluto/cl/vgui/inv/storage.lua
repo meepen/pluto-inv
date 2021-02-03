@@ -310,7 +310,7 @@ function PANEL:SwapToBuffer(enable)
 	if (self.BufferActive) then
 		for _, tab in pairs(pluto.cl_inv) do
 			if (tab.Type == "buffer") then
-				self:PopulateFromTab(tab)
+				self:PopulateFromTab(tab, true)
 			end
 		end
 
