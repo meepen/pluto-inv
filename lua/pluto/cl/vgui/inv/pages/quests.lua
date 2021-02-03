@@ -84,6 +84,28 @@ function PANEL:Init()
 	self.Progression:DockPadding(1, 1, 1, 1)
 	self.Progression:DockMargin(0, 0, 0, 9)
 
+	function self.Progression.PaintOver(s, w, h)
+		local surface = pluto.fonts.systems.shadow
+		surface.SetFont "pluto_inventory_font"
+		local text = "UNKNOWN"
+		if (self.Quest) then
+			local quest = self.Quest
+			local quest_progress = quest.TotalProgress - quest.ProgressLeft
+			text = string.format("%i / %i", quest_progress, quest.TotalProgress)
+
+			local pct = quest_progress / quest.TotalProgress
+
+			surface.SetDrawColor(106, 123, 219)
+			ttt.DrawCurvedRect(0, 0, w * pct, h, self:GetCurve())
+			surface.SetDrawColor(109, 147, 232)
+			ttt.DrawCurvedRect(1, 1, w * pct - 2, h, self:GetCurve() / 2)
+		end
+		local tw, th = surface.GetTextSize(text)
+		surface.SetTextPos(w / 2 - tw / 2, h / 2 - th / 2 + 1)
+		surface.SetTextColor(255, 255, 255, 255)
+		surface.DrawText(text)
+	end
+
 	local inner = self.Progression:Add "ttt_curved_panel"
 	inner:Dock(FILL)
 	inner:SetCurve(self.Progression:GetCurve() / 2)
