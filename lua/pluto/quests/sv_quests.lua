@@ -71,7 +71,7 @@ pluto.quests.rewardhandlers = {
             local cur = pluto.currency.byname[self.Currency]
             local amount = self.Amount or 1
 
-            return (amount == 1 and "" or "set of " .. amount .. " ") .. cur.Name .. (amount == 1 and "" or "s")
+            return (amount == 1 and "" or  amount .. " ") .. cur.Name .. (amount == 1 and "" or "s")
         end,
 	},
 	weapon = {

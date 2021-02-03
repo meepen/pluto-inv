@@ -493,7 +493,7 @@ function PANEL:SetScrollOffset(offset)
 			pnl:SetPos(pnl.CurPos.x, pnl.CurPos.y - offset)
 		end
 
-		if (line.y -self:GetTall() > offset) then
+		if (line.y - self:GetTall() > offset) then
 			break
 		end
 	end
@@ -530,6 +530,10 @@ function PANEL:ResetAllFades(hold, expiredOnly, newSustain)
 			pnl:SetFade(newSustain, pnl:GetFadeLength(), true)
 		end
 	end
+end
+
+function PANEL:SizeToContentsY()
+	self:SetTall(self.CurrentLine.y + self.CurrentLine.Height)
 end
 
 vgui.Register("pluto_text_inner", PANEL, "EditablePanel")
@@ -620,10 +624,6 @@ end
 function PANEL:OnVScroll(offset)
 	self.Inner:SetScrollOffset(-offset)
 	self.AtBottom = (self.Inner.CurrentLine.y + self.Inner.CurrentLine.Height - self.Inner:GetTall()) == -offset
-end
-
-function PANEL:SizeToContentsY()
-	self:SetTall(self.Inner.CurrentLine.y + self.Inner.CurrentLine.Height + self.Inner:GetTall())
 end
 
 function PANEL:SizeToContents()

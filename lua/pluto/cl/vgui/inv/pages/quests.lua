@@ -1,10 +1,15 @@
+local last_active_tab = CreateConVar("pluto_last_quest_tab", "", FCVAR_ARCHIVE)
+
 local PANEL = {}
 
 function PANEL:Init()
-	self:AddTab "Hourly"
-	self:AddTab "Daily"
-	self:AddTab "Weekly"
-	self:AddTab "Unique"
+	for _, quest in ipairs(pluto.quests.types) do
+		self:AddTab(quest.Name, function()
+			last_active_tab:SetString(quest.Name)
+		end, quest.Color)
+	end
+
+	self:SelectTab(last_active_tab:GetString())
 
 	hook.Add("PlutoUpdateQuests", self, self.UpdateQuests)
 	self:UpdateQuests()
@@ -62,13 +67,51 @@ function PANEL:Init()
 
 	self.TopLine:SetTall(self.Name:GetTall())
 
-	self.Description = self.Inner:Add "pluto_text"
+	self.Description = self.Inner:Add "pluto_text_inner"
 	self.Description:Dock(TOP)
 	self.Description:SetDefaultTextColor(Color(255, 255, 255))
 	self.Description:SetDefaultRenderSystem(pluto.fonts.systems.shadow)
 	self.Description:SetDefaultFont "pluto_inventory_font"
 	self.Description:SetTall(100)
 	self.Description:SetMouseInputEnabled(false)
+	self.Description:DockMargin(0, 0, 0, 9)
+
+	self.Progression = self.Inner:Add "ttt_curved_panel"
+	self.Progression:Dock(TOP)
+	self.Progression:SetTall(13)
+	self.Progression:SetCurve(4)
+	self.Progression:SetColor(Color(87, 88, 94))
+	self.Progression:DockPadding(1, 1, 1, 1)
+	self.Progression:DockMargin(0, 0, 0, 9)
+
+	local inner = self.Progression:Add "ttt_curved_panel"
+	inner:Dock(FILL)
+	inner:SetCurve(self.Progression:GetCurve() / 2)
+	inner:SetColor(Color(38, 38, 38))
+
+
+	self.BottomLine = self.Inner:Add "EditablePanel"
+	self.BottomLine:Dock(TOP)
+
+	self.RewardText = self.BottomLine:Add "pluto_label"
+	self.RewardText:Dock(RIGHT)
+	self.RewardText:SetText "Reward text"
+	self.RewardText:SetTextColor(Color(255, 255, 255))
+	self.RewardText:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.RewardText:SetFont "pluto_inventory_font"
+	self.RewardText:SetContentAlignment(5)
+	self.RewardText:SizeToContents()
+
+	self.TimeRemaining = self.BottomLine:Add "pluto_label"
+	self.TimeRemaining:Dock(FILL)
+	self.TimeRemaining:SetText ""
+	self.TimeRemaining:SetTextColor(Color(128, 128, 128))
+	self.TimeRemaining:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.TimeRemaining:SetFont "pluto_inventory_font"
+	self.TimeRemaining:SetContentAlignment(4)
+	self.TimeRemaining:SizeToContents()
+
+	self.BottomLine:SetTall(self.RewardText:GetTall())
 end
 
 function PANEL:SetQuestOnLayout(quest)
@@ -76,6 +119,7 @@ function PANEL:SetQuestOnLayout(quest)
 end
 
 function PANEL:PerformLayout(w, h)
+	-- HACK(meep): why??
 	timer.Simple(0, function()
 		if (not IsValid(self)) then
 			return
@@ -83,17 +127,36 @@ function PANEL:PerformLayout(w, h)
 		if (not self.LayoutQuest) then
 			return
 		end
-		self:SetQuest(self.LayoutQuest)
+		local q = self.LayoutQuest
 		self.LayoutQuest = nil
+		self:SetQuest(q)
 	end)
 end
 
 function PANEL:SetQuest(quest)
+	self.Quest = quest
 	self.Name:SetText(quest.Name)
 	self.Name:SetTextColor(quest.Color)
 
-	self.Description:AppendText(quest.Description .. "\n")
-	self.Description:SizeToContentsY()
+	if (not self.HasSet) then
+		self.Description:AppendText(quest.Description .. "\n")
+		self.Description:SizeToContentsY()
+		self.HasSet = true
+	end
+
+	self.RewardText:SetText("Reward: " .. quest.Reward)
+	self.RewardText:SizeToContentsX()
+	self:SetTall(3 + self.TopLine:GetTall() + self.Description:GetTall() + 9 + self.Progression:GetTall() + 9 + self.BottomLine:GetTall() + 6)
+end
+
+function PANEL:Think()
+	if (not self.Quest) then
+		return
+	end
+
+	local time_remaining = self.Quest.EndTime - os.time()
+
+	self.TimeRemaining:SetText(admin.nicetimeshort(time_remaining))
 end
 
 vgui.Register("pluto_inventory_quest", PANEL, "ttt_curved_panel")

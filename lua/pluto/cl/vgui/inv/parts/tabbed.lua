@@ -49,10 +49,11 @@ function PANEL:Init()
 end
 
 function PANEL:GetTab(text)
-	return self.TabList[text]
+	return self.Tabs[self.TabList[text]]
 end
 
-function PANEL:AddTab(text, onpress)
+function PANEL:AddTab(text, onpress, col)
+	col = col or active_text
 	onpress = onpress or function() end
 	local curve = self.TabArea:Add "ttt_curved_panel"
 	curve:Dock(LEFT)
@@ -75,10 +76,10 @@ function PANEL:AddTab(text, onpress)
 	curve:DockMargin(0, 0, 2, 0)
 
 	self.Tabs[curve] = self.Inner:Add "EditablePanel"
-	self.TabList[text] = self.Tabs[curve]
+	self.TabList[text] = curve
 	if (not self.ActiveTab) then
 		curve:SetColor(active_color)
-		curve.Label:SetTextColor(active_text)
+		curve.Label:SetTextColor(col)
 		self.ActiveTab = curve
 		self.Tabs[curve]:SetVisible(true)
 	else
@@ -95,7 +96,7 @@ function PANEL:AddTab(text, onpress)
 				self.Tabs[self.ActiveTab]:SetVisible(false)
 			end
 			s:SetColor(active_color)
-			s.Label:SetTextColor(active_text)
+			s.Label:SetTextColor(col)
 			self.Tabs[s]:SetVisible(true)
 			self.ActiveTab = s
 			onpress()
@@ -103,6 +104,13 @@ function PANEL:AddTab(text, onpress)
 	end
 
 	return self.Tabs[curve]
+end
+
+function PANEL:SelectTab(name)
+	local tab = self.TabList[name]
+	if (IsValid(tab)) then
+		tab:OnMousePressed(MOUSE_LEFT)
+	end
 end
 
 function PANEL:SetCurve(curve)
