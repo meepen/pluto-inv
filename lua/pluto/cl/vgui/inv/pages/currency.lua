@@ -73,11 +73,12 @@ function PANEL:AddTab(category, add_rest, buffer)
 		local opener = current:Add "EditablePanel"
 		opener:Dock(BOTTOM)
 		opener:SetTall(110)
-		opener:DockPadding(14, 0, 14, 0)
+		opener:DockPadding(14, 0, 14, 3)
 
 		local image_container = opener:Add "EditablePanel"
 		image_container:Dock(TOP)
 		image_container:SetTall(56)
+		image_container:DockPadding(0, 0, 0, 4)
 
 		local image = image_container:Add "DImage"
 		image:SetSize(56, 56)
@@ -100,7 +101,7 @@ function PANEL:AddTab(category, add_rest, buffer)
 	
 		local slider = opener:Add "DSlider"
 		slider:Dock(BOTTOM)
-		slider:DockMargin(7, 0, 7, 0)
+		slider:DockMargin(7, 0, 7, 4)
 
 		function open:DoClick()
 			if (not opener.Currency) then
