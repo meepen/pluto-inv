@@ -1,3 +1,4 @@
+local last_active_tab = CreateConVar("pluto_last_currency_tab", "", FCVAR_ARCHIVE)
 local circles = include "pluto/thirdparty/circles.lua"
 
 local inactive_color = Color(35, 36, 43)
@@ -18,12 +19,19 @@ function PANEL:Init()
 	self:AddTab "Modify"
 	self:AddTab("Item Boxes", false, true)
 	self:AddTab("Misc.", true)
+
+	timer.Simple(0, function()
+		if (not IsValid(self)) then
+			return
+		end
+		self:SelectTab(last_active_tab:GetString())
+	end)
 end
 
 function PANEL:AddTab(category, add_rest, buffer)
 	local current = BaseClass.AddTab(self, category, function()
-		
 		self.Storage:SwapToBuffer(not not buffer)
+		last_active_tab:SetString(category)
 	end)
 
 	local current_row
