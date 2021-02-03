@@ -19,6 +19,7 @@ pluto.files.load {
 		"craft/cl.lua",
 		"nitro/cl_nitro.lua",
 		"quests/cl_quests.lua",
+		"quests/cl_quest_hud.lua",
 		"models/cl_showhitgroups.lua",
 
 		"divine/cl.lua",

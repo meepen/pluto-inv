@@ -136,7 +136,7 @@ function PANEL:FinalizeLabel()
 	self.LastLabel = nil
 
 	local pos = self.CurPos
-	cur:SizeToContentsX()
+	cur:SizeToContents()
 	pos.x = pos.x + cur:GetWide()
 
 	self:EnsureLineHeight(cur)
@@ -174,7 +174,7 @@ function PANEL:AddText(what)
 			local tw, th = surface.GetTextSize(n)
 
 			local newposx = lbl:GetWide() + self.CurPos.x + tw
-			if (newposx > self:GetWide() and tw < self:GetWide() * 0.25) then
+			if (newposx > self:GetWide() and tw < self:GetWide() * 0.8) then
 				self:NewLine()
 				lbl = self:FetchLabel()
 			end
@@ -246,6 +246,7 @@ function PANEL:GetLineAt(mx, my)
 		end
 	end
 end
+
 function PANEL:GetHoveredElement()
 	local mx, my = self:ScreenToLocal(gui.MousePos())
 	my = my + (self.ScrollPosition or 0)
@@ -619,6 +620,14 @@ end
 function PANEL:OnVScroll(offset)
 	self.Inner:SetScrollOffset(-offset)
 	self.AtBottom = (self.Inner.CurrentLine.y + self.Inner.CurrentLine.Height - self.Inner:GetTall()) == -offset
+end
+
+function PANEL:SizeToContentsY()
+	self:SetTall(self.Inner.CurrentLine.y + self.Inner.CurrentLine.Height + self.Inner:GetTall())
+end
+
+function PANEL:SizeToContents()
+	self:SizeToContentsY()
 end
 
 vgui.Register("pluto_text", PANEL, "EditablePanel")

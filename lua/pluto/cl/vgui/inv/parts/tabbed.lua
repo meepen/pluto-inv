@@ -45,6 +45,11 @@ function PANEL:Init()
 	end
 
 	self.Tabs = {}
+	self.TabList = {}
+end
+
+function PANEL:GetTab(text)
+	return self.TabList[text]
 end
 
 function PANEL:AddTab(text, onpress)
@@ -70,6 +75,7 @@ function PANEL:AddTab(text, onpress)
 	curve:DockMargin(0, 0, 2, 0)
 
 	self.Tabs[curve] = self.Inner:Add "EditablePanel"
+	self.TabList[text] = self.Tabs[curve]
 	if (not self.ActiveTab) then
 		curve:SetColor(active_color)
 		curve.Label:SetTextColor(active_text)
