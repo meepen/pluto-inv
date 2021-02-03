@@ -57,13 +57,17 @@ pluto.files.load {
 		"cl/vgui/plutotoggle.lua",
 		"cl/vgui/plutodropdown.lua",
 
-		"cl/vgui/inv/component.lua",
+		"cl/vgui/inv/parts/component.lua",
+		"cl/vgui/inv/parts/tabbed.lua",
+
+		"cl/vgui/inv/pages/loadout.lua",
+		"cl/vgui/inv/pages/currency.lua",
+		"cl/vgui/inv/pages/quests.lua",
+
 		"cl/vgui/inv/shape.lua",
-		"cl/vgui/inv/equip.lua",
 		"cl/vgui/inv/item.lua",
 		"cl/vgui/inv/storage.lua",
 		"cl/vgui/inv/playermodel.lua",
-		"cl/vgui/inv/currency.lua",
 		"cl/vgui/inv/container.lua",
 		"cl/vgui/inv/rightclick.lua",
 

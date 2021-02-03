@@ -218,8 +218,12 @@ function PANEL:Init()
 		other.Storage = storage
 	end, true)
 
-	self:AddTab("Quests", function(container)
-	end)
+	self:AddTab("Quests", function(container, storage)
+		local quests = container:Add "pluto_inventory_quests"
+		quests:SetCurve(4)
+		quests:Dock(FILL)
+		quests:SetColor(inner_color)
+	end, true)
 
 	self:AddTab("Divine Market", function(container)
 	end)
