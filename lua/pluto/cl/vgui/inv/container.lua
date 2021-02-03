@@ -1,4 +1,5 @@
 local last_tab_id = CreateConVar("pluto_last_tab_opened", "0", FCVAR_ARCHIVE)
+local last_open_category = CreateConVar("pluto_last_category_opened", "", FCVAR_ARCHIVE)
 
 local pluto_storage_toggled = CreateConVar("pluto_storage_toggled", 0)
 
@@ -236,6 +237,8 @@ function PANEL:Init()
 	self:AddTab("Divine Market", function(container)
 	end)
 
+	self:ChangeToTab(last_open_category:GetString())
+
 	self.TabList = {}
 
 	for id, tab in pairs(pluto.cl_inv) do
@@ -306,9 +309,18 @@ function PANEL:ClearContainer()
 	end
 end
 
-function PANEL:ChangeToTab(name)
+function PANEL:ChangeToTab(name, noupdate)
 	if (self.ActiveTab == name) then
 		return
+	end
+
+	local tab = self.Tabs[name]
+	if (not tab) then
+		return
+	end
+
+	if (not noupdate) then
+		last_open_category:SetString(name)
 	end
 
 	local old = self.Tabs[self.ActiveTab]
@@ -318,10 +330,6 @@ function PANEL:ChangeToTab(name)
 
 	self.ActiveTab = name
 
-	local tab = self.Tabs[name]
-	if (not tab) then
-		return
-	end
 
 	tab.Label:SetTextColor(Color(28, 198, 244))
 
@@ -386,7 +394,7 @@ function PANEL:AddTab(name, func, has_storage)
 	end
 
 	if (not self.ActiveTab) then
-		self:ChangeToTab(name)
+		self:ChangeToTab(name, true)
 	end
 end
 
