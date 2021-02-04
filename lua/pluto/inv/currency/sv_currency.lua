@@ -543,6 +543,7 @@ for name, values in pairs {
 				pluto.inv.waitbuffer(db, ply)
 				if (not pluto.inv.addcurrency(db, ply, "endround", -1)) then
 					mysql_rollback(db)
+					return
 				end
 
 				local item = pluto.inv.generatebufferweapon(db, ply, "DROPPED")

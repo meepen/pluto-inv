@@ -39,6 +39,7 @@ end
 
 function pluto.inv.popbuffer(db, ply, index)
 	mysql_cmysql()
+	pluto.inv.lockbuffer(db, ply)
 
 	local tab = pluto.inv.invs[ply].tabs.buffer
 
@@ -47,7 +48,6 @@ function pluto.inv.popbuffer(db, ply, index)
 	end
 
 	for i = index + 1, 36 do
-		mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx - 1 where tab_id = ? and tab_idx = ?", tab.RowID, i)
 		local item = tab.Items[i]
 		tab.Items[i - 1] = item
 		if (item) then
@@ -55,6 +55,8 @@ function pluto.inv.popbuffer(db, ply, index)
 		end
 	end
 	tab.Items[36] = nil
+	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 50 where tab_id >= ? and tab_idx = ?", index, i)
+	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx - 51 where tab_id >= ? and tab_idx = ?", index, i)
 end
 
 function pluto.inv.savebufferitem(db, ply, new_item)

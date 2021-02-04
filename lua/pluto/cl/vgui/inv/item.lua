@@ -157,7 +157,7 @@ end
 function PANEL:SetCurve(curve)
 	self.InnerBorder:SetCurve(curve)
 	self.OuterBorder:SetCurve(curve)
-	self.Curve = curve
+	self.Curve = curve / 2
 end
 
 function PANEL:GetCurve()

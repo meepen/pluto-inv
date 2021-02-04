@@ -50,6 +50,11 @@ function pluto.ui.rightclickmenu(item, pre)
 		end)
 	end):SetIcon("icon16/camera.png")
 
+--[[
+	rightclick_menu:AddOption("Copy item JSON", function()
+		SetClipboardText(util.TableToJSON(item))
+	end)]]
+
 	if (not item.Locked and item.Nickname) then
 		rightclick_menu:AddOption("Remove name (100 hands)", function()
 			item.Nickname = nil
