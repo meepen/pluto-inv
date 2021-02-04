@@ -348,7 +348,12 @@ end
 
 function PANEL:InsertShowcaseItem(item)
 	self:InsertClickableTextStart(function()
+		if (IsValid(pluto.opened_showcase)) then
+			pluto.opened_showcase:Remove()
+		end
+
 		local showcase = pluto.ui.showcase(item)
+		pluto.opened_showcase = showcase
 		local posx, posy = self:LocalToScreen(self:GetWide(), 0)
 		posx = posx + 50
 		posy = posy - 50

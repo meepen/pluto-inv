@@ -661,6 +661,10 @@ function PANEL:AddTab(name, prefix)
 			end
 
 			local x,y = input.GetCursorPos()
+			if (IsValid(pluto.chat.Box.Showcase)) then
+				pluto.chat.Box.Showcase:Remove()
+			end
+
 			pluto.chat.Box.Showcase = pluto.ui.showcase(thing)
 			pluto.chat.Box.Showcase:MakePopup()
 			pluto.chat.Box.Showcase:SetPos(x,y-pluto.chat.Box.Showcase:GetTall() - 20)
