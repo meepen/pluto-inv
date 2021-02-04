@@ -159,6 +159,10 @@ function PANEL:Init()
 	self.Storage = self.StorageContainer:Add "pluto_storage_area"
 	self.Storage:SetStorageHandler(self)
 
+	function self.Storage.OnBufferPressed()
+		self:OnBufferPressed()
+	end
+
 	self.Storage:Dock(RIGHT)
 	self.Storage:DockMargin(12, 0, 0, 0)
 	self.Storage:SetColor(inner_color)
@@ -225,6 +229,8 @@ function PANEL:Init()
 		other:Dock(FILL)
 		other:SetColor(inner_color)
 		other.Storage = storage
+
+		return other
 	end, true)
 
 	self:AddTab("Quests", function(container, storage)
@@ -255,6 +261,10 @@ function PANEL:Init()
 			self:SelectTab(item.Tab)
 		end
 	end
+end
+
+function PANEL:OnBufferPressed()
+	self:ChangeToTab "Currency":SelectTab "Item Boxes"
 end
 
 function PANEL:GetOrderConvar()
@@ -348,7 +358,7 @@ function PANEL:ChangeToTab(name, noupdate)
 		child:Remove()
 	end
 
-	tab.Populate(pnl, self.Storage)
+	return tab.Populate(pnl, self.Storage)
 end
 
 local gradient_up = Material "gui/gradient_up"

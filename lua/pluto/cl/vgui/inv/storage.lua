@@ -1,5 +1,11 @@
 local PANEL = {}
 
+local inactive_color = Color(35, 36, 43)
+local active_color   = Color(64, 66, 74)
+
+local active_text = Color(255, 255, 255)
+local inactive_text = Color(128, 128, 128)
+
 local item_size = 56
 local inner_area = 5
 local outer_area = 10
@@ -44,17 +50,53 @@ function PANEL:Init()
 	self.SearchyBoi:SizeToContentsX()
 
 
-	self.Upper = self.UpperArea:Add "ttt_curved_panel"
-	self.Upper:Dock(LEFT)
-	self.Upper:SetWide(100)
-	self.Upper:DockPadding(0, 4, 0, 3)
+	self.InventoryContainer = self.UpperArea:Add "ttt_curved_panel"
+	self.InventoryContainer:Dock(LEFT)
+	self.InventoryContainer:SetWide(100)
+	self.InventoryContainer:DockPadding(0, 4, 0, 3)
+	self.InventoryContainer:DockMargin(0, 0, 2, 0)
 
-	self.UpperLabel = self.Upper:Add "pluto_label"
-	self.UpperLabel:SetContentAlignment(5)
-	self.UpperLabel:SetFont "pluto_inventory_font"
-	self.UpperLabel:SetTextColor(Color(255, 255, 255))
-	self.UpperLabel:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.UpperLabel:Dock(FILL)
+	self.InventoryLabel = self.InventoryContainer:Add "pluto_label"
+	self.InventoryLabel:SetContentAlignment(8)
+	self.InventoryLabel:SetFont "pluto_inventory_font_lg"
+	self.InventoryLabel:SetTextColor(Color(255, 255, 255))
+	self.InventoryLabel:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.InventoryLabel:Dock(FILL)
+	self.InventoryLabel:SetText "Inventory"
+	self.InventoryLabel:SizeToContentsX()
+	self.InventoryLabel:SetMouseInputEnabled(false)
+	self.InventoryContainer:SetWide(self.InventoryLabel:GetWide() + 25)
+	self.InventoryContainer:SetCursor "hand"
+
+	self.BufferContainer = self.UpperArea:Add "ttt_curved_panel"
+	self.BufferContainer:Dock(LEFT)
+	self.BufferContainer:SetWide(100)
+	self.BufferContainer:DockPadding(0, 4, 0, 3)
+	self.BufferLabel = self.BufferContainer:Add "pluto_label"
+	self.BufferLabel:SetContentAlignment(8)
+	self.BufferLabel:SetFont "pluto_inventory_font_lg"
+	self.BufferLabel:SetTextColor(Color(255, 255, 255))
+	self.BufferLabel:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.BufferLabel:Dock(FILL)
+	self.BufferLabel:SetText "Buffer"
+	self.BufferLabel:SizeToContentsX()
+	self.BufferLabel:SetMouseInputEnabled(false)
+	self.BufferContainer:SetWide(self.BufferLabel:GetWide() + 25)
+	self.BufferContainer:SetColor(inactive_color)
+	self.BufferContainer:SetCursor "hand"
+
+	function self.BufferContainer.OnMousePressed(s, m)
+		if (m == MOUSE_LEFT) then
+			self:SwapToBuffer(true)
+			self:OnBufferPressed()
+		end
+	end
+
+	function self.InventoryContainer.OnMousePressed(s, m)
+		if (m == MOUSE_LEFT) then
+			self:SwapToBuffer(false)
+		end
+	end
 
 	self.Container = self:Add "pluto_inventory_component"
 	DEFINE_BASECLASS "pluto_inventory_component"
@@ -115,12 +157,30 @@ function PANEL:Init()
 		end
 	end
 
-
 	self.Container:SetCurveTopLeft(false)
-	self.Upper:SetCurveBottomLeft(false)
-	self.Upper:SetCurveBottomRight(false)
+	self.InventoryContainer:SetCurveBottomLeft(false)
+	self.InventoryContainer:SetCurveBottomRight(false)
+	self.BufferContainer:SetCurveBottomLeft(false)
+	self.BufferContainer:SetCurveBottomRight(false)
 
-	self:SetText "Inventory"
+	self:SelectWhich(self.InventoryContainer)
+end
+
+function PANEL:OnBufferPressed()
+	print "TODO: override"
+end
+
+function PANEL:SelectWhich(t)
+	t:SetColor(active_color)
+
+	local lbl = self.InventoryContainer == t and self.InventoryLabel or self.BufferLabel
+	lbl:SetTextColor(active_text)
+
+	local other = t == self.InventoryContainer and self.BufferContainer or self.InventoryContainer
+	other:SetColor(inactive_color)
+
+	local otherlbl = other == self.InventoryContainer and self.InventoryLabel or self.BufferLabel
+	otherlbl:SetTextColor(inactive_text)
 end
 
 function PANEL:AddTab(tab)
@@ -128,16 +188,6 @@ function PANEL:AddTab(tab)
 		self:PopulateFromTab(tab)
 		self.ActiveTab = tab
 	end
-end
-
-function PANEL:SetText(t)
-	self.UpperLabel:SetText(t)
-	
-	local surface = self.UpperLabel:GetRenderSystem() or surface
-	surface.SetFont(self.UpperLabel:GetFont())
-	local tw, th = surface.GetTextSize(t)
-
-	self.Upper:SetWide(tw + 24)
 end
 
 function PANEL:PopulateFromTab(tab)
@@ -178,12 +228,12 @@ end
 
 function PANEL:SetCurve(curve)
 	self.Container:SetCurve(curve)
-	self.Upper:SetCurve(curve)
+	self.InventoryContainer:SetCurve(curve)
+	self.BufferContainer:SetCurve(curve)
 end
 
 function PANEL:SetColor(col)
 	self.Container:SetColor(col)
-	self.Upper:SetColor(col)
 end
 
 function PANEL:SetStorageHandler(pnl)
@@ -319,15 +369,16 @@ function PANEL:SwapToBuffer(enable)
 			end
 		end
 
-		self:SetText "Buffer"
 		hook.Add("PlutoBufferChanged", self, self.PlutoBufferChanged)
+
+		self:SelectWhich(self.BufferContainer)
 
 		for _, item in pairs(self.Items) do
 			item:SetCanPickup(false)
 		end
 	else
+		self:SelectWhich(self.InventoryContainer)
 		self:PopulateFromTab(self.ActiveTab)
-		self:SetText "Inventory"
 		for _, item in pairs(self.Items) do
 			item:SetCanPickup(true)
 		end

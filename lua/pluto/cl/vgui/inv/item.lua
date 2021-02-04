@@ -290,12 +290,16 @@ function PANEL:OnRightClick()
 		return
 	end
 
-	pluto.ui.rightclickmenu(self.Item)
-	-- derma menu??? idk
+	pluto.ui.rightclickmenu(self.Item, function(menu, item)
+		if (self.TabIndex) then
+			--[[menu:AddOption("Equip", function()
+
+			end):SetIcon "icon16/add.png"]]
+		end
+	end)
 end
 
 function PANEL:OnLeftClick()
-	-- derma menu??? idk
 end
 
 function PANEL:OnCursorEntered()

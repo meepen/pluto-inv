@@ -2,7 +2,7 @@ function pluto.ui.rightclickmenu(item, pre)
 	local rightclick_menu = DermaMenu()
 
 	if (pre) then
-		pre(rightclick_menu)
+		pre(rightclick_menu, item)
 	end
 
 	rightclick_menu:AddOption("Upload item stats", function()

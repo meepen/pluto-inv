@@ -30,7 +30,9 @@ end
 
 function PANEL:AddTab(col, category, add_rest, buffer)
 	local current = BaseClass.AddTab(self, category, function()
-		self.Storage:SwapToBuffer(not not buffer)
+		if (buffer) then
+			self.Storage:SwapToBuffer(true)
+		end
 		last_active_tab:SetString(category)
 	end, col)
 
