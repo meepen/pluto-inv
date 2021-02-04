@@ -312,7 +312,8 @@ function PANEL:Init()
 end
 
 function PANEL:OnBufferPressed()
-	self:ChangeToTab "Currency":SelectTab "Item Boxes"
+	self:ChangeToTab "Currency"
+		:SelectTab "Item Boxes"
 end
 
 function PANEL:GetOrderConvar()
@@ -369,7 +370,7 @@ end
 
 function PANEL:ChangeToTab(name, noupdate)
 	if (self.ActiveTab == name) then
-		return
+		return self.ActiveTabData
 	end
 
 	local tab = self.Tabs[name]
@@ -406,7 +407,8 @@ function PANEL:ChangeToTab(name, noupdate)
 		child:Remove()
 	end
 
-	return tab.Populate(pnl, self.Storage)
+	self.ActiveTabData = tab.Populate(pnl, self.Storage)
+	return self.ActiveTabData
 end
 
 local gradient_up = Material "gui/gradient_up"
