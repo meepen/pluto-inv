@@ -9,7 +9,7 @@ end
 local function ColorModulateForBackground(col)
 	local h, s, v = ColorToHSV(col)
 
-	return HSVToColor(h, s, v / 3 * 2)
+	return HSVToColor(h, s, v / 5 * 4)
 end
 
 local PANEL = {}
