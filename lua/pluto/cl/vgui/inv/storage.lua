@@ -38,6 +38,13 @@ function PANEL:Init()
 		self:SearchItems(s:GetValue())
 	end
 
+	function self.SearchyBoiText:Think()
+		if (input.IsKeyDown(KEY_LCONTROL) and input.IsKeyDown(KEY_F)) then
+			self:OnMousePressed(MOUSE_LEFT)
+			self:RequestFocus()
+		end
+	end
+
 	self.SearchyBoiText:DockMargin(0, 4, 0, 3)
 
 	self.SearchyBoi = self.UpperArea:Add "pluto_label"
@@ -45,7 +52,7 @@ function PANEL:Init()
 	self.SearchyBoi:SetTextColor(Color(255, 255, 255))
 	self.SearchyBoi:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.SearchyBoi:SetFont "pluto_inventory_font"
-	self.SearchyBoi:SetText "Search"
+	self.SearchyBoi:SetText "Search:"
 	self.SearchyBoi:DockMargin(0, 4, 5, 3)
 	self.SearchyBoi:SizeToContentsX()
 
