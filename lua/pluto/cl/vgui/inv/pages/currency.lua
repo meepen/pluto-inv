@@ -16,9 +16,9 @@ DEFINE_BASECLASS "pluto_inventory_component_tabbed"
 function PANEL:Init()
 	self.CurrencyDone = {}
 
-	self:AddTab "Modify"
-	self:AddTab("Item Boxes", false, true)
-	self:AddTab("Misc.", true)
+	self:AddTab(HexColor "ff1a1a", "Modify")
+	self:AddTab(HexColor "7ef524", "Item Boxes", false, true)
+	self:AddTab(HexColor "fcde1d", "Misc.", true)
 
 	timer.Simple(0, function()
 		if (not IsValid(self)) then
@@ -28,11 +28,11 @@ function PANEL:Init()
 	end)
 end
 
-function PANEL:AddTab(category, add_rest, buffer)
+function PANEL:AddTab(col, category, add_rest, buffer)
 	local current = BaseClass.AddTab(self, category, function()
 		self.Storage:SwapToBuffer(not not buffer)
 		last_active_tab:SetString(category)
-	end)
+	end, col)
 
 	local current_row
 	local function createrow()

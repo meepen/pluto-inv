@@ -1,3 +1,17 @@
+local cached = {}
+local function GetCachedMaterial(mat)
+	if (not cached[mat]) then
+		cached[mat] = Material(mat)
+	end
+	return cached[mat]
+end
+
+local function ColorModulateForBackground(col)
+	local h, s, v = ColorToHSV(col)
+
+	return HSVToColor(h, s, v / 3 * 2)
+end
+
 local PANEL = {}
 
 local default_color = Color(53, 53, 60)
@@ -17,14 +31,9 @@ function PANEL:Init()
 	self.InnerBorder:DockPadding(1, 1, 1, 1)
 	self.InnerBorder:SetMouseInputEnabled(false)
 
-	self.Inner = self.InnerBorder:Add "ttt_curved_panel"
-	self.Inner:Dock(FILL)
-	self.Inner:SetColor(default_color)
-	self.Inner:SetMouseInputEnabled(false)
-
-	self.ItemPanel = self.Inner:Add "EditablePanel"
+	self.ItemPanel = self.InnerBorder:Add "EditablePanel"
 	self.ItemPanel:Dock(FILL)
-	self.ItemPanel:DockMargin(1, 1, 1, 1)
+	self.ItemPanel:DockPadding(1, 1, 1, 1)
 	self.ItemPanel:SetMouseInputEnabled(false)
 
 	self.ItemPanel.Paint = function(s, w, h, x, y)
@@ -40,17 +49,6 @@ local newshardadd = Material "pluto/newshardbg.png"
 local lock = Material "icon16/lock.png"
 
 function PANEL:PaintInner(pnl, w, h, x, y)
-	if (not self.Item) then
-		self.Inner:SetColor(default_color)
-		return
-	end
-
-	if (self == pluto.ui.realpickedupitem and IsValid(pnl)) then
-		self.Inner:SetColor(default_color)
-		return
-	end
-	self.Inner:SetColor(self.Item:GetColor())
-
 	x = x or 0
 	y = y or 0
 
@@ -59,10 +57,41 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 		sx, sy = pnl:LocalToScreen(x, y)
 		sx = sx - 1
 		sy = sy - 1
-	else
-		surface.SetDrawColor(self.Item:GetColor())
-		ttt.DrawCurvedRect(x, y, w, h, self.Inner:GetCurve())
 	end
+
+	if (not self.Item or self == pluto.ui.realpickedupitem and IsValid(pnl)) then
+		surface.SetDrawColor(default_color)
+		ttt.DrawCurvedRect(x, y, w, h, self:GetCurve())
+		return
+	end
+
+
+	surface.SetDrawColor(self.Item:GetColor())
+	ttt.DrawCurvedRect(x, y, w, h, self:GetCurve())
+	
+	render.SetStencilWriteMask(0xFF)
+	render.SetStencilTestMask(0xFF)
+	render.SetStencilReferenceValue(0)
+	render.SetStencilCompareFunction( STENCIL_ALWAYS)
+	render.SetStencilPassOperation(STENCIL_KEEP)
+	render.SetStencilFailOperation(STENCIL_KEEP)
+	render.SetStencilZFailOperation(STENCIL_KEEP)
+	render.ClearStencil()
+
+	render.SetStencilEnable(true)
+		render.SetStencilReferenceValue(1)
+		render.SetStencilCompareFunction(STENCIL_ALWAYS)
+		render.SetStencilPassOperation(STENCIL_REPLACE)
+		
+		render.OverrideColorWriteEnable(true, false)
+			ttt.DrawCurvedRect(x, y, w, h, self:GetCurve())
+		render.OverrideColorWriteEnable(false, true)
+		render.SetStencilCompareFunction(STENCIL_EQUAL)
+		render.SetStencilPassOperation(STENCIL_KEEP)
+		surface.SetMaterial(GetCachedMaterial(self.Item.BackgroundMaterial or "pluto/item_bg.png"))
+		surface.SetDrawColor(ColorModulateForBackground(self.Item:GetColor()))
+		surface.DrawTexturedRect(x, y, w, h)
+	render.SetStencilEnable(false)
 
 	local r, g, b = render.GetColorModulation()
 
@@ -128,7 +157,11 @@ end
 function PANEL:SetCurve(curve)
 	self.InnerBorder:SetCurve(curve)
 	self.OuterBorder:SetCurve(curve)
-	self.Inner:SetCurve(curve)
+	self.Curve = curve
+end
+
+function PANEL:GetCurve()
+	return self.Curve or 0
 end
 
 function PANEL:SetItem(item)
