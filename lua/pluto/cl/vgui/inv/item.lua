@@ -219,7 +219,7 @@ function PANEL:PlutoItemUpdate(item, tabid, tabindex)
 		self:StartShowcase()
 	end
 
-	if (tabid == self.TabID and tabindex == self.TabIndex) then
+	if (self.TabID and self.TabIndex and tabid == self.TabID and tabindex == self.TabIndex) then
 		self:SetItem(item)
 	end
 end

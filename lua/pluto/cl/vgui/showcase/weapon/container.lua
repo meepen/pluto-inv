@@ -101,6 +101,11 @@ function PANEL:CreateInners()
 	self.CreatedLabel:SizeToContentsX()
 	self.CreatedLabel:SetContentAlignment(5)
 
+	self.Implicits = self:Add "EditablePanel"
+	self.Implicits:Dock(TOP)
+	self.Implicits:SetTall(0)
+	self.Implicits:DockMargin(7, 0, 7, 0)
+
 	self.PrefixContainer = self:Add "EditablePanel"
 	self.PrefixContainer:Dock(TOP)
 	self.PrefixContainer:SetTall(12)
@@ -110,13 +115,44 @@ function PANEL:CreateInners()
 	self.ItemInformationLine:SetTall(0)
 	self.ItemInformationLine:DockPadding(7, 0, 7, 0)
 
+	self:SetTall(self:GetTall() + self.Implicits:GetTall())
+
+
 	self:InvalidateLayout(true)
 
 	if (self.Item) then
 		self.HasPrefix = false
 		self.HasSuffix = false
+		self.HasImplicit = false
 		self:SetItem(self.Item)
 	end
+end
+
+function PANEL:AddImplicit(implicit, item)
+	local MOD = pluto.mods.byname[implicit.Mod]
+	
+	local label = self.Implicits:Add "pluto_text_inner"
+	label:SetWide(self:GetWide() - 14)
+	label:Dock(TOP)
+	label:SetDefaultRenderSystem(pluto.fonts.systems.shadow)
+	label:SetDefaultTextColor(MOD.Color)
+	label:SetDefaultFont "pluto_inventory_font_lg"
+	label:AppendText(MOD.Color, MOD.Name, Color(255, 255, 255), " - ", MOD.Description .. "\n")
+	label:SizeToContentsY()
+
+	if (not self.HasImplicit) then
+		self.Implicits:DockPadding(0, 7, 0, 0)
+		self.HasImplicit = true
+		self.ImplicitsLine = self.Implicits:Add "ttt_curved_panel"
+		self.ImplicitsLine:Dock(BOTTOM)
+		self.ImplicitsLine:SetTall(1)
+		self.ImplicitsLine:SetColor(Color(90, 91, 95))
+		self:SetTall(self:GetTall() + 11)
+		self.Implicits:SetTall(self.Implicits:GetTall() + 11 + 7)
+	end
+
+	self.Implicits:SetTall(self.Implicits:GetTall() + label:GetTall())
+	self:SetTall(self:GetTall() + label:GetTall())
 end
 
 function PANEL:AddPrefix(prefix, item)
@@ -339,6 +375,9 @@ function PANEL:SetItem(item)
 			surface.DrawLine(0, h / 2, w, h / 2)
 		end
 
+		for _, implicit in ipairs(item.Mods.implicit) do
+			self:AddImplicit(implicit, item)
+		end
 		for _, prefix in ipairs(item.Mods.prefix) do
 			self:AddPrefix(prefix, item)
 		end
