@@ -47,16 +47,14 @@ function pluto.inv.popbuffer(db, ply, index)
 		return false
 	end
 
-	for i = index + 1, 36 do
-		local item = tab.Items[i]
-		tab.Items[i - 1] = item
-		if (item) then
-			tab.Items[i - 1].TabIndex = i - 1
-		end
+	table.remove(tab.Items, index)
+	for i, item in ipairs(tab.Items) do
+		item.TabIndex = i
 	end
-	tab.Items[36] = nil
-	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 50 where tab_id >= ? and tab_idx = ?", index, i)
-	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx - 51 where tab_id >= ? and tab_idx = ?", index, i)
+
+	mysql_stmt_run(db, "DELETE FROM pluto_items where tab_id = ? and tab_idx = ?", tab.RowID, index)
+	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 50 where tab_id = ? and tab_idx >= ?", tab.RowID, index)
+	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx - 51 where tab_id = ? and tab_idx >= ?", tab.RowID, index)
 end
 
 function pluto.inv.savebufferitem(db, ply, new_item)

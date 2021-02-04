@@ -37,7 +37,7 @@ function PANEL:CreateInners()
 		child:Remove()
 	end
 
-	self:SetSize(220, 56 + 12)
+	self:SetSize(250, 56 + 12)
 	self.NameContainer = self:Add "ttt_curved_panel"
 	self.NameContainer:Dock(TOP)
 	self.NameContainer:SetTall(30)

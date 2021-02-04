@@ -421,29 +421,33 @@ hook.Add("VGUIMousePressAllowed", "pluto_item_pickup", function(m)
 		return
 	end
 
-	local pnl = vgui.GetHoveredPanel()
+	local hovered = vgui.GetHoveredPanel()
 
-	if (pnl == pluto.ui.pickedupitem or pnl == pluto.ui.realpickedupitem) then
+	if (hovered == pluto.ui.pickedupitem or hovered == pluto.ui.realpickedupitem) then
 		pluto.ui.unsetpickup()
 		return true
 	end
 
-	if (m == MOUSE_LEFT and IsValid(pnl) and pnl.ClassName == "pluto_inventory_item") then
+	if (m == MOUSE_LEFT and IsValid(hovered) and hovered.ClassName == "pluto_inventory_item") then
 		if (pluto.ui.pickedupitem.ClassName == "pluto_inventory_item") then
-			local other = IsValid(pluto.ui.realpickedupitem) and pluto.ui.realpickedupitem or pluto.ui.pickedupitem
-			if (pnl:CanClickWith(other) and other:CanClickOn(pnl)) then
-				local data = other:ClickedOn(pnl)
-				pnl:ClickedWith(other, data)
+			local holding = IsValid(pluto.ui.realpickedupitem) and pluto.ui.realpickedupitem or pluto.ui.pickedupitem
 
-				if (pnl.CanPickup and other.Item) then
-					pluto.ui.pickupitem(other)
+			if (hovered:CanClickWith(holding) and holding:CanClickOn(hovered)) then
+				if (hovered.CanPickup and holding.Item) then
+					pluto.ui.pickupitem(holding)
+				end
+
+				hovered:ClickedWith(holding)
+				holding:ClickedOn(hovered)
+
+				if (hovered.CanPickup and holding.Item) then
 					return true
 				end
 			else
 				return true
 			end
 		elseif (pluto.ui.pickedupitem.ClassName == "pluto_inventory_currency_item") then
-			pluto.ui.pickedupitem:ItemSelected(pnl.Item)
+			pluto.ui.pickedupitem:ItemSelected(hovered.Item)
 
 			if (not input.IsKeyDown(KEY_LSHIFT)) then
 				pluto.ui.unsetpickup()
@@ -452,7 +456,7 @@ hook.Add("VGUIMousePressAllowed", "pluto_item_pickup", function(m)
 		end
 	end
 
-	if (not pnl.AllowClickThrough) then
+	if (not hovered.AllowClickThrough) then
 		pluto.ui.unsetpickup()
 		return true
 	end

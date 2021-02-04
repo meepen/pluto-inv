@@ -84,6 +84,8 @@ function PANEL:Init()
 				item:DockMargin(0, 0, inner_area, 0)
 			end
 
+			local tabindex = #self.Items
+
 			function item.OnLeftClick(s)
 				-- this is claiming a buffer item (for now)
 				local p = pluto.ui.pickupitem(s)
@@ -92,11 +94,14 @@ function PANEL:Init()
 				end
 
 				function p.ClickedOn(_, other)
-					timer.Simple(0, function()
-						table.remove(pluto.buffer, s.TabIndex)
-						hook.Run "PlutoBufferChanged"
-						self:SwapToBuffer(true)
-					end)
+					self:SwapToBuffer(true)
+					for i = _.TabIndex, 36 do
+						pluto.buffer[i] = pluto.buffer[i + 1]
+						if (pluto.buffer[i]) then
+							pluto.buffer[i].TabIndex = i
+						end
+					end
+					hook.Run "PlutoBufferChanged"
 				end
 
 				self:SwapToBuffer(false)

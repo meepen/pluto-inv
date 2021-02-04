@@ -197,6 +197,7 @@ function pluto.inv.writefullupdate(ply)
 end
 
 function pluto.inv.sendfullupdate(ply)
+	debug.Trace()
 	if (pluto.inv.loading[ply]) then
 		pwarnf("Player inventory already loading: %s", ply:Nick())
 		return
@@ -432,64 +433,63 @@ function pluto.inv.readtabswitch(ply)
 	if (tabid1 == tabid2 and tabindex1 == tabindex2) then
 		return
 	end
+	pluto.db.transact(function(db)
+		local tab1 = pluto.inv.invs[ply][tabid1]
+		local tab2 = pluto.inv.invs[ply][tabid2]
 
-	local tab1 = pluto.inv.invs[ply][tabid1]
-	local tab2 = pluto.inv.invs[ply][tabid2]
+		if (not tab1 or not tab2) then
+			pluto.inv.sendfullupdate(ply)
+			return
+		end
 
-	if (not tab1 or not tab2) then
-		pluto.inv.sendfullupdate(ply)
-		return
-	end
+		local canswitch, fail = pluto.canswitchtabs(tab1, tab2, tabindex1, tabindex2)
 
-	local canswitch, fail = pluto.canswitchtabs(tab1, tab2, tabindex1, tabindex2)
+		if (not canswitch) then
+			print(fail, tabindex2, tabindex2)
+			pluto.inv.sendfullupdate(ply)
+			return
+		end
 
-	if (not canswitch) then
-		pluto.inv.sendfullupdate(ply)
-		return
-	end
+		local i1, i2 = tab1.Items[tabindex1], tab2.Items[tabindex2]
 
-	local i1, i2 = tab1.Items[tabindex1], tab2.Items[tabindex2]
+		if (i1 and ply:SteamID64() ~= i1.Owner or i2 and i2.Owner ~= ply:SteamID64()) then
+			pluto.inv.sendfullupdate(ply)
+			return
+		end
 
-	if (i1 and ply:SteamID64() ~= i1.Owner or i2 and i2.Owner ~= ply:SteamID64()) then
-		pluto.inv.sendfullupdate(ply)
-		return
-	end
+		tab1.Items[tabindex1], tab2.Items[tabindex2] = i2, i1
 
-	tab1.Items[tabindex1], tab2.Items[tabindex2] = i2, i1
+		if (i1) then
+			i1.TabID, i1.TabIndex = tabid2, tabindex2
+		end
 
-	if (i1) then
-		i1.TabID, i1.TabIndex = tabid2, tabindex2
-	end
+		if (i2) then
+			i2.TabID, i2.TabIndex = tabid1, tabindex1
+		end
 
-	if (i2) then
-		i2.TabID, i2.TabIndex = tabid1, tabindex1
-	end
-
-	if (tab1.Type == "buffer" or tab2.Type == "buffer") then
-		local buffer = tab1.Type == "buffer" and tab1 or tab2
-		local bufferindex = tab1 == buffer and tabindex1 or tabindex2
-		
-		pluto.db.transact(function(db)
+		if (tab1.Type == "buffer" or tab2.Type == "buffer") then
+			local buffer = tab1.Type == "buffer" and tab1 or tab2
+			local bufferindex = tab1 == buffer and tabindex1 or tabindex2
+			
+			pluto.inv.lockbuffer(db, ply)
 			if (not pluto.inv.switchtab(db, tabid1, tabindex1, tabid2, tabindex2)) then
 				pluto.inv.reloadfor(ply)
+				mysql_rollback(db)
 				return
 			end
 
 			pluto.inv.popbuffer(db, ply, bufferindex)
-			table.remove(buffer.Items, bufferindex)
 
 			mysql_commit(db)
-
-		end)
-	else
-		pluto.db.transact(function(db)
+		else
 			if (not pluto.inv.switchtab(db, tabid1, tabindex1, tabid2, tabindex2)) then
 				pluto.inv.reloadfor(ply)
+				mysql_rollback(db)
 				return
 			end
 			mysql_commit(db)
-		end)
-	end
+		end
+	end)
 end
 
 function pluto.inv.readitemdelete(ply)
@@ -657,67 +657,6 @@ function pluto.inv.readchangetabdata(ply)
 		pluto.db.instance(function(db)
 			mysql_stmt_run(db, "UPDATE pluto_tabs SET color = ?, tab_shape = ? WHERE idx = ?", col, shape, id)
 		end)
-	end)
-end
-
-function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
-	if (true) then
-		return
-	end
-
-	local bufferid = net.ReadUInt(32)
-	local tabid = net.ReadUInt(32)
-	local tabindex = net.ReadUInt(8)
-
-	local i = pluto.inv.getbufferitem(ply, bufferid)
-
-	if (not i) then
-		pprintf "ERROR: no i"
-		pluto.inv.sendfullupdate(ply)
-		return
-	end
-
-	if (i.Owner ~= ply:SteamID64()) then
-		pprintf "ERROR: Owner not equal"
-		pluto.inv.sendfullupdate(ply)
-		return
-	end
-
-	local can, err = pluto.canswitchtabs({
-		ID = 0,
-		Items = {i},
-	}, pluto.inv.invs[ply][tabid], 1, tabindex)
-
-	if (not can) then
-		pprintf "ERROR: not can"
-		pluto.inv.sendfullupdate(ply)
-		return
-	end
-
-	local pop_from = i.TabIndex
-
-	pluto.db.transact(function(db)
-		if (not pluto.inv.setitemplacement(db, ply, i, tabid, tabindex)) then
-			pluto.inv.reloadfor(ply)
-			return
-		end
-
-		pluto.inv.popbuffer(db, ply, pop_from, transact)
-
-		if (not IsValid(ply)) then
-			return
-		end
-		
-		pluto.inv.message(ply)
-			:write("tabupdate", i.TabID, i.TabIndex)
-			:send()
-
-		for i, item in pairs(pluto.inv.invs[ply].tabs.buffer.Items) do
-			if (item == i) then
-				table.remove(pluto.inv.invs[ply].tabs.buffer.Items, i)
-			end
-		end
-		mysql_commit(db)
 	end)
 end
 
