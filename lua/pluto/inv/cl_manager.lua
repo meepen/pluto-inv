@@ -180,7 +180,7 @@ function pluto.inv.readitem()
 
 	pluto.received.item[id] = item
 
-	hook.Run("PlutoItemUpdate", item)
+	hook.Run("PlutoItemUpdate", item, item.TabID, item.TabIndex)
 
 	return item
 end

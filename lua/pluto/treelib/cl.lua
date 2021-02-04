@@ -307,7 +307,7 @@ function PANEL:SetItem(item)
 	end
 end
 
-function PANEL:PlutoItemUpdate(item)
+function PANEL:PlutoItemUpdate(item, tabid, tabindex)
 	if (item == self.Item) then
 		self:SetItem(item)
 	end

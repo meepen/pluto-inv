@@ -213,23 +213,13 @@ function PANEL:SetUpdateFrom(tabid, tabidx)
 	self.TabID, self.TabIndex = tabid, tabidx
 end
 
-function PANEL:PlutoItemUpdate(item)
+function PANEL:PlutoItemUpdate(item, tabid, tabindex)
 	if (self.Item == item and IsValid(self.Showcase)) then
 		self:RemoveShowcase()
 		self:StartShowcase()
 	end
 
-	local tab = pluto.cl_inv[self.TabID]
-	if (not tab) then
-		return
-	end
-
-	local cur_item = tab.Items[self.TabIndex]
-	if (cur_item ~= item) then
-		return
-	end
-
-	if (item ~= self.Item) then
+	if (tabid == self.TabID and tabindex == self.TabIndex) then
 		self:SetItem(item)
 	end
 end
