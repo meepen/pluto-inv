@@ -33,6 +33,35 @@ surface.CreateFont("pluto_inventory_storage", {
 	weight = 100,
 })
 
+local pluto_tab_order = CreateConVar("pluto_tab_order", "[]", FCVAR_ARCHIVE)
+
+
+local tab_order_table
+
+local function UpdateFromConvar()
+	tab_order_table = util.JSONToTable(pluto_tab_order:GetString())
+	if (not tab_order_table) then
+		pluto_tab_order:SetString "[]"
+		return
+	end
+end
+
+cvars.AddChangeCallback(pluto_tab_order:GetName(), UpdateFromConvar, pluto_tab_order:GetString())
+UpdateFromConvar()
+
+local function GetTabPriority(tab)
+	for i, tabid in ipairs(tab_order_table) do
+		if (tabid == tab.ID) then
+			return i
+		end
+	end
+	return nil
+end
+
+local function UpdatePriorityConvar()
+	pluto_tab_order:SetString(util.TableToJSON(tab_order_table))
+end
+
 local text_color = Color(255, 255, 255)
 local inner_color = Color(64, 66, 74)
 
@@ -250,10 +279,29 @@ function PANEL:Init()
 	for id, tab in pairs(pluto.cl_inv) do
 		if (tab.Type == "normal" or tab.Type == "equip") then
 			table.insert(self.TabList, {
-				Tab = tab
+				Tab = tab,
+				Priority = GetTabPriority(tab)
 			})
 		end
 	end
+
+	table.sort(self.TabList, function(a, b)
+		if (not a.Priority and not b.Priority) then
+			return a.Tab.ID < b.Tab.ID
+		elseif (a.Priority and not b.Priority) then
+			return true
+		elseif (b.Priority and not a.Priority) then
+			return false
+		else
+			return a.Priority < b.Priority
+		end
+	end)
+
+	tab_order_table = {}
+	for i, tab in ipairs(self.TabList) do
+		tab_order_table[i] = tab.Tab.ID
+	end
+	UpdatePriorityConvar()
 
 	for _, item in ipairs(self.TabList) do
 		self:AddStorageTab(item.Tab)
@@ -439,6 +487,8 @@ function PANEL:AddStorageTab(tab)
 	self.StorageTabs[tab] = pnl
 	pnl:Dock(TOP)
 	pnl:SetTall(20)
+	pnl:SetZPos(GetTabPriority(tab))
+	pnl.Tab = tab
 
 	local img = pnl:Add "pluto_inventory_shape"
 	img:SetSize(pnl:GetTall(), pnl:GetTall())
@@ -539,7 +589,51 @@ function PANEL:AddStorageTab(tab)
 			end
 		end
 		self:SelectTab(tab)
+		if (m == MOUSE_LEFT) then
+			s.IsBeingMoved = true
+		end
 	end
+
+	function pnl:Think()
+		if (self.IsBeingMoved and input.IsMouseDown(MOUSE_LEFT)) then
+			local hovered = vgui.GetHoveredPanel()
+			if (not IsValid(hovered) or hovered == self or not hovered.IsTabMoveable) then
+				return
+			end
+
+			local newzpos = hovered:GetZPos()
+
+			for _, child in pairs(pnl:GetParent():GetChildren()) do
+				if (child:GetZPos() >= newzpos) then
+					child:SetZPos(child:GetZPos() + 1)
+				end
+			end
+
+			self:SetZPos(newzpos)
+
+			tab_order_table = {}
+
+			local children = self:GetParent():GetChildren()
+			table.sort(children, function(a, b)
+				return a:GetZPos() < b:GetZPos()
+			end)
+
+			for i, child in ipairs(children) do
+				if (not child.Tab) then
+					continue
+				end
+
+				table.insert(tab_order_table, child.Tab.ID)
+			end
+
+			UpdatePriorityConvar()
+
+		elseif (self.IsBeingMoved) then
+			self.IsBeingMoved = false
+		end
+	end
+
+	pnl.IsTabMoveable = true
 
 	if (not self.ActiveStorageTab) then
 		self:SelectTab(tab, true)
