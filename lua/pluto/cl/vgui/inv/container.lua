@@ -274,6 +274,23 @@ function PANEL:Init()
 
 	self:ChangeToTab(last_open_category:GetString())
 
+	self:CreateOrdered()
+
+	tab_order_table = {}
+	for i, tab in ipairs(self.TabList) do
+		tab_order_table[i] = tab.Tab.ID
+	end
+	UpdatePriorityConvar()
+
+	for _, item in ipairs(self.TabList) do
+		self:AddStorageTab(item.Tab)
+		if (item.Tab.ID == last_tab_id:GetInt()) then
+			self:SelectTab(item.Tab)
+		end
+	end
+end
+
+function PANEL:CreateOrdered()
 	self.TabList = {}
 
 	for id, tab in pairs(pluto.cl_inv) do
@@ -296,65 +313,11 @@ function PANEL:Init()
 			return a.Priority < b.Priority
 		end
 	end)
-
-	tab_order_table = {}
-	for i, tab in ipairs(self.TabList) do
-		tab_order_table[i] = tab.Tab.ID
-	end
-	UpdatePriorityConvar()
-
-	for _, item in ipairs(self.TabList) do
-		self:AddStorageTab(item.Tab)
-		if (item.Tab.ID == last_tab_id:GetInt()) then
-			self:SelectTab(item.Tab)
-		end
-	end
 end
 
 function PANEL:OnBufferPressed()
 	self:ChangeToTab "Currency"
 		:SelectTab "Item Boxes"
-end
-
-function PANEL:GetOrderConvar()
-	return CreateConVar("pluto_tab_order_" .. LocalPlayer():SteamID64() .. "_" .. self.ID, "[]", FCVAR_ARCHIVE)
-end
-
-function PANEL:Reorder()
-	local json = util.JSONToTable(self:GetOrderConvar():GetString()) or {}
-
-	local lookup = {}
-	for i, v in ipairs(json) do
-		lookup[tonumber(v)] = i
-	end
-
-	table.sort(self.TabList, function(a, b)
-		local aid = a.Tab.ID
-		local bid = b.Tab.ID
-
-		local al = lookup[aid]
-		local bl = lookup[bid]
-
-		if (al and not bl) then
-			return false
-		elseif (bl and not al) then
-			return true
-		elseif (bl and al) then
-			return al < bl
-		end
-
-		return aid < bid
-	end)
-
-	self:SaveOrder()
-end
-
-function PANEL:SaveOrder()
-	local list = {}
-	for _, tab in ipairs(self.TabList) do
-		table.insert(list, tab.Tab.FakeID and -tab.Tab.FakeID or tab.Tab.ID)
-	end
-	self:GetOrderConvar():SetString(util.TableToJSON(list))
 end
 
 function PANEL:PerformLayout(w, h)
@@ -596,6 +559,10 @@ function PANEL:AddStorageTab(tab)
 		end
 	end
 
+	function pnl.CreateOrdered()
+		self:CreateOrdered()
+	end
+
 	function pnl:Think()
 		if (self.IsBeingMoved and input.IsMouseDown(MOUSE_LEFT)) then
 			local hovered = vgui.GetHoveredPanel()
@@ -629,6 +596,7 @@ function PANEL:AddStorageTab(tab)
 			end
 
 			UpdatePriorityConvar()
+			self:CreateOrdered()
 
 		elseif (self.IsBeingMoved) then
 			self.IsBeingMoved = false
@@ -653,6 +621,7 @@ function PANEL:SelectTab(tab, noupdate)
 
 	if (tab ~= self.ActiveStorageTab) then
 		self.ActiveStorageTab = tab
+		self.Storage:SwapToBuffer(false)
 		self.Storage:PopulateFromTab(tab)
 	end
 end
