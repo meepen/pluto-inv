@@ -197,7 +197,6 @@ function pluto.inv.writefullupdate(ply)
 end
 
 function pluto.inv.sendfullupdate(ply)
-	debug.Trace()
 	if (pluto.inv.loading[ply]) then
 		pwarnf("Player inventory already loading: %s", ply:Nick())
 		return

@@ -82,7 +82,7 @@ function PANEL:Init()
 	self.Progression:SetCurve(4)
 	self.Progression:SetColor(Color(87, 88, 94))
 	self.Progression:DockPadding(1, 1, 1, 1)
-	self.Progression:DockMargin(0, 0, 0, 9)
+	self.Progression:DockMargin(12, 0, 12, 9)
 
 	function self.Progression.PaintOver(s, w, h)
 		local surface = pluto.fonts.systems.shadow
