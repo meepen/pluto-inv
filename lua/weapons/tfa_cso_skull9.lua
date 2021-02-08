@@ -112,7 +112,7 @@ function SWEP:DoHit(hitEnt, tr, damage)
 		if (hitEnt:Health() > 0) then
 			pluto.statuses.poison(self:GetOwner(), {
 				Weapon = self,
-				Damage = dmg / 2
+				Damage = dmg * (3 / 4)
 			})
 		end
 	end

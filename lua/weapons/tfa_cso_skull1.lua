@@ -99,7 +99,7 @@ function SWEP:DoPlayerDeath(ply, atk, dmg)
 		return
 	end
 
-	local amt = self.Damaged[ply] * 1.5
+	local amt = self.Damaged[ply] * 2
 	self.Damaged[ply] = nil
 
 	pluto.statuses.heal(self:GetOwner(), amt, amt / 20)
