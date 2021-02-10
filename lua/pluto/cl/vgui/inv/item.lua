@@ -12,6 +12,19 @@ local function ColorModulateForBackground(col)
 	return HSVToColor(h, s, v / 5 * 4)
 end
 
+sql.Query [[CREATE TABLE IF NOT EXISTS pluto_modelbounds_hack (
+	class varchar(32) not null primary key,
+	minx FLOAT NOT NULL,
+	miny FLOAT NOT NULL,
+	minz FLOAT NOT NULL,
+	maxx FLOAT NOT NULL,
+	maxy FLOAT NOT NULL,
+	maxz FLOAT NOT NULL
+)]]
+
+print(sql.LastError())
+
+
 local PANEL = {}
 
 local default_color = Color(53, 53, 60)

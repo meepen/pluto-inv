@@ -121,7 +121,6 @@ function PANEL:Init()
 	self.TabContainer = self.Main:Add "EditablePanel"
 	self.TabContainer:Dock(TOP)
 	self.TabContainer:SetTall(self.TopSize)
-	self.TabContainer:DockMargin(4, 0, 0, 0)
 
 	self.StorageExpander = self.TabContainer:Add "pluto_label"
 	self.StorageExpander:Dock(RIGHT)

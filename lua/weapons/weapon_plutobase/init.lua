@@ -93,7 +93,7 @@ function SWEP:RunModFunctionSequence(funcname, state, ...)
 	self:RunModFunctionSingle("On" .. funcname, unpack(args, 1, args.n))
 	self:RunModFunctionSingle("Post" .. funcname, unpack(args, 1, args.n))
 
-	if (self[funcname]) then
+	if (self:GetTable()[funcname]) then
 		self[funcname](self, state, ...)
 	end
 end
