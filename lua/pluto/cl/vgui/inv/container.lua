@@ -248,7 +248,16 @@ function PANEL:Init()
 		other:SetColor(inner_color)
 	end, true)
 
+
+	self:AddTab("Trading", function(container)
+	end, true)
+
 	self:AddTab("Crafting", function(container)
+		local other = container:Add "pluto_inventory_crafting"
+		other:SetCurve(4)
+		other:Dock(FILL)
+		other:SetColor(inner_color)
+		other.Storage = storage
 	end, true)
 
 	self:AddTab("Currency", function(container, storage)
