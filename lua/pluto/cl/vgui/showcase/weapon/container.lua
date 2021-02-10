@@ -81,6 +81,7 @@ function PANEL:CreateInners()
 
 	self.StatArea = self.InfoContainer:Add "EditablePanel"
 	self.StatArea:SetTall(0)
+	AccessorFunc(self.StatArea, "RealTall", "RealTall")
 	self.StatArea:Dock(BOTTOM)
 
 	self.IDLabel = self.BottomLine:Add "pluto_label"
@@ -407,6 +408,7 @@ function PANEL:SetItem(item)
 	end
 
 	self.StatArea:SetTall(self.StatArea:GetTall() + inspect:GetTall() + 7)
+	self.StatArea:SetRealTall(self.StatArea:GetTall())
 
 	if (item.Type == "Weapon") then
 		local dmg_text = pluto.mods.getitemvalue(item, "Damage")
@@ -469,7 +471,7 @@ function PANEL:SetItem(item)
 			curline:SetTall(th + 3 + 4)
 			curline:DockPadding(0, 0, 0, 4)
 			curline:Dock(TOP)
-			self.StatArea:SetTall(self.StatArea:GetTall() + curline:GetTall())
+			self.StatArea:SetRealTall(self.StatArea:GetRealTall() + curline:GetTall())
 		end
 
 		for _, statdata in ipairs(stats) do
@@ -547,7 +549,10 @@ function PANEL:SetItem(item)
 
 		finalizeline(true)
 
-		self:SetTall(self:GetTall() + self.StatArea:GetTall() + 18)
+		if (self.LastControlState) then
+			self.StatArea:SetTall(self.StatArea:GetRealTall() + 9)
+		end
+		self:SetTall(self:GetTall() + self.StatArea:GetTall() + 11)
 	end
 end
 
