@@ -57,11 +57,12 @@ function PANEL:Init()
 	self.SearchyBoi:SizeToContentsX()
 
 
-	self.InventoryContainer = self.UpperArea:Add "ttt_curved_panel"
+	self.InventoryContainer = self.UpperArea:Add "pluto_inventory_component_noshadow"
 	self.InventoryContainer:Dock(LEFT)
 	self.InventoryContainer:SetWide(100)
 	self.InventoryContainer:DockPadding(0, 4, 0, 3)
 	self.InventoryContainer:DockMargin(0, 0, 2, 0)
+	self.InventoryContainer:ChangeDockInner(1, 1, 1, 0)
 
 	self.InventoryLabel = self.InventoryContainer:Add "pluto_label"
 	self.InventoryLabel:SetContentAlignment(8)
@@ -75,10 +76,12 @@ function PANEL:Init()
 	self.InventoryContainer:SetWide(self.InventoryLabel:GetWide() + 25)
 	self.InventoryContainer:SetCursor "hand"
 
-	self.BufferContainer = self.UpperArea:Add "ttt_curved_panel"
+	self.BufferContainer = self.UpperArea:Add "pluto_inventory_component_noshadow"
 	self.BufferContainer:Dock(LEFT)
 	self.BufferContainer:SetWide(100)
 	self.BufferContainer:DockPadding(0, 4, 0, 3)
+	self.BufferContainer:ChangeDockInner(1, 1, 1, 0)
+
 	self.BufferLabel = self.BufferContainer:Add "pluto_label"
 	self.BufferLabel:SetContentAlignment(8)
 	self.BufferLabel:SetFont "pluto_inventory_font_lg"
@@ -108,6 +111,21 @@ function PANEL:Init()
 	self.Container = self:Add "pluto_inventory_component"
 	DEFINE_BASECLASS "pluto_inventory_component"
 	self.Container:Dock(FILL)
+
+	function self.Container.PaintOver(s, w, h)
+		if (not IsValid(self.SelectedTab)) then
+			return
+		end
+
+		local col = s:GetColor()
+
+		local x, y = self.SelectedTab:GetPos()
+		local tw, th = self.SelectedTab:GetSize()
+		
+		surface.SetDrawColor(s:GetColor())
+		surface.DrawLine(x, 0, x + tw - 1, 0)
+	end
+
 	self.ItemContainer = self.Container:Add "EditablePanel"
 	self.ItemContainer:SetSize(item_size * 6 + inner_area * 5, item_size * 6 + inner_area * 5)
 
@@ -178,6 +196,7 @@ function PANEL:OnBufferPressed()
 end
 
 function PANEL:SelectWhich(t)
+	self.SelectedTab = t
 	t:SetColor(active_color)
 
 	local lbl = self.InventoryContainer == t and self.InventoryLabel or self.BufferLabel

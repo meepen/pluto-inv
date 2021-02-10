@@ -32,6 +32,20 @@ function PANEL:Init()
 	self.Inner:SetCurveTopLeft(false)
 	self.Inner:SetCurveTopRight(false)
 
+	function self.Inner.PaintOver(s, w, h)
+		if (not IsValid(self.ActiveTab)) then
+			return
+		end
+
+		local col = s:GetColor()
+
+		local x, y = self.ActiveTab:GetPos()
+		local tw, th = self.ActiveTab:GetSize()
+		
+		surface.SetDrawColor(s:GetColor())
+		surface.DrawLine(x, 0, x + tw - 1, 0)
+	end
+
 	local old_layout = self.Inner.PerformLayout
 	function self.Inner.PerformLayout(s, w, h)
 		if (old_layout) then
@@ -55,12 +69,13 @@ end
 function PANEL:AddTab(text, onpress, col)
 	col = col or active_text
 	onpress = onpress or function() end
-	local curve = self.TabArea:Add "ttt_curved_panel"
+	local curve = self.TabArea:Add "pluto_inventory_component_noshadow"
 	curve:Dock(LEFT)
 	curve:DockPadding(0, 1, 0, 3)
 	curve:SetCurveBottomRight(false)
 	curve:SetCurveBottomLeft(false)
 	curve:SetMouseInputEnabled(true)
+	curve:ChangeDockInner(1, 1, 1, 0)
 
 	curve.Label = curve:Add "pluto_label"
 	curve.Label:SetFont "pluto_inventory_font_lg"
