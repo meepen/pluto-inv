@@ -198,12 +198,14 @@ end
 function PANEL:SelectWhich(t)
 	self.SelectedTab = t
 	t:SetColor(active_color)
+	t:ChangeDockInner(1, 1, 1, 0)
 
 	local lbl = self.InventoryContainer == t and self.InventoryLabel or self.BufferLabel
 	lbl:SetTextColor(active_text)
 
 	local other = t == self.InventoryContainer and self.BufferContainer or self.InventoryContainer
 	other:SetColor(inactive_color)
+	other:ChangeDockInner(0, 0, 0, 0)
 
 	local otherlbl = other == self.InventoryContainer and self.InventoryLabel or self.BufferLabel
 	otherlbl:SetTextColor(inactive_text)
