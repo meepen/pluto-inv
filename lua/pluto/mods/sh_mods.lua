@@ -114,7 +114,7 @@ function pluto.mods.formatdescription(mod_data, item, format)
 	return string.formatsafe(desc, unpack(format))
 end
 
-local function getrawvalue(wep, name)
+function pluto.mods.getrawvalue(wep, name)
 	local s, c = pcall(wep["Get" .. name], wep)
 	if (s) then
 		return c
@@ -150,13 +150,13 @@ function pluto.mods.humanreadablestat(statname, wep, value)
 end
 
 function pluto.mods.getstatvalue(wep, name)
-	return pluto.mods.humanreadablestat(name, wep, getrawvalue(wep, name))
+	return pluto.mods.humanreadablestat(name, wep, pluto.mods.getrawvalue(wep, name))
 end
 
 function pluto.mods.getitemvalue(item, name)
 	local wep = baseclass.Get(item.ClassName)
 
-	local value = getrawvalue(wep, name)
+	local value = pluto.mods.getrawvalue(wep, name)
 	if (not value) then
 		return "IDK XD"
 	end

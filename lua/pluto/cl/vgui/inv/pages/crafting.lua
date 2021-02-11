@@ -5,7 +5,7 @@ function PANEL:Init()
 
 	local shardlabel = self:Add "pluto_label"
 	shardlabel:Dock(TOP)
-	shardlabel:SetText "Give us three shards..."
+	shardlabel:SetText "Three shards..."
 	shardlabel:SetContentAlignment(5)
 	shardlabel:SetTextColor(Color(255, 255, 255))
 	shardlabel:SetFont "pluto_inventory_font"
@@ -66,7 +66,7 @@ function PANEL:Init()
 
 	local currencylabel = self:Add "pluto_label"
 	currencylabel:Dock(TOP)
-	currencylabel:SetText "Any mystical wonders you want..."
+	currencylabel:SetText "Mystical currency..."
 	currencylabel:SetContentAlignment(5)
 	currencylabel:SetTextColor(Color(255, 255, 255))
 	currencylabel:SetFont "pluto_inventory_font"
@@ -76,7 +76,7 @@ function PANEL:Init()
 
 	local itemlabel = self:Add "pluto_label"
 	itemlabel:Dock(TOP)
-	itemlabel:SetText "And any spare weapons you can..."
+	itemlabel:SetText "And any sacrifices..."
 	itemlabel:SetContentAlignment(5)
 	itemlabel:SetTextColor(Color(255, 255, 255))
 	itemlabel:SetFont "pluto_inventory_font"
@@ -133,16 +133,6 @@ function PANEL:Init()
 			x = x + 56 + 5
 		end
 	end
-
-	self.ResultLabel = self:Add "pluto_label"
-	self.ResultLabel:Dock(TOP)
-	self.ResultLabel:SetText "...and you could get anything..."
-	self.ResultLabel:SetContentAlignment(5)
-	self.ResultLabel:SetTextColor(Color(255, 255, 255))
-	self.ResultLabel:SetFont "pluto_inventory_font"
-	self.ResultLabel:SetTall(22)
-	self.ResultLabel:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.ResultLabel:SetMouseInputEnabled(false)
 	
 	self.GoButton = self:Add "ttt_curved_panel"
 	self.GoButton:Dock(TOP)
@@ -165,7 +155,7 @@ function PANEL:Init()
 	self.GoLabel:SetTextColor(Color(255, 255, 255))
 	self.GoLabel:SetFont "pluto_inventory_font"
 	self.GoLabel:SetContentAlignment(5)
-	self.GoLabel:SetText "Sacrifice your items"
+	self.GoLabel:SetText "Create an item"
 
 	self.ShardResultLine = self:Add "EditablePanel"
 	self.ShardResultLine:SetTall(28)
