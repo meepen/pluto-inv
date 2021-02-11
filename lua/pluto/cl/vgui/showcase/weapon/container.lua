@@ -116,8 +116,6 @@ function PANEL:CreateInners()
 	self.ItemInformationLine:SetTall(0)
 	self.ItemInformationLine:DockPadding(7, 0, 7, 0)
 
-	self:SetTall(self:GetTall() + self.Implicits:GetTall())
-
 
 	self:InvalidateLayout(true)
 
@@ -153,7 +151,7 @@ function PANEL:AddImplicit(implicit, item)
 	end
 
 	self.Implicits:SetTall(self.Implicits:GetTall() + label:GetTall())
-	self:SetTall(self:GetTall() + label:GetTall())
+	self:SetTall(self:GetTall() + label:GetTall() + 7)
 end
 
 function PANEL:AddPrefix(prefix, item)
