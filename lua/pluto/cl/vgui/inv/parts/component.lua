@@ -5,19 +5,20 @@ function PANEL:Init()
 	self.ComponentOutline:SetColor(Color(95, 96, 102))
 	self.ComponentInner = self.ComponentOutline:Add "ttt_curved_panel"
 	self.ComponentInner:Dock(FILL)
-	self.ComponentInner:DockMargin(1, 1, 1, 1)
+	self:ChangeDockInner(1, 1, 1, 1)
 
 	for _, child in pairs(self:GetChildren()) do
 		child:SetMouseInputEnabled(false)
 	end
 end
 
-function PANEL:PerformLayout(w, h)
-	self.ComponentOutline:SetSize(w, h)
-end
-
 function PANEL:ChangeDockInner(l, t, r, b)
 	self.ComponentInner:DockMargin(l, t, r, b)
+	self:InvalidateChildren(true)
+end
+
+function PANEL:PerformLayout(w, h)
+	self.ComponentOutline:SetSize(w, h)
 end
 
 function PANEL:SetColor(col)
@@ -65,7 +66,7 @@ function PANEL:Init()
 	self.ComponentOutline:SetColor(Color(95, 96, 102))
 	self.ComponentInner = self.ComponentOutline:Add "ttt_curved_panel"
 	self.ComponentInner:Dock(FILL)
-	self.ComponentInner:DockMargin(1, 1, 1, 1)
+	self:ChangeDockInner(1, 1, 1, 1)
 
 	for _, child in pairs(self:GetChildren()) do
 		child:SetMouseInputEnabled(false)
@@ -74,6 +75,7 @@ end
 
 function PANEL:ChangeDockInner(l, t, r, b)
 	self.ComponentInner:DockMargin(l, t, r, b)
+	self:InvalidateChildren(true)
 end
 
 function PANEL:PerformLayout(w, h)

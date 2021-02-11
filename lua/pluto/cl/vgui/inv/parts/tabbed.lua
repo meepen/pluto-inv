@@ -75,7 +75,6 @@ function PANEL:AddTab(text, onpress, col)
 	curve:SetCurveBottomRight(false)
 	curve:SetCurveBottomLeft(false)
 	curve:SetMouseInputEnabled(true)
-	curve:ChangeDockInner(1, 1, 1, 0)
 
 	curve.Label = curve:Add "pluto_label"
 	curve.Label:SetFont "pluto_inventory_font_lg"
@@ -97,10 +96,12 @@ function PANEL:AddTab(text, onpress, col)
 		curve.Label:SetTextColor(col)
 		self.ActiveTab = curve
 		self.Tabs[curve]:SetVisible(true)
+		curve:ChangeDockInner(1, 1, 1, 0)
 	else
 		curve:SetColor(inactive_color)
 		curve.Label:SetTextColor(inactive_text)
 		self.Tabs[curve]:SetVisible(false)
+		curve:ChangeDockInner(0, 0, 0, 0)
 	end
 
 	function curve.OnMousePressed(s, m)
@@ -108,9 +109,11 @@ function PANEL:AddTab(text, onpress, col)
 			if (IsValid(self.ActiveTab)) then
 				self.ActiveTab:SetColor(inactive_color)
 				self.ActiveTab.Label:SetTextColor(inactive_text)
+				self.ActiveTab:ChangeDockInner(0, 0, 0, 0)
 				self.Tabs[self.ActiveTab]:SetVisible(false)
 			end
 			s:SetColor(active_color)
+			s:ChangeDockInner(1, 1, 1, 0)
 			s.Label:SetTextColor(col)
 			self.Tabs[s]:SetVisible(true)
 			self.ActiveTab = s
