@@ -154,6 +154,14 @@ function PANEL:AddImplicit(implicit, item)
 	self:SetTall(self:GetTall() + label:GetTall() + 7)
 end
 
+local function value(a)
+	if (type(a) == "Vector") then
+		a = a:Length()
+	end
+
+	return a
+end
+
 local function GetMinMax(compared, statmod)
 	local min, max = math.huge, -math.huge
 	for _, class in pairs(pluto.weapons.guns) do
@@ -162,15 +170,19 @@ local function GetMinMax(compared, statmod)
 			continue
 		end
 		local num = pluto.mods.getrawvalue(class, statmod)
-		if (num < min) then
+		if (value(num) < value(min)) then
 			min = num
 		end
-		if (num > max) then
+		if (value(num) > value(max)) then
 			max = num
 		end
 	end
 
-	return min, max
+	if (statmod == "Spread") then
+		return max, min
+	else
+		return min, max
+	end
 end
 
 function PANEL:AddPrefix(prefix, item)
@@ -201,7 +213,8 @@ function PANEL:AddPrefix(prefix, item)
 	local rolls = pluto.mods.getrolls(MOD, prefix.Tier, prefix.Roll)
 	local num = pluto.mods.getrawvalue(baseclass.Get(item.ClassName), MOD.StatModifier)
 	local mins, maxs = GetMinMax(baseclass.Get(item.ClassName), MOD.StatModifier)
-	local frac_base = mins == maxs and 0.35 or 0.35 * ((num - mins) / (maxs - mins))
+	print(mins, maxs)
+	local frac_base = mins == maxs and 0.35 or 0.35 * ((value(num) - value(mins)) / (value(maxs) - value(mins)))
 	bar:AddFilling(frac_base, num, Color(109, 147, 232)) -- MOD:FormatModifier(1, rolls[1])
 	local left = 1 - frac_base - 0.2
 	local txt = MOD:FormatModifier(1, rolls[1])
