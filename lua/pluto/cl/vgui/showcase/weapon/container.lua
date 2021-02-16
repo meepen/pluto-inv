@@ -157,6 +157,8 @@ end
 local function value(a)
 	if (type(a) == "Vector") then
 		a = a:Length()
+	elseif (type(a) == "Angle") then
+		a = math.AngleDifference(a.p, 0) + math.AngleDifference(a.y, 0)
 	end
 
 	return a
@@ -213,7 +215,6 @@ function PANEL:AddPrefix(prefix, item)
 	local rolls = pluto.mods.getrolls(MOD, prefix.Tier, prefix.Roll)
 	local num = pluto.mods.getrawvalue(baseclass.Get(item.ClassName), MOD.StatModifier)
 	local mins, maxs = GetMinMax(baseclass.Get(item.ClassName), MOD.StatModifier)
-	print(mins, maxs)
 	local frac_base = mins == maxs and 0.35 or 0.35 * ((value(num) - value(mins)) / (value(maxs) - value(mins)))
 	bar:AddFilling(frac_base, num, Color(109, 147, 232)) -- MOD:FormatModifier(1, rolls[1])
 	local left = 1 - frac_base - 0.2

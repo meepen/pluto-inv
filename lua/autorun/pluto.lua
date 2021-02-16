@@ -65,6 +65,7 @@ pluto.files.load {
 		"cl/vgui/inv/pages/currency.lua",
 		"cl/vgui/inv/pages/quests.lua",
 		"cl/vgui/inv/pages/crafting.lua",
+		"cl/vgui/inv/pages/trading.lua",
 
 		"cl/vgui/inv/shape.lua",
 		"cl/vgui/inv/item.lua",

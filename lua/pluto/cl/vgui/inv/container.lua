@@ -250,6 +250,10 @@ function PANEL:Init()
 
 
 	self:AddTab("Trading", function(container)
+		local other = container:Add "pluto_inventory_trading"
+		other:SetCurve(4)
+		other:Dock(FILL)
+		other:SetColor(inner_color)
 	end, true)
 
 	self:AddTab("Crafting", function(container)

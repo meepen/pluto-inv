@@ -248,7 +248,7 @@ function pluto.inv.readtradelogsnapshot()
 	hook.Run("PlutoTradeLogSnapshot", id, data)
 end
 
-function pluto.inv.readtradelogresults(recv, trades)
+function pluto.inv.readtradelogresults(recv)
 	local trades = {}
 	for i = 1, net.ReadUInt(32) do
 		local trade = {}
@@ -260,6 +260,8 @@ function pluto.inv.readtradelogresults(recv, trades)
 		trade.p2steamid = net.ReadString()
 	end
 
+	hook.Run("PlutoPastTradesReceived", trades)
+--[[
 	local frame = vgui.Create "DFrame"
 	hook.Add("PlutoTradeLogSnapshot", frame, function(_, id, snapshot)
 		for _, trade in pairs(trades) do
@@ -297,7 +299,7 @@ function pluto.inv.readtradelogresults(recv, trades)
 		end
 		local frame = vgui.Create "pluto_trade_log"
 		frame:SetTrade(trades[index])
-	end
+	end]]
 end
 
 function pluto.inv.readtradeaccept()
