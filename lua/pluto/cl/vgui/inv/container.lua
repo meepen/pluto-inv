@@ -239,6 +239,7 @@ function PANEL:Init()
 	self.SidePanelContainer:SetCurveTopRight(false)
 
 	self.Tabs = {}
+	self.CachedTabs = {}
 	self.ActiveTab = nil
 
 	self:AddTab("Loadout", function(container)
@@ -262,7 +263,7 @@ function PANEL:Init()
 		other:Dock(FILL)
 		other:SetColor(inner_color)
 		other.Storage = storage
-	end, true)
+	end, true, true)
 
 	self:AddTab("Currency", function(container, storage)
 		local other = container:Add "pluto_inventory_currency"
@@ -364,7 +365,6 @@ function PANEL:ChangeToTab(name, noupdate)
 
 	self.ActiveTab = name
 
-
 	tab.Label:SetTextColor(Color(28, 198, 244))
 
 	local pnl
@@ -378,17 +378,35 @@ function PANEL:ChangeToTab(name, noupdate)
 		self.EmptyContainer:SetVisible(true)
 	end
 
-	for _, child in pairs(pnl:GetChildren()) do
-		child:Remove()
+	if (old and old.Cache) then
+		if (not IsValid(self.CachedTabs[old.Name])) then
+			local cache = vgui.Create "EditablePanel"
+			cache:SetVisible(false)
+			self.CachedTabs[old.Name] = cache
+		end
+
+		for _, child in pairs(pnl:GetChildren()) do
+			child:SetParent(self.CachedTabs[old.Name])
+		end
+	else
+		for _, child in pairs(pnl:GetChildren()) do
+			child:Remove()
+		end
 	end
 
-	self.ActiveTabData = tab.Populate(pnl, self.Storage)
+	if (tab and tab.Cache and IsValid(self.CachedTabs[name])) then
+		for _, child in pairs(self.CachedTabs[name]:GetChildren()) do
+			child:SetParent(pnl)
+		end
+	else
+		self.ActiveTabData = tab.Populate(pnl, self.Storage)
+	end
 	return self.ActiveTabData
 end
 
 local gradient_up = Material "gui/gradient_up"
 
-function PANEL:AddTab(name, func, has_storage)
+function PANEL:AddTab(name, func, has_storage, cache)
 	local lbl = self.TabContainer:Add "pluto_label"
 	local old_paint = lbl.Paint
 	function lbl.Paint(s, w, h)
@@ -405,7 +423,9 @@ function PANEL:AddTab(name, func, has_storage)
 	self.Tabs[name] = {
 		Label = lbl,
 		Populate = func,
-		HasStorage = has_storage
+		HasStorage = has_storage,
+		Cache = cache,
+		Name = name,
 	}
 
 	lbl:Dock(LEFT)
@@ -644,6 +664,11 @@ end
 
 function PANEL:OnRemove()
 	pluto.ui.pickupitem()
+	for _, pnl in pairs(self.CachedTabs) do
+		if (IsValid(pnl)) then
+			pnl:Remove()
+		end
+	end
 end
 
 vgui.Register("pluto_inv", PANEL, "EditablePanel")
