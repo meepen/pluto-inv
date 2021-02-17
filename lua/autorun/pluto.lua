@@ -60,6 +60,8 @@ pluto.files.load {
 
 		"cl/vgui/inv/parts/component.lua",
 		"cl/vgui/inv/parts/tabbed.lua",
+		"cl/vgui/inv/parts/loading.lua",
+		"cl/vgui/inv/parts/currency.lua",
 
 		"cl/vgui/inv/pages/loadout.lua",
 		"cl/vgui/inv/pages/currency.lua",

@@ -151,3 +151,91 @@ function pluto.toroman(s)
 	end
 	return ret
 end
+
+
+local mt = {
+	__index = {
+		SetPos = function(self, x, y)
+			local dx, dy = x, y
+			if (self.lastpos) then
+				dx, dy = dx - self.lastpos.x, dy - self.lastpos.y
+			end
+			self.lastpos = {x = x, y = y}
+
+			for _, vertex in ipairs(self) do
+				vertex.x, vertex.y = vertex.x + dx, vertex.y + dy
+			end
+		end,
+		GetPos = function(self)
+			if (self.lastpos) then
+				return self.lastpos.x, self.lastpos.y
+			end
+			return 0, 0
+		end,
+		Rotate = function(self, rot)
+			local x, y = self:GetPos()
+
+			local rad = math.rad(rot)
+			local s, c = math.sin(rad), math.cos(rad)
+
+			for _, vertex in ipairs(self) do
+				local bx, by = vertex.x - x, vertex.y - y
+				local bxr, byr = bx * c - by * s, bx * s + by * c
+
+				vertex.x = bxr + x
+				vertex.y = byr + y
+			end
+		end
+	},
+	__call = function(self)
+		surface.DrawPoly(self)
+	end
+}
+
+function pluto.ellipsis(w, h)
+	local points = math.max(w, h) * 2
+	local vertices = {}
+
+	for ang = 0, points - 1 do
+		local cur = math.rad(-ang / points * 360)
+
+		local s, c = math.sin(cur) * w, math.cos(cur) * h
+
+		table.insert(vertices, {
+			x = s,
+			y = c
+		})
+	end
+
+	return setmetatable(vertices, mt)
+end
+
+
+function pluto.loading_polys(x, y, size, rot)
+	rot = rot or 0
+	local ellipsis_width = size / 16
+	local ellipsis_height = size / 7
+
+	local diameter = size - ellipsis_height * 2
+	local circumference = math.pi * diameter
+
+
+	local poly_count = math.floor(math.ceil(circumference / (ellipsis_width * 8)) / 2 + 1) * 2
+
+	local polys = {}
+
+	local r = diameter / 2
+	for i = 0, poly_count - 1 do
+		local ang = i / poly_count * 360 + rot
+		local rang = math.rad(ang)
+		local s, c = math.sin(rang), math.cos(rang)
+
+		local poly = pluto.ellipsis(ellipsis_width, ellipsis_height)
+		poly:SetPos(x + size / 2 + s * r, y + size / 2 + c * r)
+		poly:Rotate(-ang)
+
+		table.insert(polys, poly)
+	end
+
+	return polys
+end

@@ -74,6 +74,22 @@ function PANEL:Init()
 	currencylabel:SetRenderSystem(pluto.fonts.systems.shadow)
 	currencylabel:SetMouseInputEnabled(false)
 
+	local selectorarea = self:Add "EditablePanel"
+	selectorarea:Dock(TOP)
+	selectorarea:SetTall(64)
+	local selector = selectorarea:Add "pluto_inventory_currency_selector"
+	selector:AcceptInput(true)
+
+	function selector:OnCurrencySelected(currency)
+		if (IsValid(pluto.ui.pnl)) then
+			pluto.ui.pnl:ChangeToTab "Crafting"
+		end
+	end
+
+	function selectorarea:PerformLayout()
+		selector:Center()
+	end
+
 	local itemlabel = self:Add "pluto_label"
 	itemlabel:Dock(TOP)
 	itemlabel:SetText "And any sacrifices..."

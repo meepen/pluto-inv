@@ -69,6 +69,8 @@ pluto.files.load {
 		"materials/pluto/hound2.png",
 		"materials/pluto/eppen_stars.png",
 		"materials/pluto/colorful.png",
+	
+		"materials/pluto/currencies/questionmark.png",
 		"resource/fonts/PermanentMarker-Regular.ttf",
 	},
 	Workshop = {

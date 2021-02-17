@@ -219,6 +219,10 @@ end
 function PANEL:OnMousePressed(m)
 	if (m == MOUSE_LEFT) then
 		local curtype = self.Currency
+		if (pluto.ui.selectorcallback) then
+			return pluto.ui.selectorcallback(curtype)
+		end
+
 		if ((pluto.cl_currency[curtype.InternalName] or 0) <= 0) then
 			return
 		end
@@ -248,4 +252,22 @@ function pluto.ui.pickupcurrency(item)
 	pluto.ui.pickedupitem = vgui.Create "pluto_inventory_currency_item"
 	pluto.ui.pickedupitem:SetPaintedManually(true)
 	pluto.ui.pickedupitem:SetCurrency(item)
+end
+
+function pluto.ui.currencyselect(msg, fn)
+	if (not IsValid(pluto.ui.pnl)) then
+		return fn and fn(false)
+	end
+
+	if (pluto.ui.selectorcallback) then
+		pluto.ui.selectorcallback(false)
+	end
+
+	pluto.ui.selectorcallback = function(cur)
+		pluto.ui.selectorcallback, pluto.ui.selectormessage = nil, nil
+		return fn(cur)
+	end
+	pluto.ui.selectormessage = msg or "Choose a currency"
+
+	pluto.ui.pnl:ChangeToTab "Currency"
 end
