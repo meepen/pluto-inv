@@ -312,6 +312,11 @@ function ITEM:Delete()
 
 	pluto.received.item[self.ID] = nil
 
+	local tab = pluto.cl_inv[self.TabID]
+	if (tab) then
+		tab.Items[self.TabIndex] = nil
+	end
+
 	hook.Run("PlutoItemUpdate", nil, self.TabID, self.TabIndex)
 end
 
