@@ -227,6 +227,7 @@ function PANEL:GetItems()
 end
 
 function PANEL:UpdateItems()
+	PrintTable(self:GetItems())
 	pluto.inv.message()
 		:write("requestcraftresults", self:GetItems())
 		:send()
@@ -278,6 +279,7 @@ function PANEL:Go()
 	for _, shard in pairs(self.Shards) do
 		shard:SetItem()
 	end
+	self.UsedItems = {}
 end
 
 vgui.Register("pluto_inventory_crafting_shards", PANEL, "EditablePanel")
