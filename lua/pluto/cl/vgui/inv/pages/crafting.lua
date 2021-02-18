@@ -3,15 +3,6 @@ local PANEL = {}
 function PANEL:Init()
 	hook.Add("PlutoCraftResults", self, self.PlutoCraftResults)
 
-	local shardlabel = self:Add "pluto_label"
-	shardlabel:Dock(TOP)
-	shardlabel:SetText "Three shards..."
-	shardlabel:SetContentAlignment(5)
-	shardlabel:SetTextColor(Color(255, 255, 255))
-	shardlabel:SetFont "pluto_inventory_font"
-	shardlabel:SetTall(22)
-	shardlabel:SetRenderSystem(pluto.fonts.systems.shadow)
-	shardlabel:SetMouseInputEnabled(false)
 	self.UsedItems = {}
 
 	self.Shards = {}
@@ -64,23 +55,18 @@ function PANEL:Init()
 		end
 	end
 
-	local currencylabel = self:Add "pluto_label"
-	currencylabel:Dock(TOP)
-	currencylabel:SetText "Mystical currency..."
-	currencylabel:SetContentAlignment(5)
-	currencylabel:SetTextColor(Color(255, 255, 255))
-	currencylabel:SetFont "pluto_inventory_font"
-	currencylabel:SetTall(22)
-	currencylabel:SetRenderSystem(pluto.fonts.systems.shadow)
-	currencylabel:SetMouseInputEnabled(false)
-
 	local selectorarea = self:Add "EditablePanel"
 	selectorarea:Dock(TOP)
 	selectorarea:SetTall(64)
 	local selector = selectorarea:Add "pluto_inventory_currency_selector"
 	selector:AcceptInput(true)
+	self.CurrencySelector = selector
 
-	function selector:OnCurrencySelected(currency)
+	function selector:OnCurrencyChanged(currency)
+		if (currency and not currency.Crafted) then
+			self:SetCurrency()
+		end
+
 		if (IsValid(pluto.ui.pnl)) then
 			pluto.ui.pnl:ChangeToTab "Crafting"
 		end
@@ -90,15 +76,24 @@ function PANEL:Init()
 		selector:Center()
 	end
 
-	local itemlabel = self:Add "pluto_label"
-	itemlabel:Dock(TOP)
-	itemlabel:SetText "And any sacrifices..."
-	itemlabel:SetContentAlignment(5)
-	itemlabel:SetTextColor(Color(255, 255, 255))
-	itemlabel:SetFont "pluto_inventory_font"
-	itemlabel:SetTall(22)
-	itemlabel:SetRenderSystem(pluto.fonts.systems.shadow)
-	itemlabel:SetMouseInputEnabled(false)
+	function selector.OnCurrencyUpdated(s)
+		local cur, amt = s:GetCurrency()
+
+		if (cur) then
+			local crafted = cur.Crafted
+			self.CurrencyText:SetText(string.format("Chance to get %s modifier: %.2f%%", crafted.Mod, pluto.mods.chance(crafted, amt) * 100))
+		else
+			self.CurrencyText:SetText ""
+		end
+	end
+
+	self.CurrencyText = self:Add "pluto_label"
+	self.CurrencyText:Dock(TOP)
+	self.CurrencyText:SetContentAlignment(5)
+	self.CurrencyText:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.CurrencyText:SetFont "pluto_inventory_font"
+	self.CurrencyText:SetTextColor(Color(255, 255, 255))
+	self.CurrencyText:SetText ""
 
 	self.Items = {}
 	self.ItemLine = self:Add "EditablePanel"
@@ -265,6 +260,17 @@ function PANEL:PlutoCraftResults(outcomes)
 end
 
 function PANEL:Go()
+	local items = self:GetItems()
+	local currency, amount = self.CurrencySelector:GetCurrency()
+
+	pluto.inv.message()
+		:write("craft", items, currency and {Currency = currency, Amount = amount} or nil)
+		:send()
+
+	for _, item in pairs(items) do
+		item:Delete()
+	end
+
 	for _, item in pairs(self.Items) do
 		item:SetItem()
 	end

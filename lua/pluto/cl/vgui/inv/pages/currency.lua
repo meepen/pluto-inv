@@ -244,6 +244,12 @@ function PANEL:OnMousePressed(m)
 	end
 end
 
+function PANEL:OnRemove()
+	if (pluto.ui.selectorcallback) then
+		pluto.ui.selectorcallback(nil)
+	end
+end
+
 vgui.Register("pluto_inventory_currency_item", PANEL, "EditablePanel")
 
 function pluto.ui.pickupcurrency(item)

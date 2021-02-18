@@ -15,6 +15,15 @@ function PANEL:Init()
 	self.InputArea:Dock(BOTTOM)
 	self.InputArea:SetTall(16)
 
+	self.InputAmount = self.InputArea:Add "pluto_label"
+	self.InputAmount:SetContentAlignment(5)
+	self.InputAmount:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.InputAmount:SetFont "pluto_inventory_font"
+	self.InputAmount:SetText "?"
+	self.InputAmount:SetTextColor(Color(255, 255, 255))
+	self.InputAmount:Dock(FILL)
+	self.InputAmount:DockMargin(2, 2, 3, 2)
+
 	self:SetCursor "hand"
 
 	self.InputArea:SetMouseInputEnabled(true)
@@ -49,7 +58,7 @@ local question = Material "pluto/currencies/questionmark.png"
 
 function PANEL:PaintInner(pnl, w, h, x, y)
 	surface.SetDrawColor(255, 255, 255)
-	surface.SetMaterial(self.Material or question)
+	surface.SetMaterial(self.Currency and self.Currency:GetMaterial() or question)
 	local pad = 6
 	if (IsValid(pnl) and self == vgui.GetHoveredPanel()) then
 		local wait = 1.5
@@ -62,17 +71,48 @@ end
 
 function PANEL:OnMousePressed(m)
 	if (m == MOUSE_LEFT) then
-		local OnSelected = self.OnCurrencySelected
 		pluto.ui.currencyselect(self.Message, function(cur)
-			OnSelected(self, cur)
+			if (not IsValid(self)) then
+				return
+			end
+
+			self:SetCurrency(cur)
 		end)
+	elseif (m == MOUSE_RIGHT) then
+		self.Currency = nil
+		self.InputAmount:SetText "?"
+		self:OnCurrencyChanged()
+		self:OnCurrencyUpdated()
 	end
 end
 
+function PANEL:SetMinMax(min, max)
+end
 
--- NO GUARANTEE SELF IS STILL ALIVE
-function PANEL:OnCurrencySelected(currency)
-	print("CURRENCY: ", currency)
+function PANEL:SetAmount(amt)
+	self.InputAmount:SetText(amt)
+end
+
+function PANEL:SetCurrency(cur)
+	self.Currency = cur
+	self:OnCurrencyChanged(cur)
+
+	-- can change before this, so get amount here
+
+	local amt = math.min(1, not self.Currency and 0 or (pluto.cl_currency[self.Currency.InternalName] or 0))
+	self:SetAmount(amt)
+
+	self:OnCurrencyUpdated()
+end
+
+function PANEL:GetCurrency()
+	return self.Currency, tonumber(self.InputAmount:GetText()) or 0
+end
+
+function PANEL:OnCurrencyChanged(currency)
+end
+
+function PANEL:OnCurrencyUpdated()
 end
 
 vgui.Register("pluto_inventory_currency_selector", PANEL, "EditablePanel")

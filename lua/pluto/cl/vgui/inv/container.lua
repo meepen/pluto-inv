@@ -401,6 +401,7 @@ function PANEL:ChangeToTab(name, noupdate)
 	else
 		self.ActiveTabData = tab.Populate(pnl, self.Storage)
 	end
+
 	return self.ActiveTabData
 end
 

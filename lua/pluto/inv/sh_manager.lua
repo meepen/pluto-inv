@@ -301,6 +301,20 @@ function ITEM:GetRawName(ignoretier)
 	return "Unknown type: " .. tostring(self.Type)
 end
 
+function ITEM:Delete()
+	if (not CLIENT) then
+		return false
+	end
+
+	if (not self.ID) then
+		return
+	end
+
+	pluto.received.item[self.ID] = nil
+
+	hook.Run("PlutoItemUpdate", nil, self.TabID, self.TabIndex)
+end
+
 function ITEM:GetCreationMethod()
 	return self.CreationMethod
 end
