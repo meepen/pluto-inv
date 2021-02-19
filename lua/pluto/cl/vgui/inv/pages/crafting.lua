@@ -60,6 +60,7 @@ function PANEL:Init()
 	selectorarea:SetTall(64)
 	local selector = selectorarea:Add "pluto_inventory_currency_selector"
 	selector:AcceptInput(true)
+	selector:AcceptAmount(true)
 	self.CurrencySelector = selector
 
 	function selector:OnCurrencyChanged(currency)

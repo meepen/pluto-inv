@@ -1,3 +1,8 @@
+--hack to make my editor not dum
+do
+	--
+end
+
 local json = {}
 
 

@@ -24,11 +24,10 @@ function PANEL:PlutoPastTradesReceived(trades)
 	self.PastTrades = self:Add "DListView"
 	self.PastTrades:Dock(FILL)
 	self.PastTrades:AddColumn "ID"
-	self.PastTrades:AddColumn "Player 1"
-	self.PastTrades:AddColumn "Player 2"
+	self.PastTrades:AddColumn "Other Player"
 
 	for _, trade in ipairs(trades) do
-		self.PastTrades:AddLine(trade.ID, trade.p1name, trade.p2name)
+		self.PastTrades:AddLine(trade.ID, trade.p2name)
 	end
 
 	function self.PastTrades:OnRowSelected(index)
@@ -143,6 +142,8 @@ vgui.Register("pluto_inventory_playercard", PANEL, "ttt_curved_panel")
 
 local PANEL = {}
 
+PANEL.ItemSize = 48
+
 function PANEL:Init()
 	self.Incoming = self:Add "EditablePanel"
 	self.Incoming:Dock(FILL)
@@ -157,14 +158,33 @@ function PANEL:Init()
 	self.IncomingLabel:Dock(TOP)
 	self.IncomingLabel:DockMargin(0, 0, 0, 5)
 
-	self.IncomingCurrency = self.Incoming:Add "ttt_curved_panel"
+	self.IncomingCurrency = self.Incoming:Add "EditablePanel"
 	self.IncomingCurrency:Dock(TOP)
-	self.IncomingCurrency:SetTall(32)
+	self.IncomingCurrency:SetTall(self.ItemSize)
 	self.IncomingCurrency:DockMargin(0, 0, 0, 5)
+	function self.IncomingCurrency:PerformLayout(w, h)
+		local pos = w / 2 + 5
+		for _, child in pairs(self:GetChildren()) do
+			pos = pos - child:GetWide() / 2 - 5 / 2
+		end
+		for _, child in pairs(self:GetChildren()) do
+			child:SetPos(pos, 0)
+			pos = pos + child:GetWide() + 5
+		end
+	end
+
+	self.IncomingCurrencies = {}
+
+	for i = 1, 4 do
+		local cur = self.IncomingCurrency:Add "pluto_inventory_currency_selector"
+		cur:SetWide(self.ItemSize - 16)
+		cur:ShowAmount(true)
+		self.IncomingCurrencies[i] = cur
+	end
 
 	self.IncomingItemContainer = self.Incoming:Add "EditablePanel"
 	self.IncomingItemContainer:Dock(TOP)
-	self.IncomingItemContainer:SetTall(56 * 2 + 5)
+	self.IncomingItemContainer:SetTall(self.ItemSize * 2 + 5)
 
 	self.IncomingItems = {}
 
@@ -172,20 +192,22 @@ function PANEL:Init()
 	for i = 1, 8 do
 		if ((i - 1) % 4 == 0) then
 			line = self.IncomingItemContainer:Add "EditablePanel"
-			line:SetSize(56 * 4 + 5 * 3, 56)
+			line:SetSize(self.ItemSize * 4 + 5 * 3, self.ItemSize)
 			line:Center()
 			if (i == 1) then
 				line:SetPos(0, 0)
 			else
-				line:SetPos(0, 56 + 5)
+				line:SetPos(0, self.ItemSize + 5)
 			end
 		end
 
 		local item = line:Add "pluto_inventory_item"
+		item:SetSize(self.ItemSize, self.ItemSize)
 		self.IncomingItems[i] = item
-		item:SetMouseInputEnabled(false)
 		item:Dock(LEFT)
 		item:DockMargin(0, 0, 5, 0)
+		function item:OnLeftClick() end
+		function item:OnRightClick() end
 	end
 
 	function self.IncomingItemContainer:PerformLayout(w, h)
@@ -208,14 +230,33 @@ function PANEL:Init()
 	self.OutgoingLabel:Dock(TOP)
 	self.OutgoingLabel:DockMargin(0, 0, 0, 5)
 
-	self.OutgoingCurrency = self.Outgoing:Add "ttt_curved_panel"
+	self.OutgoingCurrency = self.Outgoing:Add "EditablePanel"
 	self.OutgoingCurrency:Dock(TOP)
-	self.OutgoingCurrency:SetTall(32)
+	self.OutgoingCurrency:SetTall(self.ItemSize)
 	self.OutgoingCurrency:DockMargin(0, 0, 0, 5)
+	function self.OutgoingCurrency:PerformLayout(w, h)
+		local pos = w / 2 + 5
+		for _, child in pairs(self:GetChildren()) do
+			pos = pos - child:GetWide() / 2 - 5 / 2
+		end
+		for _, child in pairs(self:GetChildren()) do
+			child:SetPos(pos, 0)
+			pos = pos + child:GetWide() + 5
+		end
+	end
+
+	self.OutgoingCurrencies = {}
+
+	for i = 1, 4 do
+		local cur = self.OutgoingCurrency:Add "pluto_inventory_currency_selector"
+		cur:SetWide(self.ItemSize - 16)
+		cur:ShowAmount(true)
+		self.OutgoingCurrencies[i] = cur
+	end
 
 	self.OutgoingItemContainer = self.Outgoing:Add "EditablePanel"
 	self.OutgoingItemContainer:Dock(TOP)
-	self.OutgoingItemContainer:SetTall(56 * 2 + 5)
+	self.OutgoingItemContainer:SetTall(self.ItemSize * 2 + 5)
 
 	self.OutgoingItems = {}
 
@@ -223,16 +264,17 @@ function PANEL:Init()
 	for i = 1, 8 do
 		if ((i - 1) % 4 == 0) then
 			line = self.OutgoingItemContainer:Add "EditablePanel"
-			line:SetSize(56 * 4 + 5 * 3, 56)
+			line:SetSize(self.ItemSize * 4 + 5 * 3, self.ItemSize)
 			line:Center()
 			if (i == 1) then
 				line:SetPos(0, 0)
 			else
-				line:SetPos(0, 56 + 5)
+				line:SetPos(0, self.ItemSize + 5)
 			end
 		end
 
 		local item = line:Add "pluto_inventory_item"
+		item:SetSize(self.ItemSize, self.ItemSize)
 		self.OutgoingItems[i] = item
 		item:SetMouseInputEnabled(false)
 		item:Dock(LEFT)
@@ -253,31 +295,3 @@ end
 
 vgui.Register("pluto_inventory_trading_active", PANEL, "EditablePanel")
 
-
-local PANEL = {}
-
-function PANEL:Init()
-	self.Rotation = 0
-end
-
-function PANEL:Paint(w, h)
-	local x, y = 0, 0
-	local size = math.min(w, h)
-	if (w > h) then
-		y = h / 2 - size / 2
-	elseif (w < h) then
-		x = w / 2 - size / 2
-	end
-
-	self.Rotation = (self.Rotation - FrameTime() * 30) % 360
-	
-	draw.NoTexture()
-	local polys = pluto.loading_polys(x, y, size, self.Rotation)
-	for i, poly in ipairs(polys) do
-		local col = ColorLerp((i - 1) / (#polys), Color(255, 0, 0), Color(0, 255, 0), Color(0, 0, 255), Color(255, 0, 0))
-		surface.SetDrawColor(col)
-		poly()
-	end
-end
-
-vgui.Register("pluto_inventory_loading", PANEL, "EditablePanel")

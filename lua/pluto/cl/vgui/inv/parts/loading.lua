@@ -6,6 +6,13 @@ end
 
 function PANEL:Paint(w, h)
 	local x, y = 0, 0
+	local size = math.min(w, h)
+	if (w > h) then
+		y = h / 2 - size / 2
+	elseif (w < h) then
+		x = w / 2 - size / 2
+	end
+
 	self.Rotation = (self.Rotation - FrameTime() * 30) % 360
 	
 	draw.NoTexture()

@@ -32,44 +32,67 @@ function PANEL:Init()
 	self.InputArea:SetCursor "beam"
 end
 
-
-function PANEL:AcceptInput(b)
+function PANEL:ShowAmount(b)
 	if (b) then
-		self:SetSize(48, 64)
+		self:SetTall(self:GetWide() + 16)
 	else
-		self:SetSize(48, 48)
+		self:SetTall(self:GetWide())
+	end
+	self.ShowingAmount = b
+end
+
+function PANEL:AcceptAmount(b)
+	if (b) then
+		self:ShowAmount(true)
 	end
 end
 
+
+function PANEL:AcceptInput(b)
+	self.AllowInput = b
+	self:SetCursor(b and "hand" or "arrow")
+end
+
 local circles = include "pluto/thirdparty/circles.lua"
-	
-local Circle = circles.New(CIRCLE_FILLED, {18, 4}, 24, 41)
-Circle:SetDistance(3)
 
 function PANEL:Paint(w, h)
+	h = (self.ShowingAmount and -16 or 0) + h
+
+	local Circle = circles.New(CIRCLE_FILLED, {h / 3, 4}, w / 2, h - 7)
+	Circle:SetDistance(3)
+
 	surface.SetDrawColor(45, 47, 53)
 	draw.NoTexture()
 	Circle()
-	
+
 	self:PaintInner(self, w, h, 0, 0)
 end
 
 local question = Material "pluto/currencies/questionmark.png"
 
 function PANEL:PaintInner(pnl, w, h, x, y)
+	local pad = 6
+	local size = math.min(w, h) - pad * 2
+
 	surface.SetDrawColor(255, 255, 255)
 	surface.SetMaterial(self.Currency and self.Currency:GetMaterial() or question)
-	local pad = 6
 	if (IsValid(pnl) and self == vgui.GetHoveredPanel()) then
 		local wait = 1.5
 		local timing = 1 - ((wait + CurTime()) % wait) / wait * 2
 		local up_offset = (math.sin(timing * math.pi) + 1) / 2 * 15 * 0.25
 		y = y + up_offset
 	end
-	surface.DrawTexturedRect(x + pad, y, w - pad * 2, w - pad * 2)
+	local rx, ry = x + w / 2 - size / 2, y + h / 2 - size / 2
+	surface.DrawTexturedRect(rx, ry, size, size)
+
+	return rx, ry, size
 end
 
 function PANEL:OnMousePressed(m)
+	if (not self.AllowInput) then
+		return
+	end
+
 	if (m == MOUSE_LEFT) then
 		pluto.ui.currencyselect(self.Message, function(cur)
 			if (not IsValid(self)) then
