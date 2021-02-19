@@ -82,14 +82,6 @@ function TRADE:End()
 	pluto.trades.status(ply1, ply2, "none")
 end
 
-function pluto.trades.get(ply, oply)
-	return pluto.trades.status[ply][oply]
-end
-
-function pluto.trades.set(ply, oply, status)
-	pluto.trades.status[ply][oply] = status
-end
-
 function pluto.trades.updatefor(ply, oply)
 	pluto.inv.message(oply)
 		:write("traderequestinfo", ply)
@@ -100,6 +92,19 @@ function pluto.trades.updatefor(ply, oply)
 end
 
 function pluto.trades.start(ply, oply)
+	for _, ply2 in pairs(player.GetAll()) do
+		if (ply2 == ply or ply2 == oply) then
+			continue
+		end
+
+		if (pluto.trades.status(ply, ply2) == "outbound") then
+			pluto.trades.status(ply, ply2, "none")
+		end
+		if (pluto.trades.status(oply, ply2) == "outbound") then
+			pluto.trades.status(oply, ply2, "none")
+		end
+	end
+
 	-- TODO(meep): cancel all outbound
 	local tradedata = setmetatable({
 		[ply] = {
