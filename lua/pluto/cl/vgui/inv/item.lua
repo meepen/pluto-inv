@@ -222,6 +222,10 @@ function PANEL:SetItem(item)
 	self:OnSetItem(item)
 end
 
+function PANEL:GetItem()
+	return self.Item
+end
+
 function PANEL:OnSetItem(item)
 end
 

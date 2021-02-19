@@ -271,8 +271,11 @@ function PANEL:Init()
 		cur:SetWide(self.ItemSize - 16)
 		cur:AcceptAmount(true)
 		cur:AcceptInput(true)
-		function cur:OnCurrencyUpdated()
-			pluto.ui.pnl:ChangeToTab "Trading"
+		function cur.OnCurrencyUpdated()
+			if (IsValid(pluto.ui.pnl)) then
+				pluto.ui.pnl:ChangeToTab "Trading"
+			end
+			self:SendUpdate("currency", i)
 		end
 		self.OutgoingCurrencies[i] = cur
 	end
@@ -308,6 +311,7 @@ function PANEL:Init()
 		end
 		function itempnl.ClickedWith(s, other)
 			s:SetItem(other.Item)
+			self:SendUpdate("item", i)
 		end
 		function itempnl.OnRightClick(s)
 			s:SetItem(nil)
@@ -327,10 +331,54 @@ function PANEL:Init()
 			child:SetPos(w / 2 - child:GetWide() / 2, y)
 		end
 	end
+
+	self:UpdateFromTradeData()
 end
 
 function PANEL:PerformLayout(w, h)
 	self.Outgoing:SetTall(56 * 2 + 5 + 20 + 32 + 5)
+end
+
+function PANEL:SendUpdate(type, index)
+	if (type == "currency") then
+		pluto.trades.settradedata("outgoing", type, index, self.OutgoingCurrencies[index]:GetCurrency())
+	elseif (type == "item") then
+		pluto.trades.settradedata("outgoing", type, index, self.OutgoingItems[index]:GetItem())
+	end
+end
+
+function PANEL:UpdateFromTradeData()
+	local tradedata = pluto.trades.getdata()
+
+	if (IsValid(tradedata.otherplayer)) then
+		self.IncomingLabel:SetText(tradedata.otherplayer:Nick() .. " offers:")
+	end
+
+	for i, item in ipairs(self.OutgoingItems) do
+		item:SetItem(tradedata.outgoing.item[i])
+	end
+	for i, item in ipairs(self.OutgoingCurrencies) do
+		local dat = tradedata.outgoing.currency[i]
+		if (not dat) then
+			continue
+		end
+
+		item:SetCurrency(dat.What)
+		item:SetAmount(dat.Amount)
+	end
+
+	for i, item in ipairs(self.IncomingItems) do
+		item:SetItem(tradedata.incoming.item[i])
+	end
+	for i, item in ipairs(self.IncomingCurrencies) do
+		local dat = tradedata.incoming.currency[i]
+		if (not dat) then
+			continue
+		end
+
+		item:SetCurrency(dat.What)
+		item:SetAmount(dat.Amount)
+	end
 end
 
 vgui.Register("pluto_inventory_trading_active", PANEL, "EditablePanel")
