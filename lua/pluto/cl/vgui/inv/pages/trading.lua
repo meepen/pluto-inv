@@ -269,7 +269,11 @@ function PANEL:Init()
 	for i = 1, 4 do
 		local cur = self.OutgoingCurrency:Add "pluto_inventory_currency_selector"
 		cur:SetWide(self.ItemSize - 16)
-		cur:ShowAmount(true)
+		cur:AcceptAmount(true)
+		cur:AcceptInput(true)
+		function cur:OnCurrencyUpdated()
+			pluto.ui.pnl:ChangeToTab "Trading"
+		end
 		self.OutgoingCurrencies[i] = cur
 	end
 

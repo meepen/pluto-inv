@@ -255,7 +255,7 @@ function PANEL:Init()
 		other:SetCurve(4)
 		other:Dock(FILL)
 		other:SetColor(inner_color)
-	end, true)
+	end, true, true)
 
 	self:AddTab("Crafting", function(container)
 		local other = container:Add "pluto_inventory_crafting"

@@ -85,12 +85,12 @@ function pluto.inv.readrequesttrade(ply)
 	end
 	
 	if (oply:IsBot() and status == "outbound") then
-		ply, oply = oply, ply, "inbound"
+		ply, oply, status = oply, ply, "inbound"
 	end
 
 	if (status == "none") then
 		pluto.trades.status(ply, oply, "outbound")
-	elseif (status == "outbound") then
+	elseif (status == "inbound") then
 		pluto.trades.start(ply, oply)
 	end
 
