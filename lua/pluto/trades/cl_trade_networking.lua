@@ -28,3 +28,19 @@ function pluto.inv.readtradelogresults(recv)
 
 	hook.Run("PlutoPastTradesReceived", trades)
 end
+
+function pluto.inv.writetradeupdate(what, index, data)
+	net.WriteString(what)
+	net.WriteUInt(index, 8)
+	if (not data) then
+		net.WriteBool(false)
+	else
+		net.WriteBool(true)
+		if (what == "item") then
+			net.WriteUInt(data.ID, 32)
+		elseif (what == "currency") then
+			net.WriteString(data.What.InternalName)
+			net.WriteUInt(data.Amount, 32)
+		end
+	end
+end

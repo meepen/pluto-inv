@@ -1,7 +1,7 @@
 pluto.trades = pluto.trades or {}
 pluto.trades.status = pluto.trades.status or {}
 
-pluto.trades.data = {
+pluto.trades.data = pluto.trades.data or {
 	incoming = {
 		item = {},
 		currency = {},
@@ -11,6 +11,16 @@ pluto.trades.data = {
 		currency = {},
 	},
 	otherply = nil,
+	Clear = function(self)
+		self.outgoing = {
+			item = {},
+			currency = {},
+		}
+		self.incoming = {
+			item = {},
+			currency = {},
+		}
+	end,
 }
 
 function pluto.trades.getinboundrequests()
@@ -35,12 +45,27 @@ function pluto.trades.get()
 end
 
 function pluto.trades.settradedata(where, type, index, data, amount)
-	print(data, amount)
 	local recv = pluto.trades.data[where][type]
-	recv[index] = amount ~= nil and {
-		What = data,
-		Amount = amount
-	} or data
+	print(data, amount)
+	if (type == "item") then
+		recv[index] = data
+	elseif (type == "currency") then
+		print(data, amount)
+		if (data) then
+			recv[index] = {
+				What = data,
+				Amount = amount
+			}
+		else
+			recv[index] = nil
+		end
+	end
+
+	if (where == "outgoing") then
+		pluto.inv.message()
+			:write("tradeupdate", type, index, recv[index])
+			:send()
+	end
 end
 
 function pluto.trades.getdata()
@@ -51,7 +76,15 @@ function pluto.inv.readtraderequestinfo()
 	local oply = net.ReadEntity()
 	local status = net.ReadString()
 
+	local old_status = pluto.trades.status[oply]
+
 	pluto.trades.status[oply] = status
+	if (status == "in progress") then
+		pluto.trades.data.active = oply
+		pluto.trades.data:Clear()
+	elseif (old_status ~= status and old_status == "in progress") then
+		pluto.trades.data.active = false
+	end
 
 	hook.Run("PlutoTradeRequestInfo", oply, status)
 end
@@ -60,4 +93,22 @@ function pluto.inv.writerequesttrade(oply)
 	net.WriteEntity(oply)
 
 	pluto.trades.status[oply] = "outbound"
+end
+
+function pluto.inv.readtradeupdate()
+	local side = net.ReadBool() and "incoming" or "outgoing"
+	local what = net.ReadString()
+	local index = net.ReadUInt(8)
+	local data
+	if (net.ReadBool()) then
+		if (what == "currency") then
+			data = {}
+			data.What = pluto.currency.byname[net.ReadString()]
+			data.Amount = net.ReadUInt(32)
+		elseif (what == "item") then
+			data = pluto.inv.readitem()
+		end
+	end
+
+	pluto.trades.data[side][what][index] = data
 end

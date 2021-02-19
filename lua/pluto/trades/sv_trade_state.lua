@@ -9,6 +9,8 @@ local opposites = setmetatable({
 	end
 })
 
+pluto.trades.active = pluto.trades.active or {}
+
 pluto.trades.status = pluto.trades.status or setmetatable({
 	-- [ply][oply] = "inbound" | "outbound" | "none" | "in progress"
 }, {
@@ -51,6 +53,36 @@ pluto.trades.status = pluto.trades.status or setmetatable({
 	end
 })
 
+pluto.trades.mt = pluto.trades.mt or {
+	__index = {}
+}
+
+local TRADE = pluto.trades.mt.__index
+
+function TRADE:Set(who, what, index, data)
+	self[who][what][index] = data
+
+	pluto.inv.message(self[who].other)
+		:write("tradeupdate", who, what, index, data)
+		:send()
+
+	return self
+end
+
+function TRADE:End()
+	local ply1, ply2
+	for ply in pairs(self) do
+		if (ply1) then
+			ply2 = ply
+		else
+			ply1 = ply
+		end
+		pluto.trades.active[ply] = nil
+	end
+
+	pluto.trades.status(ply1, ply2, "none")
+end
+
 function pluto.trades.get(ply, oply)
 	return pluto.trades.status[ply][oply]
 end
@@ -69,8 +101,30 @@ function pluto.trades.updatefor(ply, oply)
 end
 
 function pluto.trades.start(ply, oply)
-	print("TRADE STARTED BETWEEN", ply, oply)
-	pluto.trades.status(ply, oply, "none")
+	local tradedata = setmetatable({
+		[ply] = {
+			item = {},
+			currency = {},
+			other = oply,
+		},
+		[oply] = {
+			item = {},
+			currency = {},
+			other = ply,
+		},
+	}, pluto.trades.mt)
+
+	pluto.trades.active[ply] = {
+		other = oply,
+		data = tradedata
+	}
+
+	pluto.trades.active[oply] = {
+		other = ply,
+		data = tradedata
+	}
+
+	pluto.trades.status(ply, oply, "in progress")
 end
 
 function pluto.inv.readrequesttrade(ply)
@@ -78,8 +132,13 @@ function pluto.inv.readrequesttrade(ply)
 	if (not IsValid(oply) or not oply:IsPlayer()) then
 		return
 	end
-	local status = pluto.trades.status(ply, oply)
 
+	local trade = pluto.trades.active[ply]
+	if (trade) then
+		trade.data:End()
+	end
+
+	local status = pluto.trades.status(ply, oply)
 	if (status == "in progress") then
 		return
 	end
@@ -93,6 +152,49 @@ function pluto.inv.readrequesttrade(ply)
 	elseif (status == "inbound") then
 		pluto.trades.start(ply, oply)
 	end
+	print(ply, oply, status)
+end
 
-	print("TRADE REQUEST RECEIVED: ", ply, oply, pluto.trades.status(ply, oply))
+function pluto.inv.readtradeupdate(ply)
+	local what = net.ReadString()
+	local index = net.ReadUInt(8)
+
+	local data
+	if (what == "currency") then
+		if (index == 0 or index > 4) then
+			return
+		end
+
+		if (net.ReadBool()) then
+			data = {}
+			data.What = net.ReadString()
+			data.Amount = net.ReadUInt(32)
+		end
+
+	elseif (what == "item") then
+		if (index == 0 or index > 8) then
+			return
+		end
+
+		if (net.ReadBool()) then
+			data = pluto.itemids[net.ReadUInt(32)]
+			if (data and data.Owner ~= ply:SteamID64()) then
+				ply:ChatPrint "YOU DON'T OWN THAT ITEM!!! REEEE"
+				pluto.inv.message(ply)
+					:write("tradeupdate", ply, what, index, nil)
+					:send()
+				return
+			end
+		end
+	else
+		return
+	end
+
+	local trade = pluto.trades.active[ply]
+	if (not trade) then
+		ply:ChatPrint "You have no active trade!!1"
+		return
+	end
+
+	trade.data:Set(ply, what, index, data)
 end

@@ -26,6 +26,7 @@ pluto.inv.messages = {
 		"chatopen",
 		"changetabdata",
 		"requesttrade",
+		"tradeupdate",
 	},
 	sv2cl = {
 		[0] = "end",
@@ -57,6 +58,7 @@ pluto.inv.messages = {
 		"auctiondata",
 		"tradelogsnapshot",
 		"traderequestinfo",
+		"tradeupdate",
 	}
 }
 

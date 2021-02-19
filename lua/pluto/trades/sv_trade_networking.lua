@@ -78,3 +78,20 @@ function pluto.inv.writetraderequestinfo(cl, oply)
 	net.WriteEntity(oply)
 	net.WriteString(pluto.trades.status(cl, oply))
 end
+
+function pluto.inv.writetradeupdate(ply, who, what, index, data)
+	net.WriteBool(who ~= ply)
+	net.WriteString(what)
+	net.WriteUInt(index, 8)
+	if (not data) then
+		net.WriteBool(false)
+	else
+		net.WriteBool(true)
+		if (what == "currency") then
+			net.WriteString(data.What)
+			net.WriteUInt(data.Amount, 32)
+		elseif (what == "item") then
+			pluto.inv.writeitem(ply, data)
+		end
+	end
+end

@@ -311,7 +311,6 @@ function PANEL:Init()
 		end
 		function itempnl.ClickedWith(s, other)
 			s:SetItem(other.Item)
-			self:SendUpdate("item", i)
 		end
 		function itempnl.OnRightClick(s)
 			s:SetItem(nil)
@@ -322,6 +321,10 @@ function PANEL:Init()
 			end
 
 			pluto.ui.highlight(s.Item)
+		end
+
+		function itempnl.OnSetItem(s, item)
+			self:SendUpdate("item", i)
 		end
 	end
 
@@ -340,6 +343,10 @@ function PANEL:PerformLayout(w, h)
 end
 
 function PANEL:SendUpdate(type, index)
+	if (self.Updating) then
+		return
+	end
+
 	if (type == "currency") then
 		pluto.trades.settradedata("outgoing", type, index, self.OutgoingCurrencies[index]:GetCurrency())
 	elseif (type == "item") then
@@ -348,10 +355,11 @@ function PANEL:SendUpdate(type, index)
 end
 
 function PANEL:UpdateFromTradeData()
+	self.Updating = true
 	local tradedata = pluto.trades.getdata()
 
-	if (IsValid(tradedata.otherplayer)) then
-		self.IncomingLabel:SetText(tradedata.otherplayer:Nick() .. " offers:")
+	if (IsValid(tradedata.active)) then
+		self.IncomingLabel:SetText(tradedata.active:Nick() .. " offers:")
 	end
 
 	for i, item in ipairs(self.OutgoingItems) do
@@ -379,6 +387,7 @@ function PANEL:UpdateFromTradeData()
 		item:SetCurrency(dat.What)
 		item:SetAmount(dat.Amount)
 	end
+	self.Updating = false
 end
 
 vgui.Register("pluto_inventory_trading_active", PANEL, "EditablePanel")
