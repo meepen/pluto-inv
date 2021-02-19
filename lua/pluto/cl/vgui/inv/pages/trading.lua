@@ -47,6 +47,11 @@ end
 function PANEL:Think()
 	if (player.GetCount() ~= self.LastPlayerCount) then
 		self.LastPlayerCount = player.GetCount()
+
+		for _, child in pairs(self.StartTrading:GetChildren()) do
+			child:Remove()
+		end
+
 		for _, ply in pairs(player.GetAll()) do
 			if (LocalPlayer() == ply) then
 				continue
