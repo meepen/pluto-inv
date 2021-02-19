@@ -58,7 +58,11 @@ function PANEL:Think()
 			pnl:DockMargin(0, 7, 0, 0)
 
 			function pnl.DoClick()
-				pnl:SetLoading()
+				pluto.inv.message()
+					:write("requesttrade", ply)
+					:send()
+
+				pnl:SetStatus "outbound"
 			end
 		end
 	end
@@ -106,20 +110,32 @@ function PANEL:Init()
 	function self.StatusArea:PerformLayout(w, h)
 		self:SetWide(h)
 	end
+
+	hook.Add("PlutoTradeRequestInfo", self, self.PlutoTradeRequestInfo)
 end
 
-function PANEL:SetLoading()
-	if (IsValid(self.StatusPanel)) then
-		self.StatusPanel:Remove()
+function PANEL:PlutoTradeRequestInfo(oply, status)
+	if (oply == self.Player) then
+		self:SetStatus(status)
 	end
-
-	self.StatusPanel = self.StatusArea:Add "pluto_inventory_loading"
-	self.StatusPanel:Dock(FILL)
 end
 
 function PANEL:SetStatus(status)
 	if (IsValid(self.StatusPanel)) then
 		self.StatusPanel:Remove()
+	end
+
+	if (status == "inbound") then
+		self.StatusPanel = self.StatusArea:Add "ttt_curved_panel"
+		self.StatusPanel:Dock(FILL)
+		self.StatusPanel:SetColor(Color(255, 0, 0))
+	elseif (status == "outbound") then
+		self.StatusPanel = self.StatusArea:Add "pluto_inventory_loading"
+		self.StatusPanel:Dock(FILL)
+	elseif (status == "in progress") then
+		self.StatusPanel = self.StatusArea:Add "ttt_curved_panel"
+		self.StatusPanel:Dock(FILL)
+		self.StatusPanel:SetColor(Color(0, 255, 0))
 	end
 end
 
@@ -127,6 +143,9 @@ function PANEL:SetPlayer(ply)
 	self.PlayerNameLabel:SetText(ply:Nick())
 	self.PlayerNameLabel:SizeToContentsX()
 	self.PlayerIcon:SetPlayer(ply, 64)
+	self.Player = ply
+
+	self:SetStatus(pluto.trades.status[ply])
 end
 
 function PANEL:OnMousePressed(m)

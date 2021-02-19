@@ -7,10 +7,6 @@ pluto.inv.messages = {
 		"itemdelete",
 		"currencyuse",
 		"tabrename",
-		"tradeupdate",
-		"trademessage",
-		"traderequest",
-		"tradeaccept",
 		"votemap",
 		"likemap",
 		"requestcraftresults",
@@ -29,6 +25,7 @@ pluto.inv.messages = {
 		"gettradesnapshot",
 		"chatopen",
 		"changetabdata",
+		"requesttrade",
 	},
 	sv2cl = {
 		[0] = "end",
@@ -39,9 +36,6 @@ pluto.inv.messages = {
 		"tabupdate",
 		"currencyupdate",
 		"bufferitem",
-		"tradeupdate",
-		"trademessage",
-		"tradeaccept",
 		"fullupdate",
 		"mapvote",
 		"mapvotes",
@@ -62,6 +56,7 @@ pluto.inv.messages = {
 		"stardustshop",
 		"auctiondata",
 		"tradelogsnapshot",
+		"traderequestinfo",
 	}
 }
 

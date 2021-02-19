@@ -18,10 +18,10 @@ pluto.files.load {
 		"inv/sv_manager.lua",
 		"inv/ttt.lua",
 		"inv/sv_buffer.lua",
-		"trades/sv.lua",
 		"mapvote/mapvote.lua",
 		"models/sv_models.lua",
 		"craft/sv.lua",
+
 
 		"inv/exp/sv_exp_provider.lua",
 		"inv/exp/sv_model_exp.lua",
@@ -53,6 +53,9 @@ pluto.files.load {
 		"divine/sv_currency_exchange.lua",
 		"divine/sv_stardust_shop.lua",
 		"divine/sv_auction_house.lua",
+
+		"trades/sv_trade_state.lua",
+		"trades/sv_trade_networking.lua",
 
 		"websocket/sv_websocket.lua",
 	},

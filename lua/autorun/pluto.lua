@@ -11,7 +11,6 @@ pluto.files.load {
 		"inv/ui.lua",
 		"inv/cl_manager.lua",
 		"inv/currency/object/cl_object.lua",
-		"trades/cl.lua",
 		"models/cl_models.lua",
 		"mapvote/cl_mapvote.lua",
 		"cl/workshop.lua",
@@ -80,6 +79,9 @@ pluto.files.load {
 		"cl/vgui/showcase/weapon/container.lua",
 		"cl/vgui/showcase/weapon/bar.lua",
 
+		"trades/cl_trade_state.lua",
+		"trades/cl_trade_networking.lua",
+
 		"cl/credits.lua",
 	},
 	Shared = {
@@ -121,6 +123,7 @@ pluto.files.load {
 
 		"thirdparty/sh_animations_api.lua",
 		"thirdparty/circles.lua",
+		"thirdparty/json.lua",
 
 		"imgur/sh_imgur.lua",
 
