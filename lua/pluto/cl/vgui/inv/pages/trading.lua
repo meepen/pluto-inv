@@ -296,12 +296,29 @@ function PANEL:Init()
 			end
 		end
 
-		local item = line:Add "pluto_inventory_item"
-		item:SetSize(self.ItemSize, self.ItemSize)
-		self.OutgoingItems[i] = item
-		item:SetMouseInputEnabled(false)
-		item:Dock(LEFT)
-		item:DockMargin(0, 0, 5, 0)
+		local itempnl = line:Add "pluto_inventory_item"
+		itempnl:SetSize(self.ItemSize, self.ItemSize)
+		self.OutgoingItems[i] = itempnl
+		itempnl:Dock(LEFT)
+		itempnl:DockMargin(0, 0, 5, 0)
+
+		function itempnl.CanClickWith(s, other)
+			local item = other.Item
+			return item
+		end
+		function itempnl.ClickedWith(s, other)
+			s:SetItem(other.Item)
+		end
+		function itempnl.OnRightClick(s)
+			s:SetItem(nil)
+		end
+		function itempnl.OnLeftClick(s)
+			if (not s.Item) then
+				return
+			end
+
+			pluto.ui.highlight(s.Item)
+		end
 	end
 
 	function self.OutgoingItemContainer:PerformLayout(w, h)
