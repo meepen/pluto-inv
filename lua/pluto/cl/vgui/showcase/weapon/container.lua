@@ -585,7 +585,7 @@ function PANEL:SetItem(item)
 
 		local class = baseclass.Get(self.Item.ClassName)
 
-		if (self.LastControlState and pluto.inv.itemtype(self.Item) == "Weapon" and class.Slot == 1 or class.Slot == 2) then
+		if (self.LastControlState and pluto.inv.itemtype(self.Item) == "Weapon" and (class.Slot == 1 or class.Slot == 2)) then
 			self.StatArea:SetTall(self.StatArea:GetRealTall() + 9)
 		end
 		self:SetTall(self:GetTall() + self.StatArea:GetTall() + 11)
