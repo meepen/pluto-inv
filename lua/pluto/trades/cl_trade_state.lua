@@ -46,11 +46,9 @@ end
 
 function pluto.trades.settradedata(where, type, index, data, amount)
 	local recv = pluto.trades.data[where][type]
-	print(data, amount)
 	if (type == "item") then
 		recv[index] = data
 	elseif (type == "currency") then
-		print(data, amount)
 		if (data) then
 			recv[index] = {
 				What = data,
@@ -111,4 +109,6 @@ function pluto.inv.readtradeupdate()
 	end
 
 	pluto.trades.data[side][what][index] = data
+
+	hook.Run("PlutoTradeUpdate", side, what, index, data)
 end

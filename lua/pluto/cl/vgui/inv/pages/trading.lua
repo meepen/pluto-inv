@@ -336,6 +336,33 @@ function PANEL:Init()
 	end
 
 	self:UpdateFromTradeData()
+
+	hook.Add("PlutoTradeUpdate", self, self.PlutoTradeUpdate)
+end
+
+function PANEL:PlutoTradeUpdate(side, what, index, data)
+	local lookup
+	if (what == "currency") then
+		lookup = side == "incoming" and self.IncomingCurrencies or self.OutgoingCurrencies
+
+		local currency = lookup[index]
+		self.Updating = true
+		if (data) then
+			currency:SetCurrency(data.What)
+			currency:SetAmount(data.Amount)
+		else
+			currency:SetCurrency()
+		end
+
+		self.Updating = false
+	elseif (what == "item") then
+		lookup = side == "incoming" and self.IncomingItems or self.OutgoingItems
+
+		local item = lookup[index]
+		self.Updating = true
+		item:SetItem(data)
+		self.Updating = false
+	end
 end
 
 function PANEL:PerformLayout(w, h)
