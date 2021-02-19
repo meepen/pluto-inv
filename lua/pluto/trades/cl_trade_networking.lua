@@ -1,3 +1,7 @@
+function pluto.inv.writegettrades(sid)
+	net.WriteString(sid or LocalPlayer():SteamID64())
+end
+
 function pluto.inv.writegettradesnapshot(id)
 	net.WriteUInt(id, 32)
 end
