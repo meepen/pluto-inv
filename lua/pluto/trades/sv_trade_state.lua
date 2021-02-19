@@ -34,12 +34,10 @@ pluto.trades.status = pluto.trades.status or setmetatable({
 
 				if (rawget(self[oply], ply)) then
 					self[oply][ply] = opposites[data]
-					pluto.trades.updatefor(ply, oply)
 					return
 				end
 
 				rawset(s, oply, data)
-				pluto.trades.updatefor(ply, oply)
 			end
 		})
 		return self[ply]
@@ -47,6 +45,7 @@ pluto.trades.status = pluto.trades.status or setmetatable({
 	__call = function(self, ply, oply, status)
 		if (status) then
 			self[ply][oply] = status
+			pluto.trades.updatefor(ply, oply)
 		else
 			return self[ply][oply]
 		end
@@ -101,6 +100,7 @@ function pluto.trades.updatefor(ply, oply)
 end
 
 function pluto.trades.start(ply, oply)
+	-- TODO(meep): cancel all outbound
 	local tradedata = setmetatable({
 		[ply] = {
 			item = {},
@@ -152,7 +152,6 @@ function pluto.inv.readrequesttrade(ply)
 	elseif (status == "inbound") then
 		pluto.trades.start(ply, oply)
 	end
-	print(ply, oply, status)
 end
 
 function pluto.inv.readtradeupdate(ply)
