@@ -3,6 +3,8 @@ local PANEL = {}
 
 function PANEL:Init()
 	self.StartTrading = self:AddTab "Start Trade"
+	self.TradingScroll = self.StartTrading:Add "DScrollPanel"
+	self.TradingScroll:Dock(FILL)
 	self.PastTrades   = self:AddTab "Past Trades"
 	self:AddTab "Active Trade":Add "pluto_inventory_trading_active":Dock(FILL)
 
@@ -72,7 +74,7 @@ function PANEL:Think()
 	if (player.GetCount() ~= self.LastPlayerCount) then
 		self.LastPlayerCount = player.GetCount()
 
-		for _, child in pairs(self.StartTrading:GetChildren()) do
+		for _, child in pairs(self.TradingScroll:GetCanvas():GetChildren()) do
 			child:Remove()
 		end
 
@@ -81,7 +83,7 @@ function PANEL:Think()
 				continue
 			end
 
-			local pnl = self.StartTrading:Add "pluto_inventory_playercard"
+			local pnl = self.TradingScroll:Add "pluto_inventory_playercard"
 			pnl:Dock(TOP)
 			pnl:SetPlayer(ply)
 			pnl:DockMargin(0, 7, 0, 0)
