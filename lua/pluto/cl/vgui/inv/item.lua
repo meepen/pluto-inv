@@ -12,48 +12,6 @@ local function ColorModulateForBackground(col)
 	return HSVToColor(h, s, v / 5 * 4)
 end
 
-sql.Query [[DROP TABLE pluto_modelbounds_hack]]
-sql.Query [[CREATE TABLE IF NOT EXISTS pluto_modelbounds_hack (
-	class varchar(65) not null primary key,
-	minx FLOAT NOT NULL,
-	miny FLOAT NOT NULL,
-	minz FLOAT NOT NULL,
-	maxx FLOAT NOT NULL,
-	maxy FLOAT NOT NULL,
-	maxz FLOAT NOT NULL
-)]]
-
-local cache = {}
-
-local function AddToCache(mdl)
-	local mins, maxs = mdl:GetModelBounds()
-	sql.Query(string.format("INSERT OR IGNORE INTO pluto_modelbounds_hack (class, minx, miny, minz, maxx, maxy, maxz) VALUES (?, ?, ?, ?, ?, ?, ?)", sql.SQLStr(mdl:GetModel()), mins.x, mins.y, mins.z, maxs.x, maxs.y, maxs.z))
-end
-
-for _, row in ipairs(sql.Query("SELECT * FROM pluto_modelbounds_hack") or {}) do
-	cache[row.class] = {
-		mins = Vector(row.minx, row.miny, row.minz),
-		maxs = Vector(row.maxx, row.maxy, row.maxz)
-	}
-end
-
-
-local function GetModelBounds(mdl)
-	local name = mdl:GetModel()
-	local mins, maxs = mdl:GetModelBounds()
-	if (mins == maxs and mins == vector_origin and cache[name]) then
-		mins, maxs = cache[name].mins, cache[name].maxs
-	elseif (not cache[name]) then
-		AddToCache(mdl)
-		cache[name] = {
-			mins = mins,
-			maxs = maxs
-		}
-	end
-
-	return mins, maxs
-end
-
 local PANEL = {}
 
 local default_color = Color(53, 53, 60)
@@ -142,7 +100,7 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 
 	render.SetColorModulation(1, 1, 1)
 	if (IsValid(mdl) and self.Item.Type == "Weapon") then
-		local mins, maxs = GetModelBounds(mdl)
+		local mins, maxs = mdl:GetModelBounds()
 		local lookup = weapons.GetStored(self.Item.ClassName).Ortho or baseclass.Get(self.Item.ClassName).Ortho or {0, 0}
 
 		local angle = Angle(0, -90)
@@ -161,7 +119,7 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 			cam.EndOrthoView()
 		cam.End3D()
 	elseif (IsValid(mdl) and self.Item.Type == "Model") then
-		local mins, maxs = GetModelBounds(mdl)
+		local mins, maxs = mdl:GetModelBounds()
 		cam.Start3D(Vector(50, 0, (maxs.z - mins.z) / 2), Angle(0, -180), 90, sx, sy, w, h)
 			render.SuppressEngineLighting(true)
 
