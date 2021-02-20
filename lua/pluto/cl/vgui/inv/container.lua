@@ -98,14 +98,17 @@ function PANEL:Init()
 	self.SidePanelContainer:Dock(FILL)
 	self.SidePanelContainer:SetCurve(4)
 
-	self.StorageTabList = self.SidePanelContainer:Add "EditablePanel"
-	self.StorageTabList:Dock(FILL)
+	self.StorageTabListContainer = self.SidePanelContainer:Add "EditablePanel"
+	self.StorageTabListContainer:Dock(FILL)
 	local w_spacing = 5
-	self.StorageTabList:DockPadding(10 + w_spacing, 12, w_spacing, 4)
+	self.StorageTabListContainer:DockPadding(10 + w_spacing, 12, w_spacing, 4)
 
-	function self.StorageTabList.PerformLayout(s, w, h)
+	function self.StorageTabListContainer.PerformLayout(s, w, h)
 		self:SelectTab(self.ActiveStorageTab, true)
 	end
+
+	self.StorageTabList = self.StorageTabListContainer:Add "DScrollPanel"
+	self.StorageTabList:Dock(FILL)
 
 	self.ActiveStorageTabBackground = self.StorageTabList:Add "ttt_curved_panel"
 	self.ActiveStorageTabBackground:SetCurve(4)
