@@ -92,7 +92,7 @@ pluto.currency.list = {
 		Description = "Contains an item",
 		SubDescription = "",
 		NoTarget = true,
-		Color = Color(71, 170, 222),
+		Color = Color(133, 92, 58),
 		ClientsideUse = function()
 			if (IsValid(pluto.opener)) then
 				pluto.opener:Remove()

@@ -7,6 +7,7 @@ function PANEL:Init()
 	self:AddTab "Active Trade":Add "pluto_inventory_trading_active":Dock(FILL)
 
 	hook.Add("PlutoPastTradesReceived", self.PastTrades, self.PlutoPastTradesReceived)
+	hook.Add("PlutoTradeLogSnapshot", self.PastTrades, self.PlutoTradeLogSnapshot)
 	function self.PastTrades:Paint(w, h)
 		if (not self.HasRendered) then
 			self.HasRendered = true
@@ -30,6 +31,8 @@ function PANEL:PlutoPastTradesReceived(trades)
 		self.PastTrades:AddLine(trade.ID, trade.p2name)
 	end
 
+	self.Trades = trades
+
 	function self.PastTrades:OnRowSelected(index)
 		local trade = trades[index]
 		if (not trade.snapshot) then
@@ -38,10 +41,31 @@ function PANEL:PlutoPastTradesReceived(trades)
 				:send()
 			chat.AddText("Retrieving data for trade " .. trade.ID .. "...")
 			return
+		else
+			SetClipboardText(trade.snapshot)
+		
+			chat.AddText("Trade " .. trade.ID .. " copied to clipboard.")
 		end
-		local frame = vgui.Create "pluto_trade_log"
-		frame:SetTrade(trades[index])
 	end
+end
+
+function PANEL:PlutoTradeLogSnapshot(id, data)
+	local trade
+	for _, tr in pairs(self.Trades) do
+		if (tr.ID == id) then
+			trade = tr
+			break
+		end
+	end
+
+	if (not trade) then
+		return
+	end
+
+	trade.snapshot = data
+	SetClipboardText(data)
+
+	chat.AddText("Trade " .. id .. " copied to clipboard.")
 end
 
 function PANEL:Think()
