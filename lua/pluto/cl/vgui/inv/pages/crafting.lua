@@ -156,17 +156,30 @@ function PANEL:Init()
 			x = x + 56 + 5
 		end
 	end
+
+	self.GoButtonShadow = self:Add "ttt_curved_panel"
+	self.GoButtonShadow:Dock(TOP)
+	self.GoButtonShadow:SetMouseInputEnabled(true)
+	self.GoButtonShadow:DockMargin(55, 7, 55, 7)
+	self.GoButtonShadow:SetTall(19)
+	self.GoButtonShadow:SetCurve(2)
+	self.GoButtonShadow:SetColor(Color(50, 51, 58))
 	
-	self.GoButton = self:Add "ttt_curved_panel"
-	self.GoButton:Dock(TOP)
-	self.GoButton:SetMouseInputEnabled(true)
-	self.GoButton:SetCursor "hand"
-	self.GoButton:DockMargin(20, 7, 20, 7)
+	self.GoButton = self.GoButtonShadow:Add "ttt_curved_panel_outline"
+	self.GoButton:Dock(FILL)
+	self.GoButton:SetMouseInputEnabled(false)
+	self.GoButton:DockMargin(0, 0, 0, 1)
 	self.GoButton:SetTall(18)
 	self.GoButton:SetCurve(2)
-	self.GoButton:SetColor(Color(134, 191, 34))
+	self.GoButton:SetColor(Color(121, 121, 121))
 
-	function self.GoButton.OnMousePressed(s, m)
+	self.GoButtonInner = self.GoButton:Add "ttt_curved_panel"
+	self.GoButtonInner:Dock(FILL)
+	self.GoButtonInner:SetCurve(2)
+	self.GoButtonInner:DockMargin(1, 1, 1, 1)
+	self.GoButtonInner:SetColor(Color(95, 96, 102))
+
+	function self.GoButtonShadow.OnMousePressed(s, m)
 		if (m == MOUSE_LEFT) then
 			self:Go()
 		end
@@ -182,7 +195,7 @@ function PANEL:Init()
 
 	self.ShardResultLine = self:Add "EditablePanel"
 	self.ShardResultLine:SetTall(28)
-	self.ShardResultLine:Dock(TOP)
+	self.ShardResultLine:Dock(BOTTOM)
 	self.ShardResultLine:DockMargin(0, 5, 0, 5)
 
 	self.ShardResults = {}
@@ -191,7 +204,7 @@ function PANEL:Init()
 		local w, h = self:GetSize()
 		local children = self:GetChildren()
 		local amt = #children
-		local x = math.Round(w / 2 - (28 * amt + 5 * (amt - 1)) / 2)
+		local x = 0
 
 		for i = 1, amt do
 			children[i]:SetPos(x, h / 2 - 28 / 2)
@@ -204,6 +217,17 @@ function PANEL:Init()
 	end
 
 	self:RecreateResults()
+	self:SetGoodToGo(true)
+end
+
+function PANEL:SetGoodToGo(good)
+	if (good) then
+		self.GoButtonShadow:SetCursor "hand"
+		self.GoButtonShadow:SetAlpha(256)
+	else
+		self.GoButtonShadow:SetAlpha(128)
+		self.GoButtonShadow:SetCursor "none"
+	end
 end
 
 function PANEL:RecreateResults()
