@@ -161,8 +161,6 @@ local function value(a)
 		a = math.AngleDifference(a.p, 0) + math.AngleDifference(a.y, 0)
 	end
 
-	print(type(a))
-
 	return a
 end
 

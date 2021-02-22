@@ -9,7 +9,6 @@ function PANEL:Init()
 	self.ShardLine = self:Add "EditablePanel"
 	self.ShardLine:SetTall(56)
 	self.ShardLine:Dock(TOP)
-	self.ShardLine:DockMargin(0, 5, 0, 10)
 
 	for i = 1, 3 do
 		local shard = self.ShardLine:Add "pluto_inventory_item"
@@ -46,19 +45,19 @@ function PANEL:Init()
 	end
 
 	function self.ShardLine.PerformLayout(s, w, h)
-		local amt = #self.Shards
-		local x = math.Round(w / 2 - (56 * amt + 5 * (amt - 1)) / 2)
+		local amt = #self.Shards + 1
+		local offset = 0
+		local x = math.Round(w / 2 - (56 * amt + 5 * (amt - 1)) / 2 - offset)
 
-		for i = 1, amt do
+		for i = 1, 3 do
 			self.Shards[i]:SetPos(x, h / 2 - 56 / 2)
 			x = x + 56 + 5
 		end
+
+		self.CurrencySelector:SetPos(x + offset, h - self.CurrencySelector:GetTall())
 	end
 
-	local selectorarea = self:Add "EditablePanel"
-	selectorarea:Dock(TOP)
-	selectorarea:SetTall(64)
-	local selector = selectorarea:Add "pluto_inventory_currency_selector"
+	local selector = self.ShardLine:Add "pluto_inventory_currency_selector"
 	selector:AcceptInput(true)
 	selector:AcceptAmount(true)
 	self.CurrencySelector = selector
@@ -73,34 +72,46 @@ function PANEL:Init()
 		end
 	end
 
-	function selectorarea:PerformLayout()
-		selector:Center()
-	end
-
 	function selector.OnCurrencyUpdated(s)
 		local cur, amt = s:GetCurrency()
 
 		if (cur) then
 			local crafted = cur.Crafted
-			self.CurrencyText:SetText(string.format("Chance to get %s modifier: %.2f%%", crafted.Mod, pluto.mods.chance(crafted, amt) * 100))
+			--self.CurrencyText:SetText(string.format("Chance to get %s modifier: %.2f%%", crafted.Mod, pluto.mods.chance(crafted, amt) * 100))
 		else
-			self.CurrencyText:SetText ""
+			--self.CurrencyText:SetText ""
 		end
 	end
 
-	self.CurrencyText = self:Add "pluto_label"
-	self.CurrencyText:Dock(TOP)
-	self.CurrencyText:SetContentAlignment(5)
-	self.CurrencyText:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.CurrencyText:SetFont "pluto_inventory_font"
-	self.CurrencyText:SetTextColor(Color(255, 255, 255))
-	self.CurrencyText:SetText ""
+	self.LineConnectors = self:Add "EditablePanel"
+	self.LineConnectors:Dock(TOP)
+	self.LineConnectors:SetTall(42)
+
+	function self.LineConnectors.Paint(s, w, h)
+		local shardlocs = {}
+		for i, shard in ipairs(self.Shards) do
+			shardlocs[i] = Vector(s:ScreenToLocal(shard:LocalToScreen(shard:GetWide() / 2, shard:GetTall())))
+		end
+
+		local curpos = Vector(s:ScreenToLocal(self.CurrencySelector:LocalToScreen(self.CurrencySelector:GetWide() / 2, self.CurrencySelector:GetTall())))
+
+		surface.SetDrawColor(95, 96, 102)
+		surface.DrawLine(shardlocs[2].x, 0, shardlocs[2].x, h)
+		surface.DrawLine(shardlocs[1].x, 0, shardlocs[1].x, 12)
+		surface.DrawLine(shardlocs[3].x, 0, shardlocs[3].x, 12)
+		surface.DrawLine(shardlocs[1].x, 12, shardlocs[3].x, 12)
+
+		surface.DrawLine(curpos.x, 0, curpos.x, h)
+	end
 
 	self.Items = {}
-	self.ItemLine = self:Add "EditablePanel"
-	self.ItemLine:SetTall(56)
+	self.ItemLine = self:Add "ttt_curved_panel_outline"
+	self.ItemLine:SetCurve(6)
+	self.ItemLine:SetColor(Color(95, 96, 102))
+	self.ItemLine:SetTall(66)
 	self.ItemLine:Dock(TOP)
-	self.ItemLine:DockMargin(0, 5, 0, 10)
+	self.ItemLine:DockMargin(5, 0, 5, 10)
+	self.ItemLine:DockPadding(7, 0, 7, 0)
 
 	for i = 1, 4 do
 		local itempnl = self.ItemLine:Add "pluto_inventory_item"
