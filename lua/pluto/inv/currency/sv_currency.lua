@@ -1431,8 +1431,6 @@ function pluto.inv.readmasscurrencyuse(ply)
 		return
 	end
 
-	amount = 10
-
 	local used = 0
 
 	for i = 1, amount do
