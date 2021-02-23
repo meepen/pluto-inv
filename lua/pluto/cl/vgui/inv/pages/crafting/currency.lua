@@ -56,7 +56,18 @@ function PANEL:Init()
 	end
 
 	hook.Add("PlutoItemUpdate", self, self.PlutoItemUpdate)
-	self.ContainerArea:DockMargin(0, 0, 0, 14)
+	self.ContainerArea:DockMargin(0, 0, 0, 7)
+
+	self.LoadingArea = self:Add "EditablePanel"
+	self.LoadingArea:Dock(TOP)
+	self.LoadingArea:SetTall(19)
+	self.LoadingArea:DockMargin(0, 0, 0, 5)
+	self.Loading = self.LoadingArea:Add "pluto_inventory_loading"
+	self.Loading:SetVisible(false)
+	function self.LoadingArea.PerformLayout(s, w, h)
+		self.Loading:SetSize(h, h)
+		self.Loading:Center()
+	end
 
 	self.SearchPanels = {}
 
@@ -188,7 +199,7 @@ function PANEL:Init()
 	plus:SetMouseInputEnabled(true)
 	function plus.OnMousePressed(s, m)
 		if (m == MOUSE_LEFT) then
-			self:AddSearchPanel ""
+			self:AddSearchPanel "Damage 1"
 		end
 	end
 	self.AddSearchButton:SetZPos(0x7ffd)
@@ -345,10 +356,48 @@ function PANEL:PlutoItemUpdate(item)
 
 	self.BetweenStatus.Image:SetImage(gotten >= mins and gotten <= maxs and "icon16/tick.png" or "icon16/cross.png")
 
-	self.Status = gotten
+	self.Status = gotten >= mins and gotten <= maxs
+
+	self:TryContinue()
 end
 
-function PANEL:Go()
+function PANEL:TryContinue()
+	if (not self.Going) then
+		return
+	end
+
+	if (self.Status) then
+		self:Go(false)
+		return
+	end
+
+	local item = self.ItemContainer.Item
+
+	if (not item) then
+		self:Go(false)
+		return
+	end
+
+	local currency, amount = self.Selector:GetCurrency()
+	if (not amount or not currency or amount <= 0) then
+		self:Go(false)
+		return
+	end
+
+	pluto.inv.message()
+		:write("currencyuse", currency.InternalName, item)
+		:send()
+end
+
+function PANEL:Go(b)
+	if (b ~= nil) then
+		self.Going = b
+	else
+		self.Going = not self.Going
+	end
+	self.Loading:SetVisible(self.Going)
+
+	self:TryContinue()
 end
 
 vgui.Register("pluto_inventory_crafting_currency", PANEL, "DScrollPanel")

@@ -478,6 +478,36 @@ function CUR:GetMaterial()
 	return self.Material
 end
 
+function CUR:Use(ply, item)
+	assert(SERVER)
+
+	if (self:Run(item)) then
+		return self:Save(ply, item)
+	end
+
+	return Promise(function(res, rej) return res() end)
+end
+
+function CUR:Save(ply, item, used)
+	assert(SERVER)
+
+	ply = pluto.db.steamid64(ply)
+	return Promise(function(res, rej)
+		item.LastUpdate = (item.LastUpdate or 0) + 1
+
+		pluto.db.transact(function(db)
+			pluto.weapons.update(db, item)
+			if (pluto.inv.addcurrency(db, ply, self.InternalName, used and -used or -1)) then
+				mysql_commit(db)
+				res(item)
+			else
+				mysql_rollback(db)
+				rej()
+			end
+		end)
+	end)
+end
+
 function pluto.iscurrency(t)
 	return debug.getmetatable(t) == pluto.currency_mt
 end

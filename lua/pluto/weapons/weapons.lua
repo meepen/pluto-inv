@@ -97,18 +97,35 @@ function pluto.weapons.update(db, item)
 	assert(item.TabID, "no tabid")
 	assert(item.TabIndex, "no tabindex")
 
+	mysql_stmt_run(db, "SELECT * from pluto_items WHERE idx = ? FOR UPDATE", item.RowID)
 	mysql_stmt_run(db, "UPDATE pluto_items SET tier = ?, class = ?, special_name = ?, nick = ? WHERE idx = ?", item.Tier.InternalName, item.ClassName, item.SpecialName, item.Nickname, item.RowID)
 	mysql_stmt_run(db, "UPDATE pluto_mods SET deleted = TRUE WHERE gun_index = ?", item.RowID)
+
+	local mod_datas = {}
+	local amount = 0
 
 	if (item.Mods) then
 		for type, list in pairs(item.Mods) do
 			for _, mod in ipairs(list) do
-				mysql_stmt_run(db, 
-					"INSERT INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3, deleted) VALUES (?, ?, ?, ?, ?, ?, FALSE) ON DUPLICATE KEY UPDATE deleted = FALSE, tier = VALUE(tier), roll1 = VALUE(roll1), roll2 = VALUE(roll2), roll3 = VALUE(roll3)",
-					item.RowID, mod.Mod, mod.Tier, mod.Roll[1], mod.Roll[2], mod.Roll[3]
-				)
+				table.insert(mod_datas, item.RowID)
+				table.insert(mod_datas, mod.Mod)
+				table.insert(mod_datas, mod.Tier)
+				table.insert(mod_datas, mod.Roll[1] or 0)
+				table.insert(mod_datas, mod.Roll[2] or 0)
+				table.insert(mod_datas, mod.Roll[3] or 0)
+				amount = amount + 1
 			end
 		end
+	end
+
+	
+	local s, e = mysql_stmt_run(db, 
+		"INSERT INTO pluto_mods (gun_index, modname, tier, roll1, roll2, roll3, deleted) VALUES " .. string.rep("(?, ?, ?, ?, ?, ?, FALSE),", amount):sub(1, -2) .. " ON DUPLICATE KEY UPDATE deleted = FALSE, tier = VALUE(tier), roll1 = VALUE(roll1), roll2 = VALUE(roll2), roll3 = VALUE(roll3)",
+		unpack(mod_datas)
+	)
+
+	if (not s) then
+		print(e)
 	end
 
 	mysql_stmt_run(db, "DELETE FROM pluto_mods WHERE gun_index = ? and deleted = TRUE", item.RowID)

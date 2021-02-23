@@ -549,6 +549,21 @@ local function allowed(types, wpn)
 	return false
 end
 
+function pluto.inv.readmasscurrencyuse(ply)
+	local currency = pluto.currency.byname[net.ReadString()]
+	local amount = net.ReadUInt(32)
+	local item = pluto.inv.items[net.ReadUInt(32)]
+
+	if (not item or item.Owner ~= ply:SteamID64()) then
+		return
+	end
+
+	if (not currency or not allowed(currency.Types, item) or not item:ShouldPreventChange()) then
+		return
+	end
+
+end
+
 function pluto.inv.readcurrencyuse(ply)
 	local currency = net.ReadString()
 	local wpn
@@ -579,10 +594,7 @@ function pluto.inv.readcurrencyuse(ply)
 		return
 	end
 
-	if (cur.Use) then
-		cur.Use(ply, wpn)
-		hook.Run("PlayerCurrencyUse", ply, wpn, currency)
-	elseif (cur.Contents) then
+	if (cur.Contents) then
 		local gotten, data = pluto.inv.roll(cur.Contents)
 		local type = pluto.inv.itemtype(gotten)
 
@@ -611,6 +623,15 @@ function pluto.inv.readcurrencyuse(ply)
 
 			mysql_commit(db)
 		end)
+	else
+		cur:Use(ply, wpn):next(function()
+			if (wpn and IsValid(ply)) then
+				pluto.inv.message(ply)
+					:write("item", wpn)
+					:send()
+			end
+		end)
+		hook.Run("PlayerCurrencyUse", ply, wpn, currency)
 	end
 end
 
