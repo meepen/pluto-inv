@@ -195,147 +195,40 @@ local PANEL = {}
 PANEL.ItemSize = 48
 
 function PANEL:Init()
-	self.Incoming = self:Add "EditablePanel"
-	self.Incoming:Dock(FILL)
+	self.IncomingNew = self:Add "pluto_inventory_trading_set"
+	self.IncomingNew:Dock(TOP)
+	self.IncomingNew:SetText "They offer:"
 
-	self.IncomingLabel = self.Incoming:Add "pluto_label"
-	self.IncomingLabel:SetFont "pluto_inventory_font"
-	self.IncomingLabel:SetTextColor(Color(255, 255, 255))
-	self.IncomingLabel:SetText "They offer:"
-	self.IncomingLabel:SizeToContents()
-	self.IncomingLabel:SetContentAlignment(4)
-	self.IncomingLabel:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.IncomingLabel:Dock(TOP)
-	self.IncomingLabel:DockMargin(0, 0, 0, 5)
+	self.OutgoingNew = self:Add "pluto_inventory_trading_set"
+	self.OutgoingNew:Dock(TOP)
+	self.OutgoingNew:SetText "You offer:"
 
-	self.IncomingCurrency = self.Incoming:Add "EditablePanel"
-	self.IncomingCurrency:Dock(TOP)
-	self.IncomingCurrency:SetTall(self.ItemSize)
-	self.IncomingCurrency:DockMargin(0, 0, 0, 5)
-	function self.IncomingCurrency:PerformLayout(w, h)
-		local pos = w / 2 + 5
-		for _, child in pairs(self:GetChildren()) do
-			pos = pos - child:GetWide() / 2 - 5 / 2
+	function self.OutgoingNew.OnCurrencyChanged(s, index, currency, amount)
+		if (IsValid(pluto.ui.pnl)) then
+			pluto.ui.pnl:ChangeToTab "Trading"
 		end
-		for _, child in pairs(self:GetChildren()) do
-			child:SetPos(pos, 0)
-			pos = pos + child:GetWide() + 5
-		end
+		self:SendUpdate("currency", i)
 	end
 
-	self.IncomingCurrencies = {}
 
 	for i = 1, 4 do
-		local cur = self.IncomingCurrency:Add "pluto_inventory_currency_selector"
-		cur:SetWide(self.ItemSize - 16)
-		cur:ShowAmount(true)
-		self.IncomingCurrencies[i] = cur
-	end
+		local currencypnl = self.OutgoingNew:GetCurrencyPanel(i)
 
-	self.IncomingItemContainer = self.Incoming:Add "EditablePanel"
-	self.IncomingItemContainer:Dock(TOP)
-	self.IncomingItemContainer:SetTall(self.ItemSize * 2 + 5)
-
-	self.IncomingItems = {}
-
-	local line
-	for i = 1, 8 do
-		if ((i - 1) % 4 == 0) then
-			line = self.IncomingItemContainer:Add "EditablePanel"
-			line:SetSize(self.ItemSize * 4 + 5 * 3, self.ItemSize)
-			line:Center()
-			if (i == 1) then
-				line:SetPos(0, 0)
-			else
-				line:SetPos(0, self.ItemSize + 5)
-			end
-		end
-
-		local item = line:Add "pluto_inventory_item"
-		item:SetSize(self.ItemSize, self.ItemSize)
-		self.IncomingItems[i] = item
-		item:Dock(LEFT)
-		item:DockMargin(0, 0, 5, 0)
-		function item:OnLeftClick() end
-		function item:OnRightClick() end
-	end
-
-	function self.IncomingItemContainer:PerformLayout(w, h)
-		for _, child in pairs(self:GetChildren()) do
-			local x, y = child:GetPos()
-			child:SetPos(w / 2 - child:GetWide() / 2, y)
-		end
-	end
-
-	self.Outgoing = self:Add "EditablePanel"
-	self.Outgoing:Dock(BOTTOM)
-
-	self.OutgoingLabel = self.Outgoing:Add "pluto_label"
-	self.OutgoingLabel:SetFont "pluto_inventory_font"
-	self.OutgoingLabel:SetTextColor(Color(255, 255, 255))
-	self.OutgoingLabel:SetText "Your offers:"
-	self.OutgoingLabel:SizeToContents()
-	self.OutgoingLabel:SetContentAlignment(4)
-	self.OutgoingLabel:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.OutgoingLabel:Dock(TOP)
-	self.OutgoingLabel:DockMargin(0, 0, 0, 5)
-
-	self.OutgoingCurrency = self.Outgoing:Add "EditablePanel"
-	self.OutgoingCurrency:Dock(TOP)
-	self.OutgoingCurrency:SetTall(self.ItemSize)
-	self.OutgoingCurrency:DockMargin(0, 0, 0, 5)
-	function self.OutgoingCurrency:PerformLayout(w, h)
-		local pos = w / 2 + 5
-		for _, child in pairs(self:GetChildren()) do
-			pos = pos - child:GetWide() / 2 - 5 / 2
-		end
-		for _, child in pairs(self:GetChildren()) do
-			child:SetPos(pos, 0)
-			pos = pos + child:GetWide() + 5
-		end
-	end
-
-	self.OutgoingCurrencies = {}
-
-	for i = 1, 4 do
-		local cur = self.OutgoingCurrency:Add "pluto_inventory_currency_selector"
-		cur:SetWide(self.ItemSize - 16)
-		cur:AcceptAmount(true)
-		cur:AcceptInput(true)
-		function cur.OnCurrencyUpdated()
+		function currencypnl.OnCurrencyUpdated()
 			if (IsValid(pluto.ui.pnl)) then
 				pluto.ui.pnl:ChangeToTab "Trading"
 			end
+
 			self:SendUpdate("currency", i)
 		end
-		self.OutgoingCurrencies[i] = cur
+
+		currencypnl:AcceptInput(true)
+		currencypnl:AcceptAmount(true)
 	end
 
-	self.OutgoingItemContainer = self.Outgoing:Add "EditablePanel"
-	self.OutgoingItemContainer:Dock(TOP)
-	self.OutgoingItemContainer:SetTall(self.ItemSize * 2 + 5)
-
-	self.OutgoingItems = {}
-
-	line = nil
 	for i = 1, 8 do
-		if ((i - 1) % 4 == 0) then
-			line = self.OutgoingItemContainer:Add "EditablePanel"
-			line:SetSize(self.ItemSize * 4 + 5 * 3, self.ItemSize)
-			line:Center()
-			if (i == 1) then
-				line:SetPos(0, 0)
-			else
-				line:SetPos(0, self.ItemSize + 5)
-			end
-		end
-
-		local itempnl = line:Add "pluto_inventory_item"
-		itempnl:SetSize(self.ItemSize, self.ItemSize)
-		self.OutgoingItems[i] = itempnl
-		itempnl:Dock(LEFT)
-		itempnl:DockMargin(0, 0, 5, 0)
-
+		local itempnl = self.OutgoingNew:GetItemPanel(i)
+	
 		function itempnl.CanClickWith(s, other)
 			local item = other.Item
 			return item
@@ -356,13 +249,6 @@ function PANEL:Init()
 
 		function itempnl.OnSetItem(s, item)
 			self:SendUpdate("item", i)
-		end
-	end
-
-	function self.OutgoingItemContainer:PerformLayout(w, h)
-		for _, child in pairs(self:GetChildren()) do
-			local x, y = child:GetPos()
-			child:SetPos(w / 2 - child:GetWide() / 2, y)
 		end
 	end
 
@@ -397,7 +283,6 @@ function PANEL:PlutoTradeUpdate(side, what, index, data)
 end
 
 function PANEL:PerformLayout(w, h)
-	self.Outgoing:SetTall(56 * 2 + 5 + 20 + 32 + 5)
 end
 
 function PANEL:SendUpdate(type, index)
@@ -406,9 +291,9 @@ function PANEL:SendUpdate(type, index)
 	end
 
 	if (type == "currency") then
-		pluto.trades.settradedata("outgoing", type, index, self.OutgoingCurrencies[index]:GetCurrency())
+		pluto.trades.settradedata("outgoing", type, index, self.OutgoingNew:GetCurrency(index))
 	elseif (type == "item") then
-		pluto.trades.settradedata("outgoing", type, index, self.OutgoingItems[index]:GetItem())
+		pluto.trades.settradedata("outgoing", type, index, self.OutgoingNew:GetItem(index))
 	end
 end
 
@@ -420,31 +305,30 @@ function PANEL:UpdateFromTradeData()
 		self.IncomingLabel:SetText(tradedata.active:Nick() .. " offers:")
 	end
 
-	for i, item in ipairs(self.OutgoingItems) do
-		item:SetItem(tradedata.outgoing.item[i])
+	for i = 1, 8 do
+		self.OutgoingNew:SetItem(i, tradedata.outgoing.item[i])
 	end
-	for i, item in ipairs(self.OutgoingCurrencies) do
+	for i = 1, 4 do
 		local dat = tradedata.outgoing.currency[i]
 		if (not dat) then
 			continue
 		end
 
-		item:SetCurrency(dat.What)
-		item:SetAmount(dat.Amount)
+		self.OutgoingNew:SetCurrency(i, dat.What, dat.Amount)
 	end
 
-	for i, item in ipairs(self.IncomingItems) do
-		item:SetItem(tradedata.incoming.item[i])
+	for i = 1, 8 do
+		self.IncomingNew:SetItem(i, tradedata.incoming.item[i])
 	end
-	for i, item in ipairs(self.IncomingCurrencies) do
+	for i = 1, 4 do
 		local dat = tradedata.incoming.currency[i]
 		if (not dat) then
 			continue
 		end
 
-		item:SetCurrency(dat.What)
-		item:SetAmount(dat.Amount)
+		self.IncomingNew:SetCurrency(i, dat.What, dat.Amount)
 	end
+
 	self.Updating = false
 end
 
