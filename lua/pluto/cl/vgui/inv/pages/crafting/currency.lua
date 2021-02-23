@@ -288,12 +288,7 @@ function PANEL:AddSearchPanel(text)
 	end
 
 	function container.Label.OnFocusChanged(s, gained)
-		if (self.HasFocusCurrently == gained) then
-			return
-		end
-		self.HasFocusCurrently = gained
-		if (gained) then
-		else
+		if (not gained) then
 			pluto.ui.pnl:AddKeyboardFocus(-1)
 		end
 	end

@@ -57,7 +57,7 @@ hook.Add("PlayerSetModel", "pluto_model", function(ply)
 
 	local itemid = tonumber(ply:GetInfo("pluto_cosmetic_slot1", nil))
 	local item = pluto.itemids[itemid]
-	if (item) then
+	if (item and item.Model) then
 		ply:SetModel(item.Model.Model)
 		return true
 	end

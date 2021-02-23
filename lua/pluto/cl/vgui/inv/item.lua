@@ -296,9 +296,9 @@ function PANEL:OnRightClick()
 
 	pluto.ui.rightclickmenu(self.Item, function(menu, item)
 		if (self.TabIndex) then
-			--[[menu:AddOption("Equip", function()
-
-			end):SetIcon "icon16/add.png"]]
+			menu:AddOption("Equip", function()
+				pluto.inv.equip(item)
+			end):SetIcon "icon16/add.png"
 		end
 	end)
 end

@@ -156,11 +156,34 @@ local filters = {
 	end,
 }
 
+
 local cosmetic_filters = {
 	[1] = function(item)
 		return item and item.Type == "Model"
 	end
 }
+
+function pluto.inv.equip(item)
+	for slot, fn in pairs(filters) do
+		if (fn(item)) then
+			sql.Query([[UPDATE pluto_loadouts SET slot]] .. slot .. [[ = ]] .. item.ID .. [[ WHERE idx = ]] .. pluto_last_loadout:GetInt())
+			loadout_slot_convars[slot]:SetString(item.ID)
+			hook.Run("PlutoLoadoutChanged", slot, item)
+			return true
+		end
+	end
+
+	for slot, fn in pairs(cosmetic_filters) do
+		if (fn(item)) then
+			sql.Query([[UPDATE pluto_cosmetic_loadouts SET slot]] .. slot .. [[ = ]] .. item.ID .. [[ WHERE idx = ]] .. pluto_last_cosmetic_loadout:GetInt())
+			cosmetic_slot_convars[slot]:SetString(item.ID)
+			hook.Run("PlutoCosmeticChanged", slot, item)
+			return true
+		end
+	end
+
+	return false
+end
 
 function PANEL:Init()
 	self:DockPadding(6, 2, 6, 2)
@@ -221,6 +244,11 @@ function PANEL:Init()
 		function item2:CanClickWith(other)
 			return cosmetic_filters[i] and cosmetic_filters[i](other.Item)
 		end
+		hook.Add("PlutoCosmeticChanged", item2, function(self, index, item)
+			if (index == i) then
+				self:SetItem(item)
+			end
+		end)
 		function item2.ClickedWith(s, other)
 			sql.Query([[UPDATE pluto_cosmetic_loadouts SET slot]] .. i .. [[ = ]] .. (other.Item and other.Item.ID or "NULL") .. [[ WHERE idx = ]] .. self.ActiveCosmeticLoadout)
 			cosmetic_slot_convars[i]:SetString(other.Item and other.Item.ID or "NULL")
@@ -255,6 +283,11 @@ function PANEL:Init()
 		function item:CanClickWith(other)
 			return filters[i] and filters[i](other.Item)
 		end
+		hook.Add("PlutoLoadoutChanged", item, function(self, index, item)
+			if (index == i) then
+				self:SetItem(item)
+			end
+		end)
 		function item.ClickedWith(s, other)
 			sql.Query([[UPDATE pluto_loadouts SET slot]] .. i .. [[ = ]] .. (other.Item and other.Item.ID or "NULL") .. [[ WHERE idx = ]] .. self.ActiveLoadout)
 			loadout_slot_convars[i]:SetString(other.Item and other.Item.ID or "NULL")
