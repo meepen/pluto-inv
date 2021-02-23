@@ -37,12 +37,14 @@ function PANEL:Init()
 
 		function input.OnEnter()
 			self.InputAmount:SetText(input:GetText())
+			self:OnCurrencyUpdated()
 			input:Remove()
 		end
 
 		function input.OnFocusChanged(gained)
 			if (not gained) then
 				self.InputAmount:SetText(input:GetText())
+				self:OnCurrencyUpdated()
 				input:Remove()
 			end
 		end

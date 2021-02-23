@@ -260,24 +260,22 @@ end
 function PANEL:PlutoTradeUpdate(side, what, index, data)
 	local lookup
 	if (what == "currency") then
-		lookup = side == "incoming" and self.IncomingCurrencies or self.OutgoingCurrencies
+		lookup = side == "incoming" and self.IncomingNew or self.OutgoingNew
 
 		local currency = lookup[index]
 		self.Updating = true
 		if (data) then
-			currency:SetCurrency(data.What)
-			currency:SetAmount(data.Amount)
+			lookup:SetCurrency(index, data.What, data.Amount)
 		else
-			currency:SetCurrency()
+			currency:SetCurrency(index)
 		end
 
 		self.Updating = false
 	elseif (what == "item") then
-		lookup = side == "incoming" and self.IncomingItems or self.OutgoingItems
+		lookup = side == "incoming" and self.IncomingNew or self.OutgoingNew
 
-		local item = lookup[index]
 		self.Updating = true
-		item:SetItem(data)
+		lookup:SetItem(index, data)
 		self.Updating = false
 	end
 end
@@ -300,10 +298,6 @@ end
 function PANEL:UpdateFromTradeData()
 	self.Updating = true
 	local tradedata = pluto.trades.getdata()
-
-	if (IsValid(tradedata.active)) then
-		self.IncomingLabel:SetText(tradedata.active:Nick() .. " offers:")
-	end
 
 	for i = 1, 8 do
 		self.OutgoingNew:SetItem(i, tradedata.outgoing.item[i])
