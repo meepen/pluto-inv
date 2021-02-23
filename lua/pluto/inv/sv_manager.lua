@@ -193,6 +193,19 @@ function pluto.inv.writefullupdate(ply)
 		pluto.inv.writecurrencyupdate(ply, currency)
 	end
 
+	local modlist = {}
+
+	for _, MOD in pairs(pluto.mods.byname) do
+		if (MOD.Type == "suffix" or MOD.Type == "prefix") then
+			table.insert(modlist, MOD:GetTierName(1))
+		end
+	end
+
+	net.WriteUInt(#modlist, 32)
+	for _, name in ipairs(modlist) do
+		net.WriteString(name)
+	end
+
 	pluto.inv.writestatus(ply, "ready")
 end
 

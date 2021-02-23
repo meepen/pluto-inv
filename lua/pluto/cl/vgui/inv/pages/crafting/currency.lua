@@ -279,11 +279,21 @@ function PANEL:AddSearchPanel(text)
 	function container.Label:OnMousePressed(m)
 		if (m == MOUSE_LEFT) then
 			pluto.ui.pnl:AddKeyboardFocus(1)
+			self:OpenAutoComplete(self:GetAutoComplete "")
 		end
 	end
 
+	function container.Label:GetAutoComplete(text)
+		return pluto.mods.networkednames
+	end
+
 	function container.Label.OnFocusChanged(s, gained)
-		if (not gained) then
+		if (self.HasFocusCurrently == gained) then
+			return
+		end
+		self.HasFocusCurrently = gained
+		if (gained) then
+		else
 			pluto.ui.pnl:AddKeyboardFocus(-1)
 		end
 	end

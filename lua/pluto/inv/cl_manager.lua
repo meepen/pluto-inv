@@ -206,6 +206,16 @@ function pluto.inv.readfullupdate()
 		pluto.inv.readcurrencyupdate()
 	end
 
+	local modlist = {}
+
+	for i = 1, net.ReadUInt(32) do
+		modlist[i] = net.ReadString()
+	end
+
+	table.sort(modlist)
+
+	pluto.mods.networkednames = modlist
+
 	pluto.inv.readstatus()
 end
 
