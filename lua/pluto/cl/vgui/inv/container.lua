@@ -332,8 +332,6 @@ function PANEL:CreateOrdered()
 end
 
 function PANEL:OnBufferPressed()
-	self:ChangeToTab "Currency"
-		:SelectTab "Item Boxes"
 end
 
 function PANEL:PerformLayout(w, h)

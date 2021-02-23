@@ -228,7 +228,7 @@ function PANEL:Init()
 
 	for i = 1, 8 do
 		local itempnl = self.OutgoingNew:GetItemPanel(i)
-	
+
 		function itempnl.CanClickWith(s, other)
 			local item = other.Item
 			return item
