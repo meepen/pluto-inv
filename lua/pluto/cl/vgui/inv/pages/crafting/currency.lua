@@ -334,7 +334,7 @@ function PANEL:PlutoItemUpdate(item)
 
 	for _, data in ipairs(self:GetWants()) do
 		local container = data[1]
-		local text = data[2]
+		local text = data[2]:lower()
 		local found = false
 
 		for _, what in ipairs(has) do
@@ -343,6 +343,8 @@ function PANEL:PlutoItemUpdate(item)
 				lazy = what.lazy
 				what = what[1]
 			end
+
+			what = what:lower()
 
 			if (not lazy) then
 				if (what == text) then

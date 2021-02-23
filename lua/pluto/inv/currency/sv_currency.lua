@@ -1384,6 +1384,7 @@ local function satisfies(item, searches)
 	local gotten = 0
 
 	for _, text in ipairs(searches) do
+		text = text:lower()
 		local found = false
 
 		for _, what in ipairs(has) do
@@ -1392,6 +1393,7 @@ local function satisfies(item, searches)
 				lazy = what.lazy
 				what = what[1]
 			end
+			what = what:lower()
 
 			if (not lazy) then
 				if (what == text) then
