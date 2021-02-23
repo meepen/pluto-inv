@@ -1368,3 +1368,91 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 		end)
 	end
 end)
+
+local function satisfies(item, searches)
+	local has = {}
+
+	for type, modlist in pairs(item.Mods) do
+		for _, mod in ipairs(modlist) do
+			local MOD = pluto.mods.byname[mod.Mod]
+			table.insert(has, {lazy = true, MOD:GetPrintName()})
+			table.insert(has, MOD:GetPrintName() .. " " .. mod.Tier)
+			table.insert(has, MOD:GetTierName(mod.Tier))
+		end
+	end
+
+	local gotten = 0
+
+	for _, text in ipairs(searches) do
+		local found = false
+
+		for _, what in ipairs(has) do
+			local lazy = false
+			if (istable(what)) then
+				lazy = what.lazy
+				what = what[1]
+			end
+
+			if (not lazy) then
+				if (what == text) then
+					found = true
+					break
+				end
+			else
+				if (what:find(text, 1, true)) then
+					found = true
+					break
+				end
+			end
+		end
+
+		gotten = gotten + (found and 1 or 0)
+	end
+
+	return gotten
+end
+
+function pluto.inv.readmasscurrencyuse(ply)
+	local currency = pluto.currency.byname[net.ReadString()]
+	local item = pluto.inv.items[net.ReadUInt(32)]
+	local amount = net.ReadUInt(32)
+	local searches = {}
+	for i = 1, net.ReadUInt(8) do
+		searches[i] = net.ReadString()
+	end
+	local mins = net.ReadUInt(8)
+	local maxs = net.ReadUInt(8)
+
+	if (not item or item.Owner ~= ply:SteamID64()) then
+		return
+	end
+
+	if (not currency or not currency.AllowMass or not currency:AllowedUse(item)) then
+		return
+	end
+
+	amount = 10
+
+	local used = 0
+
+	for i = 1, amount do
+		if (item:ShouldPreventChange()) then
+			break
+		end
+
+		currency:Run(item)
+		used = used + 1
+
+		local count = satisfies(item, searches)
+
+		if (count >= mins and count <= maxs) then
+			break
+		end
+	end
+
+	currency:Save(ply, item, used):next(function()
+		pluto.inv.message(ply)
+			:write("item", item)
+			:send()
+	end)
+end

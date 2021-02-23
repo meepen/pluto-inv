@@ -532,38 +532,6 @@ function pluto.inv.readitemdelete(ply)
 	end)
 end
 
-local function allowed(types, wpn)
-	if (wpn and wpn.Locked) then
-		return false
-	end
-
-	local type = wpn and wpn.Type or "None"
-	if (isstring(types)) then
-		return types == type
-	end
-
-	if (istable(types) and table.HasValue(types, type)) then
-		return true
-	end
-
-	return false
-end
-
-function pluto.inv.readmasscurrencyuse(ply)
-	local currency = pluto.currency.byname[net.ReadString()]
-	local amount = net.ReadUInt(32)
-	local item = pluto.inv.items[net.ReadUInt(32)]
-
-	if (not item or item.Owner ~= ply:SteamID64()) then
-		return
-	end
-
-	if (not currency or not allowed(currency.Types, item) or not item:ShouldPreventChange()) then
-		return
-	end
-
-end
-
 function pluto.inv.readcurrencyuse(ply)
 	local currency = net.ReadString()
 	local wpn
@@ -590,7 +558,7 @@ function pluto.inv.readcurrencyuse(ply)
 
 	local cur = pluto.currency.byname[currency]
 
-	if (not allowed(cur.Types, wpn) or wpn and wpn:ShouldPreventChange()) then
+	if (not cur:AllowedUse(wpn) or wpn and wpn:ShouldPreventChange()) then
 		return
 	end
 

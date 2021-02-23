@@ -305,6 +305,15 @@ function PANEL:AddSearchPanel(text)
 	self:PlutoItemUpdate(self.ItemContainer.Item)
 end
 
+function PANEL:GetWants(justtext)
+	local wants = {}
+	for _, search in ipairs(self.SearchPanels) do
+		table.insert(wants, justtext and search.Label:GetText() or {search, search.Label:GetText()})
+	end
+
+	return wants
+end
+
 function PANEL:PlutoItemUpdate(item)
 	if (not self.ItemContainer.Item or self.ItemContainer.Item ~= item) then
 		return
@@ -323,8 +332,9 @@ function PANEL:PlutoItemUpdate(item)
 
 	local gotten = 0
 
-	for _, container in ipairs(self.SearchPanels) do
-		local text = container.Label:GetText()
+	for _, data in ipairs(self:GetWants()) do
+		local container = data[1]
+		local text = data[2]
 		local found = false
 
 		for _, what in ipairs(has) do
@@ -384,8 +394,9 @@ function PANEL:TryContinue()
 		return
 	end
 
+	local mins, maxs = tonumber(self.LowerBounds.Label:GetText()) or 0, tonumber(self.UpperBounds.Label:GetText()) or 0xff
 	pluto.inv.message()
-		:write("currencyuse", currency.InternalName, item)
+		:write("masscurrencyuse", currency.InternalName, item, amount, self:GetWants(true), mins, maxs)
 		:send()
 end
 
@@ -401,3 +412,17 @@ function PANEL:Go(b)
 end
 
 vgui.Register("pluto_inventory_crafting_currency", PANEL, "DScrollPanel")
+
+function pluto.inv.writemasscurrencyuse(cur, item, amount, searches, mins, maxs)
+	net.WriteString(cur)
+	net.WriteUInt(item.ID, 32)
+	net.WriteUInt(amount, 32)
+
+	net.WriteUInt(math.min(256, #searches), 8)
+	for i = 1, math.min(256, #searches) do
+		net.WriteString(searches[i])
+	end
+
+	net.WriteUInt(mins, 8)
+	net.WriteUInt(maxs, 8)
+end

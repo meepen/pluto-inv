@@ -17,6 +17,7 @@ pluto.currency.list = {
 		StardustRatio = 2,
 
 		Category = "Modify",
+		AllowMass = true,
 	},
 	{
 		InternalName = "aciddrop",
@@ -476,6 +477,24 @@ function CUR:GetMaterial()
 	end
 
 	return self.Material
+end
+
+function CUR:AllowedUse(wpn)
+	if (wpn and wpn.Locked) then
+		return false
+	end
+
+
+	local type = wpn and wpn.Type or "None"
+	if (isstring(self.Types)) then
+		return self.Types == type
+	end
+
+	if (istable(self.Types) and table.HasValue(self.Types, type)) then
+		return true
+	end
+
+	return false
 end
 
 function CUR:Use(ply, item)

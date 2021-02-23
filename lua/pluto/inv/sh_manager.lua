@@ -27,6 +27,7 @@ pluto.inv.messages = {
 		"changetabdata",
 		"requesttrade",
 		"tradeupdate",
+		"masscurrencyuse",
 	},
 	sv2cl = {
 		[0] = "end",
