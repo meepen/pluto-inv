@@ -1,8 +1,7 @@
-pluto.currency = pluto.currency or {
-	byname = {},
-}
+pluto.currency = pluto.currency or {}
+pluto.currency.byname = pluto.currency.byname or {}
 
-pluto.currency.list = {
+local list = {
 	{
 		InternalName = "droplet",
 		Name = "Magic Droplet",
@@ -468,6 +467,17 @@ pluto.currency.list = {
 		SkipNotify = true
 	},
 }
+
+pluto.currency.list = {}
+for _, mod in ipairs(list) do
+	local old = pluto.currency.byname[mod.InternalName]
+	if (old) then
+		mod, old = old, mod
+		table.Merge(mod, old)
+	end
+
+	table.insert(pluto.currency.list, mod)
+end
 
 pluto.currency_mt = pluto.currency_mt or {}
 local CUR = pluto.currency_mt.__index or {}
