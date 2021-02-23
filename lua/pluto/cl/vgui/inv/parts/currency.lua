@@ -31,22 +31,24 @@ function PANEL:Init()
 		
 		local input = self.InputArea:Add "DTextEntry"
 		input:Dock(FILL)
-		pluto.ui.pnl:SetKeyboardInputEnabled(true)
+		pluto.ui.pnl:AddKeyboardFocus(1)
 		input:RequestFocus()
 		input:SetUpdateOnType(true)
 
 		function input.OnEnter()
 			self.InputAmount:SetText(input:GetText())
 			input:Remove()
-			pluto.ui.pnl:SetKeyboardInputEnabled(false)
 		end
 
 		function input.OnFocusChanged(gained)
 			if (not gained) then
 				self.InputAmount:SetText(input:GetText())
 				input:Remove()
-				pluto.ui.pnl:SetKeyboardInputEnabled(false)
 			end
+		end
+
+		function input.OnRemove()
+			pluto.ui.pnl:AddKeyboardFocus(-1)
 		end
 	end
 

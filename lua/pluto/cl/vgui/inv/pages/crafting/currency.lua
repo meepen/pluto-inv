@@ -123,13 +123,13 @@ function PANEL:Init()
 
 	function self.LowerBounds.Label:OnMousePressed(m)
 		if (m == MOUSE_LEFT) then
-			pluto.ui.pnl:SetKeyboardInputEnabled(true)
+			pluto.ui.pnl:AddKeyboardFocus(1)
 		end
 	end
 
 	function self.LowerBounds.Label.OnFocusChanged(s, gained)
 		if (not gained) then
-			pluto.ui.pnl:SetKeyboardInputEnabled(false)
+			pluto.ui.pnl:AddKeyboardFocus(-1)
 		end
 	end
 
@@ -160,13 +160,13 @@ function PANEL:Init()
 
 	function self.UpperBounds.Label:OnMousePressed(m)
 		if (m == MOUSE_LEFT) then
-			pluto.ui.pnl:SetKeyboardInputEnabled(true)
+			pluto.ui.pnl:AddKeyboardFocus(1)
 		end
 	end
 
 	function self.UpperBounds.Label.OnFocusChanged(s, gained)
 		if (not gained) then
-			pluto.ui.pnl:SetKeyboardInputEnabled(false)
+			pluto.ui.pnl:AddKeyboardFocus(-1)
 		end
 	end
 
@@ -278,13 +278,13 @@ function PANEL:AddSearchPanel(text)
 
 	function container.Label:OnMousePressed(m)
 		if (m == MOUSE_LEFT) then
-			pluto.ui.pnl:SetKeyboardInputEnabled(true)
+			pluto.ui.pnl:AddKeyboardFocus(1)
 		end
 	end
 
 	function container.Label.OnFocusChanged(s, gained)
 		if (not gained) then
-			pluto.ui.pnl:SetKeyboardInputEnabled(false)
+			pluto.ui.pnl:AddKeyboardFocus(-1)
 		end
 	end
 

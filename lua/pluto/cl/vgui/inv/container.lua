@@ -566,7 +566,7 @@ function PANEL:AddStorageTab(tab)
 			self.TextEntry:Dock(FILL)
 			self.TextEntry:SetFont "pluto_inventory_font"
 			self.TextEntry:SetText(lbl:GetText())
-			pluto.ui.pnl:SetKeyboardInputEnabled(true)
+			pluto.ui.pnl:AddKeyboardFocus(1)
 			function self.TextEntry:Think()
 				if (vgui.GetKeyboardFocus() == self) then
 					self.WasFocussed = true
@@ -583,7 +583,7 @@ function PANEL:AddStorageTab(tab)
 						:send()
 
 					self:Remove()
-					pluto.ui.pnl:SetKeyboardInputEnabled(false)
+					pluto.ui.pnl:AddKeyboardFocus(-1)
 				end
 			end
 		end
@@ -671,6 +671,13 @@ function PANEL:OnRemove()
 			pnl:Remove()
 		end
 	end
+end
+
+function PANEL:AddKeyboardFocus(amount)
+	self.KeyboardFocus = (self.KeyboardFocus or 0) + amount
+
+
+	self:SetKeyboardInputEnabled(self.KeyboardFocus > 0)
 end
 
 vgui.Register("pluto_inv", PANEL, "EditablePanel")
