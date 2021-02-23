@@ -29,6 +29,7 @@ pluto.currency.list = {
 		StardustRatio = 75,
 
 		Category = "Modify",
+		AllowMass = true,
 	},
 	{
 		InternalName = "pdrop",
@@ -40,6 +41,7 @@ pluto.currency.list = {
 		StardustRatio = 100,
 
 		Category = "Modify",
+		AllowMass = true,
 	},
 	{
 		InternalName = "hand",

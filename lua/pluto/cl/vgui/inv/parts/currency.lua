@@ -24,6 +24,32 @@ function PANEL:Init()
 	self.InputAmount:Dock(FILL)
 	self.InputAmount:DockMargin(2, 2, 3, 2)
 
+	function self.InputArea.OnMousePressed()
+		if (not self.AcceptingAmount) then
+			return
+		end
+		
+		local input = self.InputArea:Add "DTextEntry"
+		input:Dock(FILL)
+		pluto.ui.pnl:SetKeyboardInputEnabled(true)
+		input:RequestFocus()
+		input:SetUpdateOnType(true)
+
+		function input.OnEnter()
+			self.InputAmount:SetText(input:GetText())
+			input:Remove()
+			pluto.ui.pnl:SetKeyboardInputEnabled(false)
+		end
+
+		function input.OnFocusChanged(gained)
+			if (not gained) then
+				self.InputAmount:SetText(input:GetText())
+				input:Remove()
+				pluto.ui.pnl:SetKeyboardInputEnabled(false)
+			end
+		end
+	end
+
 	self:SetCursor "hand"
 
 	self.InputArea:SetMouseInputEnabled(true)
@@ -42,6 +68,7 @@ function PANEL:ShowAmount(b)
 end
 
 function PANEL:AcceptAmount(b)
+	self.AcceptingAmount = b
 	if (b) then
 		self:ShowAmount(true)
 	end

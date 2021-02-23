@@ -1432,6 +1432,7 @@ function pluto.inv.readmasscurrencyuse(ply)
 	end
 
 	local used = 0
+	amount = math.min(amount, 50, pluto.inv.currencies[ply][currency.InternalName] or 0)
 
 	for i = 1, amount do
 		if (item:ShouldPreventChange()) then

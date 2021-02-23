@@ -395,6 +395,7 @@ function PANEL:TryContinue()
 	end
 
 	local mins, maxs = tonumber(self.LowerBounds.Label:GetText()) or 0, tonumber(self.UpperBounds.Label:GetText()) or 0xff
+	self.Selector:SetAmount(math.max(0, amount - 50))
 	pluto.inv.message()
 		:write("masscurrencyuse", currency.InternalName, item, amount, self:GetWants(true), mins, maxs)
 		:send()
