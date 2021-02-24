@@ -7,7 +7,7 @@ function pluto.ui.rightclickmenu(item, pre)
 
 	rightclick_menu:AddOption("Upload item stats", function()
 		local StatsRT = GetRenderTarget("ItemStatsRT" .. ScrW() .. "_" ..  ScrH(), ScrW(), ScrH())
-		OVERRIDE_DETAILED = true
+		PLUTO_OVERRIDE_CONTROL_STATUS = true
 		local show = pluto.ui.showcase(item)
 		pluto.ui.showcasepnl = nil
 		show:SetPaintedManually(true)
@@ -15,7 +15,7 @@ function pluto.ui.rightclickmenu(item, pre)
 		timer.Simple(0, function()
 			hook.Add("PostRender", "Upload", function()
 				hook.Remove("PostRender", "Upload")
-				OVERRIDE_DETAILED = false
+				PLUTO_OVERRIDE_CONTROL_STATUS = false
 				cam.Start2D()
 				render.PushRenderTarget(StatsRT)
 				if (not pcall(show.PaintManual, show)) then

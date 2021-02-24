@@ -14,7 +14,7 @@ function PANEL:Init()
 end
 
 function PANEL:GetControlState()
-	return input.IsKeyDown(KEY_LCONTROL)
+	return input.IsKeyDown(KEY_LCONTROL) or PLUTO_OVERRIDE_CONTROL_STATUS
 end
 
 function PANEL:Think()
@@ -37,7 +37,7 @@ function PANEL:CreateInners()
 		child:Remove()
 	end
 
-	self:SetSize(250, 56 + 12)
+	self:SetSize(320, 56 + 12)
 	self.NameContainer = self:Add "ttt_curved_panel"
 	self.NameContainer:Dock(TOP)
 	self.NameContainer:SetTall(30)
@@ -470,8 +470,7 @@ function PANEL:SetItem(item)
 			},
 			{
 				Abbreviation = "RPM",
-				Value = rpm,
-				NewLine = true
+				Value = rpm
 			},
 			{
 				Abbreviation = "HS*",
@@ -480,14 +479,14 @@ function PANEL:SetItem(item)
 			{
 				Abbreviation = "MAG",
 				Value = pluto.mods.getitemvalue(item, "ClipSize"),
+				NewLine = true
 			},
 			{
-				Abbreviation = "RNG",
+				Abbreviation = "RANGE",
 				Value = {
 					pluto.mods.getitemvalue(item, "DamageDropoffRange"),
 					pluto.mods.getitemvalue(item, "DamageDropoffRangeMax"),
 				},
-				NewLine = true,
 			},
 		}
 		surface.SetFont "pluto_showcase_suffix_text"
