@@ -119,6 +119,10 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 	return rx, ry, size
 end
 
+function PANEL:SetCurrencyFilter(func)
+	self.Filter = func
+end
+
 function PANEL:OnMousePressed(m)
 	if (not self.AllowInput) then
 		return
@@ -131,7 +135,7 @@ function PANEL:OnMousePressed(m)
 			end
 
 			self:SetCurrency(cur)
-		end)
+		end, self.Filter)
 	elseif (m == MOUSE_RIGHT) then
 		self.Currency = nil
 		self.InputAmount:SetText "?"

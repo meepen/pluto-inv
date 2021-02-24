@@ -9,6 +9,10 @@ function PANEL:Init()
 
 	self.Selector = self.ContainerArea:Add "pluto_inventory_currency_selector"
 
+	self.Selector:SetCurrencyFilter(function(cur)
+		return cur.AllowMass
+	end)
+
 	self.Selector:AcceptAmount(true)
 	self.Selector:AcceptInput(true)
 	self.Selector:SetTall(56)

@@ -48,6 +48,8 @@ function PANEL:AddTab(col, category, add_rest, buffer)
 
 	local amount = 0
 
+	local filter = pluto.ui.selectorfilter or function() return true end
+
 	for _, cur in ipairs(pluto.currency.list) do
 		if (cur.Fake) then
 			continue
@@ -55,6 +57,10 @@ function PANEL:AddTab(col, category, add_rest, buffer)
 
 		if (not self.CurrencyDone[cur.InternalName] and (add_rest or cur.Category == category)) then
 			self.CurrencyDone[cur.InternalName] = true
+			if (not filter(cur)) then
+				continue
+			end
+
 			current_row.Count = current_row.Count + 1
 			local item = current_row:Add "pluto_inventory_currency_item"
 			item:Dock(LEFT)
@@ -71,7 +77,7 @@ function PANEL:AddTab(col, category, add_rest, buffer)
 		end
 	end
 
-	if (buffer) then
+	if (not pluto.ui.selectorfilter and buffer) then
 		local opener = current:Add "EditablePanel"
 		opener:Dock(BOTTOM)
 		opener:SetTall(110)
@@ -260,7 +266,7 @@ function pluto.ui.pickupcurrency(item)
 	pluto.ui.pickedupitem:SetCurrency(item)
 end
 
-function pluto.ui.currencyselect(msg, fn)
+function pluto.ui.currencyselect(msg, fn, filter)
 	if (not IsValid(pluto.ui.pnl)) then
 		return fn and fn(false)
 	end
@@ -270,9 +276,10 @@ function pluto.ui.currencyselect(msg, fn)
 	end
 
 	pluto.ui.selectorcallback = function(cur)
-		pluto.ui.selectorcallback, pluto.ui.selectormessage = nil, nil
+		pluto.ui.selectorcallback, pluto.ui.selectormessage, pluto.ui.selectorfilter = nil, nil, nil
 		return fn(cur)
 	end
+	pluto.ui.selectorfilter = filter or function() return true end
 	pluto.ui.selectormessage = msg or "Choose a currency"
 
 	pluto.ui.pnl:ChangeToTab "Currency"

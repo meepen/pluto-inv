@@ -58,6 +58,9 @@ function PANEL:Init()
 	end
 
 	local selector = self.ShardLine:Add "pluto_inventory_currency_selector"
+	selector:SetCurrencyFilter(function(cur)
+		return cur.Crafted
+	end)
 	selector:AcceptInput(true)
 	selector:AcceptAmount(true)
 	self.CurrencySelector = selector
