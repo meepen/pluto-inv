@@ -14,7 +14,7 @@ function PANEL:Init()
 end
 
 function PANEL:GetControlState()
-	return input.IsKeyDown(KEY_LCONTROL) or PLUTO_OVERRIDE_CONTROL_STATUS
+	return PLUTO_OVERRIDE_CONTROL_STATUS or input.IsKeyDown(KEY_LCONTROL)
 end
 
 function PANEL:Think()
@@ -230,19 +230,36 @@ function PANEL:AddPrefix(prefix, item)
 	name:SizeToContentsY(2)
 	name:SetContentAlignment(4)
 
-	local bar = container:Add "pluto_showcase_bar"
-	bar:Dock(FILL)
 	local rolls = pluto.mods.getrolls(MOD, prefix.Tier, prefix.Roll)
 	local num = pluto.mods.getrawvalue(baseclass.Get(item.ClassName), MOD.StatModifier)
 	local mins, maxs = GetMinMax(baseclass.Get(item.ClassName), MOD.StatModifier)
 	local frac_base = (not num or not mins or not maxs or mins == maxs) and 0.35 or 0.35 * ((value(num) - value(mins)) / (value(maxs) - value(mins)))
-	bar:AddFilling(frac_base, num, Color(109, 147, 232)) -- MOD:FormatModifier(1, rolls[1])
 	local left = 1 - frac_base - 0.2
 	local txt = MOD:FormatModifier(1, rolls[1])
 	local min, max = MOD:GetMinMax()
 	local tier_min = 0.2 + left * (MOD.Tiers[prefix.Tier][1] - min) / (max - min)
 	local cur_value = 0.2 + left * (rolls[1] - min) / (max - min)
 	local tier_max = 0.2 + left * (MOD.Tiers[prefix.Tier][2] - min) / (max - min)
+
+	local text = txt
+	if (self.LastControlState) then
+		text = string.format("%s (%s to %s)", txt, MOD:FormatModifier(1, MOD.Tiers[prefix.Tier][1]), MOD:FormatModifier(1, MOD.Tiers[prefix.Tier][2]))
+	end
+
+	local numberlabel = name:Add "pluto_label"
+	numberlabel:Dock(RIGHT)
+	numberlabel:SetFont "pluto_showcase_suffix_text"
+	numberlabel:SetRenderSystem(pluto.fonts.systems.shadow)
+	numberlabel:SetText(text)
+	numberlabel:SetTextColor(Color(255, 255, 255))
+	numberlabel:SetContentAlignment(6)
+	numberlabel:SizeToContentsX(2)
+
+	print(text)
+
+	local bar = container:Add "pluto_showcase_bar"
+	bar:Dock(FILL)
+	bar:AddFilling(frac_base, num, Color(109, 147, 232))
 
 	bar:AddFilling(tier_min, "", Color(37, 225, 68))
 	bar:AddFilling(cur_value - tier_min, txt:sub(1, 1) == "-" and txt or "+" .. txt, Color(37, 225, 68))
@@ -266,7 +283,7 @@ function PANEL:AddSuffix(suffix, item)
 	local fmt = pluto.mods.format(suffix, item)
 	local minmaxs = pluto.mods.getminmaxs(suffix, item)
 
-	if (self:GetControlState()) then
+	if (self.LastControlState) then
 		for i = 1, #fmt do
 			fmt[i] = string.format("%s (%s to %s)", fmt[i], minmaxs[i].Mins, minmaxs[i].Maxs)
 		end
