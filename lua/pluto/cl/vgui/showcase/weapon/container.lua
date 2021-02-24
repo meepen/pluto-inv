@@ -255,8 +255,6 @@ function PANEL:AddPrefix(prefix, item)
 	numberlabel:SetContentAlignment(6)
 	numberlabel:SizeToContentsX(2)
 
-	print(text)
-
 	local bar = container:Add "pluto_showcase_bar"
 	bar:Dock(FILL)
 	bar:AddFilling(frac_base, num, Color(109, 147, 232))
