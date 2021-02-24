@@ -117,6 +117,11 @@ function PANEL:CreateInners()
 	self.CreatedLabel:SizeToContentsX()
 	self.CreatedLabel:SetContentAlignment(5)
 
+	self.TierInfo = self:Add "EditablePanel"
+	self.TierInfo:Dock(TOP)
+	self.TierInfo:SetTall(0)
+	self.TierInfo:DockMargin(7, 0, 7, 0)
+
 	self.Implicits = self:Add "EditablePanel"
 	self.Implicits:Dock(TOP)
 	self.Implicits:SetTall(0)
@@ -340,6 +345,20 @@ end
 function PANEL:SetItem(item)
 	self.Item = item
 	self.NameContainer:SetColor(item:GetColor())
+
+	if (item.SubDescription ~= "") then
+		self.SubDescription = self.TierInfo:Add "pluto_text_inner"
+		self.SubDescription:SetWide(self:GetWide() - 14)
+		self.SubDescription:Dock(TOP)
+		self.SubDescription:SetDefaultRenderSystem(pluto.fonts.systems.shadow)
+		self.SubDescription:SetDefaultTextColor(Color(255, 255, 255))
+		self.SubDescription:SetDefaultFont "pluto_inventory_font"
+		self.SubDescription:AppendText(item.SubDescription .. "\n")
+		self.SubDescription:SizeToContentsY()
+		self:SetTall(self:GetTall() + self.SubDescription:GetTall() + 5)
+		self.TierInfo:SetTall(self.SubDescription:GetTall())
+		self.TierInfo:DockMargin(7, 5, 7, 0)
+	end
 
 	self.NameLabel:SetText(item:GetPrintName())
 	do
