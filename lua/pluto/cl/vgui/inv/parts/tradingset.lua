@@ -1,5 +1,3 @@
---
-
 local PANEL = {}
 
 PANEL.ItemSize = 48

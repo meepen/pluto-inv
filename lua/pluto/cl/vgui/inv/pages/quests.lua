@@ -67,6 +67,46 @@ function PANEL:Init()
 
 	self.TopLine:SetTall(self.Name:GetTall())
 
+	self.FavoriteButton = self.TopLine:Add "ttt_curved_panel_outline"
+	self.FavoriteButton:SetCurve(2)
+	self.FavoriteButton:SetColor(Color(95, 96, 102))
+	self.FavoriteButton:Dock(RIGHT)
+	self.FavoriteButton:SetWide(self.TopLine:GetTall())
+	self.FavoriteButton:SetCursor "hand"
+
+	self.FavoriteButton.Image = self.FavoriteButton:Add "DImage"
+	self.FavoriteButton.Image:Dock(FILL)
+	self.FavoriteButton.Image:DockMargin(1, 1, 1, 1)
+
+	AccessorFunc(self.FavoriteButton, "Toggled", "Toggled")
+
+	function self.FavoriteButton:OnMousePressed(m)
+		self:SetToggled(not self:GetToggled())
+
+		self:UpdateImage()
+	end
+
+	function self.FavoriteButton:OnCursorEntered()
+		self.Image:SetAlpha(128)
+		self.Image:SetVisible(true)
+		self.Image:SetImage(self:GetToggled() and "icon16/heart_delete.png" or "icon16/heart_add.png")
+	end
+	function self.FavoriteButton:OnCursorExited()
+		self:UpdateImage()
+	end
+
+	function self.FavoriteButton:UpdateImage()
+		self.Image:SetAlpha(255)
+		if (self:GetToggled()) then
+			self.Image:SetVisible(true)
+			self.Image:SetImage "icon16/heart.png"
+		else
+			self.Image:SetVisible(false)
+		end
+	end
+
+	self.FavoriteButton:UpdateImage()
+
 	self.Description = self.Inner:Add "pluto_text_inner"
 	self.Description:Dock(TOP)
 	self.Description:SetDefaultTextColor(Color(255, 255, 255))
