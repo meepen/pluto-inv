@@ -12,7 +12,7 @@ surface.CreateFont("pluto_showcase_name_real", {
 
 surface.CreateFont("pluto_showcase_small", {
 	font = "Roboto Lt",
-	size = 12,
+	size = 14,
 	weight = 450,
 })
 

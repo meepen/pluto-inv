@@ -37,7 +37,7 @@ function PANEL:CreateInners()
 		child:Remove()
 	end
 
-	self:SetSize(320, 56 + 12)
+	self:SetSize(320, 56 + 12 + 18)
 	self.NameContainer = self:Add "ttt_curved_panel"
 	self.NameContainer:Dock(TOP)
 	self.NameContainer:SetTall(30)
@@ -78,6 +78,21 @@ function PANEL:CreateInners()
 	self.BottomLine = self.InfoContainer:Add "EditablePanel"
 	self.BottomLine:Dock(BOTTOM)
 	self.BottomLine:SetTall(18)
+
+	self.BottomLine2 = self.InfoContainer:Add "EditablePanel"
+	self.BottomLine2:Dock(BOTTOM)
+	self.BottomLine2:SetTall(18)
+
+	self.EXPLabel = self.BottomLine2:Add "pluto_label"
+	self.EXPLabel:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.EXPLabel:SetFont "pluto_showcase_small"
+	self.EXPLabel:SetTextColor(Color(255, 255, 255))
+	self.EXPLabel:Dock(RIGHT)
+	self.EXPLabel:SetContentAlignment(6)
+	self.EXPLabel:SetTall(0)
+	self.EXPLabel:SetText ""
+	self.EXPLabel:SizeToContentsX()
+
 
 	self.StatArea = self.InfoContainer:Add "EditablePanel"
 	self.StatArea:SetTall(0)
@@ -262,7 +277,7 @@ function PANEL:AddSuffix(suffix, item)
 
 		size = size + 9
 	else
-		self.BottomLine:DockMargin(0, 13, 0, 0)
+		self.BottomLine2:DockMargin(0, 13, 0, 0)
 		size = size + 13
 	end
 
@@ -346,7 +361,8 @@ function PANEL:SetItem(item)
 	end
 
 	if (item.Experience) then
-		--
+		self.EXPLabel:SetText("EXP: " .. item.Experience)
+		self.EXPLabel:SizeToContentsX()
 	end
 
 	if (item:GetMaxAffixes() > 0) then
