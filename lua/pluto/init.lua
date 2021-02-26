@@ -1,17 +1,22 @@
 pluto = pluto or {}
+pluto.modules = pluto.modules or {}
+reset_color = reset_color or {}
 
 local good_color = Color(0,255,0)
 local bad_color = Color(255,0,0)
+
+-- TODO(meep): deprecate
 function pprintf(...)
 	MsgC(good_color, string.format(...))
 
 	MsgN ""
 end
-
 function pwarnf(...)
 	MsgC(bad_color, string.format(...))
 	MsgN""
 end
+
+
 
 local allowed = {
 	["76561198050165746"] = true, -- Meepen
@@ -212,3 +217,92 @@ function PLAYER:GetExperienceToNextLevel()
 	local cur_level = self:GetPlutoLevel()
 	return level_to_exp(cur_level + 1) - self:GetPlutoExperience()
 end
+
+
+-- pluto.message("STATUS", "error: ", col, "im ", reset_color, "gay")
+
+function pluto.addmodule(what, color)
+	pluto.modules[what] = color
+end
+pluto.addmodule("BASE", Color(233, 39, 80))
+
+
+-- can return multiple values, with colors
+local type_lookups = {
+	table = function(t)
+		if (t.r and t.g and t.b and t.a or t == reset_color) then
+			return t
+		end
+
+		return tostring(t)
+	end,
+	number = function(num)
+		return tostring(num)
+	end,
+	["nil"] = function()
+		return "nil"
+	end,
+	Player = function(ply)
+		return Color(255, 0, 0), ply:Nick(), " [", ply:SteamID64(), "]", reset_color
+	end,
+}
+
+local function toprintable(what)
+	local typ = type(what)
+	
+	if (type_lookups[typ]) then
+		return type_lookups[typ](what)
+	end
+
+	return tostring(what)
+end
+
+local current_color
+local default_color
+-- called with toprintable(what)
+local function MsgC_state(...)
+	for i = 1, select("#", ...) do
+		local what = select(i, ...)
+		if (what == reset_color) then
+			current_color = default_color
+		elseif (istable(what)) then -- sometimes colors aren't colors idk
+			current_color = what
+		else
+			MsgC(current_color, what)
+		end
+	end
+end
+
+local function print_message(col, what, ...)
+	local status_color = pluto.modules[what] or pluto.modules.BASE
+	default_color = Color(255, 255, 255)
+	current_color = default_color
+
+	MsgC(current_color, "[", status_color, what, current_color, "] ")
+
+	for i = 1, select("#", ...) do
+		local what = select(i, ...)
+		MsgC_state(toprintable(what))
+	end
+
+	MsgN ""
+end
+
+function pluto.message(what, ...)
+	MsgC(Color(128, 128, 255), "+++ ")
+	print_message(Color(103, 206, 154), what, ...)
+end
+
+function pluto.warn(what, ...)
+	MsgC(Color(255, 255, 128), "--- ")
+	print_message(Color(206, 103, 154), what, ...)
+end
+
+function pluto.error(what, ...)
+	MsgC(Color(255, 128, 128), "!!! ")
+	print_message(Color(206, 103, 154), what, ...)
+end
+
+pluto.message("BASE", "Main pluto file ", Color(0, 255, 0), "loaded", reset_color, ".")
+pluto.warn("BASE", "This is a warning")
+pluto.error("BASE", "This is an error")

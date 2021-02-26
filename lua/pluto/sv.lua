@@ -32,7 +32,12 @@ pluto.files.load {
 		"discord/discord.lua",
 		"nitro/sv_nitro.lua",
 
+		"quests/_init.lua",
+		"quests/sv_quest_commands.lua",
+		"quests/sv_quest_object.lua",
+		"quests/sv_quest_networking.lua",
 		"quests/sv_quests.lua",
+		"quests/sv_quest_rewards.lua",
 
 		"inv/currency/sv_currency.lua",
 		"inv/currency/sv_crossmap.lua",

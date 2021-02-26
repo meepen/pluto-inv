@@ -24,6 +24,8 @@ function pluto.inv.readquest()
 	quest.ProgressLeft = net.ReadUInt(32)
 	quest.TotalProgress = net.ReadUInt(32)
 
+	hook.Add("PlutoQuestUpdated", quest)
+
 	return quest
 end
 
@@ -35,5 +37,6 @@ function pluto.inv.readquests()
 
 	pluto.quests.current = quests
 
-	hook.Run("PlutoUpdateQuests", quests)
+	
+	hook.Run("PlutoActiveQuestsUpdated", quests)
 end

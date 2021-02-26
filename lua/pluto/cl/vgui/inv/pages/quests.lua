@@ -11,10 +11,10 @@ function PANEL:Init()
 
 	self:SelectTab(last_active_tab:GetString())
 
-	hook.Add("PlutoUpdateQuests", self, self.UpdateQuests)
-	self:UpdateQuests()
-
 	self.QuestList = {}
+
+	hook.Add("PlutoActiveQuestsUpdated", self, self.PlutoActiveQuestsUpdated)
+	self:PlutoActiveQuestsUpdated()
 end
 
 function PANEL:AddQuest(quest)
@@ -23,16 +23,31 @@ function PANEL:AddQuest(quest)
 	if (not IsValid(tab)) then
 		error("no tab " .. tabname)
 	end
-	
-	local questpnl = tab:Add "pluto_inventory_quest"
-	questpnl:Dock(TOP)
-	questpnl:DockMargin(0, 0, 0, 4)
+
+	local questpnl = self.QuestList[quest.ID]
+	if (not IsValid(questpnl)) then
+		questpnl = tab:Add "pluto_inventory_quest"
+		questpnl:Dock(TOP)
+		questpnl:DockMargin(0, 0, 0, 4)
+		self.QuestList[quest.ID] = questpnl
+	end
+
 	questpnl:SetQuestOnLayout(quest)
+	questpnl:InvalidateLayout()
 end
 
-function PANEL:UpdateQuests()
+function PANEL:PlutoActiveQuestsUpdated()
+	local currentlyhave = {}
 	for _, quest in ipairs(pluto.quests.current) do
 		self:AddQuest(quest)
+		currentlyhave[quest.ID] = true
+	end
+
+	for id, pnl in pairs(self.QuestList) do
+		if (not currentlyhave[id]) then
+			pnl:Remove()
+			self.QuestList[id] = nil
+		end
 	end
 end
 
@@ -174,6 +189,15 @@ function PANEL:Init()
 	self.TimeRemaining:SizeToContents()
 
 	self.BottomLine:SetTall(self.RewardText:GetTall())
+
+	hook.Add("PlutoQuestUpdated", self, self.PlutoQuestUpdated)
+end
+
+function PANEL:PlutoQuestUpdated(quest)
+	if (quest == self.Quest) then
+		self:SetQuestOnLayout(quest)
+		self:InvalidateLayout()
+	end
 end
 
 function PANEL:SetQuestOnLayout(quest)
