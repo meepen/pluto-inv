@@ -250,6 +250,21 @@ function PANEL:OnMousePressed(m)
 	end
 end
 
+function PANEL:OnCursorEntered()
+	if (IsValid(self.Showcase)) then
+		self.Showcase:Remove()
+	end
+
+	self.Showcase = pluto.ui.showcase(self.Currency)
+	self.Showcase:SetPos(self:LocalToScreen(self:GetWide() + 5, 0))
+end
+
+function PANEL:OnCursorExited()
+	if (IsValid(self.Showcase)) then
+		self.Showcase:Remove()
+	end
+end
+
 function PANEL:OnRemove()
 	if (pluto.ui.selectorcallback) then
 		pluto.ui.selectorcallback(nil)
