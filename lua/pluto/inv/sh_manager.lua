@@ -85,7 +85,7 @@ end
 
 co_net.Receive("pluto_inv_data", function(len, cl)
 	if (SERVER or GetConVar("pluto_print_console"):GetBool()) then
-		pprintf("Collecting %i bits of inventory data...", len)
+		pluto.message("INV", "Collecting ", len, " bits of inventory data...")
 	end
 
 	while (not pluto.inv.readmessage(cl)) do

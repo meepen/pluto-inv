@@ -188,7 +188,7 @@ end
 function pluto.inv.readstatus()
 	pluto.inv.status = net.ReadString()
 
-	pprintf("Inventory status = %s", pluto.inv.status)
+	pluto.message("INV", "Status = ", pluto.inv.status)
 end
 
 function pluto.inv.readfullupdate()

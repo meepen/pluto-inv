@@ -222,11 +222,11 @@ function pluto.inv.sendfullupdate(ply)
 	pluto.inv.invs[ply] = nil
 	pluto.inv.loading[ply] = true
 
-	pprintf("Loading %s's inventory", ply:Nick())
+	pluto.message("INV", "Loading ", ply, "'s inventory")
 
 	pluto.inv.init(ply, function()
 		pluto.inv.loading[ply] = nil
-		pprintf("Loaded %s's [%s] inventory", ply:Nick(), ply:SteamID64())
+		pluto.message("INV", "Loaded ", ply, "'s inventory")
 		hook.Run("PlutoInventoryLoad", ply)
 		if (ply:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE) then
 			ply:StripWeapons()

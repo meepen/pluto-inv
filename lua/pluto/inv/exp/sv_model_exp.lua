@@ -17,7 +17,5 @@ hook.Add("PlutoExperienceGain", "pluto_model_exp", function(ply, exp, damager, v
 		return
 	end
 
-	pprintf "MODEL EXP!!!"
-
 	pluto.inv.addexperience(mdl.RowID, exp)
 end)

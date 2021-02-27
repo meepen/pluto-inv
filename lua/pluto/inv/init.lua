@@ -3,6 +3,8 @@ pluto.inv = pluto.inv or {
 	weapons = {}
 }
 
+pluto.addmodule("WEAP", Color(255, 128, 128))
+
 pluto.itemids = pluto.inv.items or pluto.itemids or {}
 
 local PLAYER = FindMetaTable "Player"
@@ -360,13 +362,14 @@ function pluto.inv.retrieveitems(steamid, cb)
 	steamid = pluto.db.steamid64(steamid)
 	local ply = player.GetBySteamID64(steamid)
 
+	pluto.message("WEAP", "Retrieving weapon list for ", steamid)
+
 	pluto.db.simplequery("SELECT i.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable, CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method FROM pluto_items i LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx JOIN pluto_tabs t ON t.idx = i.tab_id WHERE owner = ?", {steamid}, function(d, err)
 		if (not d) then
 			pwarnf("sql error: %s\n%s", err, debug.traceback())
 			return
 		end
 
-		pprintf("Weapon list retrieved for %s", steamid)
 
 		local weapons = {}
 
@@ -377,15 +380,18 @@ function pluto.inv.retrieveitems(steamid, cb)
 			pluto.itemids[it.RowID] = it
 		end
 
-		pprintf("Querying mods for %s", steamid)
+		pluto.message("WEAP", "Retrieved weapon list for ", steamid)
 		pluto.db.simplequery([[
 			SELECT pluto_mods.idx as idx, gun_index, modname, pluto_mods.tier as tier, roll1, roll2, roll3 FROM pluto_mods
 				JOIN pluto_items ON pluto_mods.gun_index = pluto_items.idx
 				JOIN pluto_tabs ON pluto_items.tab_id = pluto_tabs.idx
 			WHERE owner = ? ORDER BY pluto_mods.idx ASC]], {steamid}, function(d, err)
-			pprintf("Got mods for %s", steamid)
+				
+				
+			pluto.message("WEAP", "Retrieved mod list for ", steamid)
+
 			if (not d) then
-				pwarnf("sql error: %s\n%s", err, debug.traceback())
+				pluto.error("WEAP", "Error in mod retrieval callback for ", steamid, ": ", debug.traceback())
 				return
 			end
 
@@ -393,10 +399,8 @@ function pluto.inv.retrieveitems(steamid, cb)
 				pluto.inv.readmodrow(weapons, item)
 			end
 
-			pprintf("Returned mods of %s", steamid)
-
-			pprintf("Querying constellations for %s", steamid)
 			pluto.db.simplequery("SELECT nodes.* FROM pluto_item_nodes nodes INNER JOIN pluto_items i ON i.idx = nodes.item_id INNER JOIN pluto_tabs t ON i.tab_id = t.idx WHERE t.owner = ?", {steamid}, function(d, err)
+				pluto.message("WEAP", "Retrieved constellation list for ", steamid)
 				local constellations = pluto.nodes.fromrows(d)
 
 				for id, bubbles in pairs(constellations) do
@@ -543,7 +547,7 @@ function pluto.inv.printroll(crate)
 	end
 
 	for itemname, shares in SortedPairsByValue(inorder) do
-		pprintf("Item %s: %.03f%%", itemname, shares / total * 100)
+		pluto.message("INV", "Item ", itemname, string.format(": %.03f%%", shares / total * 100))
 	end
 end
 

@@ -134,7 +134,7 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 
 		if (table.Count(pluto.afk[ply]) <= 5) then
 			ply.WasAFK = true
-			pprintf("%s was afk this round", ply:Nick())
+			pluto.warn("INV", ply, " was afk this round.")
 			continue
 		end
 		ply.WasAFK = false

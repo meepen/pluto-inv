@@ -16,7 +16,8 @@ if (SERVER) then
 end
 
 
-pprintf "TTC Enabled"
+pluto.addmodule("TTC", Color(255, 128, 255))
+pluto.message("TTC", "TTC Enabled")
 
 pluto.files.load {
 	Client = {
