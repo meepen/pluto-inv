@@ -173,4 +173,27 @@ end
 function PANEL:OnCurrencyUpdated()
 end
 
+function PANEL:OnCursorEntered()
+	if (IsValid(self.Showcase)) then
+		self.Showcase:Remove()
+	end
+
+	if (self.Currency) then
+		self.Showcase = pluto.ui.showcase(self.Currency)
+		self.Showcase:SetPos(self:LocalToScreen(self:GetWide() + 5, 0))
+	end
+end
+
+function PANEL:OnCursorExited()
+	if (IsValid(self.Showcase)) then
+		self.Showcase:Remove()
+	end
+end
+
+function PANEL:OnRemove()
+	if (IsValid(self.Showcase)) then
+		self.Showcase:Remove()
+	end
+end
+
 vgui.Register("pluto_inventory_currency_selector", PANEL, "EditablePanel")

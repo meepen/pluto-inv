@@ -266,6 +266,10 @@ function PANEL:OnCursorExited()
 end
 
 function PANEL:OnRemove()
+	if (IsValid(self.Showcase)) then
+		self.Showcase:Remove()
+	end
+
 	if (pluto.ui.selectorcallback) then
 		pluto.ui.selectorcallback(nil)
 	end
