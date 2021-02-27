@@ -187,6 +187,7 @@ function PANEL:Init()
 	self.Container:DockPadding(15, 9, 15, 9)
 
 	self.StorageContainer = self.Container:Add "EditablePanel"
+	self.StorageContainer:SetName "pluto_storage_container"
 	self.Storage = self.StorageContainer:Add "pluto_storage_area"
 	self.Storage:SetStorageHandler(self)
 
@@ -203,6 +204,7 @@ function PANEL:Init()
 	self.RestOfStorage:Dock(FILL)
 
 	self.EmptyContainer = self.Container:Add "EditablePanel"
+	self.EmptyContainer:SetName "pluto_empty_container"
 
 	function self.Container.PerformLayout(s, w, h)
 		local x, y = 15, 9
@@ -346,13 +348,13 @@ function PANEL:ClearContainer()
 end
 
 function PANEL:ChangeToTab(name, noupdate)
-	if (self.ActiveTab == name) then
-		return self.ActiveTabData
-	end
-
 	local tab = self.Tabs[name]
 	if (not tab) then
 		return
+	end
+
+	if (self.ActiveTab == name) then
+		return tab.ActiveTabData
 	end
 
 	if (not noupdate) then
@@ -368,16 +370,8 @@ function PANEL:ChangeToTab(name, noupdate)
 
 	tab.Label:SetTextColor(Color(28, 198, 244))
 
-	local pnl
-	if (tab.HasStorage) then
-		pnl = self.RestOfStorage
-		self.StorageContainer:SetVisible(true)
-		self.EmptyContainer:SetVisible(false)
-	else
-		pnl = self.EmptyContainer
-		self.StorageContainer:SetVisible(false)
-		self.EmptyContainer:SetVisible(true)
-	end
+	local oldpnl = old and old.HasStorage and self.RestOfStorage or self.EmptyContainer
+	local newpnl = tab.HasStorage and self.RestOfStorage or self.EmptyContainer
 
 	if (old and old.Cache) then
 		if (not IsValid(self.CachedTabs[old.Name])) then
@@ -386,24 +380,28 @@ function PANEL:ChangeToTab(name, noupdate)
 			self.CachedTabs[old.Name] = cache
 		end
 
-		for _, child in pairs(pnl:GetChildren()) do
+		for _, child in pairs(oldpnl:GetChildren()) do
 			child:SetParent(self.CachedTabs[old.Name])
 		end
 	else
-		for _, child in pairs(pnl:GetChildren()) do
+		for _, child in pairs(oldpnl:GetChildren()) do
 			child:Remove()
 		end
 	end
+	
+	self.StorageContainer:SetVisible(tab.HasStorage)
+	self.EmptyContainer:SetVisible(not tab.HasStorage)
 
 	if (tab and tab.Cache and IsValid(self.CachedTabs[name])) then
 		for _, child in pairs(self.CachedTabs[name]:GetChildren()) do
-			child:SetParent(pnl)
+			child:SetParent(newpnl)
+			child:SetVisible(true)
 		end
 	else
-		self.ActiveTabData = tab.Populate(pnl, self.Storage)
+		tab.ActiveTabData = tab.Populate(newpnl, self.Storage)
 	end
 
-	return self.ActiveTabData
+	return tab.ActiveTabData
 end
 
 local gradient_up = Material "gui/gradient_up"
@@ -719,3 +717,21 @@ function pluto.inv.writechangetabdata(tab)
 	net.WriteColor(tab.Color)
 	net.WriteString(tab.Shape)
 end
+
+hook.Add("DrawOverlay", "test", function()
+	local hovered = vgui.GetHoveredPanel()
+	if (not IsValid(hovered)) then
+		return
+	end
+
+	surface.SetTextPos(2, 3)
+	surface.SetFont "BudgetLabel"
+	surface.SetTextColor(255, 255, 255)
+	surface.DrawText(tostring(hovered))
+
+	surface.SetDrawColor(255, 0, 0, 100)
+	local x, y = hovered:LocalToScreen(0, 0)
+	local w, h = hovered:GetSize()
+
+	surface.DrawRect(x, y, w, h)
+end)
