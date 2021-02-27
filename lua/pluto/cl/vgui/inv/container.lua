@@ -717,21 +717,3 @@ function pluto.inv.writechangetabdata(tab)
 	net.WriteColor(tab.Color)
 	net.WriteString(tab.Shape)
 end
-
-hook.Add("DrawOverlay", "test", function()
-	local hovered = vgui.GetHoveredPanel()
-	if (not IsValid(hovered)) then
-		return
-	end
-
-	surface.SetTextPos(2, 3)
-	surface.SetFont "BudgetLabel"
-	surface.SetTextColor(255, 255, 255)
-	surface.DrawText(tostring(hovered))
-
-	surface.SetDrawColor(255, 0, 0, 100)
-	local x, y = hovered:LocalToScreen(0, 0)
-	local w, h = hovered:GetSize()
-
-	surface.DrawRect(x, y, w, h)
-end)
