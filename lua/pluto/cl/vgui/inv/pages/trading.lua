@@ -316,6 +316,7 @@ function PANEL:Init()
 	self:UpdateFromTradeData()
 
 	hook.Add("PlutoTradeUpdate", self, self.PlutoTradeUpdate)
+	self:AppendText "--beginning of trade--\n"
 end
 
 function PANEL:PlutoTradeUpdate(side, what, index, data)
@@ -388,7 +389,23 @@ function PANEL:UpdateFromTradeData()
 end
 
 function PANEL:ChatInitiated()
-	self.ChatText:AppendText("hi chat has been initiated also im gay:\n")
+	self.HasChatInitiated = true
+
+	if (self.AppendedText) then
+		for _, tex in ipairs(self.AppendedText) do
+			self.ChatText:AppendText(unpack(tex, 1, tex.n))
+		end
+	end
+end
+
+function PANEL:AppendText(...)
+	if (not self.HasChatInitiated) then
+		self.AppendedText = self.AppendedText or {}
+
+		table.insert(self.AppendedText, {n = select("#", ...), ...})
+	else
+		self.ChatText:AppendText(...)
+	end
 end
 
 vgui.Register("pluto_inventory_trading_active", PANEL, "EditablePanel")
