@@ -397,6 +397,19 @@ function pluto.ui.pickupitem(item)
 			end
 		end
 
+
+		local start = CurTime()
+		hook.Add("Think", p, function(self)
+			if (start > CurTime() - 0.1) then
+				if (not input.IsMouseDown(MOUSE_LEFT)) then
+					hook.Remove("Think", p)
+				end
+				return
+			end
+
+			print "gae"
+		end)
+
 		return p
 	end
 end

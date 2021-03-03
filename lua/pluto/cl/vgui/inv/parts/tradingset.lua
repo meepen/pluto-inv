@@ -1,15 +1,17 @@
 local PANEL = {}
 
-PANEL.ItemSize = 48
-PANEL.CurrencySize = Vector(32, 48)
+PANEL.ItemSize = 36
+PANEL.CurrencySize = Vector(36, 36 + 16)
+PANEL.Padding = 3
 
 function PANEL:Init()
-	self.Inner = self:Add "EditablePanel"
-	self.Inner:SetSize(self.ItemSize * 4 + 5 * 5, self.ItemSize * 2 + 5 * 3 + self.CurrencySize.y)
+	self.Inner = self:Add "ttt_curved_panel_outline"
+	self.Inner:SetSize(self.ItemSize * 3 + self.Padding * 5, self.ItemSize * 3 + self.Padding * 6 + self.CurrencySize.y)
 
 	self.CurrencyContainer = self.Inner:Add "EditablePanel"
-	self.CurrencyContainer:SetSize(self.CurrencySize.x * 4 + 3 * 3, self.CurrencySize.y)
-	self.CurrencyContainer:SetPos(self.Inner:GetWide() - self.CurrencyContainer:GetWide() - 6, 0)
+	self.CurrencyContainer:Dock(TOP)
+	self.CurrencyContainer:SetTall(self.CurrencySize.y)
+	self.CurrencyContainer:DockMargin(self.Padding, self.Padding, self.Padding, self.Padding)
 
 	self.CurrencySelectors = {}
 
@@ -18,51 +20,34 @@ function PANEL:Init()
 		self.CurrencySelectors[i] = selector
 		selector:Dock(LEFT)
 		selector:SetWide(self.CurrencySize.x)
-		selector:DockMargin(0, 0, 3, 0)
+		selector:DockMargin(0, 0, self.Padding, 0)
 		selector:ShowAmount(true)
-	end
-
-	self.Label = self.Inner:Add "pluto_label"
-	self.Label:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.Label:SetFont "pluto_inventory_font"
-	self.Label:SetTextColor(Color(255, 255, 255))
-
-	self.ItemContainer = self.Inner:Add "ttt_curved_panel_outline"
-	self.ItemContainer:SetColor(Color(95, 96, 102))
-	self.ItemContainer:SetCurve(4)
-	self.ItemContainer:Dock(BOTTOM)
-	self.ItemContainer:SetTall(self.ItemSize * 2 + 5 * 3 + 4)
-	function self.ItemContainer.AddToStencil(s, w, h)
-		local x1, y1 = s:ScreenToLocal(self.Label:LocalToScreen(0, 0))
-		local x2, y2 = s:ScreenToLocal(self.Label:LocalToScreen(self.Label:GetSize()))
-		surface.DrawRect(x1 - 2, y1, x2 - x1 + 4, y2 - y1)
-
-		for _, selector in ipairs(self.CurrencySelectors) do
-			x1, y1 = s:ScreenToLocal(selector:LocalToScreen(0, 0))
-			x2, y2 = s:ScreenToLocal(selector:LocalToScreen(selector:GetSize()))
-			surface.DrawRect(x1, y1, x2 - x1, y2 - y1)
-		end
 	end
 
 	self.ItemLines = {}
 
-	self.ItemLines[2] = self.ItemContainer:Add "EditablePanel"
+	self.ItemLines[3] = self.Inner:Add "EditablePanel"
+	self.ItemLines[3]:Dock(BOTTOM)
+	self.ItemLines[3]:SetTall(self.ItemSize)
+	self.ItemLines[3]:DockMargin(self.Padding, self.Padding, self.Padding, self.Padding)
+
+	self.ItemLines[2] = self.Inner:Add "EditablePanel"
 	self.ItemLines[2]:Dock(BOTTOM)
 	self.ItemLines[2]:SetTall(self.ItemSize)
-	self.ItemLines[2]:DockMargin(5, 5, 5, 5)
+	self.ItemLines[2]:DockMargin(self.Padding, self.Padding, self.Padding, self.Padding)
 
-	self.ItemLines[1] = self.ItemContainer:Add "EditablePanel"
+	self.ItemLines[1] = self.Inner:Add "EditablePanel"
 	self.ItemLines[1]:Dock(BOTTOM)
 	self.ItemLines[1]:SetTall(self.ItemSize)
-	self.ItemLines[1]:DockMargin(5, 5, 5, 0)
+	self.ItemLines[1]:DockMargin(self.Padding, self.Padding, self.Padding, 0)
 
 	self.ItemContainers = {}
 
-	for i = 1, 8 do
-		local item = self.ItemLines[math.ceil(i / 4)]:Add "pluto_inventory_item"
+	for i = 1, 9 do
+		local item = self.ItemLines[math.ceil(i / 3)]:Add "pluto_inventory_item"
 		item:SetSize(self.ItemSize, self.ItemSize)
 		item:Dock(LEFT)
-		item:DockMargin(0, 0, 5, 0)
+		item:DockMargin(0, 0, self.Padding, 0)
 
 		self.ItemContainers[i] = item
 	end
@@ -70,16 +55,20 @@ function PANEL:Init()
 	self:SizeToContents()
 
 	self:SetText "Trading Set"
+
+	function self.Inner:PerformLayout()
+		self:Center()
+		self:InvalidateParent()
+	end
 end
 
 function PANEL:SetText(text)
-	self.Label:SetText(text)
-	self.Label:SizeToContents()
-	self.Label:SetPos(6, self.Inner:GetTall() - self.ItemContainer:GetTall() - self.Label:GetTall() + 5)
+	--self.Label:SetText(text)
+	--self.Label:SizeToContents()
+	--self.Label:SetPos(6, self.Inner:GetTall() - self.ItemContainer:GetTall() - self.Label:GetTall() + 5)
 end
 
 function PANEL:PerformLayout(w, h)
-	self.Inner:Center()
 end
 
 function PANEL:SizeToContentsY()
@@ -128,4 +117,4 @@ function PANEL:GetItem(index)
 end
 
 
-vgui.Register("pluto_inventory_trading_set", PANEL, "EditablePanel")
+vgui.Register("pluto_inventory_trading_set", PANEL, "ttt_curved_panel_outline")

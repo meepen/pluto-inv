@@ -587,7 +587,6 @@ function PANEL:Init()
 	self:SetColor(color_black)
 	local pad = curve(0) / 2
 	self.Inner:SetCurve(pad)
-	self:DockPadding(pad, pad, pad, pad)
 end
 
 function PANEL:SetItem(item)

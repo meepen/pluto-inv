@@ -165,7 +165,7 @@ function pluto.inv.readtradeupdate(ply)
 
 	local data
 	if (what == "currency") then
-		if (index == 0 or index > 4) then
+		if (index == 0 or index > 3) then
 			return
 		end
 
@@ -176,7 +176,7 @@ function pluto.inv.readtradeupdate(ply)
 		end
 
 	elseif (what == "item") then
-		if (index == 0 or index > 8) then
+		if (index == 0 or index > 9) then
 			return
 		end
 

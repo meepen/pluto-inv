@@ -49,4 +49,8 @@ function PANEL:Paint(w, h)
 	surface.DrawTexturedRectUV(0, 0, w - 1, h - 1, -0.5 / w, -0.5 / h, 1 - 0.5 / w, 1 - 0.5 / h)
 end
 
+function PANEL:PerformLayout(w, h)
+	self:Center()
+end
+
 vgui.Register("pluto_scoreboard_header", PANEL, "EditablePanel")

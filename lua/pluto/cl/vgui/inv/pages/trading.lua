@@ -195,13 +195,62 @@ local PANEL = {}
 PANEL.ItemSize = 48
 
 function PANEL:Init()
-	self.IncomingNew = self:Add "pluto_inventory_trading_set"
-	self.IncomingNew:Dock(TOP)
-	self.IncomingNew:SetText "They offer:"
+	self.IncomingOutgoingContainer = self:Add "EditablePanel"
+	self.IncomingOutgoingContainer:Dock(TOP)
 
-	self.OutgoingNew = self:Add "pluto_inventory_trading_set"
-	self.OutgoingNew:Dock(TOP)
+	self.IncomingNew = self.IncomingOutgoingContainer:Add "pluto_inventory_trading_set"
+	self.IncomingNew:Dock(LEFT)
+	self.IncomingNew:SetText "They offer:"
+	self.IncomingOutgoingContainer:SetTall(self.IncomingNew:GetTall())
+
+	self.OutgoingNew = self.IncomingOutgoingContainer:Add "pluto_inventory_trading_set"
+	self.OutgoingNew:Dock(RIGHT)
 	self.OutgoingNew:SetText "You offer:"
+
+	self.ChatContainer = self:Add "ttt_curved_panel_outline"
+	self.ChatContainer:Dock(FILL)
+	self.ChatContainer:DockMargin(0, 14, 0, 14)
+	self.ChatContainer:SetColor(Color(95, 96, 102))
+	self.ChatContainer:SetZPos(1)
+
+	self.Chat = self.ChatContainer:Add "ttt_curved_panel"
+	self.Chat:SetColor(Color(44, 46, 56))
+	self.Chat:Dock(FILL)
+	self.Chat:DockPadding(3, 3, 3, 3)
+
+	self.ChatText = self.Chat:Add "pluto_text"
+	self.ChatText:Dock(FILL)
+	self.ChatText:SetDefaultFont "pluto_inventory_font"
+	self.ChatText:SetDefaultTextColor(Color(255, 255, 255))
+	self.ChatText:SetDefaultRenderSystem(pluto.fonts.systems.shadow)
+
+
+	-- TOOD(meep): ask lovely for design
+	self.ChatInputContainer = self.Chat:Add "ttt_curved_panel_outline"
+	self.ChatInputContainer:Dock(BOTTOM)
+	self.ChatInputContainer:DockMargin(0, 3, 0, 0)
+
+
+	self.ButtonContainer = self:Add "EditablePanel"
+	self.ButtonContainer:SetZPos(0)
+	self.ButtonContainer:Dock(BOTTOM)
+
+	self.AcceptButton = self.ButtonContainer:Add "pluto_inventory_button"
+	self.AcceptButton:SetColor(Color(41, 150, 39), Color(67, 195, 50))
+	self.AcceptButton:SetCurve(4)
+	self.AcceptButton:SetText "Accept"
+
+	self.CancelButton = self.ButtonContainer:Add "pluto_inventory_button"
+	self.CancelButton:SetColor(Color(175, 30, 30), Color(237, 28, 36))
+	self.CancelButton:SetCurve(4)
+	self.CancelButton:SetText "Cancel"
+
+	function self.ButtonContainer.PerformLayout(s, w, h)
+		local x = w / 2
+
+		self.CancelButton:SetPos(x + 5, h / 2 - self.CancelButton:GetTall() / 2)
+		self.AcceptButton:SetPos(x - self.AcceptButton:GetWide() - 5, h / 2 - self.CancelButton:GetTall() / 2)
+	end
 
 	function self.OutgoingNew.OnCurrencyChanged(s, index, currency, amount)
 		if (IsValid(pluto.ui.pnl)) then
@@ -211,7 +260,7 @@ function PANEL:Init()
 	end
 
 
-	for i = 1, 4 do
+	for i = 1, 3 do
 		local currencypnl = self.OutgoingNew:GetCurrencyPanel(i)
 
 		function currencypnl.OnCurrencyUpdated()
@@ -226,7 +275,7 @@ function PANEL:Init()
 		currencypnl:AcceptAmount(true)
 	end
 
-	for i = 1, 8 do
+	for i = 1, 9 do
 		local itempnl = self.OutgoingNew:GetItemPanel(i)
 
 		function itempnl.CanClickWith(s, other)
@@ -299,10 +348,10 @@ function PANEL:UpdateFromTradeData()
 	self.Updating = true
 	local tradedata = pluto.trades.getdata()
 
-	for i = 1, 8 do
+	for i = 1, 9 do
 		self.OutgoingNew:SetItem(i, tradedata.outgoing.item[i])
 	end
-	for i = 1, 4 do
+	for i = 1, 3 do
 		local dat = tradedata.outgoing.currency[i]
 		if (not dat) then
 			continue
@@ -311,10 +360,10 @@ function PANEL:UpdateFromTradeData()
 		self.OutgoingNew:SetCurrency(i, dat.What, dat.Amount)
 	end
 
-	for i = 1, 8 do
+	for i = 1, 9 do
 		self.IncomingNew:SetItem(i, tradedata.incoming.item[i])
 	end
-	for i = 1, 4 do
+	for i = 1, 3 do
 		local dat = tradedata.incoming.currency[i]
 		if (not dat) then
 			continue
