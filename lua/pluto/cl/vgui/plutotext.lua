@@ -254,6 +254,10 @@ function PANEL:GetHoveredElement()
 
 	if (not line and my > 0) then
 		line = self.Lines[#self.Lines]
+		if (not line) then
+			return
+		end
+
 		local pnl = line[#line]
 		return pnl, line, utf8.force(pnl:GetText()):len()
 	elseif (not line and my <= 0) then
@@ -381,6 +385,10 @@ function PANEL:GetDraggedElements()
 		endpnl, endline, endele = self:GetHoveredElement()
 	end
 
+	if (not endline) then
+		return
+	end
+
 	if (endline.LineNumber < startline.LineNumber or endline == startline and endpnl.PanelNumber < startpnl.PanelNumber or endpnl == startpnl and endele < startele) then
 		startpnl, startline, startele, endpnl, endline, endele = endpnl, endline, endele, startpnl, startline, startele
 	end
@@ -406,6 +414,10 @@ function PANEL:PaintOver(w, h)
 	if (self.StartDrag) then
 		surface.SetDrawColor(255, 0, 0, 100)
 		local startpnl, startline, startele, endpnl, endline, endele = self:GetDraggedElements()
+		if (not startpnl) then
+			return
+		end
+
 		local sx, sy = startpnl:GetPos()
 		local sw, sh = startpnl:GetSize()
 		local ex, ey = endpnl:GetPos()
