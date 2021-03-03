@@ -224,6 +224,18 @@ function PANEL:Init()
 	self.ChatText:SetDefaultTextColor(Color(255, 255, 255))
 	self.ChatText:SetDefaultRenderSystem(pluto.fonts.systems.shadow)
 
+	local oldlayout = self.ChatText.PerformLayout
+	function self.ChatText.PerformLayout(s, w, h)
+		if (oldlayout) then
+			oldlayout(s, w, h)
+		end
+
+		if (not s.HasInitiated) then
+			s.HasInitiated = true
+			self:ChatInitiated()
+		end
+	end
+
 
 	-- TOOD(meep): ask lovely for design
 	self.ChatInputContainer = self.Chat:Add "ttt_curved_panel_outline"
@@ -373,6 +385,10 @@ function PANEL:UpdateFromTradeData()
 	end
 
 	self.Updating = false
+end
+
+function PANEL:ChatInitiated()
+	self.ChatText:AppendText("hi chat has been initiated also im gay:\n")
 end
 
 vgui.Register("pluto_inventory_trading_active", PANEL, "EditablePanel")

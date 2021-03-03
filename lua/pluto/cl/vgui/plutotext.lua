@@ -262,6 +262,10 @@ function PANEL:GetHoveredElement()
 		return pnl, line, utf8.force(pnl:GetText()):len()
 	elseif (not line and my <= 0) then
 		line = self.Lines[1]
+		if (not line) then
+			return
+		end
+
 		local pnl = line[#line]
 		return pnl, line, 1
 	end
