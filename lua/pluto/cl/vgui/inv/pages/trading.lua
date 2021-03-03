@@ -200,12 +200,12 @@ function PANEL:Init()
 
 	self.IncomingNew = self.IncomingOutgoingContainer:Add "pluto_inventory_trading_set"
 	self.IncomingNew:Dock(LEFT)
-	self.IncomingNew:SetText "They offer:"
+	self.IncomingNew:SetText "Their offer"
 	self.IncomingOutgoingContainer:SetTall(self.IncomingNew:GetTall())
 
 	self.OutgoingNew = self.IncomingOutgoingContainer:Add "pluto_inventory_trading_set"
 	self.OutgoingNew:Dock(RIGHT)
-	self.OutgoingNew:SetText "You offer:"
+	self.OutgoingNew:SetText "Your offer"
 
 	self.ChatContainer = self:Add "ttt_curved_panel_outline"
 	self.ChatContainer:Dock(FILL)
@@ -329,7 +329,7 @@ function PANEL:PlutoTradeUpdate(side, what, index, data)
 		if (data) then
 			lookup:SetCurrency(index, data.What, data.Amount)
 		else
-			currency:SetCurrency(index)
+			lookup:SetCurrency(index)
 		end
 
 		self.Updating = false
