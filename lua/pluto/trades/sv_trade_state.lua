@@ -59,7 +59,21 @@ pluto.trades.mt = pluto.trades.mt or {
 local TRADE = pluto.trades.mt.__index
 
 function TRADE:Set(who, what, index, data)
-	self[who][what][index] = data
+	local recv = self[who][what]
+	if (recv.lookup and recv.lookup[data] and recv.lookup[data] ~= index) then
+		-- TODO(meep): don't allow and send update
+		return
+	end
+
+	local old = recv[index]
+	if (recv.lookup and old) then
+		recv.lookup[old] = nil
+	end
+
+	recv[index] = data
+	if (recv.lookup and data) then
+		recv.lookup[data] = index
+	end
 
 	pluto.inv.message(self[who].other)
 		:write("tradeupdate", who, what, index, data)
@@ -120,13 +134,21 @@ function pluto.trades.start(ply, oply)
 
 	local tradedata = setmetatable({
 		[ply] = {
-			item = {},
-			currency = {},
+			item = {
+				lookup = {},
+			},
+			currency = {
+				lookup = {},
+			},
 			other = oply,
 		},
 		[oply] = {
-			item = {},
-			currency = {},
+			item = {
+				lookup = {},
+			},
+			currency = {
+				lookup = {},
+			},
 			other = ply,
 		},
 		messages = {},

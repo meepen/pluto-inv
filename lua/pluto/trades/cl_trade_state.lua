@@ -1,30 +1,31 @@
 pluto.trades = pluto.trades or {}
 pluto.trades.status = pluto.trades.status or {}
 
-pluto.trades.data = pluto.trades.data or {
-	incoming = {
-		item = {},
-		currency = {},
-	},
-	outgoing = {
-		item = {},
-		currency = {},
-	},
-	messages = {},
-	otherply = nil,
-	Clear = function(self)
-		self.outgoing = {
-			item = {},
-			currency = {},
-		}
-		self.incoming = {
-			item = {},
-			currency = {},
-		}
-		self.messages = {}
-		self.otherply = nil
-	end,
-}
+if (not pluto.trades.data) then
+	pluto.trades.data = {
+		Clear = function(self)
+			self.outgoing = {
+				item = {
+					lookup = {},
+				},
+				currency = {
+					lookup = {},
+				},
+			}
+			self.incoming = {
+				item = {
+					lookup = {},
+				},
+				currency = {
+					lookup = {},
+				},
+			}
+			self.messages = {}
+			self.otherply = nil
+		end,
+	}
+	pluto.trades.data:Clear()
+end
 
 function pluto.trades.getinboundrequests()
 	local inbound = {}

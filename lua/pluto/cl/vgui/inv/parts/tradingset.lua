@@ -61,6 +61,7 @@ function PANEL:Init()
 	self.ItemLines[1]:DockMargin(self.Padding, self.Padding, self.Padding, 0)
 
 	self.ItemContainers = {}
+	self.Lookup = {}
 
 	for slot = 1, 9 do
 		local itempnl = self.ItemLines[math.ceil(slot / 3)]:Add "pluto_inventory_item"
@@ -69,6 +70,15 @@ function PANEL:Init()
 		itempnl:DockMargin(0, 0, self.Padding, 0)
 
 		function itempnl.OnSetItem(s, item)
+			if (s.OldItem) then
+				self.Lookup[s.OldItem] = nil
+			end
+
+			if (item) then
+				self.Lookup[item] = slot
+			end
+
+			s.OldItem = item
 			self:OnItemUpdated(slot, item)
 		end
 
@@ -87,8 +97,8 @@ end
 function PANEL:AcceptInput()
 	for slot, itempnl in ipairs(self.ItemContainers) do
 		function itempnl.CanClickWith(s, other)
-			local item = other.Item
-			return item
+			local i = other.Item
+			return not self.Lookup[i] or self.Lookup[i] == slot
 		end
 		function itempnl.ClickedWith(s, other)
 			s:SetItem(other.Item)

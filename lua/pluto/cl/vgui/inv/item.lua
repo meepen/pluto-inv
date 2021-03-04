@@ -407,7 +407,7 @@ function pluto.ui.pickupitem(item)
 				return
 			end
 
-			print "gae"
+			-- TODO(meep): drag
 		end)
 
 		return p

@@ -337,11 +337,12 @@ function PANEL:Init()
 
 	self:UpdateFromTradeData()
 
-	hook.Add("PlutoTradeUpdate", self, self.PlutoTradeUpdate)
 	self:AppendText "--beginning of trade--\n"
 	for _, msg in ipairs(pluto.trades.data.messages) do
 		self:AddTradeMessage(msg)
 	end
+
+	hook.Add("PlutoTradeUpdate", self, self.PlutoTradeUpdate)
 	hook.Add("PlutoTradeMessage", self, self.AddTradeMessage)
 end
 
