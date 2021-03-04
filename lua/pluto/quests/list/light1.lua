@@ -24,27 +24,18 @@ function QUEST:Init(data)
 	end)
 end
 
-function QUEST:Reward(data)
-	pluto.db.transact(function(db)
-		local new_item = pluto.inv.generatebufferweapon(db, data.Player, "unique", "weapon_rb566_lightsaber")
-		if (not new_item) then
-			mysql_rollback(db)
-			return
-		end
-		mysql_commit(db)
+function QUEST:Reward(db, data)
+	-- TODO(meep): update code possibly needed
+	local quest = pluto.quests.give(data.Player, "light2", db)
+	local new_item = pluto.inv.generatebufferweapon(db, data.Player, "unique", "weapon_rb566_lightsaber")
+	if (not new_item) then
+		mysql_rollback(db)
+		return false
+	end
 
-		data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "!")
-	end)
-	
-	pluto.db.transact(function(db)
-		local quest = pluto.quests.give(data.Player, "light3", db)
-		if (quest) then
-			pluto.inv.message(data.Player)
-				:write("quest", quest)
-				:send()
-		end
-		mysql_commit(db)
-	end)
+	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "!")
+
+	return true
 end
 
 function QUEST:GetProgressNeeded()

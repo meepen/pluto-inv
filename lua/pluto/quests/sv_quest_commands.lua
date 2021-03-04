@@ -16,7 +16,7 @@ concommand.Add("pluto_test_quest", function(ply, cmd, args)
 			Player = ply
 		}
 	elseif (quest.RewardPool) then
-		pluto.quests.poolreward(pluto.quests.getpoolreward(quest.RewardPool), { QUEST = quest , Player = ply})
+		--TODO(meep): this requires db now pluto.quests.poolreward(pluto.quests.getpoolreward(quest.RewardPool), { QUEST = quest , Player = ply})
 	else
 		ply:ChatPrint("No quest reward for id ", tostring(args[1]))
 	end
@@ -32,28 +32,14 @@ concommand.Add("pluto_test_pool", function(ply, cmd, args)
 	ply:ChatPrint("pluto_test_pool: Not finished")
 end)
 
-concommand.Add("pluto_add_quest", function(ply, cmd, args)
+concommand.Add("pluto_quests_repopulate", function(ply, cmd, args)
 	if (not pluto.cancheat(ply)) then
 		return
 	end
 
-	local target
-
-	for type, quests in pairs(pluto.quests.byperson[ply] or {}) do
-		for _, quest in pairs(quests) do
-			if (quest.QUEST.ID == args[1]) then
-				target = quest
-				break
-			end
-		end
-	end
-
-	if (IsValid(target)) then
-		local progress = tonumber(args[2]) or 1000
-		ply:ChatPrint("Found quest. Adding " .. progress .. " progress.")
-
-		target:UpdateProgress(progress)
-	end
+	pluto.db.instance(function(db)
+		pluto.quests.repopulatequests(db, ply)
+	end)
 end)
 
 concommand.Add("pluto_delete_quests", function(ply, cmd, args)

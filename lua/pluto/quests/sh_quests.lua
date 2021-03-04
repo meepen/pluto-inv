@@ -15,9 +15,8 @@ pluto.quests.types = {
 		Name = "Hourly",
 		RewardPool = "hourly",
 		Time = 60 * 60,
-		Amount = 4,
-		Cooldown = 60 * 7.5,
-		-- #83F52C	
+		Amount = 3,
+		Cooldown = 60 * 0.1, -- TODO(meep): change this back to 7.5 minutes
 		Color = HexColor "7ef524",
 	},
 	{

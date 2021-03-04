@@ -105,7 +105,6 @@ function pluto.trades.start(ply, oply)
 		end
 	end
 
-	-- TODO(meep): cancel all outbound
 	local tradedata = setmetatable({
 		[ply] = {
 			item = {},

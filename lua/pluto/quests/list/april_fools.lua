@@ -37,17 +37,16 @@ function QUEST:Init(data)
 	end)
 end
 
-function QUEST:Reward(data)
-	pluto.db.transact(function(db)
-		local new_item = pluto.inv.generatebufferweapon(db, data.Player, "unique", "weapon_ttt_jiggle_crowbar")
-		if (not new_item) then
-			mysql_rollback(db)
-			return
-		end
-		mysql_commit(db)
+function QUEST:Reward(db, data)
+	local new_item = pluto.inv.generatebufferweapon(db, data.Player, "unique", "weapon_ttt_jiggle_crowbar")
+	if (not new_item) then
+		mysql_rollback(db)
+		return false
+	end
 
-		data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "!")
-	end)
+	data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", self.Color, self.Name, white_text, "!")
+
+	return true
 end
 
 function QUEST:GetProgressNeeded()

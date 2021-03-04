@@ -1,15 +1,16 @@
 
 pluto.quests.rewardhandlers = {
 	currency = {
-		reward = function(self, data)
+		reward = function(self, db, data)
+			mysql_cmysql()
+
             local cur = self.Currency and pluto.currency.byname[self.Currency] or pluto.currency.random()
             local amount = self.Amount or 1
 
-			pluto.db.instance(function(db)
-				pluto.inv.addcurrency(db, data.Player, self.Currency, amount)
-				data.Player:ChatPrint(white_text, "You have received ", amount, " ", cur, amount == 1 and "" or "s", white_text, " for completing ", data.QUEST.Color, data.QUEST.Name, white_text, "!")
-			end)
+			pluto.inv.addcurrency(db, data.Player, self.Currency, amount)
+			data.Player:ChatPrint(white_text, "You have received ", amount, " ", cur, amount == 1 and "" or "s", white_text, " for completing ", data:GetQuestData().Color, data:GetQuestData().Name, white_text, "!")
 
+			return true
 		end,
         small = function(self)
             if (self.Small) then
@@ -23,7 +24,9 @@ pluto.quests.rewardhandlers = {
         end,
 	},
 	weapon = {
-		reward = function(self, data)
+		reward = function(self, db, data)
+			mysql_cmysql()
+
 			local classname = self.ClassName or (self.Grenade and pluto.weapons.randomgrenade()) --[[or (self.Melee and pluto.weapons.randommelee())]] or pluto.weapons.randomgun()
 
 			local tier = self.Tier or pluto.tiers.filter(baseclass.Get(classname), function(t)
@@ -59,12 +62,11 @@ pluto.quests.rewardhandlers = {
 				pluto.weapons.addmod(new_item, mod.InternalName)
 			end
 
-			pluto.db.transact(function(db)
-				new_item.CreationMethod = "QUEST"
-				pluto.inv.savebufferitem(db, data.Player, new_item)
-				mysql_commit(db)
-				data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", data.QUEST.Color, data.QUEST.Name, white_text, "!")
-			end)
+			new_item.CreationMethod = "QUEST"
+			pluto.inv.savebufferitem(db, data.Player, new_item)
+			data.Player:ChatPrint(white_text, "You have received ", startswithvowel(new_item.Tier.Name) and "an " or "a ", new_item, white_text, " for completing ", data:GetQuestData().Color, data:GetQuestData().Name, white_text, "!")
+
+			return true
 		end,
 		small = function(self)
 			if (self.Small) then
@@ -108,7 +110,9 @@ pluto.quests.rewardhandlers = {
 		end,
 	},
 	shard = {
-		reward = function(self, data)
+		reward = function(self, db, data)
+			mysql_cmysql()
+
 			local tier = self.Tier or pluto.tiers.filter(baseclass.Get(pluto.weapons.randomgun()), function(t)
 				if (self.ModMin and t.affixes < self.ModMin) then
 					return false
@@ -121,13 +125,12 @@ pluto.quests.rewardhandlers = {
 				return true
 			end).InternalName
 
-			pluto.db.transact(function(db)
-				pluto.inv.generatebuffershard(db, data.Player, "QUEST", tier)
-				mysql_commit(db)
-				tier = pluto.tiers.byname[tier]
-	
-				data.Player:ChatPrint(white_text, "You have received ", startswithvowel(tier.Name) and "an " or "a ", tier.Color, tier.Name, " Tier Shard", white_text, " for completing ", data.QUEST.Color, data.QUEST.Name, white_text, "!")
-			end)
+			pluto.inv.generatebuffershard(db, data.Player, "QUEST", tier)
+			tier = pluto.tiers.byname[tier]
+
+			data.Player:ChatPrint(white_text, "You have received ", startswithvowel(tier.Name) and "an " or "a ", tier.Color, tier.Name, " Tier Shard", white_text, " for completing ", data:GetQuestData().Color, data:GetQuestData().Name, white_text, "!")
+
+			return true
 		end,
 		small = function(self)
             if (self.Small) then
@@ -407,11 +410,14 @@ pluto.quests.rewards = {
 }
 
 
-function pluto.quests.poolreward(pick, quest)
-	if (quest.QUEST.Reward) then
-		return quest.QUEST.Reward(quest)
+function pluto.quests.poolreward(pick, db, quest)
+	mysql_cmysql()
+
+	local QUEST = quest:GetQuestData()
+	if (QUEST.Reward) then
+		return QUEST.Reward(quest)
 	end
-	return pluto.quests.rewardhandlers[pick.Type].reward(pick, quest)
+	return pluto.quests.rewardhandlers[pick.Type].reward(pick, db, quest)
 end
 
 function pluto.quests.poolrewardtext(pick, quest)

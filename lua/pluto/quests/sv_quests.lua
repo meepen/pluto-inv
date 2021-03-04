@@ -16,7 +16,7 @@ end
 pluto.quests.players = pluto.quests.players or setmetatable({}, {
 	__index = function(self, ply)
 		self[ply] = setmetatable({
-			init = false,
+			init = false, -- set in pluto.quests.init
 			callbacks = {}
 		}, pluto.quests.player_mt)
 
@@ -24,7 +24,7 @@ pluto.quests.players = pluto.quests.players or setmetatable({}, {
 	end,
 	__call = function(self, ply, cb)
 		local t = self[ply]
-		if (t.init) then
+		if (t.init and cb) then
 			return cb(t)
 		elseif (cb) then
 			table.insert(t.callbacks, cb)
@@ -60,8 +60,9 @@ function pluto.quests.populate(ply, data)
 	quest.Player = ply
 	quest.RewardData = util.JSONToTable(data.reward)
 
-	-- TODO(meep): init, timer to death
-
+	pluto.message("QUEST", "Initializing quest " .. quest.QuestID)
+	quest:GetQuestData():Init(quest)
+	quest:UpdateEndTime()
 
 	return quest
 end
@@ -138,21 +139,80 @@ function pluto.quests.generate(db, ply, questid)
 		reward = util.TableToJSON(reward),
 	})
 
+	quest:NotifyUpdate()
+	pluto.message("QUEST", "Notified ", quest)
+
 	return quest
+end
+
+function pluto.quests.repopulatequests(db, ply)
+	mysql_cmysql()
+
+	local sid = ply:SteamID64()
+
+	mysql_stmt_run(db, "SELECT idx from pluto_quests_new WHERE owner = ? FOR UPDATE", sid)
+	mysql_stmt_run(db, "DELETE FROM pluto_quests_new WHERE owner = ? AND expiry_time < CURRENT_TIMESTAMP + INTERVAL 5 SECOND", sid)
+
+	local types_have, have = setmetatable({}, {__index = function() return 0 end}), {}
+
+	local quests = pluto.quests.players(ply)
+	if (not quests.init) then
+		return
+	end
+
+	for _, quest in ipairs(quests) do
+		have[quest:GetQuestData().ID] = true
+		types_have[quest:GetQuestTypeData()] = types_have[quest:GetQuestTypeData()] + 1
+	end
+
+	for _, type in ipairs(pluto.quests.types) do
+		if (types_have[type.RewardPool] >= type.Amount) then
+			continue
+		end
+
+		local quests_of_type = pluto.quests.oftype(type.RewardPool)
+		local have = quests:OfType(type.RewardPool)
+
+		-- clear already gotten ones
+		for i = #quests_of_type, 1, -1 do
+			if (have[quests_of_type[i].ID]) then
+				table.remove(quests_of_type, i)
+			end
+		end
+
+		-- select ones to add
+		
+		for i = types_have[type] + 1, type.Amount do
+			local selected, idx = table.Random(quests_of_type)
+			table.remove(quests_of_type, idx)
+			if (not pluto.quests.generate(db, ply, selected)) then
+				pluto.warn("QUEST", "Couldn't add quest to player: ", selected.ID)
+			end
+		end
+	end
+
+	pluto.inv.message(ply)
+		:write "quests"
+		:send()
 end
 
 function pluto.quests.init(ply, cb)
 	if (not cb) then
 		local trace = debug.traceback()
 		cb = function()
-			pluto.warn("QUEST", "No callback or pluto.quests.init: \n", trace)
+			pluto.warn("QUEST", "No callback in pluto.quests.init: \n", trace)
 		end
 	end
 	local quests = pluto.quests.players(ply)
 
 	if (quests.init) then
 		return cb(quests)
+	elseif (not quests.init and quests.loading) then
+		table.insert(quests.callbacks, cb)
+		return
 	end
+
+	quests.loading = true
 
 	local sid = pluto.db.steamid64(ply)
 	
@@ -161,7 +221,7 @@ function pluto.quests.init(ply, cb)
 	pluto.db.transact(function(db)
 		-- freeze related entries and delete old ones
 		mysql_stmt_run(db, "SELECT idx from pluto_quests_new WHERE owner = ? FOR UPDATE", sid)
-		mysql_stmt_run(db, "DELETE FROM pluto_quests_new WHERE owner = ? AND expiry_time < CURRENT_TIMESTAMP", sid)
+		mysql_stmt_run(db, "DELETE FROM pluto_quests_new WHERE owner = ? AND expiry_time < CURRENT_TIMESTAMP + INTERVAL 5 SECOND", sid)
 		local dat, err = mysql_stmt_run(db, "SELECT idx, quest_name, CAST(reward as CHAR(1024)) as reward, CAST(type as CHAR(32)) as type, current_progress, total_progress, TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, expiry_time) as expire_diff FROM pluto_quests_new WHERE owner = ?", sid)
 
 		local types_have = setmetatable({}, {__index = function() return 0 end})
@@ -222,17 +282,48 @@ function pluto.quests.init(ply, cb)
 
 		mysql_commit(db)
 
+		quests.init = true
+
+		for _, callback in ipairs(quests.callbacks) do
+			callback(quests)
+		end
+
 		pluto.message("QUEST", "Data loaded for ", ply)
 
 		pluto.inv.message(ply)
 			:write "quests"
 			:send()
+
 		cb(quests)
 	end)
 end
 
-function pluto.quests.delete(idx)
-	-- TODO(meep)
+function pluto.quests.delete(quest)
+	if (not IsValid(quest.Player)) then
+		return
+	end
+
+	pluto.quests.players(quest.Player, function(quests)
+		local removed = false
+		for i, other in ipairs(quests) do
+			if (other == quest) then
+				table.remove(quests, i)
+				removed = true
+				break
+			end
+		end
+
+		if (removed) then
+			pluto.message("QUEST", "Adding quest to ", quest.Player)
+			pluto.db.instance(function(db)
+				pluto.quests.repopulatequests(db, quest.Player)
+			end)
+		end
+
+		pluto.inv.message(quest.Player)
+			:write "quests"
+			:send()
+	end)
 end
 
 function pluto.quests.reset(ply)
@@ -242,8 +333,10 @@ end
 
 -- while on dev server, reload file
 
+pluto.quests.byid = {}
 for _, ply in pairs(player.GetHumans()) do
-	if (ply:GetUserGroup() == "meepen") then 
+	if (ply:GetUserGroup() == "meepen") then
+		pluto.quests.players[ply] = nil
 		pluto.quests.init(ply)
 	end
 end
