@@ -12,9 +12,22 @@ function PANEL:Init()
 	self:SelectTab(last_active_tab:GetString())
 
 	self.QuestList = {}
+	self.TabScrolls = {}
 
 	hook.Add("PlutoActiveQuestsUpdated", self, self.PlutoActiveQuestsUpdated)
 	self:PlutoActiveQuestsUpdated()
+end
+
+function PANEL:GetTabScroll(name)
+	if (self.TabScrolls[name]) then
+		return self.TabScrolls[name]
+	end
+
+	local scroll = self:GetTab(name):Add "DScrollPanel"
+	self.TabScrolls[name] = scroll
+	scroll:Dock(FILL)
+
+	return scroll
 end
 
 function PANEL:AddQuest(quest)
@@ -24,9 +37,11 @@ function PANEL:AddQuest(quest)
 		error("no tab " .. tabname)
 	end
 
+	local scroll = self:GetTabScroll(tabname)
+
 	local questpnl = self.QuestList[quest.ID]
 	if (not IsValid(questpnl)) then
-		questpnl = tab:Add "pluto_inventory_quest"
+		questpnl = scroll:Add "pluto_inventory_quest"
 		questpnl:Dock(TOP)
 		questpnl:DockMargin(0, 0, 0, 4)
 		self.QuestList[quest.ID] = questpnl

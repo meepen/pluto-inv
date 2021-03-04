@@ -128,19 +128,17 @@ function pluto.quests.generate(db, ply, questid)
 		return false
 	end
 
+	local quest = pluto.quests.populate(ply, {
+		idx = dat.LAST_INSERT_ID,
+		type = quest.RewardPool,
+		quest_name = quest.ID,
+		current_progress = 0,
+		total_progress = progress_needed,
+		expire_diff = type_data.Time,
+		reward = util.TableToJSON(reward),
+	})
 
-	-- TODO(meep): generate and insert
-	--[[
-		quest.Type = data.type
-		quest.QuestID = data.quest_name
-		quest.ProgressLeft = data.total_progress - data.current_progress
-		quest.TotalProgress = data.total_progress
-		quest.EndTime = os.time() + data.expire_diff
-		quest.Player = ply
-		quest.RewardData = util.JSONToTable(data.reward)
-	]]
-
-	return
+	return quest
 end
 
 function pluto.quests.init(ply, cb)
