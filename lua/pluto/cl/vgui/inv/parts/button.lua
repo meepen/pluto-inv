@@ -51,4 +51,13 @@ function PANEL:OnChildAdded(x)
 	x:SetParent(self.ButtonFill)
 end
 
+function PANEL:OnMousePressed(m)
+	if (m == MOUSE_LEFT) then
+		self:DoClick()
+	end
+end
+
+function PANEL:DoClick()
+end
+
 vgui.Register("pluto_inventory_button", PANEL, "ttt_curved_panel_outline")

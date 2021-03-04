@@ -197,11 +197,13 @@ function PANEL:Init()
 	self.IncomingNew:Dock(LEFT)
 	self.IncomingNew:SetText "Their offer"
 	self.IncomingOutgoingContainer:SetTall(self.IncomingNew:GetTall())
+	self.IncomingNew:SetReady(pluto.trades.data.incoming.accepted)
 
 	self.OutgoingNew = self.IncomingOutgoingContainer:Add "pluto_inventory_trading_set"
 	self.OutgoingNew:Dock(RIGHT)
 	self.OutgoingNew:SetText "Your offer"
 	self.OutgoingNew:AcceptInput()
+	self.OutgoingNew:SetReady(pluto.trades.data.outgoing.accepted)
 
 	function self.OutgoingNew.OnCurrencyUpdated(s, slot, currency, amount)
 		if (IsValid(pluto.ui.pnl)) then
@@ -323,6 +325,12 @@ function PANEL:Init()
 	self.AcceptButton:SetCurve(4)
 	self.AcceptButton:SetText "Accept"
 
+	function self.AcceptButton:DoClick()
+		pluto.inv.message()
+			:write "tradestatus"
+			:send()
+	end
+
 	self.CancelButton = self.ButtonContainer:Add "pluto_inventory_button"
 	self.CancelButton:SetColor(Color(175, 30, 30), Color(237, 28, 36))
 	self.CancelButton:SetCurve(4)
@@ -344,6 +352,11 @@ function PANEL:Init()
 
 	hook.Add("PlutoTradeUpdate", self, self.PlutoTradeUpdate)
 	hook.Add("PlutoTradeMessage", self, self.AddTradeMessage)
+	hook.Add("PlutoTradePlayerStatus", self, self.PlutoTradePlayerStatus)
+end
+
+function PANEL:PlutoTradePlayerStatus(ply, b)
+	(ply == LocalPlayer() and self.OutgoingNew or self.IncomingNew):SetReady(b)
 end
 
 function PANEL:PlutoTradeUpdate(side, what, index, data)

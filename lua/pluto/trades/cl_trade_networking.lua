@@ -60,3 +60,17 @@ function pluto.inv.readtrademessage()
 	table.insert(pluto.trades.data.messages, {sender = cl, msg})
 	hook.Run("PlutoTradeMessage", {sender = cl, msg})
 end
+
+function pluto.inv.writetradestatus(b)
+	pluto.trades.data.outgoing.accepted = not pluto.trades.data.outgoing.accepted
+	net.WriteBool(pluto.trades.data.outgoing.accepted)
+end
+
+function pluto.inv.readtradestatus()
+	local cl = net.ReadEntity()
+	local status = net.ReadBool()
+
+	pluto.trades.data[cl == LocalPlayer() and "incoming" or "outgoing"].accepted = status
+
+	hook.Run("PlutoTradePlayerStatus", cl, status)
+end

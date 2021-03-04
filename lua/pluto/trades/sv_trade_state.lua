@@ -98,6 +98,20 @@ function TRADE:AddSystemMessage(msg)
 		:send()
 end
 
+function TRADE:SetAccepted(cl, b)
+	self[cl].accepted = b
+
+	pluto.inv.message(self.players)
+		:write("tradestatus", cl, b)
+		:send()
+
+	if (b and self[self[cl].other]) then
+		self:Commit(function()
+			print "COMMITTED"
+		end)
+	end
+end
+
 function TRADE:Commit(cb)
 	-- TODO(meepen): commit items to buffer and currency
 	return cb()
@@ -237,4 +251,15 @@ function pluto.inv.readtradeupdate(ply)
 	end
 
 	trade.data:Set(ply, what, index, data)
+end
+
+function pluto.inv.readtradestatus(cl)
+	local status = net.ReadBool()
+
+	local active = pluto.trades.active[cl]
+	if (not active) then
+		return
+	end
+
+	active.data:SetAccepted(cl, status)
 end

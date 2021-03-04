@@ -50,6 +50,7 @@ pluto.inv.messages = {
 		"trademessage",
 		"tradeupdate",
 		"tradeaccept",
+		"tradestatus",
 	},
 	sv2cl = {
 		[0] = "end",
@@ -111,6 +112,7 @@ pluto.inv.messages = {
 		-- trading
 		"trademessage",
 		"tradeupdate",
+		"tradestatus",
 	}
 }
 

@@ -116,3 +116,8 @@ function pluto.inv.writetrademessage(_, msg, cl)
 
 	net.WriteString(msg)
 end
+
+function pluto.inv.writetradestatus(_, cl, status)
+	net.WriteEntity(cl)
+	net.WriteBool(status)
+end

@@ -11,6 +11,7 @@ if (not pluto.trades.data) then
 				currency = {
 					lookup = {},
 				},
+				accepted = false,
 			}
 			self.incoming = {
 				item = {
@@ -19,6 +20,7 @@ if (not pluto.trades.data) then
 				currency = {
 					lookup = {},
 				},
+				accepted = false,
 			}
 			self.messages = {}
 			self.otherply = nil
