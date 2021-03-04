@@ -80,6 +80,7 @@ pluto.files.load {
 		"cl/vgui/inv/rightclick.lua",
 
 		"cl/vgui/showcase/init.lua",
+		"cl/vgui/showcase/model/container.lua",
 		"cl/vgui/showcase/weapon/container.lua",
 		"cl/vgui/showcase/weapon/bar.lua",
 
