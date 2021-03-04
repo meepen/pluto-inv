@@ -205,7 +205,6 @@ end
 
 function pluto.inv.writeauctionsearch(page, params)
 	net.WriteUInt(page, 32)
-	
 
 	for what, param in pairs(params) do
 		net.WriteBool(true)

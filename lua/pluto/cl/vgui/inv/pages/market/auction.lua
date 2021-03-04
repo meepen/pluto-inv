@@ -27,6 +27,7 @@ function PANEL:Init()
 			itempnl:Dock(LEFT)
 			itempnl:SetWide(56)
 			itempnl:DockMargin(x == 1 and self.Padding or 0, 0, self.Padding, 0)
+			table.insert(self.Results, itempnl)
 		end
 	end
 
@@ -141,6 +142,18 @@ function PANEL:Init()
 
 	self:SetPageMax(3)
 	self:SetPage(2)
+
+	hook.Add("PlutoReceiveAuctionData", self, self.PlutoReceiveAuctionData)
+end
+
+function PANEL:PlutoReceiveAuctionData(items, pages)
+	print "PAGE MAX RETURNED!!"
+	print(pages)
+	self:SetPageMax(pages)
+
+	for i = 1, 36 do
+		self.Results[i]:SetItem(items[i])
+	end
 end
 
 function PANEL:UpdatePages()
@@ -166,8 +179,8 @@ function PANEL:GetPageMax()
 end
 
 function PANEL:SearchPage(page)
-	-- TODO(meep): networking
-	self:SendSearch(page)
+	self:SetPage(page)
+	self:SendSearch()
 end
 
 function PANEL:SetPage(num)
@@ -185,9 +198,9 @@ function PANEL:StartNewSearch()
 	self:SearchPage(1)
 end
 
-function PANEL:SendSearch(page)
+function PANEL:SendSearch()
 	pluto.inv.message()
-		:write("auctionsearch", page, self.Parameters)
+		:write("auctionsearch", self:GetPage(), self.Parameters)
 		:send()
 end
 
@@ -246,6 +259,10 @@ function PANEL:Init()
 	self.SortBy:AddOption "Price Low to High"
 	self.SortBy:AddOption "Price High to Low"
 
+	self.Price = self.TabArea:Add "pluto_inventory_auction_search_input_two"
+	self.Price:Dock(TOP)
+	self.Price:SetText "Price:"
+
 	self.ItemID = self.TabArea:Add "pluto_inventory_auction_search_input_two"
 	self.ItemID:Dock(TOP)
 	self.ItemID:SetText "Item ID:"
@@ -263,6 +280,7 @@ function PANEL:Init()
 	
 	hook.Add("PlutoSearchChanged", self.SortBy, update)
 	hook.Add("PlutoSearchChanged", self.ItemID, update)
+	hook.Add("PlutoSearchChanged", self.Price, update)
 	hook.Add("PlutoSearchChanged", self.ItemName, update)
 end
 

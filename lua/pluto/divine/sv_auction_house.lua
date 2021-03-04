@@ -101,7 +101,8 @@ local sorts = {
 }
 
 local joins = {
-	slot = "INNER JOIN pluto_class_kv slot on slot.class = i.class AND slot.k = 'wep_slot'"
+	slot = "INNER JOIN pluto_class_kv slot on slot.class = i.class AND slot.k = 'wep_slot'",
+	modcount = "INNER JOIN (SELECT COUNT(*) as amount, gun_index FROM pluto_mods GROUP BY pluto_mods.gun_index) AS modcount ON modcount.gun_index = i.idx",
 }
 
 local searchlist = {
@@ -164,6 +165,32 @@ local searchlist = {
 			end
 		end,
 		join = "slot",
+	},
+	["Current mods:"] = { -- TODO(meep): no implicits
+		filter = "modcount.amount >= ? and modcount.amount <= ?",
+		arguments = function(a, b)
+			print(tonumber(a) or 0, tonumber(b) or 16)
+			return tonumber(a) or 0, tonumber(b) or 16
+		end,
+		join = "modcount",
+	},
+	["Maximum mods:"] = { -- TODO(meep)
+		filter = "1"
+	},
+	["Current suffixes:"] = { -- TODO(meep)
+		filter = "1"
+	},
+	["Current prefixes:"] = { -- TODO(meep)
+		filter = "1"
+	},
+	["Choose ammo type:"] = { -- TODO(meep)
+		filter = "1"
+	},
+	["Price:"] = {
+		filter = "price >= ? and price <= ?",
+		arguments = function(a, b)
+			return tonumber(a) or 0, tonumber(b) or 0xfffffffe
+		end,
 	}
 }
 
@@ -201,7 +228,7 @@ function pluto.inv.readauctionsearch(p)
 			rawset(self, #self + 1, k)
 		end
 	})
-	local sort = ""
+	local sort = searchlist["Sort by:"]["Newest to Oldest"].sort
 	local joins = setmetatable({}, {
 		__newindex = function(self, k, v)
 			if (not k or not joins[k]) then
@@ -219,7 +246,6 @@ function pluto.inv.readauctionsearch(p)
 		local i = 1
 		while (istable(lookup) and param[i]) do
 			local nextlookup = lookup[param[i]]
-			print(param[i])
 			if (not istable(nextlookup)) then
 				break
 			end
@@ -229,12 +255,10 @@ function pluto.inv.readauctionsearch(p)
 
 		if (not istable(lookup)) then
 			pluto.warn("AUCTION", "Failed parameter search.")
-			print(what, unpack(param))
 			return
 		end
 
 		if (lookup.filter) then
-			PrintTable(lookup)
 			filters["(" .. lookup.filter .. ")"] = lookup.arguments and pack(lookup.arguments(unpack(param, i))) or true
 		end
 
@@ -252,17 +276,19 @@ function pluto.inv.readauctionsearch(p)
 		LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx
 		INNER JOIN pluto_auction_info auction ON auction.idx = tab_idx]]
 		.. "\n\t\t" .. table.concat(joins, "\n\t\t")
-		.. "\n\n\tWHERE " .. table.concat(filters, " AND ")
-		.. "\n\t" .. sort .. " LIMIT ?, 36"
+		.. "\n\n\tWHERE " .. table.concat(filters, "\n\t\tAND ")
+	
+	local ending = "\n\t" .. sort .. "\n\tLIMIT ?, 36"
 
 	local query = [[
 SELECT i.idx as idx, tier, i.class as class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable,
 	CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method,
 	auction.price as price, CAST(auction.owner as CHAR(32)) as lister
 	
-	FROM pluto_items i]] .. last
+	FROM pluto_items i
+]] .. last .. ending
 
-	
+	print(query)
 
 	pluto.db.instance(function(db)
 		local params = {get_auction_idx(db)}
@@ -270,22 +296,26 @@ SELECT i.idx as idx, tier, i.class as class, tab_id, tab_idx, exp, special_name,
 			table.insert(params, n)
 		end
 		table.insert(params, 36 * (page - 1))
+		PrintTable(params)
 		-- grab guns, then grab mods
 		local itemresults = mysql_stmt_run(db, query, unpack(params))
 		local modquery = [[
 SELECT m.idx, m.gun_index, m.modname, m.tier, m.roll1, m.roll2, m.roll3
 		FROM pluto_mods m
 			INNER JOIN pluto_items i ON i.idx = m.gun_index
-			INNER JOIN (SELECT i.idx FROM pluto_items i ]] .. last .. [[) as i2 ON m.gun_index = i2.idx
+			INNER JOIN (SELECT i.idx FROM pluto_items i ]] .. last .. ending .. [[) as i2 ON m.gun_index = i2.idx
 		]]
-		local modresults, err = mysql_stmt_run(db, modquery, unpack(params, 1, #params - 1))
+		local modresults, err = mysql_stmt_run(db, modquery, unpack(params, 1, #params))
+		local count = mysql_stmt_run(db, [[SELECT COUNT(*) as count FROM pluto_items i ]] .. last, unpack(params, 1, #params - 1))[1].count
 
 		local items = {}
+		local itemlist = {}
 		for _, row in ipairs(itemresults) do
 			local item = pluto.inv.itemfromrow(row)
 			item.Price = row.price
 			item.Lister = row.lister
 			items[row.idx] = item
+			table.insert(itemlist, item)
 		end
 
 		for _, mod in ipairs(modresults) do
@@ -296,8 +326,11 @@ SELECT m.idx, m.gun_index, m.modname, m.tier, m.roll1, m.roll2, m.roll3
 			pluto.inv.readmodrow(items, mod)
 		end
 
-		PrintTable(items)
-	
+		local pagecount = math.ceil(count / 36)
+
+		pluto.inv.message(p)
+			:write("auctiondata", itemlist, pagecount)
+			:send()
 	end)
 end
 
