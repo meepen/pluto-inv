@@ -1,8 +1,8 @@
 local PANEL = {}
 
 function PANEL:Init()
-	self:AddTab "Auction House":Add "pluto_inventory_auction":Dock(FILL)
-	self:AddTab "Reclaim"
+	self:AddTab "Marketplace":Add "pluto_inventory_auction":Dock(FILL)
+	self:AddTab "Your Items"
 	self:AddTab "Stardust Items"
 	self:AddTab "Currency Exchange"
 	self:AddTab "Blackmarket"

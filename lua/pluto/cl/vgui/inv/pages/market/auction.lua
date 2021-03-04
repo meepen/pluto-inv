@@ -7,7 +7,7 @@ PANEL.Padding = 3
 function PANEL:Init()
 	self.ResultArea = self:Add "EditablePanel"
 	self.ResultArea:Dock(RIGHT)
-	self.ResultArea:SetWide(self.ResultColumn * 56 + (self.ResultColumn + 1) * self.Padding)
+	self.ResultArea:SetWide(self.ResultColumn * 56 + (self.ResultColumn - 1) * self.Padding)
 
 	self.ItemArea = self.ResultArea:Add "EditablePanel"
 	self.ItemArea:SetTall(self.ResultRow * 56 + (self.ResultRow + 1) * self.Padding)
@@ -26,7 +26,7 @@ function PANEL:Init()
 			local itempnl = row:Add "pluto_inventory_item"
 			itempnl:Dock(LEFT)
 			itempnl:SetWide(56)
-			itempnl:DockMargin(x == 1 and self.Padding or 0, 0, self.Padding, 0)
+			itempnl:DockMargin(x == 1 and 0 or self.Padding, 0, 0, 0)
 			table.insert(self.Results, itempnl)
 		end
 	end
@@ -83,10 +83,16 @@ function PANEL:Init()
 		local x, y = self.PaginationLabel:GetPos()
 		self.PageDown:SetPos(x - self.PageDown:GetWide() - self.Padding, y)
 		self.PageUp:SetPos(x + self.PaginationLabel:GetWide() + self.Padding, y)
-		self.SearchArea:DockMargin(0, self.Padding + 1, self.Padding * 2, self.Pagination:GetTall() + self.Padding + 1)
+		self.SearchAreaContainer:DockMargin(0, self.Padding, self.Padding * 4, self.Pagination:GetTall() + self.Padding * 2)
 	end
 
-	self.SearchArea = self:Add "pluto_inventory_auction_search"
+	self.SearchAreaContainer = self:Add "ttt_curved_panel_outline"
+	self.SearchAreaContainer:Dock(FILL)
+	self.SearchAreaContainer:SetColor(Color(95, 96, 102))
+	self.SearchAreaContainer:SetCurve(4)
+	self.SearchAreaContainer:DockPadding(self.Padding + 1, self.Padding + 1, self.Padding + 1, self.Padding + 1)
+
+	self.SearchArea = self.SearchAreaContainer:Add "pluto_inventory_auction_search"
 	self.SearchArea:Dock(FILL)
 	function self.SearchArea.StartNewSearch()
 		self:StartNewSearch()
@@ -140,8 +146,8 @@ function PANEL:Init()
 	self.ShardSearch:InvalidateChildren(true)
 	self.ShardSearch:SizeToChildren(false, true)
 
-	self:SetPageMax(3)
-	self:SetPage(2)
+	self:SetPageMax(0)
+	self:SetPage(0)
 
 	hook.Add("PlutoReceiveAuctionData", self, self.PlutoReceiveAuctionData)
 end
@@ -224,14 +230,14 @@ function PANEL:Init()
 
 	self.TabArea = self:Add "DScrollPanel"
 	self.TabArea:Dock(FILL)
-	self.TabArea:DockPadding(self.Padding, self.Padding * 2, self.Padding, self.Padding)
+	self.TabArea:DockMargin(self.Padding, self.Padding * 2, self.Padding, self.Padding)
 
 	self.SearchButtonContainer = self:Add "EditablePanel"
 	self.SearchButtonContainer:Dock(BOTTOM)
 	self.SearchButtonContainer:SetTall(22)
 
 	self.SearchButton = self.SearchButtonContainer:Add "pluto_inventory_button"
-	self.SearchButton:SetColor(Color(255, 0, 255))
+	self.SearchButton:SetColor(Color(95, 96, 102), Color(95, 96, 102))
 	self.SearchButton:SetCurve(4)
 	self.SearchButton:SetWide(120)
 	self.SearchLabel = self.SearchButton:Add "pluto_label"
@@ -288,7 +294,7 @@ function PANEL:AddTab(name)
 	local btn = self.ButtonArea:Add "pluto_inventory_button"
 	btn:Dock(LEFT)
 	btn:SetCurve(4)
-	btn:SetColor(self.InactiveColor)
+	btn:SetColor(self.InactiveColor, Color(95, 96, 102))
 
 	function btn.DoClick()
 		self:SelectTab(name)
@@ -332,13 +338,13 @@ function PANEL:SelectTab(name)
 		local tab = self.Tabs[self.ActiveTab]
 		tab.Panel:SetParent(self.Cache)
 		tab.Panel:SetVisible(false)
-		tab.Label:SetColor(self.InactiveColor)
+		tab.Label:SetColor(self.InactiveColor, Color(95, 96, 102))
 	end
 	local tab = self.Tabs[name]
 	self.ActiveTab = name
 	tab.Panel:SetParent(self.TabArea)
 	tab.Panel:SetVisible(true)
-	tab.Label:SetColor(self.ActiveColor)
+	tab.Label:SetColor(self.ActiveColor, Color(95, 96, 102))
 end
 
 function PANEL:PerformLayout(w, h)
