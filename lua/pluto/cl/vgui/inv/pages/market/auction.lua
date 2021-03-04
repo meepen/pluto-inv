@@ -87,6 +87,9 @@ function PANEL:Init()
 
 	self.SearchArea = self:Add "pluto_inventory_auction_search"
 	self.SearchArea:Dock(FILL)
+	function self.SearchArea.StartNewSearch()
+		self:StartNewSearch()
+	end
 	self.WeaponSearchArea = self.SearchArea:AddTab "Weapon"
 
 	local type = self.WeaponSearchArea:Add "pluto_inventory_auction_search_dropdown"
@@ -164,7 +167,7 @@ end
 
 function PANEL:SearchPage(page)
 	-- TODO(meep): networking
-	self:SetPage(page)
+	self:SendSearch(page)
 end
 
 function PANEL:SetPage(num)
@@ -176,13 +179,16 @@ function PANEL:GetPage()
 	return self.Page
 end
 
-function PANEL:StartNewSearch(params)
-	self.Parameters = params
+function PANEL:StartNewSearch()
+	self.Parameters = self.SearchArea:GetCurrentSearchParameters()
 
-	-- TODO(meep): network parameters
+	self:SearchPage(1)
 end
 
-function PANEL:SendSearch()
+function PANEL:SendSearch(page)
+	pluto.inv.message()
+		:write("auctionsearch", page, self.Parameters)
+		:send()
 end
 
 vgui.Register("pluto_inventory_auction", PANEL, "EditablePanel")
@@ -346,11 +352,12 @@ function PANEL:GetCurrentSearchParameters()
 		params[what] = param
 	end
 
+	params.what = {n = 1, self.ActiveTab}
+
 	return params
 end
 
 function PANEL:StartNewSearch()
-	self.CurrentParameters = self:GetCurrentSearchParameters()
 end
 
 function PANEL:OnSearchUpdated()

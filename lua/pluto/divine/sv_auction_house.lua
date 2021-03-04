@@ -122,6 +122,24 @@ local filters = {
 
 function pluto.inv.readauctionsearch(p)
 	local page = net.ReadUInt(32)
+	local params = {}
+
+	while (net.ReadBool()) do
+		local what = net.ReadString()
+		local param = {}
+		params[what] = param
+
+		for i = 1, net.ReadUInt(2) do
+			param[i] = net.ReadString()
+		end
+	end
+
+	print("PAGE", page)
+	PrintTable(params)
+
+	do return end
+	-- OLD CODE
+	local page = net.ReadUInt(32)
 	local sort = sorts[net.ReadString()] or sorts.default
 	local filter = {}
 	local joins = {}
