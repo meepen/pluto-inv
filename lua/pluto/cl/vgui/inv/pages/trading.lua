@@ -464,6 +464,8 @@ function PANEL:SetSnapshot(snap)
 			continue
 		end
 
+		current:SetText(t.name)
+
 		for slot, item in pairs(t.item) do
 			current:SetItem(tonumber(slot), setmetatable(item, pluto.inv.item_mt))
 		end
