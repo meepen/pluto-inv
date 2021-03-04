@@ -3,60 +3,108 @@ pluto.inv = pluto.inv or {}
 pluto.inv.messages = {
 	cl2sv = {
 		[0]  = "end",
-		"tabswitch",
-		"itemdelete",
-		"currencyuse",
-		"tabrename",
+
+		-- mapvote
 		"votemap",
 		"likemap",
+
+		-- craft
 		"requestcraftresults",
 		"craft",
-		"itemlock",
-		"rename",
-		"ui",
-		"unname",
-		"chat",
-		"gettrades",
+
+		-- divine market
 		"exchangestardust",
 		"auctionsearch",
+
+		-- ui
+		"tabswitch",
+		"tabrename",
+		"changetabdata",
+		"ui",
+
+		-- items
+		"itemlock",
+		"rename",
+		"itemdelete",
+		"unname",
+
+		-- currency
+		"masscurrencyuse",
+		"currencyuse",
+
+		-- chat
+		"chat",
+		"chatopen",
+
+		-- constellations
 		"unlocknode",
 		"unlockmajors",
 		"unlockconstellations",
+
+		-- past trades		
+		"gettrades",
 		"gettradesnapshot",
-		"chatopen",
-		"changetabdata",
+
+		-- trade
 		"requesttrade",
+		"trademessage",
 		"tradeupdate",
-		"masscurrencyuse",
 	},
 	sv2cl = {
 		[0] = "end",
+		-- core inventory
+		"fullupdate",
 		"item",
 		"mod",
 		"tab",
 		"status",
-		"tabupdate",
 		"currencyupdate",
+		"expupdate",
+
+		-- currency system
+		"currencyspawn",
+
+		-- item
+		"itemlock",
+
+		-- tab data
+		"tabupdate",
 		"bufferitem",
-		"fullupdate",
+
+		-- mapvote
 		"mapvote",
 		"mapvotes",
-		"craftresults",
-		"expupdate",
-		"itemlock",
+
+		-- nitro rewards
 		"nitro",
+
+		-- quests
 		"quests",
 		"quest",
-		"questdone",
+
+		-- crafting
+		"craftresults",
+
+		-- cosmetic
 		"playermodel",
+
+		-- player data
 		"playerexp",
+
+		-- chat
 		"chatmessage",
 		"tradelogresults",
+
+		-- constellations
+		
 		"nodes",
 		"itemtree",
-		"currencyspawn",
+
+		-- divine market
 		"stardustshop",
 		"auctiondata",
+
+		-- past trades
 		"tradelogsnapshot",
 		"traderequestinfo",
 		"tradeupdate",
