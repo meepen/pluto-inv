@@ -290,6 +290,9 @@ function PANEL:Init()
 	self:AddTab("Divine Market", function(container)
 	end)
 
+	self:AddTab("Donate", function(container)
+	end, nil, nil, Color(207, 204, 3))
+
 	self:ChangeToTab(last_open_category:GetString())
 
 	self:CreateOrdered()
@@ -363,7 +366,7 @@ function PANEL:ChangeToTab(name, noupdate)
 
 	local old = self.Tabs[self.ActiveTab]
 	if (old) then
-		old.Label:SetTextColor(Color(255, 255, 255))
+		old.Label:SetTextColor(old.LabelColor)
 	end
 
 	self.ActiveTab = name
@@ -406,7 +409,7 @@ end
 
 local gradient_up = Material "gui/gradient_up"
 
-function PANEL:AddTab(name, func, has_storage, cache)
+function PANEL:AddTab(name, func, has_storage, cache, col)
 	local lbl = self.TabContainer:Add "pluto_label"
 	local old_paint = lbl.Paint
 	function lbl.Paint(s, w, h)
@@ -422,6 +425,7 @@ function PANEL:AddTab(name, func, has_storage, cache)
 	end
 	self.Tabs[name] = {
 		Label = lbl,
+		LabelColor = col or white_text,
 		Populate = func,
 		HasStorage = has_storage,
 		Cache = cache,
@@ -432,7 +436,7 @@ function PANEL:AddTab(name, func, has_storage, cache)
 	lbl:SetContentAlignment(5)
 	lbl:SetText(name)
 	lbl:SetFont "pluto_inventory_font"
-	lbl:SetTextColor(white_text)
+	lbl:SetTextColor(self.Tabs[name].LabelColor)
 	lbl:SetRenderSystem(pluto.fonts.systems.shadow)
 	lbl:SetCursor "hand"
 	lbl:SetMouseInputEnabled(true)

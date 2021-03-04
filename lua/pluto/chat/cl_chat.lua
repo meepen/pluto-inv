@@ -248,7 +248,6 @@ end
 
 function pluto.chat.Close()
 	pluto.chat.isOpened = false
-	pluto.chat.teamchat = false
 
 	pluto.chat.Box:SetAlpha(closed_alpha * pluto_chat_closed_alpha:GetFloat())
 	pluto.chat.Box:ResetFade(false)
@@ -256,11 +255,13 @@ function pluto.chat.Close()
 	pluto.chat.Box:SignalClose()
 	timer.Remove "AlphaSetChatbox"
 
-	if (not teamchat) then
+	if (not pluto.chat.teamchat) then
 		pluto.inv.message()
 			:write("chatopen", false)
 			:send()
 	end
+
+	pluto.chat.teamchat = false
 
 	pluto.chat.Box:SetMouseInputEnabled(false)
 	pluto.chat.Box:SetKeyboardInputEnabled(false)
@@ -774,8 +775,10 @@ if (IsValid(pluto.chat.Box)) then
 	pluto.chat:Close()
 	pluto.chat.Box:Remove()
 	pluto.chat.Box = vgui.Create "pluto_chatbox"
+	pluto.chat.Box:ScrollToBottom()
 end
 
 hook.Add("Initialize", "init_chatbox", function()
 	pluto.chat.Box = vgui.Create "pluto_chatbox"
+	pluto.chat.Box:ScrollToBottom()
 end)

@@ -201,6 +201,23 @@ function PANEL:Init()
 	self.OutgoingNew = self.IncomingOutgoingContainer:Add "pluto_inventory_trading_set"
 	self.OutgoingNew:Dock(RIGHT)
 	self.OutgoingNew:SetText "Your offer"
+	self.OutgoingNew:AcceptInput()
+
+	function self.OutgoingNew.OnCurrencyUpdated(s, slot, currency, amount)
+		if (IsValid(pluto.ui.pnl)) then
+			pluto.ui.pnl:ChangeToTab "Trading"
+		end
+
+		self:SendUpdate("currency", slot, currency, amount)
+	end
+
+	function self.OutgoingNew.OnItemUpdated(s, slot, item)
+		if (IsValid(pluto.ui.pnl)) then
+			pluto.ui.pnl:ChangeToTab "Trading"
+		end
+
+		self:SendUpdate("item", slot, item)
+	end
 
 	self.ChatContainer = self:Add "ttt_curved_panel_outline"
 	self.ChatContainer:Dock(FILL)
@@ -233,9 +250,51 @@ function PANEL:Init()
 
 
 	-- TOOD(meep): ask lovely for design
-	self.ChatInputContainer = self.Chat:Add "ttt_curved_panel_outline"
+	self.ChatInputContainer = self.Chat:Add "ttt_curved_panel"
 	self.ChatInputContainer:Dock(BOTTOM)
 	self.ChatInputContainer:DockMargin(0, 3, 0, 0)
+	self.ChatInputContainer:SetTall(16)
+	self.ChatInputContainer:SetColor(Color(249, 249, 249))
+	self.ChatInputContainer:DockPadding(3, 1, 3, 1)
+
+	self.TextEntry = self.ChatInputContainer:Add "pluto_label"
+	self.TextEntry:SetContentAlignment(4)
+	self.TextEntry:SetFont "pluto_inventory_font"
+	self.TextEntry:SetText "Write something..."
+	self.TextEntry:SetTextColor(Color(2, 3, 4))
+	self.TextEntry:Dock(FILL)
+	self.TextEntry:SetMouseInputEnabled(true)
+
+	function self.TextEntry.OnMousePressed(s)
+		local t = s:GetText()
+		s:SetText ""
+		local input = s:Add "DTextEntry"
+		input:SetTextColor(s:GetTextColor())
+		input:SetFont(s:GetFont())
+		input:Dock(FILL)
+		pluto.ui.pnl:AddKeyboardFocus(1)
+		input:RequestFocus()
+		input:SetUpdateOnType(true)
+
+		local function finish()
+			s:SetText(t)
+			input:Remove()
+		end
+
+		function input.OnEnter()
+			finish()
+		end
+
+		function input.OnFocusChanged(gained)
+			if (not gained) then
+				finish()
+			end
+		end
+
+		function input.OnRemove()
+			pluto.ui.pnl:AddKeyboardFocus(-1)
+		end
+	end
 
 
 	self.ButtonContainer = self:Add "EditablePanel"
@@ -257,55 +316,6 @@ function PANEL:Init()
 
 		self.CancelButton:SetPos(x + 5, h / 2 - self.CancelButton:GetTall() / 2)
 		self.AcceptButton:SetPos(x - self.AcceptButton:GetWide() - 5, h / 2 - self.CancelButton:GetTall() / 2)
-	end
-
-	function self.OutgoingNew.OnCurrencyChanged(s, index, currency, amount)
-		if (IsValid(pluto.ui.pnl)) then
-			pluto.ui.pnl:ChangeToTab "Trading"
-		end
-		self:SendUpdate("currency", i)
-	end
-
-
-	for i = 1, 3 do
-		local currencypnl = self.OutgoingNew:GetCurrencyPanel(i)
-
-		function currencypnl.OnCurrencyUpdated()
-			if (IsValid(pluto.ui.pnl)) then
-				pluto.ui.pnl:ChangeToTab "Trading"
-			end
-
-			self:SendUpdate("currency", i)
-		end
-
-		currencypnl:AcceptInput(true)
-		currencypnl:AcceptAmount(true)
-	end
-
-	for i = 1, 9 do
-		local itempnl = self.OutgoingNew:GetItemPanel(i)
-
-		function itempnl.CanClickWith(s, other)
-			local item = other.Item
-			return item
-		end
-		function itempnl.ClickedWith(s, other)
-			s:SetItem(other.Item)
-		end
-		function itempnl.OnRightClick(s)
-			s:SetItem(nil)
-		end
-		function itempnl.OnLeftClick(s)
-			if (not s.Item) then
-				return
-			end
-
-			pluto.ui.highlight(s.Item)
-		end
-
-		function itempnl.OnSetItem(s, item)
-			self:SendUpdate("item", i)
-		end
 	end
 
 	self:UpdateFromTradeData()
@@ -340,15 +350,15 @@ end
 function PANEL:PerformLayout(w, h)
 end
 
-function PANEL:SendUpdate(type, index)
+function PANEL:SendUpdate(type, index, ...)
 	if (self.Updating) then
 		return
 	end
 
 	if (type == "currency") then
-		pluto.trades.settradedata("outgoing", type, index, self.OutgoingNew:GetCurrency(index))
+		pluto.trades.settradedata("outgoing", type, index, ...)
 	elseif (type == "item") then
-		pluto.trades.settradedata("outgoing", type, index, self.OutgoingNew:GetItem(index))
+		pluto.trades.settradedata("outgoing", type, index, ...)
 	end
 end
 
