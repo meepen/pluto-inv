@@ -108,6 +108,10 @@ function TRADE:AddSystemMessage(msg)
 end
 
 function TRADE:SetAccepted(cl, b)
+	if (not b) then
+		timer.Remove("trade_" .. tostring(self))
+	end
+
 	self[cl].accepted = b
 
 	pluto.inv.message(self.players)
@@ -116,13 +120,13 @@ function TRADE:SetAccepted(cl, b)
 
 	self:AddSystemMessage(cl:Nick() .. " " .. (b and "is ready to trade" or "is no longer ready to trade"))
 
-	if (b and self[self[cl].other]) then
+	if (b and self[self[cl].other].accepted) then
 		self:Commit()
 	end
 end
 
 function TRADE:Commit()
-	local left = 3
+	local left = 5
 	timer.Create("trade_" .. tostring(self), 1, left + 1, function()
 		if (left == 0) then
 			self:AddSystemMessage "Trade commenced"
@@ -137,6 +141,7 @@ function TRADE:Commit()
 end
 
 function TRADE:End()
+	timer.Remove("trade_" .. tostring(self))
 	pluto.trades.status(self.players[1], self.players[2], "none")
 	pluto.trades.active[self.players[1]] = nil
 	pluto.trades.active[self.players[2]] = nil
