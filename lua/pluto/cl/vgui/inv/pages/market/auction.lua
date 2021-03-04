@@ -93,7 +93,7 @@ function PANEL:Init()
 	self.WeaponSearchArea = self.SearchArea:AddTab "Weapon"
 
 	local type = self.WeaponSearchArea:Add "pluto_inventory_auction_search_dropdown"
-	type:SetText "Choose weapon type: "
+	type:SetText "Choose weapon type:"
 	type:AddOption "Any"
 	type:AddOption "Primary"
 	type:AddOption "Secondary"
@@ -102,7 +102,7 @@ function PANEL:Init()
 	type:Dock(TOP)
 	
 	local ammotype = self.WeaponSearchArea:Add "pluto_inventory_auction_search_dropdown"
-	ammotype:SetText "Choose ammo type: "
+	ammotype:SetText "Choose ammo type:"
 	ammotype:AddOption "Any"
 	ammotype:AddOption "Sniper"
 	ammotype:AddOption "Pistol"

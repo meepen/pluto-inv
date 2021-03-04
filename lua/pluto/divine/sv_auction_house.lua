@@ -99,26 +99,77 @@ local sorts = {
 	lowest_price = "ORDER BY price ASC",
 	highest_price = "ORDER BY price DESC",
 }
-local filters = {
-	primary = {
-		filter = "slot.v = 2",
-		join = "INNER JOIN pluto_class_kv slot ON slot.class = i.class AND slot.k = 'wep_slot'"
+
+local joins = {
+	slot = "INNER JOIN pluto_class_kv slot on slot.class = i.class AND slot.k = 'wep_slot'"
+}
+
+local searchlist = {
+	what = {
+		Weapon = {
+			filter = "i.class like 'tfa_%' or i.class like 'weapon_%'"
+		},
+		Model = {
+			filter = "i.class like 'model_%'",
+		},
+		Shard = {
+			filter = "i.class = 'shard'"
+		}
 	},
-	secondary = {
-		filter = "slot.v = 1",
-		join = "INNER JOIN pluto_class_kv slot ON slot.class = i.class AND slot.k = 'wep_slot'"
+	["Sort by:"] = {
+		["Oldest to Newest"] = {
+			sort = "ORDER BY listed ASC"
+		},
+		["Newest to Oldest"] = {
+			sort = "ORDER BY listed DESC"
+		},
+		["ID Low to High"] = {
+			sort = "ORDER BY idx ASC",
+		},
+		["ID High to Low"] = {
+			sort = "ORDER BY idx DESC",
+		},
+		["Price Low to High"] = {
+			sort = "ORDER BY price ASC",
+		},
+		["Price Low to High"] = {
+			sort = "ORDER BY price DESC",
+		},
 	},
-	melee = {
-		filter = "slot.v = 0",
-		join = "INNER JOIN pluto_class_kv slot ON slot.class = i.class AND slot.k = 'wep_slot'"
+	["Item ID:"] = {
+		filter = "i.idx >= ? AND i.idx <= ?",
+		arguments = function(a, b)
+			return tonumber(a) or 0, tonumber(b) or 0xffffffff
+		end
 	},
-	shard = {
-		filter = "class = 'shard'"
+	["Item name:"] = {
+		filter = "i.class like CONCAT('%', ?, '%')",
+		arguments = function(a)
+			return a
+		end
 	},
-	model = {
-		filter = "class like 'model_%'"
+	["Choose weapon type:"] = {
+		filter = "slot.v = ?",
+		arguments = function(a)
+			if (a == "Primary") then
+				return 2
+			elseif (a == "Secondary") then
+				return 1
+			elseif (a == "Melee") then
+				return 0
+			elseif (a == "Grenade") then
+				return 3
+			else
+				return 100
+			end
+		end,
+		join = "slot",
 	}
 }
+
+local function pack(...)
+	return {n = select("#", ...), ...}
+end
 
 function pluto.inv.readauctionsearch(p)
 	local page = net.ReadUInt(32)
@@ -134,107 +185,119 @@ function pluto.inv.readauctionsearch(p)
 		end
 	end
 
-	print("PAGE", page)
-	PrintTable(params)
-
-	do return end
-	-- OLD CODE
-	local page = net.ReadUInt(32)
-	local sort = sorts[net.ReadString()] or sorts.default
-	local filter = {}
-	local joins = {}
-	while (net.ReadBool()) do
-		local current = filters[net.ReadString()]
-		if (not current) then
-			continue
-		end
-		if (current.filter and not filter[current.filter]) then
-			table.insert(filter, current.filter)
-			filter[current.filter] = true
-		end
-		if (current.join and not joins[current.join]) then
-			table.insert(joins, current.join)
-			joins[current.join] = true
-		end
-	end
-
-	filter = table.concat(filter, " AND ")
-	joins = table.concat(joins, " ")
-	if (filter == "") then
-		filter = "1"
-	end
-
-	local last_search = p.LastAuctionSearch or -math.huge
-	if (last_search > CurTime() - 1) then
-		p:ChatPrint "You are searching too fast! Slow your roll!"
-		return
-	end
-
-	p.LastAuctionSearch = CurTime()
-
-	local function runnext(item_rows)
-		local items = {}
-		local pages
-		local function finalize()
-			pluto.inv.message(p)
-				:write("auctiondata", items, pages)
-				:send()
-		end
-
-		local waiting_for = 2
-		local function check_waiting()
-			waiting_for = waiting_for - 1 
-			if (waiting_for == 0) then
-				finalize()
+	local filterparams = {}
+	local filters = setmetatable({"(tab_id = ?)"}, {
+		__newindex = function(self, k, v)
+			if (not k) then
+				return
 			end
-		end
-		pluto.db.instance(function(db)
-			pages = math.ceil(mysql_query(db, [[
-				SELECT COUNT(*) as amount
-					FROM pluto_items i ]] .. joins .. [[ 
-					WHERE tab_id = ]] .. get_auction_idx(db) .. [[ AND ]] .. filter)[1].amount / 15)
-			check_waiting()
-		end)
-		for _, row in ipairs(item_rows) do
-			local item = pluto.divine.auction_list[row.idx]
-			if (not item) then
-				item = pluto.inv.itemfromrow(row)
-				item.Price = row.price
-				item.Lister = row.lister
-				if (item.Type == "Weapon") then
-					waiting_for = waiting_for + 1
-					pluto.db.instance(function(db)
-						for _, mod in ipairs(mysql_query(db, "SELECT idx, gun_index, modname, tier, roll1, roll2, roll3 FROM pluto_mods WHERE gun_index = " .. item.RowID)) do
-							pluto.inv.readmodrow({[item.RowID] = item}, mod)
-						end
-						check_waiting()
-					end)
+
+			rawset(self, k, v)
+			if (istable(v)) then
+				for i = 1, v.n do
+					table.insert(filterparams, v[i])
 				end
-				pluto.divine.auction_list[item.RowID] = item
 			end
-			table.insert(items, item)
+			rawset(self, #self + 1, k)
 		end
-		check_waiting()
+	})
+	local sort = ""
+	local joins = setmetatable({}, {
+		__newindex = function(self, k, v)
+			if (not k or not joins[k]) then
+				return
+			end
+
+			rawset(self, k, v)
+			rawset(self, #self + 1, joins[k])
+		end
+	})
+
+	for what, param in pairs(params) do
+		local lookup = searchlist[what]
+
+		local i = 1
+		while (istable(lookup) and param[i]) do
+			local nextlookup = lookup[param[i]]
+			print(param[i])
+			if (not istable(nextlookup)) then
+				break
+			end
+			lookup = nextlookup
+			i = i + 1
+		end
+
+		if (not istable(lookup)) then
+			pluto.warn("AUCTION", "Failed parameter search.")
+			print(what, unpack(param))
+			return
+		end
+
+		if (lookup.filter) then
+			PrintTable(lookup)
+			filters["(" .. lookup.filter .. ")"] = lookup.arguments and pack(lookup.arguments(unpack(param, i))) or true
+		end
+
+		if (lookup.join) then
+			joins[lookup.join] = true
+		end
+
+		if (lookup.sort) then
+			sort = lookup.sort
+		end
 	end
+
+	local last = [[
+		LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner
+		LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx
+		INNER JOIN pluto_auction_info auction ON auction.idx = tab_idx]]
+		.. "\n\t\t" .. table.concat(joins, "\n\t\t")
+		.. "\n\n\tWHERE " .. table.concat(filters, " AND ")
+		.. "\n\t" .. sort .. " LIMIT ?, 36"
+
+	local query = [[
+SELECT i.idx as idx, tier, i.class as class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable,
+	CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method,
+	auction.price as price, CAST(auction.owner as CHAR(32)) as lister
+	
+	FROM pluto_items i]] .. last
+
+	
 
 	pluto.db.instance(function(db)
-		local tab_id = get_auction_idx(db)
+		local params = {get_auction_idx(db)}
+		for _, n in ipairs(filterparams) do
+			table.insert(params, n)
+		end
+		table.insert(params, 36 * (page - 1))
+		-- grab guns, then grab mods
+		local itemresults = mysql_stmt_run(db, query, unpack(params))
+		local modquery = [[
+SELECT m.idx, m.gun_index, m.modname, m.tier, m.roll1, m.roll2, m.roll3
+		FROM pluto_mods m
+			INNER JOIN pluto_items i ON i.idx = m.gun_index
+			INNER JOIN (SELECT i.idx FROM pluto_items i ]] .. last .. [[) as i2 ON m.gun_index = i2.idx
+		]]
+		local modresults, err = mysql_stmt_run(db, modquery, unpack(params, 1, #params - 1))
 
-		local item_rows, err = mysql_stmt_run(db, [[
-			SELECT i.idx as idx, tier, i.class as class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable,
-				CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method,
-				auction.price as price, CAST(auction.owner as CHAR(32)) as lister
+		local items = {}
+		for _, row in ipairs(itemresults) do
+			local item = pluto.inv.itemfromrow(row)
+			item.Price = row.price
+			item.Lister = row.lister
+			items[row.idx] = item
+		end
 
-				FROM pluto_items i
-					LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner
-					LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx
-					INNER JOIN pluto_auction_info auction ON auction.idx = tab_idx ]] .. joins .. [[
+		for _, mod in ipairs(modresults) do
+			if (not items[mod.gun_index]) then
+				continue -- should never happen question mark
+			end
 
-				WHERE tab_id = ? AND ]] .. filter .. [[
-				]] .. sort .. [[
-				LIMIT 15 OFFSET ?]], tab_id, page * 15)
-				print(err)
-		runnext(item_rows)
+			pluto.inv.readmodrow(items, mod)
+		end
+
+		PrintTable(items)
+	
 	end)
 end
 
