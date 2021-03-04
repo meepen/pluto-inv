@@ -178,6 +178,24 @@ function pluto.inv.readitem()
 		item.constellations = nil
 	end
 
+	if (net.ReadBool()) then
+		local oldtabid = item.TabID
+		local oldtabidx = item.TabIndex
+		item.TabID = net.ReadUInt(32)
+		item.TabIndex = net.ReadUInt(32)
+		if (item.TabID ~= oldtabid or item.TabIndex ~= oldtabidx) then
+			local tab = pluto.cl_inv[oldtabid]
+			if (tab) then
+				tab.Items[oldtabidx] = nil
+			end
+
+			tab = pluto.cl_inv[item.TabID]
+			if (tab) then
+				tab.Items[item.TabIndex] = item
+			end
+		end
+	end
+
 	pluto.received.item[id] = item
 
 	hook.Run("PlutoItemUpdate", item, item.TabID, item.TabIndex)

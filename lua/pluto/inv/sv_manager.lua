@@ -133,6 +133,14 @@ function pluto.inv.writeitem(ply, item)
 		else
 			net.WriteBool(false)
 		end
+
+		if (item.TabID) then
+			net.WriteBool(true)
+			net.WriteUInt(item.TabID, 32)
+			net.WriteUInt(item.TabIndex, 32)
+		else
+			net.WriteBool(false)
+		end
 	else
 		net.WriteBool(false)
 	end

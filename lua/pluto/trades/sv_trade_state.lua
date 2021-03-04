@@ -130,8 +130,57 @@ function TRADE:Commit()
 	timer.Create("trade_" .. tostring(self), 1, left + 1, function()
 		if (left == 0) then
 			self:AddSystemMessage "Trade commenced"
+			self:End()
 
-			-- TODO(meep): commence
+			pluto.db.transact(function(db)
+				for _, ply in pairs(self.players) do
+					local oply = self[ply].other
+
+					for slot, data in pairs(self[ply].currency) do
+						if (type(slot) ~= "number") then
+							continue
+						end
+
+						if (not pluto.inv.addcurrency(db, ply, data.What, -data.Amount)) then
+							mysql_rollback(db)
+							return
+						end
+
+						if (not pluto.inv.addcurrency(db, oply, data.What, data.Amount)) then
+							mysql_rollback(db)
+							return
+						end
+					end
+
+					local tab = pluto.inv.invs[oply].tabs.buffer
+
+					for slot, item in pairs(self[ply].item) do
+						if (type(slot) ~= "number") then
+							continue
+						end
+
+						pluto.inv.pushbuffer(db, oply)
+						pluto.inv.invs[ply][item.TabID].Items[item.TabIndex] = nil
+						item.Owner = oply:SteamID64()
+						if (not pluto.inv.setitemplacement(db, oply, item, tab.RowID, 1)) then
+							for _, ply in pairs(self.players) do
+								ply:ChatPrint "err"
+							end
+							return
+						end
+
+						pluto.inv.message(self.players)
+							:write("item", item)
+							:send()
+					end
+				end
+
+				mysql_commit(db)
+
+				for _, ply in pairs(self.players) do
+					ply:ChatPrint"DONE"
+				end
+			end)
 	
 		else
 			self:AddSystemMessage("Trade will commence in " .. left .. " seconds...")
@@ -141,6 +190,7 @@ function TRADE:Commit()
 end
 
 function TRADE:End()
+	self:AddSystemMessage("-- trade ended --")
 	timer.Remove("trade_" .. tostring(self))
 	pluto.trades.status(self.players[1], self.players[2], "none")
 	pluto.trades.active[self.players[1]] = nil

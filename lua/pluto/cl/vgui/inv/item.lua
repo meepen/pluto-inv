@@ -218,8 +218,15 @@ function PANEL:SetUpdateFrom(tabid, tabidx)
 end
 
 function PANEL:PlutoItemUpdate(item, tabid, tabindex)
+	local had_showcase = false
 	if (self.Item == item and IsValid(self.Showcase)) then
 		self:RemoveShowcase()
+		had_showcase = true
+	end
+
+	if (self.Item == item and (tabid ~= self.TabID or tabindex ~= self.TabIndex)) then
+		self:SetItem()
+	elseif (had_showcase) then
 		self:StartShowcase()
 	end
 

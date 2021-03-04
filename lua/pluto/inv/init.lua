@@ -209,14 +209,6 @@ function pluto.inv.switchtab(db, tabid1, tabindex1, tabid2, tabindex2)
 
 	local affected = 0
 
-	local function addaffected(e, q)
-		if (e) then
-			return
-		end
-
-		affected = affected + q:affectedRows()
-	end
-
 	mysql_stmt_run(db, "SELECT tab_id, tab_idx FROM pluto_items WHERE tab_id IN (?, ?) FOR UPDATE", tabid1, tabid2)
 	local affected = 0
 
@@ -245,10 +237,14 @@ function pluto.inv.setitemplacement(db, ply, item, tabid, tabindex)
 	local tab = inv[tabid]
 
 	if (not tab) then
-		return
+		return false, "a"
 	end
 
-	inv[item.TabID].Items[item.TabIndex] = nil
+	if (inv[item.TabID]) then
+		inv[item.TabID].Items[item.TabIndex] = nil
+		print "NO TARGET ???"
+	end
+
 	tab.Items[tabindex] = item
 	item.TabID = tabid
 	item.TabIndex = tabindex
@@ -258,7 +254,7 @@ function pluto.inv.setitemplacement(db, ply, item, tabid, tabindex)
 	if (not succ) then
 		mysql_rollback(db)
 		pluto.inv.reloadfor(ply)
-		return false
+		return false, "b"
 	end
 
 	return true

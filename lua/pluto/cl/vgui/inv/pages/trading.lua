@@ -311,7 +311,9 @@ function PANEL:Init()
 		end
 
 		function input.OnRemove()
-			pluto.ui.pnl:AddKeyboardFocus(-1)
+			if (IsValid(pluto.ui.pnl)) then
+				pluto.ui.pnl:AddKeyboardFocus(-1)
+			end
 		end
 	end
 
