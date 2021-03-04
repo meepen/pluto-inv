@@ -125,6 +125,37 @@ function TRADE:SetAccepted(cl, b)
 	end
 end
 
+function TRADE:CreateSnapshot()
+	local snap = {}
+
+	for _, ply in pairs(self.players) do
+		snap[ply:SteamID64()] = {
+			item = {},
+			currency = {},
+		}
+		
+		for slot, item in pairs(self[ply].item) do
+			if (type(slot) ~= "number") then
+				continue
+			end
+
+			snap[ply:SteamID64()].item[slot] = util.JSONToTable(util.TableToJSON(item))
+		end
+		
+		for slot, data in pairs(self[ply].currency) do
+			if (type(slot) ~= "number") then
+				continue
+			end
+
+			snap[ply:SteamID64()].currency[slot] = data
+		end
+	end
+
+	snap.messages = self.messages
+
+	return snap
+end
+
 function TRADE:Commit()
 	local left = 5
 	timer.Create("trade_" .. tostring(self), 1, left + 1, function()
@@ -132,9 +163,29 @@ function TRADE:Commit()
 			self:AddSystemMessage "Trade commenced"
 			self:End()
 
+			local snapshot = util.TableToJSON(self:CreateSnapshot())
+
 			pluto.db.transact(function(db)
+				local dat, err = mysql_stmt_run(db, "INSERT INTO pluto_trades (version, snapshot, accepted) VALUES (1, ?, 1)", snapshot)
+				if (not dat) then
+					pluto.error("TRADE", err)
+					mysql_rollback(db)
+					for _, ply in pairs(self.players) do
+						ply:ChatPrint "Failed adding to trade logs. Trade reversed."
+					end
+					return
+				end
+
+				local snap_id = dat.LAST_INSERT_ID
+
 				for _, ply in pairs(self.players) do
 					local oply = self[ply].other
+
+					if (not mysql_stmt_run(db, "INSERT INTO pluto_trades_players (trade_id, player) VALUES (?, ?)", snap_id, ply:SteamID64())) then
+						pluto.error("TRADE", "Couldn't save player ", ply, " to snapshot association. Rolling back.")
+						mysql_rollback(db)
+						return
+					end
 
 					for slot, data in pairs(self[ply].currency) do
 						if (type(slot) ~= "number") then
@@ -169,6 +220,12 @@ function TRADE:Commit()
 							return
 						end
 
+						if (not mysql_stmt_run(db, "INSERT INTO pluto_trades_items (trade_id, item_id) VALUES (?, ?)", snap_id, item.RowID)) then
+							pluto.error("TRADE", "Couldn't save item ", item, " to snapshot association. Rolling back.")
+							mysql_rollback(db)
+							return
+						end
+
 						pluto.inv.message(self.players)
 							:write("item", item)
 							:send()
@@ -176,10 +233,6 @@ function TRADE:Commit()
 				end
 
 				mysql_commit(db)
-
-				for _, ply in pairs(self.players) do
-					ply:ChatPrint"DONE"
-				end
 			end)
 	
 		else

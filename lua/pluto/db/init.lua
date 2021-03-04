@@ -203,7 +203,8 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 			CREATE TABLE IF NOT EXISTS pluto_trades (
 				idx INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 				snapshot JSON NOT NULL,
-				accepted TINYINT NOT NULL DEFAULT 0
+				accepted TINYINT NOT NULL DEFAULT 0,
+				version SMALLINT UNSIGNED DEFAULT 0
 			)
 		]])
 
