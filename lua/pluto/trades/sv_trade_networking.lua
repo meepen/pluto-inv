@@ -10,7 +10,7 @@ function pluto.inv.readgettrades(ply)
 			inner join pluto_trades_players p2info on p2info.trade_id = tr.idx
 			inner join pluto_player_info p2 on p2info.player = p2.steamid
 			inner join pluto_player_info p1 on search.player = p1.steamid
-				where search.player = ?
+				where version = 1 AND search.player = ?
 				and p2info.player != search.player
 				order by trade_id desc]],
 			ply:SteamID64()
