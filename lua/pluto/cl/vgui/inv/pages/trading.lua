@@ -171,7 +171,7 @@ function PANEL:SetPlayer(ply)
 	self.PlayerIcon:SetPlayer(ply, 64)
 	self.Player = ply
 
-	self:SetStatus(pluto.trades.status[ply])
+	self:SetStatus(pluto.trades.status[ply] or "none")
 end
 
 function PANEL:OnMousePressed(m)
