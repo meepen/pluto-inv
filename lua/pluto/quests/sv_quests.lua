@@ -312,7 +312,7 @@ function pluto.quests.delete(quest)
 		end
 
 		if (removed) then
-			pluto.db.instance(function(db)
+			pluto.db.transact(function(db)
 				pluto.quests.repopulatequests(db, quest.Player)
 			end)
 		end
