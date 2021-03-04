@@ -276,13 +276,30 @@ function PANEL:Init()
 		input:RequestFocus()
 		input:SetUpdateOnType(true)
 
+		local function sendmessage(msg)
+			if (msg:Trim() == "") then
+				return
+			end
+
+			pluto.inv.message()
+				:write("trademessage", msg)
+				:send()
+		end
+
 		local function finish()
+			sendmessage(input:GetText())
 			s:SetText(t)
 			input:Remove()
 		end
 
-		function input.OnEnter()
-			finish()
+		function input.OnEnter(s)
+			if (input:GetText() == "") then
+				finish()
+			else
+				sendmessage(input:GetText())
+				s:SetText ""
+				s:RequestFocus()
+			end
 		end
 
 		function input.OnFocusChanged(gained)
@@ -322,6 +339,10 @@ function PANEL:Init()
 
 	hook.Add("PlutoTradeUpdate", self, self.PlutoTradeUpdate)
 	self:AppendText "--beginning of trade--\n"
+	for _, msg in ipairs(pluto.trades.data.messages) do
+		self:AddTradeMessage(msg)
+	end
+	hook.Add("PlutoTradeMessage", self, self.AddTradeMessage)
 end
 
 function PANEL:PlutoTradeUpdate(side, what, index, data)
@@ -411,6 +432,15 @@ function PANEL:AppendText(...)
 	else
 		self.ChatText:AppendText(...)
 	end
+end
+
+function PANEL:AddTradeMessage(msg)
+	local sender = msg.sender
+	if (IsValid(sender)) then
+		self:AppendText(Color(255, 222, 0), sender:Nick(), ": ")
+	end
+
+	self:AppendText(Color(255, 255, 255), msg[1], "\n")
 end
 
 vgui.Register("pluto_inventory_trading_active", PANEL, "EditablePanel")

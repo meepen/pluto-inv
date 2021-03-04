@@ -95,3 +95,24 @@ function pluto.inv.writetradeupdate(ply, who, what, index, data)
 		end
 	end
 end
+
+
+function pluto.inv.readtrademessage(cl)
+	local msg = net.ReadString()
+
+	local active = pluto.trades.active[cl]
+	if (active) then
+		active.data:AddPlayerMessage(cl, msg)
+	end
+end
+
+function pluto.inv.writetrademessage(_, msg, cl)
+	if (cl) then
+		net.WriteBool(true)
+		net.WriteEntity(cl)
+	else
+		net.WriteBool(false)
+	end
+
+	net.WriteString(msg)
+end

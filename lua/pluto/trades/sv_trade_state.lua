@@ -68,18 +68,26 @@ function TRADE:Set(who, what, index, data)
 	return self
 end
 
-function TRADE:End()
-	local ply1, ply2
-	for ply in pairs(self) do
-		if (ply1) then
-			ply2 = ply
-		else
-			ply1 = ply
-		end
-		pluto.trades.active[ply] = nil
-	end
+function TRADE:AddPlayerMessage(ply, msg)
+	table.insert(self.messages, {sender = ply:SteamID64(), msg})
 
-	pluto.trades.status(ply1, ply2, "none")
+	pluto.inv.message(self.players)
+		:write("trademessage", msg, ply)
+		:send()
+end
+
+function TRADE:AddSystemMessage(msg)
+	table.insert(self.messages, {msg})
+
+	pluto.inv.message(self.players)
+		:write("trademessage", msg)
+		:send()
+end
+
+function TRADE:End()
+	pluto.trades.status(self.players[1], self.players[2], "none")
+	pluto.trades.active[self.players[1]] = nil
+	pluto.trades.active[self.players[2]] = nil
 end
 
 function pluto.trades.updatefor(ply, oply)
@@ -116,6 +124,8 @@ function pluto.trades.start(ply, oply)
 			currency = {},
 			other = ply,
 		},
+		messages = {},
+		players = {ply, oply},
 	}, pluto.trades.mt)
 
 	pluto.trades.active[ply] = {

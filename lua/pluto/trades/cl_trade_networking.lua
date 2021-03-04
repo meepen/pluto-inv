@@ -44,3 +44,19 @@ function pluto.inv.writetradeupdate(what, index, data)
 		end
 	end
 end
+
+function pluto.inv.writetrademessage(msg)
+	net.WriteString(msg)
+end
+
+function pluto.inv.readtrademessage()
+	local cl
+	if (net.ReadBool()) then
+		cl = net.ReadEntity()
+	end
+
+	local msg = net.ReadString()
+
+	table.insert(pluto.trades.data.messages, {sender = cl, msg})
+	hook.Run("PlutoTradeMessage", {sender = cl, msg})
+end

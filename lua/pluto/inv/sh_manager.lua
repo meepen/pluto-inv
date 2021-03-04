@@ -96,7 +96,6 @@ pluto.inv.messages = {
 		"tradelogresults",
 
 		-- constellations
-		
 		"nodes",
 		"itemtree",
 
@@ -107,6 +106,9 @@ pluto.inv.messages = {
 		-- past trades
 		"tradelogsnapshot",
 		"traderequestinfo",
+
+		-- trading
+		"trademessage",
 		"tradeupdate",
 	}
 }

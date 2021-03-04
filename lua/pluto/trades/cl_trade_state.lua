@@ -10,6 +10,7 @@ pluto.trades.data = pluto.trades.data or {
 		item = {},
 		currency = {},
 	},
+	messages = {},
 	otherply = nil,
 	Clear = function(self)
 		self.outgoing = {
@@ -20,6 +21,8 @@ pluto.trades.data = pluto.trades.data or {
 			item = {},
 			currency = {},
 		}
+		self.messages = {}
+		self.otherply = nil
 	end,
 }
 
