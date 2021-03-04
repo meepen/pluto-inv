@@ -54,7 +54,7 @@ function pluto.ui.rightclickmenu(item, pre)
 		SetClipboardText(util.TableToJSON(item))
 	end)]]
 
-	if (not item.Locked and item.Nickname) then
+	if (not item.Locked and item.Nickname and item.Owner == LocalPlayer():SteamID64()) then
 		rightclick_menu:AddOption("Remove name (100 hands)", function()
 			item.Nickname = nil
 			pluto.inv.message()
@@ -63,11 +63,13 @@ function pluto.ui.rightclickmenu(item, pre)
 		end):SetIcon("icon16/cog_delete.png")
 	end
 
-	rightclick_menu:AddOption("Copy Chat Link", function()
-		SetClipboardText("{item:" .. item.ID .. "}")
-	end):SetIcon("icon16/book.png")
+	if (item.Owner == LocalPlayer():SteamID64()) then
+		rightclick_menu:AddOption("Copy Chat Link", function()
+			SetClipboardText("{item:" .. item.ID .. "}")
+		end):SetIcon("icon16/book.png")
+	end
 
-	if (item.Type ~= "Shard") then
+	if (item.Type ~= "Shard" and item.Owner == LocalPlayer():SteamID64()) then
 		rightclick_menu:AddOption("Toggle locked", function()
 			pluto.inv.message()
 				:write("itemlock", item.ID)
@@ -81,7 +83,7 @@ function pluto.ui.rightclickmenu(item, pre)
 		end):SetIcon "icon16/star.png"
 	end
 
-	if (not item.Untradeable) then
+	if (not item.Untradeable and item.Owner == LocalPlayer():SteamID64()) then
 		rightclick_menu:AddOption("Sell in Divine Market", function()
 			if (IsValid(PLUTO_LIST_TEST)) then
 				PLUTO_LIST_TEST:Remove()
@@ -98,7 +100,7 @@ function pluto.ui.rightclickmenu(item, pre)
 		end):SetIcon("icon16/money.png")
 	end
 
-	if (not item.Locked) then
+	if (not item.Locked and item.Owner == LocalPlayer():SteamID64()) then
 		rightclick_menu:AddOption("Destroy Item", function()
 			pluto.divine.confirm("Destroy " .. item:GetPrintName(), function()
 				local tab = pluto.cl_inv[item.TabID]

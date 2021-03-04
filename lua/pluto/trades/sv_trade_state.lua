@@ -84,6 +84,11 @@ function TRADE:AddSystemMessage(msg)
 		:send()
 end
 
+function TRADE:Commit(cb)
+	-- TODO(meepen): commit items to buffer and currency
+	return cb()
+end
+
 function TRADE:End()
 	pluto.trades.status(self.players[1], self.players[2], "none")
 	pluto.trades.active[self.players[1]] = nil
