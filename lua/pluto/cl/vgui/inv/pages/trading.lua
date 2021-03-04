@@ -134,13 +134,15 @@ function PANEL:Init()
 	self.PlayerNameLabel:Dock(LEFT)
 	self.PlayerNameLabel:DockMargin(2, 0, 0, 0)
 
-	self.StatusArea = self.Inner:Add "EditablePanel"
+	self.StatusArea = self.Inner:Add "pluto_label"
 	self.StatusArea:SetMouseInputEnabled(false)
 	self.StatusArea:Dock(RIGHT)
 	self.StatusArea:DockMargin(5, 5, 5, 5)
-	function self.StatusArea:PerformLayout(w, h)
-		self:SetWide(h)
-	end
+	self.StatusArea:SetTextColor(Color(247, 249, 43))
+	self.StatusArea:SetFont "pluto_inventory_font"
+	self.StatusArea:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.StatusArea:SetText "hello"
+	self.StatusArea:SetContentAlignment(5)
 
 	hook.Add("PlutoTradeRequestInfo", self, self.PlutoTradeRequestInfo)
 end
@@ -151,23 +153,16 @@ function PANEL:PlutoTradeRequestInfo(oply, status)
 	end
 end
 
-function PANEL:SetStatus(status)
-	if (IsValid(self.StatusPanel)) then
-		self.StatusPanel:Remove()
-	end
+PANEL.Types = {
+	["in progress"] = "Trade in progress",
+	["outbound"] = "Trade request sent",
+	["inbound"] = "Trade request received",
+	["none"] = "",
+}
 
-	if (status == "inbound") then
-		self.StatusPanel = self.StatusArea:Add "ttt_curved_panel"
-		self.StatusPanel:Dock(FILL)
-		self.StatusPanel:SetColor(Color(255, 0, 0))
-	elseif (status == "outbound") then
-		self.StatusPanel = self.StatusArea:Add "pluto_inventory_loading"
-		self.StatusPanel:Dock(FILL)
-	elseif (status == "in progress") then
-		self.StatusPanel = self.StatusArea:Add "ttt_curved_panel"
-		self.StatusPanel:Dock(FILL)
-		self.StatusPanel:SetColor(Color(0, 255, 0))
-	end
+function PANEL:SetStatus(status)
+	self.StatusArea:SetText(self.Types[status] or status)
+	self.StatusArea:SizeToContentsX()
 end
 
 function PANEL:SetPlayer(ply)
