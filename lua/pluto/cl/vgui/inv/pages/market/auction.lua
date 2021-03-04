@@ -124,7 +124,7 @@ function PANEL:Init()
 	self.ButtonArea:Dock(TOP)
 	self.ButtonArea:DockMargin(0, 0, 0, self.Padding)
 
-	self.TabArea = self:Add "EditablePanel"
+	self.TabArea = self:Add "DScrollPanel"
 	self.TabArea:Dock(FILL)
 	self.TabArea:DockPadding(self.Padding, self.Padding * 2, self.Padding, self.Padding)
 	
@@ -145,6 +145,17 @@ function PANEL:Init()
 	self.ItemName = self.TabArea:Add "pluto_inventory_auction_search_input"
 	self.ItemName:Dock(TOP)
 	self.ItemName:SetText "Item name:"
+
+	self.Parameters = {}
+
+	local function update(s, what, ...)
+		self.Parameters[what] = {n = select("#", ...), ...}
+		self:OnSearchUpdated()
+	end
+	
+	hook.Add("PlutoSearchChanged", self.SortBy, update)
+	hook.Add("PlutoSearchChanged", self.ItemID, update)
+	hook.Add("PlutoSearchChanged", self.ItemName, update)
 end
 
 function PANEL:AddTab(name)
@@ -173,8 +184,15 @@ function PANEL:AddTab(name)
 	tab:SetTall(0)
 	self.Tabs[name] = {
 		Panel = tab,
-		Label = btn
+		Label = btn,
+		Parameters = {},
 	}
+
+	function tab.OnChildAdded(child)
+		hook.Add("PlutoSearchChanged", child, function(s, what, ...)
+			self:OnSearchChanged(what, ...)
+		end)
+	end
 
 	if (not self.ActiveTab) then
 		self:SelectTab(name)
@@ -209,6 +227,26 @@ function PANEL:PerformLayout(w, h)
 	end
 end
 
+function PANEL:OnSearchChanged(what, ...)
+	local tab = self.Tabs[self.ActiveTab].Parameters
+	tab[what] = {n = select("#", ...), ...}
+
+	self:OnSearchUpdated()
+end
+
+function PANEL:GetCurrentSearchParameters()
+	local params = {}
+	for what, param in pairs(self.Tabs[self.ActiveTab].Parameters) do
+		params[what] = param
+	end
+
+	return params
+end
+
+function PANEL:OnSearchUpdated()
+	PrintTable(self:GetCurrentSearchParameters())
+end
+
 function PANEL:OnRemove()
 	self.Cache:Remove()
 end
@@ -236,7 +274,12 @@ function PANEL:SetText(text)
 	self.Label:SetText(text)
 end
 
-function PANEL:OnChange()
+function PANEL:GetText()
+	return self.Label:GetText()
+end
+
+function PANEL:OnChanged(...)
+	hook.Run("PlutoSearchChanged", self:GetText(), ...)
 end
 
 vgui.Register("pluto_inventory_auction_search_base", PANEL, "EditablePanel")
@@ -251,7 +294,7 @@ end
 
 function PANEL:AddOption(what)
 	self.Dropdown:AddOption(what, function()
-		self:OnChange(what)
+		self:OnChanged(what)
 	end)
 end
 
@@ -263,6 +306,32 @@ function PANEL:Init()
 	self.TextEntry = self:Add "DTextEntry"
 	self.TextEntry:Dock(RIGHT)
 	self.TextEntry:SetWide(120)
+	self.TextEntry:SetFont "pluto_inventory_font"
+
+	function self.TextEntry.OnMousePressed(s, m)
+		if (m == MOUSE_LEFT and not s:HasFocus()) then
+			pluto.ui.pnl:AddKeyboardFocus(1)
+		elseif (m == MOUSE_RIGHT) then
+			s:SetText ""
+			self:OnUpdated()
+		end
+	end
+
+	function self.TextEntry.OnEnter()
+		self:OnUpdated()
+		pluto.ui.pnl:AddKeyboardFocus(-1)
+	end
+
+	function self.TextEntry.OnFocusChanged(s, gained)
+		if (not gained and self:HasFocus()) then
+			self:OnUpdated()
+			pluto.ui.pnl:AddKeyboardFocus(-1)
+		end
+	end
+end
+
+function PANEL:OnUpdated()
+	self:OnChanged(self.TextEntry:GetText())
 end
 
 vgui.Register("pluto_inventory_auction_search_input", PANEL, "pluto_inventory_auction_search_base")
@@ -270,9 +339,32 @@ vgui.Register("pluto_inventory_auction_search_input", PANEL, "pluto_inventory_au
 local PANEL = {}
 
 function PANEL:Init()
-	self.TextEntry1 = self:Add "DTextEntry"
-	self.TextEntry1:Dock(RIGHT)
-	self.TextEntry1:SetWide(55)
+	self.TextEntry2 = self:Add "DTextEntry"
+	self.TextEntry2:Dock(RIGHT)
+	self.TextEntry2:SetWide(55)
+	self.TextEntry2:SetUpdateOnType(true)
+	self.TextEntry2:SetFont "pluto_inventory_font"
+	
+	function self.TextEntry2.OnMousePressed(s, m)
+		if (m == MOUSE_LEFT and not s:HasFocus()) then
+			pluto.ui.pnl:AddKeyboardFocus(1)
+		elseif (m == MOUSE_RIGHT) then
+			s:SetText ""
+			self:OnUpdated()
+		end
+	end
+
+	function self.TextEntry2.OnEnter()
+		self:OnUpdated()
+		pluto.ui.pnl:AddKeyboardFocus(-1)
+	end
+
+	function self.TextEntry2.OnFocusChanged(s, gained)
+		if (not gained and self:HasFocus()) then
+			self:OnUpdated()
+			pluto.ui.pnl:AddKeyboardFocus(-1)
+		end
+	end
 
 	self.To = self:Add "pluto_label"
 	self.To:SetContentAlignment(5)
@@ -283,9 +375,35 @@ function PANEL:Init()
 	self.To:SetWide(10)
 	self.To:Dock(RIGHT)
 
-	self.TextEntry2 = self:Add "DTextEntry"
-	self.TextEntry2:Dock(RIGHT)
-	self.TextEntry2:SetWide(55)
+	self.TextEntry1 = self:Add "DTextEntry"
+	self.TextEntry1:Dock(RIGHT)
+	self.TextEntry1:SetWide(55)
+	self.TextEntry1:SetFont "pluto_inventory_font"
+
+	function self.TextEntry1.OnMousePressed(s, m)
+		if (m == MOUSE_LEFT and not s:HasFocus()) then
+			pluto.ui.pnl:AddKeyboardFocus(1)
+		elseif (m == MOUSE_RIGHT) then
+			s:SetText ""
+			self:OnUpdated()
+		end
+	end
+
+	function self.TextEntry1.OnEnter()
+		self:OnUpdated()
+		pluto.ui.pnl:AddKeyboardFocus(-1)
+	end
+
+	function self.TextEntry1.OnFocusChanged(s, gained)
+		if (not gained and self:HasFocus()) then
+			self:OnUpdated()
+			pluto.ui.pnl:AddKeyboardFocus(-1)
+		end
+	end
+end
+
+function PANEL:OnUpdated()
+	self:OnChanged(self.TextEntry1:GetText(), self.TextEntry2:GetText())
 end
 
 vgui.Register("pluto_inventory_auction_search_input_two", PANEL, "pluto_inventory_auction_search_base")
