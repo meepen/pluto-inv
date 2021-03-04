@@ -75,8 +75,16 @@ function TRADE:Set(who, what, index, data)
 		recv.lookup[data] = index
 	end
 
+	self[who].accepted = false
+	self[self[who].other].accepted = false
+
 	pluto.inv.message(self[who].other)
 		:write("tradeupdate", who, what, index, data)
+		:send()
+
+	pluto.inv.message(self.players)
+		:write("tradestatus", who, false)
+		:write("tradestatus", self[who].other, false)
 		:send()
 
 	return self

@@ -70,7 +70,7 @@ function pluto.inv.readtradestatus()
 	local cl = net.ReadEntity()
 	local status = net.ReadBool()
 
-	pluto.trades.data[cl == LocalPlayer() and "incoming" or "outgoing"].accepted = status
+	pluto.trades.data[cl == LocalPlayer() and "outgoing" or "incoming"].accepted = status
 
 	hook.Run("PlutoTradePlayerStatus", cl, status)
 end
