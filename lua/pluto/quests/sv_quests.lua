@@ -60,7 +60,6 @@ function pluto.quests.populate(ply, data)
 	quest.Player = ply
 	quest.RewardData = util.JSONToTable(data.reward)
 
-	pluto.message("QUEST", "Initializing quest " .. quest.QuestID)
 	quest:GetQuestData():Init(quest)
 	quest:UpdateEndTime()
 
@@ -140,7 +139,6 @@ function pluto.quests.generate(db, ply, questid)
 	})
 
 	quest:NotifyUpdate()
-	pluto.message("QUEST", "Notified ", quest)
 
 	return quest
 end
@@ -314,7 +312,6 @@ function pluto.quests.delete(quest)
 		end
 
 		if (removed) then
-			pluto.message("QUEST", "Adding quest to ", quest.Player)
 			pluto.db.instance(function(db)
 				pluto.quests.repopulatequests(db, quest.Player)
 			end)
@@ -328,15 +325,4 @@ end
 
 function pluto.quests.reset(ply)
 	-- TODO(meep)
-end
-
-
--- while on dev server, reload file
-
-pluto.quests.byid = {}
-for _, ply in pairs(player.GetHumans()) do
-	if (ply:GetUserGroup() == "meepen") then
-		pluto.quests.players[ply] = nil
-		pluto.quests.init(ply)
-	end
 end
