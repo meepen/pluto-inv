@@ -406,10 +406,17 @@ function PANEL:SendUpdate(type, index, ...)
 	end
 end
 
+function PANEL:PlutoTradeRequestInfo(ply, status)
+	if (status == "in progress") then
+		self:UpdateFromTradeData()
+	end
+end
+
 function PANEL:UpdateFromTradeData()
 	hook.Add("PlutoTradeUpdate", self, self.PlutoTradeUpdate)
 	hook.Add("PlutoTradeMessage", self, self.AddTradeMessage)
 	hook.Add("PlutoTradePlayerStatus", self, self.PlutoTradePlayerStatus)
+	hook.Add("PlutoTradeRequestInfo", self, self.PlutoTradeRequestInfo)
 	self.IncomingNew:SetReady(pluto.trades.data.incoming.accepted)
 	self.OutgoingNew:SetReady(pluto.trades.data.outgoing.accepted)
 	for _, msg in ipairs(pluto.trades.data.messages) do
@@ -425,6 +432,7 @@ function PANEL:UpdateFromTradeData()
 	for i = 1, 3 do
 		local dat = tradedata.outgoing.currency[i]
 		if (not dat) then
+			self.OutgoingNew:SetCurrency(i)
 			continue
 		end
 
@@ -437,6 +445,7 @@ function PANEL:UpdateFromTradeData()
 	for i = 1, 3 do
 		local dat = tradedata.incoming.currency[i]
 		if (not dat) then
+			self.IncomingNew:SetCurrency(i)
 			continue
 		end
 
