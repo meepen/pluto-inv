@@ -41,8 +41,47 @@ function PANEL:Init()
 	self.PaginationLabel:SetTextColor(Color(255, 255, 255))
 	self.PaginationLabel:SetContentAlignment(5)
 
+	self.PageDown = self.Pagination:Add "pluto_label"
+	self.PageDown:SetCursor "hand"
+	self.PageDown:SetMouseInputEnabled(true)
+	self.PageDown:SetFont "pluto_inventory_font"
+	self.PageDown:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.PageDown:SetText "<<"
+	self.PageDown:SetTextColor(Color(255, 255, 255))
+	self.PageDown:SetContentAlignment(5)
+	function self.PageDown.OnMousePressed()
+		local page = self:GetPage() - 1
+		if (page < 1) then
+			return
+		end
+		self:SearchPage(page)
+	end
+
+
+	self.PageUp = self.Pagination:Add "pluto_label"
+	self.PageUp:SetCursor "hand"
+	self.PageUp:SetMouseInputEnabled(true)
+	self.PageUp:SetFont "pluto_inventory_font"
+	self.PageUp:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.PageUp:SetText ">>"
+	self.PageUp:SetTextColor(Color(255, 255, 255))
+	self.PageUp:SetContentAlignment(5)
+
+	function self.PageUp.OnMousePressed()
+		local page = self:GetPage() + 1
+		if (page > self:GetPageMax()) then
+			return
+		end
+		self:SearchPage(page)
+	end
+
 	function self.Pagination.PerformLayout()
 		self.PaginationLabel:Center()
+		self.PageDown:SetTall(self.PaginationLabel:GetTall())
+		self.PageUp:SetTall(self.PaginationLabel:GetTall())
+		local x, y = self.PaginationLabel:GetPos()
+		self.PageDown:SetPos(x - self.PageDown:GetWide() - self.Padding, y)
+		self.PageUp:SetPos(x + self.PaginationLabel:GetWide() + self.Padding, y)
 		self.SearchArea:DockMargin(0, self.Padding + 1, self.Padding * 2, self.Pagination:GetTall() + self.Padding + 1)
 	end
 
@@ -97,13 +136,53 @@ function PANEL:Init()
 	self.ShardSearch:InvalidateChildren(true)
 	self.ShardSearch:SizeToChildren(false, true)
 
-	self:SetPageInfo(0, 0)
+	self:SetPageMax(3)
+	self:SetPage(2)
 end
 
-function PANEL:SetPageInfo(num, max)
-	self.PaginationLabel:SetText(string.format("Page %i / %i", num, max))
+function PANEL:UpdatePages()
+	if (not self.Page or not self.PageMax) then
+		return
+	end
+
+	self.PaginationLabel:SetText(string.format("Page %i / %i", self.Page, self.PageMax))
 	self.PaginationLabel:SizeToContents()
 	self.PaginationLabel:Center()
+
+	self.PageDown:SetVisible(self.Page > 1)
+	self.PageUp:SetVisible(self.Page < self.PageMax)
+end
+
+function PANEL:SetPageMax(max)
+	self.PageMax = max
+	self:UpdatePages()
+end
+
+function PANEL:GetPageMax()
+	return self.PageMax
+end
+
+function PANEL:SearchPage(page)
+	-- TODO(meep): networking
+	self:SetPage(page)
+end
+
+function PANEL:SetPage(num)
+	self.Page = num
+	self:UpdatePages()
+end
+
+function PANEL:GetPage()
+	return self.Page
+end
+
+function PANEL:StartNewSearch(params)
+	self.Parameters = params
+
+	-- TODO(meep): network parameters
+end
+
+function PANEL:SendSearch()
 end
 
 vgui.Register("pluto_inventory_auction", PANEL, "EditablePanel")
@@ -127,6 +206,29 @@ function PANEL:Init()
 	self.TabArea = self:Add "DScrollPanel"
 	self.TabArea:Dock(FILL)
 	self.TabArea:DockPadding(self.Padding, self.Padding * 2, self.Padding, self.Padding)
+
+	self.SearchButtonContainer = self:Add "EditablePanel"
+	self.SearchButtonContainer:Dock(BOTTOM)
+	self.SearchButtonContainer:SetTall(22)
+
+	self.SearchButton = self.SearchButtonContainer:Add "pluto_inventory_button"
+	self.SearchButton:SetColor(Color(255, 0, 255))
+	self.SearchButton:SetCurve(4)
+	self.SearchButton:SetWide(120)
+	self.SearchLabel = self.SearchButton:Add "pluto_label"
+	self.SearchLabel:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.SearchLabel:SetText "Update search"
+	self.SearchLabel:SetTextColor(Color(255, 255, 255))
+	self.SearchLabel:SetContentAlignment(5)
+	self.SearchLabel:SetFont "pluto_inventory_font"
+	self.SearchLabel:Dock(FILL)
+	function self.SearchButtonContainer.PerformLayout(s, w, h)
+		self.SearchButton:SetTall(h)
+		self.SearchButton:Center()
+	end
+	function self.SearchButton.DoClick()
+		self:StartNewSearch()
+	end
 	
 	self.SortBy = self.TabArea:Add "pluto_inventory_auction_search_dropdown"
 	self.SortBy:Dock(TOP)
@@ -240,11 +342,19 @@ function PANEL:GetCurrentSearchParameters()
 		params[what] = param
 	end
 
+	for what, param in pairs(self.Parameters) do
+		params[what] = param
+	end
+
 	return params
 end
 
+function PANEL:StartNewSearch()
+	self.CurrentParameters = self:GetCurrentSearchParameters()
+end
+
 function PANEL:OnSearchUpdated()
-	PrintTable(self:GetCurrentSearchParameters())
+	-- something?
 end
 
 function PANEL:OnRemove()
