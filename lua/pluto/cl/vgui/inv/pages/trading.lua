@@ -6,7 +6,9 @@ function PANEL:Init()
 	self.TradingScroll = self.StartTrading:Add "DScrollPanel"
 	self.TradingScroll:Dock(FILL)
 	self.PastTrades   = self:AddTab "Past Trades"
-	self:AddTab "Active Trade":Add "pluto_inventory_trading_active":Dock(FILL)
+	local active = self:AddTab "Active Trade":Add "pluto_inventory_trading_active"
+	active:Dock(FILL)
+	active:UpdateFromTradeData()
 
 	hook.Add("PlutoPastTradesReceived", self.PastTrades, self.PlutoPastTradesReceived)
 	hook.Add("PlutoTradeLogSnapshot", self.PastTrades, self.PlutoTradeLogSnapshot)
@@ -23,6 +25,23 @@ end
 
 function PANEL:PlutoPastTradesReceived(trades)
 	self.HasInfo = true
+
+	local function CreateTradeThing(snap)
+		self.PastTrades:SetVisible(false)
+
+		local active = self:Add "pluto_inventory_trading_active"
+		active:Dock(FILL)
+		active:SetSnapshot(snap)
+
+		function active:OnCancel()
+			self:Remove()
+		end
+		function active.OnRemove()
+			if (IsValid(self.PastTrades)) then
+				self.PastTrades:SetVisible(true)
+			end
+		end
+	end
 
 	self.PastTrades = self:Add "DListView"
 	self.PastTrades:Dock(FILL)
@@ -44,9 +63,7 @@ function PANEL:PlutoPastTradesReceived(trades)
 			chat.AddText("Retrieving data for trade " .. trade.ID .. "...")
 			return
 		else
-			SetClipboardText(trade.snapshot)
-		
-			chat.AddText("Trade " .. trade.ID .. " copied to clipboard.")
+			CreateTradeThing(trade.snapshot)
 		end
 	end
 end
@@ -65,9 +82,8 @@ function PANEL:PlutoTradeLogSnapshot(id, data)
 	end
 
 	trade.snapshot = data
-	SetClipboardText(data)
 
-	chat.AddText("Trade " .. id .. " copied to clipboard.")
+	chat.AddText("Trade " .. id .. " received.")
 end
 
 function PANEL:Think()
@@ -197,13 +213,11 @@ function PANEL:Init()
 	self.IncomingNew:Dock(LEFT)
 	self.IncomingNew:SetText "Their offer"
 	self.IncomingOutgoingContainer:SetTall(self.IncomingNew:GetTall())
-	self.IncomingNew:SetReady(pluto.trades.data.incoming.accepted)
 
 	self.OutgoingNew = self.IncomingOutgoingContainer:Add "pluto_inventory_trading_set"
 	self.OutgoingNew:Dock(RIGHT)
 	self.OutgoingNew:SetText "Your offer"
 	self.OutgoingNew:AcceptInput()
-	self.OutgoingNew:SetReady(pluto.trades.data.outgoing.accepted)
 
 	function self.OutgoingNew.OnCurrencyUpdated(s, slot, currency, amount)
 		if (IsValid(pluto.ui.pnl)) then
@@ -327,16 +341,18 @@ function PANEL:Init()
 	self.AcceptButton:SetCurve(4)
 	self.AcceptButton:SetText "Accept"
 
-	function self.AcceptButton:DoClick()
-		pluto.inv.message()
-			:write "tradestatus"
-			:send()
+	function self.AcceptButton.DoClick()
+		self:OnAccept()
 	end
 
 	self.CancelButton = self.ButtonContainer:Add "pluto_inventory_button"
 	self.CancelButton:SetColor(Color(175, 30, 30), Color(237, 28, 36))
 	self.CancelButton:SetCurve(4)
 	self.CancelButton:SetText "Cancel"
+
+	function self.CancelButton.DoClick()
+		self:OnCancel()
+	end
 
 	function self.ButtonContainer.PerformLayout(s, w, h)
 		local x = w / 2
@@ -345,16 +361,7 @@ function PANEL:Init()
 		self.AcceptButton:SetPos(x - self.AcceptButton:GetWide() - 5, h / 2 - self.CancelButton:GetTall() / 2)
 	end
 
-	self:UpdateFromTradeData()
-
 	self:AppendText "--beginning of trade--\n"
-	for _, msg in ipairs(pluto.trades.data.messages) do
-		self:AddTradeMessage(msg)
-	end
-
-	hook.Add("PlutoTradeUpdate", self, self.PlutoTradeUpdate)
-	hook.Add("PlutoTradeMessage", self, self.AddTradeMessage)
-	hook.Add("PlutoTradePlayerStatus", self, self.PlutoTradePlayerStatus)
 end
 
 function PANEL:PlutoTradePlayerStatus(ply, b)
@@ -400,6 +407,15 @@ function PANEL:SendUpdate(type, index, ...)
 end
 
 function PANEL:UpdateFromTradeData()
+	hook.Add("PlutoTradeUpdate", self, self.PlutoTradeUpdate)
+	hook.Add("PlutoTradeMessage", self, self.AddTradeMessage)
+	hook.Add("PlutoTradePlayerStatus", self, self.PlutoTradePlayerStatus)
+	self.IncomingNew:SetReady(pluto.trades.data.incoming.accepted)
+	self.OutgoingNew:SetReady(pluto.trades.data.outgoing.accepted)
+	for _, msg in ipairs(pluto.trades.data.messages) do
+		self:AddTradeMessage(msg)
+	end
+
 	self.Updating = true
 	local tradedata = pluto.trades.getdata()
 
@@ -430,6 +446,35 @@ function PANEL:UpdateFromTradeData()
 	self.Updating = false
 end
 
+function PANEL:SetSnapshot(snap)
+	local trade = json.parse(snap)
+	for _, msg in ipairs(trade.messages) do
+		local newmsg = {msg["1"] or msg[1]}
+		if (msg.sender and trade[msg.sender]) then
+			newmsg.sender = trade[msg.sender].name
+		end
+
+		self:AddTradeMessage(newmsg)
+	end
+
+	local current = self.OutgoingNew
+
+	for ply, t in pairs(trade) do
+		if (not tonumber(ply)) then
+			continue
+		end
+
+		for slot, item in pairs(t.item) do
+			current:SetItem(tonumber(slot), setmetatable(item, pluto.inv.item_mt))
+		end
+		for slot, data in pairs(t.currency) do
+			current:SetCurrency(tonumber(slot), pluto.currency.byname[data.What], data.Amount)
+		end
+
+		current = self.IncomingNew
+	end
+end
+
 function PANEL:ChatInitiated()
 	self.HasChatInitiated = true
 
@@ -452,11 +497,22 @@ end
 
 function PANEL:AddTradeMessage(msg)
 	local sender = msg.sender
-	if (IsValid(sender)) then
+	if (isstring(sender)) then
+		self:AppendText(Color(255, 222, 0), sender, ": ")
+	elseif (IsValid(sender)) then
 		self:AppendText(Color(255, 222, 0), sender:Nick(), ": ")
 	end
 
 	self:AppendText(Color(255, 255, 255), msg[1], "\n")
+end
+
+function PANEL:OnCancel()
+end
+
+function PANEL:OnAccept()
+	pluto.inv.message()
+		:write "tradestatus"
+		:send()
 end
 
 vgui.Register("pluto_inventory_trading_active", PANEL, "EditablePanel")

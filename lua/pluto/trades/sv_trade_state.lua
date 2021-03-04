@@ -132,6 +132,7 @@ function TRADE:CreateSnapshot()
 		snap[ply:SteamID64()] = {
 			item = {},
 			currency = {},
+			name = ply:Nick(),
 		}
 		
 		for slot, item in pairs(self[ply].item) do
@@ -163,7 +164,7 @@ function TRADE:Commit()
 			self:AddSystemMessage "Trade commenced"
 			self:End()
 
-			local snapshot = util.TableToJSON(self:CreateSnapshot())
+			local snapshot = json.stringify(self:CreateSnapshot())
 
 			pluto.db.transact(function(db)
 				local dat, err = mysql_stmt_run(db, "INSERT INTO pluto_trades (version, snapshot, accepted) VALUES (1, ?, 1)", snapshot)

@@ -129,7 +129,7 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 			render.SuppressEngineLighting(false)
 		cam.End3D()
 	elseif (self.Item.Type == "Shard") then
-		local RealColor, AddColor = pluto.inv.colors(self.Item.Color)
+		local RealColor, AddColor = pluto.inv.colors(self.Item.Color or Color(255, 255, 255))
 		newshard:SetVector("$color", RealColor:ToVector())
 		newshardadd:SetVector("$color", AddColor:ToVector())
 		surface.SetDrawColor(255, 255, 255, 255)
