@@ -75,17 +75,16 @@ function TRADE:Set(who, what, index, data)
 		recv.lookup[data] = index
 	end
 
-	self[who].accepted = false
-	self[self[who].other].accepted = false
-
 	pluto.inv.message(self[who].other)
 		:write("tradeupdate", who, what, index, data)
 		:send()
 
-	pluto.inv.message(self.players)
-		:write("tradestatus", who, false)
-		:write("tradestatus", self[who].other, false)
-		:send()
+	if (self[who].accepted) then
+		self:SetAccepted(who, false)
+	end
+	if (self[self[who].other].accepted) then
+		self:SetAccepted(self[who].other, false)
+	end
 
 	self:AddSystemMessage(who:Nick() .. " changed " .. what .. " " .. index)
 
@@ -118,15 +117,23 @@ function TRADE:SetAccepted(cl, b)
 	self:AddSystemMessage(cl:Nick() .. " " .. (b and "is ready to trade" or "is no longer ready to trade"))
 
 	if (b and self[self[cl].other]) then
-		self:Commit(function()
-			print "COMMITTED"
-		end)
+		self:Commit()
 	end
 end
 
-function TRADE:Commit(cb)
-	-- TODO(meepen): commit items to buffer and currency
-	return cb()
+function TRADE:Commit()
+	local left = 3
+	timer.Create("trade_" .. tostring(self), 1, left + 1, function()
+		if (left == 0) then
+			self:AddSystemMessage "Trade commenced"
+
+			-- TODO(meep): commence
+	
+		else
+			self:AddSystemMessage("Trade will commence in " .. left .. " seconds...")
+		end
+		left = left - 1
+	end)
 end
 
 function TRADE:End()
