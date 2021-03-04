@@ -87,6 +87,8 @@ function TRADE:Set(who, what, index, data)
 		:write("tradestatus", self[who].other, false)
 		:send()
 
+	self:AddSystemMessage(who:Nick() .. " changed " .. what .. " " .. index)
+
 	return self
 end
 
@@ -112,6 +114,8 @@ function TRADE:SetAccepted(cl, b)
 	pluto.inv.message(self.players)
 		:write("tradestatus", cl, b)
 		:send()
+
+	self:AddSystemMessage(cl:Nick() .. " " .. (b and "is ready to trade" or "is no longer ready to trade"))
 
 	if (b and self[self[cl].other]) then
 		self:Commit(function()
