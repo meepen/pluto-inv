@@ -72,6 +72,13 @@ pluto.files.load {
 		"cl/vgui/inv/pages/crafting.lua",
 		"cl/vgui/inv/pages/trading.lua",
 
+		"cl/vgui/inv/pages/market/itemshop.lua",
+		"cl/vgui/inv/pages/market/auction.lua",
+		"cl/vgui/inv/pages/market/reclaim.lua",
+		"cl/vgui/inv/pages/market/currencyex.lua",
+		"cl/vgui/inv/pages/market/blackmarket.lua",
+		"cl/vgui/inv/pages/divine_market.lua",
+
 		"cl/vgui/inv/shape.lua",
 		"cl/vgui/inv/item.lua",
 		"cl/vgui/inv/storage.lua",

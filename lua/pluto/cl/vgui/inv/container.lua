@@ -288,6 +288,10 @@ function PANEL:Init()
 	end, true)
 
 	self:AddTab("Divine Market", function(container)
+		local quests = container:Add "pluto_inventory_divine_market"
+		quests:SetCurve(4)
+		quests:Dock(FILL)
+		quests:SetColor(inner_color)
 	end)
 
 	self:AddTab("Donate", function(container)

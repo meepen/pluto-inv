@@ -12,6 +12,7 @@ local padding_y = 5
 local PANEL = {}
 
 function PANEL:Init()
+	self.Color = active_color
 	self.TabArea = self:Add "EditablePanel"
 	function self.TabArea:PerformLayout(w, h)
 		local children = self:GetChildren()
@@ -53,13 +54,17 @@ function PANEL:Init()
 		end
 
 		for _, tab in pairs(self.Tabs) do
-			tab:SetSize(padding_x * 3 + 48 * 4, h - 24)
-			tab:SetPos(w / 2 - tab:GetWide() / 2, 12)
+			self:SizeTab(tab, w, h)
 		end
 	end
 
 	self.Tabs = {}
 	self.TabList = {}
+end
+
+function PANEL:SizeTab(tab, w, h)
+	tab:SetSize(padding_x * 3 + 48 * 4, h - 24)
+	tab:SetPos(w / 2 - tab:GetWide() / 2, 12)
 end
 
 function PANEL:GetTab(text)
@@ -92,7 +97,7 @@ function PANEL:AddTab(text, onpress, col)
 	self.Tabs[curve] = self.Inner:Add "EditablePanel"
 	self.TabList[text] = curve
 	if (not self.ActiveTab) then
-		curve:SetColor(active_color)
+		curve:SetColor(self.Color)
 		curve.Label:SetTextColor(col)
 		self.ActiveTab = curve
 		self.Tabs[curve]:SetVisible(true)
@@ -112,7 +117,7 @@ function PANEL:AddTab(text, onpress, col)
 				self.ActiveTab:ChangeDockInner(0, 0, 0, 0)
 				self.Tabs[self.ActiveTab]:SetVisible(false)
 			end
-			s:SetColor(active_color)
+			s:SetColor(self.Color)
 			s:ChangeDockInner(1, 1, 1, 0)
 			s.Label:SetTextColor(col)
 			self.Tabs[s]:SetVisible(true)
@@ -140,6 +145,10 @@ function PANEL:SetCurve(curve)
 end
 
 function PANEL:SetColor(col)
+	self.Color = col
+	if (IsValid(self.ActiveTab)) then
+		self.ActiveTab:SetColor(self.Color)
+	end
 	self.Inner:SetColor(col)
 end
 
