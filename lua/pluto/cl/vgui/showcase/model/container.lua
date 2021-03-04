@@ -58,7 +58,7 @@ function PANEL:SetItem(item)
 
 	createnewline()
 
-	local subdesc = item.Model.SubDescription
+	local subdesc = item.Model.SubDescription or ""
 	for _, splitpart in ipairs(subdesc:Split " ") do
 		for part, newline in (splitpart .. " "):gmatch("([^\n]+)(.?)") do
 			curw = curw + surface.GetTextSize(part)
