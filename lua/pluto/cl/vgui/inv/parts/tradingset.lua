@@ -188,7 +188,7 @@ function PANEL:Init()
 	self.CurrencyIcon:SetCursor "hand"
 	function self.CurrencyIcon.OnMousePressed(s, m)
 		if (m == MOUSE_LEFT) then
-			pluto.ui.currencyselect("Select a currency to trade.",
+			pluto.ui.currencyselect("Select a currency to trade",
 				function(cur)
 					if (not IsValid(self)) then
 						return
@@ -233,7 +233,7 @@ function PANEL:Init()
 
 		local function finish()
 			local num = tonumber(input:GetText() or 1)
-			self:SetAmount(num)
+			self:SetAmount(math.Clamp(math.Round(num), 1, pluto.cl_currency[self:GetCurrency().InternalName]))
 			input:Remove()
 		end
 
