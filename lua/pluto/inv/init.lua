@@ -44,7 +44,7 @@ end
 function pluto.inv.defaulttabs(db, steamid)
 	mysql_cmysql()
 
-	return pluto.inv.addtabs(db, steamid, {"equip", "normal", "buffer"})
+	return pluto.inv.addtabs(db, steamid, {"normal", "normal", "buffer"})
 end
 
 function pluto.inv.reloadfor(ply)
