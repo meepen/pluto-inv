@@ -72,15 +72,6 @@ pluto.files.load {
 		"resource/fonts/Niconne-Regular.ttf",
 		"resource/fonts/Lateef-Regular.ttf",
 		"resource/fonts/Aladin-Regular.ttf",
-
-		"materials/pluto/star3.png",
-		"materials/pluto/hubble.png",
-		"materials/pluto/hound1.png",
-		"materials/pluto/hound2.png",
-		"materials/pluto/eppen_stars.png",
-		"materials/pluto/colorful.png",
-	
-		"materials/pluto/currencies/questionmark.png",
 		"resource/fonts/PermanentMarker-Regular.ttf",
 	},
 	Workshop = {
