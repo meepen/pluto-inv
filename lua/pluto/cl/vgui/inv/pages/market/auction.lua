@@ -450,23 +450,23 @@ function PANEL:Init()
 	self.TextEntry:SetFont "pluto_inventory_font"
 
 	function self.TextEntry.OnMousePressed(s, m)
-		if (m == MOUSE_LEFT and not s:HasFocus()) then
-			pluto.ui.pnl:AddKeyboardFocus(1)
+		if (m == MOUSE_LEFT) then
+			pluto.ui.pnl:SetKeyboardFocus(s, true)
 		elseif (m == MOUSE_RIGHT) then
 			s:SetText ""
 			self:OnUpdated()
 		end
 	end
 
-	function self.TextEntry.OnEnter()
+	function self.TextEntry.OnEnter(s)
 		self:OnUpdated()
-		pluto.ui.pnl:AddKeyboardFocus(-1)
+		pluto.ui.pnl:SetKeyboardFocus(s, false)
 	end
 
 	function self.TextEntry.OnFocusChanged(s, gained)
-		if (not gained and self:HasFocus()) then
+		if (not gained) then
 			self:OnUpdated()
-			pluto.ui.pnl:AddKeyboardFocus(-1)
+			pluto.ui.pnl:SetKeyboardFocus(s, false)
 		end
 	end
 end
@@ -487,23 +487,23 @@ function PANEL:Init()
 	self.TextEntry2:SetFont "pluto_inventory_font"
 	
 	function self.TextEntry2.OnMousePressed(s, m)
-		if (m == MOUSE_LEFT and not s:HasFocus()) then
-			pluto.ui.pnl:AddKeyboardFocus(1)
+		if (m == MOUSE_LEFT) then
+			pluto.ui.pnl:SetKeyboardFocus(s, true)
 		elseif (m == MOUSE_RIGHT) then
 			s:SetText ""
 			self:OnUpdated()
 		end
 	end
 
-	function self.TextEntry2.OnEnter()
+	function self.TextEntry2.OnEnter(s)
 		self:OnUpdated()
-		pluto.ui.pnl:AddKeyboardFocus(-1)
+		pluto.ui.pnl:SetKeyboardFocus(s, false)
 	end
 
 	function self.TextEntry2.OnFocusChanged(s, gained)
-		if (not gained and self:HasFocus()) then
+		if (not gained) then
 			self:OnUpdated()
-			pluto.ui.pnl:AddKeyboardFocus(-1)
+			pluto.ui.pnl:SetKeyboardFocus(s, false)
 		end
 	end
 
@@ -522,23 +522,23 @@ function PANEL:Init()
 	self.TextEntry1:SetFont "pluto_inventory_font"
 
 	function self.TextEntry1.OnMousePressed(s, m)
-		if (m == MOUSE_LEFT and not s:HasFocus()) then
-			pluto.ui.pnl:AddKeyboardFocus(1)
+		if (m == MOUSE_LEFT) then
+			pluto.ui.pnl:SetKeyboardFocus(s, true)
 		elseif (m == MOUSE_RIGHT) then
 			s:SetText ""
 			self:OnUpdated()
 		end
 	end
 
-	function self.TextEntry1.OnEnter()
+	function self.TextEntry1.OnEnter(s)
 		self:OnUpdated()
-		pluto.ui.pnl:AddKeyboardFocus(-1)
+		pluto.ui.pnl:SetKeyboardFocus(s, false)
 	end
 
 	function self.TextEntry1.OnFocusChanged(s, gained)
-		if (not gained and self:HasFocus()) then
+		if (not gained) then
 			self:OnUpdated()
-			pluto.ui.pnl:AddKeyboardFocus(-1)
+			pluto.ui.pnl:SetKeyboardFocus(s, false)
 		end
 	end
 end

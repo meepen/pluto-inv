@@ -127,13 +127,13 @@ function PANEL:Init()
 
 	function self.LowerBounds.Label:OnMousePressed(m)
 		if (m == MOUSE_LEFT) then
-			pluto.ui.pnl:AddKeyboardFocus(1)
+			pluto.ui.pnl:SetKeyboardFocus(self, true)
 		end
 	end
 
 	function self.LowerBounds.Label.OnFocusChanged(s, gained)
 		if (not gained) then
-			pluto.ui.pnl:AddKeyboardFocus(-1)
+			pluto.ui.pnl:SetKeyboardFocus(s, false)
 		end
 	end
 
@@ -164,13 +164,13 @@ function PANEL:Init()
 
 	function self.UpperBounds.Label:OnMousePressed(m)
 		if (m == MOUSE_LEFT) then
-			pluto.ui.pnl:AddKeyboardFocus(1)
+			pluto.ui.pnl:SetKeyboardFocus(self, true)
 		end
 	end
 
 	function self.UpperBounds.Label.OnFocusChanged(s, gained)
 		if (not gained) then
-			pluto.ui.pnl:AddKeyboardFocus(-1)
+			pluto.ui.pnl:SetKeyboardFocus(s, false)
 		end
 	end
 
@@ -282,7 +282,7 @@ function PANEL:AddSearchPanel(text)
 
 	function container.Label:OnMousePressed(m)
 		if (m == MOUSE_LEFT) then
-			pluto.ui.pnl:AddKeyboardFocus(1)
+			pluto.ui.pnl:SetKeyboardFocus(self, true)
 			self:OpenAutoComplete(self:GetAutoComplete "")
 		end
 	end
@@ -293,7 +293,7 @@ function PANEL:AddSearchPanel(text)
 
 	function container.Label.OnFocusChanged(s, gained)
 		if (not gained) then
-			pluto.ui.pnl:AddKeyboardFocus(-1)
+			pluto.ui.pnl:SetKeyboardFocus(s, false)
 		end
 	end
 

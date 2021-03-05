@@ -237,7 +237,7 @@ function PANEL:Init()
 		input:SetTextColor(s:GetTextColor())
 		input:SetFont(s:GetFont())
 		input:Dock(FILL)
-		pluto.ui.pnl:AddKeyboardFocus(1)
+		pluto.ui.pnl:SetKeyboardFocus(input, true)
 		input:RequestFocus()
 		input:SetUpdateOnType(true)
 
@@ -258,7 +258,7 @@ function PANEL:Init()
 		end
 
 		function input.OnRemove()
-			pluto.ui.pnl:AddKeyboardFocus(-1)
+			pluto.ui.pnl:SetKeyboardFocus(input, false)
 		end
 	end
 

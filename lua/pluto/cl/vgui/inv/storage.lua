@@ -24,13 +24,13 @@ function PANEL:Init()
 
 	function self.SearchyBoiText:OnMousePressed(m)
 		if (m == MOUSE_LEFT) then
-			pluto.ui.pnl:AddKeyboardFocus(1)
+			pluto.ui.pnl:SetKeyboardFocus(self, true)
 		end
 	end
 
 	function self.SearchyBoiText.OnFocusChanged(s, gained)
 		if (not gained) then
-			pluto.ui.pnl:AddKeyboardFocus(-1)
+			pluto.ui.pnl:SetKeyboardFocus(s, false)
 		end
 	end
 

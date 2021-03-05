@@ -83,6 +83,7 @@ vgui.Register("pluto_inv_border", PANEL, "EditablePanel")
 local PANEL = {}
 
 function PANEL:Init()
+	self.KeyboardFocus = {}
 	self.StorageTabs = {}
 
 	self.SidePanelSize = 180
@@ -572,7 +573,7 @@ function PANEL:AddStorageTab(tab)
 			self.TextEntry:Dock(FILL)
 			self.TextEntry:SetFont "pluto_inventory_font"
 			self.TextEntry:SetText(lbl:GetText())
-			pluto.ui.pnl:AddKeyboardFocus(1)
+			pluto.ui.pnl:SetKeyboardFocus(self.TextEntry, true)
 			function self.TextEntry:Think()
 				if (vgui.GetKeyboardFocus() == self) then
 					self.WasFocussed = true
@@ -589,7 +590,7 @@ function PANEL:AddStorageTab(tab)
 						:send()
 
 					self:Remove()
-					pluto.ui.pnl:AddKeyboardFocus(-1)
+					pluto.ui.pnl:SetKeyboardFocus(self, false)
 				end
 			end
 		end
@@ -679,11 +680,10 @@ function PANEL:OnRemove()
 	end
 end
 
-function PANEL:AddKeyboardFocus(amount)
-	self.KeyboardFocus = (self.KeyboardFocus or 0) + amount
+function PANEL:SetKeyboardFocus(what, b)
+	self.KeyboardFocus[what] = b and true or nil
 
-
-	self:SetKeyboardInputEnabled(self.KeyboardFocus > 0)
+	self:SetKeyboardInputEnabled(table.Count(self.KeyboardFocus) > 0)
 end
 
 vgui.Register("pluto_inv", PANEL, "EditablePanel")
