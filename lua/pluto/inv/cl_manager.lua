@@ -184,14 +184,16 @@ function pluto.inv.readitem()
 		item.TabID = net.ReadUInt(32)
 		item.TabIndex = net.ReadUInt(32)
 		if (item.TabID ~= oldtabid or item.TabIndex ~= oldtabidx) then
-			local tab = pluto.cl_inv[oldtabid]
-			if (tab) then
-				tab.Items[oldtabidx] = nil
-			end
+			local oldtab = pluto.cl_inv[oldtabid]
+			local newtab = pluto.cl_inv[item.TabID]
+			if (newtab and newtab.Type ~= "buffer") then
+				if (oldtab) then
+					oldtab.Items[oldtabidx] = nil
+				end
 
-			tab = pluto.cl_inv[item.TabID]
-			if (tab) then
-				tab.Items[item.TabIndex] = item
+				if (newtab) then
+					newtab.Items[item.TabIndex] = item
+				end
 			end
 		end
 	end

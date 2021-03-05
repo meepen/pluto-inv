@@ -30,6 +30,21 @@ function PANEL:Init()
 			itempnl:DockMargin(x == 1 and 0 or self.Padding, 0, 0, 0)
 			table.insert(self.Results, itempnl)
 
+			function itempnl:OnRightClick()
+				if (not self.Item) then
+					return
+				end
+
+				pluto.ui.rightclickmenu(self.Item, function(menu, item)
+					menu:AddOption("Buy for " .. self.Item.Price .. " stardust", function()
+						pluto.divine.confirm("Buy " .. self.Item:GetPrintName(), function()
+							RunConsoleCommand("pluto_auction_buy", self.Item.ID)
+						end)
+					end):SetIcon "icon16/money_delete.png"
+				end)
+			end
+			itempnl.OnLeftClick = itempnl.OnRightClick
+
 			local container = itempnl.ItemPanel:Add "ttt_curved_panel_outline"
 			container:SetCurve(4)
 			container:SetColor(Color(95, 96, 102))

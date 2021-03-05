@@ -442,41 +442,66 @@ concommand.Add("pluto_auction_buy", function(p, c, a)
 		return
 	end
 
-	local new_item = pluto.divine.auction_list[itemid]
-	if (not new_item) then
-		return
-	end
-	pluto.divine.auction_list[itemid] = nil
-
 	pluto.db.transact(function(db)
 		local tab_id = get_auction_idx(db)
 		local tab = pluto.inv.invs[p].tabs.buffer
 		mysql_stmt_run(db, "SELECT * from pluto_items WHERE tab_id = ? FOR UPDATE", tab_id)
 
+		local itemrows = mysql_stmt_run(db, "SELECT * FROM pluto_items i LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx WHERE i.tab_id = ? AND i.idx = ?", get_auction_idx(db), itemid)
+		local modrows = mysql_stmt_run(db, [[
+			SELECT m.idx, m.gun_index, m.modname, m.tier, m.roll1, m.roll2, m.roll3
+					FROM pluto_mods m
+						INNER JOIN pluto_items i ON i.idx = m.gun_index
+					WHERE i.tab_id = ? AND i.idx = ?]], get_auction_idx(db), itemid)
+
+		local items = {}
+		for _, row in ipairs(itemrows) do
+			local item = pluto.inv.itemfromrow(row)
+			items[row.idx] = item
+		end
+
+		for _, mod in ipairs(modrows) do
+			if (not items[mod.gun_index]) then
+				continue -- should never happen question mark
+			end
+
+			pluto.inv.readmodrow(items, mod)
+		end
+
+		local item = items[itemid]
+		if (not item) then
+			mysql_rollback(db)
+			return
+		end
+		local auction_data = mysql_stmt_run(db, "SELECT cast(owner as varchar(64)) as lister, price from pluto_auction_info WHERE idx = ?", item.TabIndex)[1]
+
+		if (not auction_data) then
+			mysql_rollback(db)
+			return
+		end
+
+		if (not pluto.inv.addcurrency(db, p, "stardust", -auction_data.price)) then
+			mysql_rollback(db)
+			return
+		end
+
+		pluto.inv.addcurrency(db, auction_data.lister, "stardust", auction_data.price)
+
 		pluto.inv.pushbuffer(db, p)
-		local data, err = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = 1 WHERE idx = ? AND tab_id = ?", tab.RowID, new_item.RowID, tab_id)
+		local data, err = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = 1 WHERE idx = ? AND tab_id = ?", tab.RowID, item.RowID, tab_id)
 		if (not data or data.AFFECTED_ROWS ~= 1) then
 			mysql_rollback(db)
 			return
 		end
 
-		if (not pluto.inv.addcurrency(db, p, "stardust", -new_item.Price)) then
-			mysql_rollback(db)
-			return
-		end
-
-		local tab_idx = new_item.TabIndex
-
-		pluto.inv.addcurrency(db, new_item.Lister, "stardust", new_item.Price)
-
-		new_item.TabID = tab.RowID
-		new_item.TabIndex = 1
-		new_item.Owner = p:SteamID64()
-		pluto.itemids[new_item.RowID] = new_item
+		item.TabID = tab.RowID
+		item.TabIndex = 1
+		item.Owner = p:SteamID64()
+		pluto.itemids[item.RowID] = item
 
 		mysql_stmt_run(db, "DELETE FROM pluto_auction_info WHERE idx = ?", tab_idx)
-		pluto.inv.notifybufferitem(p, new_item)
-		tab.Items[1] = new_item
+		pluto.inv.notifybufferitem(p, item)
+		tab.Items[1] = item
 		mysql_commit(db)
 	end)
 end)

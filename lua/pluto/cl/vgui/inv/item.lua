@@ -224,6 +224,11 @@ function PANEL:PlutoItemUpdate(item, tabid, tabindex)
 		had_showcase = true
 	end
 
+	local tab = pluto.cl_inv[tabid]
+	if (tab and tab.Type == "buffer") then
+		return
+	end
+
 	if (self.Item == item and (tabid ~= self.TabID or tabindex ~= self.TabIndex)) then
 		self:SetItem()
 	elseif (had_showcase) then

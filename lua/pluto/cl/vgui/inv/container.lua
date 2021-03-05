@@ -15,6 +15,12 @@ surface.CreateFont("pluto_inventory_font_lg", {
 	weight = 450,
 })
 
+surface.CreateFont("pluto_trade_buttons", {
+	font = "Roboto Lt",
+	size = 13,
+	weight = 450,
+})
+
 surface.CreateFont("pluto_inventory_font_xlg", {
 	font = "Roboto Lt",
 	size = 18,
