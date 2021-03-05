@@ -228,7 +228,7 @@ end
 
 
 pluto.inv.item_mt.__colorprint = function(self)
-	return {rendersystem = self.RenderSystem or "lightsaber_shadow", self:GetColor(), self:GetPrintName()}
+	return {rendersystem = self.RenderSystem or "bouncy", self:GetColor(), self:GetPrintName()}
 end
 
 function ITEM:GetPrintName()
