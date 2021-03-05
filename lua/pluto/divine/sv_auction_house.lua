@@ -208,10 +208,10 @@ local searchlist = {
 			sort = "ORDER BY idx DESC",
 		},
 		["Price Low to High"] = {
-			sort = "ORDER BY price DESC",
+			sort = "ORDER BY auction.price ASC",
 		},
-		["Price Low to High"] = {
-			sort = "ORDER BY price ASC",
+		["Price High to Low"] = {
+			sort = "ORDER BY auction.price DESC",
 		},
 	},
 	["Item ID:"] = {

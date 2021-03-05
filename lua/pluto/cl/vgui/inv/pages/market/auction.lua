@@ -15,6 +15,7 @@ function PANEL:Init()
 	self.ItemArea:Dock(TOP)
 
 	self.Results = {}
+	self.ResultPrices = {}
 
 	for y = 1, self.ResultRow do
 		local row = self.ItemArea:Add "EditablePanel"
@@ -28,6 +29,18 @@ function PANEL:Init()
 			itempnl:SetWide(56)
 			itempnl:DockMargin(x == 1 and 0 or self.Padding, 0, 0, 0)
 			table.insert(self.Results, itempnl)
+
+			local price = itempnl.ItemPanel:Add "pluto_label"
+			price:Dock(BOTTOM)
+			price:SetTall(14)
+			price:MoveToFront()
+			price:SetText "0"
+			price:SetContentAlignment(6)
+			price:SetFont "pluto_inventory_font"
+			price:SetTextColor(Color(255, 255, 255))
+			price:SetRenderSystem(pluto.fonts.systems.shadow)
+			price:SetVisible(false)
+			table.insert(self.ResultPrices, price)
 		end
 	end
 
@@ -158,7 +171,14 @@ function PANEL:PlutoReceiveAuctionData(items, pages)
 	self:SetPageMax(pages)
 
 	for i = 1, 36 do
-		self.Results[i]:SetItem(items[i])
+		local item = items[i]
+		self.Results[i]:SetItem(item)
+		local price = self.ResultPrices[i]
+
+		price:SetVisible(item)
+		if (item) then
+			price:SetText(item.Price)
+		end
 	end
 end
 
