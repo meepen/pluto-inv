@@ -68,7 +68,7 @@ pluto.fonts.registersystem("outline", bind {
 		shadow_col.a = self.Color.a
 		surface.SetTextColor(shadow_col)
 		for x = -1, 1 do
-			for y = -2, 1 do
+			for y = -1, 1 do
 				surface.SetTextPos(self.TextPosX + x, self.TextPosY + y)
 				surface.DrawText(text)
 			end

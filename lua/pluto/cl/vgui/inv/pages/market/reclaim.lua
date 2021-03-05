@@ -128,14 +128,103 @@ function PANEL:Init()
 		local x, y = self.PaginationLabel:GetPos()
 		self.PageDown:SetPos(x - self.PageDown:GetWide() - self.Padding, y)
 		self.PageUp:SetPos(x + self.PaginationLabel:GetWide() + self.Padding, y)
-		self.SearchAreaContainer:DockMargin(self.Padding * 1, self.Padding, self.Padding * 2, self.Pagination:GetTall() + self.Padding * 2)
+		self.ListAreaContainer:DockMargin(self.Padding * 1, self.Padding, self.Padding * 2, self.Pagination:GetTall() + self.Padding * 2)
 	end
 
-	self.SearchAreaContainer = self:Add "ttt_curved_panel_outline"
-	self.SearchAreaContainer:Dock(FILL)
-	self.SearchAreaContainer:SetCurve(4)
-	self.SearchAreaContainer:SetColor(Color(95, 96, 102))
-	self.SearchAreaContainer:DockPadding(self.Padding + 1, self.Padding + 1, self.Padding + 1, self.Padding + 1)
+	self.ListAreaContainer = self:Add "EditablePanel"
+	self.ListAreaContainer:Dock(FILL)
+	self.ListAreaContainer:DockPadding(self.Padding + 1, self.Padding + 1, self.Padding + 1, self.Padding + 1)
+
+	self.ListDataContainer = self.ListAreaContainer:Add "ttt_curved_panel_outline"
+	self.ListDataContainer:SetCurve(4)
+	self.ListDataContainer:SetColor(Color(95, 96, 102))
+	self.ListDataContainer:SetSize(132, 132)
+
+	self.ListItem = self.ListDataContainer:Add "pluto_inventory_item"
+
+	function self.ListItem.CanClickWith(s, other)
+		local item = other.Item
+		return item
+	end
+	function self.ListItem.ClickedWith(s, other)
+		s:SetItem(other.Item)
+	end
+	function self.ListItem.OnRightClick(s)
+		s:SetItem(nil)
+	end
+	function self.ListItem.OnLeftClick(s)
+		if (not s.Item) then
+			return -- 
+		end
+
+		pluto.ui.highlight(s.Item)
+	end
+
+	function self.ListItem.OnSetItem(s, item)
+	end
+
+	self.ListAmount = self.ListDataContainer:Add "DTextEntry"
+	self.ListAmount:SetContentAlignment(6)
+	self.ListAmount:SetFont "pluto_inventory_font"
+	self.ListAmount:Dock(BOTTOM)
+	self.ListAmount:DockMargin(4, 4, 4, 4)
+
+	self.TaxLabel = self.ListDataContainer:Add "pluto_label"
+	self.TaxLabel:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.TaxLabel:SetText "10 + 5% up to 200 tax"
+	self.TaxLabel:SetTextColor(Color(255, 255, 255))
+	self.TaxLabel:SetContentAlignment(2)
+	self.TaxLabel:SetFont "pluto_inventory_font"
+	self.TaxLabel:Dock(BOTTOM)
+
+	function self.ListAmount.OnMousePressed(s, m)
+		if (m == MOUSE_LEFT) then
+			pluto.ui.pnl:SetKeyboardFocus(s, true)
+		elseif (m == MOUSE_RIGHT) then
+			s:SetText ""
+			self:OnUpdated()
+		end
+	end
+
+	function self.ListAmount.OnEnter(s)
+		self:OnUpdated()
+		pluto.ui.pnl:SetKeyboardFocus(s, false)
+	end
+
+	function self.ListAmount.OnFocusChanged(s, gained)
+		if (not gained) then
+			self:OnUpdated()
+			pluto.ui.pnl:SetKeyboardFocus(s, false)
+		end
+	end
+
+	function self.ListAreaContainer.PerformLayout(s, w, h)
+		self.ListDataContainer:Center()
+		self.ListButton:MoveBelow(self.ListDataContainer, 12)
+		self.ListButton:CenterHorizontal()
+	end
+
+	function self.ListDataContainer.PerformLayout(s, w, h)
+		self.ListButton:SetWide(w * 3 / 4)
+		self.ListItem:CenterHorizontal()
+		self.ListItem:SetPos(self.ListItem:GetPos(), (h - self.ListAmount:GetTall()) / 2 - self.ListItem:GetTall() / 2)
+	end
+
+
+	self.ListButton = self.ListAreaContainer:Add "pluto_inventory_button"
+	self.ListButton:SetColor(Color(95, 96, 102), Color(95, 96, 102))
+	self.ListButton:SetCurve(4)
+	self.ListButton:SetWide(120)
+	self.ListLabel = self.ListButton:Add "pluto_label"
+	self.ListLabel:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.ListLabel:SetText "List item"
+	self.ListLabel:SetTextColor(Color(255, 255, 255))
+	self.ListLabel:SetContentAlignment(5)
+	self.ListLabel:SetFont "pluto_inventory_font"
+	self.ListLabel:Dock(FILL)
+	function self.ListButton.DoClick()
+		self:DoList()
+	end
 
 	self:SetPage(0)
 	self:SetPageMax(1)
@@ -195,6 +284,19 @@ function PANEL:SendSearch()
 	pluto.inv.message()
 		:write("getmyitems", self.Page)
 		:send()
+end
+
+function PANEL:DoList()
+	if (not self.ListItem.Item.ID) then
+		return
+	end
+
+	RunConsoleCommand("pluto_auction_list", self.ListItem.Item.ID, self.ListAmount:GetText())
+end
+
+function PANEL:OnUpdated()
+	local amount = tonumber(self.ListAmount:GetText()) or 0
+	self.TaxLabel:SetText(math.ceil(math.min(200, 10 + 0.075 * amount)) .. " tax")
 end
 
 vgui.Register("pluto_inventory_auction_reclaim", PANEL, "EditablePanel")

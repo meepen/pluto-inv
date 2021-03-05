@@ -92,7 +92,7 @@ function PANEL:Init()
 	self.KeyboardFocus = {}
 	self.StorageTabs = {}
 
-	self.SidePanelSize = 180
+	self.SidePanelSize = 140
 	self.TopSize = 22
 	self.BottomSize = 11
 	self:SetSize(700 + self.SidePanelSize, 450 + self.BottomSize)
@@ -302,6 +302,10 @@ function PANEL:Init()
 	end)
 
 	self:AddTab("Donate", function(container)
+		local quests = container:Add "pluto_inventory_donate"
+		quests:SetCurve(4)
+		quests:Dock(FILL)
+		quests:SetColor(inner_color)
 	end, nil, nil, Color(207, 204, 3))
 
 	self:ChangeToTab(last_open_category:GetString())

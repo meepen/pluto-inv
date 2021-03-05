@@ -94,7 +94,7 @@ concommand.Add("pluto_upgrade_market_data", function(p)
 	end)
 end)
 
-concommand.Add("pluto_send_to_auction", function(p, c, a)
+concommand.Add("pluto_auction_list", function(p, c, a)
 	local itemid = tonumber(a[1])
 	if (not itemid) then
 		return
@@ -106,10 +106,15 @@ concommand.Add("pluto_send_to_auction", function(p, c, a)
 		return
 	end
 
-	local price = math.Clamp(tonumber(a[2]) or 0, 100, 90000)
-	local tax = math.ceil(price * 0.04)
+	if (not tonumber(a[2])) then
+		p:ChatPrint "invalid price"
+		return
+	end
 
-	if (price < 0 or price ~= price or price > 1000000000) then
+	local price = math.Clamp(tonumber(a[2]), 15, 90000)
+	local tax = math.ceil(math.min(200, 10 + 0.075 * price))
+
+	if (price ~= price) then
 		p:ChatPrint "invalid price"
 		return
 	end
@@ -223,7 +228,6 @@ local searchlist = {
 	["Item name:"] = {
 		filter = "auction.name like CONCAT('%', ?, '%')",
 		arguments = function(a)
-			print("yes", a)
 			return a
 		end
 	},
@@ -521,7 +525,6 @@ end
 function pluto.inv.readgetmyitems(cl)
 	local page = net.ReadUInt(32)
 	local sid64 = pluto.db.steamid64(cl)
-	print(cl, page)
 
 	pluto.db.transact(function(db)
 		local itemrows = mysql_stmt_run(db, [[
@@ -624,8 +627,6 @@ concommand.Add("pluto_auction_reclaim", function(p, c, a)
 
 		local item = items[itemid]
 		if (not item or item.Owner ~= p:SteamID64()) then
-			print(item.Owner)
-			print "no own"
 			mysql_rollback(db)
 			return
 		end
@@ -636,13 +637,13 @@ concommand.Add("pluto_auction_reclaim", function(p, c, a)
 			mysql_rollback(db)
 			return
 		end
+		mysql_stmt_run(db, "DELETE FROM pluto_auction_info WHERE idx = ?", item.TabIndex)
 
 		item.TabID = tab.RowID
 		item.TabIndex = 1
 		item.Owner = p:SteamID64()
 		pluto.itemids[item.RowID] = item
 
-		mysql_stmt_run(db, "DELETE FROM pluto_auction_info WHERE idx = ?", tab_idx)
 		pluto.inv.notifybufferitem(p, item)
 		tab.Items[1] = item
 		mysql_commit(db)

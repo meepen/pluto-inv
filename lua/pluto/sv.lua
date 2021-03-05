@@ -63,6 +63,8 @@ pluto.files.load {
 		"trades/sv_trade_networking.lua",
 
 		"websocket/sv_websocket.lua",
+
+		"donate/sv_donate.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty

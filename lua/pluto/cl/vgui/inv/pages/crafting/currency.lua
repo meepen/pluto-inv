@@ -24,7 +24,7 @@ function PANEL:Init()
 		end
 	end
 
-	local pad = 14
+	local pad = 34
 	function self.ContainerArea.PerformLayout(s, w, h)
 		self.ItemContainer:SetPos(w / 2 - self.ItemContainer:GetWide() - pad / 2, 0)
 		self.Selector:SetPos(w / 2 + pad / 2, 0)
@@ -32,9 +32,7 @@ function PANEL:Init()
 
 	function self.ContainerArea.Paint(s, w, h)
 		surface.SetDrawColor(95, 96, 102)
-		surface.DrawLine(w / 2 - pad, h / 2, w / 2, h / 2)
-		surface.DrawLine(w / 2, h / 2, w / 2, h - 8)
-		surface.DrawLine(w / 2, h - 8, self.Selector:GetPos(), h - 8)
+		surface.DrawLine(w / 2 - pad, h - 8, self.Selector:GetPos(), h - 8)
 	end
 
 	function self.ItemContainer.CanClickWith(s, other)
@@ -60,7 +58,7 @@ function PANEL:Init()
 	end
 
 	hook.Add("PlutoItemUpdate", self, self.PlutoItemUpdate)
-	self.ContainerArea:DockMargin(0, 0, 0, 7)
+	self.ContainerArea:DockMargin(0, 20, 0, 7)
 
 	self.LoadingArea = self:Add "EditablePanel"
 	self.LoadingArea:Dock(TOP)
@@ -209,33 +207,18 @@ function PANEL:Init()
 	self.AddSearchButton:SetZPos(0x7ffd)
 
 	
-	self.GoButtonShadow = self:Add "ttt_curved_panel"
-	self.GoButtonShadow:Dock(TOP)
-	self.GoButtonShadow:SetMouseInputEnabled(true)
-	self.GoButtonShadow:DockMargin(55, 7, 55, 7)
-	self.GoButtonShadow:SetTall(19)
-	self.GoButtonShadow:SetCurve(2)
-	self.GoButtonShadow:SetColor(Color(50, 51, 58))
-	self.GoButtonShadow:SetCursor "hand"
-	
-	self.GoButton = self.GoButtonShadow:Add "ttt_curved_panel_outline"
-	self.GoButton:Dock(FILL)
-	self.GoButton:SetMouseInputEnabled(false)
-	self.GoButton:DockMargin(0, 0, 0, 1)
-	self.GoButton:SetTall(18)
+	self.GoButton = self:Add "pluto_inventory_button"
+	self.GoButton:Dock(TOP)
+	self.GoButton:SetMouseInputEnabled(true)
+	self.GoButton:DockMargin(55, 12, 55, 7)
+	self.GoButton:SetTall(19)
 	self.GoButton:SetCurve(2)
-	self.GoButton:SetColor(Color(121, 121, 121))
+	self.GoButton:SetColor(Color(95, 96, 102), Color(95, 96, 102))
+	self.GoButton:SetCursor "hand"
+	
 
-	self.GoButtonInner = self.GoButton:Add "ttt_curved_panel"
-	self.GoButtonInner:Dock(FILL)
-	self.GoButtonInner:SetCurve(2)
-	self.GoButtonInner:DockMargin(1, 1, 1, 1)
-	self.GoButtonInner:SetColor(Color(95, 96, 102))
-
-	function self.GoButtonShadow.OnMousePressed(s, m)
-		if (m == MOUSE_LEFT) then
-			self:Go()
-		end
+	function self.GoButton.DoClick()
+		self:Go()
 	end
 
 	self.GoLabel = self.GoButton:Add "pluto_label"
@@ -246,7 +229,7 @@ function PANEL:Init()
 	self.GoLabel:SetContentAlignment(5)
 	self.GoLabel:SetText "Use currency"
 
-	self.GoButtonShadow:SetZPos(0x7fff)
+	self.GoButton:SetZPos(0x7fff)
 end
 
 function PANEL:AddSearchPanel(text)

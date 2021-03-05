@@ -63,6 +63,7 @@ pluto.files.load {
 		"cl/vgui/inv/parts/currency.lua",
 		"cl/vgui/inv/parts/tradingset.lua",
 		"cl/vgui/inv/parts/button.lua",
+		"cl/vgui/inv/parts/textentry.lua",
 
 		"cl/vgui/inv/pages/loadout.lua",
 		"cl/vgui/inv/pages/currency.lua",
@@ -71,6 +72,7 @@ pluto.files.load {
 		"cl/vgui/inv/pages/crafting/currency.lua",
 		"cl/vgui/inv/pages/crafting.lua",
 		"cl/vgui/inv/pages/trading.lua",
+		"cl/vgui/inv/pages/donate.lua",
 
 		"cl/vgui/inv/pages/market/itemshop.lua",
 		"cl/vgui/inv/pages/market/auction.lua",

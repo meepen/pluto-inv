@@ -296,8 +296,10 @@ function pluto.inv.readtabupdate()
 	end
 
 	pluto.cl_inv[tabid].Items[tabindex] = item
-	item.TabID = tabid
-	item.TabIndex = tabindex
+	if (item) then
+		item.TabID = tabid
+		item.TabIndex = tabindex
+	end
 
 	hook.Run("PlutoTabUpdate", tabid, tabindex, item)
 end
