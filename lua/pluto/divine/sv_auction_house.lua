@@ -131,6 +131,18 @@ local joins = {
 					straight_join pluto_class_kv modtype force index(`class`) on modtype.class = m.modname AND modtype.k = 'mod_type' AND modtype.v != 2
 				GROUP BY m.gun_index
 			) AS modcount ON modcount.gun_index = i.idx]],
+	suffixcount = [[
+			INNER JOIN (
+				SELECT COUNT(*) as amount, gun_index FROM pluto_mods m
+					straight_join pluto_class_kv modtype force index(`class`) on modtype.class = m.modname AND modtype.k = 'mod_type' AND modtype.v = 0
+				GROUP BY m.gun_index
+			) AS suffixcount ON suffixcount.gun_index = i.idx]],
+	prefixcount = [[
+			INNER JOIN (
+				SELECT COUNT(*) as amount, gun_index FROM pluto_mods m
+					straight_join pluto_class_kv modtype force index(`class`) on modtype.class = m.modname AND modtype.k = 'mod_type' AND modtype.v = 1
+				GROUP BY m.gun_index
+			) AS prefixcount ON prefixcount.gun_index = i.idx]],
 }
 
 local searchlist = {
@@ -194,7 +206,7 @@ local searchlist = {
 		end,
 		join = "slot",
 	},
-	["Current mods:"] = { -- TODO(meep): no implicits
+	["Current mods:"] = {
 		filter = "modcount.amount >= ? and modcount.amount <= ?",
 		arguments = function(a, b)
 			return tonumber(a) or 0, tonumber(b) or 16
@@ -204,11 +216,19 @@ local searchlist = {
 	["Maximum mods:"] = { -- TODO(meep)
 		filter = "1"
 	},
-	["Current suffixes:"] = { -- TODO(meep)
-		filter = "1"
+	["Current suffixes:"] = {
+		filter = "suffixcount.amount >= ? and suffixcount.amount <= ?",
+		arguments = function(a, b)
+			return tonumber(a) or 0, tonumber(b) or 16
+		end,
+		join = "suffixcount",
 	},
-	["Current prefixes:"] = { -- TODO(meep)
-		filter = "1"
+	["Current prefixes:"] = {
+		filter = "prefixcount.amount >= ? and prefixcount.amount <= ?",
+		arguments = function(a, b)
+			return tonumber(a) or 0, tonumber(b) or 16
+		end,
+		join = "prefixcount",
 	},
 	["Choose ammo type:"] = { -- TODO(meep)
 		filter = "ammo.v = ?",
