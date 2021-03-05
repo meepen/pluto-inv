@@ -160,32 +160,18 @@ function PANEL:Init()
 		end
 	end
 
-	self.GoButtonShadow = self:Add "ttt_curved_panel"
-	self.GoButtonShadow:Dock(TOP)
-	self.GoButtonShadow:SetMouseInputEnabled(true)
-	self.GoButtonShadow:DockMargin(55, 7, 55, 7)
-	self.GoButtonShadow:SetTall(19)
-	self.GoButtonShadow:SetCurve(2)
-	self.GoButtonShadow:SetColor(Color(50, 51, 58))
 	
-	self.GoButton = self.GoButtonShadow:Add "ttt_curved_panel_outline"
-	self.GoButton:Dock(FILL)
+	self.GoButton = self:Add "pluto_inventory_button"
+	self.GoButton:Dock(TOP)
 	self.GoButton:SetMouseInputEnabled(false)
 	self.GoButton:DockMargin(0, 0, 0, 1)
 	self.GoButton:SetTall(18)
 	self.GoButton:SetCurve(2)
-	self.GoButton:SetColor(Color(121, 121, 121))
+	self.GoButton:SetColor(Color(95, 96, 102), Color(95, 96, 102))
+	self.GoButton:SetMouseInputEnabled(true)
 
-	self.GoButtonInner = self.GoButton:Add "ttt_curved_panel"
-	self.GoButtonInner:Dock(FILL)
-	self.GoButtonInner:SetCurve(2)
-	self.GoButtonInner:DockMargin(1, 1, 1, 1)
-	self.GoButtonInner:SetColor(Color(95, 96, 102))
-
-	function self.GoButtonShadow.OnMousePressed(s, m)
-		if (m == MOUSE_LEFT) then
-			self:Go()
-		end
+	function self.GoButton.DoClick()
+		self:Go()
 	end
 
 	self.GoLabel = self.GoButton:Add "pluto_label"
@@ -224,13 +210,6 @@ function PANEL:Init()
 end
 
 function PANEL:SetGoodToGo(good)
-	if (good) then
-		self.GoButtonShadow:SetCursor "hand"
-		self.GoButtonShadow:SetAlpha(256)
-	else
-		self.GoButtonShadow:SetAlpha(128)
-		self.GoButtonShadow:SetCursor "none"
-	end
 end
 
 function PANEL:RecreateResults()

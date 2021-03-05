@@ -10,6 +10,7 @@ local function paintquest(x, y, _x, quest)
 end
 
 hook.Add("HUDPaint", "pluto_quest_hud", function()
+	do return end
 	if (not pluto or not pluto.quests or not pluto.quests.current) then
 		return
 	end

@@ -134,7 +134,7 @@ concommand.Add("pluto_auction_list", function(p, c, a)
 
 		mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE idx = ?", tab_id, auction_id, itemid)
 		mysql_stmt_run(db, "INSERT INTO pluto_auction_info (idx, owner, listed, price, name, max_mods) VALUES (?, ?, NOW(), ?, ?, ?)", auction_id, pluto.db.steamid64(p), price, gun:GetPrintName(), gun:GetMaxAffixes())
-		
+
 		pluto.inv.invs[p][gun.TabID].Items[gun.TabIndex] = nil
 		
 		pluto.inv.message(p)
