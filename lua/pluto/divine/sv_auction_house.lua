@@ -171,10 +171,10 @@ local searchlist = {
 			sort = "ORDER BY idx DESC",
 		},
 		["Price Low to High"] = {
-			sort = "ORDER BY price ASC",
+			sort = "ORDER BY price DESC",
 		},
 		["Price Low to High"] = {
-			sort = "ORDER BY price DESC",
+			sort = "ORDER BY price ASC",
 		},
 	},
 	["Item ID:"] = {
@@ -230,7 +230,7 @@ local searchlist = {
 		end,
 		join = "prefixcount",
 	},
-	["Choose ammo type:"] = { -- TODO(meep)
+	["Choose ammo type:"] = { -- TODO(meep): fix 'any'
 		filter = "ammo.v = ?",
 		arguments = function(a)
 			if (a == "Sniper") then
