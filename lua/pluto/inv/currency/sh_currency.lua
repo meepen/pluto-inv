@@ -1,8 +1,7 @@
-pluto.currency = pluto.currency or {
-	byname = {},
-}
+pluto.currency = pluto.currency or {}
+pluto.currency.byname = pluto.currency.byname or {}
 
-pluto.currency.list = {
+local list = {
 	{
 		InternalName = "droplet",
 		Name = "Magic Droplet",
@@ -15,6 +14,9 @@ pluto.currency.list = {
 			Mod = "dropletted",
 		},
 		StardustRatio = 2,
+
+		Category = "Modify",
+		AllowMass = true,
 	},
 	{
 		InternalName = "aciddrop",
@@ -24,6 +26,9 @@ pluto.currency.list = {
 		SubDescription = "What have Yaari done to you, my children?!",
 		Color = Color(11, 84, 51),
 		StardustRatio = 75,
+
+		Category = "Modify",
+		AllowMass = true,
 	},
 	{
 		InternalName = "pdrop",
@@ -33,6 +38,9 @@ pluto.currency.list = {
 		SubDescription = "Back when these things first were created, the military bought them straight from the man himself... paid upwards to a million for a single liter. Nowadays they are shot straight up to the skies",
 		Color = Color(117, 28, 178),
 		StardustRatio = 100,
+
+		Category = "Modify",
+		AllowMass = true,
 	},
 	{
 		InternalName = "hand",
@@ -46,6 +54,8 @@ pluto.currency.list = {
 			Mod = "handed",
 		},
 		StardustRatio = 5,
+
+		Category = "Modify",
 	},
 	{
 		InternalName = "dice",
@@ -59,6 +69,8 @@ pluto.currency.list = {
 			Mod = "diced",
 		},
 		StardustRatio = 4,
+
+		Category = "Modify",
 	},
 	{
 		InternalName = "tome",
@@ -72,6 +84,32 @@ pluto.currency.list = {
 			Mod = "tomed",
 		},
 		StardustRatio = 90,
+
+		Category = "Modify",
+	},
+	{
+		InternalName = "endround",
+		Name = "End-round Crate",
+		Icon = "pluto/currencies/crate0.png",
+		Description = "Contains an item",
+		SubDescription = "",
+		NoTarget = true,
+		Color = Color(133, 92, 58),
+		ClientsideUse = function()
+			if (IsValid(pluto.opener)) then
+				pluto.opener:Remove()
+			end
+
+			pluto.opener = vgui.Create "tttrw_base"
+
+			pluto.opener:AddTab("Open Box", vgui.Create "pluto_box_open" :SetCurrency "endround")
+
+			pluto.opener:SetSize(640, 400)
+			pluto.opener:Center()
+			pluto.opener:MakePopup()
+		end,
+
+		Category = "Item Boxes",
 	},
 	{
 		InternalName = "crate0",
@@ -94,6 +132,8 @@ pluto.currency.list = {
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
 		end,
+
+		Category = "Item Boxes",
 	},
 	{
 		InternalName = "crate2",
@@ -116,6 +156,8 @@ pluto.currency.list = {
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
 		end,
+
+		Category = "Item Boxes",
 	},
 	{
 		InternalName = "crate1",
@@ -138,6 +180,8 @@ pluto.currency.list = {
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
 		end,
+
+		Category = "Item Boxes",
 	},
 	{
 		InternalName = "xmas2020",
@@ -160,6 +204,8 @@ pluto.currency.list = {
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
 		end,
+
+		Category = "Item Boxes",
 	},
 	{
 		InternalName = "heart",
@@ -173,6 +219,8 @@ pluto.currency.list = {
 			Mod = "hearted",
 		},
 		StardustRatio = 250,
+
+		Category = "Modify",
 	},
 	{
 		InternalName = "coin",
@@ -195,6 +243,8 @@ pluto.currency.list = {
 		Description = "Creates a mirror image of an item which is unmodifiable",
 		SubDescription = "Mara threw this mirror out after seeing what she had become",
 		Color = Color(177, 173, 205),
+
+		Category = "Modify",
 	},
 	{
 		InternalName = "quill",
@@ -249,7 +299,9 @@ pluto.currency.list = {
 			pluto.opener:SetSize(640, 400)
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
-		end
+		end,
+
+		Category = "Modify",
 	},
 	{
 		InternalName = "tp",
@@ -280,6 +332,8 @@ pluto.currency.list = {
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
 		end,
+
+		Category = "Item Boxes",
 	},
 	{
 		InternalName = "crate3",
@@ -302,6 +356,8 @@ pluto.currency.list = {
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
 		end,
+
+		Category = "Item Boxes",
 	},
 	{
 		InternalName = "crate3_n",
@@ -324,6 +380,8 @@ pluto.currency.list = {
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
 		end,
+
+		Category = "Item Boxes",
 	},
 	{
 		InternalName = "eye",
@@ -410,7 +468,76 @@ pluto.currency.list = {
 	},
 }
 
+pluto.currency.list = {}
+for _, mod in ipairs(list) do
+	local old = pluto.currency.byname[mod.InternalName]
+	if (old) then
+		mod, old = old, mod
+		table.Merge(mod, old)
+	end
+
+	table.insert(pluto.currency.list, mod)
+end
+
 pluto.currency_mt = pluto.currency_mt or {}
+local CUR = pluto.currency_mt.__index or {}
+pluto.currency_mt.__index = CUR
+
+function CUR:GetMaterial()
+	if (not self.Material) then
+		self.Material = Material(self.Icon, "noclamp")
+	end
+
+	return self.Material
+end
+
+function CUR:AllowedUse(wpn)
+	if (wpn and wpn.Locked) then
+		return false
+	end
+
+
+	local type = wpn and wpn.Type or "None"
+	if (isstring(self.Types)) then
+		return self.Types == type
+	end
+
+	if (istable(self.Types) and table.HasValue(self.Types, type)) then
+		return true
+	end
+
+	return false
+end
+
+function CUR:Use(ply, item)
+	assert(SERVER)
+
+	if (self:Run(item)) then
+		return self:Save(ply, item)
+	end
+
+	return Promise(function(res, rej) return res() end)
+end
+
+function CUR:Save(ply, item, used)
+	assert(SERVER)
+
+	ply = pluto.db.steamid64(ply)
+	return Promise(function(res, rej)
+		item.LastUpdate = (item.LastUpdate or 0) + 1
+
+		pluto.db.transact(function(db)
+			pluto.weapons.update(db, item)
+			if (pluto.inv.addcurrency(db, ply, self.InternalName, used and -used or -1)) then
+				mysql_commit(db)
+				res(item)
+			else
+				mysql_rollback(db)
+				rej()
+			end
+		end)
+	end)
+end
 
 function pluto.iscurrency(t)
 	return debug.getmetatable(t) == pluto.currency_mt

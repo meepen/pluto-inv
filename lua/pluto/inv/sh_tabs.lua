@@ -86,8 +86,7 @@ pluto.tabs = {
 		canremove = function()
 			return true
 		end,
-		size = 5,
-		-- no element = no send
+		size = 36,
 	},
 	quest = {
 		element = "pluto_quest",

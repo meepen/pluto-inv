@@ -80,7 +80,7 @@ end
 function SWEP:Initialize()
 	BaseClass.Initialize(self)
 
-	self.Pluto = {}
+	self:PlutoInitialize()
 
 	pluto.wpn.list[self:GetPlutoID()] = self
 end

@@ -11,7 +11,6 @@ pluto.files.load {
 		"inv/ui.lua",
 		"inv/cl_manager.lua",
 		"inv/currency/object/cl_object.lua",
-		"trades/cl.lua",
 		"models/cl_models.lua",
 		"mapvote/cl_mapvote.lua",
 		"cl/workshop.lua",
@@ -19,6 +18,7 @@ pluto.files.load {
 		"craft/cl.lua",
 		"nitro/cl_nitro.lua",
 		"quests/cl_quests.lua",
+		"quests/cl_quest_hud.lua",
 		"models/cl_showhitgroups.lua",
 
 		"divine/cl.lua",
@@ -54,6 +54,47 @@ pluto.files.load {
 		"cl/vgui/plutotext.lua",
 		"cl/vgui/plutolabel.lua",
 		"cl/vgui/plutoimage.lua",
+		"cl/vgui/plutotoggle.lua",
+		"cl/vgui/plutodropdown.lua",
+
+		"cl/vgui/inv/parts/component.lua",
+		"cl/vgui/inv/parts/tabbed.lua",
+		"cl/vgui/inv/parts/loading.lua",
+		"cl/vgui/inv/parts/currency.lua",
+		"cl/vgui/inv/parts/tradingset.lua",
+		"cl/vgui/inv/parts/button.lua",
+		"cl/vgui/inv/parts/textentry.lua",
+
+		"cl/vgui/inv/pages/loadout.lua",
+		"cl/vgui/inv/pages/currency.lua",
+		"cl/vgui/inv/pages/quests.lua",
+		"cl/vgui/inv/pages/crafting/shards.lua",
+		"cl/vgui/inv/pages/crafting/currency.lua",
+		"cl/vgui/inv/pages/crafting.lua",
+		"cl/vgui/inv/pages/trading.lua",
+		"cl/vgui/inv/pages/donate.lua",
+
+		"cl/vgui/inv/pages/market/itemshop.lua",
+		"cl/vgui/inv/pages/market/auction.lua",
+		"cl/vgui/inv/pages/market/reclaim.lua",
+		"cl/vgui/inv/pages/market/currencyex.lua",
+		"cl/vgui/inv/pages/market/blackmarket.lua",
+		"cl/vgui/inv/pages/divine_market.lua",
+
+		"cl/vgui/inv/shape.lua",
+		"cl/vgui/inv/item.lua",
+		"cl/vgui/inv/storage.lua",
+		"cl/vgui/inv/playermodel.lua",
+		"cl/vgui/inv/container.lua",
+		"cl/vgui/inv/rightclick.lua",
+
+		"cl/vgui/showcase/init.lua",
+		"cl/vgui/showcase/model/container.lua",
+		"cl/vgui/showcase/weapon/container.lua",
+		"cl/vgui/showcase/weapon/bar.lua",
+
+		"trades/cl_trade_state.lua",
+		"trades/cl_trade_networking.lua",
 
 		"cl/credits.lua",
 	},
@@ -96,6 +137,7 @@ pluto.files.load {
 
 		"thirdparty/sh_animations_api.lua",
 		"thirdparty/circles.lua",
+		"thirdparty/json.lua",
 
 		"imgur/sh_imgur.lua",
 

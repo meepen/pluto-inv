@@ -6,21 +6,6 @@ local health_full = Color(58, 180, 80)
 local health_ok = Color(240, 255, 0)
 local health_dead = Color(255, 51, 0)
 
-local function ColorLerp(col_from, col_mid, col_to, amt)
-	if (amt > 0.5) then
-		col_from = col_mid
-		amt = (amt - 0.5) * 2
-	else
-		col_to = col_mid
-		amt = amt * 2
-	end
-
-	local fr, fg, fb = col_from.r, col_from.g, col_from.b
-	local tr, tg, tb = col_to.r, col_to.g, col_to.b
-
-	return fr + (tr - fr) * amt, fg + (tg - fg) * amt, fb + (tb - fb) * amt
-end
-
 local first = Color(0, 0, 255, 100)
 local middle = Color(0, 255, 0, 100)
 local last = Color(255, 0, 0, 100)
@@ -60,7 +45,7 @@ hook.Add("PostPlayerDraw", "pluto_showhitgroups", function(ply)
 
 		local hitgroup = ply:GetHitBoxHitGroup(hitbox, set)
 
-		render.DrawWireframeBox(origin, angles, mins, maxs, Color(ColorLerp(first, middle, last, hitbox / (count - 1))))
+		render.DrawWireframeBox(origin, angles, mins, maxs, Color(ColorLerp(hitbox / (count - 1), first, middle, last)))
 	end
 
 	surface.SetFont "BudgetLabel"
@@ -93,7 +78,7 @@ hook.Add("PostPlayerDraw", "pluto_showhitgroups", function(ply)
 
 			surface.SetTextPos(mid.x - w / 2, mid.y - h / 2)
 
-			surface.SetTextColor(Color(ColorLerp(first, middle, last, hitbox / (count - 1))))
+			surface.SetTextColor(Color(ColorLerp(hitbox / (count - 1), first, middle, last)))
 
 			surface.DrawText(text)
 		end

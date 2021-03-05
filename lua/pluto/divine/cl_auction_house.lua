@@ -203,11 +203,18 @@ function pluto.inv.readauctiondata()
 	hook.Run("PlutoReceiveAuctionData", items, pages)
 end
 
-function pluto.inv.writeauctionsearch(data)
-	net.WriteUInt((data.Page or 1) - 1, 32)
-	net.WriteString(data.Sort or "default")
-	net.WriteBool(true)
-	net.WriteString(data.Filter or "default")
+function pluto.inv.writeauctionsearch(page, params)
+	net.WriteUInt(page, 32)
+
+	for what, param in pairs(params) do
+		net.WriteBool(true)
+		net.WriteString(what)
+		net.WriteUInt(param.n, 2)
+		for i = 1, math.min(param.n, 3) do
+			net.WriteString(param[i])
+		end
+	end
+
 	net.WriteBool(false)
 end
 
@@ -223,7 +230,6 @@ function PANEL:Init()
 		self.Item:Center()
 	end
 	self.Item = self.ItemContainer:Add "pluto_inventory_item"
-	self.Item:SetNoMove()
 	self.Item:SetSize(64, 64)
 	self.Item:Center()
 	self.Item:SetItem(nil, {Active = true, Items = {}, ID = 0})

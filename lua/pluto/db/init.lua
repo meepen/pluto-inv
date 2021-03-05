@@ -6,6 +6,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				owner BIGINT UNSIGNED NOT NULL,
 				color INT UNSIGNED NOT NULL DEFAULT 0,
 				tab_type varchar(16) NOT NULL DEFAULT "normal",
+				tab_shape varchar(16) NOT NULL DEFAULT "square",
 				name VARCHAR(16) NOT NULL,
 
 				PRIMARY KEY(idx),
@@ -202,7 +203,8 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 			CREATE TABLE IF NOT EXISTS pluto_trades (
 				idx INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 				snapshot JSON NOT NULL,
-				accepted TINYINT NOT NULL DEFAULT 0
+				accepted TINYINT NOT NULL DEFAULT 0,
+				version SMALLINT UNSIGNED DEFAULT 0
 			)
 		]])
 
@@ -262,7 +264,11 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				owner BIGINT UNSIGNED NOT NULL REFERENCES pluto_player_info(steamid),
 				price INT UNSIGNED NOT NULL,
 				listed TIMESTAMP NOT NULL,
+				name VARCHAR(64) NOT NULL DEFAULT '',
+				max_mods SMALLINT UNSIGNED NULL DEFAULT NULL,
 
+				INDEX(name),
+				INDEX(max_mods),
 				INDEX USING HASH(owner),
 				INDEX(price),
 				INDEX(listed),
@@ -275,7 +281,9 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 			CREATE TABLE IF NOT EXISTS pluto_class_kv (
 				class VARCHAR(32) NOT NULL,
 				k VARCHAR(16) NOT NULL,
-				v SMALLINT NOT NULL,
+				v varchar(32) NOT NULL,
+
+				KEY v_index (v),
 
 				UNIQUE KEY (class, k)
 			)

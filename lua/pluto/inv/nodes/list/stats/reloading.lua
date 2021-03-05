@@ -8,6 +8,5 @@ function NODE:GetDescription(node)
 end
 
 function NODE:ModifyWeapon(node, wep)
-	wep:DefinePlutoOverrides "ReloadAnimationSpeed"
 	wep.Pluto.ReloadAnimationSpeed = wep.Pluto.ReloadAnimationSpeed + (2 + node.node_val1 * 8) / 100
 end

@@ -398,7 +398,7 @@ function pluto.inv.writecraft(items, currency)
 	pluto.inv.writecraftheader(items)
 	if (currency) then
 		net.WriteBool(true)
-		net.WriteString(currency.Currency)
+		net.WriteString(currency.Currency.InternalName)
 		net.WriteUInt(currency.Amount, 32)
 	else
 		net.WriteBool(false)

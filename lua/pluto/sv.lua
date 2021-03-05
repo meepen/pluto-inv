@@ -18,10 +18,10 @@ pluto.files.load {
 		"inv/sv_manager.lua",
 		"inv/ttt.lua",
 		"inv/sv_buffer.lua",
-		"trades/sv.lua",
 		"mapvote/mapvote.lua",
 		"models/sv_models.lua",
 		"craft/sv.lua",
+
 
 		"inv/exp/sv_exp_provider.lua",
 		"inv/exp/sv_model_exp.lua",
@@ -32,7 +32,12 @@ pluto.files.load {
 		"discord/discord.lua",
 		"nitro/sv_nitro.lua",
 
+		"quests/_init.lua",
+		"quests/sv_quest_commands.lua",
+		"quests/sv_quest_object.lua",
+		"quests/sv_quest_networking.lua",
 		"quests/sv_quests.lua",
+		"quests/sv_quest_rewards.lua",
 
 		"inv/currency/sv_currency.lua",
 		"inv/currency/sv_crossmap.lua",
@@ -54,7 +59,12 @@ pluto.files.load {
 		"divine/sv_stardust_shop.lua",
 		"divine/sv_auction_house.lua",
 
+		"trades/sv_trade_state.lua",
+		"trades/sv_trade_networking.lua",
+
 		"websocket/sv_websocket.lua",
+
+		"donate/sv_donate.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty
@@ -69,6 +79,8 @@ pluto.files.load {
 		"materials/pluto/hound2.png",
 		"materials/pluto/eppen_stars.png",
 		"materials/pluto/colorful.png",
+	
+		"materials/pluto/currencies/questionmark.png",
 		"resource/fonts/PermanentMarker-Regular.ttf",
 	},
 	Workshop = {

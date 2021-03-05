@@ -32,6 +32,10 @@ function MOD:GetTierName(tier)
 	return self:GetPrintName() .. " " .. pluto.toroman(tier)
 end
 
+function MOD:GetMinMax()
+	return self.Tiers[#self.Tiers][1], self.Tiers[1][2]
+end
+
 function pluto.mods.getrolls(mod, tier, rolls)
 	local retn = {}
 
@@ -108,4 +112,65 @@ function pluto.mods.formatdescription(mod_data, item, format)
 	end
 
 	return string.formatsafe(desc, unpack(format))
+end
+
+function pluto.mods.getrawvalue(wep, name)
+	local s, c = pcall(wep["Get" .. name], wep)
+	if (s) then
+		return c
+	end
+
+	if (wep.Primary and wep.Primary[name]) then
+		return wep.Primary[name]
+	end
+
+	if (wep[name]) then
+		return wep[name]
+	end
+end
+
+function pluto.mods.humanreadablestat(statname, wep, value)
+	if (statname == "Delay") then
+		return math.Round(60 / value), "RPM"
+	end
+
+	if (statname == "Damage" and wep.Bullets and wep.Bullets.Num and wep.Bullets.Num > 1) then
+		return math.Round(value, 1) .. "*" .. wep.Bullets.Num, "DMG"
+	end
+
+	if (type(value) == "Vector") then
+		return math.Round(value:Length() * 100, 1), "??"
+	end
+
+	if (type(value) == "number") then
+		return math.Round(value, 1)
+	end
+
+	return tostring(value), "?"
+end
+
+function pluto.mods.getstatvalue(wep, name)
+	return pluto.mods.humanreadablestat(name, wep, pluto.mods.getrawvalue(wep, name))
+end
+
+function pluto.mods.getitemvalue(item, name)
+	local wep = baseclass.Get(item.ClassName)
+
+	local value = pluto.mods.getrawvalue(wep, name)
+	if (not value) then
+		return "IDK XD"
+	end
+
+	local override, modifier = pluto.stattranslate(name)
+	for _, mod in pairs(item.Mods.prefix) do
+		local MOD = pluto.mods.byname[mod.Mod]
+		if (MOD.StatModifier ~= name) then
+			continue
+		end
+
+		local rolls = pluto.mods.getrolls(MOD, mod.Tier, mod.Roll)
+		modifier = modifier + rolls[1] / 100
+	end
+	
+	return pluto.mods.humanreadablestat(name, wep, override(value, modifier))
 end

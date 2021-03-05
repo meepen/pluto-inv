@@ -12,3 +12,5 @@ function SWEP:Initialize()
 	self:SetWorldModel(mdl)
 	self:SetModel(mdl)
 end
+
+SWEP.Ortho = {-4.5, 3}

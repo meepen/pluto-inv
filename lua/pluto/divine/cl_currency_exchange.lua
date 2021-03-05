@@ -186,13 +186,13 @@ function PANEL:Init()
 	end
 	function self.SliderNum:OnMousePressed(m)
 		self:SetKeyboardInputEnabled(true)
-		pluto.ui.pnl:SetKeyboardInputEnabled(true)
+		pluto.ui.pnl:SetKeyboardFocus(self, true)
 	end
 
 	function self.SliderNum:OnFocusChanged(gained)
 		if (not gained) then
 			self:SetKeyboardInputEnabled(false)
-			pluto.ui.pnl:SetKeyboardInputEnabled(false)
+			pluto.ui.pnl:SetKeyboardFocus(self, false)
 			local num = tonumber(self:GetText())
 			if (not num) then
 				num = 0

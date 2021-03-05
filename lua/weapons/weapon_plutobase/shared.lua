@@ -13,9 +13,63 @@ end
 
 pluto.wpn_db = pluto.wpn_db or {}
 
+local function Override(self)
+	self:DefinePlutoOverrides "ReloadAnimationSpeed"
+	self:DefinePlutoOverrides "Damage"
+	self:DefinePlutoOverrides "DamageDropoffRangeMax"
+	self:DefinePlutoOverrides "ViewPunchAngles"
+	self:DefinePlutoOverrides "Spread"
+	self:DefinePlutoOverrides "DamageDropoffRangeMax"
+	self:DefinePlutoOverrides "DamageDropoffRange"
+	self:DefinePlutoOverrides("Delay", 0, function(old, pct)
+		local rpm = 60 / old
+
+		rpm = rpm + pct * rpm
+
+		return 60 / rpm
+	end)
+end
+
+local function default_translate(old, pct)
+	if (pct < 0) then
+		pct = 1 / (2 - pct)
+	end
+	return old * pct
+end
+
+function pluto.stattranslate(stat)
+	local function override_func(num)
+		return num
+	end
+	local _default = 0
+	local function DefinePlutoOverrides(self, type, default, translate)
+		if (type ~= stat) then
+			return
+		end
+
+		_default = default or 1
+		translate = translate or default_translate
+		function override_func(num, value)
+			return translate(num, value)
+		end
+	end
+	Override({DefinePlutoOverrides = DefinePlutoOverrides})
+	return override_func, _default
+end
+
+function SWEP:PlutoInitialize()
+	self.Pluto = {}
+
+	Override(self)
+end
+
 function WEAPON:GetInventoryItem()
 	return pluto.wpn_db[self:GetPlutoID()]
 end
+
+SWEP.StatModifierLookups = {
+	
+}
 
 function SWEP:ReceivePlutoData()
 	if (self.AlreadyReceived) then
@@ -36,6 +90,10 @@ function SWEP:ReceivePlutoData()
 			local mod = pluto.mods.byname[mod_data.Mod]
 			if (mod and mod.ModifyWeapon) then
 				mod:ModifyWeapon(self, pluto.mods.getrolls(mod, mod_data.Tier, mod_data.Roll))
+			elseif (mod.StatModifier) then
+				local roll = pluto.mods.getrolls(mod, mod_data.Tier, mod_data.Roll)[1]
+
+				self.Pluto[mod.StatModifier] = (self.Pluto[mod.StatModifier] or 0) + roll / 100
 			end
 		end
 	end
@@ -49,13 +107,6 @@ function SWEP:SetupDataTables()
 		self:SetPlutoID(pluto.CurrentID)
 		pluto.CurrentID = pluto.CurrentID + 1
 	end
-end
-
-local function default_translate(old, pct)
-	if (pct < 0) then
-		pct = 1 / (2 - pct)
-	end
-	return old * pct
 end
 
 function SWEP:DefinePlutoOverrides(type, default, translate)

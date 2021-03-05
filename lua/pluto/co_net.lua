@@ -28,7 +28,6 @@ for _, index in pairs {
 	co_net["Write" .. index] = function(...)
 		local wt = co_net.BitsWritten()
 		if (wt > co_net.max_packet) then
-			pprintf("Bits written: %u", wt)
 			net = _net
 			co_net.finish_fn()
 			co_net.Start(co_net.CurrentMessage, co_net.finish_fn, true)
@@ -40,7 +39,6 @@ for _, index in pairs {
 	co_net["Read" .. index] = function(...)
 		local rd = co_net.BitsRead()
 		if (rd > co_net.max_packet) then
-			pprintf("Bits overflow: %u", rd)
 			coroutine.yield()
 		end
 
@@ -93,7 +91,7 @@ function co_net.Receive(name, fn)
 			co = coroutine.create(fn)
 			lookup[name] = co
 		elseif (not co or coroutine.status(co) == "dead") then
-			pprintf("Packet is dead, discarding.")
+			pluto.warn("INV", "Packet is dead, discarding.")
 			return
 		end
 

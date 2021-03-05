@@ -43,3 +43,5 @@ SWEP.Ironsights = {
 SWEP.MuzzleAttachment			= "1" 		-- Should be "1" for CSS models or "muzzle" for hl2 models
 --SWEP.MuzzleAttachmentRaw = 1 --This will override whatever string you gave.  This is the raw attachment number.  This is overridden or created when a gun makes a muzzle event.
 SWEP.ShellAttachment			= "2" 		-- Should be "2" for CSS models or "shell" for hl2 models
+
+SWEP.Ortho = {-0.4, 0, angle = Angle(90, 230, -10), size = 1.1}

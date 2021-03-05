@@ -1,5 +1,6 @@
 MOD.Type = "prefix"
-MOD.Name = "Proximity"
+MOD.Name = "Min. Range"
+MOD.StatModifier = "DamageDropoffRange"
 MOD.Tags = {
 	"range"
 }
@@ -20,10 +21,5 @@ MOD.Tiers = {
 	{ 10, 20 },
 	{ 0.1, 10 },
 }
-
-function MOD:ModifyWeapon(wep, roll)
-	wep:DefinePlutoOverrides "DamageDropoffRange"
-	wep.Pluto.DamageDropoffRange = wep.Pluto.DamageDropoffRange + roll[1] / 100
-end
 
 return MOD

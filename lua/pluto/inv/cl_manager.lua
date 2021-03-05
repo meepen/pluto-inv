@@ -16,8 +16,6 @@ pluto.received = pluto.received or {
 	item = {},
 }
 
-pluto.buffer = pluto.buffer or {}
-
 pluto.inv = pluto.inv or {
 	status = "uninitialized",
 }
@@ -51,6 +49,7 @@ function pluto.inv.readmod(item)
 		mod.Type = net.ReadString()
 		mod.Name = net.ReadString()
 
+		ReadIfExists(mod, "StatModifier")
 		ReadIfExists(mod, "Color")
 		ReadIfExists(mod, "FormatModifier")
 		ReadIfExists(mod, "GetDescription")
@@ -179,9 +178,29 @@ function pluto.inv.readitem()
 		item.constellations = nil
 	end
 
+	if (net.ReadBool()) then
+		local oldtabid = item.TabID
+		local oldtabidx = item.TabIndex
+		item.TabID = net.ReadUInt(32)
+		item.TabIndex = net.ReadUInt(32)
+		if (item.TabID ~= oldtabid or item.TabIndex ~= oldtabidx) then
+			local oldtab = pluto.cl_inv[oldtabid]
+			local newtab = pluto.cl_inv[item.TabID]
+			if (newtab and newtab.Type ~= "buffer") then
+				if (oldtab) then
+					oldtab.Items[oldtabidx] = nil
+				end
+
+				if (newtab) then
+					newtab.Items[item.TabIndex] = item
+				end
+			end
+		end
+	end
+
 	pluto.received.item[id] = item
 
-	hook.Run("PlutoItemUpdate", item)
+	hook.Run("PlutoItemUpdate", item, item.TabID, item.TabIndex)
 
 	return item
 end
@@ -189,12 +208,11 @@ end
 function pluto.inv.readstatus()
 	pluto.inv.status = net.ReadString()
 
-	pprintf("Inventory status = %s", pluto.inv.status)
+	pluto.message("INV", "Status = ", pluto.inv.status)
 end
 
 function pluto.inv.readfullupdate()
 	pluto.cl_inv = {}
-	pluto.buffer = {}
 	pluto.cl_currency = {}
 	if (IsValid(pluto.ui.pnl)) then
 		pluto.ui.pnl:Remove()
@@ -208,12 +226,17 @@ function pluto.inv.readfullupdate()
 		pluto.inv.readcurrencyupdate()
 	end
 
-	for i = 1, net.ReadUInt(8) do
-		pluto.inv.readbufferitem()
+	local modlist = {}
+
+	for i = 1, net.ReadUInt(32) do
+		modlist[i] = net.ReadString()
 	end
 
+	table.sort(modlist)
+
+	pluto.mods.networkednames = modlist
+
 	pluto.inv.readstatus()
-	pluto.inv.remakefake()
 end
 
 function pluto.inv.readtab()
@@ -235,6 +258,7 @@ function pluto.inv.readtab()
 
 	tab.Name = net.ReadString()
 	tab.Type = net.ReadString()
+	tab.Shape = net.ReadString()
 	local col = net.ReadUInt(24)
 	local r = bit.band(bit.rshift(col, 16), 0xff)
 	local g = bit.band(bit.rshift(col, 8), 0xff)
@@ -245,6 +269,12 @@ function pluto.inv.readtab()
 		local tabindex = net.ReadUInt(8)
 		local item = pluto.inv.readitem()
 		tab.Items[tabindex] = item
+		item.TabID = id
+		item.TabIndex = tabindex
+	end
+
+	if (tab.Type == "buffer") then
+		pluto.buffer = tab.Items
 	end
 
 	return true
@@ -265,8 +295,11 @@ function pluto.inv.readtabupdate()
 		item = pluto.inv.readitem()
 	end
 
-	print(tabid, tabindex, item)
 	pluto.cl_inv[tabid].Items[tabindex] = item
+	if (item) then
+		item.TabID = tabid
+		item.TabIndex = tabindex
+	end
 
 	hook.Run("PlutoTabUpdate", tabid, tabindex, item)
 end
@@ -274,11 +307,11 @@ end
 function pluto.inv.readbufferitem()
 	local item = pluto.inv.readitem()
 
-	table.insert(pluto.buffer, item)
-	if (#pluto.buffer > 5) then
-		table.remove(pluto.buffer, 1)
+	table.insert(pluto.buffer, 1, item)
+	for i = 37, #pluto.buffer do
+		pluto.buffer[i] = nil
 	end
-	hook.Run("PlutoBufferChanged")
+	hook.Run "PlutoBufferChanged"
 end
 
 function pluto.inv.writeitemdelete(tabid, tabindex, itemid)
@@ -299,6 +332,14 @@ function pluto.inv.writetabswitch(tabid1, tabindex1, tabid2, tabindex2)
 	local tab1, tab2 = pluto.cl_inv[tabid1], pluto.cl_inv[tabid2]
 
 	tab1.Items[tabindex1], tab2.Items[tabindex2] = tab2.Items[tabindex2], tab1.Items[tabindex1]
+
+	local item1, item2 = tab1.Items[tabindex1], tab2.Items[tabindex2]
+	if (item1) then
+		item1.TabID, item1.TabIndex = tabid1, tabindex1
+	end
+	if (item2) then
+		item2.TabID, item2.TabIndex = tabid2, tabindex2
+	end
 
 	net.WriteUInt(tabid1, 32)
 	net.WriteUInt(tabindex1, 8)
@@ -342,11 +383,6 @@ function pluto.inv.readend()
 	return true
 end
 
-function pluto.inv.readcrate_id()
-	hook.Run("CrateOpenResponse", net.ReadInt(32))
-end
-
-
 function pluto.inv.readexpupdate()
 	local itemid = net.ReadUInt(32)
 	local exp = net.ReadUInt(32)
@@ -360,6 +396,10 @@ function pluto.inv.readexpupdate()
 	end
 
 	item.Experience = exp
+end
+
+function pluto.inv.readplayertokens()
+	pluto.cl_tokens = net.ReadUInt(32)
 end
 
 function pluto.inv.readplayerexp(cl, ply, exp)

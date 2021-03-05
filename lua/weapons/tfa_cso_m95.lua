@@ -1,4 +1,4 @@
-SWEP.Base				= "tfa_gun_base"
+SWEP.Base				= "weapon_tttbase"
 SWEP.Category				= "TFA CS:O"
 SWEP.Author				= "Kamikaze"
 SWEP.PrintName				= "Barret .50 Cal"
@@ -102,8 +102,8 @@ function SWEP:ScaleRollType(type, roll, init)
 		local ret = roll / 2
 
 		if (init) then
-			pluto.mods.byname.mag:ModifyWeapon(self, {roll * 1.5})
-			pluto.mods.byname.firerate:ModifyWeapon(self, {roll * 0.75})
+			self.Pluto[pluto.mods.byname.firerate.StatModifier] = (self.Pluto[pluto.mods.byname.firerate.StatModifier] or 0) + roll * 0.75
+			self.Pluto[pluto.mods.byname.mag.StatModifier] = (self.Pluto[pluto.mods.byname.mag.StatModifier] or 0) + roll * 1.5
 			self.HeadshotMultiplier = self.HeadshotMultiplier * (1 + roll / 100 * 5)
 		end
 

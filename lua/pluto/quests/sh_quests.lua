@@ -17,7 +17,6 @@ pluto.quests.types = {
 		Time = 60 * 60,
 		Amount = 3,
 		Cooldown = 60 * 7.5,
-		-- #83F52C	
 		Color = HexColor "7ef524",
 	},
 	{

@@ -65,9 +65,9 @@ SWEP.Primary.Delay = 1.2
 SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
-	DamageDropoffRange = 650,
-	DamageDropoffRangeMax = 4200,
-	DamageMinimumPercent = 0.1,
+	DamageDropoffRange = 1000,
+	DamageDropoffRangeMax = 6200,
+	DamageMinimumPercent = 0.4,
 	Spread = Vector(0.01, 0.02),
 	TracerName = "cso_ajax"
 }

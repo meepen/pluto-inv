@@ -2,6 +2,19 @@ local function ornull(n)
 	return n and SQLStr(n) or "NULL"
 end
 
+function pluto.inv.lockbuffer(db, ply)
+	mysql_cmysql()
+	local tab = pluto.inv.invs[ply].tabs.buffer
+	mysql_stmt_run(db, "SELECT idx FROM pluto_items WHERE tab_id = ? FOR UPDATE", tab.RowID)
+end
+
+function pluto.inv.waitbuffer(db, ply)
+	mysql_cmysql()
+	local tab = pluto.inv.invs[ply].tabs.buffer
+	mysql_stmt_run(db, "SELECT 1 FROM pluto_items WHERE tab_id = ? LIMIT 1", tab.RowID)
+end
+
+
 function pluto.inv.pushbuffer(db, ply)
 	mysql_cmysql()
 
@@ -11,14 +24,11 @@ function pluto.inv.pushbuffer(db, ply)
 		return false
 	end
 
-	mysql_stmt_run(db, "SELECT idx FROM pluto_items WHERE tab_id = ? FOR UPDATE", tab.RowID)
-	mysql_stmt_run(db, "DELETE FROM pluto_items where tab_id = ? and tab_idx = 5", tab.RowID)
-	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 4", tab.RowID)
-	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 3", tab.RowID)
-	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 2", tab.RowID)
-	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 1 where tab_id = ? and tab_idx = 1", tab.RowID)
-
-	for i = 4, 1, -1 do
+	pluto.inv.lockbuffer(db, ply)
+	mysql_stmt_run(db, "DELETE FROM pluto_items where tab_id = ? and tab_idx = 36", tab.RowID)
+	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 50 where tab_id = ?", tab.RowID)
+	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx - 49 where tab_id = ?", tab.RowID)
+	for i = 35, 1, -1 do
 		local item = tab.Items[i]
 		tab.Items[i + 1] = item
 		if (item) then
@@ -29,6 +39,7 @@ end
 
 function pluto.inv.popbuffer(db, ply, index)
 	mysql_cmysql()
+	pluto.inv.lockbuffer(db, ply)
 
 	local tab = pluto.inv.invs[ply].tabs.buffer
 
@@ -36,15 +47,14 @@ function pluto.inv.popbuffer(db, ply, index)
 		return false
 	end
 
-	for i = index + 1, 5 do
-		mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx - 1 where tab_id = ? and tab_idx = ?", tab.RowID, i)
-		local item = tab.Items[i]
-		tab.Items[i - 1] = item
-		if (item) then
-			tab.Items[i - 1].TabIndex = i - 1
-		end
+	table.remove(tab.Items, index)
+	for i, item in ipairs(tab.Items) do
+		item.TabIndex = i
 	end
-	tab.Items[5] = nil
+
+	mysql_stmt_run(db, "DELETE FROM pluto_items where tab_id = ? and tab_idx = ?", tab.RowID, index)
+	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx + 50 where tab_id = ? and tab_idx >= ?", tab.RowID, index)
+	mysql_stmt_run(db, "UPDATE pluto_items set tab_idx = tab_idx - 51 where tab_id = ? and tab_idx >= ?", tab.RowID, index)
 end
 
 function pluto.inv.savebufferitem(db, ply, new_item)
@@ -113,6 +123,10 @@ function pluto.inv.notifybufferitem(ply, i)
 	pluto.inv.message(ply)
 		:write("bufferitem", i)
 		:send()
+end
+
+function pluto.inv.writebufferitem(ply, i)
+	pluto.inv.writeitem(ply, i)
 end
 
 function pluto.inv.getbufferitems(owner)

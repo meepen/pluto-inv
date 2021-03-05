@@ -320,20 +320,21 @@ function pluto.inv.readcraft(cl)
 	end
 
 	pluto.db.transact(function(db)
-		for _, item in pairs(items) do
-			if (not pluto.inv.deleteitem(db, cl, item.RowID, true)) then
-				return
-			end
-		end
-		wpn.CreationMethod = "CRAFT"
-		pluto.inv.savebufferitem(db, cl, wpn)
-	
 		if (cur) then
 			if (not pluto.inv.addcurrency(db, cl, cur.Currency, -cur.Amount)) then
 				mysql_rollback(db)
 				return
 			end
 		end
+
+		for _, item in pairs(items) do
+			if (not pluto.inv.deleteitem(db, cl, item.RowID, true)) then
+				return
+			end
+		end
+
+		wpn.CreationMethod = "CRAFT"
+		pluto.inv.savebufferitem(db, cl, wpn)
 		mysql_commit(db)
 	end)
 

@@ -199,7 +199,8 @@ for _, name in pairs {
 
 	local prev = pluto.tiers.byname[name]
 	if (prev) then
-		pprintf("Merging %s", name)
+		pluto.message("INV", "Merging tier ", name)
+		table.Empty(prev)
 		table.Merge(prev, item)
 		item = prev
 	end

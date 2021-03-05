@@ -134,7 +134,7 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 
 		if (table.Count(pluto.afk[ply]) <= 5) then
 			ply.WasAFK = true
-			pprintf("%s was afk this round", ply:Nick())
+			pluto.warn("INV", ply, " was afk this round.")
 			continue
 		end
 		ply.WasAFK = false
@@ -142,20 +142,9 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 		if (not IsValid(ply) or math.random() > pluto_weapon_droprate:GetFloat()) then
 			continue
 		end
-		pluto.db.transact(function(db)
-			local item = pluto.inv.generatebufferweapon(db, ply, "DROPPED")
-
-			if (item:GetMaxAffixes() >= 5) then
-				local msg = discord.Message()
-
-				msg:AddEmbed(item:GetDiscordEmbed()
-					:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
-				)
-				msg:Send "drops"
-			end
-
-			ply:ChatPrint("You have received a ", item, white_text, "! Check your inventory.")
-			mysql_commit(db)
+		pluto.db.instance(function(db)
+			pluto.inv.addcurrency(db, ply, "endround", 1)
+			ply:ChatPrint(white_text, "You obtained a ", pluto.currency.byname.endround)
 		end)
 	end
 end)
@@ -173,52 +162,13 @@ hook.Add("TTTPlayerGiveWeapons", "pluto_loadout", function(ply)
 		return true
 	end
 
-	if (not pluto.inv.invs[ply]) then
-		return
-	end
-
-	local equip_tab = pluto.inv.invs[ply].tabs.equip
-
-	if (not equip_tab) then
-		pwarnf("Player doesn't have equip tab!")
-		return
-	end
-
-	local i1 = equip_tab.Items[1]
-
-	if (i1) then
-		pluto.NextWeaponSpawn = i1
-		ply:Give(i1.ClassName)
-	end
-
-	local i2 = equip_tab.Items[2]
-	if (i2) then
-		pluto.NextWeaponSpawn = i2
-		ply:Give(i2.ClassName)
-	end
-
-	local i4 = equip_tab.Items[4]
-	if (i4) then
-		pluto.NextWeaponSpawn = i4
-		ply:Give(i4.ClassName)
-	end
-
-	local i5 = equip_tab.Items[5]
-	if (i5) then
-		pluto.NextWeaponSpawn = i5
-		ply:Give(i5.ClassName)
-	end
-
-	local i6 = equip_tab.Items[6]
-	if (i6) then
-		pluto.NextWeaponSpawn = i6
-		ply:Give(i6.ClassName)
-	end
-
-	local i7 = equip_tab.Items[7]
-	if (i7) then
-		pluto.NextWeaponSpawn = i7
-		ply:Give(i7.ClassName)
+	for i = 1, 6 do
+		local wepid = tonumber(ply:GetInfo("pluto_loadout_slot" .. i, nil))
+		local wep = pluto.itemids[wepid]
+		if (wep and wep.Owner == ply:SteamID64()) then
+			pluto.NextWeaponSpawn = wep
+			ply:Give(wep.ClassName)
+		end
 	end
 
 	pluto_loaded[ply:SteamID64()] = true

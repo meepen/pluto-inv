@@ -3,66 +3,121 @@ pluto.inv = pluto.inv or {}
 pluto.inv.messages = {
 	cl2sv = {
 		[0]  = "end",
-		"tabswitch",
-		"itemdelete",
-		"currencyuse",
-		"tabrename",
-		"claimbuffer",
-		"tradeupdate",
-		"trademessage",
-		"traderequest",
-		"tradeaccept",
+
+		-- mapvote
 		"votemap",
 		"likemap",
+
+		-- craft
 		"requestcraftresults",
 		"craft",
-		"itemlock",
-		"rename",
-		"ui",
-		"unname",
-		"chat",
-		"gettrades",
+
+		-- divine market
 		"exchangestardust",
 		"auctionsearch",
+		"getmyitems",
+
+		-- ui
+		"tabswitch",
+		"tabrename",
+		"changetabdata",
+		"ui",
+
+		-- items
+		"itemlock",
+		"rename",
+		"itemdelete",
+		"unname",
+
+		-- currency
+		"masscurrencyuse",
+		"currencyuse",
+
+		-- chat
+		"chat",
+		"chatopen",
+
+		-- constellations
 		"unlocknode",
 		"unlockmajors",
 		"unlockconstellations",
+
+		-- past trades		
+		"gettrades",
 		"gettradesnapshot",
-		"chatopen",
+
+		-- trade
+		"requesttrade",
+		"trademessage",
+		"tradeupdate",
+		"tradeaccept",
+		"tradestatus",
 	},
 	sv2cl = {
 		[0] = "end",
+		-- core inventory
+		"fullupdate",
 		"item",
 		"mod",
 		"tab",
 		"status",
-		"tabupdate",
 		"currencyupdate",
+		"expupdate",
+
+		-- currency system
+		"currencyspawn",
+
+		-- item
+		"itemlock",
+
+		-- tab data
+		"tabupdate",
 		"bufferitem",
-		"tradeupdate",
-		"trademessage",
-		"tradeaccept",
-		"fullupdate",
-		"crate_id",
+
+		-- mapvote
 		"mapvote",
 		"mapvotes",
-		"craftresults",
-		"expupdate",
-		"itemlock",
+
+		-- nitro rewards
 		"nitro",
+
+		-- quests
 		"quests",
 		"quest",
-		"questdone",
+
+		-- crafting
+		"craftresults",
+
+		-- cosmetic
 		"playermodel",
+
+		-- player data
 		"playerexp",
+
+		-- chat
 		"chatmessage",
 		"tradelogresults",
+
+		-- constellations
 		"nodes",
 		"itemtree",
-		"currencyspawn",
+
+		-- divine market
 		"stardustshop",
 		"auctiondata",
+		"gotyouritems",
+
+		-- past trades
 		"tradelogsnapshot",
+		"traderequestinfo",
+
+		-- trading
+		"trademessage",
+		"tradeupdate",
+		"tradestatus",
+
+		-- donator
+		"playertokens",
 	}
 }
 
@@ -88,7 +143,7 @@ end
 
 co_net.Receive("pluto_inv_data", function(len, cl)
 	if (SERVER or GetConVar("pluto_print_console"):GetBool()) then
-		pprintf("Collecting %i bits of inventory data...", len)
+		pluto.message("INV", "Collecting ", len, " bits of inventory data...")
 	end
 
 	while (not pluto.inv.readmessage(cl)) do
@@ -263,7 +318,6 @@ function ITEM:GetModCount(includeimplicit)
 	local count = 0
 
 	for type, modlist in pairs(self.Mods) do
-		print(type)
 		if (type == "implicit" and not includeimplicit) then
 			continue
 		end
@@ -301,6 +355,25 @@ function ITEM:GetRawName(ignoretier)
 	end
 
 	return "Unknown type: " .. tostring(self.Type)
+end
+
+function ITEM:Delete()
+	if (not CLIENT) then
+		return false
+	end
+
+	if (not self.ID) then
+		return
+	end
+
+	pluto.received.item[self.ID] = nil
+
+	local tab = pluto.cl_inv[self.TabID]
+	if (tab) then
+		tab.Items[self.TabIndex] = nil
+	end
+
+	hook.Run("PlutoItemUpdate", nil, self.TabID, self.TabIndex)
 end
 
 function ITEM:GetCreationMethod()

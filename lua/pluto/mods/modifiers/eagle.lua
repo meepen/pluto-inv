@@ -1,5 +1,6 @@
 MOD.Type = "suffix"
 MOD.Name = "The Eagle"
+MOD.Color = Color(211, 180, 3)
 MOD.Tags = {
 	"vision",
 }

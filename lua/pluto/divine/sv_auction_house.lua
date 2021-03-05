@@ -1,17 +1,39 @@
 local AUCTION_HOUSE_ID = "1152921504606846975"
 local AUCTION_TAB
 
-local function init()
-end
+local function fallback() return 255 end
 
-concommand.Add("pluto_update_class_data", function(p)
+pluto.class_kv = {
+	ammo_type = setmetatable({
+		["357"] = 0,
+		["pistol"] = 1,
+		["none"] = 2,
+		["smg1"] = 3,
+	}, {__index = function() return 2 end}),
+
+	mod_type = setmetatable({
+		["suffix"] = 0,
+		["prefix"] = 1,
+		["implicit"] = 2,
+	}, {__index = fallback}),
+}
+
+concommand.Add("pluto_update_market_data", function(p)
 	if (IsValid(p)) then
 		return
 	end
+
 	pluto.db.instance(function(db)
+		mysql_stmt_run(db, "DELETE FROM pluto_class_kv WHERE 1")
+
 		for _, wep in pairs(weapons.GetList()) do
 			wep = baseclass.Get(wep.ClassName)
 			mysql_stmt_run(db, "INSERT INTO pluto_class_kv (class, k, v) VALUES (?, 'wep_slot', ?) ON DUPLICATE KEY UPDATE v = v", wep.ClassName, wep.Slot or 255)
+			mysql_stmt_run(db, "INSERT INTO pluto_class_kv (class, k, v) VALUES (?, 'ammo_type', ?) ON DUPLICATE KEY UPDATE v = v", wep.ClassName, pluto.class_kv.ammo_type[string.lower(wep.Primary and wep.Primary.Ammo or "none")])
+		end
+
+		for name, MOD in pairs(pluto.mods.byname) do
+			mysql_stmt_run(db, "INSERT INTO pluto_class_kv (class, k, v) VALUES (?, 'mod_type', ?) ON DUPLICATE KEY UPDATE v = v", name, pluto.class_kv.mod_type[string.lower(MOD.Type or "none")])
 		end
 	end)
 end)
@@ -35,7 +57,44 @@ local function get_auction_idx(db)
 	return auction_id
 end
 
-concommand.Add("pluto_send_to_auction", function(p, c, a)
+concommand.Add("pluto_upgrade_market_data", function(p)
+	if (IsValid(p)) then
+		return
+	end
+
+	pluto.db.instance(function(db)
+		local itemrows = mysql_stmt_run(db, "SELECT * FROM pluto_items i LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx WHERE i.tab_id = ?", get_auction_idx(db))
+		local modrows = mysql_stmt_run(db, [[
+			SELECT m.idx, m.gun_index, m.modname, m.tier, m.roll1, m.roll2, m.roll3
+					FROM pluto_mods m
+						INNER JOIN pluto_items i ON i.idx = m.gun_index
+					WHERE i.tab_id = ?]], get_auction_idx(db))
+		local items = {}
+
+		for _, row in ipairs(itemrows) do
+			local item = pluto.inv.itemfromrow(row)
+			items[row.idx] = item
+		end
+
+		for _, mod in ipairs(modrows) do
+			if (not items[mod.gun_index]) then
+				continue -- should never happen question mark
+			end
+
+			pluto.inv.readmodrow(items, mod)
+		end
+
+		local amount_left = table.Count(items)
+		for idx, item in pairs(items) do
+			amount_left = amount_left - 1
+			print(amount_left)
+
+			mysql_stmt_run(db, "UPDATE pluto_auction_info SET name = ?, max_mods = ? WHERE idx = ?", item:GetPrintName(), item:GetMaxAffixes(), item.TabIndex)
+		end
+	end)
+end)
+
+concommand.Add("pluto_auction_list", function(p, c, a)
 	local itemid = tonumber(a[1])
 	if (not itemid) then
 		return
@@ -47,10 +106,15 @@ concommand.Add("pluto_send_to_auction", function(p, c, a)
 		return
 	end
 
-	local price = math.Clamp(tonumber(a[2]) or 0, 100, 90000)
-	local tax = math.ceil(price * 0.04)
+	if (not tonumber(a[2])) then
+		p:ChatPrint "invalid price"
+		return
+	end
 
-	if (price < 0 or price ~= price or price > 1000000000) then
+	local price = math.Clamp(tonumber(a[2]), 15, 90000)
+	local tax = math.ceil(math.min(200, 10 + 0.075 * price))
+
+	if (price ~= price) then
 		p:ChatPrint "invalid price"
 		return
 	end
@@ -69,8 +133,8 @@ concommand.Add("pluto_send_to_auction", function(p, c, a)
 		local auction_id = max + 1
 
 		mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE idx = ?", tab_id, auction_id, itemid)
-		mysql_stmt_run(db, "INSERT INTO pluto_auction_info (idx, owner, listed, price) VALUES (?, ?, NOW(), ?)", auction_id, pluto.db.steamid64(p), price)
-		
+		mysql_stmt_run(db, "INSERT INTO pluto_auction_info (idx, owner, listed, price, name, max_mods) VALUES (?, ?, NOW(), ?, ?, ?)", auction_id, pluto.db.steamid64(p), price, gun:GetPrintName(), gun:GetMaxAffixes())
+
 		pluto.inv.invs[p][gun.TabID].Items[gun.TabIndex] = nil
 		
 		pluto.inv.message(p)
@@ -99,124 +163,280 @@ local sorts = {
 	lowest_price = "ORDER BY price ASC",
 	highest_price = "ORDER BY price DESC",
 }
-local filters = {
-	primary = {
-		filter = "slot.v = 2",
-		join = "INNER JOIN pluto_class_kv slot ON slot.class = i.class AND slot.k = 'wep_slot'"
+
+local joins = {
+	slot = "straight_join pluto_class_kv slot force index(`class`) on slot.class = i.class AND slot.k = 'wep_slot'",
+	ammo = "straight_join pluto_class_kv ammo force index(`class`)  on ammo.class = i.class AND ammo.k = 'ammo_type'",
+	modcount = [[
+			INNER JOIN (
+				SELECT COUNT(*) as amount, gun_index FROM pluto_mods m
+					straight_join pluto_class_kv modtype force index(`class`) on modtype.class = m.modname AND modtype.k = 'mod_type' AND modtype.v != 2
+				GROUP BY m.gun_index
+			) AS modcount ON modcount.gun_index = i.idx]],
+	suffixcount = [[
+			INNER JOIN (
+				SELECT COUNT(*) as amount, gun_index FROM pluto_mods m
+					straight_join pluto_class_kv modtype force index(`class`) on modtype.class = m.modname AND modtype.k = 'mod_type' AND modtype.v = 0
+				GROUP BY m.gun_index
+			) AS suffixcount ON suffixcount.gun_index = i.idx]],
+	prefixcount = [[
+			INNER JOIN (
+				SELECT COUNT(*) as amount, gun_index FROM pluto_mods m
+					straight_join pluto_class_kv modtype force index(`class`) on modtype.class = m.modname AND modtype.k = 'mod_type' AND modtype.v = 1
+				GROUP BY m.gun_index
+			) AS prefixcount ON prefixcount.gun_index = i.idx]],
+}
+
+local searchlist = {
+	what = {
+		Weapon = {
+			filter = "i.class like 'tfa_%' or i.class like 'weapon_%'"
+		},
+		Model = {
+			filter = "i.class like 'model_%'",
+		},
+		Shard = {
+			filter = "i.class = 'shard'"
+		}
 	},
-	secondary = {
-		filter = "slot.v = 1",
-		join = "INNER JOIN pluto_class_kv slot ON slot.class = i.class AND slot.k = 'wep_slot'"
+	["Sort by:"] = {
+		["Oldest to Newest"] = {
+			sort = "ORDER BY listed ASC"
+		},
+		["Newest to Oldest"] = {
+			sort = "ORDER BY listed DESC"
+		},
+		["ID Low to High"] = {
+			sort = "ORDER BY idx ASC",
+		},
+		["ID High to Low"] = {
+			sort = "ORDER BY idx DESC",
+		},
+		["Price Low to High"] = {
+			sort = "ORDER BY auction.price ASC",
+		},
+		["Price High to Low"] = {
+			sort = "ORDER BY auction.price DESC",
+		},
 	},
-	melee = {
-		filter = "slot.v = 0",
-		join = "INNER JOIN pluto_class_kv slot ON slot.class = i.class AND slot.k = 'wep_slot'"
+	["Item ID:"] = {
+		filter = "i.idx >= ? AND i.idx <= ?",
+		arguments = function(a, b)
+			return tonumber(a) or 0, tonumber(b) or 0xffffffff
+		end
 	},
-	shard = {
-		filter = "class = 'shard'"
+	["Item name:"] = {
+		filter = "auction.name like CONCAT('%', ?, '%')",
+		arguments = function(a)
+			return a
+		end
 	},
-	model = {
-		filter = "class like 'model_%'"
+	["Choose weapon type:"] = {
+		filter = "slot.v = ?",
+		arguments = function(a)
+			if (a == "Primary") then
+				return 2
+			elseif (a == "Secondary") then
+				return 1
+			elseif (a == "Melee") then
+				return 0
+			elseif (a == "Grenade") then
+				return 3
+			else
+				return 100
+			end
+		end,
+		join = "slot",
+	},
+	["Current mods:"] = {
+		filter = "modcount.amount >= ? and modcount.amount <= ?",
+		arguments = function(a, b)
+			return tonumber(a) or 0, tonumber(b) or 16
+		end,
+		join = "modcount",
+	},
+	["Maximum mods:"] = { -- TODO(meep)
+		filter = "auction.max_mods >= ? and auction.max_mods <= ?",
+		arguments = function(a, b)
+			return tonumber(a) or 0, tonumber(b) or 16
+		end,
+	},
+	["Current suffixes:"] = {
+		filter = "suffixcount.amount >= ? and suffixcount.amount <= ?",
+		arguments = function(a, b)
+			return tonumber(a) or 0, tonumber(b) or 16
+		end,
+		join = "suffixcount",
+	},
+	["Current prefixes:"] = {
+		filter = "prefixcount.amount >= ? and prefixcount.amount <= ?",
+		arguments = function(a, b)
+			return tonumber(a) or 0, tonumber(b) or 16
+		end,
+		join = "prefixcount",
+	},
+	["Choose ammo type:"] = {
+		filter = "ammo.v = ?",
+		arguments = function(a)
+			if (a == "Sniper") then
+				return pluto.class_kv.ammo_type["357"]
+			elseif (a == "Pistol") then
+				return pluto.class_kv.ammo_type["pistol"]
+			elseif (a == "SMG") then
+				return pluto.class_kv.ammo_type["smg1"]
+			else
+				return pluto.class_kv.ammo_type["none"]
+			end
+		end,
+		join = "ammo"
+	},
+	["Price:"] = {
+		filter = "price >= ? and price <= ?",
+		arguments = function(a, b)
+			return tonumber(a) or 0, tonumber(b) or 0xfffffffe
+		end,
 	}
 }
 
+local function pack(...)
+	return {n = select("#", ...), ...}
+end
+
 function pluto.inv.readauctionsearch(p)
 	local page = net.ReadUInt(32)
-	local sort = sorts[net.ReadString()] or sorts.default
-	local filter = {}
-	local joins = {}
+	local params = {}
+
 	while (net.ReadBool()) do
-		local current = filters[net.ReadString()]
-		if (not current) then
+		local what = net.ReadString()
+		local param = {}
+		params[what] = param
+
+		for i = 1, net.ReadUInt(2) do
+			param[i] = net.ReadString()
+		end
+	end
+
+	local filterparams = {}
+	local filters = setmetatable({"(tab_id = ?)"}, {
+		__newindex = function(self, k, v)
+			if (not k) then
+				return
+			end
+
+			rawset(self, k, v)
+			if (istable(v)) then
+				for i = 1, v.n do
+					table.insert(filterparams, v[i])
+				end
+			end
+			rawset(self, #self + 1, k)
+		end
+	})
+	local sort = searchlist["Sort by:"]["Newest to Oldest"].sort
+	local joins = setmetatable({}, {
+		__newindex = function(self, k, v)
+			if (not k or not joins[k]) then
+				return
+			end
+
+			rawset(self, k, v)
+			rawset(self, #self + 1, joins[k])
+		end
+	})
+
+	for what, param in pairs(params) do
+		local lookup = searchlist[what]
+
+		local i = 1
+		while (istable(lookup) and param[i]) do
+			local nextlookup = lookup[param[i]]
+			if (not istable(nextlookup)) then
+				break
+			end
+			lookup = nextlookup
+			i = i + 1
+		end
+
+		if (not istable(lookup)) then
+			pluto.warn("AUCTION", "Failed parameter search.")
+			return
+		end
+
+		if (param[i] == 'Any') then -- hack lol
 			continue
 		end
-		if (current.filter and not filter[current.filter]) then
-			table.insert(filter, current.filter)
-			filter[current.filter] = true
+
+		if (lookup.filter) then
+			filters["(" .. lookup.filter .. ")"] = lookup.arguments and pack(lookup.arguments(unpack(param, i))) or true
 		end
-		if (current.join and not joins[current.join]) then
-			table.insert(joins, current.join)
-			joins[current.join] = true
+
+		if (lookup.join) then
+			joins[lookup.join] = true
+		end
+
+		if (lookup.sort) then
+			sort = lookup.sort
 		end
 	end
 
-	filter = table.concat(filter, " AND ")
-	joins = table.concat(joins, " ")
-	if (filter == "") then
-		filter = "1"
-	end
+	local last = [[
+		LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner
+		LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx
+		INNER JOIN pluto_auction_info auction ON auction.idx = tab_idx]]
+		.. "\n\t\t" .. table.concat(joins, "\n\t\t")
+		.. "\n\n\tWHERE " .. table.concat(filters, "\n\t\tAND ")
+	
+	local ending = "\n\t" .. sort .. "\n\tLIMIT ?, 36"
 
-	local last_search = p.LastAuctionSearch or -math.huge
-	if (last_search > CurTime() - 1) then
-		p:ChatPrint "You are searching too fast! Slow your roll!"
-		return
-	end
-
-	p.LastAuctionSearch = CurTime()
-
-	local function runnext(item_rows)
-		local items = {}
-		local pages
-		local function finalize()
-			pluto.inv.message(p)
-				:write("auctiondata", items, pages)
-				:send()
-		end
-
-		local waiting_for = 2
-		local function check_waiting()
-			waiting_for = waiting_for - 1 
-			if (waiting_for == 0) then
-				finalize()
-			end
-		end
-		pluto.db.instance(function(db)
-			pages = math.ceil(mysql_query(db, [[
-				SELECT COUNT(*) as amount
-					FROM pluto_items i ]] .. joins .. [[ 
-					WHERE tab_id = ]] .. get_auction_idx(db) .. [[ AND ]] .. filter)[1].amount / 15)
-			check_waiting()
-		end)
-		for _, row in ipairs(item_rows) do
-			local item = pluto.divine.auction_list[row.idx]
-			if (not item) then
-				item = pluto.inv.itemfromrow(row)
-				item.Price = row.price
-				item.Lister = row.lister
-				if (item.Type == "Weapon") then
-					waiting_for = waiting_for + 1
-					pluto.db.instance(function(db)
-						for _, mod in ipairs(mysql_query(db, "SELECT idx, gun_index, modname, tier, roll1, roll2, roll3 FROM pluto_mods WHERE gun_index = " .. item.RowID)) do
-							pluto.inv.readmodrow({[item.RowID] = item}, mod)
-						end
-						check_waiting()
-					end)
-				end
-				pluto.divine.auction_list[item.RowID] = item
-			end
-			table.insert(items, item)
-		end
-		check_waiting()
-	end
+	local query = [[
+SELECT i.idx as idx, tier, i.class as class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable,
+	CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method,
+	auction.price as price, CAST(auction.owner as CHAR(32)) as lister
+	
+	FROM pluto_items i
+]] .. last .. ending
 
 	pluto.db.instance(function(db)
-		local tab_id = get_auction_idx(db)
+		local params = {get_auction_idx(db)}
+		for _, n in ipairs(filterparams) do
+			table.insert(params, n)
+		end
+		table.insert(params, 36 * (page - 1))
 
-		local item_rows, err = mysql_stmt_run(db, [[
-			SELECT i.idx as idx, tier, i.class as class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable,
-				CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method,
-				auction.price as price, CAST(auction.owner as CHAR(32)) as lister
+		-- grab guns, then grab mods
+		local itemresults = mysql_stmt_run(db, query, unpack(params))
+		local modquery = [[
+SELECT m.idx, m.gun_index, m.modname, m.tier, m.roll1, m.roll2, m.roll3
+		FROM pluto_mods m
+			INNER JOIN pluto_items i ON i.idx = m.gun_index
+			INNER JOIN (SELECT i.idx FROM pluto_items i ]] .. last .. ending .. [[) as i2 ON m.gun_index = i2.idx
+		]]
+		local modresults, err = mysql_stmt_run(db, modquery, unpack(params, 1, #params))
+		local count = mysql_stmt_run(db, [[SELECT COUNT(*) as count FROM pluto_items i ]] .. last, unpack(params, 1, #params - 1))[1].count
 
-				FROM pluto_items i
-					LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner
-					LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx
-					INNER JOIN pluto_auction_info auction ON auction.idx = tab_idx ]] .. joins .. [[
+		local items = {}
+		local itemlist = {}
+		for _, row in ipairs(itemresults) do
+			local item = pluto.inv.itemfromrow(row)
+			item.Price = row.price
+			item.Lister = row.lister
+			items[row.idx] = item
+			table.insert(itemlist, item)
+		end
 
-				WHERE tab_id = ? AND ]] .. filter .. [[
-				]] .. sort .. [[
-				LIMIT 15 OFFSET ?]], tab_id, page * 15)
-				print(err)
-		runnext(item_rows)
+		for _, mod in ipairs(modresults) do
+			if (not items[mod.gun_index]) then
+				continue -- should never happen question mark
+			end
+
+			pluto.inv.readmodrow(items, mod)
+		end
+
+		local pagecount = math.ceil(count / 36)
+
+		pluto.inv.message(p)
+			:write("auctiondata", itemlist, pagecount)
+			:send()
 	end)
 end
 
@@ -226,41 +446,67 @@ concommand.Add("pluto_auction_buy", function(p, c, a)
 		return
 	end
 
-	local new_item = pluto.divine.auction_list[itemid]
-	if (not new_item) then
-		return
-	end
-	pluto.divine.auction_list[itemid] = nil
-
 	pluto.db.transact(function(db)
 		local tab_id = get_auction_idx(db)
 		local tab = pluto.inv.invs[p].tabs.buffer
 		mysql_stmt_run(db, "SELECT * from pluto_items WHERE tab_id = ? FOR UPDATE", tab_id)
 
+		local itemrows = mysql_stmt_run(db, "SELECT * FROM pluto_items i LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx WHERE i.tab_id = ? AND i.idx = ?", get_auction_idx(db), itemid)
+		local modrows = mysql_stmt_run(db, [[
+			SELECT m.idx, m.gun_index, m.modname, m.tier, m.roll1, m.roll2, m.roll3
+					FROM pluto_mods m
+						INNER JOIN pluto_items i ON i.idx = m.gun_index
+					WHERE i.tab_id = ? AND i.idx = ?]], get_auction_idx(db), itemid)
+
+		local items = {}
+		for _, row in ipairs(itemrows) do
+			local item = pluto.inv.itemfromrow(row)
+			item.Owner = row.lister
+			items[row.idx] = item
+		end
+
+		for _, mod in ipairs(modrows) do
+			if (not items[mod.gun_index]) then
+				continue -- should never happen question mark
+			end
+
+			pluto.inv.readmodrow(items, mod)
+		end
+
+		local item = items[itemid]
+		if (not item) then
+			mysql_rollback(db)
+			return
+		end
+		local auction_data = mysql_stmt_run(db, "SELECT cast(owner as varchar(64)) as lister, price from pluto_auction_info WHERE idx = ?", item.TabIndex)[1]
+
+		if (not auction_data) then
+			mysql_rollback(db)
+			return
+		end
+
+		if (not pluto.inv.addcurrency(db, p, "stardust", -auction_data.price)) then
+			mysql_rollback(db)
+			return
+		end
+
+		pluto.inv.addcurrency(db, auction_data.lister, "stardust", auction_data.price)
+
 		pluto.inv.pushbuffer(db, p)
-		local data, err = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = 1 WHERE idx = ? AND tab_id = ?", tab.RowID, new_item.RowID, tab_id)
+		local data, err = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = 1 WHERE idx = ? AND tab_id = ?", tab.RowID, item.RowID, tab_id)
 		if (not data or data.AFFECTED_ROWS ~= 1) then
 			mysql_rollback(db)
 			return
 		end
 
-		if (not pluto.inv.addcurrency(db, p, "stardust", -new_item.Price)) then
-			mysql_rollback(db)
-			return
-		end
-
-		local tab_idx = new_item.TabIndex
-
-		pluto.inv.addcurrency(db, new_item.Lister, "stardust", new_item.Price)
-
-		new_item.TabID = tab.RowID
-		new_item.TabIndex = 1
-		new_item.Owner = p:SteamID64()
-		pluto.itemids[new_item.RowID] = new_item
+		item.TabID = tab.RowID
+		item.TabIndex = 1
+		item.Owner = p:SteamID64()
+		pluto.itemids[item.RowID] = item
 
 		mysql_stmt_run(db, "DELETE FROM pluto_auction_info WHERE idx = ?", tab_idx)
-		pluto.inv.notifybufferitem(p, new_item)
-		tab.Items[1] = new_item
+		pluto.inv.notifybufferitem(p, item)
+		tab.Items[1] = item
 		mysql_commit(db)
 	end)
 end)
@@ -275,3 +521,131 @@ function pluto.inv.writeauctiondata(p, items, pages)
 		net.WriteUInt(item.Price, 32)
 	end
 end
+
+function pluto.inv.readgetmyitems(cl)
+	local page = net.ReadUInt(32)
+	local sid64 = pluto.db.steamid64(cl)
+
+	pluto.db.transact(function(db)
+		local itemrows = mysql_stmt_run(db, [[
+	SELECT i.idx as idx, tier, i.class as class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable,
+		CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method,
+		auction.price as price, CAST(auction.owner as CHAR(32)) as lister
+
+		FROM pluto_items i
+			LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner
+			LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx
+			INNER JOIN pluto_auction_info auction ON auction.idx = tab_idx
+
+		WHERE i.tab_id = ? AND auction.owner = ? ORDER BY auction.price DESC LIMIT ?, 36]], get_auction_idx(db), sid64, (page - 1) * 36)
+		local modrows = mysql_stmt_run(db, [[
+	SELECT m.idx, m.gun_index, m.modname, m.tier, m.roll1, m.roll2, m.roll3
+			FROM pluto_mods m
+				INNER JOIN pluto_items i ON i.idx = m.gun_index
+				INNER JOIN pluto_auction_info auction ON auction.idx = i.tab_idx
+			WHERE i.tab_id = ? AND auction.owner = ?]], get_auction_idx(db), sid64)
+
+		local pages = math.ceil(mysql_stmt_run(db, "SELECT COUNT(*) as amount FROM pluto_auction_info WHERE owner = ?", sid64)[1].amount / 36)
+
+		local items = {}
+		local itemlist = {}
+		for _, row in ipairs(itemrows) do
+			local item = pluto.inv.itemfromrow(row)
+			item.Price = row.price
+			item.Owner = row.lister
+			items[row.idx] = item
+			table.insert(itemlist, item)
+		end
+
+		for _, mod in ipairs(modrows) do
+			if (not items[mod.gun_index]) then
+				continue
+			end
+
+			pluto.inv.readmodrow(items, mod)
+		end
+
+		
+		pluto.inv.message(cl)
+			:write("gotyouritems", pages, itemlist)
+			:send()
+
+	end)
+end
+
+function pluto.inv.writegotyouritems(cl, pages, itemlist)
+	net.WriteUInt(pages, 32)
+	net.WriteUInt(#itemlist, 8)
+	for _, item in ipairs(itemlist) do
+		pluto.inv.writeitem(cl, item)
+		net.WriteUInt(item.Price or 0, 32)
+	end
+end
+
+concommand.Add("pluto_auction_reclaim", function(p, c, a)
+	local itemid = tonumber(a[1])
+	if (not itemid) then
+		return
+	end
+
+	pluto.db.transact(function(db)
+		local tab_id = get_auction_idx(db)
+		local tab = pluto.inv.invs[p].tabs.buffer
+		mysql_stmt_run(db, "SELECT * from pluto_items WHERE tab_id = ? FOR UPDATE", tab_id)
+
+		local itemrows = mysql_stmt_run(db, [[
+	SELECT i.idx as idx, tier, i.class as class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable,
+		CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method,
+		auction.price as price, CAST(auction.owner as CHAR(32)) as lister
+
+		FROM pluto_items i
+			LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner
+			LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx
+			INNER JOIN pluto_auction_info auction ON auction.idx = tab_idx
+		
+	WHERE i.tab_id = ? AND i.idx = ?]], get_auction_idx(db), itemid)
+		local modrows = mysql_stmt_run(db, [[
+			SELECT m.idx, m.gun_index, m.modname, m.tier, m.roll1, m.roll2, m.roll3
+					FROM pluto_mods m
+						INNER JOIN pluto_items i ON i.idx = m.gun_index
+					WHERE i.tab_id = ? AND i.idx = ?]], get_auction_idx(db), itemid)
+
+		local items = {}
+		for _, row in ipairs(itemrows) do
+			local item = pluto.inv.itemfromrow(row)
+			item.Owner = row.lister
+			items[row.idx] = item
+		end
+
+		for _, mod in ipairs(modrows) do
+			if (not items[mod.gun_index]) then
+				continue -- should never happen question mark
+			end
+
+			pluto.inv.readmodrow(items, mod)
+		end
+
+		local item = items[itemid]
+		if (not item or item.Owner ~= p:SteamID64()) then
+			mysql_rollback(db)
+			return
+		end
+
+		pluto.inv.pushbuffer(db, p)
+		local data, err = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = 1 WHERE idx = ? AND tab_id = ?", tab.RowID, item.RowID, tab_id)
+		if (not data or data.AFFECTED_ROWS ~= 1) then
+			mysql_rollback(db)
+			return
+		end
+		mysql_stmt_run(db, "DELETE FROM pluto_auction_info WHERE idx = ?", item.TabIndex)
+
+		item.TabID = tab.RowID
+		item.TabIndex = 1
+		item.Owner = p:SteamID64()
+		pluto.itemids[item.RowID] = item
+
+		pluto.inv.notifybufferitem(p, item)
+		tab.Items[1] = item
+		mysql_commit(db)
+	end)
+end)

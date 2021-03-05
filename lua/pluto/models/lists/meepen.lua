@@ -41,6 +41,7 @@ c "academy_ahri" {
 				0, 1
 			}
 		}, item.RowID or item.ID)
+		bg.Skin = nil
 		
 		return bg
 	end,

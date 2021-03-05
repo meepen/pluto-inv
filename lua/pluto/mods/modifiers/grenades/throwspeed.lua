@@ -1,5 +1,7 @@
 MOD.Type = "prefix"
+MOD.ItemType = "Grenade"
 MOD.Name = "Power"
+MOD.StatModifier = "ThrowVelocity"
 MOD.Tags = {
 	"speed"
 }
@@ -20,11 +22,5 @@ MOD.Tiers = {
 	{ 15, 25 },
 	{ 10, 15 },
 }
-
-function MOD:ModifyWeapon(wep, rolls)
-	wep.ThrowVelocity = wep.ThrowVelocity * (1 + rolls[1] / 100)
-end
-
-MOD.ItemType = "Grenade"
 
 return MOD

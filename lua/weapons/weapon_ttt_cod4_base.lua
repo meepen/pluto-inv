@@ -50,6 +50,10 @@ function SWEP:DoZoom(zoomed)
 	end
 end
 
+function SWEP:GetIdleAnimation()
+	return
+end
+
 function SWEP:GetPrimaryAttackAnimation()
 	return self:GetIronsights() and ACT_VM_PRIMARYATTACK_DEPLOYED or ACT_VM_PRIMARYATTACK
 end

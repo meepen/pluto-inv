@@ -6,22 +6,6 @@ local currency_per_round = 3
 
 local pluto_currency_spawnrate = CreateConVar("pluto_currency_spawnrate", "0.9")
 
-local function UpdateAndDecrement(ply, item, currency)
-	pluto.db.transact(function(db)
-		pluto.weapons.update(db, item)
-		if (pluto.inv.addcurrency(db, ply, currency, -1)) then
-			mysql_commit(db)
-		else
-			mysql_rollback(db)
-		end
-	end)
-
-	pluto.inv.message(ply)
-		:write("item", item)
-		:send()
-
-end
-
 local crate1_fill = 750 / (5 + 6 + 9)
 local xmas2020_fill = 200 / (11)
 
@@ -39,7 +23,7 @@ end
 for name, values in pairs {
 	dice = {
 		Shares = 500,
-		Use = function(ply, item)
+		Run = function(self, item)
 			local tier = item.Tier
 
 			local changed = false
@@ -52,15 +36,13 @@ for name, values in pairs {
 				end
 			end
 
-			if (changed) then
-				UpdateAndDecrement(ply, item, "dice")
-			end
+			return changed
 		end,
 		Types = "Weapon",
 	},
 	droplet = {
 		Shares = 1500,
-		Use = function(ply, item)
+		Run = function(self, item)
 			local affixes = item:GetMaxAffixes()
 
 			if (affixes >= 4 and not item:GetMod "dropletted") then
@@ -87,13 +69,13 @@ for name, values in pairs {
 				end
 			end
 
-			UpdateAndDecrement(ply, item, "droplet")
+			return true
 		end,
 		Types = "Weapon",
 	},
 	hand = {
 		Shares = 400,
-		Use = function(ply, item)
+		Run = function(self, item)
 			local possible = {}
 			local incr_possible = {}
 			for typ, Mods in pairs(item.Mods) do
@@ -117,7 +99,7 @@ for name, values in pairs {
 			end
 
 			if (#possible <= 1) then
-				return
+				return false
 			end
 
 			local rand = table.Random(possible)
@@ -132,13 +114,13 @@ for name, values in pairs {
 				increase.Tier = increase.Tier - 1
 			end
 
-			UpdateAndDecrement(ply, item, "hand")
+			return true
 		end,
 		Types = "Weapon",
 	},
 	tome = {
 		Shares = 20,
-		Use = function(ply, item)
+		Run = function(self, item)
 			local outcomes = {
 				add1mod = {
 					Type = "good",
@@ -255,16 +237,15 @@ for name, values in pairs {
 				pluto.weapons.addmod(item, "unchanging")
 			end
 
-			UpdateAndDecrement(ply, item, "tome")
+			return true
 		end,
 		Types = "Weapon",
 	},
 	mirror = {
 		Shares = 0.01,
-		Use = function(ply, item)
+		Use = function(self, ply, item)
 			local new_item = item:Duplicate()
 			pluto.weapons.addmod(new_item, "mirror")
-
 			pluto.db.transact(function(db)
 				if (not pluto.inv.addcurrency(db, ply, "mirror", -1)) then
 					mysql_rollback(db)
@@ -281,31 +262,33 @@ for name, values in pairs {
 	},
 	heart = {
 		Shares = 7.5,
-		Use = function(ply, item)
-			if (pluto.weapons.generatemod(item)) then
-				UpdateAndDecrement(ply, item, "heart")
-			end
+		Run = function(self, item)
+			return pluto.weapons.generatemod(item)
 		end,
 		Types = "Weapon",
 	},
 	coin = {
 		Shares = 0.3,
-		Use = function(ply)
-			pluto.db.transact(function(db)
-				if (not pluto.inv.addcurrency(db, ply, "coin", -1)) then
-					mysql_rollback(db)
-					return
-				end
+		Use = function(self, ply)
+			return Promise(function(res, rej)
+				pluto.db.transact(function(db)
+					if (not pluto.inv.addcurrency(db, ply, self.InternalName, -1)) then
+						mysql_rollback(db)
+						rej()
+						return
+					end
 
-				local tab = pluto.inv.addtabs(db, ply, {"normal"})[1]
+					local tab = pluto.inv.addtabs(db, ply, {"normal"})[1]
 
-				mysql_commit(db)
-				tab.Items = {}
-				pluto.inv.invs[ply][tab.RowID] = tab
+					mysql_commit(db)
+					tab.Items = {}
+					pluto.inv.invs[ply][tab.RowID] = tab
 
-				pluto.inv.message(ply)
-					:write("tab", tab)
-					:send()
+					pluto.inv.message(ply)
+						:write("tab", tab)
+						:send()
+					res()
+				end)
 			end)
 		end,
 		Types = "None",
@@ -534,9 +517,41 @@ for name, values in pairs {
 		},
 		Types = "None",
 	},
+	endround = {
+		Shares = 0,
+		Use = function(self, ply)
+			return Promise(function(res, rej)
+				pluto.db.transact(function(db)
+					pluto.inv.lockbuffer(db, ply)
+					pluto.inv.waitbuffer(db, ply)
+					if (not pluto.inv.addcurrency(db, ply, "endround", -1)) then
+						mysql_rollback(db)
+						rej()
+						return
+					end
+
+					local item = pluto.inv.generatebufferweapon(db, ply, "DROPPED")
+
+					if (item:GetMaxAffixes() >= 5) then
+						local msg = discord.Message()
+
+						msg:AddEmbed(item:GetDiscordEmbed()
+							:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
+						)
+						msg:Send "drops"
+					end
+
+					ply:ChatPrint("You have received a ", item, white_text, "!")
+					mysql_commit(db)
+					res()
+				end)
+			end)
+		end,
+		Types = "None"
+	},
 	aciddrop = {
 		Shares = 30,
-		Use = function(ply, item)
+		Run = function(self, item)
 			local affixes = item:GetMaxAffixes()
 
 			local new_mods = pluto.weapons.generatetier(item.Tier, item.ClassName, nil, nil, function(mod, tier)
@@ -558,13 +573,13 @@ for name, values in pairs {
 				end
 			end
 
-			UpdateAndDecrement(ply, item, "aciddrop")
+			return true
 		end,
 		Types = "Weapon",
 	},
 	pdrop = {
 		Shares = 20,
-		Use = function(ply, item)
+		Run = function(self, item)
 			local affixes = item:GetMaxAffixes()
 
 			local new_mods = pluto.weapons.generatetier(item.Tier, item.ClassName, nil, nil, function(mod, tier)
@@ -586,7 +601,7 @@ for name, values in pairs {
 				end
 			end
 
-			UpdateAndDecrement(ply, item, "pdrop")
+			return true
 		end,
 		Types = "Weapon",
 	},
@@ -1353,3 +1368,92 @@ hook.Add("TTTBeginRound", "pluto_currency", function()
 		end)
 	end
 end)
+
+local function satisfies(item, searches)
+	local has = {}
+
+	for type, modlist in pairs(item.Mods) do
+		for _, mod in ipairs(modlist) do
+			local MOD = pluto.mods.byname[mod.Mod]
+			table.insert(has, {lazy = true, MOD:GetPrintName()})
+			table.insert(has, MOD:GetPrintName() .. " " .. mod.Tier)
+			table.insert(has, MOD:GetTierName(mod.Tier))
+		end
+	end
+
+	local gotten = 0
+
+	for _, text in ipairs(searches) do
+		text = text:lower()
+		local found = false
+
+		for _, what in ipairs(has) do
+			local lazy = false
+			if (istable(what)) then
+				lazy = what.lazy
+				what = what[1]
+			end
+			what = what:lower()
+
+			if (not lazy) then
+				if (what == text) then
+					found = true
+					break
+				end
+			else
+				if (what:find(text, 1, true)) then
+					found = true
+					break
+				end
+			end
+		end
+
+		gotten = gotten + (found and 1 or 0)
+	end
+
+	return gotten
+end
+
+function pluto.inv.readmasscurrencyuse(ply)
+	local currency = pluto.currency.byname[net.ReadString()]
+	local item = pluto.inv.items[net.ReadUInt(32)]
+	local amount = net.ReadUInt(32)
+	local searches = {}
+	for i = 1, net.ReadUInt(8) do
+		searches[i] = net.ReadString()
+	end
+	local mins = net.ReadUInt(8)
+	local maxs = net.ReadUInt(8)
+
+	if (not item or item.Owner ~= ply:SteamID64()) then
+		return
+	end
+
+	if (not currency or not currency.AllowMass or not currency:AllowedUse(item)) then
+		return
+	end
+
+	local used = 0
+	amount = math.min(amount, 50, pluto.inv.currencies[ply][currency.InternalName] or 0)
+
+	for i = 1, amount do
+		if (item:ShouldPreventChange()) then
+			break
+		end
+
+		currency:Run(item)
+		used = used + 1
+
+		local count = satisfies(item, searches)
+
+		if (count >= mins and count <= maxs) then
+			break
+		end
+	end
+
+	currency:Save(ply, item, used):next(function()
+		pluto.inv.message(ply)
+			:write("item", item)
+			:send()
+	end)
+end

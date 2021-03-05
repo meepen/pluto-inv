@@ -35,12 +35,9 @@ function PANEL:Init()
 		pluto.ui.unsetghost()
 	end
 
-
 	function self.Item:RightClick()
 		self:SetItem()
 	end
-
-
 end
 
 vgui.Register("pluto_divine_crafting", PANEL, "EditablePanel")

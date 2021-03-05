@@ -1,5 +1,6 @@
 MOD.Type = "suffix"
 MOD.Name = "Protection"
+MOD.Color = Color(0, 162, 226)
 MOD.Tags = {
 	"healing",
 }

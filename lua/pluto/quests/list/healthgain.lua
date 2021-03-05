@@ -5,6 +5,10 @@ QUEST.RewardPool = "daily"
 
 function QUEST:Init(data)
 	data:Hook("OnPlutoHealthGain", function(data, ply, amt)
+		if (amt < 1) then
+			return
+		end
+
 		if (ttt.GetRoundState() == ttt.ROUNDSTATE_ACTIVE and ply == data.Player and ply:Alive()) then
 			data:UpdateProgress(amt)
 		end

@@ -8,6 +8,5 @@ function NODE:GetDescription(node)
 end
 
 function NODE:ModifyWeapon(node, wep)
-	wep:DefinePlutoOverrides "Damage"
 	wep.Pluto.Damage = wep.Pluto.Damage + wep:ScaleRollType("damage", (3 + node.node_val1 * 2) / 100, true)
 end

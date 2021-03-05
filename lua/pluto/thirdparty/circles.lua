@@ -44,7 +44,13 @@ local function New(type, radius, x, y, ...)
 	local circle = setmetatable({}, CIRCLE)
 
 	circle:SetType(tonumber(type))
-	circle:SetRadius(tonumber(radius))
+	if (istable(radius)) then
+		circle:SetRadius(radius[1])
+		circle:SetRadiusY(radius[2])
+	else
+		circle:SetRadius(radius)
+		circle:SetRadiusY(radius)
+	end
 	circle:SetPos(tonumber(x), tonumber(y))
 
 	if (type == CIRCLE_OUTLINED) then
@@ -88,7 +94,8 @@ end
 local function CalculateVertices(x, y, radius, rotation, start_angle, end_angle, distance, rotate_uv)
 	x = tonumber(x) or 0
 	y = tonumber(y) or 0
-	radius = tonumber(radius) or 16
+	local radius_y = radius[2] or 16
+	radius = radius[1] or 16
 	rotation = tonumber(rotation) or 0
 	start_angle = tonumber(start_angle) or 0
 	end_angle = tonumber(end_angle) or 360
@@ -112,7 +119,7 @@ local function CalculateVertices(x, y, radius, rotation, start_angle, end_angle,
 
 		local vertex = {
 			x = x + c * radius,
-			y = y + s * radius,
+			y = y + s * radius_y,
 
 			u = 0.5 + c / 2,
 			v = 0.5 + s / 2,
@@ -148,13 +155,14 @@ end
 function CIRCLE:Calculate()
 	local rotate_uv = self:GetRotateMaterial()
 	local x, y = self:GetPos()
-	local radius = self:GetRadius()
+	local radius_x = self:GetRadius()
+	local radius_y = self:GetRadiusY()
 	local rotation = self:GetRotation()
 	local start_angle = self:GetStartAngle()
 	local end_angle = self:GetEndAngle()
 	local distance = self:GetDistance()
 
-	self:SetVertices(CalculateVertices(x, y, radius, rotation, start_angle, end_angle, distance, rotate_uv))
+	self:SetVertices(CalculateVertices(x, y, {radius_x, radius_y}, rotation, start_angle, end_angle, distance, rotate_uv))
 
 	if (self:GetType() == CIRCLE_OUTLINED) then
 		local inner = self:GetChildCircle() or self:Copy()
@@ -377,6 +385,7 @@ do
 	AccessorFunc("X", 0, false, OffsetVerticesX) 		-- The circle's X position relative to the top left of the screen.
 	AccessorFunc("Y", 0, false, OffsetVerticesY) 		-- The circle's Y position relative to the top left of the screen.
 	AccessorFunc("Radius", 8, "m_Dirty") 				-- The circle's radius.
+	AccessorFunc("RadiusY", 8, "m_Dirty") 				-- The circle's radius (y).
 	AccessorFunc("Rotation", 0, false, UpdateRotation)	-- The circle's rotation, measured in degrees.
 	AccessorFunc("StartAngle", 0, "m_Dirty") 			-- The circle's start angle, measured in degrees.
 	AccessorFunc("EndAngle", 360, "m_Dirty")			-- The circle's end angle, measured in degrees.

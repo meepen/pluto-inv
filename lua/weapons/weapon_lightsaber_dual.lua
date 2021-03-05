@@ -14,3 +14,5 @@ function SWEP:Initialize()
 	self:SetMaxLength(self:GetMaxLength() * 2 / 3)
 	self:SetDarkInner(true)
 end
+
+SWEP.Ortho = {-4.5, 3}

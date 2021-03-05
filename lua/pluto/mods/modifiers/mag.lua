@@ -1,5 +1,6 @@
 MOD.Type = "prefix"
 MOD.Name = "Capacity"
+MOD.StatModifier = "ClipSize"
 MOD.Tags = {
 	"mag"
 }

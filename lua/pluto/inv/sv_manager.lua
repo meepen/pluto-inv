@@ -56,6 +56,7 @@ function pluto.inv.writemod(ply, item, gun)
 		net.WriteString(mod.Type)
 		net.WriteString(mod.Name)
 
+		WriteIfExists(mod, "StatModifier")
 		WriteIfExists(mod, "Color")
 		WriteIfExists(mod, "FormatModifier")
 		WriteIfExists(mod, "GetDescription")
@@ -132,6 +133,14 @@ function pluto.inv.writeitem(ply, item)
 		else
 			net.WriteBool(false)
 		end
+
+		if (item.TabID) then
+			net.WriteBool(true)
+			net.WriteUInt(item.TabID, 32)
+			net.WriteUInt(item.TabIndex, 32)
+		else
+			net.WriteBool(false)
+		end
 	else
 		net.WriteBool(false)
 	end
@@ -160,6 +169,7 @@ function pluto.inv.writetab(ply, tab)
 	net.WriteUInt(tab.RowID, 32)
 	net.WriteString(tab.Name)
 	net.WriteString(tab.Type)
+	net.WriteString(tab.Shape)
 	net.WriteUInt(tab.Color, 24) -- rgb8
 
 	net.WriteUInt(table.Count(tab.Items), 8)
@@ -178,7 +188,7 @@ function pluto.inv.writefullupdate(ply)
 
 		local tabtype = pluto.tabs[tab.Type]
 
-		if (not tabtype or not tabtype.element) then
+		if (not tabtype) then
 			continue
 		end
 
@@ -191,14 +201,19 @@ function pluto.inv.writefullupdate(ply)
 		pluto.inv.writecurrencyupdate(ply, currency)
 	end
 
-	local buffer = pluto.inv.getbufferitems(ply)
+	local modlist = {}
 
-	net.WriteUInt(#buffer, 8)
-	for i = #buffer, 1, -1 do
-		local item = buffer[i]
-		pluto.inv.writebufferitem(ply, item)
+	for _, MOD in pairs(pluto.mods.byname) do
+		if (MOD.Type == "suffix" or MOD.Type == "prefix") then
+			table.insert(modlist, MOD:GetTierName(1))
+		end
 	end
-	
+
+	net.WriteUInt(#modlist, 32)
+	for _, name in ipairs(modlist) do
+		net.WriteString(name)
+	end
+
 	pluto.inv.writestatus(ply, "ready")
 end
 
@@ -215,11 +230,11 @@ function pluto.inv.sendfullupdate(ply)
 	pluto.inv.invs[ply] = nil
 	pluto.inv.loading[ply] = true
 
-	pprintf("Loading %s's inventory", ply:Nick())
+	pluto.message("INV", "Loading ", ply, "'s inventory")
 
 	pluto.inv.init(ply, function()
 		pluto.inv.loading[ply] = nil
-		pprintf("Loaded %s's [%s] inventory", ply:Nick(), ply:SteamID64())
+		pluto.message("INV", "Loaded ", ply, "'s inventory")
 		hook.Run("PlutoInventoryLoad", ply)
 		if (ply:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE) then
 			ply:StripWeapons()
@@ -311,10 +326,6 @@ function pluto.inv.writebaseitem(ply, item)
 	end
 end
 
-function pluto.inv.writebufferitem(ply, item)
-	pluto.inv.writeitem(ply, item)
-end
-
 local function noop() end
 
 function pluto.inv.init(ply, cb2)
@@ -349,7 +360,6 @@ function pluto.inv.init(ply, cb2)
 	end
 
 	local function InitTabs()
-		print(ply, tabs, items)
 		if (not tabs or not items) then
 			return
 		end
@@ -417,9 +427,13 @@ function pluto.inv.init(ply, cb2)
 		TrySucceed "quests"
 	end)
 
-	pluto.db.simplequery("SELECT experience from pluto_player_info where steamid = ?", {pluto.db.steamid64(ply)}, function(d, err)
+	pluto.db.simplequery("SELECT experience, tokens from pluto_player_info where steamid = ?", {pluto.db.steamid64(ply)}, function(d, err)
 		d = d and d[1] or {experience = 0}
 		if (IsValid(ply)) then
+			pluto.inv.message(ply)
+				:write("playertokens", d.tokens or 0)
+				:send()
+
 			ply:SetPlutoExperience(d.experience)
 			pluto.inv.addplayerexperience(ply, 0)
 
@@ -434,6 +448,10 @@ function pluto.inv.init(ply, cb2)
 	end)
 end
 
+function pluto.inv.writeplayertokens(cl, tokens)
+	net.WriteUInt(tokens, 32)
+end
+
 function pluto.inv.readtabswitch(ply)
 	local tabid1 = net.ReadUInt(32)
 	local tabindex1 = net.ReadUInt(8)
@@ -443,64 +461,62 @@ function pluto.inv.readtabswitch(ply)
 	if (tabid1 == tabid2 and tabindex1 == tabindex2) then
 		return
 	end
-
-	local tab1 = pluto.inv.invs[ply][tabid1]
-	local tab2 = pluto.inv.invs[ply][tabid2]
-
-	if (not tab1 or not tab2) then
-		pluto.inv.sendfullupdate(ply)
-		return
-	end
-
-	local canswitch, fail = pluto.canswitchtabs(tab1, tab2, tabindex1, tabindex2)
-
-	if (not canswitch) then
-		pluto.inv.sendfullupdate(ply)
-		return
-	end
-
-	local i1, i2 = tab1.Items[tabindex1], tab2.Items[tabindex2]
-
-	if (i1 and ply:SteamID64() ~= i1.Owner or i2 and i2.Owner ~= ply:SteamID64()) then
-		pluto.inv.sendfullupdate(ply)
-		return
-	end
-
-	tab1.Items[tabindex1], tab2.Items[tabindex2] = i2, i1
-
-	if (i1) then
-		i1.TabID, i1.TabIndex = tabid2, tabindex2
-	end
-
-	if (i2) then
-		i2.TabID, i2.TabIndex = tabid1, tabindex1
-	end
-
-	local equip
-	if (tab1.Type == "equip") then
-		equip = tab1
-	elseif (tab2.Type == "equip") then
-		equip = tab2
-	end
-
-	if (equip) then
-		timer.Simple(0, function()
-			if (IsValid(ply) and ply:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE and ply.LastLoadout ~= ttt.GetRoundNumber()) then
-				ply:StripWeapons()
-				ply:StripAmmo()
-				hook.Run("PlayerLoadout", ply)
-
-				ply.LastLoadout = ttt.GetRoundNumber()
-			end
-		end)
-	end
-
 	pluto.db.transact(function(db)
-		if (not pluto.inv.switchtab(db, tabid1, tabindex1, tabid2, tabindex2)) then
-			pluto.inv.reloadfor(ply)
+		local tab1 = pluto.inv.invs[ply][tabid1]
+		local tab2 = pluto.inv.invs[ply][tabid2]
+
+		if (not tab1 or not tab2) then
+			pluto.inv.sendfullupdate(ply)
 			return
 		end
-		mysql_commit(db)
+
+		local canswitch, fail = pluto.canswitchtabs(tab1, tab2, tabindex1, tabindex2)
+
+		if (not canswitch) then
+			print(fail, tabindex2, tabindex2)
+			pluto.inv.sendfullupdate(ply)
+			return
+		end
+
+		local i1, i2 = tab1.Items[tabindex1], tab2.Items[tabindex2]
+
+		if (i1 and ply:SteamID64() ~= i1.Owner or i2 and i2.Owner ~= ply:SteamID64()) then
+			pluto.inv.sendfullupdate(ply)
+			return
+		end
+
+		tab1.Items[tabindex1], tab2.Items[tabindex2] = i2, i1
+
+		if (i1) then
+			i1.TabID, i1.TabIndex = tabid2, tabindex2
+		end
+
+		if (i2) then
+			i2.TabID, i2.TabIndex = tabid1, tabindex1
+		end
+
+		if (tab1.Type == "buffer" or tab2.Type == "buffer") then
+			local buffer = tab1.Type == "buffer" and tab1 or tab2
+			local bufferindex = tab1 == buffer and tabindex1 or tabindex2
+			
+			pluto.inv.lockbuffer(db, ply)
+			if (not pluto.inv.switchtab(db, tabid1, tabindex1, tabid2, tabindex2)) then
+				pluto.inv.reloadfor(ply)
+				mysql_rollback(db)
+				return
+			end
+
+			pluto.inv.popbuffer(db, ply, bufferindex)
+
+			mysql_commit(db)
+		else
+			if (not pluto.inv.switchtab(db, tabid1, tabindex1, tabid2, tabindex2)) then
+				pluto.inv.reloadfor(ply)
+				mysql_rollback(db)
+				return
+			end
+			mysql_commit(db)
+		end
 	end)
 end
 
@@ -545,23 +561,6 @@ function pluto.inv.readitemdelete(ply)
 	end)
 end
 
-local function allowed(types, wpn)
-	if (wpn and wpn.Locked) then
-		return false
-	end
-
-	local type = wpn and wpn.Type or "None"
-	if (isstring(types)) then
-		return types == type
-	end
-
-	if (istable(types) and table.HasValue(types, type)) then
-		return true
-	end
-
-	return false
-end
-
 function pluto.inv.readcurrencyuse(ply)
 	local currency = net.ReadString()
 	local wpn
@@ -588,27 +587,28 @@ function pluto.inv.readcurrencyuse(ply)
 
 	local cur = pluto.currency.byname[currency]
 
-	if (not allowed(cur.Types, wpn) or wpn and wpn:ShouldPreventChange()) then
+	if (not cur:AllowedUse(wpn) or wpn and wpn:ShouldPreventChange()) then
 		return
 	end
 
-	if (cur.Use) then
-		cur.Use(ply, wpn)
-		hook.Run("PlayerCurrencyUse", ply, wpn, currency)
-	elseif (cur.Contents) then
+	if (cur.Contents) then
 		local gotten, data = pluto.inv.roll(cur.Contents)
 		local type = pluto.inv.itemtype(gotten)
 
 		pluto.db.transact(function(db)
+			pluto.inv.lockbuffer(db, ply)
+			pluto.inv.waitbuffer(db, ply)
+
+			if (not pluto.inv.addcurrency(db, ply, currency, -1)) then
+				mysql_rollback(db)
+				return
+			end
+
 			local wpn
 			if (type == "Model") then -- model
 				wpn = pluto.inv.generatebuffermodel(db, ply, "UNBOXED", gotten:match "^model_(.+)$")
 			elseif (type == "Weapon") then -- unique
 				wpn = pluto.inv.generatebufferweapon(db, ply, "UNBOXED", istable(data) and data.Tier or cur.DefaultTier or "unique", gotten)
-			end
-
-			if (not wpn) then
-				print(gotten)
 			end
 
 			if (istable(data) and data.Rare) then
@@ -618,16 +618,17 @@ function pluto.inv.readcurrencyuse(ply)
 				):Send "drops"
 			end
 
-			if (not pluto.inv.addcurrency(db, ply, currency, -1)) then
-				mysql_rollback(db)
-				return
-			end
-
-			pluto.inv.message(ply)
-				:write("crate_id", wpn.RowID)
-				:send()
 			mysql_commit(db)
 		end)
+	else
+		cur:Use(ply, wpn):next(function()
+			if (wpn and IsValid(ply)) then
+				pluto.inv.message(ply)
+					:write("item", wpn)
+					:send()
+			end
+		end)
+		hook.Run("PlayerCurrencyUse", ply, wpn, currency)
 	end
 end
 
@@ -655,69 +656,29 @@ function pluto.inv.readtabrename(ply)
 	pluto.inv.renametab(tab, function() end)
 end
 
-function pluto.inv.readclaimbuffer(ply, bufferid, tabid, tabindex)
-	local bufferid = net.ReadUInt(32)
-	local tabid = net.ReadUInt(32)
-	local tabindex = net.ReadUInt(8)
+function pluto.inv.readchangetabdata(ply)
+	local id = net.ReadUInt(32)
+	local col = net.ReadColor()
+	col = col.b + bit.lshift(col.g, 8) + bit.lshift(col.r, 16)
+	local shape = net.ReadString()
 
-	local i = pluto.inv.getbufferitem(ply, bufferid)
-
-	if (not i) then
-		pprintf "ERROR: no i"
-		pluto.inv.sendfullupdate(ply)
+	local tab = pluto.inv.invs[ply][id]
+	if (not tab) then
 		return
 	end
 
-	if (i.Owner ~= ply:SteamID64()) then
-		pprintf "ERROR: Owner not equal"
-		pluto.inv.sendfullupdate(ply)
-		return
-	end
+	tab.Shape = shape
+	tab.Color = col
 
-	local can, err = pluto.canswitchtabs({
-		ID = 0,
-		Items = {i},
-	}, pluto.inv.invs[ply][tabid], 1, tabindex)
-
-	if (not can) then
-		pprintf "ERROR: not can"
-		pluto.inv.sendfullupdate(ply)
-		return
-	end
-
-	local pop_from = i.TabIndex
-
-	pluto.db.transact(function(db)
-		if (not pluto.inv.setitemplacement(db, ply, i, tabid, tabindex)) then
-			pluto.inv.reloadfor(ply)
-			return
-		end
-
-		pluto.inv.popbuffer(db, ply, pop_from, transact)
-
-		if (not IsValid(ply)) then
-			return
-		end
-		
-		pluto.inv.message(ply)
-			:write("tabupdate", i.TabID, i.TabIndex)
-			:send()
-
-		for i, item in pairs(pluto.inv.invs[ply].tabs.buffer.Items) do
-			if (item == i) then
-				table.remove(pluto.inv.invs[ply].tabs.buffer.Items, i)
-			end
-		end
-		mysql_commit(db)
+	timer.Create("changetabdata" .. id, 2, 1, function()
+		pluto.db.instance(function(db)
+			mysql_stmt_run(db, "UPDATE pluto_tabs SET color = ?, tab_shape = ? WHERE idx = ?", col, shape, id)
+		end)
 	end)
 end
 
 function pluto.inv.readend()
 	return true
-end
-
-function pluto.inv.writecrate_id(ply, id)
-	net.WriteInt(id, 32)
 end
 
 function pluto.inv.writeexpupdate(cl, item)

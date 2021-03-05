@@ -136,7 +136,7 @@ function PANEL:FinalizeLabel()
 	self.LastLabel = nil
 
 	local pos = self.CurPos
-	cur:SizeToContentsX()
+	cur:SizeToContents()
 	pos.x = pos.x + cur:GetWide()
 
 	self:EnsureLineHeight(cur)
@@ -174,7 +174,7 @@ function PANEL:AddText(what)
 			local tw, th = surface.GetTextSize(n)
 
 			local newposx = lbl:GetWide() + self.CurPos.x + tw
-			if (newposx > self:GetWide() and tw < self:GetWide() * 0.25) then
+			if (newposx > self:GetWide() and tw < self:GetWide() * 0.8) then
 				self:NewLine()
 				lbl = self:FetchLabel()
 			end
@@ -246,6 +246,7 @@ function PANEL:GetLineAt(mx, my)
 		end
 	end
 end
+
 function PANEL:GetHoveredElement()
 	local mx, my = self:ScreenToLocal(gui.MousePos())
 	my = my + (self.ScrollPosition or 0)
@@ -253,10 +254,18 @@ function PANEL:GetHoveredElement()
 
 	if (not line and my > 0) then
 		line = self.Lines[#self.Lines]
+		if (not line) then
+			return
+		end
+
 		local pnl = line[#line]
 		return pnl, line, utf8.force(pnl:GetText()):len()
 	elseif (not line and my <= 0) then
 		line = self.Lines[1]
+		if (not line) then
+			return
+		end
+
 		local pnl = line[#line]
 		return pnl, line, 1
 	end
@@ -347,7 +356,12 @@ end
 
 function PANEL:InsertShowcaseItem(item)
 	self:InsertClickableTextStart(function()
+		if (IsValid(pluto.opened_showcase)) then
+			pluto.opened_showcase:Remove()
+		end
+
 		local showcase = pluto.ui.showcase(item)
+		pluto.opened_showcase = showcase
 		local posx, posy = self:LocalToScreen(self:GetWide(), 0)
 		posx = posx + 50
 		posy = posy - 50
@@ -375,6 +389,10 @@ function PANEL:GetDraggedElements()
 		endpnl, endline, endele = self:GetHoveredElement()
 	end
 
+	if (not endline) then
+		return
+	end
+
 	if (endline.LineNumber < startline.LineNumber or endline == startline and endpnl.PanelNumber < startpnl.PanelNumber or endpnl == startpnl and endele < startele) then
 		startpnl, startline, startele, endpnl, endline, endele = endpnl, endline, endele, startpnl, startline, startele
 	end
@@ -400,6 +418,10 @@ function PANEL:PaintOver(w, h)
 	if (self.StartDrag) then
 		surface.SetDrawColor(255, 0, 0, 100)
 		local startpnl, startline, startele, endpnl, endline, endele = self:GetDraggedElements()
+		if (not startpnl) then
+			return
+		end
+
 		local sx, sy = startpnl:GetPos()
 		local sw, sh = startpnl:GetSize()
 		local ex, ey = endpnl:GetPos()
@@ -492,7 +514,7 @@ function PANEL:SetScrollOffset(offset)
 			pnl:SetPos(pnl.CurPos.x, pnl.CurPos.y - offset)
 		end
 
-		if (line.y -self:GetTall() > offset) then
+		if (line.y - self:GetTall() > offset) then
 			break
 		end
 	end
@@ -529,6 +551,10 @@ function PANEL:ResetAllFades(hold, expiredOnly, newSustain)
 			pnl:SetFade(newSustain, pnl:GetFadeLength(), true)
 		end
 	end
+end
+
+function PANEL:SizeToContentsY()
+	self:SetTall(self.CurrentLine.y + self.CurrentLine.Height)
 end
 
 vgui.Register("pluto_text_inner", PANEL, "EditablePanel")
@@ -619,6 +645,10 @@ end
 function PANEL:OnVScroll(offset)
 	self.Inner:SetScrollOffset(-offset)
 	self.AtBottom = (self.Inner.CurrentLine.y + self.Inner.CurrentLine.Height - self.Inner:GetTall()) == -offset
+end
+
+function PANEL:SizeToContents()
+	self:SizeToContentsY()
 end
 
 vgui.Register("pluto_text", PANEL, "EditablePanel")
