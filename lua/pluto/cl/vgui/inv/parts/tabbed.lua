@@ -125,6 +125,7 @@ function PANEL:AddTab(text, onpress, col)
 			onpress()
 		end
 	end
+	curve.AllowClickThrough = true
 
 	return self.Tabs[curve]
 end
