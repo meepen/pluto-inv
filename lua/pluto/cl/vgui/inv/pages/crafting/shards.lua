@@ -164,7 +164,7 @@ function PANEL:Init()
 	self.GoButton = self:Add "pluto_inventory_button"
 	self.GoButton:Dock(TOP)
 	self.GoButton:SetMouseInputEnabled(false)
-	self.GoButton:DockMargin(0, 0, 0, 1)
+	self.GoButton:DockMargin(55, 12, 55, 7)
 	self.GoButton:SetTall(18)
 	self.GoButton:SetCurve(2)
 	self.GoButton:SetColor(Color(95, 96, 102), Color(95, 96, 102))
