@@ -171,7 +171,7 @@ function PANEL:Init()
 
 	self.TaxLabel = self.ListDataContainer:Add "pluto_label"
 	self.TaxLabel:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.TaxLabel:SetText "10 + 5% up to 200 tax"
+	self.TaxLabel:SetText "10 + 7.5% up to 200 tax"
 	self.TaxLabel:SetTextColor(Color(255, 255, 255))
 	self.TaxLabel:SetContentAlignment(2)
 	self.TaxLabel:SetFont "pluto_inventory_font"

@@ -230,7 +230,6 @@ function PANEL:Init()
 		self.Item:Center()
 	end
 	self.Item = self.ItemContainer:Add "pluto_inventory_item"
-	self.Item:SetNoMove()
 	self.Item:SetSize(64, 64)
 	self.Item:Center()
 	self.Item:SetItem(nil, {Active = true, Items = {}, ID = 0})
