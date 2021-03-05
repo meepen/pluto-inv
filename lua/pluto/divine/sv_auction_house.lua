@@ -457,6 +457,7 @@ concommand.Add("pluto_auction_buy", function(p, c, a)
 		local items = {}
 		for _, row in ipairs(itemrows) do
 			local item = pluto.inv.itemfromrow(row)
+			item.Owner = row.lister
 			items[row.idx] = item
 		end
 
@@ -524,10 +525,16 @@ function pluto.inv.readgetmyitems(cl)
 
 	pluto.db.transact(function(db)
 		local itemrows = mysql_stmt_run(db, [[
-	SELECT * FROM pluto_items i
-		LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx
-		INNER JOIN pluto_auction_info auction ON auction.idx = i.tab_idx
-			WHERE i.tab_id = ? AND auction.owner = ? ORDER BY auction.price DESC LIMIT ?, 36]], get_auction_idx(db), sid64, (page - 1) * 36)
+	SELECT i.idx as idx, tier, i.class as class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable,
+		CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method,
+		auction.price as price, CAST(auction.owner as CHAR(32)) as lister
+
+		FROM pluto_items i
+			LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner
+			LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx
+			INNER JOIN pluto_auction_info auction ON auction.idx = tab_idx
+
+		WHERE i.tab_id = ? AND auction.owner = ? ORDER BY auction.price DESC LIMIT ?, 36]], get_auction_idx(db), sid64, (page - 1) * 36)
 		local modrows = mysql_stmt_run(db, [[
 	SELECT m.idx, m.gun_index, m.modname, m.tier, m.roll1, m.roll2, m.roll3
 			FROM pluto_mods m
@@ -542,6 +549,7 @@ function pluto.inv.readgetmyitems(cl)
 		for _, row in ipairs(itemrows) do
 			local item = pluto.inv.itemfromrow(row)
 			item.Price = row.price
+			item.Owner = row.lister
 			items[row.idx] = item
 			table.insert(itemlist, item)
 		end
@@ -570,3 +578,73 @@ function pluto.inv.writegotyouritems(cl, pages, itemlist)
 		net.WriteUInt(item.Price or 0, 32)
 	end
 end
+
+concommand.Add("pluto_auction_reclaim", function(p, c, a)
+	local itemid = tonumber(a[1])
+	if (not itemid) then
+		return
+	end
+
+	pluto.db.transact(function(db)
+		local tab_id = get_auction_idx(db)
+		local tab = pluto.inv.invs[p].tabs.buffer
+		mysql_stmt_run(db, "SELECT * from pluto_items WHERE tab_id = ? FOR UPDATE", tab_id)
+
+		local itemrows = mysql_stmt_run(db, [[
+	SELECT i.idx as idx, tier, i.class as class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable,
+		CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method,
+		auction.price as price, CAST(auction.owner as CHAR(32)) as lister
+
+		FROM pluto_items i
+			LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner
+			LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx
+			INNER JOIN pluto_auction_info auction ON auction.idx = tab_idx
+		
+	WHERE i.tab_id = ? AND i.idx = ?]], get_auction_idx(db), itemid)
+		local modrows = mysql_stmt_run(db, [[
+			SELECT m.idx, m.gun_index, m.modname, m.tier, m.roll1, m.roll2, m.roll3
+					FROM pluto_mods m
+						INNER JOIN pluto_items i ON i.idx = m.gun_index
+					WHERE i.tab_id = ? AND i.idx = ?]], get_auction_idx(db), itemid)
+
+		local items = {}
+		for _, row in ipairs(itemrows) do
+			local item = pluto.inv.itemfromrow(row)
+			item.Owner = row.lister
+			items[row.idx] = item
+		end
+
+		for _, mod in ipairs(modrows) do
+			if (not items[mod.gun_index]) then
+				continue -- should never happen question mark
+			end
+
+			pluto.inv.readmodrow(items, mod)
+		end
+
+		local item = items[itemid]
+		if (not item or item.Owner ~= p:SteamID64()) then
+			print(item.Owner)
+			print "no own"
+			mysql_rollback(db)
+			return
+		end
+
+		pluto.inv.pushbuffer(db, p)
+		local data, err = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = 1 WHERE idx = ? AND tab_id = ?", tab.RowID, item.RowID, tab_id)
+		if (not data or data.AFFECTED_ROWS ~= 1) then
+			mysql_rollback(db)
+			return
+		end
+
+		item.TabID = tab.RowID
+		item.TabIndex = 1
+		item.Owner = p:SteamID64()
+		pluto.itemids[item.RowID] = item
+
+		mysql_stmt_run(db, "DELETE FROM pluto_auction_info WHERE idx = ?", tab_idx)
+		pluto.inv.notifybufferitem(p, item)
+		tab.Items[1] = item
+		mysql_commit(db)
+	end)
+end)
