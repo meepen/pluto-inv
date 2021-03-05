@@ -418,7 +418,7 @@ local mod_colors = {
 	Color(105, 199, 64),
 	Color(51, 143, 213),
 	Color(172, 66, 213),
-	Color(224, 44, 98),
+	Color(213, 55, 146),
 	Color(254, 67, 71)
 }
 
