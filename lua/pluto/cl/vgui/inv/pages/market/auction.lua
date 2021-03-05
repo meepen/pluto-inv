@@ -130,7 +130,7 @@ function PANEL:Init()
 		local x, y = self.PaginationLabel:GetPos()
 		self.PageDown:SetPos(x - self.PageDown:GetWide() - self.Padding, y)
 		self.PageUp:SetPos(x + self.PaginationLabel:GetWide() + self.Padding, y)
-		self.SearchAreaContainer:DockMargin(0, self.Padding, self.Padding * 4, self.Pagination:GetTall() + self.Padding * 2)
+		self.SearchAreaContainer:DockMargin(self.Padding * 1, self.Padding, self.Padding * 2, self.Pagination:GetTall() + self.Padding * 2)
 	end
 
 	self.SearchAreaContainer = self:Add "ttt_curved_panel_outline"
