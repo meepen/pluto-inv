@@ -3,7 +3,10 @@ local last_active_tab = CreateConVar("pluto_last_quest_tab", "", FCVAR_ARCHIVE)
 local PANEL = {}
 
 function PANEL:Init()
-	for _, quest in ipairs(pluto.quests.types) do
+	local quests = table.Copy(pluto.quests.types)
+	table.insert(quests, quests[1])
+	table.remove(quests, 1)
+	for _, quest in ipairs(quests) do
 		self:AddTab(quest.Name, function()
 			last_active_tab:SetString(quest.Name)
 		end, quest.Color)
