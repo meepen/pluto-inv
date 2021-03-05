@@ -27,6 +27,10 @@ hook.Add("ShutDown", "pluto_currency_crossmap", function()
 			continue
 		end
 
+		if (ent.SkipCrossmap) then
+			continue
+		end
+
 		local plylist = list[ply]
 		if (not plylist) then
 			plylist = {}

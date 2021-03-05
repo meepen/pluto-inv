@@ -36,7 +36,7 @@ function pluto.inv.readquests()
 	end
 
 	pluto.quests.current = quests
-
 	
 	hook.Run("PlutoActiveQuestsUpdated", quests)
 end
+

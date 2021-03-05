@@ -6,7 +6,6 @@ ROUND.KillSteal = 0.25
 ROUND.HealthPerBanana = 10
 ROUND.BananasPerEgg = 7
 ROUND.WinnerBonus = 2
-ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
 
 util.AddNetworkString "chimp_data"
 
@@ -161,10 +160,6 @@ end)
 function ROUND:Initialize(state, ply)
 	self:PlayerSetModel(state, ply)
 	self:Spawn(state, ply)
-	local pos = self:ResetPosition(state, ply)
-	if (pos) then
-		ply.ForcePos = pos
-	end
 end
 
 function ROUND:ChooseLeader(state)
@@ -212,7 +207,6 @@ ROUND:Hook("SetupMove", function(self, state, ply, mv)
 end)
 
 function ROUND:Spawn(state, ply)
-	ply:SetCollisionGroup(self.CollisionGroup)
 	if (state.players and state.players[ply]) then
 		ply:SetHealth(100)
 		ply:SetMaxHealth(100)
@@ -228,7 +222,7 @@ ROUND:Hook("PlayerSpawn", ROUND.Spawn)
 local hull_mins, hull_maxs = Vector(-22, -22, 0), Vector(22, 22, 90)
 
 function ROUND:ResetPosition(state, ply)
-	return select(1, pluto.currency.randompos(hull_mins, hull_maxs))
+	return pluto.currency.randompos(hull_mins, hull_maxs)
 end
 
 ROUND:Hook("PlayerSelectSpawnPosition", ROUND.ResetPosition)
