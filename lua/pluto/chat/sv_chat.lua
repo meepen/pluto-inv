@@ -15,6 +15,20 @@ for idx, name in pairs(debug.getregistry()[3]) do
 	end
 end
 
+local function GetLoadoutItem(ply, i)
+	local item = pluto.itemids[tonumber(ply:GetInfo("pluto_loadout_slot" .. i, nil))]
+	if (item and item.Owner == ply:SteamID64()) then
+		return item
+	end
+end
+
+local function GetCosmeticItem(ply, i)
+	local item = pluto.itemids[tonumber(ply:GetInfo("pluto_cosmetic_slot" .. i, nil))]
+	if (item and item.Owner == ply:SteamID64()) then
+		return item
+	end
+end
+
 hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 	print((teamchat and "[TEAM]" or "") .. from:Nick() .. ": " .. texts)
 	local content = {
@@ -46,7 +60,6 @@ hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 		local done = false
 
 		local item
-		local eq = pluto.inv.invs[from].tabs.equip
 
 		if (what == "item") then
 			local slot = pluto.itemids[tonumber(id)]
@@ -54,31 +67,39 @@ hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 				item = slot
 			end
 		elseif (match == "primary") then
-			item = eq.Items[1]
+			item = GetLoadoutItem(from, 1)
 		elseif (match == "secondary") then
-			item = eq.Items[2]
+			item = GetLoadoutItem(from, 2)
 		elseif (match == "model") then
-			item = eq.Items[3]
+			item = GetCosmeticItem(from, 1)
 		elseif (match == "melee") then
-			item = eq.Items[4]
+			item = GetLoadoutItem(from, 3)
 		elseif (match == "grenade") then
-			item = eq.Items[5]
+			item = GetLoadoutItem(from, 4)
 		elseif (match == "other" or match == "holster") then
-			item = eq.Items[6]
+			item = GetLoadoutItem(from, 6)
 		elseif (match == "pickup") then
-			item = eq.Items[7]
+			item = GetLoadoutItem(from, 5)
 		elseif (match == "loadout") then
 			
-			local eq = pluto.inv.invs[from].tabs.equip
-
-			for i = 1, 14 do
-				local slot = eq.Items[i]
-				
-				if (slot) then
-					table.insert(content, slot)
-					table.insert(content, " ")
-					length = length + slot:GetPrintName():len() + 1
+			local items = {}
+			for i = 1, 6 do
+				local item = GetLoadoutItem(from, i)
+				if (item) then
+					table.insert(items, item)
 				end
+			end
+			for i = 1, 6 do
+				local item = GetCosmeticItem(from, i)
+				if (item) then
+					table.insert(items, item)
+				end
+			end
+
+			for _, slot in ipairs(items) do
+				table.insert(content, slot)
+				table.insert(content, " ")
+				length = length + slot:GetPrintName():len() + 1
 			end
 
 			done = true

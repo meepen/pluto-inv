@@ -217,6 +217,10 @@ function pluto.inv.switchtab(db, tabid1, tabindex1, tabid2, tabindex2)
 		affected = affected + 1
 	end
 	dat, err = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE tab_id = ? AND tab_idx = ?", tabid1, tabindex1, tabid2, tabindex2)
+	if (err) then
+		mysql_rollback(db)
+		return false, 0
+	end
 	if (dat.AFFECTED_ROWS == 1) then
 		affected = affected + 1
 	end

@@ -31,6 +31,7 @@ end
 include "sh_list.lua"
 
 hook.Add("PlayerSetModel", "pluto_model", function(ply)
+	ply.RoundModel = nil
 	local r = pluto.rounds.run("PlayerSetModel", ply)
 
 	if (r ~= nil) then
@@ -59,6 +60,7 @@ hook.Add("PlayerSetModel", "pluto_model", function(ply)
 	local item = pluto.itemids[itemid]
 	if (item and item.Model) then
 		ply:SetModel(item.Model.Model)
+		ply.RoundModel = item
 		return true
 	end
 end)
