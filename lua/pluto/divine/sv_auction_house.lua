@@ -57,6 +57,43 @@ local function get_auction_idx(db)
 	return auction_id
 end
 
+concommand.Add("pluto_upgrade_market_data", function(p)
+	if (IsValid(p)) then
+		return
+	end
+
+	pluto.db.instance(function(db)
+		local itemrows = mysql_stmt_run(db, "SELECT * FROM pluto_items i LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx WHERE i.tab_id = ?", get_auction_idx(db))
+		local modrows = mysql_stmt_run(db, [[
+			SELECT m.idx, m.gun_index, m.modname, m.tier, m.roll1, m.roll2, m.roll3
+					FROM pluto_mods m
+						INNER JOIN pluto_items i ON i.idx = m.gun_index
+					WHERE i.tab_id = ?]], get_auction_idx(db))
+		local items = {}
+
+		for _, row in ipairs(itemrows) do
+			local item = pluto.inv.itemfromrow(row)
+			items[row.idx] = item
+		end
+
+		for _, mod in ipairs(modrows) do
+			if (not items[mod.gun_index]) then
+				continue -- should never happen question mark
+			end
+
+			pluto.inv.readmodrow(items, mod)
+		end
+
+		local amount_left = table.Count(items)
+		for idx, item in pairs(items) do
+			amount_left = amount_left - 1
+			print(amount_left)
+
+			mysql_stmt_run(db, "UPDATE pluto_auction_info SET name = ?, max_mods = ? WHERE idx = ?", item:GetPrintName(), item:GetMaxAffixes(), item.TabIndex)
+		end
+	end)
+end)
+
 concommand.Add("pluto_send_to_auction", function(p, c, a)
 	local itemid = tonumber(a[1])
 	if (not itemid) then
@@ -91,7 +128,7 @@ concommand.Add("pluto_send_to_auction", function(p, c, a)
 		local auction_id = max + 1
 
 		mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = ? WHERE idx = ?", tab_id, auction_id, itemid)
-		mysql_stmt_run(db, "INSERT INTO pluto_auction_info (idx, owner, listed, price) VALUES (?, ?, NOW(), ?)", auction_id, pluto.db.steamid64(p), price)
+		mysql_stmt_run(db, "INSERT INTO pluto_auction_info (idx, owner, listed, price, name, max_mods) VALUES (?, ?, NOW(), ?, ?, ?)", auction_id, pluto.db.steamid64(p), price, gun:GetPrintName(), gun:GetMaxAffixes())
 		
 		pluto.inv.invs[p][gun.TabID].Items[gun.TabIndex] = nil
 		
@@ -184,8 +221,9 @@ local searchlist = {
 		end
 	},
 	["Item name:"] = {
-		filter = "i.class like CONCAT('%', ?, '%')",
+		filter = "auction.name like CONCAT('%', ?, '%')",
 		arguments = function(a)
+			print("yes", a)
 			return a
 		end
 	},
@@ -214,7 +252,10 @@ local searchlist = {
 		join = "modcount",
 	},
 	["Maximum mods:"] = { -- TODO(meep)
-		filter = "1"
+		filter = "auction.max_mods >= ? and auction.max_mods <= ?",
+		arguments = function(a, b)
+			return tonumber(a) or 0, tonumber(b) or 16
+		end,
 	},
 	["Current suffixes:"] = {
 		filter = "suffixcount.amount >= ? and suffixcount.amount <= ?",
@@ -317,7 +358,7 @@ function pluto.inv.readauctionsearch(p)
 			return
 		end
 
-		if (param[i] == 'Any') then
+		if (param[i] == 'Any') then -- hack lol
 			continue
 		end
 

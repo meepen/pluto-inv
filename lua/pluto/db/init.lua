@@ -264,7 +264,11 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				owner BIGINT UNSIGNED NOT NULL REFERENCES pluto_player_info(steamid),
 				price INT UNSIGNED NOT NULL,
 				listed TIMESTAMP NOT NULL,
+				name VARCHAR(64) NOT NULL DEFAULT '',
+				max_mods SMALLINT UNSIGNED NULL DEFAULT NULL,
 
+				INDEX(name),
+				INDEX(max_mods),
 				INDEX USING HASH(owner),
 				INDEX(price),
 				INDEX(listed),
