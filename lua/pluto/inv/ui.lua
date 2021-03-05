@@ -653,3 +653,43 @@ function PANEL:Think()
 end
 
 vgui.Register("pluto_falling_text", PANEL, "ttt_curved_panel")
+
+local PANEL = {}
+
+local alpha = 220
+function PANEL:Init()
+	self:SetCurve(4)
+	self:SetSize(100, 40)
+	self:SetColor(Color(95, 96, 102, alpha))
+	self.Inner = self:Add "ttt_curved_panel"
+	self.Inner:Dock(FILL)
+	self.Inner:SetCurve(4)
+	self.Inner:SetColor(Color(53, 53, 53, alpha))
+
+	self.Label = self.Inner:Add "pluto_label"
+	self.Label:Dock(FILL)
+	self.Label:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.Label:SetTextColor(Color(255, 255, 255))
+	self.Label:SetText "This server was coded for x86-64. You may notice performance issues."
+	self.Label:SetFont "pluto_inventory_font_xlg"
+	self.Label:SetContentAlignment(5)
+	self.Label:SizeToContents()
+
+	self:SetSize(self.Label:GetSize())
+	self:SetTall(self:GetTall() + 8)
+	self:SetWide(self:GetWide() + 14)
+end
+
+vgui.Register("pluto_branch_popup", PANEL, "ttt_curved_panel_outline")
+
+
+if (IsValid(pluto_pop)) then
+	pluto_pop:Remove()
+end
+
+if (not tonumber("0b1")) then
+	pluto_pop = vgui.Create "pluto_branch_popup"
+	pluto_pop:ParentToHUD()
+	pluto_pop:SetPos(0, ScrH() - pluto_pop:GetTall() - 30)
+	pluto_pop:CenterHorizontal()
+end
