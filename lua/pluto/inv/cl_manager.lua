@@ -398,6 +398,10 @@ function pluto.inv.readexpupdate()
 	item.Experience = exp
 end
 
+function pluto.inv.readplayertokens()
+	pluto.cl_tokens = net.ReadUInt(32)
+end
+
 function pluto.inv.readplayerexp(cl, ply, exp)
 	local ply = net.ReadString()
 	local exp = net.ReadUInt(32)

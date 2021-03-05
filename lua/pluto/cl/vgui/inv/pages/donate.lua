@@ -37,13 +37,12 @@ Donating to us helps keep the servers up, keep the developers fed (BREADBOWLS) a
 
 		self.DonateButton:MoveBelow(self.DonateBar, 24)
 		self.DonateButton:CenterHorizontal()
+		self.YourDonationsLabel:CenterHorizontal()
 	end
 
 	self.Top = self.Inner:Add "EditablePanel"
 	self.Top:Dock(TOP)
 	self.Top:SetTall(30) -- TODO(meep): show donation points
-
-
 
 
 	self.DonateButton = self.Inner:Add "pluto_inventory_button"
@@ -73,6 +72,14 @@ Donating to us helps keep the servers up, keep the developers fed (BREADBOWLS) a
 	self.DonateLabel:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.DonateLabel:SetTextColor(Color(255, 255, 255))
 	self:SetDonateText("Monthly goal: " .. string.format("$%.2f USD", GetGlobalInt "pluto_donate_goal" / 100))
+
+	self.YourDonationsLabel = self.Inner:Add "pluto_label"
+	self.YourDonationsLabel:SetFont "pluto_inventory_font"
+	self.YourDonationsLabel:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.YourDonationsLabel:SetTextColor(Color(255, 255, 255))
+	self.YourDonationsLabel:SetText("You have " .. (pluto.cl_tokens or 0) .. " tokens" .. (pluto.cl_tokens > 0 and " <3" or ""))
+	self.YourDonationsLabel:SizeToContents()
+	self.YourDonationsLabel:SetPos(0, 5)
 end
 
 

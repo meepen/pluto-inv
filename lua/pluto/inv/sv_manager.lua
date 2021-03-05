@@ -427,9 +427,13 @@ function pluto.inv.init(ply, cb2)
 		TrySucceed "quests"
 	end)
 
-	pluto.db.simplequery("SELECT experience from pluto_player_info where steamid = ?", {pluto.db.steamid64(ply)}, function(d, err)
+	pluto.db.simplequery("SELECT experience, tokens from pluto_player_info where steamid = ?", {pluto.db.steamid64(ply)}, function(d, err)
 		d = d and d[1] or {experience = 0}
 		if (IsValid(ply)) then
+			pluto.inv.message(ply)
+				:write("playertokens", d.tokens or 0)
+				:send()
+
 			ply:SetPlutoExperience(d.experience)
 			pluto.inv.addplayerexperience(ply, 0)
 
@@ -442,6 +446,10 @@ function pluto.inv.init(ply, cb2)
 			msg:send()
 		end
 	end)
+end
+
+function pluto.inv.writeplayertokens(cl, tokens)
+	net.WriteUInt(tokens, 32)
 end
 
 function pluto.inv.readtabswitch(ply)

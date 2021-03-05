@@ -115,6 +115,9 @@ pluto.inv.messages = {
 		"trademessage",
 		"tradeupdate",
 		"tradestatus",
+
+		-- donator
+		"playertokens",
 	}
 }
 
