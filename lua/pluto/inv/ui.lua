@@ -670,7 +670,7 @@ function PANEL:Init()
 	self.Label:Dock(FILL)
 	self.Label:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.Label:SetTextColor(Color(255, 255, 255))
-	self.Label:SetText "This server was coded for x86-64. You may notice performance issues."
+	self.Label:SetText "This server was coded for x86-64 branch. You may notice performance issues."
 	self.Label:SetFont "pluto_inventory_font_xlg"
 	self.Label:SetContentAlignment(5)
 	self.Label:SizeToContents()

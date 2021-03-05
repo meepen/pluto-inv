@@ -242,7 +242,7 @@ function pluto.quests.init(ply, cb)
 			local quest = pluto.quests.populate(ply, data)
 			active_ids[data.idx] = true
 
-			types_have[data.type] = types_have[data.type] + 1
+			types_have[quest.Type] = types_have[quest.Type] + 1
 		end
 
 		-- remove inactive and stale quests from player's list
@@ -269,7 +269,7 @@ function pluto.quests.init(ply, cb)
 
 			-- select ones to add
 			
-			for i = types_have[type] + 1, type.Amount do
+			for i = types_have[type.RewardPool] + 1, type.Amount do
 				local selected, idx = table.Random(quests_of_type)
 				table.remove(quests_of_type, idx)
 				if (not pluto.quests.generate(db, ply, selected)) then
