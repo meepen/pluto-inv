@@ -516,3 +516,57 @@ function pluto.inv.writeauctiondata(p, items, pages)
 		net.WriteUInt(item.Price, 32)
 	end
 end
+
+function pluto.inv.readgetmyitems(cl)
+	local page = net.ReadUInt(32)
+	local sid64 = pluto.db.steamid64(cl)
+	print(cl, page)
+
+	pluto.db.transact(function(db)
+		local itemrows = mysql_stmt_run(db, [[
+	SELECT * FROM pluto_items i
+		LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx
+		INNER JOIN pluto_auction_info auction ON auction.idx = i.tab_idx
+			WHERE i.tab_id = ? AND auction.owner = ? ORDER BY auction.price DESC LIMIT ?, 36]], get_auction_idx(db), sid64, (page - 1) * 36)
+		local modrows = mysql_stmt_run(db, [[
+	SELECT m.idx, m.gun_index, m.modname, m.tier, m.roll1, m.roll2, m.roll3
+			FROM pluto_mods m
+				INNER JOIN pluto_items i ON i.idx = m.gun_index
+				INNER JOIN pluto_auction_info auction ON auction.idx = i.tab_idx
+			WHERE i.tab_id = ? AND auction.owner = ?]], get_auction_idx(db), sid64)
+
+		local pages = math.ceil(mysql_stmt_run(db, "SELECT COUNT(*) as amount FROM pluto_auction_info WHERE owner = ?", sid64)[1].amount / 36)
+
+		local items = {}
+		local itemlist = {}
+		for _, row in ipairs(itemrows) do
+			local item = pluto.inv.itemfromrow(row)
+			item.Price = row.price
+			items[row.idx] = item
+			table.insert(itemlist, item)
+		end
+
+		for _, mod in ipairs(modrows) do
+			if (not items[mod.gun_index]) then
+				continue
+			end
+
+			pluto.inv.readmodrow(items, mod)
+		end
+
+		
+		pluto.inv.message(cl)
+			:write("gotyouritems", pages, itemlist)
+			:send()
+
+	end)
+end
+
+function pluto.inv.writegotyouritems(cl, pages, itemlist)
+	net.WriteUInt(pages, 32)
+	net.WriteUInt(#itemlist, 8)
+	for _, item in ipairs(itemlist) do
+		pluto.inv.writeitem(cl, item)
+		net.WriteUInt(item.Price or 0, 32)
+	end
+end

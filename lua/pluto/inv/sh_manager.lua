@@ -15,6 +15,7 @@ pluto.inv.messages = {
 		-- divine market
 		"exchangestardust",
 		"auctionsearch",
+		"getmyitems",
 
 		-- ui
 		"tabswitch",
@@ -104,6 +105,7 @@ pluto.inv.messages = {
 		-- divine market
 		"stardustshop",
 		"auctiondata",
+		"gotyouritems",
 
 		-- past trades
 		"tradelogsnapshot",
