@@ -7,6 +7,7 @@ function PANEL:Init()
 	self.TradingScroll:Dock(FILL)
 	self.PastTrades   = self:AddTab "Past Trades"
 	local active = self:AddTab "Active Trade":Add "pluto_inventory_trading_active"
+	active.OutgoingNew:AcceptInput()
 	active:Dock(FILL)
 	active:UpdateFromTradeData()
 
@@ -217,7 +218,6 @@ function PANEL:Init()
 	self.OutgoingNew = self.IncomingOutgoingContainer:Add "pluto_inventory_trading_set"
 	self.OutgoingNew:Dock(RIGHT)
 	self.OutgoingNew:SetText "Your offer"
-	self.OutgoingNew:AcceptInput()
 
 	function self.OutgoingNew.OnCurrencyUpdated(s, slot, currency, amount)
 		if (IsValid(pluto.ui.pnl)) then

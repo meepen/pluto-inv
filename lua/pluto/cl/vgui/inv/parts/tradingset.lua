@@ -201,7 +201,7 @@ function PANEL:Init()
 	end
 	self.CurrencyIcon:SetCursor "hand"
 	function self.CurrencyIcon.OnMousePressed(s, m)
-		if (m == MOUSE_LEFT) then
+		if (m == MOUSE_LEFT and self.InputAccepted) then
 			pluto.ui.currencyselect("Select a currency to trade",
 				function(cur)
 					if (not IsValid(self)) then
