@@ -30,16 +30,35 @@ function PANEL:Init()
 			itempnl:DockMargin(x == 1 and 0 or self.Padding, 0, 0, 0)
 			table.insert(self.Results, itempnl)
 
-			local price = itempnl.ItemPanel:Add "pluto_label"
-			price:Dock(BOTTOM)
-			price:SetTall(14)
-			price:MoveToFront()
+			local container = itempnl.ItemPanel:Add "ttt_curved_panel_outline"
+			container:SetCurve(4)
+			container:SetColor(Color(95, 96, 102))
+			container:Dock(BOTTOM)
+
+			local container_fill = container:Add "ttt_curved_panel"
+			container_fill:SetCurve(4)
+			container_fill:Dock(FILL)
+			container_fill:SetColor(Color(52, 51, 52))
+
+			local price = container_fill:Add "pluto_label"
+			price:Dock(FILL)
 			price:SetText "0"
 			price:SetContentAlignment(6)
 			price:SetFont "pluto_inventory_font"
 			price:SetTextColor(Color(255, 255, 255))
 			price:SetRenderSystem(pluto.fonts.systems.shadow)
+			price:SizeToContentsY()
 			price:SetVisible(false)
+
+			container:SetTall(price:GetTall())
+
+			local img = container_fill:Add "DImage"
+			img:SetImage(pluto.currency.byname.stardust.Icon)
+			img:Dock(RIGHT)
+			function img.PerformLayout(s, w, h)
+				img:SetWide(h)
+			end
+
 			table.insert(self.ResultPrices, price)
 		end
 	end
@@ -166,8 +185,6 @@ function PANEL:Init()
 end
 
 function PANEL:PlutoReceiveAuctionData(items, pages)
-	print "PAGE MAX RETURNED!!"
-	print(pages)
 	self:SetPageMax(pages)
 
 	for i = 1, 36 do
