@@ -61,11 +61,11 @@ function pluto.ui.rightclickmenu(item, pre)
 				:write("unname", item.ID)
 				:send()
 		end):SetIcon("icon16/cog_delete.png")
-
-		rightclick_menu:AddOption("Copy Chat Link", function()
-			SetClipboardText("{item:" .. item.ID .. "}")
-		end):SetIcon("icon16/book.png")
 	end
+
+	rightclick_menu:AddOption("Copy Chat Link", function()
+		SetClipboardText("{item:" .. item.ID .. "}")
+	end):SetIcon("icon16/book.png")
 
 	if (item.Type ~= "Shard") then
 		rightclick_menu:AddOption("Toggle locked", function()
