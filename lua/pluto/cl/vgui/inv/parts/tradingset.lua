@@ -114,6 +114,10 @@ function PANEL:AcceptInput()
 			pluto.ui.highlight(s.Item)
 		end
 	end
+
+	for _, curr in ipairs(self.CurrencySelectors) do
+		curr.InputAccepted = true
+	end
 end
 
 function PANEL:OnItemUpdated(slot, item)
@@ -210,7 +214,7 @@ function PANEL:Init()
 					return (pluto.cl_currency[cur.InternalName] or 0) > 0
 				end
 			)
-		elseif (m == MOUSE_RIGHT) then
+		elseif (m == MOUSE_RIGHT and self.InputAccepted) then
 			self:Reset()
 		end
 	end

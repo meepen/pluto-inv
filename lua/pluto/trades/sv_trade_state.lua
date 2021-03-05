@@ -334,6 +334,7 @@ function pluto.inv.readrequesttrade(ply)
 
 	if (status == "none") then
 		pluto.trades.status(ply, oply, "outbound")
+		oply:ChatPrint(ttt.roles.Traitor.Color, ply:Nick(), white_text, " has requested a trade with you.")
 	elseif (status == "inbound") then
 		pluto.trades.start(ply, oply)
 	end
