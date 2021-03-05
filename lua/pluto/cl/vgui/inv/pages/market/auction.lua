@@ -89,6 +89,15 @@ function PANEL:Init()
 	self.PaginationLabel:SetTextColor(Color(255, 255, 255))
 	self.PaginationLabel:SetContentAlignment(5)
 
+	self.StardustLabel = self:Add "pluto_label"
+	self.StardustLabel:SetFont "pluto_inventory_font"
+	self.StardustLabel:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.StardustLabel:SetText "hi"
+	self.StardustLabel:SetTextColor(Color(255, 255, 255))
+	self.StardustLabel:SetContentAlignment(5)
+	self.StardustImage = self:Add "DImage"
+	self.StardustImage:SetImage(pluto.currency.byname.stardust.Icon)
+
 	self.PageDown = self.Pagination:Add "pluto_label"
 	self.PageDown:SetCursor "hand"
 	self.PageDown:SetMouseInputEnabled(true)
@@ -260,6 +269,25 @@ function PANEL:SendSearch()
 	pluto.inv.message()
 		:write("auctionsearch", self:GetPage(), self.Parameters)
 		:send()
+end
+
+function PANEL:Think()
+	local text = tostring(pluto.cl_currency.stardust or 0)
+	if (text ~= self.StardustLabel:GetText()) then
+		self.StardustLabel:SetText(text)
+		self.StardustLabel:SizeToContents()
+		self.StardustImage:SetSize(self.StardustLabel:GetTall(), self.StardustLabel:GetTall())
+		self.StardustLabel:CenterHorizontal()
+		self.StardustImage:SetPos(self.StardustLabel:GetPos())
+		self.StardustImage:MoveRightOf(self.StardustLabel, self.Padding)
+	end
+end
+
+function PANEL:PerformLayout(w, h)
+	self.StardustLabel:SetPos(0, h - self.StardustLabel:GetTall() - 2)
+	self.StardustLabel:CenterHorizontal()
+	self.StardustImage:SetPos(self.StardustLabel:GetPos())
+	self.StardustImage:MoveRightOf(self.StardustLabel, self.Padding)
 end
 
 vgui.Register("pluto_inventory_auction", PANEL, "EditablePanel")
