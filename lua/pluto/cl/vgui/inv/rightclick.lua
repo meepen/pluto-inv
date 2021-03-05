@@ -40,7 +40,7 @@ function pluto.ui.rightclickmenu(item, pre)
 				cam.End2D()
 				show:Remove()
 				
-				imgur.image(data, "gun", string.format("%s's %s", LocalPlayer():Nick(), item_name)):next(function(data)
+				imgur.image(data, "gun", string.format("%s's %s", LocalPlayer():SteamID64() == item.Owner and LocalPlayer():Nick() or "Unknown", item_name)):next(function(data)
 					SetClipboardText(data.data.link)
 					chat.AddText("Screenshot link made! Paste from your clipboard.")
 				end):catch(function()
