@@ -200,7 +200,7 @@ local searchlist = {
 				return 0
 			elseif (a == "Grenade") then
 				return 3
-			else -- TODO(meep): allow ANY clientside??
+			else
 				return 100
 			end
 		end,
@@ -230,7 +230,7 @@ local searchlist = {
 		end,
 		join = "prefixcount",
 	},
-	["Choose ammo type:"] = { -- TODO(meep): fix 'any'
+	["Choose ammo type:"] = {
 		filter = "ammo.v = ?",
 		arguments = function(a)
 			if (a == "Sniper") then
@@ -317,6 +317,10 @@ function pluto.inv.readauctionsearch(p)
 			return
 		end
 
+		if (param[i] == 'Any') then
+			continue
+		end
+
 		if (lookup.filter) then
 			filters["(" .. lookup.filter .. ")"] = lookup.arguments and pack(lookup.arguments(unpack(param, i))) or true
 		end
@@ -347,15 +351,13 @@ SELECT i.idx as idx, tier, i.class as class, tab_id, tab_idx, exp, special_name,
 	FROM pluto_items i
 ]] .. last .. ending
 
-	print(query)
-
 	pluto.db.instance(function(db)
 		local params = {get_auction_idx(db)}
 		for _, n in ipairs(filterparams) do
 			table.insert(params, n)
 		end
 		table.insert(params, 36 * (page - 1))
-		PrintTable(params)
+
 		-- grab guns, then grab mods
 		local itemresults = mysql_stmt_run(db, query, unpack(params))
 		local modquery = [[
