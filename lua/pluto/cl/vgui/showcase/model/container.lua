@@ -17,9 +17,74 @@ function PANEL:Init()
 	self:MakePopup()
 	self:SetKeyboardInputEnabled(false)
 	self:SetMouseInputEnabled(false)
+
+	self.BottomLine = canvas:Add "EditablePanel"
+	self.BottomLine:Dock(BOTTOM)
+	self.BottomLine:SetTall(18)
+	self.BottomLine:DockMargin(7, 0, 7, 0)
+
+	self.BottomLine2 = canvas:Add "EditablePanel"
+	self.BottomLine2:Dock(BOTTOM)
+	self.BottomLine2:SetTall(18)
+	self.BottomLine2:DockMargin(7, 0, 7, 0)
+
+
+	self.CreatedLabel = self.BottomLine:Add "pluto_label"
+	self.CreatedLabel:SetFont "pluto_showcase_small"
+	self.CreatedLabel:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.CreatedLabel:SetTextColor(Color(255, 255, 255))
+	self.CreatedLabel:SetText ""
+	self.CreatedLabel:Dock(RIGHT)
+	self.CreatedLabel:SizeToContentsX()
+	self.CreatedLabel:SetContentAlignment(5)
+
+	self.IDLabel = self.BottomLine:Add "pluto_label"
+	self.IDLabel:SetFont "pluto_showcase_small"
+	self.IDLabel:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.IDLabel:SetTextColor(Color(174, 174, 174, 200))
+	self.IDLabel:SetText ""
+	self.IDLabel:Dock(LEFT)
+	self.IDLabel:SizeToContentsX()
+	self.IDLabel:SetContentAlignment(5)
+	
+	self.EXPLabel = self.BottomLine2:Add "pluto_label"
+	self.EXPLabel:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.EXPLabel:SetFont "pluto_showcase_small"
+	self.EXPLabel:SetTextColor(Color(255, 255, 255))
+	self.EXPLabel:Dock(RIGHT)
+	self.EXPLabel:SetContentAlignment(6)
+	self.EXPLabel:SetTall(0)
+	self.EXPLabel:SetText ""
+	self.EXPLabel:SizeToContentsX()
 end
 
 function PANEL:SetItem(item)
+	self.IDLabel:SetText(item.ID)
+	self.IDLabel:SizeToContentsX()
+
+	if (item.Experience) then
+		self.EXPLabel:SetText("EXP: " .. item.Experience)
+		self.EXPLabel:SizeToContentsX()
+	end
+
+	if (item.CreationMethod) then
+		local fmt = ({
+			UNBOXED = "Unboxed by %s",
+			SPAWNED = "Created by %s",
+			FOUND = "Found by %s",
+			DELETE = "Sharded by %s",
+			REWARD = "Rewarded to %s",
+			QUEST = "Quest Reward given to %s",
+			DROPPED = "Dropped by %s",
+			MIRROR = "Mirrored by %s",
+			CRAFT = "Crafted by %s",
+			BOUGHT = "Bought by %s",
+		})[item.CreationMethod] or item.CreationMethod .. " %s"
+		self.CreatedLabel:SetText(fmt:format(item.OriginalOwnerName))
+		self.CreatedLabel:SizeToContentsX()
+	end
+
+
 	self:InvalidateLayout(true)
 	self:InvalidateChildren(true)
 	self.NameContainer:SetColor(item.Model.Color)
@@ -75,7 +140,6 @@ function PANEL:SetItem(item)
 	end
 
 	finalizeline()
-
 end
 
 vgui.Register("pluto_showcase_model", PANEL, "pluto_showcase_base")
