@@ -411,12 +411,24 @@ local function ToRomanNumerals(s)
     return ret
 end
 
+local mod_colors = {
+	[0] = Color(94, 59, 163),
+	Color(204, 153, 47),
+	Color(204, 197, 64),
+	Color(105, 199, 64),
+	Color(51, 143, 213),
+	Color(172, 66, 213),
+	Color(224, 44, 98),
+	Color(254, 67, 71)
+}
+
+
 function ITEM:GetColor()
 	local col = color_white
-	if (self.Color) then
+	if (self.Type == "Weapon" or self.Type == "Shard") then
+		return mod_colors[self:GetMaxAffixes()] or mod_colors[0]
+	elseif (self.Color) then
 		col = self.Color or col
-	elseif (self.Type == "Weapon") then
-		col = self.Tier.Color or col
 	elseif (self.Type == "Model") then
 		col = self.Model.Color or col
 	end
