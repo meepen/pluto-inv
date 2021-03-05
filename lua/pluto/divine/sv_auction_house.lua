@@ -1,17 +1,39 @@
 local AUCTION_HOUSE_ID = "1152921504606846975"
 local AUCTION_TAB
 
-local function init()
-end
+local function fallback() return 255 end
 
-concommand.Add("pluto_update_class_data", function(p)
+pluto.class_kv = {
+	ammo_type = setmetatable({
+		["357"] = 0,
+		["pistol"] = 1,
+		["none"] = 2,
+		["smg1"] = 3,
+	}, {__index = function() return 2 end}),
+
+	mod_type = setmetatable({
+		["suffix"] = 0,
+		["prefix"] = 1,
+		["implicit"] = 2,
+	}, {__index = fallback}),
+}
+
+concommand.Add("pluto_update_market_data", function(p)
 	if (IsValid(p)) then
 		return
 	end
+
 	pluto.db.instance(function(db)
+		mysql_stmt_run(db, "DELETE FROM pluto_class_kv WHERE 1")
+
 		for _, wep in pairs(weapons.GetList()) do
 			wep = baseclass.Get(wep.ClassName)
 			mysql_stmt_run(db, "INSERT INTO pluto_class_kv (class, k, v) VALUES (?, 'wep_slot', ?) ON DUPLICATE KEY UPDATE v = v", wep.ClassName, wep.Slot or 255)
+			mysql_stmt_run(db, "INSERT INTO pluto_class_kv (class, k, v) VALUES (?, 'ammo_type', ?) ON DUPLICATE KEY UPDATE v = v", wep.ClassName, pluto.class_kv.ammo_type[string.lower(wep.Primary and wep.Primary.Ammo or "none")])
+		end
+
+		for name, MOD in pairs(pluto.mods.byname) do
+			mysql_stmt_run(db, "INSERT INTO pluto_class_kv (class, k, v) VALUES (?, 'mod_type', ?) ON DUPLICATE KEY UPDATE v = v", name, pluto.class_kv.mod_type[string.lower(MOD.Type or "none")])
 		end
 	end)
 end)
@@ -101,8 +123,14 @@ local sorts = {
 }
 
 local joins = {
-	slot = "INNER JOIN pluto_class_kv slot on slot.class = i.class AND slot.k = 'wep_slot'",
-	modcount = "INNER JOIN (SELECT COUNT(*) as amount, gun_index FROM pluto_mods GROUP BY pluto_mods.gun_index) AS modcount ON modcount.gun_index = i.idx",
+	slot = "straight_join pluto_class_kv slot force index(`class`) on slot.class = i.class AND slot.k = 'wep_slot'",
+	ammo = "straight_join pluto_class_kv ammo force index(`class`)  on ammo.class = i.class AND ammo.k = 'ammo_type'",
+	modcount = [[
+			INNER JOIN (
+				SELECT COUNT(*) as amount, gun_index FROM pluto_mods m
+					straight_join pluto_class_kv modtype force index(`class`) on modtype.class = m.modname AND modtype.k = 'mod_type' AND modtype.v != 2
+				GROUP BY m.gun_index
+			) AS modcount ON modcount.gun_index = i.idx]],
 }
 
 local searchlist = {
@@ -160,7 +188,7 @@ local searchlist = {
 				return 0
 			elseif (a == "Grenade") then
 				return 3
-			else
+			else -- TODO(meep): allow ANY clientside??
 				return 100
 			end
 		end,
@@ -169,7 +197,6 @@ local searchlist = {
 	["Current mods:"] = { -- TODO(meep): no implicits
 		filter = "modcount.amount >= ? and modcount.amount <= ?",
 		arguments = function(a, b)
-			print(tonumber(a) or 0, tonumber(b) or 16)
 			return tonumber(a) or 0, tonumber(b) or 16
 		end,
 		join = "modcount",
@@ -184,7 +211,19 @@ local searchlist = {
 		filter = "1"
 	},
 	["Choose ammo type:"] = { -- TODO(meep)
-		filter = "1"
+		filter = "ammo.v = ?",
+		arguments = function(a)
+			if (a == "Sniper") then
+				return pluto.class_kv.ammo_type["357"]
+			elseif (a == "Pistol") then
+				return pluto.class_kv.ammo_type["pistol"]
+			elseif (a == "SMG") then
+				return pluto.class_kv.ammo_type["smg1"]
+			else
+				return pluto.class_kv.ammo_type["none"]
+			end
+		end,
+		join = "ammo"
 	},
 	["Price:"] = {
 		filter = "price >= ? and price <= ?",

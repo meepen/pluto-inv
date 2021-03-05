@@ -277,7 +277,9 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 			CREATE TABLE IF NOT EXISTS pluto_class_kv (
 				class VARCHAR(32) NOT NULL,
 				k VARCHAR(16) NOT NULL,
-				v SMALLINT NOT NULL,
+				v varchar(32) NOT NULL,
+
+				KEY v_index (v),
 
 				UNIQUE KEY (class, k)
 			)
