@@ -54,6 +54,7 @@ function PANEL:Init()
 	end
 
 	function self.ItemContainer.OnSetItem(s, item)
+		debug.Trace()
 		self:PlutoItemUpdate(item)
 	end
 

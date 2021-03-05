@@ -35,7 +35,7 @@ end
 -- has_pass_started:SetBool(true)
 
 
-hook.Add("HUDPaint", "pluto_passevent", function()
+hook.Remove("HUDPaint", "pluto_passevent", function()
 	hook.Remove("HUDPaint", "pluto_passevent")
 
 	local start = SysTime()
