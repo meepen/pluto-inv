@@ -5,17 +5,16 @@ end
 function pluto.inv.lockbuffer(db, ply)
 	mysql_cmysql()
 	local tab = pluto.inv.invs[ply].tabs.buffer
-	mysql_stmt_run(db, "SELECT idx FROM pluto_items WHERE tab_id = ? FOR UPDATE", tab.RowID)
+	mysql_stmt_run(db, "SELECT tab_idx FROM pluto_items WHERE tab_id = ? FOR UPDATE", tab.RowID)
 end
 
 function pluto.inv.waitbuffer(db, ply)
-	mysql_cmysql()
-	local tab = pluto.inv.invs[ply].tabs.buffer
-	mysql_stmt_run(db, "SELECT 1 FROM pluto_items WHERE tab_id = ? LIMIT 1", tab.RowID)
 end
 
 
 function pluto.inv.pushbuffer(db, ply)
+	pluto.inv.lockbuffer(db, ply)
+	pluto.inv.waitbuffer(db, ply)
 	mysql_cmysql()
 
 	local tab = pluto.inv.invs[ply].tabs.buffer
