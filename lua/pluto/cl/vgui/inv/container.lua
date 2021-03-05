@@ -451,6 +451,7 @@ function PANEL:AddTab(name, func, has_storage, cache, col)
 	lbl:SetRenderSystem(pluto.fonts.systems.shadow)
 	lbl:SetCursor "hand"
 	lbl:SetMouseInputEnabled(true)
+	lbl.AllowClickThrough = true
 
 	surface.SetFont(lbl:GetFont())
 	lbl:SetWide(surface.GetTextSize(lbl:GetText()) + 24)
