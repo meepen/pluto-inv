@@ -99,7 +99,6 @@ function PANEL:Init()
 
 	self.SidePanel = self:Add "ttt_curved_panel"
 	self.SidePanel:SetWide(self.SidePanelSize + 10)
-	self.SidePanel:SetVisible(false)
 
 	self.SidePanelContainer = self.SidePanel:Add "ttt_curved_panel"
 	self.SidePanelContainer:Dock(FILL)
@@ -132,40 +131,6 @@ function PANEL:Init()
 	self.TabContainer:Dock(TOP)
 	self.TabContainer:SetTall(self.TopSize)
 
-	self.StorageExpander = self.TabContainer:Add "pluto_label"
-	self.StorageExpander:Dock(RIGHT)
-	self.StorageExpander:SetFont "pluto_inventory_storage"
-	self.StorageExpander:SetText ">>"
-	self.StorageExpander:SetTextColor(Color(255, 255, 255))
-	self.StorageExpander:SetContentAlignment(5)
-	self.StorageExpander:SizeToContentsX()
-	self.StorageExpander:DockMargin(0, 0, 4, 4)
-	self.StorageExpander:SetCursor "hand"
-	self.StorageExpander:SetMouseInputEnabled(true)
-	self.StorageExpander.AllowClickThrough = true
-	function self.StorageExpander.OnMousePressed(s, m)
-		if (m == MOUSE_LEFT) then
-			s.Toggled = not s.Toggled
-			pluto_storage_toggled:SetBool(s.Toggled)
-
-			self.SidePanel:SetVisible(s.Toggled)
-			self.StorageExpander:SetText(s.Toggled and "<<" or ">>")
-		end
-	end
-	if (pluto_storage_toggled:GetBool()) then
-		self.StorageExpander:OnMousePressed(MOUSE_LEFT)
-	end
-
-	self.Divider = self.TabContainer:Add "EditablePanel"
-	self.Divider:Dock(RIGHT)
-	self.Divider:SetWide(1)
-	self.Divider:DockMargin(4, 0, 4, 0)
-
-	function self.Divider:Paint(w, h)
-		surface.SetDrawColor(58, 58, 58)
-		surface.DrawLine(w / 2, 2, w / 2, h - 2)
-	end
-
 	self.CloseButton = self.TabContainer:Add "pluto_label"
 	self.CloseButton:Dock(RIGHT)
 	self.CloseButton:SetSize(self.TopSize, self.TopSize)
@@ -177,6 +142,7 @@ function PANEL:Init()
 	self.CloseButton:SetCursor "hand"
 	self.CloseButton:SetMouseInputEnabled(true)
 	self.CloseButton:SizeToContentsX()
+	self.CloseButton:DockMargin(0, 0, 5, 0)
 	self.CloseButton.AllowClickThrough = true
 	function self.CloseButton.OnMousePressed(s, m)
 		if (m == MOUSE_LEFT) then
