@@ -272,6 +272,10 @@ function PANEL:Init()
 				return
 			end
 			pluto.ui.highlight(s.Item)
+			if (CurTime() - (s.LastClick or -math.huge) < 0.2) then
+				s:OnRightClick()
+			end
+			s.LastClick = CurTime()
 		end
 
 		function item2.OnSetItem(s, item)
@@ -311,6 +315,10 @@ function PANEL:Init()
 				return
 			end
 			pluto.ui.highlight(s.Item)
+			if (CurTime() - (s.LastClick or -math.huge) < 0.2) then
+				s:OnRightClick()
+			end
+			s.LastClick = CurTime()
 		end
 
 		function item.OnSetItem(s, item)
