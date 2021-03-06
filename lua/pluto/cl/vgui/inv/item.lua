@@ -1,3 +1,116 @@
+local test_item
+
+
+local textures = {
+	galaxy = Material("pluto/seamless/galaxy.png", "noclamp"),
+}
+
+for k, texture in pairs(textures) do
+	if (isnumber(k)) then
+		continue
+	end
+
+	table.insert(textures, texture)
+end
+
+local rands = setmetatable({}, {
+	__index = function(self, k)
+		local rands = {
+			x = math.random(),
+			y = math.random(),
+			img = math.random(-#textures, #textures)
+		}
+		self[k] = rands
+		return rands
+	end,
+	__mode = "k"
+})
+
+local function DrawMovingTexture(item, scale, x, y, w, h, vx, vy)
+	local rand = rands[item]
+	local tex = textures[rand.img]
+	if (not tex) then
+		return
+	end
+
+	local tw, th = tex:GetInt "$realwidth" * scale, tex:GetInt "$realheight" * scale
+
+	local xdur = 1 / vx
+	local ydur = 1 / vy
+
+	local su, sv = (CurTime() + rand.x * xdur % xdur) / xdur, (CurTime() + rand.y * ydur % ydur) / ydur
+	local eu, ev = su + w / tw, sv + h / th
+
+	surface.SetDrawColor(255, 255, 255)
+	surface.SetMaterial(tex)
+	surface.DrawTexturedRectUV(x, y, w, h, su, sv, eu, ev)
+end
+
+--[[
+	create render target
+	clear 0 0 0 0
+	override alpha write enable
+	override color write disable
+
+	draw model
+
+	material with $alphatest set $basetexture to rendertarget
+
+	create new rendertarget
+]]
+local function ceilpow2(x)
+	return 2 ^ math.ceil(math.log(x) / math.log(2))
+end
+
+local function GetRTForSize(w, h, which)
+	local cw, ch = ceilpow2(w), ceilpow2(h)
+	local rt = GetRenderTarget("pluto_rt_" .. cw .. "x" .. ch .. "x" .. (which or 0), cw, ch)
+	return rt, cw, ch
+end
+
+local err = ClientsideModel "error"
+err:SetNoDraw(true)
+
+local function CreateTextureFromDraw(w, h, draw)
+	local rt, cw, ch = GetRTForSize(w, h)
+
+	render.PushRenderTarget(rt)
+	render.Clear(0, 255, 0, 255, true, true)
+
+	render.SetStencilWriteMask(0xFF)
+	render.SetStencilTestMask(0xFF)
+	render.SetStencilReferenceValue(0)
+	render.SetStencilCompareFunction(STENCIL_ALWAYS)
+	render.SetStencilPassOperation(STENCIL_KEEP)
+	render.SetStencilFailOperation(STENCIL_KEEP)
+	render.SetStencilZFailOperation(STENCIL_KEEP)
+
+	render.SetStencilEnable(true)
+		render.SetStencilReferenceValue(1)
+		render.SetStencilCompareFunction(STENCIL_ALWAYS)
+		render.SetStencilPassOperation(STENCIL_REPLACE)
+		
+		draw()
+		
+		render.SetStencilCompareFunction(STENCIL_NOTEQUAL)
+		render.SetStencilPassOperation(STENCIL_KEEP)
+
+		render.ClearBuffersObeyStencil(0, 0, 0, 0, true)
+
+		render.SetStencilCompareFunction(STENCIL_EQUAL)
+		render.ClearBuffersObeyStencil(255, 255, 255, 255, true)
+	render.SetStencilEnable(false)
+	render.PopRenderTarget(rt)
+
+	return rt, w / cw, h / ch
+end
+
+local alphatest = CreateMaterial("pluto_alphatest", "UnlitGeneric", {
+	["$alphatest"] = 1,
+})
+
+local additive = Material "pp/add"
+
 local cached = {}
 local function GetCachedMaterial(mat)
 	if (not cached[mat]) then
@@ -48,6 +161,7 @@ local newshard = Material "pluto/newshard.png"
 local newshardadd = Material "pluto/newshardbg.png"
 local lock = Material "icon16/lock.png"
 
+
 function PANEL:PaintInner(pnl, w, h, x, y)
 	x = x or 0
 	y = y or 0
@@ -57,17 +171,15 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 		sx, sy = pnl:LocalToScreen(x, y)
 		sx = sx - 1
 		sy = sy - 1
-	end
-
-	if (not self.Item or self == pluto.ui.realpickedupitem and IsValid(pnl)) then
 		surface.SetDrawColor(default_color)
 		ttt.DrawCurvedRect(x, y, w, h, self:GetCurve())
+	end
+
+
+	if (not self.Item or self == pluto.ui.realpickedupitem and IsValid(pnl)) then
 		return
 	end
 
-
-	surface.SetDrawColor(self.Item:GetColor())
-	ttt.DrawCurvedRect(x, y, w, h, self:GetCurve())
 	
 	render.SetStencilWriteMask(0xFF)
 	render.SetStencilTestMask(0xFF)
@@ -85,28 +197,72 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 		
 		render.OverrideColorWriteEnable(true, false)
 			ttt.DrawCurvedRect(x, y, w, h, self:GetCurve())
-		render.OverrideColorWriteEnable(false, true)
+		render.OverrideColorWriteEnable(false)
 		render.SetStencilCompareFunction(STENCIL_EQUAL)
 		render.SetStencilPassOperation(STENCIL_KEEP)
-		surface.SetMaterial(GetCachedMaterial(self.Item.BackgroundMaterial or "pluto/item_bg.png"))
-		surface.SetDrawColor(ColorModulateForBackground(self.Item:GetColor()))
-		surface.DrawTexturedRect(x, y, w, h)
+
+
+
 	render.SetStencilEnable(false)
 
 	local r, g, b = render.GetColorModulation()
 
 	cam.IgnoreZ(true)
+	render.ClearDepth()
 	local mdl = self:GetCachedCurrentModel()
+	
 
 	render.SetColorModulation(1, 1, 1)
 	if (IsValid(mdl) and self.Item.Type == "Weapon") then
+
 		local mins, maxs = mdl:GetModelBounds()
 		local lookup = weapons.GetStored(self.Item.ClassName).Ortho or baseclass.Get(self.Item.ClassName).Ortho or {0, 0}
 
-		local angle = Angle(0, -90)
+		local angle = lookup.angle or Angle(0, -90)
 		local size = mins:Distance(maxs) / 2.5 * (lookup.size or 1) * 1.1
 
-		cam.Start3D(vector_origin, lookup.angle or angle, 90, sx, sy, w, h)
+		local tex, u, v = CreateTextureFromDraw(w, h, function()
+			cam.Start3D(vector_origin, angle, 90, 0, 0, w, h)
+				cam.StartOrthoView(lookup[1] + -size, lookup[2] + size, lookup[1] + size, lookup[2] + -size)
+					render.SuppressEngineLighting(true)
+						mdl:SetAngles(Angle(-40, 10, 10))
+						render.PushFilterMin(TEXFILTER.ANISOTROPIC)
+						render.PushFilterMag(TEXFILTER.ANISOTROPIC)
+							mdl:DrawModel()
+						render.PopFilterMag()
+						render.PopFilterMin()
+					render.SuppressEngineLighting(false)
+				cam.EndOrthoView()
+			cam.End3D()
+		end)
+
+		local rt, cw, ch = GetRTForSize(w, h, 1)
+		alphatest:SetTexture("$basetexture", tex)
+
+		render.PushRenderTarget(rt)
+			render.Clear(0, 0, 0, 255, true, true)
+			local big = 3
+			cam.Start2D()
+				for x = -big, big do
+					for y = -big, big do
+						surface.SetMaterial(alphatest)
+						surface.SetDrawColor(255, 255, 255)
+						surface.DrawTexturedRectUV(x, y, w, h, 0, 0, u, v)
+					end
+				end
+			cam.End2D()
+			render.BlurRenderTarget(rt, 5, 5, 4)
+		render.PopRenderTarget()
+
+		DrawMovingTexture(self.Item, 0.4, x, y, w, h, 0.03, 0.02)
+		additive:SetTexture("$basetexture", rt)
+		additive:SetVector("$color", self.Item:GetColor():ToVector())
+		surface.SetMaterial(additive)
+		surface.DrawTexturedRectUV(x, y, w, h, 0, 0, u, v)
+
+		
+		render.ClearDepth()
+		cam.Start3D(vector_origin, angle, 90, sx, sy, w, h)
 			cam.StartOrthoView(lookup[1] + -size, lookup[2] + size, lookup[1] + size, lookup[2] + -size)
 				render.SuppressEngineLighting(true)
 					mdl:SetAngles(Angle(-40, 10, 10))
@@ -118,6 +274,7 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 				render.SuppressEngineLighting(false)
 			cam.EndOrthoView()
 		cam.End3D()
+
 	elseif (IsValid(mdl) and self.Item.Type == "Model") then
 		local mins, maxs = mdl:GetModelBounds()
 		cam.Start3D(Vector(50, 0, (maxs.z - mins.z) / 2), Angle(0, -180), 90, sx, sy, w, h)

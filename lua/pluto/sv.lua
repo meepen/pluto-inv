@@ -73,6 +73,9 @@ pluto.files.load {
 		"resource/fonts/Lateef-Regular.ttf",
 		"resource/fonts/Aladin-Regular.ttf",
 		"resource/fonts/PermanentMarker-Regular.ttf",
+
+		"materials/pluto/seamless/galaxy.png",
+		"materials/pluto/seamless/galaxy_mask.png",
 	},
 	Workshop = {
 		"2275087857",
