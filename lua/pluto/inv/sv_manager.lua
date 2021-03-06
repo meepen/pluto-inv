@@ -294,14 +294,15 @@ function pluto.inv.writebaseitem(ply, item)
 	end
 
 	if (item.Type == "Shard" or item.Type == "Weapon") then
-		if (not item.Tier) then
-			PrintTable(item)
+		if (item.Tier.InternalName == "crafted") then
+			net.WriteBool(true)
+			for i = 1, 3 do
+				net.WriteString(item.Tier.Tiers[i])
+			end
+		else
+			net.WriteBool(false)
+			net.WriteString(item.Tier.InternalName)
 		end
-
-		net.WriteString(item.Tier.Name)
-		net.WriteString(item.Tier:GetSubDescription())
-		net.WriteColor(item.Tier.Color or color_white)
-		net.WriteUInt(item:GetMaxAffixes(), 3)
 	end
 
 	if (item.Type == "Weapon") then

@@ -7,6 +7,5 @@ return {
 	SubDescription = {
 		tags = "This gun seems to never roll Damage over Time modifiers",
 	},
-	Shares = 7000,
 	Color = Color(163, 23, 65),
 }

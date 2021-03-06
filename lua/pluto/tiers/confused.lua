@@ -13,6 +13,5 @@ return {
 		tags = "This gun seems to roll Damage, Speed and RPM modifiers 3x as often",
 		rolltier = "This gun seems to always roll the lowest tier possible"
 	},
-	Shares = 1000,
 	Color = Color(180, 170, 70),
 }

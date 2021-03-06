@@ -1,7 +1,6 @@
 return {
 	Name = "Testing",
 	affixes = 1,
-	Shares = 0,
 	guaranteed = {
 		limp = 1,
 	},

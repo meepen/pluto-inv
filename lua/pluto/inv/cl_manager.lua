@@ -104,11 +104,12 @@ function pluto.inv.readbaseitem(item)
 	item.Type = pluto.inv.itemtype(item)
 
 	if (item.Type == "Weapon" or item.Type == "Shard") then
-		item.Tier = net.ReadString()
-		item.SubDescription = net.ReadString()
-		item.Color = net.ReadColor()
-
-		item.AffixMax = net.ReadUInt(3)
+		if (net.ReadBool()) then
+			local t1, t2, t3 = net.ReadString(), net.ReadString(), net.ReadString()
+			item.Tier = pluto.tiers.craft {t1, t2, t3}
+		else
+			item.Tier = pluto.tiers.byname[net.ReadString()]
+		end
 	end
 
 	if (item.Type == "Weapon") then

@@ -83,7 +83,7 @@ function pluto.tiers.random(gun)
 	error "Reached end of loop in pluto.tiers.random!" 
 end
 
-local function CombineColors(...)
+local function CombineColors(...) -- TODO(meep): remove
 	local cols = {
 		s = 0,
 		v = 0,
@@ -131,7 +131,6 @@ function pluto.tiers.craft(tiers)
 			t2.InternalName,
 			t3.InternalName,
 		},
-		Shares = (t1.Shares + t2.Shares + t3.Shares) / 2,
 		Crafted = true,
 	}, pluto.tier_mt)
 
@@ -157,7 +156,7 @@ function pluto.tiers.craft(tiers)
 	end
 
 	tier.affixes = t1.affixes or 0
-	tier.Color = CombineColors(t1.Color, t1.Color, t1.Color, t2.Color, t2.Color, t3.Color)
+	tier.Color = CombineColors(t1.Color, t1.Color, t1.Color, t2.Color, t2.Color, t3.Color) -- TODO(meep): remove
 
 	return tier
 end
@@ -184,6 +183,7 @@ for _, name in pairs {
 
 	"unstable",
 } do
+	AddCSLuaFile("pluto/tiers/" .. name .. ".lua")
 	local item = include("pluto/tiers/" .. name .. ".lua")
 	if (not item) then
 		pwarnf("Tier %s didn't return a value", name)
@@ -191,11 +191,6 @@ for _, name in pairs {
 	end
 
 	setmetatable(item, pluto.tier_mt)
-
-	if (not item.Shares) then
-		pwarnf("Tier %s doesn't have shares", name)
-		continue
-	end
 
 	local prev = pluto.tiers.byname[name]
 	if (prev) then
@@ -222,5 +217,4 @@ for _, name in pairs {
 	local typelist = pluto.tiers.bytype[type]
 
 	table.insert(typelist.list, item)
-	typelist.shares = typelist.shares + item.Shares
 end

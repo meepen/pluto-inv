@@ -27,7 +27,7 @@ pluto.files.load {
 		"inv/exp/sv_model_exp.lua",
 		"inv/exp/sv_player_exp.lua",
 
-		"tiers/_init.lua",
+		"tiers/_sv_init.lua",
 
 		"discord/discord.lua",
 		"nitro/sv_nitro.lua",

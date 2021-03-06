@@ -1,8 +1,13 @@
 local test_item
 
 
+local mat_white = Material("vgui/white")
 local textures = {
-	galaxy = Material("pluto/seamless/galaxy.png", "noclamp"),
+	galaxy = {
+		scale = 0.3,
+		image = Material("pluto/seamless/galaxy.png", "noclamp"),
+		speed = Vector(0.03, 0.02)
+	}
 }
 
 for k, texture in pairs(textures) do
@@ -26,17 +31,19 @@ local rands = setmetatable({}, {
 	__mode = "k"
 })
 
-local function DrawMovingTexture(item, scale, x, y, w, h, vx, vy)
+local function DrawMovingTexture(item, x, y, w, h)
 	local rand = rands[item]
-	local tex = textures[rand.img]
+	local img = textures[rand.img]
 	if (not tex) then
-		return
+		return false
 	end
+	local tex = img.texture
+	local scale = img.scale
 
 	local tw, th = tex:GetInt "$realwidth" * scale, tex:GetInt "$realheight" * scale
 
-	local xdur = 1 / vx
-	local ydur = 1 / vy
+	local xdur = 1 / img.speed.x
+	local ydur = 1 / img.speed.y
 
 	local su, sv = (CurTime() + rand.x * xdur % xdur) / xdur, (CurTime() + rand.y * ydur % ydur) / ydur
 	local eu, ev = su + w / tw, sv + h / th
@@ -44,6 +51,8 @@ local function DrawMovingTexture(item, scale, x, y, w, h, vx, vy)
 	surface.SetDrawColor(255, 255, 255)
 	surface.SetMaterial(tex)
 	surface.DrawTexturedRectUV(x, y, w, h, su, sv, eu, ev)
+
+	return true
 end
 
 --[[
@@ -161,25 +170,51 @@ local newshard = Material "pluto/newshard.png"
 local newshardadd = Material "pluto/newshardbg.png"
 local lock = Material "icon16/lock.png"
 
-
-function PANEL:PaintInner(pnl, w, h, x, y)
-	x = x or 0
-	y = y or 0
-
-	local sx, sy = x, y
-	if (IsValid(pnl)) then
-		sx, sy = pnl:LocalToScreen(x, y)
-		sx = sx - 1
-		sy = sy - 1
-		surface.SetDrawColor(default_color)
-		ttt.DrawCurvedRect(x, y, w, h, self:GetCurve())
-	end
-
-
-	if (not self.Item or self == pluto.ui.realpickedupitem and IsValid(pnl)) then
+function PANEL:DrawItemBackground(x, y, sx, sy, w, h)
+	if (DrawMovingTexture(self.Item, x, y, w, h)) then
 		return
 	end
 
+	local col1, col3 = Color(157, 17, 69), Color(249, 21, 91)
+	local col2 = ColorLerp(0.5, col1, col3)
+
+	render.SetMaterial(mat_white)
+	mesh.Begin(MATERIAL_TRIANGLES, 2)
+		mesh.Color(col2.r, col2.g, col2.b, col2.a)
+		mesh.Position(Vector(sx, sy))
+		mesh.AdvanceVertex()
+
+		mesh.Color(col2.r, col2.g, col2.b, col2.a)
+		mesh.Position(Vector(sx + w, sy + h))
+		mesh.AdvanceVertex()
+
+		mesh.Color(col1.r, col1.g, col1.b, col1.a)
+		mesh.Position(Vector(sx, sy + h))
+		mesh.AdvanceVertex()
+
+		mesh.Color(col2.r, col2.g, col2.b, col2.a)
+		mesh.Position(Vector(sx, sy))
+		mesh.AdvanceVertex()
+
+		mesh.Color(col3.r, col3.g, col3.b, col3.a)
+		mesh.Position(Vector(sx + w, sy))
+		mesh.AdvanceVertex()
+
+		mesh.Color(col2.r, col2.g, col2.b, col2.a)
+		mesh.Position(Vector(sx + w, sy + h))
+		mesh.AdvanceVertex()
+	mesh.End()
+end
+
+function PANEL:PaintGradientBorder(x, y, sx, sy, w, h, bordercol)
+	local outlinesize = 3
+	surface.SetDrawColor(bordercol)
+	ttt.DrawCurvedRect(x, y, w, h, self:GetCurve())
+
+	sx = sx + outlinesize
+	sy = sy + outlinesize
+	w = w - outlinesize * 2
+	h = h - outlinesize * 2
 	
 	render.SetStencilWriteMask(0xFF)
 	render.SetStencilTestMask(0xFF)
@@ -196,14 +231,34 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 		render.SetStencilPassOperation(STENCIL_REPLACE)
 		
 		render.OverrideColorWriteEnable(true, false)
-			ttt.DrawCurvedRect(x, y, w, h, self:GetCurve())
+			ttt.DrawCurvedRect(x + outlinesize, y + outlinesize, w, h, self:GetCurve())
 		render.OverrideColorWriteEnable(false)
 		render.SetStencilCompareFunction(STENCIL_EQUAL)
 		render.SetStencilPassOperation(STENCIL_KEEP)
 
-
-
+		self:DrawItemBackground(x + outlinesize, y + outlinesize, sx, sy, w, h)
 	render.SetStencilEnable(false)
+end
+
+function PANEL:PaintInner(pnl, w, h, x, y)
+	x = x or 0
+	y = y or 0
+
+	local sx, sy = x, y
+	if (IsValid(pnl)) then
+		sx, sy = pnl:LocalToScreen(x, y)
+		sx = sx
+		sy = sy
+		surface.SetDrawColor(default_color)
+		ttt.DrawCurvedRect(x, y, w, h, self:GetCurve())
+	end
+
+
+	if (not self.Item or self == pluto.ui.realpickedupitem and IsValid(pnl)) then
+		return
+	end
+
+	self:PaintGradientBorder(x, y, sx, sy, w, h, Color(252, 68, 152))
 
 	local r, g, b = render.GetColorModulation()
 
@@ -251,10 +306,9 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 					end
 				end
 			cam.End2D()
-			render.BlurRenderTarget(rt, 5, 5, 4)
+			render.BlurRenderTarget(rt, 5, 5, 2)
 		render.PopRenderTarget()
 
-		DrawMovingTexture(self.Item, 0.4, x, y, w, h, 0.03, 0.02)
 		additive:SetTexture("$basetexture", rt)
 		additive:SetVector("$color", self.Item:GetColor():ToVector())
 		surface.SetMaterial(additive)

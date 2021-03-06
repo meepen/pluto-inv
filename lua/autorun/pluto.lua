@@ -114,6 +114,8 @@ pluto.files.load {
 
 		"craft/sh.lua",
 
+		"tiers/_sh_init.lua",
+
 		"roles/ttc.lua",
 		"roles/pluto.lua",
 

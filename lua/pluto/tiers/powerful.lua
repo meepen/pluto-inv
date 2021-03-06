@@ -16,6 +16,5 @@ return {
 		end
 		return math.random(1, #mod.Tiers)
 	end,
-	Shares = 10000,
 	Color = Color(204, 61, 5),
 }

@@ -1,7 +1,6 @@
 return {
 	Name = "Inevitable",
 	affixes = 3,
-	Shares = 0,
 	guaranteed = {
 		firerate = 1,
 	},
