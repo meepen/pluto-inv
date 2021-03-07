@@ -639,6 +639,8 @@ function pluto.ui.unsetpickup()
 end
 
 function pluto.ui.pickupitem(item)
+	print(item and item.Item)
+	debug.Trace()
 	local itemdata, tabid, tabidx, clickedon, clickedwith, canclickon, canclickwith
 
 	if (IsValid(item)) then
@@ -722,14 +724,12 @@ hook.Add("VGUIMousePressAllowed", "pluto_item_pickup", function(m)
 			local holding = IsValid(pluto.ui.realpickedupitem) and pluto.ui.realpickedupitem or pluto.ui.pickedupitem
 
 			if (hovered:CanClickWith(holding) and holding:CanClickOn(hovered)) then
-				if (hovered.CanPickup and holding.Item) then
-					pluto.ui.pickupitem(holding)
-				end
 
 				hovered:ClickedWith(holding)
 				holding:ClickedOn(hovered)
 
 				if (hovered.CanPickup and holding.Item) then
+					pluto.ui.pickupitem(holding)
 					return true
 				end
 			else
