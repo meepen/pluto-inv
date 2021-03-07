@@ -280,7 +280,7 @@ function PANEL:Init()
 
 		function item2.OnSetItem(s, item)
 			if (i == 1) then
-				self.PlayerModel:SetPlutoModel(item and item.Model or pluto.models.default)
+				self.PlayerModel:SetPlutoModel(item and item.Model or pluto.models.default, item)
 			end
 		end
 
