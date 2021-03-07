@@ -111,6 +111,7 @@ pluto.files.load {
 		"quests/sh_quests.lua",
 	
 		"mods/sh_mods.lua",
+		"mods/load_mods.lua",
 
 		"craft/sh.lua",
 

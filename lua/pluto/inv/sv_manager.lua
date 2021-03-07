@@ -16,7 +16,6 @@ pluto.inv.currencies = pluto.inv.currencies or {}
 pluto.inv.loading = pluto.inv.loading or {}
 
 pluto.inv.sent = pluto.inv.sent or {}
-pluto.inv.mods_sent = pluto.inv.mods_sent or {}
 
 util.AddNetworkString "pluto_inv_data"
 
@@ -45,51 +44,8 @@ local function WriteIfExists(mod, key)
 end
 
 function pluto.inv.writemod(ply, item, gun)
-	local mod = pluto.mods.byname[item.Mod]
+	net.WriteString(item.Mod)
 
-	-- global modifier stuff
-	net.WriteString(mod.InternalName)
-
-	if (not pluto.inv.mods_sent[ply] or not pluto.inv.mods_sent[ply][mod.InternalName]) then
-		net.WriteBool(true)
-
-		net.WriteString(mod.Type)
-		net.WriteString(mod.Name)
-
-		WriteIfExists(mod, "StatModifier")
-		WriteIfExists(mod, "Color")
-		WriteIfExists(mod, "FormatModifier")
-		WriteIfExists(mod, "GetDescription")
-		WriteIfExists(mod, "Description")
-		WriteIfExists(mod, "IsNegative")
-		WriteIfExists(mod, "GetModifier")
-		WriteIfExists(mod, "ModifyWeapon")
-
-		for tag in pairs(mod.Tags or {}) do
-			if (type(tag) ~= "string") then
-				continue
-			end
-
-			net.WriteBool(true)
-			net.WriteString(tag)
-		end
-		net.WriteBool(false)
-
-		net.WriteUInt(#mod.Tiers, 8)
-		for _, data in ipairs(mod.Tiers) do
-			net.WriteUInt(#data, 4)
-			for _, roll in ipairs(data) do
-				net.WriteFloat(roll)
-			end
-		end
-
-		pluto.inv.mods_sent[ply] = pluto.inv.mods_sent[ply] or {}
-		pluto.inv.mods_sent[ply][mod.InternalName] = true
-	else
-		net.WriteBool(false)
-	end
-
-	-- current modifier stuff
 	local tier = item.Tier
 
 	net.WriteUInt(item.Tier, 4)
@@ -199,19 +155,6 @@ function pluto.inv.writefullupdate(ply)
 	net.WriteUInt(table.Count(pluto.inv.currencies[ply]), 32)
 	for currency in pairs(pluto.inv.currencies[ply]) do
 		pluto.inv.writecurrencyupdate(ply, currency)
-	end
-
-	local modlist = {}
-
-	for _, MOD in pairs(pluto.mods.byname) do
-		if (MOD.Type == "suffix" or MOD.Type == "prefix") then
-			table.insert(modlist, MOD:GetTierName(1))
-		end
-	end
-
-	net.WriteUInt(#modlist, 32)
-	for _, name in ipairs(modlist) do
-		net.WriteString(name)
 	end
 
 	pluto.inv.writestatus(ply, "ready")
