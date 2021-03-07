@@ -66,3 +66,5 @@ SWEP.RecoilInstructions = {
 	Interval = 1,
 	Angle(-70),
 }
+
+SWEP.Ortho = {-0.5, 0.8, angle = Angle(-45, -25, 0), size = 1.1}
