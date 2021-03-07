@@ -56,9 +56,9 @@ sound.Add {
 SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
-	DamageDropoffRange = 750,
-	DamageDropoffRangeMax = 5200,
-	DamageMinimumPercent = 0.1,
+	DamageDropoffRange = 450,
+	DamageDropoffRangeMax = 3500,
+	DamageMinimumPercent = 0.15,
 	Spread = Vector(0.01, 0.02)
 }
 
