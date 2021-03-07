@@ -111,3 +111,5 @@ function SWEP:PlayerRagdollCreated(ply, rag, atk, dmg)
 		MakeGold(rag, "models/player/shared/ice_player")
 	end
 end
+
+SWEP.Ortho = { 1, 2, angle = Angle(90, 0, 123) }
