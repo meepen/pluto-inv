@@ -293,6 +293,12 @@ function ITEM:GetMod(name)
 	end
 end
 
+function ITEM:GetBackgroundTexture()
+	if (self.Type == "Shard" or self.Type == "Weapon") then
+		return self.Tier and self.Tier.tags and self.Tier.tags.texture
+	end
+end
+
 function ITEM:GetMaxAffixes()
 	local affix = 0
 
@@ -413,8 +419,8 @@ end
 
 local mod_colors = {
 	[0] = Color(94, 59, 163),
-	Color(204, 153, 47),
-	Color(204, 153, 47),
+	Color(150, 150, 150),
+	Color(150, 150, 150),
 	Color(105, 199, 64),
 	Color(51, 143, 213),
 	Color(172, 66, 213),
@@ -422,17 +428,26 @@ local mod_colors = {
 	Color(254, 67, 71)
 }
 
-
 function ITEM:GetColor()
 	local col = color_white
 	if (self.Type == "Weapon" or self.Type == "Shard") then
-		return mod_colors[self:GetMaxAffixes()] or mod_colors[0]
+		if (self.Tier.Color) then
+			return self.Tier.Color
+		end
+
+		return mod_colors[self:GetMaxAffixes() + (self.Tier.Type == "Grenade" and 1 or 0)] or mod_colors[0]
 	elseif (self.Color) then
-		col = self.Color or col
+		col = self.Color
 	elseif (self.Type == "Model") then
-		col = self.Model.Color or col
+		col = self.Model.Color
 	end
-	return col
+	return col or color_white
+end
+
+function ITEM:GetGradientColors()
+	local col = self:GetColor()
+	local h, s, l = ColorToHSL(col)
+	return HSLToColor(h, s, l - 0.18), HSLToColor(h, s, l + 0.05)
 end
 
 function ITEM:GetDiscordEmbed()

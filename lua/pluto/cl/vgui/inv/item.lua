@@ -5,9 +5,20 @@ local mat_white = Material("vgui/white")
 local textures = {
 	galaxy = {
 		scale = 0.3,
-		image = Material("pluto/seamless/galaxy.png", "noclamp"),
+		texture = Material("pluto/seamless/galaxy.png", "noclamp"),
 		speed = Vector(0.03, 0.02)
-	}
+	},
+	bullets = {
+		scale = 0.6,
+		texture = Material("pluto/seamless/bullets.png", "noclamp"),
+		speed = Vector(-0.01, -0.09)
+	},
+	blackhole = {
+		scale = true,
+		texture = Material("pluto/seamless/blackhole.png", "noclamp"),
+		speed = Vector(0, 0),
+		rotate = 90,
+	},
 }
 
 for k, texture in pairs(textures) do
@@ -23,7 +34,7 @@ local rands = setmetatable({}, {
 		local rands = {
 			x = math.random(),
 			y = math.random(),
-			img = math.random(-#textures, #textures)
+			rotate = math.random(),
 		}
 		self[k] = rands
 		return rands
@@ -33,20 +44,54 @@ local rands = setmetatable({}, {
 
 local function DrawMovingTexture(item, x, y, w, h)
 	local rand = rands[item]
-	local img = textures[rand.img]
-	if (not tex) then
+	local img = textures[item:GetBackgroundTexture()]
+	if (not img or img ~= textures.blackhole) then
 		return false
 	end
 	local tex = img.texture
 	local scale = img.scale
 
-	local tw, th = tex:GetInt "$realwidth" * scale, tex:GetInt "$realheight" * scale
+	local tw, th = tex:GetInt "$realwidth", tex:GetInt "$realheight"
+	if (scale == true) then
+		tw, th = w, h
+	else
+		tw, th = tw * scale, th * scale
+	end
 
 	local xdur = 1 / img.speed.x
 	local ydur = 1 / img.speed.y
 
 	local su, sv = (CurTime() + rand.x * xdur % xdur) / xdur, (CurTime() + rand.y * ydur % ydur) / ydur
+
+	if (su ~= su) then
+		su = 0
+	end
+	if (sv ~= sv) then
+		sv = 0
+	end
+
 	local eu, ev = su + w / tw, sv + h / th
+
+	--[[if (img.rotate and img.rotate ~= 0) then
+		su, sv = (su - 0.5), (sv - 0.5)
+		eu, ev = (eu - 0.5), (ev - 0.5)
+
+		local rdur = 360 / img.rotate
+		local rot =  ((CurTime() + rand.rotate * rdur) % rdur) / rdur * math.pi * 2
+		local s = math.sin(rot)
+		local c = math.cos(rot)
+
+
+		local nsu = su * c - sv * s
+		local nsv = su * s + sv * c
+
+		local neu = eu * c - ev * s
+		local nev = eu * s + ev * c
+
+		su, sv = (nsu + 0.5), (nsv + 0.5)
+		eu, ev = (neu + 0.5), (nev + 0.5)
+	end]]
+
 
 	surface.SetDrawColor(255, 255, 255)
 	surface.SetMaterial(tex)
@@ -175,7 +220,7 @@ function PANEL:DrawItemBackground(x, y, sx, sy, w, h)
 		return
 	end
 
-	local col1, col3 = Color(157, 17, 69), Color(249, 21, 91)
+	local col1, col3 = self.Item:GetGradientColors()
 	local col2 = ColorLerp(0.5, col1, col3)
 
 	render.SetMaterial(mat_white)
@@ -207,8 +252,8 @@ function PANEL:DrawItemBackground(x, y, sx, sy, w, h)
 end
 
 function PANEL:PaintGradientBorder(x, y, sx, sy, w, h, bordercol)
-	local outlinesize = 3
-	surface.SetDrawColor(bordercol)
+	local outlinesize = 2
+	surface.SetDrawColor(self.Item:GetColor())
 	ttt.DrawCurvedRect(x, y, w, h, self:GetCurve())
 
 	sx = sx + outlinesize
@@ -296,7 +341,7 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 
 		render.PushRenderTarget(rt)
 			render.Clear(0, 0, 0, 255, true, true)
-			local big = 3
+			local big = 2
 			cam.Start2D()
 				for x = -big, big do
 					for y = -big, big do
@@ -306,7 +351,7 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 					end
 				end
 			cam.End2D()
-			render.BlurRenderTarget(rt, 5, 5, 2)
+			render.BlurRenderTarget(rt, 5, 5, 4)
 		render.PopRenderTarget()
 
 		additive:SetTexture("$basetexture", rt)

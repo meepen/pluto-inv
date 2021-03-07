@@ -83,27 +83,6 @@ function pluto.tiers.random(gun)
 	error "Reached end of loop in pluto.tiers.random!" 
 end
 
-local function CombineColors(...) -- TODO(meep): remove
-	local cols = {
-		s = 0,
-		v = 0,
-		a = 255
-	}
-	local hues = {}
-
-	local num = select("#", ...)
-	for i = 1, num do
-		local h, s, v = ColorToHSV((select(i, ...)))
-
-		hues[i] = h / 360
-		cols.s = cols.s + s / num
-		cols.v = cols.v + v / num
-	end
-
-	local c = HSVToColor(math.circularmean(unpack(hues)) * 360, cols.s, cols.v, cols.a)
-	return Color(c.r, c.g, c.b, c.a)
-end
-
 function pluto.tiers.craft(tiers)
 	for i, t in pairs(tiers) do
 		if (not istable(tiers[i])) then
@@ -156,7 +135,6 @@ function pluto.tiers.craft(tiers)
 	end
 
 	tier.affixes = t1.affixes or 0
-	tier.Color = CombineColors(t1.Color, t1.Color, t1.Color, t2.Color, t2.Color, t3.Color) -- TODO(meep): remove
 
 	return tier
 end
@@ -217,4 +195,8 @@ for _, name in pairs {
 	local typelist = pluto.tiers.bytype[type]
 
 	table.insert(typelist.list, item)
+end
+
+if (SERVER) then
+	include "_sv_init.lua"
 end

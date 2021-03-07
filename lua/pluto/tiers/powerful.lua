@@ -2,6 +2,7 @@ return {
 	Name = "Powerful",
 	affixes = 3,
 	tags = {
+		texture = "bullets",
 		damage = 3,
 	},
 	SubDescription = {

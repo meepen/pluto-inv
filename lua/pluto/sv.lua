@@ -27,8 +27,6 @@ pluto.files.load {
 		"inv/exp/sv_model_exp.lua",
 		"inv/exp/sv_player_exp.lua",
 
-		"tiers/_sv_init.lua",
-
 		"discord/discord.lua",
 		"nitro/sv_nitro.lua",
 
@@ -75,7 +73,8 @@ pluto.files.load {
 		"resource/fonts/PermanentMarker-Regular.ttf",
 
 		"materials/pluto/seamless/galaxy.png",
-		"materials/pluto/seamless/galaxy_mask.png",
+		"materials/pluto/seamless/bullets.png",
+		"materials/pluto/seamless/blackhole.png",
 	},
 	Workshop = {
 		"2275087857",

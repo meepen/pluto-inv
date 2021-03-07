@@ -176,7 +176,7 @@ function pluto.inv.writechatmessage(ply, content, channel, teamchat)
 			elseif (pluto.isitem(data)) then
 				if (not data.RowID) then
 					net.WriteUInt(pluto.chat.type.COLOR, 4)
-					net.WriteColor(data.Tier.Color)
+					net.WriteColor(data:GetColor())
 					net.WriteUInt(pluto.chat.type.TEXT, 4)
 					net.WriteString(data:GetPrintName())
 				else
