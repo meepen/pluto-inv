@@ -19,7 +19,7 @@ SWEP.Primary.Automatic = true
 SWEP.Primary.Damage = 15
 SWEP.Primary.Delay = 0.09
 
-SWEP.HeadshotMultiplier = 1.333
+SWEP.HeadshotMultiplier = 22 / 15
 
 SWEP.Sights = true
 
