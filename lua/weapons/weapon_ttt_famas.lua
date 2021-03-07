@@ -18,13 +18,13 @@ SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
 	DamageDropoffRange = 650,
-	DamageDropoffRangeMax = 2300,
+	DamageDropoffRangeMax = 3100,
 	DamageMinimumPercent = 0.1,
 	Spread = Vector(0.015, 0.015),
 }
 
 SWEP.Primary.Damage        = 14
-SWEP.Primary.Delay         = 0.36
+SWEP.Primary.Delay         = 0.5
 SWEP.Primary.RecoilTiming  = 0.36 / 6
 SWEP.Primary.Recoil        = 2.65
 SWEP.Primary.Automatic     = true
@@ -35,7 +35,7 @@ SWEP.Primary.Sound         = Sound "Weapon_FAMAS.Single"
 
 SWEP.BurstAmount = 3
 
-SWEP.HeadshotMultiplier    = 1.5
+SWEP.HeadshotMultiplier    = 29 / 14
 SWEP.DeploySpeed = 1.3
 
 SWEP.AutoSpawnable         = true
@@ -53,11 +53,11 @@ SWEP.Ironsights = {
 	Zoom = 0.8,
 }
 
-local pow = 2
+local pow = 5
 SWEP.RecoilInstructions = {
 	Interval = 1,
 	pow * Angle(-5, -0.2),
-	pow * Angle(-5, -0.1),
+	pow * Angle(-3, -0.1),
 	pow * Angle(-5, 0.2),
 }
 
