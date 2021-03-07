@@ -419,9 +419,9 @@ function PANEL:SetItem(item)
 	self.ItemBackground:SetColor(item.Color or item:GetColor())
 
 	self.ItemDesc:SetText(item.Description or "")
-	local subdesc = item.SubDescription or ""
+	local subdesc = item.Tier:GetSubDescription() or ""
 	if (item.AffixMax) then
-		subdesc = subdesc .. "\n" .. "You can get up to " .. item.AffixMax .. " modifiers on this item."
+		subdesc = subdesc .. "\n" .. "You can get up to " .. item:GetMaxAffixes() .. " modifiers on this item."
 	end
 
 	if (item.ClassName) then
