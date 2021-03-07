@@ -35,51 +35,10 @@ local function ReadIfExists(mod, key)
 end
 
 function pluto.inv.readmod(item)
-	local rolls = {}
-	local minsmaxs = {}
-
-	local InternalName = net.ReadString()
-
-	if (net.ReadBool()) then
-		local mod = pluto.mods.byname[InternalName] or {}
-		pluto.mods.byname[InternalName] = mod
-
-		mod.InternalName = true
-
-		mod.Type = net.ReadString()
-		mod.Name = net.ReadString()
-
-		ReadIfExists(mod, "StatModifier")
-		ReadIfExists(mod, "Color")
-		ReadIfExists(mod, "FormatModifier")
-		ReadIfExists(mod, "GetDescription")
-		ReadIfExists(mod, "Description")
-		ReadIfExists(mod, "IsNegative")
-		ReadIfExists(mod, "GetModifier")
-		ReadIfExists(mod, "ModifyWeapon")
-
-		mod.Tags = {}
-		while (net.ReadBool()) do
-			local tag = net.ReadString()
-			mod.Tags[#mod.Tags + 1] = tag
-			mod.Tags[tag] = true
-		end
-
-		mod.Tiers = {}
-		for i = 1, net.ReadUInt(8) do
-			mod.Tiers[i] = {}
-			for j = 1, net.ReadUInt(4) do
-				mod.Tiers[i][j] = net.ReadFloat()
-			end
-		end
-
-		setmetatable(mod, pluto.mods.mt)
-	end
-
 	local mod = {}
+	mod.Mod = net.ReadString()
 	mod.Tier = net.ReadUInt(4)
 	mod.Roll = {}
-	mod.Mod = InternalName
 
 	for i = 1, net.ReadUInt(4) do
 		mod.Roll[i] = net.ReadFloat()
@@ -104,11 +63,12 @@ function pluto.inv.readbaseitem(item)
 	item.Type = pluto.inv.itemtype(item)
 
 	if (item.Type == "Weapon" or item.Type == "Shard") then
-		item.Tier = net.ReadString()
-		item.SubDescription = net.ReadString()
-		item.Color = net.ReadColor()
-
-		item.AffixMax = net.ReadUInt(3)
+		if (net.ReadBool()) then
+			local t1, t2, t3 = net.ReadString(), net.ReadString(), net.ReadString()
+			item.Tier = pluto.tiers.craft {t1, t2, t3}
+		else
+			item.Tier = pluto.tiers.byname[net.ReadString()]
+		end
 	end
 
 	if (item.Type == "Weapon") then
@@ -225,16 +185,6 @@ function pluto.inv.readfullupdate()
 	for i = 1, net.ReadUInt(32) do
 		pluto.inv.readcurrencyupdate()
 	end
-
-	local modlist = {}
-
-	for i = 1, net.ReadUInt(32) do
-		modlist[i] = net.ReadString()
-	end
-
-	table.sort(modlist)
-
-	pluto.mods.networkednames = modlist
 
 	pluto.inv.readstatus()
 end

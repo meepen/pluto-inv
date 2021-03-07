@@ -1,3 +1,171 @@
+local test_item
+
+
+local mat_white = Material("vgui/white")
+local textures = {
+	galaxy = {
+		scale = 0.3,
+		texture = Material("pluto/seamless/galaxy.png", "noclamp"),
+		speed = Vector(0.03, 0.02)
+	},
+	bullets = {
+		scale = 0.6,
+		texture = Material("pluto/seamless/bullets.png", "noclamp"),
+		speed = Vector(-0.01, -0.09)
+	},
+	blackhole = {
+		scale = true,
+		texture = Material("pluto/seamless/blackhole.png", "noclamp"),
+		speed = Vector(0, 0),
+		rotate = 45,
+	},
+}
+
+for k, texture in pairs(textures) do
+	if (isnumber(k)) then
+		continue
+	end
+
+	table.insert(textures, texture)
+end
+
+local rands = setmetatable({}, {
+	__index = function(self, k)
+		local rands = {
+			x = math.random(),
+			y = math.random(),
+			rotate = math.random(),
+		}
+		self[k] = rands
+		return rands
+	end,
+	__mode = "k"
+})
+
+local function DrawMovingTexture(item, x, y, w, h)
+	local rand = rands[item]
+	local img = textures[item:GetBackgroundTexture()]
+	if (not img) then
+		return false
+	end
+	local tex = img.texture
+	local scale = img.scale
+
+	local tw, th = tex:GetInt "$realwidth", tex:GetInt "$realheight"
+	if (scale == true) then
+		tw, th = w, h
+	else
+		tw, th = tw * scale, th * scale
+	end
+
+	local xdur = 1 / img.speed.x
+	local ydur = 1 / img.speed.y
+
+	local su, sv = (CurTime() + rand.x * xdur % xdur) / xdur, (CurTime() + rand.y * ydur % ydur) / ydur
+
+	if (su ~= su) then
+		su = 0
+	end
+	if (sv ~= sv) then
+		sv = 0
+	end
+
+	local eu, ev = su + w / tw, sv + h / th
+
+	if (img.rotate and img.rotate ~= 0) then
+		su, sv = (su - 0.5), (sv - 0.5)
+		eu, ev = (eu - 0.5), (ev - 0.5)
+
+		local rdur = 360 / img.rotate
+		local rot =  ((CurTime() + rand.rotate * rdur) % rdur) / rdur * math.pi * 2
+		local s = math.sin(rot)
+		local c = math.cos(rot)
+
+
+		local nsu = su * c - sv * s
+		local nsv = su * s + sv * c
+
+		local neu = eu * c - ev * s
+		local nev = eu * s + ev * c
+
+		su, sv = (nsu + 0.5), (nsv + 0.5)
+		eu, ev = (neu + 0.5), (nev + 0.5)
+	end
+
+
+	local col = 150
+	surface.SetDrawColor(col, col, col)
+	surface.SetMaterial(tex)
+	surface.DrawTexturedRectUV(x, y, w, h, su, sv, eu, ev)
+
+	return true
+end
+
+--[[
+	create render target
+	clear 0 0 0 0
+	override alpha write enable
+	override color write disable
+
+	draw model
+
+	material with $alphatest set $basetexture to rendertarget
+
+	create new rendertarget
+]]
+local function ceilpow2(x)
+	return 2 ^ math.ceil(math.log(x) / math.log(2))
+end
+
+local function GetRTForSize(w, h, which)
+	local cw, ch = ceilpow2(w), ceilpow2(h)
+	local rt = GetRenderTarget("pluto_rt_" .. cw .. "x" .. ch .. "x" .. (which or 0), cw, ch)
+	return rt, cw, ch
+end
+
+local err = ClientsideModel "error"
+err:SetNoDraw(true)
+
+local function CreateTextureFromDraw(w, h, draw)
+	local rt, cw, ch = GetRTForSize(w, h)
+
+	render.PushRenderTarget(rt)
+	render.Clear(0, 255, 0, 255, true, true)
+
+	render.SetStencilWriteMask(0xFF)
+	render.SetStencilTestMask(0xFF)
+	render.SetStencilReferenceValue(0)
+	render.SetStencilCompareFunction(STENCIL_ALWAYS)
+	render.SetStencilPassOperation(STENCIL_KEEP)
+	render.SetStencilFailOperation(STENCIL_KEEP)
+	render.SetStencilZFailOperation(STENCIL_KEEP)
+
+	render.SetStencilEnable(true)
+		render.SetStencilReferenceValue(1)
+		render.SetStencilCompareFunction(STENCIL_ALWAYS)
+		render.SetStencilPassOperation(STENCIL_REPLACE)
+		
+		draw()
+		
+		render.SetStencilCompareFunction(STENCIL_NOTEQUAL)
+		render.SetStencilPassOperation(STENCIL_KEEP)
+
+		render.ClearBuffersObeyStencil(0, 0, 0, 0, true)
+
+		render.SetStencilCompareFunction(STENCIL_EQUAL)
+		render.ClearBuffersObeyStencil(255, 255, 255, 255, true)
+	render.SetStencilEnable(false)
+	render.PopRenderTarget(rt)
+
+	return rt, w / cw, h / ch
+end
+
+local alphatest = CreateMaterial("pluto_alphatest", "UnlitGeneric", {
+	["$alphatest"] = 1,
+})
+
+local additive = Material "pp/add"
+
 local cached = {}
 local function GetCachedMaterial(mat)
 	if (not cached[mat]) then
@@ -48,26 +216,59 @@ local newshard = Material "pluto/newshard.png"
 local newshardadd = Material "pluto/newshardbg.png"
 local lock = Material "icon16/lock.png"
 
-function PANEL:PaintInner(pnl, w, h, x, y)
-	x = x or 0
-	y = y or 0
-
-	local sx, sy = x, y
-	if (IsValid(pnl)) then
-		sx, sy = pnl:LocalToScreen(x, y)
-		sx = sx - 1
-		sy = sy - 1
-	end
-
-	if (not self.Item or self == pluto.ui.realpickedupitem and IsValid(pnl)) then
-		surface.SetDrawColor(default_color)
-		ttt.DrawCurvedRect(x, y, w, h, self:GetCurve())
+function PANEL:DrawItemBackground(x, y, sx, sy, w, h)
+	if (DrawMovingTexture(self.Item, x, y, w, h)) then
 		return
 	end
 
+	local col1, col3 = self.Item:GetGradientColors()
+	local col2 = ColorLerp(0.5, col1, col3)
 
+	render.SetMaterial(mat_white)
+	mesh.Begin(MATERIAL_TRIANGLES, 2)
+		mesh.Color(col2.r, col2.g, col2.b, col2.a)
+		mesh.Position(Vector(sx, sy))
+		mesh.AdvanceVertex()
+
+		mesh.Color(col2.r, col2.g, col2.b, col2.a)
+		mesh.Position(Vector(sx + w, sy + h))
+		mesh.AdvanceVertex()
+
+		mesh.Color(col1.r, col1.g, col1.b, col1.a)
+		mesh.Position(Vector(sx, sy + h))
+		mesh.AdvanceVertex()
+
+		mesh.Color(col2.r, col2.g, col2.b, col2.a)
+		mesh.Position(Vector(sx, sy))
+		mesh.AdvanceVertex()
+
+		mesh.Color(col3.r, col3.g, col3.b, col3.a)
+		mesh.Position(Vector(sx + w, sy))
+		mesh.AdvanceVertex()
+
+		mesh.Color(col2.r, col2.g, col2.b, col2.a)
+		mesh.Position(Vector(sx + w, sy + h))
+		mesh.AdvanceVertex()
+	mesh.End()
+end
+
+function PANEL:DrawItemOverlay(x, y, sx, sy, w, h)
+	if (not self.Item or not self.Item:GetOverlayFunction()) then
+		return
+	end
+
+	self.Item:GetOverlayFunction()(x, y, sx, sy, w, h, 0)
+end
+
+function PANEL:PaintGradientBorder(x, y, sx, sy, w, h, bordercol)
+	local outlinesize = 2
 	surface.SetDrawColor(self.Item:GetColor())
 	ttt.DrawCurvedRect(x, y, w, h, self:GetCurve())
+
+	sx = sx + outlinesize
+	sy = sy + outlinesize
+	w = w - outlinesize * 2
+	h = h - outlinesize * 2
 	
 	render.SetStencilWriteMask(0xFF)
 	render.SetStencilTestMask(0xFF)
@@ -84,29 +285,93 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 		render.SetStencilPassOperation(STENCIL_REPLACE)
 		
 		render.OverrideColorWriteEnable(true, false)
-			ttt.DrawCurvedRect(x, y, w, h, self:GetCurve())
-		render.OverrideColorWriteEnable(false, true)
+			ttt.DrawCurvedRect(x + outlinesize, y + outlinesize, w, h, self:GetCurve())
+		render.OverrideColorWriteEnable(false)
 		render.SetStencilCompareFunction(STENCIL_EQUAL)
 		render.SetStencilPassOperation(STENCIL_KEEP)
-		surface.SetMaterial(GetCachedMaterial(self.Item.BackgroundMaterial or "pluto/item_bg.png"))
-		surface.SetDrawColor(ColorModulateForBackground(self.Item:GetColor()))
-		surface.DrawTexturedRect(x, y, w, h)
+
+		self:DrawItemBackground(x + outlinesize, y + outlinesize, sx, sy, w, h)
+		self:DrawItemOverlay(x + outlinesize, y + outlinesize, sx, sy, w, h)
 	render.SetStencilEnable(false)
+end
+
+function PANEL:PaintInner(pnl, w, h, x, y)
+	x = x or 0
+	y = y or 0
+
+	local sx, sy = x, y
+	if (IsValid(pnl)) then
+		sx, sy = pnl:LocalToScreen(x, y)
+		sx = sx
+		sy = sy
+		surface.SetDrawColor(default_color)
+		ttt.DrawCurvedRect(x, y, w, h, self:GetCurve())
+	end
+
+
+	if (not self.Item or self == pluto.ui.realpickedupitem and IsValid(pnl)) then
+		return
+	end
+
+	self:PaintGradientBorder(x, y, sx, sy, w, h, Color(252, 68, 152))
 
 	local r, g, b = render.GetColorModulation()
 
 	cam.IgnoreZ(true)
+	render.ClearDepth()
 	local mdl = self:GetCachedCurrentModel()
+	
 
 	render.SetColorModulation(1, 1, 1)
 	if (IsValid(mdl) and self.Item.Type == "Weapon") then
+
 		local mins, maxs = mdl:GetModelBounds()
 		local lookup = weapons.GetStored(self.Item.ClassName).Ortho or baseclass.Get(self.Item.ClassName).Ortho or {0, 0}
 
-		local angle = Angle(0, -90)
+		local angle = lookup.angle or Angle(0, -90)
 		local size = mins:Distance(maxs) / 2.5 * (lookup.size or 1) * 1.1
 
-		cam.Start3D(vector_origin, lookup.angle or angle, 90, sx, sy, w, h)
+		local tex, u, v = CreateTextureFromDraw(w, h, function()
+			cam.Start3D(vector_origin, angle, 90, 0, 0, w, h)
+				cam.StartOrthoView(lookup[1] + -size, lookup[2] + size, lookup[1] + size, lookup[2] + -size)
+					render.SuppressEngineLighting(true)
+						mdl:SetAngles(Angle(-40, 10, 10))
+						render.PushFilterMin(TEXFILTER.ANISOTROPIC)
+						render.PushFilterMag(TEXFILTER.ANISOTROPIC)
+							mdl:DrawModel()
+						render.PopFilterMag()
+						render.PopFilterMin()
+					render.SuppressEngineLighting(false)
+				cam.EndOrthoView()
+			cam.End3D()
+		end)
+
+		local rt, cw, ch = GetRTForSize(w, h, 1)
+		alphatest:SetTexture("$basetexture", tex)
+
+		render.PushRenderTarget(rt)
+			render.Clear(0, 0, 0, 255, true, true)
+			local big = 2
+			cam.Start2D()
+				for x = -big, big do
+					for y = -big, big do
+						surface.SetMaterial(alphatest)
+						surface.SetDrawColor(255, 255, 255)
+						surface.DrawTexturedRectUV(x, y, w, h, 0, 0, u, v)
+					end
+				end
+			cam.End2D()
+			render.BlurRenderTarget(rt, 5, 5, 4)
+		render.PopRenderTarget()
+
+		additive:SetTexture("$basetexture", rt)
+		additive:SetVector("$color", self.Item:GetColor():ToVector())
+		surface.SetMaterial(additive)
+		surface.DrawTexturedRectUV(x, y, w, h, 0, 0, u, v)
+
+		
+		render.ClearDepth()
+		cam.Start3D(vector_origin, angle, 90, sx, sy, w, h)
 			cam.StartOrthoView(lookup[1] + -size, lookup[2] + size, lookup[1] + size, lookup[2] + -size)
 				render.SuppressEngineLighting(true)
 					mdl:SetAngles(Angle(-40, 10, 10))
@@ -118,6 +383,7 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 				render.SuppressEngineLighting(false)
 			cam.EndOrthoView()
 		cam.End3D()
+
 	elseif (IsValid(mdl) and self.Item.Type == "Model") then
 		local mins, maxs = mdl:GetModelBounds()
 		cam.Start3D(Vector(50, 0, (maxs.z - mins.z) / 2), Angle(0, -180), 90, sx, sy, w, h)
@@ -129,7 +395,7 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 			render.SuppressEngineLighting(false)
 		cam.End3D()
 	elseif (self.Item.Type == "Shard") then
-		local RealColor, AddColor = pluto.inv.colors(self.Item.Color or Color(255, 255, 255))
+		local RealColor, AddColor = pluto.inv.colors(self.Item:GetColor() or Color(255, 255, 255))
 		newshard:SetVector("$color", RealColor:ToVector())
 		newshardadd:SetVector("$color", AddColor:ToVector())
 		surface.SetDrawColor(255, 255, 255, 255)

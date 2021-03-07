@@ -368,7 +368,7 @@ function PANEL:SetItem(item)
 		self.SubDescription:SetDefaultRenderSystem(pluto.fonts.systems.shadow)
 		self.SubDescription:SetDefaultTextColor(Color(255, 255, 255))
 		self.SubDescription:SetDefaultFont "pluto_inventory_font"
-		self.SubDescription:AppendText(item.SubDescription .. "\n")
+		self.SubDescription:AppendText(item.Tier:GetSubDescription() .. "\n")
 		self.SubDescription:SizeToContentsY()
 		self:SetTall(self:GetTall() + self.SubDescription:GetTall() + 5)
 		self.TierInfo:SetTall(self.SubDescription:GetTall())

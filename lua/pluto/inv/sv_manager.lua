@@ -16,7 +16,6 @@ pluto.inv.currencies = pluto.inv.currencies or {}
 pluto.inv.loading = pluto.inv.loading or {}
 
 pluto.inv.sent = pluto.inv.sent or {}
-pluto.inv.mods_sent = pluto.inv.mods_sent or {}
 
 util.AddNetworkString "pluto_inv_data"
 
@@ -45,51 +44,8 @@ local function WriteIfExists(mod, key)
 end
 
 function pluto.inv.writemod(ply, item, gun)
-	local mod = pluto.mods.byname[item.Mod]
+	net.WriteString(item.Mod)
 
-	-- global modifier stuff
-	net.WriteString(mod.InternalName)
-
-	if (not pluto.inv.mods_sent[ply] or not pluto.inv.mods_sent[ply][mod.InternalName]) then
-		net.WriteBool(true)
-
-		net.WriteString(mod.Type)
-		net.WriteString(mod.Name)
-
-		WriteIfExists(mod, "StatModifier")
-		WriteIfExists(mod, "Color")
-		WriteIfExists(mod, "FormatModifier")
-		WriteIfExists(mod, "GetDescription")
-		WriteIfExists(mod, "Description")
-		WriteIfExists(mod, "IsNegative")
-		WriteIfExists(mod, "GetModifier")
-		WriteIfExists(mod, "ModifyWeapon")
-
-		for tag in pairs(mod.Tags or {}) do
-			if (type(tag) ~= "string") then
-				continue
-			end
-
-			net.WriteBool(true)
-			net.WriteString(tag)
-		end
-		net.WriteBool(false)
-
-		net.WriteUInt(#mod.Tiers, 8)
-		for _, data in ipairs(mod.Tiers) do
-			net.WriteUInt(#data, 4)
-			for _, roll in ipairs(data) do
-				net.WriteFloat(roll)
-			end
-		end
-
-		pluto.inv.mods_sent[ply] = pluto.inv.mods_sent[ply] or {}
-		pluto.inv.mods_sent[ply][mod.InternalName] = true
-	else
-		net.WriteBool(false)
-	end
-
-	-- current modifier stuff
 	local tier = item.Tier
 
 	net.WriteUInt(item.Tier, 4)
@@ -201,19 +157,6 @@ function pluto.inv.writefullupdate(ply)
 		pluto.inv.writecurrencyupdate(ply, currency)
 	end
 
-	local modlist = {}
-
-	for _, MOD in pairs(pluto.mods.byname) do
-		if (MOD.Type == "suffix" or MOD.Type == "prefix") then
-			table.insert(modlist, MOD:GetTierName(1))
-		end
-	end
-
-	net.WriteUInt(#modlist, 32)
-	for _, name in ipairs(modlist) do
-		net.WriteString(name)
-	end
-
 	pluto.inv.writestatus(ply, "ready")
 end
 
@@ -294,14 +237,15 @@ function pluto.inv.writebaseitem(ply, item)
 	end
 
 	if (item.Type == "Shard" or item.Type == "Weapon") then
-		if (not item.Tier) then
-			PrintTable(item)
+		if (item.Tier.InternalName == "crafted") then
+			net.WriteBool(true)
+			for i = 1, 3 do
+				net.WriteString(item.Tier.Tiers[i])
+			end
+		else
+			net.WriteBool(false)
+			net.WriteString(item.Tier.InternalName)
 		end
-
-		net.WriteString(item.Tier.Name)
-		net.WriteString(item.Tier:GetSubDescription())
-		net.WriteColor(item.Tier.Color or color_white)
-		net.WriteUInt(item:GetMaxAffixes(), 3)
 	end
 
 	if (item.Type == "Weapon") then

@@ -2,6 +2,7 @@ return {
 	Name = "Powerful",
 	affixes = 3,
 	tags = {
+		texture = "bullets",
 		damage = 3,
 	},
 	SubDescription = {
@@ -16,6 +17,5 @@ return {
 		end
 		return math.random(1, #mod.Tiers)
 	end,
-	Shares = 10000,
 	Color = Color(204, 61, 5),
 }

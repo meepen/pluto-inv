@@ -272,7 +272,17 @@ function PANEL:AddSearchPanel(text)
 	end
 
 	function container.Label:GetAutoComplete(text)
-		return pluto.mods.networkednames
+		local modlist = {}
+	
+		for _, MOD in pairs(pluto.mods.byname) do
+			if (MOD.Type == "suffix" or MOD.Type == "prefix") then
+				table.insert(modlist, MOD:GetTierName(1))
+			end
+		end
+
+		table.sort(modlist)
+	
+		return modlist
 	end
 
 	function container.Label.OnFocusChanged(s, gained)

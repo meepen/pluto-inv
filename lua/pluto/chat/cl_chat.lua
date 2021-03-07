@@ -722,7 +722,7 @@ end
 
 function PANEL:Item(channel, item)
 	local box = self.Tabs.table[channel]
-	self:Color(channel, item.Color)
+	self:Color(channel, item:GetColor())
 	self:InsertShowcaseItem(channel, item)
 	self:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
 end

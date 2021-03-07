@@ -1,7 +1,6 @@
 return {
 	Name = "Promised",
 	affixes = 2,
-	Shares = 0,
 	SubDescription = {
 		why = "This gun has an incredibly high sacrifice rate in crafting.",
 	},

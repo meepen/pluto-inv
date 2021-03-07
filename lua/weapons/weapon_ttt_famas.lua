@@ -5,7 +5,7 @@ SWEP.HoldType           = "ar2"
 SWEP.PrintName          = "FAMAS"
 SWEP.Slot               = 2
 
-SWEP.Ortho = {5, 3}
+SWEP.Ortho = {9, 1}
 
 SWEP.ViewModelFlip      = false
 SWEP.ViewModelFOV       = 54

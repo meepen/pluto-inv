@@ -83,27 +83,6 @@ function pluto.tiers.random(gun)
 	error "Reached end of loop in pluto.tiers.random!" 
 end
 
-local function CombineColors(...)
-	local cols = {
-		s = 0,
-		v = 0,
-		a = 255
-	}
-	local hues = {}
-
-	local num = select("#", ...)
-	for i = 1, num do
-		local h, s, v = ColorToHSV((select(i, ...)))
-
-		hues[i] = h / 360
-		cols.s = cols.s + s / num
-		cols.v = cols.v + v / num
-	end
-
-	local c = HSVToColor(math.circularmean(unpack(hues)) * 360, cols.s, cols.v, cols.a)
-	return Color(c.r, c.g, c.b, c.a)
-end
-
 function pluto.tiers.craft(tiers)
 	for i, t in pairs(tiers) do
 		if (not istable(tiers[i])) then
@@ -131,7 +110,6 @@ function pluto.tiers.craft(tiers)
 			t2.InternalName,
 			t3.InternalName,
 		},
-		Shares = (t1.Shares + t2.Shares + t3.Shares) / 2,
 		Crafted = true,
 	}, pluto.tier_mt)
 
@@ -149,15 +127,16 @@ function pluto.tiers.craft(tiers)
 	if (t2.guaranteed) then
 		table.insert(tier.SubDescription, t2.SubDescription.guaranteed)
 		tier.guaranteed = t2.guaranteed
+		tier.guaranteeddraw = t2.guaranteeddraw
 	end
 
 	if (t3.rolltier) then
 		table.insert(tier.SubDescription, t3.SubDescription.rolltier)
 		tier.rolltier = t3.rolltier
+		tier.rolltierdraw = t3.rolltierdraw
 	end
 
 	tier.affixes = t1.affixes or 0
-	tier.Color = CombineColors(t1.Color, t1.Color, t1.Color, t2.Color, t2.Color, t3.Color)
 
 	return tier
 end
@@ -184,6 +163,7 @@ for _, name in pairs {
 
 	"unstable",
 } do
+	AddCSLuaFile("pluto/tiers/" .. name .. ".lua")
 	local item = include("pluto/tiers/" .. name .. ".lua")
 	if (not item) then
 		pwarnf("Tier %s didn't return a value", name)
@@ -191,11 +171,6 @@ for _, name in pairs {
 	end
 
 	setmetatable(item, pluto.tier_mt)
-
-	if (not item.Shares) then
-		pwarnf("Tier %s doesn't have shares", name)
-		continue
-	end
 
 	local prev = pluto.tiers.byname[name]
 	if (prev) then
@@ -222,5 +197,8 @@ for _, name in pairs {
 	local typelist = pluto.tiers.bytype[type]
 
 	table.insert(typelist.list, item)
-	typelist.shares = typelist.shares + item.Shares
+end
+
+if (SERVER) then
+	include "_sv_init.lua"
 end

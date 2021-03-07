@@ -286,3 +286,5 @@ if (CLIENT) then
 		hud.DrawTextOutlined(text, Color(255, 20, 20), color_black, ScrW() / 2 - w / 2, ScrH() / 4, 3)
 	end)
 end
+
+SWEP.Ortho = {-4, 0, angle = Angle(180, 45, 135), size = 1}
