@@ -420,7 +420,7 @@ function PANEL:SetItem(item)
 
 	self.ItemDesc:SetText(item.Description or "")
 	local subdesc = item.Tier:GetSubDescription() or ""
-	if (item.AffixMax) then
+	if (item:GetMaxAffixes() > 0) then
 		subdesc = subdesc .. "\n" .. "You can get up to " .. item:GetMaxAffixes() .. " modifiers on this item."
 	end
 
