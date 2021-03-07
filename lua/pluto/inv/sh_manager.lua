@@ -299,6 +299,12 @@ function ITEM:GetBackgroundTexture()
 	end
 end
 
+function ITEM:GetOverlayFunction()
+	if (self.Type == "Shard" or self.Type == "Weapon") then
+		return self.Tier and self.Tier.rolltierdraw or nil
+	end
+end
+
 function ITEM:GetMaxAffixes()
 	local affix = 0
 

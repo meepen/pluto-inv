@@ -45,7 +45,7 @@ local rands = setmetatable({}, {
 local function DrawMovingTexture(item, x, y, w, h)
 	local rand = rands[item]
 	local img = textures[item:GetBackgroundTexture()]
-	if (not img or img ~= textures.blackhole) then
+	if (not img) then
 		return false
 	end
 	local tex = img.texture
@@ -72,7 +72,7 @@ local function DrawMovingTexture(item, x, y, w, h)
 
 	local eu, ev = su + w / tw, sv + h / th
 
-	--[[if (img.rotate and img.rotate ~= 0) then
+	if (img.rotate and img.rotate ~= 0) then
 		su, sv = (su - 0.5), (sv - 0.5)
 		eu, ev = (eu - 0.5), (ev - 0.5)
 
@@ -90,10 +90,11 @@ local function DrawMovingTexture(item, x, y, w, h)
 
 		su, sv = (nsu + 0.5), (nsv + 0.5)
 		eu, ev = (neu + 0.5), (nev + 0.5)
-	end]]
+	end
 
 
-	surface.SetDrawColor(255, 255, 255)
+	local col = 150
+	surface.SetDrawColor(col, col, col)
 	surface.SetMaterial(tex)
 	surface.DrawTexturedRectUV(x, y, w, h, su, sv, eu, ev)
 
@@ -251,6 +252,14 @@ function PANEL:DrawItemBackground(x, y, sx, sy, w, h)
 	mesh.End()
 end
 
+function PANEL:DrawItemOverlay(x, y, sx, sy, w, h)
+	if (not self.Item or not self.Item:GetOverlayFunction()) then
+		return
+	end
+
+	self.Item:GetOverlayFunction()(x, y, sx, sy, w, h, 0)
+end
+
 function PANEL:PaintGradientBorder(x, y, sx, sy, w, h, bordercol)
 	local outlinesize = 2
 	surface.SetDrawColor(self.Item:GetColor())
@@ -282,6 +291,7 @@ function PANEL:PaintGradientBorder(x, y, sx, sy, w, h, bordercol)
 		render.SetStencilPassOperation(STENCIL_KEEP)
 
 		self:DrawItemBackground(x + outlinesize, y + outlinesize, sx, sy, w, h)
+		self:DrawItemOverlay(x + outlinesize, y + outlinesize, sx, sy, w, h)
 	render.SetStencilEnable(false)
 end
 
