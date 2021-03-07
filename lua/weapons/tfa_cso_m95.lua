@@ -102,7 +102,7 @@ function SWEP:ScaleRollType(type, roll, init)
 		local ret = roll / 2
 
 		if (init) then
-			self.Pluto[pluto.mods.byname.firerate.StatModifier] = (self.Pluto[pluto.mods.byname.firerate.StatModifier] or 0) + roll * 0.75
+			self.Pluto[pluto.mods.byname.firerate.StatModifier] = (self.Pluto[pluto.mods.byname.firerate.StatModifier] or 0) + roll * 0.2
 			self.Pluto[pluto.mods.byname.mag.StatModifier] = (self.Pluto[pluto.mods.byname.mag.StatModifier] or 0) + roll * 1.5
 			self.HeadshotMultiplier = self.HeadshotMultiplier * (1 + roll / 100 * 5)
 		end
