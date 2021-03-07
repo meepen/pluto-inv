@@ -206,6 +206,7 @@ function PANEL:Init()
 	self:SetPage(0)
 
 	hook.Add("PlutoReceiveAuctionData", self, self.PlutoReceiveAuctionData)
+	self:StartNewSearch()
 end
 
 function PANEL:PlutoReceiveAuctionData(items, pages)
