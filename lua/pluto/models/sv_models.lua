@@ -60,6 +60,7 @@ hook.Add("PlayerSetModel", "pluto_model", function(ply)
 	local item = pluto.itemids[itemid]
 	if (item and item.Model) then
 		ply:SetModel(item.Model.Model)
+		pluto.updatemodel(ply, item)
 		ply.RoundModel = item
 		return true
 	end
