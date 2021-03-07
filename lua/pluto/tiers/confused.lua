@@ -12,7 +12,7 @@ local function DrawArrow(x, y, w, h)
 end
 
 local aw, ah = 16, 16
-local speed = 1.3
+local speed = 1.5
 
 return {
 	Name = "Confused",
@@ -23,7 +23,6 @@ return {
 	rolltierdraw = function(x, y, sx, sy, w, h, rand)
 		surface.SetDrawColor(255, 0, 0, 128)
 		draw.NoTexture()
-
 
 		DrawArrow(x + w * 0.1, y + (CurTime() % speed) / speed * h, aw, ah)
 		DrawArrow(x + w * 0.1, y - h + (CurTime() % speed) / speed * h, aw, ah)

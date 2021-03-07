@@ -27,3 +27,5 @@ SWEP.Secondary.ScopeTable = {
 	["ScopeBorder"] = Color(0,0,0,255),
 	["ScopeCrosshair"] = { ["r"] = 0, ["g"]  = 0, ["b"] = 0, ["a"] = 255, ["s"] = 0 }
 }
+
+SWEP.Ortho = {-5, 0, angle = Angle(-30, 180, 160), size = 0.8 }

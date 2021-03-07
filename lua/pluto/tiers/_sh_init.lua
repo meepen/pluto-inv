@@ -127,11 +127,13 @@ function pluto.tiers.craft(tiers)
 	if (t2.guaranteed) then
 		table.insert(tier.SubDescription, t2.SubDescription.guaranteed)
 		tier.guaranteed = t2.guaranteed
+		tier.guaranteeddraw = t2.guaranteeddraw
 	end
 
 	if (t3.rolltier) then
 		table.insert(tier.SubDescription, t3.SubDescription.rolltier)
 		tier.rolltier = t3.rolltier
+		tier.rolltierdraw = t3.rolltierdraw
 	end
 
 	tier.affixes = t1.affixes or 0

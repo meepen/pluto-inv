@@ -17,7 +17,7 @@ local textures = {
 		scale = true,
 		texture = Material("pluto/seamless/blackhole.png", "noclamp"),
 		speed = Vector(0, 0),
-		rotate = 90,
+		rotate = 45,
 	},
 }
 

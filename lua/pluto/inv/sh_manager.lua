@@ -301,7 +301,17 @@ end
 
 function ITEM:GetOverlayFunction()
 	if (self.Type == "Shard" or self.Type == "Weapon") then
-		return self.Tier and self.Tier.rolltierdraw or nil
+		return function(...)
+			local fn = self.Tier and self.Tier.rolltierdraw or nil
+			if (fn) then
+				fn(...)
+			end
+
+			fn = self.Tier and self.Tier.guaranteeddraw
+			if (fn) then
+				fn(...)
+			end
+		end
 	end
 end
 
