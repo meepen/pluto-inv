@@ -5,7 +5,7 @@ function pluto.ui.rightclickmenu(item, pre)
 		pre(rightclick_menu, item)
 	end
 
-	local is_owner = true or item.Owner == LocalPlayer():SteamID64()
+	local is_owner = item.Owner == LocalPlayer():SteamID64()
 
 	rightclick_menu:AddOption("Upload item stats", function()
 		local StatsRT = GetRenderTarget("ItemStatsRT" .. ScrW() .. "_" ..  ScrH(), ScrW(), ScrH())

@@ -81,6 +81,7 @@ function pluto.inv.writeitem(ply, item)
 		net.WriteString(item.OriginalOwner or "0")
 		net.WriteString(item.OriginalOwnerName or "[unknown]")
 		net.WriteString(item.CreationMethod or "UNKNOWN")
+		net.WriteString(item.Owner or "0")
 		net.WriteBool(item.Untradeable)
 
 		if (item.constellations) then
