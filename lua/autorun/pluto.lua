@@ -88,6 +88,8 @@ pluto.files.load {
 		"cl/vgui/inv/container.lua",
 		"cl/vgui/inv/rightclick.lua",
 
+		"cl/vgui/popups/crash.lua",
+
 		"cl/vgui/showcase/init.lua",
 		"cl/vgui/showcase/model/container.lua",
 		"cl/vgui/showcase/weapon/container.lua",

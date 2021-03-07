@@ -5,6 +5,7 @@ end
 pluto.files.load {
 	Server = {
 		"sv/config.lua",
+		"sv/crash.lua",
 		"sv/maxplayers.lua",
 
 		"weapons/weapons.lua",
