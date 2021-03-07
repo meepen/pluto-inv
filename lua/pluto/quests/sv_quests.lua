@@ -314,6 +314,8 @@ function pluto.quests.delete(quest)
 		if (removed) then
 			pluto.db.transact(function(db)
 				pluto.quests.repopulatequests(db, quest.Player)
+
+				mysql_commit(db)
 			end)
 		end
 
