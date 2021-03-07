@@ -69,9 +69,7 @@ end
 function SWEP:GetPrintNameColor()
 	local item = self:GetInventoryItem()
 	if (item) then
-		if (item.Color) then
-			return (pluto.inv.colors(item.Color))
-		end
+		return item:GetColor()
 	end
 
 	return white_text
