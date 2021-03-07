@@ -17,7 +17,10 @@ SWEP.Primary.ClipSize = 30
 SWEP.Primary.DefaultClip = 90
 SWEP.Primary.Automatic = true
 SWEP.Primary.Damage = 15
-SWEP.Primary.Delay = 0.33
+SWEP.Primary.Delay = 0.5
+SWEP.Primary.RecoilTiming  = 0.36 / 6
+
+SWEP.HeadshotMultiplier = 25 / SWEP.Primary.Damage
 
 SWEP.AutoSpawnable = true
 
@@ -28,7 +31,7 @@ SWEP.Bullets = {
 	Num = 1,
 	DamageDropoffRange = 650,
 	DamageDropoffRangeMax = 4200,
-	DamageMinimumPercent = 0.1,
+	DamageMinimumPercent = 0.2,
 	Spread = vector_origin,
 }
 
@@ -68,3 +71,12 @@ end
 function SWEP:GetIronsightsPos(is_ironsights, frac, pos, ang)
 	return pos, ang + LerpAngle(is_ironsights and frac or 1 - frac, angle_zero, self:GetAngleDown())
 end
+
+
+local pow = 4
+SWEP.RecoilInstructions = {
+	Interval = 1,
+	pow * Angle(-5, -0.2),
+	pow * Angle(-3, -0.1),
+	pow * Angle(-5, 0.2),
+}
