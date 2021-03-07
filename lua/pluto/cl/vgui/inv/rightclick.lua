@@ -5,6 +5,8 @@ function pluto.ui.rightclickmenu(item, pre)
 		pre(rightclick_menu, item)
 	end
 
+	local is_owner = true or item.Owner == LocalPlayer():SteamID64()
+
 	rightclick_menu:AddOption("Upload item stats", function()
 		local StatsRT = GetRenderTarget("ItemStatsRT" .. ScrW() .. "_" ..  ScrH(), ScrW(), ScrH())
 		PLUTO_OVERRIDE_CONTROL_STATUS = true
@@ -54,25 +56,32 @@ function pluto.ui.rightclickmenu(item, pre)
 		SetClipboardText(util.TableToJSON(item))
 	end)]]
 
-	if (not item.Locked) then
-		rightclick_menu:AddOption("Remove name (100 hands)", function()
-			item.Nickname = nil
-			pluto.inv.message()
-				:write("unname", item.ID)
-				:send()
-		end):SetIcon("icon16/cog_delete.png")
-	end
+	if (is_owner) then
 
-	rightclick_menu:AddOption("Copy Chat Link", function()
-		SetClipboardText("{item:" .. item.ID .. "}")
-	end):SetIcon("icon16/book.png")
+		if (not item.Locked) then
+			rightclick_menu:AddOption("Remove name (100 hands)", function()
+				item.Nickname = nil
+				pluto.inv.message()
+					:write("unname", item.ID)
+					:send()
+			end):SetIcon("icon16/cog_delete.png")
+		end
 
-	if (item.Type ~= "Shard") then
-		rightclick_menu:AddOption("Toggle locked", function()
-			pluto.inv.message()
-				:write("itemlock", item.ID)
-				:send()
-		end):SetIcon("icon16/lock.png")
+		rightclick_menu:AddOption("Copy Chat Link", function()
+			SetClipboardText("{item:" .. item.ID .. "}")
+		end):SetIcon("icon16/book.png")
+
+		if (item.Type ~= "Shard") then
+			rightclick_menu:AddOption("Toggle locked", function()
+				pluto.inv.message()
+					:write("itemlock", item.ID)
+					:send()
+			end):SetIcon("icon16/lock.png")
+		end
+
+		rightclick_menu:AddOption("List item on Divine Market", function()
+			pluto.ui.listitem(item)
+		end):SetIcon "icon16/money_add.png"
 	end
 
 	if (item.Type == "Weapon") then
@@ -81,18 +90,20 @@ function pluto.ui.rightclickmenu(item, pre)
 		end):SetIcon "icon16/star.png"
 	end
 
-	if (not item.Locked) then
-		rightclick_menu:AddOption("Destroy Item", function()
-			pluto.divine.confirm("Destroy " .. item:GetPrintName(), function()
-				local tab = pluto.cl_inv[item.TabID]
-				tab.Items[item.TabIndex] = nil
-				hook.Run("PlutoItemUpdate", nil, item.TabID, item.TabIndex)
+	if (is_owner) then
+		if (not item.Locked) then
+			rightclick_menu:AddOption("Destroy Item", function()
+				pluto.divine.confirm("Destroy " .. item:GetPrintName(), function()
+					local tab = pluto.cl_inv[item.TabID]
+					tab.Items[item.TabIndex] = nil
+					hook.Run("PlutoItemUpdate", nil, item.TabID, item.TabIndex)
 
-				pluto.inv.message()
-					:write("itemdelete", item.TabID, item.TabIndex, item.ID)
-					:send()
-			end)
-		end):SetIcon("icon16/bomb.png")
+					pluto.inv.message()
+						:write("itemdelete", item.TabID, item.TabIndex, item.ID)
+						:send()
+				end)
+			end):SetIcon("icon16/bomb.png")
+		end
 	end
 
 	if (LocalPlayer():GetUserGroup() == "developer" or LocalPlayer():GetUserGroup() == "meepen") then

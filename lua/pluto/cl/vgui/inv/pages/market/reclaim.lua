@@ -141,6 +141,8 @@ function PANEL:Init()
 	self.ListDataContainer:SetSize(132, 132)
 
 	self.ListItem = self.ListDataContainer:Add "pluto_inventory_item"
+	self.ListItem:SetItem(pluto.ui.listeditem)
+	pluto.ui.listeditem = nil
 
 	function self.ListItem.CanClickWith(s, other)
 		local item = other.Item
@@ -315,4 +317,14 @@ function pluto.inv.readgotyouritems()
 	end
 
 	hook.Run("PlutoYourAuctionsUpdated", pagemax, items)
+end
+
+function pluto.ui.listitem(item)
+	if (not IsValid(pluto.ui.pnl)) then
+		return
+	end
+
+	pluto.ui.listeditem = item
+
+	pluto.ui.pnl:ChangeToTab "Divine Market":SelectTab "Your Items"
 end

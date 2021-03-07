@@ -265,6 +265,8 @@ function PANEL:Init()
 		quests:SetCurve(4)
 		quests:Dock(FILL)
 		quests:SetColor(inner_color)
+
+		return quests
 	end)
 
 	self:AddTab("Donate", function(container)
