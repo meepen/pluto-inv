@@ -9,7 +9,7 @@ return {
 		math.randomseed(math.floor((CurTime() + rand) / diff))
 
 		surface.SetDrawColor(0, 255, 255)
-		for i = 1, 25 do
+		for i = 1, 3 do
 			surface.DrawLine(math.random() * w + x, y, x + math.random() * w, y + h)
 		end
 	end,
