@@ -142,10 +142,6 @@ for k, v in pairs(pluto.inv.messages.sv2cl) do
 end
 
 co_net.Receive("pluto_inv_data", function(len, cl)
-	if (SERVER or GetConVar("pluto_print_console"):GetBool()) then
-		pluto.message("INV", "Collecting ", len, " bits of inventory data...")
-	end
-
 	while (not pluto.inv.readmessage(cl)) do
 	end
 end)
