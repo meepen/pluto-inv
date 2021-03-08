@@ -498,13 +498,18 @@ concommand.Add("pluto_auction_buy", function(p, c, a)
 			mysql_rollback(db)
 			return
 		end
+		
+		local dat = mysql_stmt_run(db, "DELETE FROM pluto_auction_info WHERE idx = ?", item.TabIndex)
+		if (not dat or dat.AFFECTED_ROWS ~= 1) then
+			mysql_rollback(db)
+			return
+		end
 
 		item.TabID = tab.RowID
 		item.TabIndex = 1
 		item.Owner = p:SteamID64()
 		pluto.itemids[item.RowID] = item
 
-		mysql_stmt_run(db, "DELETE FROM pluto_auction_info WHERE idx = ?", tab_idx)
 		pluto.inv.notifybufferitem(p, item)
 		tab.Items[1] = item
 		mysql_commit(db)
