@@ -639,8 +639,6 @@ function pluto.ui.unsetpickup()
 end
 
 function pluto.ui.pickupitem(item)
-	print(item and item.Item)
-	debug.Trace()
 	local itemdata, tabid, tabidx, clickedon, clickedwith, canclickon, canclickwith
 
 	if (IsValid(item)) then
