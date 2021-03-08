@@ -744,6 +744,9 @@ end
 function PANEL:Newline(channel)
 	self:DefaultFade(channel)
 	self.Tabs.table[channel]:AppendText("\n")
+	if (not pluto.chat.isOpened) then
+		self:ScrollToBottom()
+	end
 	MsgN ""
 end
 
