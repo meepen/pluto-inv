@@ -371,7 +371,7 @@ function pluto.inv.readtradeupdate(ply)
 				return
 			end
 
-			if (data.Untradeable == 1) then
+			if (data.Untradeable) then
 				ply:ChatPrint "UNTRADEABLE"
 				pluto.inv.message(ply)
 					:write("tradeupdate", ply, what, index, nil)

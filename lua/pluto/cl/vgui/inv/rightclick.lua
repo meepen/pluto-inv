@@ -57,7 +57,6 @@ function pluto.ui.rightclickmenu(item, pre)
 	end)]]
 
 	if (is_owner) then
-
 		if (not item.Locked) then
 			rightclick_menu:AddOption("Remove name (100 hands)", function()
 				item.Nickname = nil
@@ -79,9 +78,11 @@ function pluto.ui.rightclickmenu(item, pre)
 			end):SetIcon("icon16/lock.png")
 		end
 
-		rightclick_menu:AddOption("List item on Divine Market", function()
-			pluto.ui.listitem(item)
-		end):SetIcon "icon16/money_add.png"
+		if (not item.Untradeable) then
+			rightclick_menu:AddOption("List item on Divine Market", function()
+				pluto.ui.listitem(item)
+			end):SetIcon "icon16/money_add.png"
+		end
 	end
 
 	if (item.Type == "Weapon") then
