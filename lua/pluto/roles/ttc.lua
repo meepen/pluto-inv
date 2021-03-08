@@ -7,11 +7,11 @@ local function IsTTC()
 	end
 end
 
-if (SERVER) then
-	if (not IsTTC()) then
-		return
-	end
+if (not IsTTC()) then
+	return
+end
 	
+if (SERVER) then
 	util.AddNetworkString "pluto_ttc"
 end
 
