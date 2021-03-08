@@ -678,6 +678,12 @@ function pluto.ui.pickupitem(item)
 
 		local start = CurTime()
 		hook.Add("Think", p, function(self)
+			if (pluto.ui.pickedupitem ~= self) then
+				hook.Remove("Think", p)
+				print "not me"
+				return
+			end
+
 			if (start > CurTime() - 0.1) then
 				if (not input.IsMouseDown(MOUSE_LEFT)) then
 					hook.Remove("Think", p)
@@ -685,7 +691,12 @@ function pluto.ui.pickupitem(item)
 				return
 			end
 
-			-- TODO(meep): drag
+			if (not input.IsMouseDown(MOUSE_LEFT)) then
+				-- TODO(meep): hack lol
+				hook.GetTable().VGUIMousePressAllowed.pluto_item_pickup(MOUSE_LEFT)
+				hook.Remove("Think", p)
+				pluto.ui.pickupitem()
+			end
 		end)
 
 		return p
