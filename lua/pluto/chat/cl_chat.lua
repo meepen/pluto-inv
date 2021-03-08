@@ -413,6 +413,7 @@ function PANEL:Init()
 		self:SetKeyboardInputEnabled(true)
 		pluto.chat.Box:SetKeyboardInputEnabled(true)
 	end
+	self.TextEntry:DockMargin(0, 5, 0, 0)
 
 	self.TextEntry:SetFont "pluto_chat_font"
 	self.TextEntry:SetEnterAllowed(false)

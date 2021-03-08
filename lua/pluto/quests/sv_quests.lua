@@ -43,7 +43,11 @@ function pluto.quests.create(ply, id)
 			RowID = id
 		}, pluto.quests.mt)
 		pluto.quests.byid[id] = quest
-		table.insert(pluto.quests.players(ply), quest)
+	end
+
+	local quests = pluto.quests.players(ply)
+	if (quests and not table.HasValue(quests, quest)) then
+		table.insert(quests, quest)
 	end
 
 	return quest
@@ -186,6 +190,7 @@ function pluto.quests.repopulatequests(db, ply)
 			if (not pluto.quests.generate(db, ply, selected)) then
 				pluto.warn("QUEST", "Couldn't add quest to player: ", selected.ID)
 			end
+			pluto.warn("QUEST", "-add quest to player: ", selected.ID)
 		end
 	end
 
