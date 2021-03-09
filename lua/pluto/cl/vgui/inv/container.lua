@@ -1,5 +1,4 @@
 local last_tab_id = CreateConVar("pluto_last_tab_opened", "0", FCVAR_ARCHIVE)
-local last_open_category = CreateConVar("pluto_last_category_opened", "", FCVAR_ARCHIVE)
 
 local pluto_storage_toggled = CreateConVar("pluto_storage_toggled", 0)
 
@@ -276,8 +275,6 @@ function PANEL:Init()
 		quests:SetColor(inner_color)
 	end, nil, nil, Color(207, 204, 3))
 
-	self:ChangeToTab(last_open_category:GetString())
-
 	self:CreateOrdered()
 
 	tab_order_table = {}
@@ -341,10 +338,6 @@ function PANEL:ChangeToTab(name, noupdate)
 
 	if (self.ActiveTab == name) then
 		return tab.ActiveTabData
-	end
-
-	if (not noupdate) then
-		last_open_category:SetString(name)
 	end
 
 	local old = self.Tabs[self.ActiveTab]
