@@ -508,13 +508,16 @@ end
 
 function PANEL:AddTradeMessage(msg)
 	local sender = msg.sender
+	local textcol = Color(255, 255, 255)
 	if (isstring(sender)) then
 		self:AppendText(Color(255, 222, 0), sender, ": ")
 	elseif (IsValid(sender)) then
 		self:AppendText(Color(255, 222, 0), sender:Nick(), ": ")
+	else
+		textcol = Color(237, 237, 52)
 	end
 
-	self:AppendText(Color(255, 255, 255), msg[1], "\n")
+	self:AppendText(textcol, msg[1], "\n")
 end
 
 function PANEL:OnCancel()

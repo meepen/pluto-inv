@@ -76,7 +76,7 @@ Donating to us helps keep the servers up, keep the developers fed (BREADBOWLS) a
 	self.YourDonationsLabel = self.Inner:Add "pluto_label"
 	self.YourDonationsLabel:SetFont "pluto_inventory_font"
 	self.YourDonationsLabel:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.YourDonationsLabel:SetTextColor(Color(255, 255, 255))
+	self.YourDonationsLabel:SetTextColor(Color(237, 237, 52))
 	self.YourDonationsLabel:SetText("You have " .. (pluto.cl_tokens or 0) .. " tokens" .. (pluto.cl_tokens > 0 and " <3" or ""))
 	self.YourDonationsLabel:SizeToContents()
 	self.YourDonationsLabel:SetPos(0, 5)
