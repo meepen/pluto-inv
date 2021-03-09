@@ -40,7 +40,7 @@ function ENT:Tick()
 
 	damages.Left = damages.Left - 1
 
-	if (damages.Left == 0) then
+	if (damages.Left <= 0) then
 		table.remove(self.Damages, 1)
 		if (#self.Damages == 0) then
 			self:Remove()
@@ -64,17 +64,13 @@ end
 function ENT:DoDamage(damages)
 	local p = self:GetParent()
 
-	local outside = util.TraceLine {
-		start = p:GetPos(),
-		endpos = p:GetPos() + vector_up * 20000,
-		filter = function() return false end,
-	}.MatType == MAT_DEFAULT and 2 or 1
-
 	local dmg = DamageInfo()
-	dmg:SetDamage(damages.Damage * outside)
+	dmg:SetDamage(damages.Damage)
+	local dmgowner
 	if (IsValid(damages.Owner)) then
 		dmg:SetInflictor(IsValid(damages.Weapon) and damages.Weapon or damages.Owner)
 		dmg:SetAttacker(damages.Owner)
+		dmgowner = damages.Owner
 	else
 		dmg:SetAttacker(game.GetWorld())
 	end
@@ -82,7 +78,24 @@ function ENT:DoDamage(damages)
 	dmg:SetDamageType(DMG_SLOWBURN + DMG_DIRECT)
 	dmg:SetDamagePosition(p:GetPos())
 	p:TakeDamageInfo(dmg)
-	--p:EmitSound "General.BurningFlesh"
+
+	local flame = ents.Create "ttt_flame"
+	flame:SetPos(p:GetPos())
+	if (IsValid(dmgowner) and dmgowner:IsPlayer()) then
+		flame:SetDamageParent(dmgowner)
+		flame:SetOwner(dmgowner)
+	end
+	flame:SetDieTime(CurTime() + 4)
+	flame:SetExplodeOnDeath(false)
+
+	flame:Spawn()
+	flame:PhysWake()
+
+	local phys = flame:GetPhysicsObject()
+	if IsValid(phys) then
+		-- the balance between mass and force is subtle, be careful adjusting
+		phys:SetMass(2)
+	end
 end
 
 function pluto.statuses.fire(ply, damage)
@@ -100,8 +113,8 @@ function pluto.statuses.fire(ply, damage)
 		flame:Spawn()
 	end
 
-	damage.Damage = damage.Damage / 4
-	damage.Left = 4
+	damage.Damage = 4
+	damage.Left = damage.Damage / 4
 
 	table.insert(flame.Damages, damage)
 end

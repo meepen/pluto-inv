@@ -1,5 +1,5 @@
 MOD.Type = "suffix"
-MOD.Name = "Flame"
+MOD.Name = "The Inferno"
 MOD.Tags = {
 	"damage", "fire", "dot"
 }
