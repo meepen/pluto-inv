@@ -25,8 +25,8 @@ function ENT:DoDamage(damages)
 
 	local dmg = DamageInfo()
 
-	if (self.Speed > p:GetRunSpeed() * 3) then
-		d = d * 3
+	if (self.Speed > p:GetRunSpeed() * 2) then
+		d = d * 2
 	elseif (self.Speed > 50) then
 		d = d * 1.5
 	end
