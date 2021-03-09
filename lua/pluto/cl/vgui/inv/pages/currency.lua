@@ -94,11 +94,12 @@ function PANEL:AddTab(col, category, add_rest, buffer)
 			image:Center()
 		end
 
-		local open = opener:Add "ttt_curved_button"
+		local open = opener:Add "pluto_inventory_button"
 		open:SetText ""
 		open:Dock(BOTTOM)
 		open:SetCurve(4)
-		open:SetColor(Color(0, 0, 0))
+		open:SetColor(Color(0, 0, 0), Color(0, 0, 0))
+		open:SetTall(20)
 		local text = open:Add "pluto_label"
 		text:SetRenderSystem(pluto.fonts.systems.shadow)
 		text:SetFont "pluto_inventory_font"
@@ -136,7 +137,7 @@ function PANEL:AddTab(col, category, add_rest, buffer)
 		function self:SelectItemBox(currency)
 			image:SetImage(currency.Icon)
 			slider:SetSlideX(0)
-			open:SetColor(currency.Color)
+			open:SetColor(currency.Color, currency.Color)
 			text:SetText("Open 1 " .. currency.Name)
 			opener.Currency = currency
 			open.Amount = 1
