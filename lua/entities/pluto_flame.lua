@@ -31,7 +31,7 @@ function ENT:Tick()
 
 	local damages = self.Damages[1]
 
-	if (not damages) then
+	if (not damages or not p:Alive()) then
 		self:Remove()
 		return
 	end
@@ -113,7 +113,7 @@ function pluto.statuses.fire(ply, damage)
 		flame:Spawn()
 	end
 
-	damage.Damage = 4
+	damage.Damage = 3.5
 	damage.Left = damage.Damage / 4
 
 	table.insert(flame.Damages, damage)
