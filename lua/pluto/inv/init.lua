@@ -419,35 +419,38 @@ function pluto.inv.deleteitem(db, steamid, itemid, ignorelock)
 
 	local i = pluto.itemids[itemid]
 
-	local cl = player.GetBySteamID64(steamid)
-	if (i) then
-		if (IsValid(cl)) then
-			local tabs = pluto.inv.invs[cl]
-			if (tabs and tabs[i.TabID] and tabs[i.TabID].Items[i.TabIndex] == i) then
-				tabs[i.TabID].Items[i.TabIndex] = nil
-			end
-		end
-		i.RowID = nil
-	end
-
 	local query = "delete pluto_items from pluto_items inner join pluto_tabs on pluto_tabs.idx = pluto_items.tab_id where pluto_items.idx = ? and pluto_tabs.owner = ? and locked = false"
 	if (ignorelock) then
 		query = "delete pluto_items from pluto_items inner join pluto_tabs on pluto_tabs.idx = pluto_items.tab_id where pluto_items.idx = ? and pluto_tabs.owner = ?"
 	end
 
 	local d = mysql_stmt_run(db, query, itemid, steamid)
-	if (not d) then
-		pluto.inv.reloadfor(cl)
-		mysql_rollback(db)
-		return false
-	end
-
 	if (not d or d.AFFECTED_ROWS ~= 1) then
 		pluto.inv.reloadfor(cl)
 
 		pwarnf("Affected rows: %i", d.AFFECTED_ROWS)
 		mysql_rollback(db)
 		return false
+	end
+
+	local cl = player.GetBySteamID64(steamid)
+	if (i) then
+		if (IsValid(cl)) then
+			local tabs = pluto.inv.invs[cl]
+			local tab = tabs and tabs[i.TabID] or nil
+			if (tab and tab.Type == "buffer") then
+				pluto.inv.popbuffer(db, cl, i.TabIndex)
+			end
+
+			if (tab and tab.Items[i.TabIndex] == i) then
+				tab.Items[i.TabIndex] = nil
+			end
+
+			pluto.inv.message(cl)
+				:write("item", i)
+				:send()
+		end
+		i.RowID = nil
 	end
 
 	pluto.itemids[itemid] = nil
