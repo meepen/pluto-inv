@@ -144,12 +144,14 @@ function PANEL:Init()
 	self:SetCurve(2)
 	self:SetColor(Color(146, 146, 149))
 	self:DockPadding(1, 1, 1, 1)
+	self:SetSize(190, 79 + 2 + 8 + 20 + 2 + 20 + 2)
 
 
 	self.Inner = self:Add "ttt_curved_panel"
 	self.Inner:Dock(FILL)
 	self.Inner:SetCurve(2)
 	self.Inner:SetColor(Color(38, 38, 38))
+	self.Inner:SetSize(190 - 2, 79 + 2 + 8 + 20 + 2 + 20 + 2 - 2)
 
 	self.MixerBackground = self.Inner:Add "ttt_curved_panel"
 	self.MixerBackground:SetColor(Color(54, 54, 54))
@@ -175,6 +177,7 @@ function PANEL:Init()
 	end
 
 	function self.Mixer.OnUserChanged(s, col)
+		self:DoColorChanged(Color(col.r, col.g, col.b))
 		self:OnColorChanged(Color(col.r, col.g, col.b))
 		for _, shape in pairs(self.Shapes) do
 			shape:SetColor(col)
@@ -184,11 +187,28 @@ function PANEL:Init()
 		end
 	end
 
-	self:SetSize(190, 79 + 2 + 8 + 20 + 2)
+
+	self.TextEntry = self.Inner:Add "DTextEntry"
+	self.TextEntry:SetFont "pluto_inventory_font"
+	self.TextEntry:SetPos(8, 77)
+	self.TextEntry:SetSize(60, 20)
+	self.TextEntry:CenterHorizontal()
+
+	function self.TextEntry.OnEnter(s)
+		local r, g, b = s:GetText():match "([a-fA-F0-9][a-fA-F0-9])([a-fA-F0-9][a-fA-F0-9])([a-fA-F0-9][a-fA-F0-9])"
+		if (r) then
+			print(tonumber(r, 16))
+			self:SetRGB(Color(tonumber(r, 16), tonumber(g, 16), tonumber(b, 16)))
+		else
+
+			s:SetText "invalid"
+		end
+			
+	end
 
 	self.ShapeContainer = self.Inner:Add "EditablePanel"
 
-	self.ShapeContainer:SetPos(8, 79)
+	self.ShapeContainer:SetPos(8, 79 + 22)
 	self.ShapeContainer:SetWide(self:GetWide() - 16)
 	self.ShapeContainer:SetTall(20)
 	self.ShapeContainer:DockPadding(1, 1, 1, 1)
@@ -214,11 +234,19 @@ end
 function PANEL:OnColorChanged(col)
 end
 
+function PANEL:DoColorChanged(col)
+	local hex = string.format("%02x%02x%02x", col.r, col.g, col.b)
+	self.TextEntry:SetText(hex)
+end
+
 function PANEL:OnShapeChanged(shape)
 end
 
 function PANEL:SetRGB(col)
+	self:DoColorChanged(col)
+	self:OnColorChanged(col)
 	self.Mixer:SetBaseRGB(col)
+	self.Mixer:SetRGB(col)
 	self.Picker:SetRGB(col)
 	self.Mixer:OnUserChanged(self.Mixer:GetRGB())
 	for _, shape in pairs(self.Shapes) do
