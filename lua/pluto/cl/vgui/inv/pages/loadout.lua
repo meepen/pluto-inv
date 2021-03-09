@@ -103,6 +103,7 @@ local function GetCosmeticItems(idx)
 end
 
 GetLoadoutItems(pluto_last_loadout:GetInt())
+GetCosmeticItems(pluto_last_cosmetic_loadout:GetInt())
 
 local PANEL = {}
 DEFINE_BASECLASS "pluto_inventory_component"
