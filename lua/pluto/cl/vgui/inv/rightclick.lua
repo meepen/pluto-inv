@@ -91,8 +91,9 @@ function pluto.ui.rightclickmenu(item, pre)
 		end):SetIcon "icon16/star.png"
 	end
 
-	if (is_owner) then
-		if (not item.Locked) then
+	if (is_owner and not item.Locked) then
+		--local tab = pluto.cl_inv[item.TabID]
+		--if (tab and tab.Type ~= "buffer") then
 			rightclick_menu:AddOption("Destroy Item", function()
 				pluto.divine.confirm("Destroy " .. item:GetPrintName(), function()
 					local tab = pluto.cl_inv[item.TabID]
@@ -104,7 +105,7 @@ function pluto.ui.rightclickmenu(item, pre)
 						:send()
 				end)
 			end):SetIcon("icon16/bomb.png")
-		end
+		--end
 	end
 
 	if (LocalPlayer():GetUserGroup() == "developer" or LocalPlayer():GetUserGroup() == "meepen") then

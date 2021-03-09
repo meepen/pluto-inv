@@ -51,11 +51,12 @@ pluto.files.load {
 
 		"cl/fontstuff.lua",
 
-		"cl/vgui/plutotext.lua",
-		"cl/vgui/plutolabel.lua",
-		"cl/vgui/plutoimage.lua",
-		"cl/vgui/plutotoggle.lua",
-		"cl/vgui/plutodropdown.lua",
+		"cl/vgui/pluto/frame.lua",
+		"cl/vgui/pluto/text.lua",
+		"cl/vgui/pluto/label.lua",
+		"cl/vgui/pluto/image.lua",
+		"cl/vgui/pluto/toggle.lua",
+		"cl/vgui/pluto/dropdown.lua",
 
 		"cl/vgui/inv/parts/component.lua",
 		"cl/vgui/inv/parts/tabbed.lua",
