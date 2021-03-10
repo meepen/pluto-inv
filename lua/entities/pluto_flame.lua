@@ -113,7 +113,7 @@ function pluto.statuses.fire(ply, damage)
 		flame:Spawn()
 	end
 
-	damage.Damage = 3.5
+	damage.Damage = 4
 	damage.Left = damage.Damage / 4
 
 	table.insert(flame.Damages, damage)
