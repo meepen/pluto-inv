@@ -20,6 +20,8 @@ local urls = {}
 file.CreateDir "pluto"
 file.CreateDir "pluto/emojis"
 
+local flags = "mips smooth"
+
 local function GetURLMaterial(url)
 	return Promise(function(res, rej)
 		if (urls[url]) then
@@ -28,7 +30,7 @@ local function GetURLMaterial(url)
 
 		local fname = "pluto/emojis/" .. url:GetFileFromFilename() .. ".png"
 		if (file.Exists(fname, "DATA")) then
-			local mat = Material("../data/" .. fname)
+			local mat = Material("../data/" .. fname, flags)
 			urls[url] = mat
 			print(mat)
 			return res(mat)
@@ -37,7 +39,7 @@ local function GetURLMaterial(url)
 	
 		http.Fetch(url, function(body)
 			file.Write(fname, body)
-			local mat = Material("../data/" .. fname)
+			local mat = Material("../data/" .. fname, flags)
 			urls[url] = mat
 			return res(mat)
 		end, rej)
