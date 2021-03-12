@@ -126,6 +126,45 @@ hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 		table.insert(content, replace:sub(last_pos, last_pos + math.max(0, MAX_LENGTH - length)))
 	end
 
+	for i = #content, 1, -1 do
+		if (not isstring(content[i])) then
+			continue
+		end
+
+		local split = content[i]:Split ":"
+		
+		local new = {}
+
+		for x = #split - 1, 2, -2 do
+			local emoji = split[x]
+
+			local override_size
+			if (pluto.cancheat(from)) then
+				local e, w, h = emoji:match "([^;]+);(%d+)x(%d+)"
+				if (e) then
+					emoji = e
+					override_size = Vector(w, h)
+				end
+			end
+
+			if (not pluto.chat.images[emoji]) then
+				continue
+			end
+
+			content[i] = table.concat(split, ":", 1, x - 1)
+			table.insert(content, i + 1, table.concat(split, ":", x + 1))
+			for y = x, #split do
+				split[y] = nil
+			end
+			local data = pluto.chat.images[emoji]
+			if (override_size) then
+				data = table.Copy(data)
+				data.Size = override_size
+			end
+			table.insert(content, i + 1, data)
+		end
+	end
+
 	if (hook.Run("OnPlayerSay", from, content)) then
 		return ""
 	end
@@ -183,6 +222,11 @@ function pluto.inv.writechatmessage(ply, content, channel, teamchat)
 					net.WriteUInt(pluto.chat.type.ITEM, 4)
 					pluto.inv.writeitem(ply, data)
 				end
+			elseif (data.Type == "emoji") then
+				net.WriteUInt(pluto.chat.type.IMAGE, 4)
+				net.WriteString(data.Name)
+				net.WriteUInt(data.Size.x, 8)
+				net.WriteUInt(data.Size.y, 8)
 			else
 				net.WriteUInt(pluto.chat.type.TEXT, 4)
 				net.WriteString(tostring(data))

@@ -149,6 +149,10 @@ function pluto.inv.readchatmessage()
 			data = pluto.inv.readitem()
 		elseif type == pluto.chat.type.CURRENCY then
 			data = pluto.currency.byname[net.ReadString()]
+		elseif (type == pluto.chat.type.IMAGE) then
+			data = table.Copy(pluto.chat.images[net.ReadString()])
+			data.Size = Vector(net.ReadUInt(8), net.ReadUInt(8))
+			print "?!"
 		elseif (type == pluto.chat.type.NONE) then
 			break
 		end
@@ -216,7 +220,9 @@ function pluto.chat.Add(content, channel, teamchat)
 			pluto.chat.Box:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
 			--pluto.chat.Box:Text(channel, ": ")
 		else
-			if (v.Type ~= nil) then
+			if (v.Type == "emoji") then
+				pluto.chat.Box.Tabs.table[channel]:AddImage(v.Material, v.Size.x, v.Size.y)
+			elseif (v.Type ~= nil) then
 				pluto.chat.Box:Item(channel, v)
 			elseif (v.InternalName ~= nil) then
 				pluto.chat.Box:Cur(channel, v)
