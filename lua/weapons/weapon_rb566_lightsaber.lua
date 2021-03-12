@@ -664,8 +664,6 @@ end
 function SWEP:OnEnabled( bDeploy )
 	if ( ( !self:GetEnabled() or bDeploy ) and IsValid( self.Owner ) ) then self:PlayWeaponSound( self:GetOnSound() ) end
 
-	if ( CLIENT or ( self:GetEnabled() and !bDeploy ) ) then return end
-
 	self:SetHoldType( self:GetTargetHoldType() )
 	timer.Remove( "rb655_ls_ht" .. self:EntIndex() )
 
