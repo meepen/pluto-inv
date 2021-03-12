@@ -136,9 +136,9 @@ hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 		local new = {}
 
 		for x = #split - 1, 2, -2 do
-			local emoji = split[x]
+			local emoji = split[x]:lower()
 
-			local override_size
+			local override_size = Vector(30, 30)
 			if (pluto.cancheat(from)) then
 				local e, w, h = emoji:match "([^;]+);(%d+)x(%d+)"
 				if (e) then
@@ -156,11 +156,8 @@ hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 			for y = x, #split do
 				split[y] = nil
 			end
-			local data = pluto.chat.images[emoji]
-			if (override_size) then
-				data = table.Copy(data)
-				data.Size = override_size
-			end
+			local data = table.Copy(pluto.chat.images[emoji])
+			data.Size = override_size
 			table.insert(content, i + 1, data)
 		end
 	end

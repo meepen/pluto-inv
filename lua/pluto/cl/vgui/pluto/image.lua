@@ -2,11 +2,57 @@ local PANEL = {}
 AccessorFunc(PANEL, "TextColor", "TextColor")
 function PANEL:Init()
 	self.Image = self:Add "DImage"
+	self.Loading = self.Image:Add "pluto_inventory_loading"
+	self.Loading:Dock(FILL)
+	self.Loading:SetVisible(true)
 	self:SetCursor "beam"
 end
 
 function PANEL:SetMaterial(mat)
+	if (not mat) then
+		return
+	end
 	self.Image:SetMaterial(mat)
+	self.Loading:SetVisible(false)
+end
+
+local urls = {}
+file.CreateDir "pluto"
+file.CreateDir "pluto/emojis"
+
+local function GetURLMaterial(url)
+	return Promise(function(res, rej)
+		if (urls[url]) then
+			return res(urls[url])
+		end
+
+		local fname = "pluto/emojis/" .. url:GetFileFromFilename() .. ".png"
+		if (file.Exists(fname, "DATA")) then
+			local mat = Material("../data/" .. fname)
+			urls[url] = mat
+			print(mat)
+			return res(mat)
+		end
+
+	
+		http.Fetch(url, function(body)
+			file.Write(fname, body)
+			local mat = Material("../data/" .. fname)
+			urls[url] = mat
+			return res(mat)
+		end, rej)
+	end)
+end
+
+function PANEL:SetFromURL(url)
+	GetURLMaterial(url):next(function(mat)
+		if (not IsValid(self)) then
+			return
+		end
+
+		self.Image:SetMaterial(mat)
+		self.Loading:SetVisible(false)
+	end):catch(ErrorNoHalt)
 end
 
 function PANEL:SetImageSize(w, h)
@@ -17,6 +63,7 @@ end
 
 function PANEL:PerformLayout()
 	self.Image:Center()
+	self.Loading:Center()
 end
 
 function PANEL:SetClickable(clickable)

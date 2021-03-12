@@ -152,7 +152,6 @@ function pluto.inv.readchatmessage()
 		elseif (type == pluto.chat.type.IMAGE) then
 			data = table.Copy(pluto.chat.images[net.ReadString()])
 			data.Size = Vector(net.ReadUInt(8), net.ReadUInt(8))
-			print "?!"
 		elseif (type == pluto.chat.type.NONE) then
 			break
 		end
@@ -221,7 +220,7 @@ function pluto.chat.Add(content, channel, teamchat)
 			--pluto.chat.Box:Text(channel, ": ")
 		else
 			if (v.Type == "emoji") then
-				pluto.chat.Box.Tabs.table[channel]:AddImage(v.Material, v.Size.x, v.Size.y)
+				pluto.chat.Box.Tabs.table[channel]:AddImageFromURL(v.URL, v.Size.x, v.Size.y)
 			elseif (v.Type ~= nil) then
 				pluto.chat.Box:Item(channel, v)
 			elseif (v.InternalName ~= nil) then

@@ -196,9 +196,11 @@ end
 
 function PANEL:AddImage(img, w, h)
 	self:FinalizeLabel()
-	local rw, rh = img:GetInt "$realwidth", img:GetInt "$realheight"
-	if (rw and rh and not w and not h) then
-		w, h = rw, rh
+	if (not w or not h) then
+		local rw, rh = img:GetInt "$realwidth", img:GetInt "$realheight"
+		if (rw and rh and not w and not h) then
+			w, h = rw, rh
+		end
 	end
 
 	local pnl = self:Add "pluto_image"
@@ -208,6 +210,26 @@ function PANEL:AddImage(img, w, h)
 		y = self.CurPos.y,
 	}
 	pnl:SetMaterial(img)
+	pnl:SetImageSize(w, h)
+	pnl:SetClickable(self.Clickable)
+	pnl:SetTextColor(self:GetCurrentTextColor())
+	pnl:SetTall(math.max(h, self.CurrentLine.Height))
+
+	self:EnsureLineHeight(pnl)
+
+	self.CurPos.x = self.CurPos.x + w
+end
+
+function PANEL:AddImageFromURL(url, w, h)
+	self:FinalizeLabel()
+
+	local pnl = self:Add "pluto_image"
+	pnl:SetPos(self.CurPos.x, self.CurPos.y)
+	pnl.CurPos = {
+		x = self.CurPos.x,
+		y = self.CurPos.y,
+	}
+	pnl:SetFromURL(url)
 	pnl:SetImageSize(w, h)
 	pnl:SetClickable(self.Clickable)
 	pnl:SetTextColor(self:GetCurrentTextColor())
@@ -608,6 +630,7 @@ function Proxy(what)
 end
 Proxy "AppendText"
 Proxy "AddImage"
+Proxy "AddImageFromURL"
 Proxy "InsertShowcaseItem"
 
 
