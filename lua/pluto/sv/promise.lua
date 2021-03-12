@@ -31,7 +31,6 @@ end
 
 function MT:_try()
 	if (self._finished) then
-		pwarnf("already finished! %s", debug.traceback())
 		return self
 	end
 

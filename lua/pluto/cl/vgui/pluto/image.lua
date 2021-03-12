@@ -32,7 +32,6 @@ local function GetURLMaterial(url)
 		if (file.Exists(fname, "DATA")) then
 			local mat = Material("../data/" .. fname, flags)
 			urls[url] = mat
-			print(mat)
 			return res(mat)
 		end
 
