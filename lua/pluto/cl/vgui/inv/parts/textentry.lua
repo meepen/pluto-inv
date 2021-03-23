@@ -21,12 +21,12 @@ function PANEL:Init()
 		end
 
 		if (self:IsChildOfInventory()) then
-			pluto.ui.pnl:SetKeyboardFocus(s, true)
+			pluto.ui.SetKeyboardFocus(s, true)
 		end
 	end
 
 	function self.Entry.OnRemove(s)
-		pluto.ui.pnl:SetKeyboardFocus(s, false)
+		pluto.ui.SetKeyboardFocus(s, false)
 	end
 
 	self.Entry.GetAutoComplete = function(s, t)
@@ -35,7 +35,7 @@ function PANEL:Init()
 
 	hook.Add("OnTextEntryLoseFocus", self.Entry, function(s, p)
 		if (s == p) then
-			pluto.ui.pnl:SetKeyboardFocus(s, false)
+			pluto.ui.SetKeyboardFocus(s, false)
 		end
 	end)
 

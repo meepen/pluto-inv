@@ -658,6 +658,12 @@ function PANEL:SetKeyboardFocus(what, b)
 	self:SetKeyboardInputEnabled(table.Count(self.KeyboardFocus) > 0)
 end
 
+function pluto.ui.SetKeyboardFocus(what, b)
+	if (IsValid(pluto.ui.pnl)) then
+		pluto.ui.pnl:SetKeyboardFocus(what, b)
+	end
+end
+
 vgui.Register("pluto_inv", PANEL, "EditablePanel")
 
 
