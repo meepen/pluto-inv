@@ -248,7 +248,7 @@ function PANEL:AddSearchPanel()
 	text:SetContentAlignment(5)
 	text:SetFont "pluto_inventory_font"
 	text:SetTextColor(Color(255, 255, 255))
-	text:SetText " with tier >= "
+	text:SetText " with tier <= "
 	text:SetRenderSystem(pluto.fonts.systems.shadow)
 	text:Dock(RIGHT)
 	text:SizeToContentsX()
