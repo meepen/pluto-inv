@@ -688,8 +688,10 @@ if (IsValid(pluto_pop)) then
 end
 
 if (not tonumber("0b1")) then
-	pluto_pop = vgui.Create "pluto_branch_popup"
-	pluto_pop:ParentToHUD()
-	pluto_pop:SetPos(0, ScrH() - pluto_pop:GetTall() - 30)
-	pluto_pop:CenterHorizontal()
+	timer.Simple(2, function()
+		pluto_pop = vgui.Create "pluto_branch_popup"
+		pluto_pop:ParentToHUD()
+		pluto_pop:SetPos(0, ScrH() - pluto_pop:GetTall() - 30)
+		pluto_pop:CenterHorizontal()
+	end)
 end
