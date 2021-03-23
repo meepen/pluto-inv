@@ -539,6 +539,14 @@ function CUR:Save(ply, item, used)
 	end)
 end
 
+function CUR:GetColor()
+	return self.Color
+end
+
+function CUR:GetPrintName()
+	return self.Name
+end
+
 function pluto.iscurrency(t)
 	return debug.getmetatable(t) == pluto.currency_mt
 end

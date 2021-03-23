@@ -757,6 +757,7 @@ end
 function PANEL:InsertShowcaseItem(channel, item)
 	self:DefaultFade(channel)
 	self.Tabs.table[channel]:InsertShowcaseItem(item)
+	MsgC(item:GetColor(), item:GetPrintName())
 end
 
 function PANEL:ResetFade(enable)
