@@ -525,30 +525,12 @@ vgui.Register("pluto_inventory_auction_search_dropdown", PANEL, "pluto_inventory
 local PANEL = {}
 
 function PANEL:Init()
-	self.TextEntry = self:Add "DTextEntry"
+	self.TextEntry = self:Add "pluto_inventory_textentry"
 	self.TextEntry:Dock(RIGHT)
 	self.TextEntry:SetWide(120)
-	self.TextEntry:SetFont "pluto_inventory_font"
 
-	function self.TextEntry.OnMousePressed(s, m)
-		if (m == MOUSE_LEFT) then
-			pluto.ui.pnl:SetKeyboardFocus(s, true)
-		elseif (m == MOUSE_RIGHT) then
-			s:SetText ""
-			self:OnUpdated()
-		end
-	end
-
-	function self.TextEntry.OnEnter(s)
+	function self.TextEntry.OnChange()
 		self:OnUpdated()
-		pluto.ui.pnl:SetKeyboardFocus(s, false)
-	end
-
-	function self.TextEntry.OnFocusChanged(s, gained)
-		if (not gained) then
-			self:OnUpdated()
-			pluto.ui.pnl:SetKeyboardFocus(s, false)
-		end
 	end
 end
 
@@ -561,31 +543,12 @@ vgui.Register("pluto_inventory_auction_search_input", PANEL, "pluto_inventory_au
 local PANEL = {}
 
 function PANEL:Init()
-	self.TextEntry2 = self:Add "DTextEntry"
+	self.TextEntry2 = self:Add "pluto_inventory_textentry"
 	self.TextEntry2:Dock(RIGHT)
 	self.TextEntry2:SetWide(55)
-	self.TextEntry2:SetUpdateOnType(true)
-	self.TextEntry2:SetFont "pluto_inventory_font"
 	
-	function self.TextEntry2.OnMousePressed(s, m)
-		if (m == MOUSE_LEFT) then
-			pluto.ui.pnl:SetKeyboardFocus(s, true)
-		elseif (m == MOUSE_RIGHT) then
-			s:SetText ""
-			self:OnUpdated()
-		end
-	end
-
-	function self.TextEntry2.OnEnter(s)
+	function self.TextEntry2.OnChange(s, m)
 		self:OnUpdated()
-		pluto.ui.pnl:SetKeyboardFocus(s, false)
-	end
-
-	function self.TextEntry2.OnFocusChanged(s, gained)
-		if (not gained) then
-			self:OnUpdated()
-			pluto.ui.pnl:SetKeyboardFocus(s, false)
-		end
 	end
 
 	self.To = self:Add "pluto_label"
@@ -597,30 +560,12 @@ function PANEL:Init()
 	self.To:SetWide(10)
 	self.To:Dock(RIGHT)
 
-	self.TextEntry1 = self:Add "DTextEntry"
+	self.TextEntry1 = self:Add "pluto_inventory_textentry"
 	self.TextEntry1:Dock(RIGHT)
 	self.TextEntry1:SetWide(55)
-	self.TextEntry1:SetFont "pluto_inventory_font"
 
-	function self.TextEntry1.OnMousePressed(s, m)
-		if (m == MOUSE_LEFT) then
-			pluto.ui.pnl:SetKeyboardFocus(s, true)
-		elseif (m == MOUSE_RIGHT) then
-			s:SetText ""
-			self:OnUpdated()
-		end
-	end
-
-	function self.TextEntry1.OnEnter(s)
+	function self.TextEntry1.OnChange(s, m)
 		self:OnUpdated()
-		pluto.ui.pnl:SetKeyboardFocus(s, false)
-	end
-
-	function self.TextEntry1.OnFocusChanged(s, gained)
-		if (not gained) then
-			self:OnUpdated()
-			pluto.ui.pnl:SetKeyboardFocus(s, false)
-		end
 	end
 end
 
