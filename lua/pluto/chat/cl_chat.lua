@@ -4,7 +4,6 @@ local pluto_chat_fade_enable = CreateConVar("pluto_chat_fade_enable", "1", FCVAR
 local pluto_chat_fade_sustain = CreateConVar("pluto_chat_fade_sustain", "5", FCVAR_ARCHIVE, "sustain", 0, 10)
 local pluto_chat_fade_length = CreateConVar("pluto_chat_fade_length", "0.5", FCVAR_ARCHIVE, "length", 0, 10)
 local pluto_chat_closed_alpha = CreateConVar("pluto_chat_closed_alpha", "0", FCVAR_ARCHIVE, "alpha", 0, 0.75)
-local cur_color
 
 local function reposition()
 	if (IsValid(pluto.chat.Box)) then
@@ -706,7 +705,7 @@ function PANEL:SelectTab(name)
 end
 
 function PANEL:Text(channel, text)
-	MsgC(cur_color or white_text, text)
+	MsgC(self.Tabs.table[channel]:GetCurrentTextColor(), text)
 	self:DefaultFade(channel)
 	self.Tabs.table[channel]:AppendText(text)
 end
@@ -722,7 +721,6 @@ function PANEL:Color(channel, col, g, b, a)
 		r = col
 	end
 
-	cur_color = Color(r, g, b, a)
 	self.Tabs.table[channel]:InsertColorChange(r, g, b, a)
 end
 

@@ -245,7 +245,6 @@ function PANEL:GetItems()
 end
 
 function PANEL:UpdateItems()
-	PrintTable(self:GetItems())
 	pluto.inv.message()
 		:write("requestcraftresults", self:GetItems())
 		:send()

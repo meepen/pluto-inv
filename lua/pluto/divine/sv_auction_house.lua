@@ -87,7 +87,6 @@ concommand.Add("pluto_upgrade_market_data", function(p)
 		local amount_left = table.Count(items)
 		for idx, item in pairs(items) do
 			amount_left = amount_left - 1
-			print(amount_left)
 
 			mysql_stmt_run(db, "UPDATE pluto_auction_info SET name = ?, max_mods = ? WHERE idx = ?", item:GetPrintName(), item:GetMaxAffixes(), item.TabIndex)
 		end

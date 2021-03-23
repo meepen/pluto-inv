@@ -418,7 +418,7 @@ function pluto.inv.readtabswitch(ply)
 		local canswitch, fail = pluto.canswitchtabs(tab1, tab2, tabindex1, tabindex2)
 
 		if (not canswitch) then
-			print(fail, tabindex2, tabindex2)
+			print("FAILED TAB SWITCH: ", fail, tabindex2, tabindex2)
 			pluto.inv.sendfullupdate(ply)
 			return
 		end

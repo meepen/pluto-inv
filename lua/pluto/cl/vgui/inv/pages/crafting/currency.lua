@@ -286,8 +286,6 @@ function PANEL:GetWants(justtext)
 		table.insert(wants, justtext and search.Label:GetText() .. tier or {search, search.Label:GetText() .. tier})
 	end
 
-	PrintTable(wants)
-
 	return wants
 end
 
