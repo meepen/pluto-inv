@@ -54,7 +54,6 @@ function PANEL:Init()
 	end
 
 	function self.ItemContainer.OnSetItem(s, item)
-		debug.Trace()
 		self:PlutoItemUpdate(item)
 	end
 
@@ -98,86 +97,24 @@ function PANEL:Init()
 	local betweentext = self.BetweenSearch:Add "pluto_label"
 	betweentext:SetContentAlignment(4)
 	betweentext:SetFont "pluto_inventory_font"
-	betweentext:SetText "Stop when between "
+	betweentext:SetText "Stop when have at least "
 	betweentext:Dock(LEFT)
 	betweentext:SizeToContents()
 	betweentext:SetTextColor(Color(255, 255, 255))
 	betweentext:SetRenderSystem(pluto.fonts.systems.shadow)
 	betweentext:DockMargin(0, 1, 0, 2)
 
-	self.LowerBounds = self.BetweenSearch:Add "ttt_curved_panel_outline"
-	self.LowerBounds:SetCurve(4)
-	self.LowerBounds:SetColor(Color(95, 96, 102))
-	self.LowerBounds:Dock(LEFT)
+	self.LowerBounds = self.BetweenSearch:Add "pluto_inventory_textentry"
+	self.LowerBounds:DockMargin(0, 0, 3, 0)
+	self.LowerBounds:SetText "1"
+	self.LowerBounds:Dock(FILL)
 	self.LowerBounds:SetWide(50)
 
-	self.LowerBounds.Label = self.LowerBounds:Add "DTextEntry"
-	self.LowerBounds.Label:DockMargin(0, 0, 3, 0)
-	self.LowerBounds.Label:SetFont "pluto_inventory_font"
-	self.LowerBounds.Label:SetText "1"
-	self.LowerBounds.Label:Dock(FILL)
-	self.LowerBounds.Label:SetTextColor(Color(255, 255, 255))
-	self.LowerBounds.Label:SetPaintBackground(false)
-	self.LowerBounds.Label:SetMouseInputEnabled(true)
-
-	function self.LowerBounds.Label.OnChange()
+	function self.LowerBounds.OnChange()
 		self:PlutoItemUpdate(self.ItemContainer.Item)
 	end
 
-	function self.LowerBounds.Label:OnMousePressed(m)
-		if (m == MOUSE_LEFT) then
-			pluto.ui.pnl:SetKeyboardFocus(self, true)
-		end
-	end
-
-	function self.LowerBounds.Label.OnFocusChanged(s, gained)
-		if (not gained) then
-			pluto.ui.pnl:SetKeyboardFocus(s, false)
-		end
-	end
-
-	local andtext = self.BetweenSearch:Add "pluto_label"
-	andtext:SetContentAlignment(4)
-	andtext:SetFont "pluto_inventory_font"
-	andtext:SetText " and "
-	andtext:Dock(LEFT)
-	andtext:SizeToContents()
-	andtext:SetTextColor(Color(255, 255, 255))
-	andtext:SetRenderSystem(pluto.fonts.systems.shadow)
-	andtext:DockMargin(0, 1, 0, 2)
-
-	self.UpperBounds = self.BetweenSearch:Add "ttt_curved_panel_outline"
-	self.UpperBounds:SetCurve(4)
-	self.UpperBounds:SetColor(Color(95, 96, 102))
-	self.UpperBounds:Dock(LEFT)
-	self.UpperBounds:SetWide(50)
-
-	self.UpperBounds.Label = self.UpperBounds:Add "DTextEntry"
-	self.UpperBounds.Label:DockMargin(0, 0, 3, 0)
-	self.UpperBounds.Label:SetFont "pluto_inventory_font"
-	self.UpperBounds.Label:SetText "1"
-	self.UpperBounds.Label:Dock(FILL)
-	self.UpperBounds.Label:SetTextColor(Color(255, 255, 255))
-	self.UpperBounds.Label:SetPaintBackground(false)
-	self.UpperBounds.Label:SetMouseInputEnabled(true)
-
-	function self.UpperBounds.Label:OnMousePressed(m)
-		if (m == MOUSE_LEFT) then
-			pluto.ui.pnl:SetKeyboardFocus(self, true)
-		end
-	end
-
-	function self.UpperBounds.Label.OnFocusChanged(s, gained)
-		if (not gained) then
-			pluto.ui.pnl:SetKeyboardFocus(s, false)
-		end
-	end
-
-	function self.UpperBounds.Label.OnChange()
-		self:PlutoItemUpdate(self.ItemContainer.Item)
-	end
-
-	self:AddSearchPanel "Damage"
+	self:AddSearchPanel()
 
 	self.AddSearchButton = self:Add "EditablePanel"
 	self.AddSearchButton:SetTall(19)
@@ -202,7 +139,7 @@ function PANEL:Init()
 	plus:SetMouseInputEnabled(true)
 	function plus.OnMousePressed(s, m)
 		if (m == MOUSE_LEFT) then
-			self:AddSearchPanel "Damage 1"
+			self:AddSearchPanel()
 		end
 	end
 	self.AddSearchButton:SetZPos(0x7ffd)
@@ -233,7 +170,7 @@ function PANEL:Init()
 	self.GoButton:SetZPos(0x7fff)
 end
 
-function PANEL:AddSearchPanel(text)
+function PANEL:AddSearchPanel()
 	local container = self:Add "EditablePanel"
 	container:Dock(TOP)
 	container:DockMargin(0, 0, 0, 5)
@@ -243,6 +180,18 @@ function PANEL:AddSearchPanel(text)
 	container.Status:SetColor(Color(95, 96, 102))
 	container.Status:Dock(LEFT)
 	container.Status:DockMargin(0, 0, 5, 0)
+	container.Status:SetMouseInputEnabled(true)
+	container.Status:SetCursor "hand"
+
+	function container.Status.OnMousePressed()
+		container:Remove()
+
+		for i, c in pairs(self.SearchPanels) do
+			if (c == container) then
+				table.remove(self.SearchPanels, i)
+			end
+		end
+	end
 
 	container.StatusImage = container.Status:Add "DImage"
 	container.StatusImage:Dock(FILL)
@@ -253,16 +202,10 @@ function PANEL:AddSearchPanel(text)
 		container.Status:SetWide(h)
 	end
 
-	local labelcontainer = container:Add "ttt_curved_panel_outline"
-	labelcontainer:SetCurve(4)
-	labelcontainer:SetColor(Color(95, 96, 102))
-	labelcontainer:Dock(FILL)
 
-	container.Label = labelcontainer:Add "DTextEntry"
-	container.Label:SetFont "pluto_inventory_font"
-	container.Label:SetText(text)
-	container.Label:SetTextColor(Color(255, 255, 255))
-	container.Label:SetPaintBackground(false)
+	container.Label = container:Add "pluto_inventory_textentry"
+	container.Label:SetText("")
+	container.Label:Dock(FILL)
 
 	function container.Label:OnMousePressed(m)
 		if (m == MOUSE_LEFT) then
@@ -276,13 +219,44 @@ function PANEL:AddSearchPanel(text)
 	
 		for _, MOD in pairs(pluto.mods.byname) do
 			if (MOD.Type == "suffix" or MOD.Type == "prefix") then
-				table.insert(modlist, MOD:GetTierName(1))
+				table.insert(modlist, MOD:GetPrintName())
 			end
 		end
 
 		table.sort(modlist)
+
+		for i = #modlist, 1, -1 do
+			if (not modlist[i]:lower():find(text:lower(), 1, true)) then
+				table.remove(modlist, i)
+			end
+		end
 	
 		return modlist
+	end
+
+	function container.Label.OnChange()
+		self:PlutoItemUpdate(self.ItemContainer.Item)
+	end
+
+	container:SetTall(19)
+
+	container.Tier = container:Add "pluto_inventory_textentry"
+	container.Tier:SetText("")
+	container.Tier:Dock(RIGHT)
+
+	local text = container:Add "pluto_label"
+	text:SetContentAlignment(5)
+	text:SetFont "pluto_inventory_font"
+	text:SetTextColor(Color(255, 255, 255))
+	text:SetText " with tier >= "
+	text:SetRenderSystem(pluto.fonts.systems.shadow)
+	text:Dock(RIGHT)
+	text:SizeToContentsX()
+	function container.Tier:OnMousePressed(m)
+		if (m == MOUSE_LEFT) then
+			pluto.ui.pnl:SetKeyboardFocus(self, true)
+			self:OpenAutoComplete(self:GetAutoComplete "")
+		end
 	end
 
 	function container.Label.OnFocusChanged(s, gained)
@@ -295,12 +269,6 @@ function PANEL:AddSearchPanel(text)
 		self:PlutoItemUpdate(self.ItemContainer.Item)
 	end
 
-	container.Label:SizeToContentsY()
-	container:SetTall(19)
-	container.Label:DockMargin(5, 1, 0, 2)
-	container.Label:Dock(FILL)
-	container.Label:SetMouseInputEnabled(true)
-
 	container:SetZPos(#self.SearchPanels)
 
 	table.insert(self.SearchPanels, container)
@@ -311,8 +279,14 @@ end
 function PANEL:GetWants(justtext)
 	local wants = {}
 	for _, search in ipairs(self.SearchPanels) do
-		table.insert(wants, justtext and search.Label:GetText() or {search, search.Label:GetText()})
+		local tier = ""
+		if (search.Tier:GetText() ~= "") then
+			tier = " " .. search.Tier:GetText()
+		end
+		table.insert(wants, justtext and search.Label:GetText() .. tier or {search, search.Label:GetText() .. tier})
 	end
+
+	PrintTable(wants)
 
 	return wants
 end
@@ -367,7 +341,7 @@ function PANEL:PlutoItemUpdate(item)
 		container.StatusImage:SetImage(found and "icon16/tick.png" or "icon16/cross.png")
 	end
 
-	local mins, maxs = tonumber(self.LowerBounds.Label:GetText()) or -math.huge, tonumber(self.UpperBounds.Label:GetText()) or math.huge
+	local mins, maxs = tonumber(self.LowerBounds:GetText()) or -math.huge, math.huge
 
 	self.BetweenStatus.Image:SetImage(gotten >= mins and gotten <= maxs and "icon16/tick.png" or "icon16/cross.png")
 
@@ -399,7 +373,7 @@ function PANEL:TryContinue()
 		return
 	end
 
-	local mins, maxs = tonumber(self.LowerBounds.Label:GetText()) or 0, tonumber(self.UpperBounds.Label:GetText()) or 0xff
+	local mins, maxs = tonumber(self.LowerBounds:GetText()) or 0, 0xff
 	self.Selector:SetAmount(math.max(0, amount - 50))
 	pluto.inv.message()
 		:write("masscurrencyuse", currency.InternalName, item, amount, self:GetWants(true), mins, maxs)

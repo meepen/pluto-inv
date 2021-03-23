@@ -188,8 +188,7 @@ function PANEL:Init()
 	end
 
 
-	self.TextEntry = self.Inner:Add "DTextEntry"
-	self.TextEntry:SetFont "pluto_inventory_font"
+	self.TextEntry = self.Inner:Add "pluto_inventory_textentry"
 	self.TextEntry:SetPos(8, 77)
 	self.TextEntry:SetSize(60, 20)
 	self.TextEntry:CenterHorizontal()
