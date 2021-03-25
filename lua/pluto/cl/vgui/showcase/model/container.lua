@@ -32,7 +32,7 @@ function PANEL:Init()
 	self.CreatedLabel = self.BottomLine:Add "pluto_label"
 	self.CreatedLabel:SetFont "pluto_showcase_small"
 	self.CreatedLabel:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.CreatedLabel:SetTextColor(Color(255, 255, 255))
+	self.CreatedLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.CreatedLabel:SetText ""
 	self.CreatedLabel:Dock(RIGHT)
 	self.CreatedLabel:SizeToContentsX()
@@ -50,7 +50,7 @@ function PANEL:Init()
 	self.EXPLabel = self.BottomLine2:Add "pluto_label"
 	self.EXPLabel:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.EXPLabel:SetFont "pluto_showcase_small"
-	self.EXPLabel:SetTextColor(Color(255, 255, 255))
+	self.EXPLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.EXPLabel:Dock(RIGHT)
 	self.EXPLabel:SetContentAlignment(6)
 	self.EXPLabel:SetTall(0)

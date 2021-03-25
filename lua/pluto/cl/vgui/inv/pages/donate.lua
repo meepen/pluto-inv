@@ -16,7 +16,7 @@ function PANEL:Init()
 		self.Text:SetSize(w - 30, 200)
 		self.Text:SetDefaultRenderSystem(pluto.fonts.systems.shadow)
 		self.Text:SetDefaultFont "pluto_inventory_font_lg"
-		self.Text:SetDefaultTextColor(Color(255, 255, 255))
+		self.Text:SetDefaultTextColor(pluto.ui.theme "TextActive")
 		self.Text:AppendText [[We take extreme pride in programming this server from the ground up. Because of this we are able to keep our servers fast and expandable.
 ---
 Pluto takes a stance where we will never enable pay-to-win mechanics to our server to keep things fair for everyone who puts their time into this server!
@@ -51,7 +51,7 @@ Donating to us helps keep the servers up, keep the developers fed (BREADBOWLS) a
 	self.DonateButton:SetMouseInputEnabled(true)
 	self.DonateButtonLabel = self.DonateButton:Add "pluto_label"
 	self.DonateButtonLabel:SetFont "pluto_inventory_font_lg"
-	self.DonateButtonLabel:SetTextColor(Color(255, 255, 255))
+	self.DonateButtonLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.DonateButtonLabel:SetContentAlignment(5)
 	self.DonateButtonLabel:SetText "Click here to donate! <3"
 	self.DonateButtonLabel:SetRenderSystem(pluto.fonts.systems.shadow)
@@ -70,7 +70,7 @@ Donating to us helps keep the servers up, keep the developers fed (BREADBOWLS) a
 	self.DonateLabel = self.Inner:Add "pluto_label"
 	self.DonateLabel:SetFont "pluto_inventory_font"
 	self.DonateLabel:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.DonateLabel:SetTextColor(Color(255, 255, 255))
+	self.DonateLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self:SetDonateText("Monthly goal: " .. string.format("$%.2f USD", GetGlobalInt "pluto_donate_goal" / 100))
 
 	self.YourDonationsLabel = self.Inner:Add "pluto_label"

@@ -100,7 +100,7 @@ function PANEL:Init()
 	betweentext:SetText "Stop when have at least "
 	betweentext:Dock(LEFT)
 	betweentext:SizeToContents()
-	betweentext:SetTextColor(Color(255, 255, 255))
+	betweentext:SetTextColor(pluto.ui.theme "TextActive")
 	betweentext:SetRenderSystem(pluto.fonts.systems.shadow)
 	betweentext:DockMargin(0, 1, 0, 2)
 
@@ -133,7 +133,7 @@ function PANEL:Init()
 	plus:SetFont "pluto_inventory_font"
 	plus:SetText "+"
 	plus:Dock(FILL)
-	plus:SetTextColor(Color(255, 255, 255))
+	plus:SetTextColor(pluto.ui.theme "TextActive")
 	plus:DockMargin(0, 0, 2, 1)
 	plus:SetCursor "hand"
 	plus:SetMouseInputEnabled(true)
@@ -162,7 +162,7 @@ function PANEL:Init()
 	self.GoLabel = self.GoButton:Add "pluto_label"
 	self.GoLabel:Dock(FILL)
 	self.GoLabel:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.GoLabel:SetTextColor(Color(255, 255, 255))
+	self.GoLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.GoLabel:SetFont "pluto_inventory_font"
 	self.GoLabel:SetContentAlignment(5)
 	self.GoLabel:SetText "Use currency"
@@ -247,7 +247,7 @@ function PANEL:AddSearchPanel()
 	local text = container:Add "pluto_label"
 	text:SetContentAlignment(5)
 	text:SetFont "pluto_inventory_font"
-	text:SetTextColor(Color(255, 255, 255))
+	text:SetTextColor(pluto.ui.theme "TextActive")
 	text:SetText " with tier <= "
 	text:SetRenderSystem(pluto.fonts.systems.shadow)
 	text:Dock(RIGHT)

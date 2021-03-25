@@ -48,7 +48,7 @@ function PANEL:CreateInners()
 	self.NameLabel = self.NameContainer:Add "pluto_label"
 	self.NameLabel:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.NameLabel:SetFont "pluto_showcase_name"
-	self.NameLabel:SetTextColor(Color(255, 255, 255))
+	self.NameLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.NameLabel:SetText "TEST"
 	self.NameLabel:Dock(FILL)
 	self.NameLabel:SetContentAlignment(5)
@@ -64,7 +64,7 @@ function PANEL:CreateInners()
 	self.RealNameLabel = self.NameContainer:Add "pluto_label"
 	self.RealNameLabel:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.RealNameLabel:SetFont "pluto_showcase_name_real"
-	self.RealNameLabel:SetTextColor(Color(255, 255, 255))
+	self.RealNameLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.RealNameLabel:SetText ""
 	self.RealNameLabel:Dock(BOTTOM)
 	self.RealNameLabel:SetContentAlignment(8)

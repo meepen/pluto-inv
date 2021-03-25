@@ -31,9 +31,6 @@ local function UpdatePriorityConvar()
 	pluto_tab_order:SetString(util.TableToJSON(tab_order_table))
 end
 
-local text_color = Color(255, 255, 255)
-local inner_color = Color(64, 66, 74)
-
 local PANEL = {}
 
 function PANEL:Init()
@@ -99,7 +96,7 @@ function PANEL:Init()
 	self.CloseButton:SetSize(self.TopSize, self.TopSize)
 	self.CloseButton:SetFont "pluto_inventory_x"
 	self.CloseButton:SetText "X"
-	self.CloseButton:SetTextColor(Color(0xd7, 0x2c, 0x2d))
+	self.CloseButton:SetTextColor(pluto.ui.theme "XButton")
 	self.CloseButton:SetContentAlignment(5)
 	self.CloseButton:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.CloseButton:SetCursor "hand"
@@ -133,7 +130,7 @@ function PANEL:Init()
 
 	self.Storage:Dock(RIGHT)
 	self.Storage:DockMargin(12, 0, 0, 0)
-	self.Storage:SetColor(inner_color)
+	self.Storage:SetColor(pluto.ui.theme "InnerColor")
 	self.Storage:SetCurve(4)
 
 	self.RestOfStorage = self.StorageContainer:Add "EditablePanel"
@@ -161,13 +158,13 @@ function PANEL:Init()
 
 	self.StorageLabel:SetText "Storage"
 	self.StorageLabel:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.StorageLabel:SetTextColor(text_color)
+	self.StorageLabel:SetTextColor(pluto.ui.theme "TextActive")
 
 	-- THEME
 	self.Main:SetColor(Color(38, 38, 38))
 	self.SidePanel:SetColor(Color(57, 57, 57))
 	self.Container:SetColor(Color(48, 50, 59))
-	self.SidePanelContainer:SetColor(Color(64, 66, 74))
+	self.SidePanelContainer:SetColor(pluto.ui.theme "InnerColor")
 
 	self.Main:SetCurve(4)
 	self.SidePanel:SetCurve(4)
@@ -187,7 +184,7 @@ function PANEL:Init()
 		local other = container:Add "pluto_inventory_equip"
 		other:SetCurve(4)
 		other:Dock(FILL)
-		other:SetColor(inner_color)
+		other:SetColor(pluto.ui.theme "InnerColor")
 	end, true)
 
 
@@ -195,14 +192,14 @@ function PANEL:Init()
 		local other = container:Add "pluto_inventory_trading"
 		other:SetCurve(4)
 		other:Dock(FILL)
-		other:SetColor(inner_color)
+		other:SetColor(pluto.ui.theme "InnerColor")
 	end, true, true)
 
 	self:AddTab("Crafting", function(container)
 		local other = container:Add "pluto_inventory_crafting"
 		other:SetCurve(4)
 		other:Dock(FILL)
-		other:SetColor(inner_color)
+		other:SetColor(pluto.ui.theme "InnerColor")
 		other.Storage = storage
 	end, true, true)
 
@@ -210,7 +207,7 @@ function PANEL:Init()
 		local other = container:Add "pluto_inventory_currency"
 		other:SetCurve(4)
 		other:Dock(FILL)
-		other:SetColor(inner_color)
+		other:SetColor(pluto.ui.theme "InnerColor")
 		other.Storage = storage
 
 		return other
@@ -220,14 +217,14 @@ function PANEL:Init()
 		local quests = container:Add "pluto_inventory_quests"
 		quests:SetCurve(4)
 		quests:Dock(FILL)
-		quests:SetColor(inner_color)
+		quests:SetColor(pluto.ui.theme "InnerColor")
 	end, true)
 
 	self:AddTab("Divine Market", function(container)
 		local quests = container:Add "pluto_inventory_divine_market"
 		quests:SetCurve(4)
 		quests:Dock(FILL)
-		quests:SetColor(inner_color)
+		quests:SetColor(pluto.ui.theme "InnerColor")
 
 		return quests
 	end)
@@ -236,7 +233,7 @@ function PANEL:Init()
 		local quests = container:Add "pluto_inventory_donate"
 		quests:SetCurve(4)
 		quests:Dock(FILL)
-		quests:SetColor(inner_color)
+		quests:SetColor(pluto.ui.theme "InnerColor")
 	end, nil, nil, Color(207, 204, 3))
 
 	self:CreateOrdered()
@@ -487,7 +484,7 @@ function PANEL:AddStorageTab(tab)
 	lbl:SetFont "pluto_inventory_font_s"
 	lbl:SetTall(22)
 	lbl:SetRenderSystem(pluto.fonts.systems.shadow)
-	lbl:SetTextColor(Color(255, 255, 255))
+	lbl:SetTextColor(pluto.ui.theme "TextActive")
 	lbl:SetText(tab.Name)
 	lbl:SetMouseInputEnabled(false)
 

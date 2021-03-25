@@ -1,6 +1,3 @@
-local text_color = Color(255, 255, 255)
-local inner_color = Color(64, 66, 74)
-
 local PANEL = {}
 
 function PANEL:Init()

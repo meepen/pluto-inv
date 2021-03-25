@@ -1,9 +1,5 @@
 local circles = include "pluto/thirdparty/circles.lua"
 
-local inactive_color = Color(35, 36, 43)
-local active_color   = Color(64, 66, 74)
-
-local active_text = Color(255, 255, 255)
 local inactive_text = Color(128, 128, 128)
 
 local padding_x = 8
@@ -12,7 +8,7 @@ local padding_y = 5
 local PANEL = {}
 
 function PANEL:Init()
-	self.Color = active_color
+	self.Color = pluto.ui.theme "InnerColor"
 	self.TabArea = self:Add "EditablePanel"
 	function self.TabArea:PerformLayout(w, h)
 		local children = self:GetChildren()
@@ -72,7 +68,7 @@ function PANEL:GetTab(text)
 end
 
 function PANEL:AddTab(text, onpress, col)
-	col = col or active_text
+	col = col or pluto.ui.theme "TextActive"
 	onpress = onpress or function() end
 	local curve = self.TabArea:Add "pluto_inventory_component_noshadow"
 	curve:Dock(LEFT)
@@ -84,7 +80,7 @@ function PANEL:AddTab(text, onpress, col)
 	curve.Label = curve:Add "pluto_label"
 	curve.Label:SetFont "pluto_inventory_font_lg"
 	curve.Label:SetRenderSystem(pluto.fonts.systems.shadow)
-	curve.Label:SetTextColor(Color(255, 255, 255))
+	curve.Label:SetTextColor(pluto.ui.theme "TextActive")
 	curve.Label:SetText(text)
 	curve.Label:SetContentAlignment(5)
 	curve.Label:SizeToContentsX()
@@ -103,7 +99,7 @@ function PANEL:AddTab(text, onpress, col)
 		self.Tabs[curve]:SetVisible(true)
 		curve:ChangeDockInner(1, 1, 1, 0)
 	else
-		curve:SetColor(inactive_color)
+		curve:SetColor(pluto.ui.theme "InnerColorInactive")
 		curve.Label:SetTextColor(inactive_text)
 		self.Tabs[curve]:SetVisible(false)
 		curve:ChangeDockInner(0, 0, 0, 0)
@@ -112,7 +108,7 @@ function PANEL:AddTab(text, onpress, col)
 	function curve.OnMousePressed(s, m)
 		if (m == MOUSE_LEFT) then
 			if (IsValid(self.ActiveTab)) then
-				self.ActiveTab:SetColor(inactive_color)
+				self.ActiveTab:SetColor(pluto.ui.theme "InnerColorInactive")
 				self.ActiveTab.Label:SetTextColor(inactive_text)
 				self.ActiveTab:ChangeDockInner(0, 0, 0, 0)
 				self.Tabs[self.ActiveTab]:SetVisible(false)

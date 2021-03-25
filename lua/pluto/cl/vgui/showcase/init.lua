@@ -94,7 +94,7 @@ function PANEL:Init()
 	self.Name:SetFont "pluto_showcase_name"
 	self.Name:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.Name:SetContentAlignment(5)
-	self.Name:SetTextColor(Color(255, 255, 255))
+	self.Name:SetTextColor(pluto.ui.theme "TextActive")
 end
 
 function PANEL:SetItem()

@@ -1,10 +1,6 @@
 local last_active_tab = CreateConVar("pluto_last_currency_tab", "", FCVAR_ARCHIVE)
 local circles = include "pluto/thirdparty/circles.lua"
 
-local inactive_color = Color(35, 36, 43)
-local active_color   = Color(64, 66, 74)
-
-local active_text = Color(255, 255, 255)
 local inactive_text = Color(128, 128, 128)
 
 local padding_x = 23
@@ -104,7 +100,7 @@ function PANEL:AddTab(col, category, add_rest, buffer)
 		text:SetRenderSystem(pluto.fonts.systems.shadow)
 		text:SetFont "pluto_inventory_font"
 		text:SetText "Open"
-		text:SetTextColor(Color(255, 255, 255))
+		text:SetTextColor(pluto.ui.theme "TextActive")
 		text:SetContentAlignment(5)
 		text:Dock(FILL)
 	
@@ -186,7 +182,7 @@ function PANEL:Paint(w, h)
 
 	local text = tostring(pluto.cl_currency[self.Currency.InternalName] or 0)
 	surface.SetFont "pluto_inventory_font_s"
-	surface.SetTextColor(255, 255, 255)
+	surface.SetTextColor(pluto.ui.theme "TextActive")
 	local tw, th = surface.GetTextSize(text)
 	surface.SetTextPos(x - tw / 2, y - th / 2)
 	surface.DrawText(text)

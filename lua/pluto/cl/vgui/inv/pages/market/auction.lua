@@ -60,7 +60,7 @@ function PANEL:Init()
 			price:SetText "0"
 			price:SetContentAlignment(6)
 			price:SetFont "pluto_inventory_font"
-			price:SetTextColor(Color(255, 255, 255))
+			price:SetTextColor(pluto.ui.theme "TextActive")
 			price:SetRenderSystem(pluto.fonts.systems.shadow)
 			price:SizeToContentsY()
 			price:SetVisible(false)
@@ -86,14 +86,14 @@ function PANEL:Init()
 	self.PaginationLabel:SetFont "pluto_inventory_font"
 	self.PaginationLabel:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.PaginationLabel:SetText "hi"
-	self.PaginationLabel:SetTextColor(Color(255, 255, 255))
+	self.PaginationLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.PaginationLabel:SetContentAlignment(5)
 
 	self.StardustLabel = self:Add "pluto_label"
 	self.StardustLabel:SetFont "pluto_inventory_font"
 	self.StardustLabel:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.StardustLabel:SetText "hi"
-	self.StardustLabel:SetTextColor(Color(255, 255, 255))
+	self.StardustLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.StardustLabel:SetContentAlignment(5)
 	self.StardustImage = self:Add "DImage"
 	self.StardustImage:SetImage(pluto.currency.byname.stardust.Icon)
@@ -104,7 +104,7 @@ function PANEL:Init()
 	self.PageDown:SetFont "pluto_inventory_font"
 	self.PageDown:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.PageDown:SetText "<<"
-	self.PageDown:SetTextColor(Color(255, 255, 255))
+	self.PageDown:SetTextColor(pluto.ui.theme "TextActive")
 	self.PageDown:SetContentAlignment(5)
 	function self.PageDown.OnMousePressed()
 		local page = self:GetPage() - 1
@@ -121,7 +121,7 @@ function PANEL:Init()
 	self.PageUp:SetFont "pluto_inventory_font"
 	self.PageUp:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.PageUp:SetText ">>"
-	self.PageUp:SetTextColor(Color(255, 255, 255))
+	self.PageUp:SetTextColor(pluto.ui.theme "TextActive")
 	self.PageUp:SetContentAlignment(5)
 
 	function self.PageUp.OnMousePressed()
@@ -324,7 +324,7 @@ function PANEL:Init()
 	self.SearchLabel = self.SearchButton:Add "pluto_label"
 	self.SearchLabel:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.SearchLabel:SetText "Update search"
-	self.SearchLabel:SetTextColor(Color(255, 255, 255))
+	self.SearchLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.SearchLabel:SetContentAlignment(5)
 	self.SearchLabel:SetFont "pluto_inventory_font"
 	self.SearchLabel:Dock(FILL)
@@ -386,7 +386,7 @@ function PANEL:AddTab(name)
 	lbl:SetRenderSystem(pluto.fonts.systems.shadow)
 	lbl:SetText(name)
 	lbl:Dock(FILL)
-	lbl:SetTextColor(Color(255, 255, 255))
+	lbl:SetTextColor(pluto.ui.theme "TextActive")
 	lbl:SetContentAlignment(5)
 
 	table.insert(self.Labels, btn)
@@ -483,7 +483,7 @@ function PANEL:Init()
 	self.Label:Dock(FILL)
 	self.Label:SetFont "pluto_inventory_font"
 	self.Label:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.Label:SetTextColor(Color(255, 255, 255))
+	self.Label:SetTextColor(pluto.ui.theme "TextActive")
 	self.Label:SetContentAlignment(4)
 
 	self:DockMargin(0, 0, 0, 3)
@@ -555,7 +555,7 @@ function PANEL:Init()
 	self.To:SetContentAlignment(5)
 	self.To:SetText "-"
 	self.To:SetFont "pluto_inventory_font"
-	self.To:SetTextColor(Color(255, 255, 255))
+	self.To:SetTextColor(pluto.ui.theme "TextActive")
 	self.To:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.To:SetWide(10)
 	self.To:Dock(RIGHT)

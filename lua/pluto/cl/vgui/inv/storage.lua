@@ -1,9 +1,5 @@
 local PANEL = {}
 
-local inactive_color = Color(35, 36, 43)
-local active_color   = Color(64, 66, 74)
-
-local active_text = Color(255, 255, 255)
 local inactive_text = Color(128, 128, 128)
 
 local inner_area = 5
@@ -27,7 +23,7 @@ function PANEL:Init()
 
 	self.SearchyBoi = self.UpperArea:Add "pluto_label"
 	self.SearchyBoi:Dock(RIGHT)
-	self.SearchyBoi:SetTextColor(Color(255, 255, 255))
+	self.SearchyBoi:SetTextColor(pluto.ui.theme "TextActive")
 	self.SearchyBoi:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.SearchyBoi:SetFont "pluto_inventory_font"
 	self.SearchyBoi:SetText "Search:"
@@ -45,7 +41,7 @@ function PANEL:Init()
 	self.InventoryLabel = self.InventoryContainer:Add "pluto_label"
 	self.InventoryLabel:SetContentAlignment(8)
 	self.InventoryLabel:SetFont "pluto_inventory_font_lg"
-	self.InventoryLabel:SetTextColor(Color(255, 255, 255))
+	self.InventoryLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.InventoryLabel:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.InventoryLabel:Dock(FILL)
 	self.InventoryLabel:SetText "Inventory"
@@ -63,14 +59,14 @@ function PANEL:Init()
 	self.BufferLabel = self.BufferContainer:Add "pluto_label"
 	self.BufferLabel:SetContentAlignment(8)
 	self.BufferLabel:SetFont "pluto_inventory_font_lg"
-	self.BufferLabel:SetTextColor(Color(255, 255, 255))
+	self.BufferLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.BufferLabel:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.BufferLabel:Dock(FILL)
 	self.BufferLabel:SetText "Buffer"
 	self.BufferLabel:SizeToContentsX()
 	self.BufferLabel:SetMouseInputEnabled(false)
 	self.BufferContainer:SetWide(self.BufferLabel:GetWide() + 25)
-	self.BufferContainer:SetColor(inactive_color)
+	self.BufferContainer:SetColor(pluto.ui.theme "InnerColorInactive")
 	self.BufferContainer:SetCursor "hand"
 
 	function self.BufferContainer.OnMousePressed(s, m)
@@ -175,14 +171,14 @@ end
 
 function PANEL:SelectWhich(t)
 	self.SelectedTab = t
-	t:SetColor(active_color)
+	t:SetColor(pluto.ui.theme "InnerColor")
 	t:ChangeDockInner(1, 1, 1, 0)
 
 	local lbl = self.InventoryContainer == t and self.InventoryLabel or self.BufferLabel
-	lbl:SetTextColor(active_text)
+	lbl:SetTextColor(pluto.ui.theme "TextActive")
 
 	local other = t == self.InventoryContainer and self.BufferContainer or self.InventoryContainer
-	other:SetColor(inactive_color)
+	other:SetColor(pluto.ui.theme "InnerColorInactive")
 	other:ChangeDockInner(0, 0, 0, 0)
 
 	local otherlbl = other == self.InventoryContainer and self.InventoryLabel or self.BufferLabel

@@ -58,7 +58,7 @@ function PANEL:Init()
 			price:SetText "0"
 			price:SetContentAlignment(6)
 			price:SetFont "pluto_inventory_font"
-			price:SetTextColor(Color(255, 255, 255))
+			price:SetTextColor(pluto.ui.theme "TextActive")
 			price:SetRenderSystem(pluto.fonts.systems.shadow)
 			price:SizeToContentsY()
 			price:SetVisible(false)
@@ -84,7 +84,7 @@ function PANEL:Init()
 	self.PaginationLabel:SetFont "pluto_inventory_font"
 	self.PaginationLabel:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.PaginationLabel:SetText "hi"
-	self.PaginationLabel:SetTextColor(Color(255, 255, 255))
+	self.PaginationLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.PaginationLabel:SetContentAlignment(5)
 
 	self.PageDown = self.Pagination:Add "pluto_label"
@@ -93,7 +93,7 @@ function PANEL:Init()
 	self.PageDown:SetFont "pluto_inventory_font"
 	self.PageDown:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.PageDown:SetText "<<"
-	self.PageDown:SetTextColor(Color(255, 255, 255))
+	self.PageDown:SetTextColor(pluto.ui.theme "TextActive")
 	self.PageDown:SetContentAlignment(5)
 	function self.PageDown.OnMousePressed()
 		local page = self:GetPage() - 1
@@ -110,7 +110,7 @@ function PANEL:Init()
 	self.PageUp:SetFont "pluto_inventory_font"
 	self.PageUp:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.PageUp:SetText ">>"
-	self.PageUp:SetTextColor(Color(255, 255, 255))
+	self.PageUp:SetTextColor(pluto.ui.theme "TextActive")
 	self.PageUp:SetContentAlignment(5)
 
 	function self.PageUp.OnMousePressed()
@@ -174,7 +174,7 @@ function PANEL:Init()
 	self.TaxLabel = self.ListDataContainer:Add "pluto_label"
 	self.TaxLabel:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.TaxLabel:SetText "10 + 7.5% up to 200 tax"
-	self.TaxLabel:SetTextColor(Color(255, 255, 255))
+	self.TaxLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.TaxLabel:SetContentAlignment(2)
 	self.TaxLabel:SetFont "pluto_inventory_font"
 	self.TaxLabel:Dock(BOTTOM)
@@ -220,7 +220,7 @@ function PANEL:Init()
 	self.ListLabel = self.ListButton:Add "pluto_label"
 	self.ListLabel:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.ListLabel:SetText "List item"
-	self.ListLabel:SetTextColor(Color(255, 255, 255))
+	self.ListLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.ListLabel:SetContentAlignment(5)
 	self.ListLabel:SetFont "pluto_inventory_font"
 	self.ListLabel:Dock(FILL)

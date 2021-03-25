@@ -1,7 +1,19 @@
 
+local function gettheme()
+	return "default"
+end
+
 pluto.ui = pluto.ui or {}
-pluto.ui.theme = pluto.ui.theme or setmetatable({}, {
-	__index = function(self, k)
+pluto.ui.theme = setmetatable({
+	default = {
+		XButton = Color(0xd7, 0x2c, 0x2d),
+		InnerColor = Color(64, 66, 74),
+		InnerColorInactive = Color(35, 36, 43),
+		TextActive = Color(255, 255, 255),
+	}
+}, {
+	__call = function(self, k)
+		return rawget(self, gettheme())[k]
 	end
 })
 

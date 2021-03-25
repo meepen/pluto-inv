@@ -28,7 +28,7 @@ function PANEL:Init()
 	self.TextSmall = self.Inner:Add "pluto_label"
 	self.TextSmall:SetFont "pluto_inventory_font"
 	self.TextSmall:SetText "(blame garry)"
-	self.TextSmall:SetTextColor(Color(255, 255, 255, 128))
+	self.TextSmall:SetTextColor(ColorAlpha(pluto.ui.theme "TextActive", 128))
 	self.TextSmall:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.TextSmall:Dock(TOP)
 	self.TextSmall:SizeToContentsY()
@@ -36,7 +36,7 @@ function PANEL:Init()
 	self.PlsRejoinLabel = self.Inner:Add "pluto_label"
 	self.PlsRejoinLabel:SetFont "pluto_inventory_font_lg"
 	self.PlsRejoinLabel:SetText "Why not join another server we have?"
-	self.PlsRejoinLabel:SetTextColor(Color(255, 255, 255, 255))
+	self.PlsRejoinLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.PlsRejoinLabel:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.PlsRejoinLabel:Dock(TOP)
 	self.PlsRejoinLabel:SizeToContentsY()
@@ -92,14 +92,14 @@ function PANEL:Init()
 
 	self.Inner = self:Add "ttt_curved_panel"
 	self.Inner:Dock(FILL)
-	self.Inner:SetColor(Color(64, 66, 74))
+	self.Inner:SetColor(pluto.ui.theme "InnerColor")
 	self.Inner:SetCurve(self:GetCurve())
 	self.Inner:DockPadding(self.Padding, self.Padding, self.Padding, self.Padding)
 	self.Inner:SetMouseInputEnabled(false)
 
 	self.ServerName = self.Inner:Add "pluto_label"
 	self.ServerName:SetText "hi"
-	self.ServerName:SetTextColor(Color(255, 255, 255))
+	self.ServerName:SetTextColor(pluto.ui.theme "TextActive")
 	self.ServerName:SetFont "pluto_inventory_font_xlg"
 	self.ServerName:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.ServerName:Dock(TOP)
@@ -112,7 +112,7 @@ function PANEL:Init()
 	
 	self.ServerMap = self.ServerInfo:Add "pluto_label"
 	self.ServerMap:SetText "hi"
-	self.ServerMap:SetTextColor(Color(255, 255, 255, 200))
+	self.ServerMap:SetTextColor(ColorAlpha(pluto.ui.theme "TextActive", 200))
 	self.ServerMap:SetFont "pluto_inventory_font"
 	self.ServerMap:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.ServerMap:Dock(LEFT)
@@ -121,7 +121,7 @@ function PANEL:Init()
 
 	self.ServerPlayers = self.ServerInfo:Add "pluto_label"
 	self.ServerPlayers:SetText "hi"
-	self.ServerPlayers:SetTextColor(Color(255, 255, 255, 200))
+	self.ServerPlayers:SetTextColor(ColorAlpha(pluto.ui.theme "TextActive", 200))
 	self.ServerPlayers:SetFont "pluto_inventory_font"
 	self.ServerPlayers:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.ServerPlayers:Dock(RIGHT)

@@ -177,7 +177,7 @@ function PANEL:Init()
 	self.GoLabel = self.GoButton:Add "pluto_label"
 	self.GoLabel:Dock(FILL)
 	self.GoLabel:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.GoLabel:SetTextColor(Color(255, 255, 255))
+	self.GoLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.GoLabel:SetFont "pluto_inventory_font"
 	self.GoLabel:SetContentAlignment(5)
 	self.GoLabel:SetText "Create an item"
@@ -219,7 +219,7 @@ function PANEL:RecreateResults()
 
 	self.ItemResults = self:Add "pluto_text_inner"
 	self.ItemResults:Dock(FILL)
-	self.ItemResults:SetDefaultTextColor(Color(255, 255, 255))
+	self.ItemResults:SetDefaultTextColor(pluto.ui.theme "TextActive")
 	self.ItemResults:SetDefaultRenderSystem(pluto.fonts.systems.shadow)
 	self.ItemResults:SetDefaultFont "pluto_inventory_font"
 	self.ItemResults:SetMouseInputEnabled(false)

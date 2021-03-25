@@ -146,7 +146,7 @@ function PANEL:Init()
 	self.PlayerNameLabel:SetContentAlignment(4)
 	self.PlayerNameLabel:SetFont "pluto_inventory_font"
 	self.PlayerNameLabel:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.PlayerNameLabel:SetTextColor(Color(255, 255, 255))
+	self.PlayerNameLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.PlayerNameLabel:SetText "PLAYER NAME"
 	self.PlayerNameLabel:Dock(LEFT)
 	self.PlayerNameLabel:DockMargin(2, 0, 0, 0)
@@ -249,7 +249,7 @@ function PANEL:Init()
 	self.ChatText = self.Chat:Add "pluto_text"
 	self.ChatText:Dock(FILL)
 	self.ChatText:SetDefaultFont "pluto_inventory_font"
-	self.ChatText:SetDefaultTextColor(Color(255, 255, 255))
+	self.ChatText:SetDefaultTextColor(pluto.ui.theme "TextActive")
 	self.ChatText:SetDefaultRenderSystem(pluto.fonts.systems.shadow)
 
 	local oldlayout = self.ChatText.PerformLayout
@@ -508,7 +508,7 @@ end
 
 function PANEL:AddTradeMessage(msg)
 	local sender = msg.sender
-	local textcol = Color(255, 255, 255)
+	local textcol = pluto.ui.theme "TextActive"
 	if (isstring(sender)) then
 		self:AppendText(Color(255, 222, 0), sender, ": ")
 	elseif (IsValid(sender)) then

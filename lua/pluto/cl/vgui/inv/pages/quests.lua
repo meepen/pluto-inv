@@ -91,7 +91,7 @@ function PANEL:Init()
 	self.Name = self.TopLine:Add "pluto_label"
 	self.Name:Dock(FILL)
 	self.Name:SetText "HI"
-	self.Name:SetTextColor(Color(255, 255, 255))
+	self.Name:SetTextColor(pluto.ui.theme "TextActive")
 	self.Name:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.Name:SetFont "pluto_inventory_font_xlg"
 	self.Name:SetContentAlignment(4)
@@ -142,7 +142,7 @@ function PANEL:Init()
 
 	self.Description = self.Inner:Add "pluto_text_inner"
 	self.Description:Dock(TOP)
-	self.Description:SetDefaultTextColor(Color(255, 255, 255))
+	self.Description:SetDefaultTextColor(pluto.ui.theme "TextActive")
 	self.Description:SetDefaultRenderSystem(pluto.fonts.systems.shadow)
 	self.Description:SetDefaultFont "pluto_inventory_font_s"
 	self.Description:SetTall(100)
@@ -175,7 +175,7 @@ function PANEL:Init()
 		end
 		local tw, th = surface.GetTextSize(text)
 		surface.SetTextPos(w / 2 - tw / 2, h / 2 - th / 2 + 1)
-		surface.SetTextColor(255, 255, 255, 255)
+		surface.SetTextColor(pluto.ui.theme "TextActive")
 		surface.DrawText(text)
 	end
 
@@ -191,7 +191,7 @@ function PANEL:Init()
 	self.RewardText = self.BottomLine:Add "pluto_label"
 	self.RewardText:Dock(RIGHT)
 	self.RewardText:SetText "Reward text"
-	self.RewardText:SetTextColor(Color(255, 255, 255))
+	self.RewardText:SetTextColor(pluto.ui.theme "TextActive")
 	self.RewardText:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.RewardText:SetFont "pluto_inventory_font_s"
 	self.RewardText:SetContentAlignment(5)

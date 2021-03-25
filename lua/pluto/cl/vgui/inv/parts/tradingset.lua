@@ -15,7 +15,7 @@ function PANEL:Init()
 	self.Inner.Label = self:Add "pluto_label"
 	self.Inner.Label:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.Inner.Label:SetFont "pluto_inventory_font"
-	self.Inner.Label:SetTextColor(Color(255, 255, 255))
+	self.Inner.Label:SetTextColor(pluto.ui.theme "TextActive")
 	self.Inner.Label:SetText "hi"
 	self.Inner.Label:SetContentAlignment(8)
 	self.Inner.Label:SizeToContentsX(5)
@@ -223,7 +223,7 @@ function PANEL:Init()
 	self.Amount:Dock(FILL)
 	self.Amount:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.Amount:SetFont "pluto_inventory_font"
-	self.Amount:SetTextColor(Color(255, 255, 255))
+	self.Amount:SetTextColor(pluto.ui.theme "TextActive")
 	self.Amount:SetText "hi"
 	self.Amount:SetContentAlignment(6)
 	self.Amount:SetCursor "beam"

@@ -7,7 +7,7 @@ function PANEL:Init()
 	self.TextLabel = self:Add "pluto_label"
 	self.TextLabel:SetText "Unknown"
 	self.TextLabel:SetFont "pluto_inventory_font"
-	self.TextLabel:SetTextColor(Color(255, 255, 255))
+	self.TextLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.TextLabel:SetContentAlignment(5)
 	self.TextLabel:Dock(FILL)
 	self.TextLabel:SetRenderSystem(pluto.fonts.systems.shadow)

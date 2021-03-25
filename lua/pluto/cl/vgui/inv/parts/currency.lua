@@ -20,7 +20,7 @@ function PANEL:Init()
 	self.InputAmount:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.InputAmount:SetFont "pluto_inventory_font"
 	self.InputAmount:SetText "?"
-	self.InputAmount:SetTextColor(Color(255, 255, 255))
+	self.InputAmount:SetTextColor(pluto.ui.theme "TextActive")
 	self.InputAmount:Dock(FILL)
 	self.InputAmount:DockMargin(2, 2, 3, 2)
 

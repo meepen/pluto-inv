@@ -7,7 +7,7 @@ function PANEL:Init()
 	self.Entry:Dock(FILL)
 	self.Entry:SetPaintBackground(false)
 	self.Entry:SetMouseInputEnabled(true)
-	self.Entry:SetTextColor(Color(255, 255, 255))
+	self.Entry:SetTextColor(pluto.ui.theme "TextActive")
 
 	function self.Entry.OnChange()
 		self:OnChange()

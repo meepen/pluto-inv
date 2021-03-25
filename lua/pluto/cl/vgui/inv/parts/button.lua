@@ -22,7 +22,7 @@ function PANEL:GetLabel()
 		self.Label = self:Add "pluto_label"
 		self.Label:SetRenderSystem(pluto.fonts.systems.shadow)
 		self.Label:SetFont "pluto_inventory_font" -- better font maybe? idk
-		self.Label:SetTextColor(Color(255, 255, 255))
+		self.Label:SetTextColor(pluto.ui.theme "TextActive")
 		self.Label:SetText ""
 		self.Label:Dock(FILL)
 		self.Label:SetContentAlignment(5)
