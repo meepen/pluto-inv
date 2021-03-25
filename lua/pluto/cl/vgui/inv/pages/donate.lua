@@ -13,7 +13,7 @@ function PANEL:Init()
 		end
 
 		self.Text = self.Inner:Add "pluto_text_inner"
-		self.Text:SetSize(w - 30, 200)
+		self.Text:SetSize(w - 30, (pluto.ui.sizings "pluto_inventory_font_lg" + 1) * 12)
 		self.Text:SetDefaultRenderSystem(pluto.fonts.systems.shadow)
 		self.Text:SetDefaultFont "pluto_inventory_font_lg"
 		self.Text:SetDefaultTextColor(pluto.ui.theme "TextActive")
