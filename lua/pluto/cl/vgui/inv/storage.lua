@@ -6,43 +6,21 @@ local active_color   = Color(64, 66, 74)
 local active_text = Color(255, 255, 255)
 local inactive_text = Color(128, 128, 128)
 
-local item_size = 56
 local inner_area = 5
 local outer_area = 10
 
 function PANEL:Init()
-	self:SetWide(item_size * 6 + inner_area * 5 + outer_area * 2)
+	self:SetWide(pluto.ui.sizings "ItemSize" * 6 + inner_area * 5 + outer_area * 2)
 	self.UpperArea = self:Add "EditablePanel"
 	self.UpperArea:Dock(TOP)
-	self.UpperArea:SetTall(22)
+	self.UpperArea:SetTall(pluto.ui.sizings "pluto_inventory_font_lg" + 7)
 
-	self.SearchyBoiText = self.UpperArea:Add "DTextEntry"
+	self.SearchyBoiText = self.UpperArea:Add "pluto_inventory_textentry"
 	self.SearchyBoiText:Dock(RIGHT)
 	self.SearchyBoiText:SetWide(100)
-	self.SearchyBoiText:SetFont "pluto_inventory_font"
-	self.SearchyBoiText:SetKeyboardInputEnabled(true)
 
-	function self.SearchyBoiText:OnMousePressed(m)
-		if (m == MOUSE_LEFT) then
-			pluto.ui.pnl:SetKeyboardFocus(self, true)
-		end
-	end
-
-	function self.SearchyBoiText.OnFocusChanged(s, gained)
-		if (not gained) then
-			pluto.ui.pnl:SetKeyboardFocus(s, false)
-		end
-	end
-
-	function self.SearchyBoiText.OnChange(s)
-		self:SearchItems(s:GetValue())
-	end
-
-	function self.SearchyBoiText:Think()
-		if (input.IsKeyDown(KEY_LCONTROL) and input.IsKeyDown(KEY_F)) then
-			self:OnMousePressed(MOUSE_LEFT)
-			self:RequestFocus()
-		end
+	function self.SearchyBoiText.OnChange(s, t)
+		self:SearchItems(s:GetText())
 	end
 
 	self.SearchyBoiText:DockMargin(0, 4, 0, 3)
@@ -127,7 +105,7 @@ function PANEL:Init()
 	end
 
 	self.ItemContainer = self.Container:Add "EditablePanel"
-	self.ItemContainer:SetSize(item_size * 6 + inner_area * 5, item_size * 6 + inner_area * 5)
+	self.ItemContainer:SetSize(pluto.ui.sizings "ItemSize" * 6 + inner_area * 5, pluto.ui.sizings "ItemSize" * 6 + inner_area * 5)
 
 	function self.Container.PerformLayout(s, w, h)
 		BaseClass.PerformLayout(s, w, h)
@@ -176,7 +154,7 @@ function PANEL:Init()
 		end
 
 		row:Dock(TOP)
-		row:SetTall(56)
+		row:SetTall(pluto.ui.sizings "ItemSize")
 		if (i ~= 6) then
 			row:DockMargin(0, 0, 0, inner_area)
 		end
@@ -306,7 +284,7 @@ PANEL.FilterTypes = {
 		return item.Type == text
 	end,
 	name = function(item, text)
-		return item:GetPrintName():lower():find(text, nil, true)
+		return item:GetPrintName():lower():find(text:lower(), nil, true)
 	end,
 	slot = function(item, text)
 		text = (tonumber(text) or -1) - 1

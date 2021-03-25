@@ -144,7 +144,7 @@ function PANEL:Init()
 	self.Description:Dock(TOP)
 	self.Description:SetDefaultTextColor(Color(255, 255, 255))
 	self.Description:SetDefaultRenderSystem(pluto.fonts.systems.shadow)
-	self.Description:SetDefaultFont "pluto_inventory_font"
+	self.Description:SetDefaultFont "pluto_inventory_font_s"
 	self.Description:SetTall(100)
 	self.Description:SetMouseInputEnabled(false)
 	self.Description:DockMargin(0, 0, 0, 9)
@@ -193,7 +193,7 @@ function PANEL:Init()
 	self.RewardText:SetText "Reward text"
 	self.RewardText:SetTextColor(Color(255, 255, 255))
 	self.RewardText:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.RewardText:SetFont "pluto_inventory_font"
+	self.RewardText:SetFont "pluto_inventory_font_s"
 	self.RewardText:SetContentAlignment(5)
 	self.RewardText:SizeToContents()
 
@@ -202,7 +202,7 @@ function PANEL:Init()
 	self.TimeRemaining:SetText ""
 	self.TimeRemaining:SetTextColor(Color(128, 128, 128))
 	self.TimeRemaining:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.TimeRemaining:SetFont "pluto_inventory_font"
+	self.TimeRemaining:SetFont "pluto_inventory_font_s"
 	self.TimeRemaining:SetContentAlignment(4)
 	self.TimeRemaining:SizeToContents()
 

@@ -85,11 +85,11 @@ function PANEL:AddTab(col, category, add_rest, buffer)
 
 		local image_container = opener:Add "EditablePanel"
 		image_container:Dock(TOP)
-		image_container:SetTall(56)
+		image_container:SetTall(pluto.ui.sizings "ItemSize")
 		image_container:DockPadding(0, 0, 0, 4)
 
 		local image = image_container:Add "DImage"
-		image:SetSize(56, 56)
+		image:SetSize(pluto.ui.sizings "ItemSize", pluto.ui.sizings "ItemSize")
 		function image_container:PerformLayout(w, h)
 			image:Center()
 		end
@@ -158,12 +158,12 @@ vgui.Register("pluto_inventory_currency", PANEL, "pluto_inventory_component_tabb
 local PANEL = {}
 
 function PANEL:Init()
-	self:SetSize(48, 64)
+	self:SetSize(pluto.ui.sizings "ItemSize" - 16, pluto.ui.sizings "ItemSize")
 	self.Container = self:Add "ttt_curved_panel_outline"
 	self.Container:SetCurve(2)
 	self.Container:SetColor(Color(95, 96, 102))
 	self.Container:Dock(BOTTOM)
-	self.Container:SetTall(16)
+	self.Container:SetTall(pluto.ui.sizings "pluto_inventory_font_s")
 	self:SetCursor "hand"
 end
 
@@ -172,27 +172,27 @@ function PANEL:SetCurrency(cur)
 	self.Currency = cur
 end
 
-local Circle = circles.New(CIRCLE_FILLED, {18, 4}, 24, 41)
-Circle:SetDistance(3)
 
 function PANEL:Paint(w, h)
 	surface.SetDrawColor(45, 47, 53)
 	draw.NoTexture()
+	local Circle = circles.New(CIRCLE_FILLED, {w / 3, 4}, w / 2, 41)
+	Circle:SetDistance(3)
 	Circle()
-	self:PaintInner(self, w, h, 0, 0)
+	self:PaintInner(self, w - pluto.ui.sizings "pluto_inventory_font_s", pluto.ui.sizings "pluto_inventory_font_s" / 2, 0)
 
 	local x, y = self:ScreenToLocal(self.Container:LocalToScreen(self.Container:GetWide() / 2, self.Container:GetTall() / 2))
 	local surface = pluto.fonts.systems.shadow
 
 	local text = tostring(pluto.cl_currency[self.Currency.InternalName] or 0)
-	surface.SetFont "pluto_inventory_font"
+	surface.SetFont "pluto_inventory_font_s"
 	surface.SetTextColor(255, 255, 255)
 	local tw, th = surface.GetTextSize(text)
 	surface.SetTextPos(x - tw / 2, y - th / 2)
 	surface.DrawText(text)
 end
 
-function PANEL:PaintInner(pnl, w, h, x, y)
+function PANEL:PaintInner(pnl, w, x, y)
 	surface.SetDrawColor(255, 255, 255)
 	surface.SetMaterial(self.Material)
 	local pad = 6

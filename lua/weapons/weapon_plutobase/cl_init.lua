@@ -60,9 +60,7 @@ DEFINE_BASECLASS "weapon_tttbase_old"
 function SWEP:GetPlutoPrintName()
 	local item = self:GetInventoryItem()
 	if (item) then
-		if (item.Nickname) then
-			return "'" .. item.Nickname .. "'"
-		end
+		return item:GetPrintName()
 	end
 end
 

@@ -3,7 +3,7 @@ local PANEL = {}
 function PANEL:Init()
 	self.ContainerArea = self:Add "EditablePanel"
 	self.ContainerArea:Dock(TOP)
-	self.ContainerArea:SetTall(56)
+	self.ContainerArea:SetTall(pluto.ui.sizings "ItemSize")
 
 	self.ItemContainer = self.ContainerArea:Add "pluto_inventory_item"
 
@@ -15,7 +15,7 @@ function PANEL:Init()
 
 	self.Selector:AcceptAmount(true)
 	self.Selector:AcceptInput(true)
-	self.Selector:SetTall(56)
+	self.Selector:SetTall(pluto.ui.sizings "ItemSize")
 	self.Selector:InvalidateLayout(true)
 
 	function self.Selector:OnCurrencyUpdated()

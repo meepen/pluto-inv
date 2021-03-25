@@ -156,7 +156,7 @@ function PANEL:Init()
 	self.StatusArea:Dock(RIGHT)
 	self.StatusArea:DockMargin(5, 5, 5, 5)
 	self.StatusArea:SetTextColor(Color(247, 249, 43))
-	self.StatusArea:SetFont "pluto_inventory_font"
+	self.StatusArea:SetFont "pluto_inventory_font_s"
 	self.StatusArea:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.StatusArea:SetText "hello"
 	self.StatusArea:SetContentAlignment(5)

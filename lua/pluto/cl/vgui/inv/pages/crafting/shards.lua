@@ -7,7 +7,7 @@ function PANEL:Init()
 
 	self.Shards = {}
 	self.ShardLine = self:Add "EditablePanel"
-	self.ShardLine:SetTall(56)
+	self.ShardLine:SetTall(pluto.ui.sizings "ItemSize")
 	self.ShardLine:Dock(TOP)
 
 	for i = 1, 3 do
@@ -47,11 +47,11 @@ function PANEL:Init()
 	function self.ShardLine.PerformLayout(s, w, h)
 		local amt = #self.Shards + 1
 		local offset = 0
-		local x = math.Round(w / 2 - (56 * amt + 5 * (amt - 1)) / 2 - offset)
+		local x = math.Round(w / 2 - (pluto.ui.sizings "ItemSize" * amt + 5 * (amt - 1)) / 2 - offset)
 
 		for i = 1, 3 do
-			self.Shards[i]:SetPos(x, h / 2 - 56 / 2)
-			x = x + 56 + 5
+			self.Shards[i]:SetPos(x, h / 2 - pluto.ui.sizings "ItemSize" / 2)
+			x = x + pluto.ui.sizings "ItemSize" + 5
 		end
 
 		self.CurrencySelector:SetPos(x + offset, h - self.CurrencySelector:GetTall())
@@ -111,7 +111,7 @@ function PANEL:Init()
 	self.ItemLine = self:Add "ttt_curved_panel_outline"
 	self.ItemLine:SetCurve(6)
 	self.ItemLine:SetColor(Color(95, 96, 102))
-	self.ItemLine:SetTall(66)
+	self.ItemLine:SetTall(pluto.ui.sizings "ItemSize" + 10)
 	self.ItemLine:Dock(TOP)
 	self.ItemLine:DockMargin(5, 0, 5, 10)
 	self.ItemLine:DockPadding(7, 0, 7, 0)
@@ -152,15 +152,15 @@ function PANEL:Init()
 
 	function self.ItemLine.PerformLayout(s, w, h)
 		local amt = #self.Items
-		local x = math.Round(w / 2 - (56 * amt + 5 * (amt - 1)) / 2)
+		local x = math.Round(w / 2 - (pluto.ui.sizings "ItemSize" * amt + 5 * (amt - 1)) / 2)
 
 		for i = 1, amt do
-			self.Items[i]:SetPos(x, h / 2 - 56 / 2)
-			x = x + 56 + 5
+			self.Items[i]:SetPos(x, h / 2 - pluto.ui.sizings "ItemSize" / 2)
+			x = x + pluto.ui.sizings "ItemSize" + 5
 		end
 	end
 
-	
+
 	self.GoButton = self:Add "pluto_inventory_button"
 	self.GoButton:Dock(TOP)
 	self.GoButton:SetMouseInputEnabled(false)

@@ -58,6 +58,8 @@ pluto.files.load {
 		"cl/vgui/pluto/toggle.lua",
 		"cl/vgui/pluto/dropdown.lua",
 
+		"cl/vgui/inv/theme.lua",
+
 		"cl/vgui/inv/parts/component.lua",
 		"cl/vgui/inv/parts/tabbed.lua",
 		"cl/vgui/inv/parts/loading.lua",

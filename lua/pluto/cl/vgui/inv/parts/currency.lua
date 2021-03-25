@@ -1,7 +1,7 @@
 local PANEL = {}
 
 function PANEL:Init()
-	self:SetSize(48, 48)
+	self:SetSize(pluto.ui.sizings "ItemSize", pluto.ui.sizings "ItemSize")
 
 	self.CurrencyArea = self:Add "EditablePanel"
 	self.CurrencyArea:Dock(TOP)

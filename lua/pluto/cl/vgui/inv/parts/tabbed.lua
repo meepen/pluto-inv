@@ -6,7 +6,7 @@ local active_color   = Color(64, 66, 74)
 local active_text = Color(255, 255, 255)
 local inactive_text = Color(128, 128, 128)
 
-local padding_x = 23
+local padding_x = 8
 local padding_y = 5
 
 local PANEL = {}
@@ -26,7 +26,7 @@ function PANEL:Init()
 		end
 	end
 	self.TabArea:Dock(TOP)
-	self.TabArea:SetTall(22)
+	self.TabArea:SetTall(pluto.ui.sizings "pluto_inventory_font_lg" + 7)
 
 	self.Inner = self:Add "pluto_inventory_component"
 	self.Inner:Dock(FILL)
@@ -63,7 +63,7 @@ function PANEL:Init()
 end
 
 function PANEL:SizeTab(tab, w, h)
-	tab:SetSize(padding_x * 3 + 48 * 4, h - 24)
+	tab:SetSize(pluto.ui.sizings "ItemSize" * 4 + padding_x * 5, h - 24)
 	tab:SetPos(w / 2 - tab:GetWide() / 2, 12)
 end
 

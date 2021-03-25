@@ -185,7 +185,7 @@ local PANEL = {}
 local default_color = Color(53, 53, 60)
 function PANEL:Init()
 	hook.Add("PlutoItemUpdate", self, self.PlutoItemUpdate)
-	self:SetSize(56, 56)
+	self:SetSize(pluto.ui.sizings "ItemSize", pluto.ui.sizings "ItemSize")
 
 	self.OuterBorder = self:Add "ttt_curved_panel"
 	self.OuterBorder:Dock(FILL)

@@ -7,10 +7,10 @@ PANEL.Padding = 3
 function PANEL:Init()
 	self.ResultArea = self:Add "EditablePanel"
 	self.ResultArea:Dock(RIGHT)
-	self.ResultArea:SetWide(self.ResultColumn * 56 + (self.ResultColumn - 1) * self.Padding)
+	self.ResultArea:SetWide(self.ResultColumn * pluto.ui.sizings "ItemSize" + (self.ResultColumn - 1) * self.Padding)
 
 	self.ItemArea = self.ResultArea:Add "EditablePanel"
-	self.ItemArea:SetTall(self.ResultRow * 56 + (self.ResultRow + 1) * self.Padding)
+	self.ItemArea:SetTall(self.ResultRow * pluto.ui.sizings "ItemSize" + (self.ResultRow + 1) * self.Padding)
 	self.ItemArea:SetZPos(1)
 	self.ItemArea:Dock(TOP)
 
@@ -21,12 +21,12 @@ function PANEL:Init()
 		local row = self.ItemArea:Add "EditablePanel"
 		row:Dock(TOP)
 		row:DockMargin(0, y == 1 and self.Padding or 0, 0, self.Padding)
-		row:SetTall(56)
+		row:SetTall(pluto.ui.sizings "ItemSize")
 
 		for x = 1, self.ResultColumn do
 			local itempnl = row:Add "pluto_inventory_item"
 			itempnl:Dock(LEFT)
-			itempnl:SetWide(56)
+			itempnl:SetWide(pluto.ui.sizings "ItemSize")
 			itempnl:DockMargin(x == 1 and 0 or self.Padding, 0, 0, 0)
 			table.insert(self.Results, itempnl)
 

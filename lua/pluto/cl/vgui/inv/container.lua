@@ -2,42 +2,6 @@ local last_tab_id = CreateConVar("pluto_last_tab_opened", "0", FCVAR_ARCHIVE)
 
 local pluto_storage_toggled = CreateConVar("pluto_storage_toggled", 0)
 
-surface.CreateFont("pluto_inventory_font", {
-	font = "Roboto Lt",
-	size = 13,
-	weight = 450,
-})
-
-surface.CreateFont("pluto_inventory_font_lg", {
-	font = "Roboto Lt",
-	size = 15,
-	weight = 450,
-})
-
-surface.CreateFont("pluto_trade_buttons", {
-	font = "Roboto Lt",
-	size = 13,
-	weight = 450,
-})
-
-surface.CreateFont("pluto_inventory_font_xlg", {
-	font = "Roboto Lt",
-	size = 18,
-	weight = 450,
-})
-
-surface.CreateFont("pluto_inventory_x", {
-	font = "Arial",
-	size = 15,
-	weight = 1000,
-})
-
-surface.CreateFont("pluto_inventory_storage", {
-	font = "Verdana",
-	size = 15,
-	weight = 100,
-})
-
 local pluto_tab_order = CreateConVar("pluto_tab_order", "[]", FCVAR_ARCHIVE)
 
 
@@ -91,10 +55,10 @@ function PANEL:Init()
 	self.KeyboardFocus = {}
 	self.StorageTabs = {}
 
-	self.SidePanelSize = 140
-	self.TopSize = 22
-	self.BottomSize = 11
-	self:SetSize(700 + self.SidePanelSize, 450 + self.BottomSize)
+	self.SidePanelSize = pluto.ui.sizings "SidePanelSize"
+	self.TopSize = pluto.ui.sizings "pluto_inventory_font" + 9
+	self.BottomSize = pluto.ui.sizings "pluto_inventory_font" - 2
+	self:SetSize(pluto.ui.sizings "MainWidth" + self.SidePanelSize, pluto.ui.sizings "MainHeight" + self.BottomSize)
 
 	self.SidePanel = self:Add "ttt_curved_panel"
 	self.SidePanel:SetWide(self.SidePanelSize + 10)
@@ -434,18 +398,6 @@ function PANEL:AddTab(name, func, has_storage, cache, col)
 	end
 end
 
-function PANEL:Center()
-	local prnt = self:GetParent()
-	local pw, ph
-	if (not prnt) then
-		pw, ph = prnt:GetSize()
-	else
-		pw, ph = ScrW(), ScrH()
-	end
-
-	self:SetPos(pw / 2 - (self:GetWide() - self.SidePanelSize) / 2, ph / 2 - self:GetTall() / 2)
-end
-
 function PANEL:HandleStorageScroll(wheeled)
 	local current_position
 	for i, tab in ipairs(self.TabList) do
@@ -532,7 +484,7 @@ function PANEL:AddStorageTab(tab)
 	pnl.Label = lbl
 	lbl:Dock(FILL)
 	lbl:SetContentAlignment(4)
-	lbl:SetFont "pluto_inventory_font"
+	lbl:SetFont "pluto_inventory_font_s"
 	lbl:SetTall(22)
 	lbl:SetRenderSystem(pluto.fonts.systems.shadow)
 	lbl:SetTextColor(Color(255, 255, 255))

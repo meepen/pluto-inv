@@ -108,7 +108,6 @@ GetCosmeticItems(pluto_last_cosmetic_loadout:GetInt())
 local PANEL = {}
 DEFINE_BASECLASS "pluto_inventory_component"
 
-local item_size = 56
 local inner_area = 5
 local outer_area = 10
 
@@ -204,28 +203,28 @@ function PANEL:Init()
 	end
 
 	self.Dropdown = self:Add "pluto_dropdown"
-	self.Dropdown:SetSize(80, 20)
+	self.Dropdown:SetSize(80, pluto.ui.sizings "pluto_inventory_font" + 8)
 	self.Dropdown:SetCurveTopLeft(false)
 	self.Dropdown:SetCurveBottomRight(false)
 
 	self.CosmeticDropdown = self:Add "pluto_dropdown"
-	self.CosmeticDropdown:SetSize(80, 20)
+	self.CosmeticDropdown:SetSize(80, pluto.ui.sizings "pluto_inventory_font" + 8)
 	self.CosmeticDropdown:SetCurveTopLeft(false)
 	self.CosmeticDropdown:SetCurveBottomRight(false)
 	self.CosmeticDropdown:SetVisible(false)
 
 	self.ItemContainer = self.Inner:Add "EditablePanel"
 	self.ItemContainer:Dock(LEFT)
-	self.ItemContainer:SetWide(64)
+	self.ItemContainer:SetWide(pluto.ui.sizings "ItemSize" + 16)
 
 	self.CosmeticsContainer = self.ItemContainer:Add "EditablePanel"
-	self.CosmeticsContainer:SetSize(56, 56 * 6 + 6 * 5)
+	self.CosmeticsContainer:SetSize(pluto.ui.sizings "ItemSize", pluto.ui.sizings "ItemSize" * 6 + 6 * 5)
 	self.CosmeticsContainer:SetPos(6, 8)
 	self.CosmeticsContainer:SetMouseInputEnabled(false)
 	self.CosmeticsContainer:SetAlpha(128)
 
 	self.LoadoutContainer = self.ItemContainer:Add "EditablePanel"
-	self.LoadoutContainer:SetSize(56, 56 * 6 + 6 * 5)
+	self.LoadoutContainer:SetSize(pluto.ui.sizings "ItemSize", pluto.ui.sizings "ItemSize" * 6 + 6 * 5)
 	self.LoadoutContainer:SetPos(0, 0)
 
 	self.PlayerModel:Dock(FILL)
