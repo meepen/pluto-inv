@@ -175,7 +175,7 @@ function PANEL:Paint(w, h)
 	local Circle = circles.New(CIRCLE_FILLED, {w / 3, 4}, w / 2, 41)
 	Circle:SetDistance(3)
 	Circle()
-	self:PaintInner(self, w - pluto.ui.sizings "pluto_inventory_font_s", pluto.ui.sizings "pluto_inventory_font_s" / 2, 0)
+	self:PaintInner(self, w, h, 0, 0)
 
 	local x, y = self:ScreenToLocal(self.Container:LocalToScreen(self.Container:GetWide() / 2, self.Container:GetTall() / 2))
 	local surface = pluto.fonts.systems.shadow
@@ -188,17 +188,19 @@ function PANEL:Paint(w, h)
 	surface.DrawText(text)
 end
 
-function PANEL:PaintInner(pnl, w, x, y)
+function PANEL:PaintInner(pnl, w, h, x, y)
+	local imgsize = math.min(w, h) - pluto.ui.sizings "pluto_inventory_font_s"
+	x = x + w / 2 - imgsize / 2
+	y = y + (h - pluto.ui.sizings "pluto_inventory_font_s") / 2 - imgsize / 2
 	surface.SetDrawColor(255, 255, 255)
 	surface.SetMaterial(self.Material)
-	local pad = 6
 	if (IsValid(pnl) and self == vgui.GetHoveredPanel()) then
 		local wait = 1.5
 		local timing = 1 - ((wait + CurTime()) % wait) / wait * 2
 		local up_offset = (math.sin(timing * math.pi) + 1) / 2 * 15 * 0.25
 		y = y + up_offset
 	end
-	surface.DrawTexturedRect(x + pad, y, w - pad * 2, w - pad * 2)
+	surface.DrawTexturedRect(x, y, imgsize, imgsize)
 end
 
 function PANEL:GetPickupSize()

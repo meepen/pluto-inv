@@ -87,7 +87,7 @@ end
 local circles = include "pluto/thirdparty/circles.lua"
 
 function PANEL:Paint(w, h)
-	h = (self.ShowingAmount and -16 or 0) + h
+	h = (self.ShowingAmount and -pluto.ui.sizings "pluto_inventory_font_s" or 0) + h
 
 	local Circle = circles.New(CIRCLE_FILLED, {h / 3, 4}, w / 2, h - 7)
 	Circle:SetDistance(3)
@@ -102,9 +102,9 @@ end
 local question = Material "pluto/currencies/questionmark.png"
 
 function PANEL:PaintInner(pnl, w, h, x, y)
-	local pad = 6
-	local size = math.min(w, h) - pad * 2
-
+	local imgsize = math.min(w, h) - pluto.ui.sizings "pluto_inventory_font_s"
+	x = x + w / 2 - imgsize / 2
+	y = y + h / 2 - imgsize / 2
 	surface.SetDrawColor(255, 255, 255)
 	surface.SetMaterial(self.Currency and self.Currency:GetMaterial() or question)
 	if (IsValid(pnl) and self == vgui.GetHoveredPanel()) then
@@ -113,10 +113,7 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 		local up_offset = (math.sin(timing * math.pi) + 1) / 2 * 15 * 0.25
 		y = y + up_offset
 	end
-	local rx, ry = x + w / 2 - size / 2, y + h / 2 - size / 2
-	surface.DrawTexturedRect(rx, ry, size, size)
-
-	return rx, ry, size
+	surface.DrawTexturedRect(x, y, imgsize, imgsize)
 end
 
 function PANEL:SetCurrencyFilter(func)
