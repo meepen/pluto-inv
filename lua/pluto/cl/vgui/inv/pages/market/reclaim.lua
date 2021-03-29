@@ -231,6 +231,8 @@ function PANEL:Init()
 	self:SetPage(0)
 	self:SetPageMax(1)
 
+	self:SearchPage(1)
+
 	hook.Add("PlutoYourAuctionsUpdated", self, self.PlutoYourAuctionsUpdated)
 end
 
