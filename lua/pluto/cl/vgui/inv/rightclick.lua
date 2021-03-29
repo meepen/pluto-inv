@@ -116,6 +116,9 @@ function pluto.ui.rightclickmenu(item, pre)
 		dev:AddOption("Copy ID", function()
 			SetClipboardText(item.ID)
 		end):SetIcon("icon16/cog_edit.png")
+		dev:AddOption("Copy Class Name", function()
+			SetClipboardText(item.ClassName)
+		end):SetIcon("icon16/emoticon_tongue.png")
 	end
 
 	rightclick_menu:Open()
