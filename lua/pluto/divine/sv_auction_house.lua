@@ -120,12 +120,6 @@ concommand.Add("pluto_auction_list", function(p, c, a)
 
 	pluto.db.transact(function(db)
 		local tab_id = get_auction_idx(db)
-
-		if (not pluto.inv.addcurrency(db, p, "stardust", -tax)) then
-			mysql_rollback(db)
-			return
-		end
-
 		mysql_stmt_run(db, "SELECT * from pluto_items WHERE tab_id = ? FOR UPDATE", tab_id)
 		local max = mysql_stmt_run(db, "SELECT MAX(tab_idx) as max FROM pluto_items WHERE tab_id = ?", tab_id)[1].max or 0
 
@@ -135,6 +129,11 @@ concommand.Add("pluto_auction_list", function(p, c, a)
 		mysql_stmt_run(db, "INSERT INTO pluto_auction_info (idx, owner, listed, price, name, max_mods) VALUES (?, ?, NOW(), ?, ?, ?)", auction_id, pluto.db.steamid64(p), price, gun:GetPrintName(), gun:GetMaxAffixes())
 
 		pluto.inv.invs[p][gun.TabID].Items[gun.TabIndex] = nil
+
+		if (not pluto.inv.addcurrency(db, p, "stardust", -tax)) then
+			mysql_rollback(db)
+			return
+		end
 		
 		pluto.inv.message(p)
 			:write("tabupdate", gun.TabID, gun.TabIndex)

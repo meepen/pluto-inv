@@ -81,7 +81,7 @@ function PANEL:Init()
 	self.Pagination:DockMargin(0, 0, 0, self.Padding)
 
 	self.PaginationLabel = self.Pagination:Add "pluto_label"
-	self.PaginationLabel:SetFont "pluto_inventory_font"
+	self.PaginationLabel:SetFont "pluto_inventory_font_s"
 	self.PaginationLabel:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.PaginationLabel:SetText "hi"
 	self.PaginationLabel:SetTextColor(pluto.ui.theme "TextActive")
@@ -90,7 +90,7 @@ function PANEL:Init()
 	self.PageDown = self.Pagination:Add "pluto_label"
 	self.PageDown:SetCursor "hand"
 	self.PageDown:SetMouseInputEnabled(true)
-	self.PageDown:SetFont "pluto_inventory_font"
+	self.PageDown:SetFont "pluto_inventory_font_s"
 	self.PageDown:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.PageDown:SetText "<<"
 	self.PageDown:SetTextColor(pluto.ui.theme "TextActive")
@@ -107,7 +107,7 @@ function PANEL:Init()
 	self.PageUp = self.Pagination:Add "pluto_label"
 	self.PageUp:SetCursor "hand"
 	self.PageUp:SetMouseInputEnabled(true)
-	self.PageUp:SetFont "pluto_inventory_font"
+	self.PageUp:SetFont "pluto_inventory_font_s"
 	self.PageUp:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.PageUp:SetText ">>"
 	self.PageUp:SetTextColor(pluto.ui.theme "TextActive")
@@ -165,9 +165,8 @@ function PANEL:Init()
 	function self.ListItem.OnSetItem(s, item)
 	end
 
-	self.ListAmount = self.ListDataContainer:Add "DTextEntry"
+	self.ListAmount = self.ListDataContainer:Add "pluto_inventory_textentry"
 	self.ListAmount:SetContentAlignment(6)
-	self.ListAmount:SetFont "pluto_inventory_font"
 	self.ListAmount:Dock(BOTTOM)
 	self.ListAmount:DockMargin(4, 4, 4, 4)
 
@@ -176,28 +175,12 @@ function PANEL:Init()
 	self.TaxLabel:SetText "10 + 7.5% up to 200 tax"
 	self.TaxLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.TaxLabel:SetContentAlignment(2)
-	self.TaxLabel:SetFont "pluto_inventory_font"
+	self.TaxLabel:SetFont "pluto_inventory_font_s"
 	self.TaxLabel:Dock(BOTTOM)
 
-	function self.ListAmount.OnMousePressed(s, m)
-		if (m == MOUSE_LEFT) then
-			pluto.ui.pnl:SetKeyboardFocus(s, true)
-		elseif (m == MOUSE_RIGHT) then
-			s:SetText ""
-			self:OnUpdated()
-		end
-	end
 
-	function self.ListAmount.OnEnter(s)
+	function self.ListAmount.OnChange(s)
 		self:OnUpdated()
-		pluto.ui.pnl:SetKeyboardFocus(s, false)
-	end
-
-	function self.ListAmount.OnFocusChanged(s, gained)
-		if (not gained) then
-			self:OnUpdated()
-			pluto.ui.pnl:SetKeyboardFocus(s, false)
-		end
 	end
 
 	function self.ListAreaContainer.PerformLayout(s, w, h)
