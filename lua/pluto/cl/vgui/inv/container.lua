@@ -613,6 +613,13 @@ function pluto.ui.SetKeyboardFocus(what, b)
 	end
 end
 
+function PANEL:Think()
+	if (input.IsKeyDown(KEY_ESCAPE) and gui.IsGameUIVisible()) then
+		gui.HideGameUI()
+		self:Remove()
+	end
+end
+
 vgui.Register("pluto_inv", PANEL, "EditablePanel")
 
 
