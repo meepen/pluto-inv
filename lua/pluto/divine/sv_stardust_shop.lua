@@ -244,18 +244,8 @@ concommand.Add("pluto_buy_stardust_shop", function(p, c, a)
 	end)
 end)
 
-concommand.Add("pluto_send_stardust_shop", function(p)
-	local function finish()
-		pluto.inv.message(p)
-			:write "stardustshop"
-			:send()
-	end
-	
-	if (pluto.divine.stardust_shop.available) then
-		finish()
-		return
-	end
 
+hook.Add("Initialize", "pluto_stardust_shop", function()
 	local options = buildoptions()
 
 	local available = {}
@@ -278,7 +268,7 @@ concommand.Add("pluto_send_stardust_shop", function(p)
 
 		if (#available < 8) then
 			local msg = discord.Message()
-	
+
 			for i = #available + 1, 8 do
 				local id, data = pluto.inv.roll(options)
 				data = table.Copy(data)
@@ -305,4 +295,10 @@ concommand.Add("pluto_send_stardust_shop", function(p)
 		mysql_query(db, "UNLOCK TABLES")
 		finish()
 	end)
+end)
+
+concommand.Add("pluto_send_stardust_shop", function(p)
+	pluto.inv.message(p)
+		:write "stardustshop"
+		:send()
 end)

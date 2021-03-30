@@ -4,8 +4,23 @@ function PANEL:Init()
 	self:DockPadding(3, 3, 3, pluto.ui.sizings "pluto_inventory_font")
 	self.ShopScroll = self:Add "EditablePanel"
 	self.ShopScroll:Dock(RIGHT)
-	self.ShopScroll:SetWide(pluto.ui.sizings "ItemSize" * 4 + 5 * 3)
+	self.ShopScroll:SetWide(pluto.ui.sizings "ItemSize" * 5 + 5 * 4)
 	self.ShopScroll:DockMargin(5 + 20, 0, 0, 0)
+
+	self.Header = self.ShopScroll:Add "ttt_curved_panel"
+	self.Header:Dock(TOP)
+	self.Header:SetColor(pluto.ui.theme "InnerColorSeperator")
+	self.Header:SetTall(pluto.ui.sizings "pluto_inventory_font_xlg" + 8)
+	self.Header:DockMargin(0, 0, 0, 5)
+	self.Header:SetCurve(6)
+
+	self.TextHeader = self.Header:Add "pluto_label"
+	self.TextHeader:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.TextHeader:SetText "SPECIALS XD"
+	self.TextHeader:SetFont "pluto_inventory_font_xlg"
+	self.TextHeader:SetContentAlignment(5)
+	self.TextHeader:Dock(FILL)
+	self.TextHeader:SetTextColor(pluto.ui.theme "TextActive")
 
 	self.Fill = self:Add "EditablePanel"
 	self.Fill:Dock(FILL)
@@ -39,16 +54,16 @@ function PANEL:Init()
 				container_fill:SetCurve(4)
 				container_fill:Dock(FILL)
 				container_fill:SetColor(Color(52, 51, 52))
-			
+
 				local img = container_fill:Add "DImage"
 				img:Dock(RIGHT)
 				img:DockMargin(1, 1, 1, 1)
 				img:SetImage(pluto.currency.byname.stardust.Icon)
-				
+
 				function container_fill:PerformLayout(w, h)
 					img:SetSize(h - 2, h - 2)
 				end
-			
+
 				local price = container_fill:Add "pluto_label"
 				price:Dock(FILL)
 				price:SetText("111")
@@ -97,7 +112,7 @@ function PANEL:Init()
 end
 
 function PANEL:GetNextShopLayer()
-	if (not IsValid(self.ShopLayer) or #self.ShopLayer:GetChildren() >= 4) then
+	if (not IsValid(self.ShopLayer) or #self.ShopLayer:GetChildren() >= 5) then
 		local t = self.ShopScroll:Add "EditablePanel"
 		t:Dock(TOP)
 		t:SetTall(pluto.ui.sizings "ItemSize")

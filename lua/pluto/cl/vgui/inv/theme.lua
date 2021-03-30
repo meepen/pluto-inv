@@ -38,6 +38,7 @@ pluto.ui.sizings = setmetatable({
 		pluto_inventory_font = 13,
 		pluto_inventory_font_s = 13,
 		pluto_inventory_font_lg = 15,
+		pluto_inventory_font_xlg = 18,
 		MainWidth = 700,
 		MainHeight = 450,
 		ItemSize = 56
@@ -47,6 +48,7 @@ pluto.ui.sizings = setmetatable({
 		pluto_inventory_font = 17,
 		pluto_inventory_font_s = 15,
 		pluto_inventory_font_lg = 19,
+		pluto_inventory_font_xlg = 23,
 		SidePanelSize = 200,
 		MainWidth = 950,
 		MainHeight = 570,
@@ -91,7 +93,7 @@ local function init_fonts()
 
 	surface.CreateFont("pluto_inventory_font_xlg", {
 		font = "Roboto Lt",
-		size = 18,
+		size = pluto.ui.sizings "pluto_inventory_font_xlg",
 		weight = 450,
 	})
 
