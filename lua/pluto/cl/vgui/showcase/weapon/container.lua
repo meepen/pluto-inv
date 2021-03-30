@@ -191,7 +191,7 @@ local function GetMinMax(compared, statmod)
 		if (class ~= compared and (class.Slot ~= compared.Slot or not not compared.Primary ~= not not class.Primary or class.Primary and class.Primary.Ammo ~= compared.Primary.Ammo)) then
 			continue
 		end
-		local num = pluto.mods.getrawvalue(class, statmod)
+		local num = pluto.mods.getrawvalue(class, statmod) or 0
 		if (value(num) < value(min)) then
 			min = num
 		end

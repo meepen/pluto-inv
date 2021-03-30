@@ -23,7 +23,7 @@ MOD.Tiers = {
 }
 
 function MOD:ModifyWeapon(wep, rolls)
-	wep.Bounciness = wep.Bounciness * (1 - rolls[1] / 100)
+	wep.Bounciness = (wep.Bounciness or 0) * (1 - rolls[1] / 100)
 end
 
 MOD.ItemType = "Grenade"
