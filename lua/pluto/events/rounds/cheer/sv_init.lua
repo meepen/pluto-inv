@@ -86,7 +86,7 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	state.rewards = {
 		false,
 		function(state)
-			timer.Create("pluto_cheer_radar", 5, 0, function()
+			timer.Create("pluto_cheer_radar", 3, 0, function()
 				for k, ply in ipairs(state.players) do
 					if (not state.target[ply]) then
 						return
