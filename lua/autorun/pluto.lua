@@ -77,10 +77,8 @@ pluto.files.load {
 		"cl/vgui/inv/pages/trading.lua",
 		"cl/vgui/inv/pages/donate.lua",
 
-		"cl/vgui/inv/pages/market/itemshop.lua",
 		"cl/vgui/inv/pages/market/auction.lua",
 		"cl/vgui/inv/pages/market/reclaim.lua",
-		"cl/vgui/inv/pages/market/currencyex.lua",
 		"cl/vgui/inv/pages/market/blackmarket.lua",
 		"cl/vgui/inv/pages/divine_market.lua",
 
