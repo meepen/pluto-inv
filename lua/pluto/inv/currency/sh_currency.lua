@@ -308,7 +308,7 @@ local list = {
 		Name = "Toilet Paper",
 		GroundData = {
 			Icon = "pluto/currencies/toiletpaper.png",
-			Amount = 100,
+			Amount = 25,
 		},
 		Icon = "pluto/currencies/toiletsquare.png",
 		Description = "Valuable Black Market Currency",
