@@ -361,14 +361,14 @@ function PANEL:SetItem(item)
 	self.Item = item
 	self.NameContainer:SetColor(item:GetColor())
 
-	if (item.SubDescription ~= "") then
+	if (item.SubDescription and item.SubDescription ~= "") then
 		self.SubDescription = self.TierInfo:Add "pluto_text_inner"
 		self.SubDescription:SetWide(self:GetWide() - 14)
 		self.SubDescription:Dock(TOP)
 		self.SubDescription:SetDefaultRenderSystem(pluto.fonts.systems.shadow)
 		self.SubDescription:SetDefaultTextColor(Color(255, 255, 255))
 		self.SubDescription:SetDefaultFont "pluto_inventory_font"
-		self.SubDescription:AppendText(item.Tier:GetSubDescription() .. "\n")
+		self.SubDescription:AppendText(item.SubDescription .. "\n")
 		self.SubDescription:SizeToContentsY()
 		self:SetTall(self:GetTall() + self.SubDescription:GetTall() + 5)
 		self.TierInfo:SetTall(self.SubDescription:GetTall())

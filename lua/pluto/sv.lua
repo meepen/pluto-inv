@@ -86,6 +86,9 @@ pluto.files.load {
 
 		"1516699044", -- slvbase 2
 		"1516711672", -- skyrim snpcs
+
+		"122274673", -- nes zapper
+		"329057380", -- raygun
 	},
 }
 

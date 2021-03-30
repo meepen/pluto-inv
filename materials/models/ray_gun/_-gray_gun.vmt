@@ -1,0 +1,10 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/ray_gun/_-gray_gun"
+                "$bumpmap" "models/ray_gun/_-gray_gun_normal"
+                "$phong" "1"
+                "$phongexponent" "33"
+                "$phongboost" "6"
+                "$phongfresnelranges" "[.05 .025 1]"
+                "$selfillum" "1"
+}
