@@ -57,7 +57,11 @@ function PANEL:SetContentAlignment(alignment)
 	self.Alignment = alignment
 end
 
+function PANEL:PaintUnder(w, h)
+end
+
 function PANEL:Paint(w, h)
+	self:PaintUnder(w, h)
 	local col = self:GetTextColor()
 
 	if (self:GetFadeLength() ~= -1 and self:GetFadeSustain() ~= -1 and self.Creation + self:GetFadeSustain() < CurTime()) then

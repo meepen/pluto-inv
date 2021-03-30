@@ -316,6 +316,7 @@ function PANEL:Init()
 	self.SearchButtonContainer = self:Add "EditablePanel"
 	self.SearchButtonContainer:Dock(BOTTOM)
 	self.SearchButtonContainer:SetTall(22)
+	self.SearchButtonContainer:DockMargin(0, 0, 0, 20)
 
 	self.SearchButton = self.SearchButtonContainer:Add "pluto_inventory_button"
 	self.SearchButton:SetColor(pluto.ui.theme "InnerColorSeperator", pluto.ui.theme "InnerColorSeperator")

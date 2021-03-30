@@ -101,9 +101,14 @@ function PANEL:Init()
 	self.CloseButton:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.CloseButton:SetCursor "hand"
 	self.CloseButton:SetMouseInputEnabled(true)
-	self.CloseButton:SizeToContentsX()
-	self.CloseButton:DockMargin(0, 0, 5, 0)
+	self.CloseButton:SizeToContentsX(20)
 	self.CloseButton.AllowClickThrough = true
+	self.CloseButton.PaintUnder = function(s, w, h)
+		if (s:IsHovered()) then
+			surface.SetDrawColor(0, 0, 0, 64)
+			surface.DrawRect(0, 0, w, h)
+		end
+	end
 	function self.CloseButton.OnMousePressed(s, m)
 		if (m == MOUSE_LEFT) then
 			self:Remove()
@@ -348,16 +353,14 @@ local gradient_up = Material "gui/gradient_up"
 
 function PANEL:AddTab(name, func, has_storage, cache, col)
 	local lbl = self.TabContainer:Add "pluto_label"
-	local old_paint = lbl.Paint
-	function lbl.Paint(s, w, h)
+	function lbl.PaintUnder(s, w, h)
 		if (self.ActiveTab == name) then
 			surface.SetMaterial(gradient_up)
 			surface.SetDrawColor(255, 255, 255, 10)
 			surface.DrawTexturedRect(0, 0, w, h)
-		end
-
-		if (old_paint) then
-			old_paint(s, w, h)
+		elseif (s:IsHovered()) then
+			surface.SetDrawColor(0, 0, 0, 64)
+			surface.DrawRect(0, 0, w, h)
 		end
 	end
 	self.Tabs[name] = {
