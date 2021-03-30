@@ -299,7 +299,7 @@ function pluto.inv.init(ply, cb2)
 			return cb(false, "disconnected")
 		end
 
-		if (success == 3) then
+		if (success == 4) then
 			cb(pluto.inv.invs[ply])
 		end
 	end
@@ -366,6 +366,10 @@ function pluto.inv.init(ply, cb2)
 		pluto.inv.currencies[ply] = currencies
 
 		TrySucceed "currency"
+	end)
+
+	pluto.emoji.init(ply):next(function()
+		TrySucceed "emojis"
 	end)
 
 	pluto.quests.init(ply, function(_quests)

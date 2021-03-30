@@ -149,7 +149,7 @@ function pluto.inv.readchatmessage()
 		elseif type == pluto.chat.type.CURRENCY then
 			data = pluto.currency.byname[net.ReadString()]
 		elseif (type == pluto.chat.type.IMAGE) then
-			data = table.Copy(pluto.chat.images[net.ReadString()])
+			data = table.Copy(pluto.emoji.byname[net.ReadString()])
 			data.Size = Vector(net.ReadUInt(8), net.ReadUInt(8))
 		elseif (type == pluto.chat.type.NONE) then
 			break
@@ -184,6 +184,8 @@ function pluto.chat.Add(content, channel, teamchat)
 	end
 	local from
 	pluto.chat.Box:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
+	pluto.chat.Box:DefaultFade(pluto.chat.Box.Tabs.active.name)
+
 	if (type(content[1]) ~= "string" and IsValid(content[1]) and content[1]:IsPlayer()) then
 		from = table.remove(content, 1)
 		if (channel == "Server") then 
@@ -204,7 +206,6 @@ function pluto.chat.Add(content, channel, teamchat)
 		pluto.chat.Box:Text(channel, ": ")
 	end
 
-	pluto.chat.Box:DefaultFade(pluto.chat.Box.Tabs.active.name)
 
 	for k,v in pairs(content) do
 		if (IsColor(v)) then

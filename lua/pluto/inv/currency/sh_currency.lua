@@ -305,11 +305,11 @@ local list = {
 	},
 	{
 		InternalName = "tp",
-		Name = "Refined Plutonium",
-		Icon = "pluto/currencies/refined_ingot.png",
+		Name = "Toilet Paper",
+		Icon = "pluto/currencies/toiletpaper.png",
 		Description = "Valuable Black Market Currency",
 		SubDescription = "Once the mission was complete, it was revealed what Yaari was truly after...",
-		Color = Color(0, 213, 183),
+		Color = Color(213, 213, 213),
 	},
 	{
 		InternalName = "brainegg",

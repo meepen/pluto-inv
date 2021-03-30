@@ -41,6 +41,8 @@ pluto.files.load {
 		"inv/currency/sv_currency.lua",
 		"inv/currency/sv_crossmap.lua",
 
+		"inv/sv_emojis.lua",
+
 		"inv/currency/object/sv_object.lua",
 
 		"chat/sv_chat.lua",

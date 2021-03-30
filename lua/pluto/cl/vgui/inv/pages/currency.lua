@@ -175,7 +175,7 @@ function PANEL:Paint(w, h)
 	local Circle = circles.New(CIRCLE_FILLED, {w / 3, 4}, w / 2, 41)
 	Circle:SetDistance(3)
 	Circle()
-	self:PaintInner(self, w, h, 0, 0)
+	self:PaintInner(self, w, h, 0, -5)
 
 	local x, y = self:ScreenToLocal(self.Container:LocalToScreen(self.Container:GetWide() / 2, self.Container:GetTall() / 2))
 	local surface = pluto.fonts.systems.shadow
@@ -189,7 +189,8 @@ function PANEL:Paint(w, h)
 end
 
 function PANEL:PaintInner(pnl, w, h, x, y)
-	local imgsize = math.min(w, h) - pluto.ui.sizings "pluto_inventory_font_s"
+	local imgsize = math.min(w, h) - pluto.ui.sizings "pluto_inventory_font_s" * 1.5
+
 	x = x + w / 2 - imgsize / 2
 	y = y + (h - pluto.ui.sizings "pluto_inventory_font_s") / 2 - imgsize / 2
 	surface.SetDrawColor(255, 255, 255)

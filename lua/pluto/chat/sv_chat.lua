@@ -147,7 +147,13 @@ hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 				end
 			end
 
-			if (not pluto.chat.images[emoji]) then
+			if (not pluto.emoji.byname[emoji]) then
+				continue
+			end
+
+			print(pluto.emoji.unlocks[from])
+
+			if (not pluto.emoji.unlocks[from][emoji]) then
 				continue
 			end
 
@@ -156,7 +162,7 @@ hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 			for y = x, #split do
 				split[y] = nil
 			end
-			local data = table.Copy(pluto.chat.images[emoji])
+			local data = table.Copy(pluto.emoji.byname[emoji])
 			data.Size = override_size
 			table.insert(content, i + 1, data)
 		end
@@ -222,8 +228,13 @@ function pluto.inv.writechatmessage(ply, content, channel, teamchat)
 			elseif (data.Type == "emoji") then
 				net.WriteUInt(pluto.chat.type.IMAGE, 4)
 				net.WriteString(data.Name)
-				net.WriteUInt(data.Size.x, 8)
-				net.WriteUInt(data.Size.y, 8)
+				if (data.Size) then
+					net.WriteUInt(data.Size.x, 8)
+					net.WriteUInt(data.Size.y, 8)
+				else
+					net.WriteUInt(24, 8)
+					net.WriteUInt(24, 8)
+				end
 			else
 				net.WriteUInt(pluto.chat.type.TEXT, 4)
 				net.WriteString(tostring(data))

@@ -288,5 +288,15 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				UNIQUE KEY (class, k)
 			)
 		]])
+
+		mysql_query(db, [[
+			CREATE TABLE IF NOT EXISTS pluto_emoji_unlocks (
+				steamid BIGINT UNSIGNED NOT NULL,
+				name VARCHAR(32) NOT NULL,
+
+				KEY (steamid),
+				UNIQUE(steamid, name)
+			)
+		]])
 	end)
 end)
