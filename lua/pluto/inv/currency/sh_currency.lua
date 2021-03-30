@@ -306,7 +306,11 @@ local list = {
 	{
 		InternalName = "tp",
 		Name = "Toilet Paper",
-		Icon = "pluto/currencies/toiletpaper.png",
+		GroundData = {
+			Icon = "pluto/currencies/toiletpaper.png",
+			Amount = 100,
+		},
+		Icon = "pluto/currencies/toiletsquare.png",
 		Description = "Valuable Black Market Currency",
 		SubDescription = "Once the mission was complete, it was revealed what Yaari was truly after...",
 		Color = Color(213, 213, 213),

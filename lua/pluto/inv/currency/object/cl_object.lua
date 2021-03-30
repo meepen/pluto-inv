@@ -6,10 +6,18 @@ net.Receive("pluto_currency", function()
 	sound.Play("garrysmod/balloon_pop_cute.wav", net.ReadVector(), 75, math.random(pitch - 10, pitch + 10), 1)
 end)
 
-function CURRENCY:GetMaterial()
+function CURRENCY:GetMaterial(ground)
 	local obj = pluto.currency.byname[self:GetCurrencyType()]
 	if (not obj) then
 		return error_mat
+	end
+
+	if (ground and obj.GroundData and obj.GroundData.Icon) then
+		if (not obj.GroundData.Material) then
+			obj.GroundData.Material = Material(obj.GroundData.Icon, "noclamp")
+		end
+
+		return obj.GroundData.Material
 	end
 
 	if (not obj.Material) then
@@ -70,7 +78,7 @@ hook.Add("PostDrawTranslucentRenderables", "pluto_new_currency_render", function
 	for _, self in pairs(getlist()) do
 		cam.IgnoreZ(LocalPlayer():GetCurrencyTime() > CurTime() and dist > self:GetPos():Distance(LocalPlayer():GetPos()))
 
-		render.SetMaterial(self:GetMaterial())
+		render.SetMaterial(self:GetMaterial(true))
 		local pos = self:GetPos()
 		
 		pos = pos + up_offset

@@ -15,6 +15,7 @@ function PANEL:Init()
 
 	self.Fill = self:Add "ttt_curved_panel_outline"
 	self.Fill:Dock(FILL)
+	self.Fill:SetCurve(4)
 	self.Fill:SetColor(pluto.ui.theme "InnerColorSeperator")
 
 	for i = 1, 10 do
@@ -55,7 +56,7 @@ function PANEL:AddShopItem(data)
 
 	local img = container_fill:Add "DImage"
 	img:Dock(RIGHT)
-	img:DockMargin(2, 3, 3, 3)
+	img:DockMargin(3, 3, 3, 3)
 	img:SetImage(pluto.currency.byname.tp.Icon)
 	
 	function container_fill:PerformLayout(w, h)

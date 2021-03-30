@@ -29,8 +29,9 @@ function CURRENCY:TryReward(e)
 	net.Send(e)
 
 	if (not cur.Fake) then
+		local grounddata = cur.GroundData or cur
 		pluto.db.instance(function(db)
-			local succ, err = pluto.inv.addcurrency(db, e, cur.InternalName, 1)
+			local succ, err = pluto.inv.addcurrency(db, e, cur.InternalName, grounddata.Amount or 1)
 			if (not IsValid(e)) then
 				return
 			end
@@ -39,7 +40,11 @@ function CURRENCY:TryReward(e)
 				e:ChatPrint("i tried to add currency but it didn't work, tell meepen you lost: " .. cur.InternalName)
 			end
 		end)
-		e:ChatPrint(cur.Color, "+ ", white_text, "You received ", startswithvowel(cur.Name) and "an " or "a ", cur)
+		if ((grounddata.Amount or 1) > 1) then
+			e:ChatPrint(cur.Color, "+ ", white_text, "You have found " .. grounddata.Amount .. " ", cur)
+		else
+			e:ChatPrint(cur.Color, "+ ", white_text, "You have found ", startswithvowel(cur.Name) and "an " or "a ", cur)
+		end
 	end
 
 	self:Remove()
