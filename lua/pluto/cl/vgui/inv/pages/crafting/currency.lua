@@ -31,7 +31,7 @@ function PANEL:Init()
 	end
 
 	function self.ContainerArea.Paint(s, w, h)
-		surface.SetDrawColor(95, 96, 102)
+		surface.SetDrawColor(pluto.ui.theme "InnerColorSeperator")
 		surface.DrawLine(w / 2 - pad, h - 8, self.Selector:GetPos(), h - 8)
 	end
 
@@ -81,7 +81,7 @@ function PANEL:Init()
 
 	self.BetweenStatus = self.BetweenSearch:Add "ttt_curved_panel_outline"
 	self.BetweenStatus:SetCurve(4)
-	self.BetweenStatus:SetColor(Color(95, 96, 102))
+	self.BetweenStatus:SetColor(pluto.ui.theme "InnerColorSeperator")
 	self.BetweenStatus:Dock(LEFT)
 	self.BetweenStatus:DockMargin(0, 0, 5, 0)
 
@@ -121,7 +121,7 @@ function PANEL:Init()
 	self.AddSearchButton:Dock(TOP)
 	self.AddSearchButton:DockMargin(0, 0, 0, 12)
 	local outline = self.AddSearchButton:Add "ttt_curved_panel_outline"
-	outline:SetColor(Color(95, 96, 102))
+	outline:SetColor(pluto.ui.theme "InnerColorSeperator")
 	outline:Dock(LEFT)
 
 	function self.AddSearchButton.PerformLayout(s, w, h)
@@ -151,7 +151,7 @@ function PANEL:Init()
 	self.GoButton:DockMargin(55, 12, 55, 7)
 	self.GoButton:SetTall(19)
 	self.GoButton:SetCurve(2)
-	self.GoButton:SetColor(Color(95, 96, 102), Color(95, 96, 102))
+	self.GoButton:SetColor(pluto.ui.theme "InnerColorSeperator", pluto.ui.theme "InnerColorSeperator")
 	self.GoButton:SetCursor "hand"
 	
 
@@ -177,7 +177,7 @@ function PANEL:AddSearchPanel()
 
 	container.Status = container:Add "ttt_curved_panel_outline"
 	container.Status:SetCurve(4)
-	container.Status:SetColor(Color(95, 96, 102))
+	container.Status:SetColor(pluto.ui.theme "InnerColorSeperator")
 	container.Status:Dock(LEFT)
 	container.Status:DockMargin(0, 0, 5, 0)
 	container.Status:SetMouseInputEnabled(true)

@@ -98,7 +98,7 @@ function PANEL:Init()
 
 		local curpos = Vector(s:ScreenToLocal(self.CurrencySelector:LocalToScreen(self.CurrencySelector:GetWide() / 2, self.CurrencySelector:GetTall())))
 
-		surface.SetDrawColor(95, 96, 102)
+		surface.SetDrawColor(pluto.ui.theme "InnerColorSeperator")
 		surface.DrawLine(shardlocs[2].x, 0, shardlocs[2].x, h)
 		surface.DrawLine(shardlocs[1].x, 0, shardlocs[1].x, 12)
 		surface.DrawLine(shardlocs[3].x, 0, shardlocs[3].x, 12)
@@ -110,7 +110,7 @@ function PANEL:Init()
 	self.Items = {}
 	self.ItemLine = self:Add "ttt_curved_panel_outline"
 	self.ItemLine:SetCurve(6)
-	self.ItemLine:SetColor(Color(95, 96, 102))
+	self.ItemLine:SetColor(pluto.ui.theme "InnerColorSeperator")
 	self.ItemLine:SetTall(pluto.ui.sizings "ItemSize" + 10)
 	self.ItemLine:Dock(TOP)
 	self.ItemLine:DockMargin(5, 0, 5, 10)
@@ -167,7 +167,7 @@ function PANEL:Init()
 	self.GoButton:DockMargin(55, 12, 55, 7)
 	self.GoButton:SetTall(18)
 	self.GoButton:SetCurve(2)
-	self.GoButton:SetColor(Color(95, 96, 102), Color(95, 96, 102))
+	self.GoButton:SetColor(pluto.ui.theme "InnerColorSeperator", pluto.ui.theme "InnerColorSeperator")
 	self.GoButton:SetMouseInputEnabled(true)
 
 	function self.GoButton.DoClick()

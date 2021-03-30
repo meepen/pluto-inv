@@ -45,7 +45,7 @@ function PANEL:Init()
 
 			local container = itempnl.ItemPanel:Add "ttt_curved_panel_outline"
 			container:SetCurve(4)
-			container:SetColor(Color(95, 96, 102))
+			container:SetColor(pluto.ui.theme "InnerColorSeperator")
 			container:Dock(BOTTOM)
 
 			local container_fill = container:Add "ttt_curved_panel"
@@ -137,7 +137,7 @@ function PANEL:Init()
 
 	self.ListDataContainer = self.ListAreaContainer:Add "ttt_curved_panel_outline"
 	self.ListDataContainer:SetCurve(4)
-	self.ListDataContainer:SetColor(Color(95, 96, 102))
+	self.ListDataContainer:SetColor(pluto.ui.theme "InnerColorSeperator")
 	self.ListDataContainer:SetSize(132, 132)
 
 	self.ListItem = self.ListDataContainer:Add "pluto_inventory_item"
@@ -197,7 +197,7 @@ function PANEL:Init()
 
 
 	self.ListButton = self.ListAreaContainer:Add "pluto_inventory_button"
-	self.ListButton:SetColor(Color(95, 96, 102), Color(95, 96, 102))
+	self.ListButton:SetColor(pluto.ui.theme "InnerColorSeperator", pluto.ui.theme "InnerColorSeperator")
 	self.ListButton:SetCurve(4)
 	self.ListButton:SetWide(120)
 	self.ListLabel = self.ListButton:Add "pluto_label"

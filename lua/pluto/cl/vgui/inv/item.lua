@@ -189,7 +189,7 @@ function PANEL:Init()
 
 	self.OuterBorder = self:Add "ttt_curved_panel"
 	self.OuterBorder:Dock(FILL)
-	self.OuterBorder:SetColor(Color(95, 96, 102))
+	self.OuterBorder:SetColor(pluto.ui.theme "InnerColorSeperator")
 	self.OuterBorder:DockPadding(1, 1, 1, 1)
 	self.OuterBorder:SetMouseInputEnabled(false)
 

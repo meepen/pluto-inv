@@ -4,7 +4,6 @@ PANEL.ItemSize = 36
 PANEL.CurrencySize = 16
 PANEL.Padding = 3
 PANEL.LabelTall = 12
-PANEL.InactiveColor = Color(95, 96, 102)
 PANEL.ActiveColor = Color(91, 226, 84)
 
 function PANEL:Init()
@@ -22,7 +21,7 @@ function PANEL:Init()
 	self.Inner.Label:SetTall(self.LabelTall)
 	self.Inner.Label:SetPos(10, 0)
 	self.Inner.Label:CenterHorizontal()
-	self.Inner:SetColor(self.InactiveColor)
+	self.Inner:SetColor(pluto.ui.theme "InnerColorSeperator")
 
 	function self.Inner:AddToStencil(w, h)
 		local x, y = self:ScreenToLocal(self.Label:LocalToScreen(0, 0))
@@ -181,7 +180,7 @@ end
 
 function PANEL:SetReady(ready)
 	self.Ready = ready
-	self.Inner:SetColor(self.Ready and self.ActiveColor or self.InactiveColor)
+	self.Inner:SetColor(self.Ready and self.ActiveColor or pluto.ui.theme "InnerColorSeperator")
 end
 
 vgui.Register("pluto_inventory_trading_set", PANEL, "EditablePanel")
@@ -270,7 +269,7 @@ function PANEL:Init()
 
 	self.CurrencyIcon:DockMargin(3, 0, 3, 0)
 
-	self:SetColor(Color(95, 96, 102))
+	self:SetColor(pluto.ui.theme "InnerColorSeperator")
 	self:SetCurve(2)
 	self.Inner:SetCurve(2)
 	self.Inner:SetColor(Color(53, 53, 60))

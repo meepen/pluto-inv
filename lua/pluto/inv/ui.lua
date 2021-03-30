@@ -660,7 +660,7 @@ local alpha = 220
 function PANEL:Init()
 	self:SetCurve(4)
 	self:SetSize(100, 40)
-	self:SetColor(Color(95, 96, 102, alpha))
+	self:SetColor(ColorAlpha(pluto.ui.theme "InnerColorSeperator", alpha))
 	self.Inner = self:Add "ttt_curved_panel"
 	self.Inner:Dock(FILL)
 	self.Inner:SetCurve(4)

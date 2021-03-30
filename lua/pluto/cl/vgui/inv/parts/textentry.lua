@@ -45,7 +45,7 @@ function PANEL:Init()
 		end
 	end)
 
-	self:SetColor(Color(95, 96, 102))
+	self:SetColor(pluto.ui.theme "InnerColorSeperator")
 	self:SetCurve(2)
 end
 

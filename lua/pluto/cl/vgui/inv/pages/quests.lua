@@ -76,7 +76,7 @@ local PANEL = {}
 function PANEL:Init()
 	self:SetTall(100)
 	self:SetCurve(4)
-	self:SetColor(Color(95, 96, 102))
+	self:SetColor(pluto.ui.theme "InnerColorSeperator")
 	self.Inner = self:Add "ttt_curved_panel"
 	self.Inner:Dock(FILL)
 	self:DockPadding(1, 1, 1, 1)
@@ -102,7 +102,7 @@ function PANEL:Init()
 
 	self.FavoriteButton = self.TopLine:Add "ttt_curved_panel_outline"
 	self.FavoriteButton:SetCurve(2)
-	self.FavoriteButton:SetColor(Color(95, 96, 102))
+	self.FavoriteButton:SetColor(pluto.ui.theme "InnerColorSeperator")
 	self.FavoriteButton:Dock(RIGHT)
 	self.FavoriteButton:SetWide(self.TopLine:GetTall())
 	self.FavoriteButton:SetCursor "hand"

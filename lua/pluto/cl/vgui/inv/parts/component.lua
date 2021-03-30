@@ -2,7 +2,7 @@ local PANEL = {}
 
 function PANEL:Init()
 	self.ComponentOutline = self:Add "ttt_curved_panel"
-	self.ComponentOutline:SetColor(Color(95, 96, 102))
+	self.ComponentOutline:SetColor(pluto.ui.theme "InnerColorSeperator")
 	self.ComponentInner = self.ComponentOutline:Add "ttt_curved_panel"
 	self.ComponentInner:Dock(FILL)
 	self:ChangeDockInner(1, 1, 1, 1)
@@ -63,7 +63,7 @@ function PANEL:Init()
 	self.ComponentShadow = self:Add "ttt_curved_panel"
 	self.ComponentShadow:SetColor(Color(0, 0, 0, 128))
 	self.ComponentOutline = self:Add "ttt_curved_panel"
-	self.ComponentOutline:SetColor(Color(95, 96, 102))
+	self.ComponentOutline:SetColor(pluto.ui.theme "InnerColorSeperator")
 	self.ComponentInner = self.ComponentOutline:Add "ttt_curved_panel"
 	self.ComponentInner:Dock(FILL)
 	self:ChangeDockInner(1, 1, 1, 1)

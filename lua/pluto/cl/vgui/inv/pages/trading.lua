@@ -123,7 +123,7 @@ local PANEL = {}
 function PANEL:Init()
 	self:SetTall(36)
 	self:SetCurve(4)
-	self:SetColor(Color(95, 96, 102))
+	self:SetColor(pluto.ui.theme "InnerColorSeperator")
 	self:SetMouseInputEnabled(true)
 	self:SetCursor "hand"
 
@@ -238,7 +238,7 @@ function PANEL:Init()
 	self.ChatContainer = self:Add "ttt_curved_panel_outline"
 	self.ChatContainer:Dock(FILL)
 	self.ChatContainer:DockMargin(0, 14, 0, 14)
-	self.ChatContainer:SetColor(Color(95, 96, 102))
+	self.ChatContainer:SetColor(pluto.ui.theme "InnerColorSeperator")
 	self.ChatContainer:SetZPos(1)
 
 	self.Chat = self.ChatContainer:Add "ttt_curved_panel"

@@ -47,7 +47,7 @@ function PANEL:Init()
 
 			local container = itempnl.ItemPanel:Add "ttt_curved_panel_outline"
 			container:SetCurve(4)
-			container:SetColor(Color(95, 96, 102))
+			container:SetColor(pluto.ui.theme "InnerColorSeperator")
 			container:Dock(BOTTOM)
 
 			local container_fill = container:Add "ttt_curved_panel"
@@ -144,7 +144,7 @@ function PANEL:Init()
 
 	self.SearchAreaContainer = self:Add "ttt_curved_panel_outline"
 	self.SearchAreaContainer:Dock(FILL)
-	self.SearchAreaContainer:SetColor(Color(95, 96, 102))
+	self.SearchAreaContainer:SetColor(pluto.ui.theme "InnerColorSeperator")
 	self.SearchAreaContainer:SetCurve(4)
 	self.SearchAreaContainer:DockPadding(self.Padding + 1, self.Padding + 1, self.Padding + 1, self.Padding + 1)
 
@@ -318,7 +318,7 @@ function PANEL:Init()
 	self.SearchButtonContainer:SetTall(22)
 
 	self.SearchButton = self.SearchButtonContainer:Add "pluto_inventory_button"
-	self.SearchButton:SetColor(Color(95, 96, 102), Color(95, 96, 102))
+	self.SearchButton:SetColor(pluto.ui.theme "InnerColorSeperator", pluto.ui.theme "InnerColorSeperator")
 	self.SearchButton:SetCurve(4)
 	self.SearchButton:SetWide(120)
 	self.SearchLabel = self.SearchButton:Add "pluto_label"
@@ -375,7 +375,7 @@ function PANEL:AddTab(name)
 	local btn = self.ButtonArea:Add "pluto_inventory_button"
 	btn:Dock(LEFT)
 	btn:SetCurve(4)
-	btn:SetColor(self.InactiveColor, Color(95, 96, 102))
+	btn:SetColor(self.InactiveColor, pluto.ui.theme "InnerColorSeperator")
 
 	function btn.DoClick()
 		self:SelectTab(name)
@@ -419,13 +419,13 @@ function PANEL:SelectTab(name)
 		local tab = self.Tabs[self.ActiveTab]
 		tab.Panel:SetParent(self.Cache)
 		tab.Panel:SetVisible(false)
-		tab.Label:SetColor(self.InactiveColor, Color(95, 96, 102))
+		tab.Label:SetColor(self.InactiveColor, pluto.ui.theme "InnerColorSeperator")
 	end
 	local tab = self.Tabs[name]
 	self.ActiveTab = name
 	tab.Panel:SetParent(self.TabArea)
 	tab.Panel:SetVisible(true)
-	tab.Label:SetColor(self.ActiveColor, Color(95, 96, 102))
+	tab.Label:SetColor(self.ActiveColor, pluto.ui.theme "InnerColorSeperator")
 end
 
 function PANEL:PerformLayout(w, h)

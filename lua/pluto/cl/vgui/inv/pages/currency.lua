@@ -157,7 +157,7 @@ function PANEL:Init()
 	self:SetSize(pluto.ui.sizings "ItemSize" - 16, pluto.ui.sizings "ItemSize")
 	self.Container = self:Add "ttt_curved_panel_outline"
 	self.Container:SetCurve(2)
-	self.Container:SetColor(Color(95, 96, 102))
+	self.Container:SetColor(pluto.ui.theme "InnerColorSeperator")
 	self.Container:Dock(BOTTOM)
 	self.Container:SetTall(pluto.ui.sizings "pluto_inventory_font_s")
 	self:SetCursor "hand"

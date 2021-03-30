@@ -11,7 +11,7 @@ function PANEL:Init()
 	self.InputArea = self:Add "ttt_curved_panel_outline"
 	self.InputArea:Dock(FILL)
 	self.InputArea:SetCurve(2)
-	self.InputArea:SetColor(Color(95, 96, 102))
+	self.InputArea:SetColor(pluto.ui.theme "InnerColorSeperator")
 	self.InputArea:Dock(BOTTOM)
 	self.InputArea:SetTall(16)
 
