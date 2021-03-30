@@ -741,11 +741,6 @@ for name, values in pairs {
 				if (player.GetCount() >= 6) then
 					pluto.rounds.prepare "chimp"
 				end
-
-				pluto.db.instance(function(db)
-					pluto.inv.addcurrency(db, ply, "brainegg", 1)
-					ply:ChatPrint(white_text, "You have received 1 ", pluto.currency.byname.brainegg, white_text, " for finding a banna!")
-				end)
 			end
 
 			return true
