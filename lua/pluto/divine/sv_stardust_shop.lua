@@ -266,10 +266,10 @@ hook.Add("Initialize", "pluto_stardust_shop", function()
 			table.insert(available, data)
 		end
 
-		if (#available < 8) then
+		if (#available < 10) then
 			local msg = discord.Message()
 
-			for i = #available + 1, 8 do
+			for i = #available + 1, 10 do
 				local id, data = pluto.inv.roll(options)
 				data = table.Copy(data)
 				data.id = id
@@ -293,7 +293,6 @@ hook.Add("Initialize", "pluto_stardust_shop", function()
 		end
 
 		mysql_query(db, "UNLOCK TABLES")
-		finish()
 	end)
 end)
 

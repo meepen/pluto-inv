@@ -1,6 +1,13 @@
 local PANEL = {}
 
 function PANEL:Init()
+	surface.CreateFont("headline_font", {
+		font = "Permanent Marker",
+		size = pluto.ui.sizings "pluto_inventory_font_xlg" * 1.4,
+		antialias = true,
+		weight = 500
+	})
+
 	self:DockPadding(3, 3, 3, pluto.ui.sizings "pluto_inventory_font")
 	self.ShopScroll = self:Add "EditablePanel"
 	self.ShopScroll:Dock(RIGHT)
@@ -17,7 +24,7 @@ function PANEL:Init()
 	self.TextHeader = self.Header:Add "pluto_label"
 	self.TextHeader:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.TextHeader:SetText "SPECIALS XD"
-	self.TextHeader:SetFont "pluto_inventory_font_xlg"
+	self.TextHeader:SetFont "headline_font"
 	self.TextHeader:SetContentAlignment(5)
 	self.TextHeader:Dock(FILL)
 	self.TextHeader:SetTextColor(pluto.ui.theme "TextActive")
@@ -66,7 +73,7 @@ function PANEL:Init()
 
 				local price = container_fill:Add "pluto_label"
 				price:Dock(FILL)
-				price:SetText("111")
+				price:SetText ""
 				price:SetContentAlignment(6)
 				price:SetFont "pluto_inventory_font"
 				price:SetTextColor(pluto.ui.theme "TextActive")
@@ -103,11 +110,20 @@ function PANEL:Init()
 		end
 	end
 
+	hook.Add("ReceiveStardustShop", self, self.ReceiveStardustShop)
+
 	for i = 1, 10 do
 		self:AddShopItem {
 			Price = math.random(1, 100),
 			Item = nil
 		}
+	end
+end
+
+function PANEL:ReceiveStardustShop(stardusts)
+	for i, item in ipairs(stardusts) do
+		self.StardustItemPanels[i]:SetItem(item.Item)
+		self.StardustItemPanels[i].PricePanel:SetText(item.Price)
 	end
 end
 
@@ -159,6 +175,13 @@ function PANEL:AddShopItem(data)
 	price:SizeToContentsY()
 
 	container:SetTall(price:GetTall())
+end
+
+function PANEL:Paint()
+	if (not self.HasPainted) then
+		self.HasPainted = true
+		RunConsoleCommand "pluto_send_stardust_shop"
+	end
 end
 
 vgui.Register("pluto_inventory_blackmarket", PANEL, "EditablePanel")
