@@ -71,12 +71,23 @@ local blackmarket_items_test = {
 }
 
 local function install(panel)
-	function panel:AddItem(data)
+	function panel:AddItem(data, offerid)
 		self.Items = self.Items or {}
 
 		local pnl = self:Add "pluto_inventory_item"
 		pnl:SetSize(pluto.ui.sizings "ItemSize", pluto.ui.sizings "ItemSize")
 		pnl:SetItem(data.Item)
+
+		function pnl:OnLeftClick()
+			self:OnRightClick()
+		end
+		function pnl:OnRightClick()
+			local mn = DermaMenu()
+			mn:AddOption("Buy for " .. pnl.PricePanel:GetText() .. " " .. pluto.currency.byname.tp.Name,function()
+				RunConsoleCommand("pluto_blackmarket_buy", offerid, self:GetItem().ClassName)
+			end):SetIcon "icon16/money_delete.png"
+			mn:Open()
+		end
 
 		local container = pnl.ItemPanel:Add "ttt_curved_panel_outline"
 		container:SetCurve(4)
@@ -322,15 +333,19 @@ function PANEL:Init()
 	end
 
 	hook.Add("ReceiveStardustShop", self, self.ReceiveStardustShop)
+	hook.Add("PlutoBlackmarketReceived", self, self.PlutoBlackmarketReceived)
 
-	for _, data in ipairs(blackmarket_items_test.Specials) do
-		self.SpecialFill:AddItem(data)
-	end
 	for _, offer in ipairs(self:GetCurrencySpecials()) do
 		self.CurrencySpecialFill:AddCurrency(offer)
 	end
 	for _, data in ipairs(blackmarket_items_test) do
 		self:AddBlackmarketItem(data)
+	end
+end
+
+function PANEL:PlutoBlackmarketReceived(data)
+	for id, data in ipairs(data.Offers) do
+		self.SpecialFill:AddItem(data, id)
 	end
 end
 
@@ -412,7 +427,26 @@ function PANEL:Paint()
 	if (not self.HasPainted) then
 		self.HasPainted = true
 		RunConsoleCommand "pluto_send_stardust_shop"
+		RunConsoleCommand "pluto_send_blackmarket"
 	end
 end
 
 vgui.Register("pluto_inventory_blackmarket", PANEL, "EditablePanel")
+
+function pluto.inv.readblackmarket()
+	local data = {
+		Remaining = net.ReadUInt(32),
+		Offers = {}
+	}
+	for i = 1, net.ReadUInt(8) do
+		local price = net.ReadUInt(32)
+		local what = setmetatable({}, pluto.inv.item_mt)
+		pluto.inv.readbaseitem(what)
+		data.Offers[i] = {
+			Price = price,
+			Item = what,
+		}
+	end
+
+	hook.Run("PlutoBlackmarketReceived", data)
+end
