@@ -78,7 +78,7 @@ function SWEP:FireBulletsCallback(tr, dmginfo, data)
 		else
 			pluto.statuses.poison(own, {
 				Weapon = self,
-				Damage = 15
+				Damage = 10
 			})
 		end
 	end

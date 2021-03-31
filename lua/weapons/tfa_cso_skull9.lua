@@ -85,7 +85,9 @@ function SWEP:GetCurrentAnimation(what)
 	return t[(self:GetBulletsShot() % #t) + 1]
 end
 
-function SWEP:SoundEffect(tr_main)
+function SWEP:HitEffects(tr_main)
+	BaseClass.HitEffects(self, tr_main)
+
 	if (IsValid(tr_main.Entity) and tr_main.Entity:IsPlayer()) then
 		self:EmitSound(self:GetCurrentAnimation().hitflesh)
 	elseif (IsValid(tr_main.Entity) or tr_main.HitWorld) then

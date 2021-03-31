@@ -81,7 +81,7 @@ function SWEP:FireBulletsCallback(tr, dmginfo, data)
 
 		pluto.statuses.poison(own, {
 			Weapon = self,
-			Damage = 10
+			Damage = 5
 		})
 
 		local ent = tr.Entity
@@ -90,7 +90,7 @@ function SWEP:FireBulletsCallback(tr, dmginfo, data)
 			return 
 		end
 
-		self.Damaged[ent] = (self.Damaged[ent] or 0) + 10
+		self.Damaged[ent] = (self.Damaged[ent] or 0) + 5
 	end
 end
 
@@ -99,7 +99,7 @@ function SWEP:DoPlayerDeath(ply, atk, dmg)
 		return
 	end
 
-	local amt = self.Damaged[ply] * 1.5
+	local amt = self.Damaged[ply] * 2
 	self.Damaged[ply] = nil
 
 	pluto.statuses.heal(self:GetOwner(), amt, amt / 20)
