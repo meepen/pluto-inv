@@ -401,12 +401,14 @@ function PANEL:SetItem(item)
 
 	if (item:GetMaxAffixes() > 0) then
 		local num_mods = 0
-		for type, tbl in pairs(item.Mods) do
-			if (type == "implicit") then
-				continue
-			end
+		if (item.Mods) then
+			for type, tbl in pairs(item.Mods) do
+				if (type == "implicit") then
+					continue
+				end
 
-			num_mods = num_mods + #tbl
+				num_mods = num_mods + #tbl
+			end
 		end
 		--[[
 		self.ModLabel:SetText(num_mods .. " / " .. item:GetMaxAffixes() .. " mods")
@@ -437,7 +439,7 @@ function PANEL:SetItem(item)
 		self.ModLabel:Dock(RIGHT)
 		self.ModLabel:SetFont "pluto_showcase_suffix_text"
 		self.ModLabel:SetTextColor(Color(255, 255, 255))
-		self.ModLabel:SetText(string.format("%i/%i mods", #item.Mods.suffix + #item.Mods.prefix, item:GetMaxAffixes()))
+		self.ModLabel:SetText(string.format("%i/%i mods", #(item.Mods.suffix or {}) + #(item.Mods.prefix or {}), item:GetMaxAffixes()))
 		self.ModLabel:DockMargin(7, 0, 0, 0)
 		self.ModLabel:SizeToContents()
 
@@ -445,7 +447,7 @@ function PANEL:SetItem(item)
 		self.SuffixLabel:Dock(LEFT)
 		self.SuffixLabel:SetFont "pluto_showcase_suffix_text"
 		self.SuffixLabel:SetTextColor(Color(255, 255, 255))
-		self.SuffixLabel:SetText(string.format("%i/%i suffixes", #item.Mods.suffix, math.min(item:GetMaxAffixes(), 3)))
+		self.SuffixLabel:SetText(string.format("%i/%i suffixes", #(item.Mods.suffix or {}), math.min(item:GetMaxAffixes(), 3)))
 		self.SuffixLabel:DockMargin(0, 0, 7, 0)
 		self.SuffixLabel:SizeToContents()
 
@@ -460,14 +462,22 @@ function PANEL:SetItem(item)
 			surface.DrawLine(0, h / 2, w, h / 2)
 		end
 
-		for _, implicit in ipairs(item.Mods.implicit) do
-			self:AddImplicit(implicit, item)
-		end
-		for _, prefix in ipairs(item.Mods.prefix) do
-			self:AddPrefix(prefix, item)
-		end
-		for _, suffix in ipairs(item.Mods.suffix) do
-			self:AddSuffix(suffix, item)
+		if (item.Mods) then
+			if (item.Mods.implicit) then
+				for _, implicit in ipairs(item.Mods.implicit) do
+					self:AddImplicit(implicit, item)
+				end
+			end
+			if (item.Mods.prefix) then
+				for _, prefix in ipairs(item.Mods.prefix) do
+					self:AddPrefix(prefix, item)
+				end
+			end
+			if (item.Mods.suffix) then
+				for _, suffix in ipairs(item.Mods.suffix) do
+					self:AddSuffix(suffix, item)
+				end
+			end
 		end
 	end
 

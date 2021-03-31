@@ -1,5 +1,17 @@
 local PANEL = {}
 
+local blackmarket_items_test = {
+	{
+		Price = math.random(1, 10000),
+		Item = setmetatable({
+			Type = "Weapon",
+			Mods = {},
+			ClassName = "weapon_ttt_m4a1",
+			Tier = pluto.tiers.byname.otherworldly,
+		}, pluto.inv.item_mt)
+	}
+}
+
 function PANEL:Init()
 	surface.CreateFont("headline_font", {
 		font = "Permanent Marker",
@@ -56,7 +68,7 @@ function PANEL:Init()
 				container:SetCurve(4)
 				container:SetColor(pluto.ui.theme "InnerColorSeperator")
 				container:Dock(BOTTOM)
-			
+
 				local container_fill = container:Add "ttt_curved_panel"
 				container_fill:SetCurve(4)
 				container_fill:Dock(FILL)
@@ -112,11 +124,8 @@ function PANEL:Init()
 
 	hook.Add("ReceiveStardustShop", self, self.ReceiveStardustShop)
 
-	for i = 1, 10 do
-		self:AddShopItem {
-			Price = math.random(1, 100),
-			Item = nil
-		}
+	for _, data in ipairs(blackmarket_items_test) do
+		self:AddBlackmarketItem(data)
 	end
 end
 
@@ -139,12 +148,13 @@ function PANEL:GetNextShopLayer()
 	return self.ShopLayer
 end
 
-function PANEL:AddShopItem(data)
+function PANEL:AddBlackmarketItem(data)
 	local layer = self:GetNextShopLayer()
 	local item = layer:Add "pluto_inventory_item"
 	item:SetWide(pluto.ui.sizings "ItemSize")
 	item:Dock(LEFT)
 	item:DockMargin(0, 0, 5, 0)
+	item:SetItem(data.Item)
 
 	local container = item.ItemPanel:Add "ttt_curved_panel_outline"
 	container:SetCurve(4)
