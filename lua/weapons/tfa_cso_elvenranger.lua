@@ -75,3 +75,5 @@ SWEP.Primary.PenetrationValue = 50
 function SWEP:GetReloadDuration(speed)
 	return 2 / speed + 0.1
 end
+
+SWEP.Ortho = {-2, 0, angle = Angle(-50, -25)}

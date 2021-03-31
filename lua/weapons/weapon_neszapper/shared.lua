@@ -65,6 +65,12 @@ SWEP.Bullets = {
 SWEP.Primary.Sound         = Sound "Weapon_NESZapper.Single"
 
 DEFINE_BASECLASS(SWEP.Base)
+
+function SWEP:Initialize()
+	hook.Add("PlayerRagdollCreated", self, self.PlayerRagdollCreated)
+	return BaseClass.Initialize(self)
+end
+
 function SWEP:Deploy()
 	if (CLIENT and IsFirstTimePredicted()) then
 		if (ttt.GetHUDTarget() ~= self:GetOwner()) then
@@ -93,6 +99,56 @@ function SWEP:Holster()
 	return BaseClass.Holster(self)
 end
 
+function SWEP:Kill(state, atk, vic)
+	if (SERVER) then
+		net.Start "weapon_neszapper"
+		net.Send(vic)
+	end
+end
+
+function SWEP:PlayerRagdollCreated(ply, rag, atk, dmg)
+	if (dmg:GetInflictor() ~= self) then
+		return
+	end
+
+	if (not IsValid(rag)) then
+		return
+	end
+
+	if (not atk:GetRoleData().Evil) then
+		return
+	end
+
+	for _, oply in pairs(player.GetAll()) do
+		print(oply, oply:Alive(), oply:Visible(rag))
+		if (oply:Alive() and not oply:GetRoleData().Evil and oply:Visible(rag)) then
+			return
+		end
+	end
+
+	local dissolver = ents.Create "env_entity_dissolver"
+	rag.IsSafeToRemove = true
+	if IsValid(vic) then
+		vic:SetNW2Bool("body_found", false)
+		net.Start("Ass_talent")
+		net.WriteString(vic:Nick())
+		net.Send(att)
+	end
+
+	rag:SetName("diss_" .. rag:EntIndex())
+	dissolver:Spawn()
+	dissolver:Activate()
+	dissolver:SetKeyValue("dissolvetype", 3)
+	dissolver:SetKeyValue("magnitude", 0)
+	dissolver:SetPos(rag:GetPos())
+	dissolver:Fire("Dissolve", rag:GetName(), 0)
+	dissolver:Fire("Kill", "", 0.5)
+
+	timer.Simple(0.5, function()
+		dissolver:Remove()
+	end)
+end
+
 local power
 SWEP.RecoilInstructions = {
 	Interval = 1,
@@ -102,3 +158,9 @@ SWEP.RecoilInstructions = {
 }
 
 SWEP.Ortho = {-4, 4, angle = Angle(0, 0, -27), size = 1}
+
+if (CLIENT) then
+	net.Receive("weapon_neszapper", function()
+		surface.PlaySound "weapons/neszapper/neskill.wav"
+	end)
+end

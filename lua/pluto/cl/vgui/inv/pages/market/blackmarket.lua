@@ -36,98 +36,26 @@ local blackmarket_items_test = {
 		Item = setmetatable({
 			Type = "Weapon",
 			Mods = {},
-			ClassName = "weapon_ttt_deagle_gold",
+			ClassName = "tfa_cso_elvenranger",
 			Tier = pluto.tiers.byname.legendary,
 		}, pluto.inv.item_mt)
 	},
 	{
-		Price = 250,
+		Price = 150,
 		Item = setmetatable({
 			Type = "Weapon",
 			Mods = {},
-			ClassName = "weapon_ttt_deagle_gold",
-			Tier = pluto.tiers.byname.legendary,
+			ClassName = "weapon_lightsaber_rb",
+			Tier = pluto.tiers.byname.unique,
 		}, pluto.inv.item_mt)
 	},
 	{
-		Price = 250,
+		Price = 283,
 		Item = setmetatable({
 			Type = "Weapon",
 			Mods = {},
-			ClassName = "weapon_ttt_deagle_gold",
-			Tier = pluto.tiers.byname.legendary,
-		}, pluto.inv.item_mt)
-	},
-	{
-		Price = 250,
-		Item = setmetatable({
-			Type = "Weapon",
-			Mods = {},
-			ClassName = "weapon_ttt_deagle_gold",
-			Tier = pluto.tiers.byname.legendary,
-		}, pluto.inv.item_mt)
-	},
-	{
-		Price = 250,
-		Item = setmetatable({
-			Type = "Weapon",
-			Mods = {},
-			ClassName = "weapon_ttt_deagle_gold",
-			Tier = pluto.tiers.byname.legendary,
-		}, pluto.inv.item_mt)
-	},
-	{
-		Price = 250,
-		Item = setmetatable({
-			Type = "Weapon",
-			Mods = {},
-			ClassName = "weapon_ttt_deagle_gold",
-			Tier = pluto.tiers.byname.legendary,
-		}, pluto.inv.item_mt)
-	},
-	{
-		Price = 250,
-		Item = setmetatable({
-			Type = "Weapon",
-			Mods = {},
-			ClassName = "weapon_ttt_deagle_gold",
-			Tier = pluto.tiers.byname.legendary,
-		}, pluto.inv.item_mt)
-	},
-	{
-		Price = 250,
-		Item = setmetatable({
-			Type = "Weapon",
-			Mods = {},
-			ClassName = "weapon_ttt_deagle_gold",
-			Tier = pluto.tiers.byname.legendary,
-		}, pluto.inv.item_mt)
-	},
-	{
-		Price = 250,
-		Item = setmetatable({
-			Type = "Weapon",
-			Mods = {},
-			ClassName = "weapon_ttt_deagle_gold",
-			Tier = pluto.tiers.byname.legendary,
-		}, pluto.inv.item_mt)
-	},
-	{
-		Price = 250,
-		Item = setmetatable({
-			Type = "Weapon",
-			Mods = {},
-			ClassName = "weapon_ttt_deagle_gold",
-			Tier = pluto.tiers.byname.legendary,
-		}, pluto.inv.item_mt)
-	},
-	{
-		Price = 250,
-		Item = setmetatable({
-			Type = "Weapon",
-			Mods = {},
-			ClassName = "weapon_ttt_deagle_gold",
-			Tier = pluto.tiers.byname.legendary,
+			ClassName = "weapon_lightsaber_rainbow",
+			Tier = pluto.tiers.byname.unique,
 		}, pluto.inv.item_mt)
 	},
 }

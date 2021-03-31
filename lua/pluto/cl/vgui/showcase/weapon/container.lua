@@ -507,8 +507,9 @@ function PANEL:SetItem(item)
 	if (item.Type == "Weapon") then
 		local dmg_text = pluto.mods.getitemvalue(item, "Damage")
 		local dmg, pellets = tostring(dmg_text):match "^([%d%.]+)%*?(%d*)$"
+		dmg, pellets = dmg or 0, pellets or 0
 		pellets = pellets == "" and 1 or pellets
-		local rpm = pluto.mods.getitemvalue(item, "Delay")
+		local rpm = tonumber((pluto.mods.getitemvalue(item, "Delay"))) or 1
 
 		local stats = {
 			{

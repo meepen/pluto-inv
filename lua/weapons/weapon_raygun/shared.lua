@@ -136,3 +136,5 @@ SWEP.RecoilInstructions = {
 	Angle(-10, 1),
 	Angle(-10, -2),
 }
+
+SWEP.Ortho = {4.5, -3.8, angle = Angle(45, 55)}

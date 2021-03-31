@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "gmod_tower/box/box_skin"
+	"$bumpmap" "gmod_tower/box/box_skin_bump"
+}
