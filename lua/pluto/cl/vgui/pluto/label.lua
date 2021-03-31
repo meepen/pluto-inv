@@ -75,16 +75,20 @@ function PANEL:Paint(w, h)
 	local tw, th = surface.GetTextSize(txt)
 
 
-	if (self.Alignment == 2) then
+	if (self.Alignment == 1) then
+		surface.SetTextPos(0, h - th)
+	elseif (self.Alignment == 2) then
 		surface.SetTextPos(w / 2 - tw / 2, h - th)
+	elseif (self.Alignment == 3) then
+		surface.SetTextPos(w - tw, h - th)
 	elseif (self.Alignment == 4) then
 		surface.SetTextPos(0, h / 2 - th / 2 + 1)
 	elseif (self.Alignment == 6) then
-		surface.SetTextPos(w - tw, h / 2 - th / 2)
+		surface.SetTextPos(w - tw, h / 2 - th / 2 + 0.5 )
 	elseif (self.Alignment == 8) then
 		surface.SetTextPos(w / 2 - tw / 2, 0)
 	else -- if (self.Alignment == 5) then
-		surface.SetTextPos(w / 2 - tw / 2 + 1, h / 2 - th / 2 + 1)
+		surface.SetTextPos(w / 2 - tw / 2, h / 2 - th / 2 + 0.5)
 	end
 	surface.DrawText(txt)
 

@@ -223,6 +223,36 @@ function PANEL:Init()
 	self.TextHeader:Dock(FILL)
 	self.TextHeader:SetTextColor(pluto.ui.theme "TextActive")
 
+	self.RefreshTimer = self.Header:Add "pluto_label"
+	self.RefreshTimer:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.RefreshTimer:SetText "Refresh Timer"
+	self.RefreshTimer:SetTextColor(Color(255, 255, 255, 128))
+	self.RefreshTimer:SetFont "pluto_inventory_font_s"
+	self.RefreshTimer:SetContentAlignment(3)
+	self.RefreshTimer:Dock(FILL)
+	self.RefreshTimer:DockMargin(0, 0, 5, 5)
+
+	function self.RefreshTimer:Think()
+		if (not self.EndTime) then
+			return
+		end
+
+		local diff = self.EndTime - os.time()
+		local text
+		if (diff < 0) then
+			text = "next map"
+		elseif (diff < 60) then
+			text = diff .. "s"
+		elseif (diff < 60 * 60) then
+			text = math.Round(diff / 60) .. "m"
+		else
+			text = math.Round(diff / 60 / 60) .. "h"
+		end
+
+		self:SetText("Refreshes: " .. text)
+	end
+
+
 	self.SpecialFill = self.SpecialArea:Add "EditablePanel"
 	self.SpecialFill:Dock(TOP)
 	self.SpecialFill:SetTall(pluto.ui.sizings "ItemSize")
@@ -344,6 +374,7 @@ function PANEL:Init()
 end
 
 function PANEL:PlutoBlackmarketReceived(data)
+	self.RefreshTimer.EndTime = os.time() + data.Remaining
 	for id, data in ipairs(data.Offers) do
 		self.SpecialFill:AddItem(data, id)
 	end
