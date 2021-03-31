@@ -13,6 +13,7 @@ function EFFECT:Init(data)
 	self.StartPos = data:GetStart()
 	self.WeaponEnt = data:GetEntity()
 	self.Attachment = data:GetAttachment()
+	self.Color = data:GetColor()
 	local owent
 
 	if IsValid(self.WeaponEnt) then
@@ -103,7 +104,12 @@ function EFFECT:Render()
 	beamcol.a = self.LifeTime / self.Life * 2
 	self.rot = self.rot + FrameTime() * self.RotVelocity
 	render.SetMaterial(Mat_TracePart)
-	for i = -0.1, 0.1, 0.01 do
+	if (self.Color == 1) then
+		Mat_TracePart:SetVector("$color", Vector(1, 0.5, 1))
+	else
+		Mat_TracePart:SetVector("$color", Vector(1, 1, 1))
+	end
+	for i = -0.1, 0.05, 0.05 do
 		render.DrawQuadEasy(Lerp(math.Clamp(self.LifeTime / self.Life + i, 0, 1), endPos, startPos), self.Normal, 12, 12, beamcol2, self.rot)
 	end
 end

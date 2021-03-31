@@ -31,6 +31,8 @@ SWEP.Slot					= 1
  
 SWEP.UseHands               = true
 
+SWEP.Secondary.Automatic = true
+
 SWEP.ViewModelFOV = 60
 SWEP.ViewModel = "models/weapons/v_waw_raygun.mdl"
 SWEP.WorldModel = "models/raygun/ray_gun.mdl"
@@ -58,7 +60,6 @@ sound.Add {
 	level = 70,
 	sound = {
 		"weapons/waw_raygun/fire.wav",
-		"weapons/waw_raygun/fire1.wav",
 	}
 }
 
@@ -69,7 +70,8 @@ sound.Add {
 	level = 70,
 	sound = {
 		"weapons/waw_raygun/open.wav",
-	}
+	},
+	volume = 0.6
 }
 
 sound.Add {
@@ -79,7 +81,8 @@ sound.Add {
 	level = 70,
 	sound = {
 		"weapons/waw_raygun/out.wav",
-	}
+	},
+	volume = 0.6
 }
 
 sound.Add {
@@ -89,7 +92,8 @@ sound.Add {
 	level = 70,
 	sound = {
 		"weapons/waw_raygun/in.wav",
-	}
+	},
+	volume = 0.6
 }
 
 sound.Add {
@@ -99,7 +103,8 @@ sound.Add {
 	level = 70,
 	sound = {
 		"weapons/waw_raygun/open.wav",
-	}
+	},
+	volume = 0.6
 }
 
 sound.Add {
@@ -109,19 +114,29 @@ sound.Add {
 	level = 70,
 	sound = {
 		"weapons/waw_raygun/close.wav",
-	}
+	},
+	volume = 0.6
 }
 
 SWEP.Primary.Sound = "waw_raygun.Single"
+SWEP.Primary.Damage = 25
+SWEP.HeadshotMultiplier = 1.5
 
-SWEP.Primary.ClipSize = 10
-SWEP.Primary.DefaultClip = 10
+SWEP.Primary.ClipSize = 20
 SWEP.Primary.Delay = 0.45
-SWEP.Primary.Ammo = "Pistol"
+SWEP.Primary.Ammo = "none"
 SWEP.HoldType = "pistol"
 
 DEFINE_BASECLASS(SWEP.Base)
 
+function SWEP:SetupDataTables()
+	self:NetVar("Mode", "Int", 0)
+	return BaseClass.SetupDataTables(self)
+end
+
+function SWEP:GetReserveAmmo()
+	return self.Primary.ClipSize
+end
 
 function SWEP:_DispatchEffect(EFFECTSTR)
 	local owner = self:GetOwner()
@@ -169,8 +184,63 @@ function SWEP:_ImpactEffect(traceHit)
 	end
 end
 
+function SWEP:PrimaryAttack()
+	self:SetMode(1)
+	return BaseClass.PrimaryAttack(self)
+end
+
+function SWEP:SecondaryAttack()
+	if (not self:CanPrimaryAttack() or self:GetNextPrimaryFire() > CurTime()) then
+		return
+	end
+
+	self:SetMode(2)
+	return BaseClass.PrimaryAttack(self)
+end
+
+function SWEP:IsToggleADS()
+	return true
+end
+
+function SWEP:AddTracerEffectData(data)
+	data:SetColor(self:GetMode())
+end
+
+function SWEP:ShootBullet(data)
+	return BaseClass.ShootBullet(self, data) * self:GetMode()
+end
+
 function SWEP:GetViewModelPosition(eyepos, eyeang)
-	return BaseClass.GetViewModelPosition(self, eyepos + eyeang:Forward() * 5, eyeang)
+	return BaseClass.GetViewModelPosition(self, eyepos + eyeang:Forward() * 6, eyeang)
+end
+
+function SWEP:GetPenetration()
+	if (self:GetMode() == 1) then
+		return 100
+	end
+
+	return BaseClass.GetPenetration(self)
+end
+
+function SWEP:FireBulletsCallback(tr, dmginfo, data)
+	BaseClass.FireBulletsCallback(self, tr, dmginfo, data)
+	if (SERVER and not tr.HitregCallback and self:GetMode() == 2) then
+		local inf, atk, pos = dmginfo:GetInflictor(), dmginfo:GetAttacker(), dmginfo:GetDamagePosition()
+
+		local dmg = DamageInfo()
+		dmg:SetInflictor(inf)
+		dmg:SetAttacker(atk)
+		dmg:SetDamagePosition(pos)
+
+		local damage, dist = 25, 100
+
+		for _, ent in pairs(ents.FindInSphere(dmg:GetDamagePosition(), dist)) do
+			if (ent:IsPlayer()) then
+				dmg:SetDamage(damage - ent:GetPos():Distance(dmg:GetDamagePosition()) / dist * damage)
+				ent:TakeDamageInfo(dmg)
+			end
+		end
+	end
 end
 
 SWEP.RecoilInstructions = {
