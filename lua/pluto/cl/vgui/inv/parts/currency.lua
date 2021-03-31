@@ -1,7 +1,8 @@
 local PANEL = {}
 
 function PANEL:Init()
-	self:SetSize(pluto.ui.sizings "ItemSize", pluto.ui.sizings "ItemSize")
+	local size = pluto.ui.sizings "ItemSize" - pluto.ui.sizings "pluto_inventory_font" - 2
+	self:SetSize(size, size)
 
 	self.CurrencyArea = self:Add "EditablePanel"
 	self.CurrencyArea:Dock(TOP)
@@ -64,7 +65,7 @@ end
 
 function PANEL:ShowAmount(b)
 	if (b) then
-		self:SetTall(self:GetWide() + 16)
+		self:SetTall(self:GetWide() + pluto.ui.sizings "pluto_inventory_font" + 2)
 	else
 		self:SetTall(self:GetWide())
 	end
@@ -120,8 +121,12 @@ function PANEL:SetCurrencyFilter(func)
 	self.Filter = func
 end
 
+function PANEL:OnLeftClick()
+end
+
 function PANEL:OnMousePressed(m)
 	if (not self.AllowInput) then
+		self:OnLeftClick()
 		return
 	end
 

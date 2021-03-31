@@ -169,3 +169,5 @@ hook.Add("PostPlayerDraw", "weapon_cbox", function(pl)
 		pl:DrawShadow(true)
 	end
 end)
+
+SWEP.Ortho = {-4.6, 0, angle = Angle(-50, 90), size = 1.2}

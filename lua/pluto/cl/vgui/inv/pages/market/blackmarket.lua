@@ -3,7 +3,7 @@ local PANEL = {}
 local blackmarket_items_test = {
 	Specials = {
 		{
-			Price = 135,
+			Price = 255,
 			Item = setmetatable({
 				Type = "Weapon",
 				Mods = {},
@@ -12,7 +12,7 @@ local blackmarket_items_test = {
 			}, pluto.inv.item_mt)
 		},
 		{
-			Price = 200,
+			Price = 275,
 			Item = setmetatable({
 				Type = "Weapon",
 				Mods = {},
@@ -23,12 +23,12 @@ local blackmarket_items_test = {
 	},
 
 	{
-		Price = 250,
+		Price = 325,
 		Item = setmetatable({
 			Type = "Weapon",
 			Mods = {},
 			ClassName = "weapon_ttt_deagle_gold",
-			Tier = pluto.tiers.byname.legendary,
+			Tier = pluto.tiers.byname.unique,
 		}, pluto.inv.item_mt)
 	},
 	{
@@ -41,15 +41,6 @@ local blackmarket_items_test = {
 		}, pluto.inv.item_mt)
 	},
 	{
-		Price = 150,
-		Item = setmetatable({
-			Type = "Weapon",
-			Mods = {},
-			ClassName = "weapon_lightsaber_rb",
-			Tier = pluto.tiers.byname.unique,
-		}, pluto.inv.item_mt)
-	},
-	{
 		Price = 283,
 		Item = setmetatable({
 			Type = "Weapon",
@@ -58,50 +49,29 @@ local blackmarket_items_test = {
 			Tier = pluto.tiers.byname.unique,
 		}, pluto.inv.item_mt)
 	},
+	{
+		Price = 290,
+		Item = setmetatable({
+			Type = "Weapon",
+			Mods = {},
+			ClassName = "weapon_cbox",
+			Tier = pluto.tiers.byname.unique,
+		}, pluto.inv.item_mt)
+	},
+
+	{
+		Price = 150,
+		Item = setmetatable({
+			Type = "Weapon",
+			Mods = {},
+			ClassName = "weapon_lightsaber_rb",
+			Tier = pluto.tiers.byname.unique,
+		}, pluto.inv.item_mt)
+	},
 }
 
-function PANEL:Init()
-	surface.CreateFont("headline_font", {
-		font = "Permanent Marker",
-		size = pluto.ui.sizings "pluto_inventory_font_xlg" * 1.4,
-		antialias = true,
-		weight = 500
-	})
-
-	self:DockPadding(3, 3, 3, pluto.ui.sizings "pluto_inventory_font")
-	self.ShopScroll = self:Add "EditablePanel"
-	self.ShopScroll:Dock(RIGHT)
-	self.ShopScroll:SetWide(pluto.ui.sizings "ItemSize" * 5 + 5 * 4)
-	self.ShopScroll:DockMargin(5 + 20, 0, 0, 0)
-
-	self.SpecialArea = self.ShopScroll:Add "ttt_curved_panel_outline"
-	self.SpecialArea:SetColor(pluto.ui.theme "InnerColorSeperator")
-	self.SpecialArea:SetCurve(6)
-	self.SpecialArea:SetTall(pluto.ui.sizings "pluto_inventory_font_xlg" + 8 + 5 * 2 + pluto.ui.sizings "ItemSize")
-	self.SpecialArea:Dock(TOP)
-	self.SpecialArea:DockMargin(0, 0, 0, 5)
-
-	self.Header = self.SpecialArea:Add "ttt_curved_panel"
-	self.Header:Dock(TOP)
-	self.Header:SetColor(pluto.ui.theme "InnerColorSeperator")
-	self.Header:SetTall(pluto.ui.sizings "pluto_inventory_font_xlg" + 8)
-	self.Header:DockMargin(0, 0, 0, 5)
-	self.Header:SetCurve(6)
-	self.Header:SetCurveBottomRight(false)
-	self.Header:SetCurveBottomLeft(false)
-
-	self.TextHeader = self.Header:Add "pluto_label"
-	self.TextHeader:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.TextHeader:SetText "SPECIALS XD"
-	self.TextHeader:SetFont "headline_font"
-	self.TextHeader:SetContentAlignment(5)
-	self.TextHeader:Dock(FILL)
-	self.TextHeader:SetTextColor(pluto.ui.theme "TextActive")
-
-	self.SpecialFill = self.SpecialArea:Add "EditablePanel"
-	self.SpecialFill:Dock(TOP)
-	self.SpecialFill:SetTall(pluto.ui.sizings "ItemSize")
-	function self.SpecialFill:AddItem(data)
+local function install(panel)
+	function panel:AddItem(data)
 		self.Items = self.Items or {}
 
 		local pnl = self:Add "pluto_inventory_item"
@@ -142,18 +112,110 @@ function PANEL:Init()
 		self:InvalidateLayout(true)
 	end
 
-	function self.SpecialFill:PerformLayout(w, h)
+	function panel:AddCurrency(data)
+		self.Items = self.Items or {}
+
+		local pnl = self:Add "pluto_inventory_currency_selector"
+		function pnl:OnLeftClick()
+			local mn = DermaMenu()
+			mn:AddOption("Buy for " .. pnl.PricePanel:GetText() .. " stardust",function()
+				pluto.inv.message()
+					:write("exchangestardust", self.Currency.InternalName, 1)
+					:send()
+			end):SetIcon "icon16/money_delete.png"
+			mn:Open()
+		end
+		pnl:ShowAmount(true)
+		pnl:SetCurrency(data.Currency)
+		pnl:SetAmount(data.Amount)
+
+		local container = pnl:Add "ttt_curved_panel_outline"
+		container:SetCurve(4)
+		container:SetColor(pluto.ui.theme "InnerColorSeperator")
+		container:Dock(BOTTOM)
+
+		local container_fill = container:Add "ttt_curved_panel"
+		container_fill:SetCurve(4)
+		container_fill:Dock(FILL)
+		container_fill:SetColor(Color(52, 51, 52))
+
+		local img = container_fill:Add "DImage"
+		img:Dock(RIGHT)
+		img:DockMargin(1, 1, 1, 1)
+		img:SetImage(pluto.currency.byname.stardust.Icon)
+
+		function container_fill:PerformLayout(w, h)
+			img:SetSize(h - 2, h - 2)
+		end
+
+		local price = container_fill:Add "pluto_label"
+		price:Dock(FILL)
+		price:SetText(tostring(data.Price))
+		price:SetContentAlignment(6)
+		price:SetFont "pluto_inventory_font"
+		price:SetTextColor(pluto.ui.theme "TextActive")
+		price:SetRenderSystem(pluto.fonts.systems.shadow)
+		price:SizeToContentsY()
+		container:SetTall(price:GetTall())
+
+		pnl.PricePanel = price
+		table.insert(self.Items, pnl)
+		self:InvalidateLayout(true)
+	end
+
+	function panel:PerformLayout(w, h)
 		if (not self.Items) then
 			return
 		end
+		local total_size = 0
+		for _, child in pairs(self:GetChildren()) do
+			total_size = total_size + child:GetWide()
+		end
 
-		local sx = w / 2 - (pluto.ui.sizings "ItemSize" * #self.Items) / 2 - (25 * (#self.Items - 1)) / 2
+		local sx = w / 2 - total_size / 2 - (25 * (#self.Items - 1)) / 2
 
 		for _, item in ipairs(self.Items) do
 			item:SetPos(sx, h / 2 - item:GetTall() / 2)
 			sx = sx + item:GetWide() + 25
 		end
 	end
+end
+
+function PANEL:Init()
+	self:DockPadding(3, 3, 3, pluto.ui.sizings "pluto_inventory_font")
+	self.ShopScroll = self:Add "EditablePanel"
+	self.ShopScroll:Dock(RIGHT)
+	self.ShopScroll:SetWide(pluto.ui.sizings "ItemSize" * 5 + 5 * 4)
+	self.ShopScroll:DockMargin(5 + 20, 0, 0, 0)
+
+	self.SpecialArea = self.ShopScroll:Add "ttt_curved_panel_outline"
+	self.SpecialArea:SetColor(pluto.ui.theme "InnerColorSeperator")
+	self.SpecialArea:SetCurve(6)
+	self.SpecialArea:SetTall(pluto.ui.sizings "pluto_inventory_font_xlg" + 8 + 5 * 2 + pluto.ui.sizings "ItemSize")
+	self.SpecialArea:Dock(TOP)
+	self.SpecialArea:DockMargin(0, 0, 0, 25)
+
+	self.Header = self.SpecialArea:Add "ttt_curved_panel"
+	self.Header:Dock(TOP)
+	self.Header:SetColor(pluto.ui.theme "InnerColorSeperator")
+	self.Header:SetTall(pluto.ui.sizings "pluto_inventory_font_xlg" + 8)
+	self.Header:DockMargin(0, 0, 0, 5)
+	self.Header:SetCurve(6)
+	self.Header:SetCurveBottomRight(false)
+	self.Header:SetCurveBottomLeft(false)
+
+	self.TextHeader = self.Header:Add "pluto_label"
+	self.TextHeader:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.TextHeader:SetText "SPECIALS"
+	self.TextHeader:SetFont "pluto_inventory_font_xlg"
+	self.TextHeader:SetContentAlignment(5)
+	self.TextHeader:Dock(FILL)
+	self.TextHeader:SetTextColor(pluto.ui.theme "TextActive")
+
+	self.SpecialFill = self.SpecialArea:Add "EditablePanel"
+	self.SpecialFill:Dock(TOP)
+	self.SpecialFill:SetTall(pluto.ui.sizings "ItemSize")
+	install(self.SpecialFill)
 
 	self.Fill = self:Add "EditablePanel"
 	self.Fill:Dock(FILL)
@@ -163,7 +225,7 @@ function PANEL:Init()
 	self.SpecialCurrencyArea:SetCurve(6)
 	self.SpecialCurrencyArea:SetTall(pluto.ui.sizings "pluto_inventory_font_xlg" + 8 + 5 * 2 + pluto.ui.sizings "ItemSize")
 	self.SpecialCurrencyArea:Dock(TOP)
-	self.SpecialCurrencyArea:DockMargin(0, 0, 0, 5)
+	self.SpecialCurrencyArea:DockMargin(0, 0, 0, 25)
 
 	self.CurrencyHeader = self.SpecialCurrencyArea:Add "ttt_curved_panel"
 	self.CurrencyHeader:Dock(TOP)
@@ -176,11 +238,16 @@ function PANEL:Init()
 
 	self.CurrencyTextHeader = self.CurrencyHeader:Add "pluto_label"
 	self.CurrencyTextHeader:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.CurrencyTextHeader:SetText "THIS MAP ONLYYYY LOL"
-	self.CurrencyTextHeader:SetFont "headline_font"
+	self.CurrencyTextHeader:SetText "THIS MAP ONLY"
+	self.CurrencyTextHeader:SetFont "pluto_inventory_font_xlg"
 	self.CurrencyTextHeader:SetContentAlignment(5)
 	self.CurrencyTextHeader:Dock(FILL)
 	self.CurrencyTextHeader:SetTextColor(pluto.ui.theme "TextActive")
+
+	self.CurrencySpecialFill = self.SpecialCurrencyArea:Add "EditablePanel"
+	self.CurrencySpecialFill:Dock(TOP)
+	self.CurrencySpecialFill:SetTall(pluto.ui.sizings "ItemSize")
+	install(self.CurrencySpecialFill)
 
 	self.StardustItems = self.Fill:Add "EditablePanel"
 	self.StardustItems:Dock(TOP)
@@ -198,6 +265,17 @@ function PANEL:Init()
 			item:Dock(LEFT)
 			item:SetWide(pluto.ui.sizings "ItemSize")
 			item:DockMargin(0, 0, 5, 0)
+
+			function item:OnLeftClick()
+				self:OnRightClick()
+			end
+			function item:OnRightClick()
+				pluto.ui.rightclickmenu(self.Item, function(menu, item)
+					menu:AddOption("Buy for " .. self.PricePanel:GetText() .. " stardust", function()
+						RunConsoleCommand("pluto_buy_stardust_shop", self.StardustShopID)
+					end):SetIcon "icon16/money_delete.png"
+				end)
+			end
 			table.insert(self.StardustItemPanels, item)
 
 
@@ -248,6 +326,9 @@ function PANEL:Init()
 	for _, data in ipairs(blackmarket_items_test.Specials) do
 		self.SpecialFill:AddItem(data)
 	end
+	for _, offer in ipairs(self:GetCurrencySpecials()) do
+		self.CurrencySpecialFill:AddCurrency(offer)
+	end
 	for _, data in ipairs(blackmarket_items_test) do
 		self:AddBlackmarketItem(data)
 	end
@@ -256,8 +337,24 @@ end
 function PANEL:ReceiveStardustShop(stardusts)
 	for i, item in ipairs(stardusts) do
 		self.StardustItemPanels[i]:SetItem(item.Item)
+		self.StardustItemPanels[i].StardustShopID = i
 		self.StardustItemPanels[i].PricePanel:SetText(item.Price)
 	end
+end
+
+function PANEL:GetCurrencySpecials()
+	local i = 1
+	local offers = {}
+	while (GetGlobalInt("pluto_currency_exchange.Ratio:" .. i, false) ~= false) do
+		offers[i] = {
+			Price = GetGlobalInt("pluto_currency_exchange.Ratio:" .. i),
+			Amount = GetGlobalInt("pluto_currency_exchange.Amount:" .. i),
+			Currency = pluto.currency.byname[GetGlobalString("pluto_currency_exchange.Currency:" .. i)],
+		}
+		i = i + 1
+	end
+
+	return offers
 end
 
 function PANEL:GetNextShopLayer()
