@@ -15,7 +15,7 @@ SWEP.Spawnable = false
 SWEP.Primary.ClipSize = 10
 SWEP.Primary.DefaultClip = 10
 SWEP.Primary.RecoilTiming  = 0.06
-SWEP.Primary.Delay = 0.4
+SWEP.Primary.Delay = 0.2
 SWEP.Primary.Ammo = "Pistol"
 
 SWEP.Offset = { --Procedural world model animation, defaulted for CS:S purposes.
@@ -107,7 +107,7 @@ function SWEP:Kill(state, atk, vic)
 end
 
 function SWEP:PlayerRagdollCreated(ply, rag, atk, dmg)
-	if (dmg:GetInflictor() ~= self) then
+	if (not dmg or dmg:GetInflictor() ~= self) then
 		return
 	end
 

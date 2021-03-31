@@ -1,24 +1,9 @@
 SWEP.Base = "weapon_tttbase"
 SWEP.PrintName			= "Raygun"
 SWEP.Author				= "ErrolLiamP"
-SWEP.ViewModelFOV		= 50
 
-SWEP.VElements = {
-	["raygun"] = {
-		type = "Model",
-		model = "models/raygun/ray_gun.mdl",
-		bone = "ValveBiped.Bip01_R_Hand",
-		rel = "",
-		pos = Vector(13.77, -0.616, -2.32),
-		angle = Angle(-86.367, 2.88, 93.068),
-		size = Vector(1.062, 1.062, 1.062),
-		color = Color(255, 255, 255, 255),
-		surpresslightning = false,
-		material = "",
-		skin = 1,
-		bodygroup = {}
-	}
-}
+SWEP.VElements = {}
+
 SWEP.Offset = {
 	Pos = {
         Up = -2,
@@ -33,8 +18,8 @@ SWEP.Offset = {
 }
 
 SWEP.Ironsights = {
-	Pos = Vector(-6, 0, 0),
-	Angle = Vector(2.4, -1.3, 1),
+	Pos = Vector(-5, 1, 1.6),
+	Angle = Vector(-0.7, -0.9, 0),
 	TimeTo = 0.1,
 	TimeFrom = 0.15,
 	SlowDown = 0.9,
@@ -46,15 +31,16 @@ SWEP.Slot					= 1
  
 SWEP.UseHands               = true
 
-SWEP.ViewModelFOV = 45
-SWEP.ViewModel = "models/weapons/c_pistol.mdl"
+SWEP.ViewModelFOV = 60
+SWEP.ViewModel = "models/weapons/v_waw_raygun.mdl"
 SWEP.WorldModel = "models/raygun/ray_gun.mdl"
-SWEP.ShowViewModel = true
+
 SWEP.ShowWorldModel = false
 SWEP.ViewModelBoneMods = {
 	["ValveBiped.base"] = { scale = Vector(0.009, 0.009, 0.009), pos = Vector(0, 0, 0), angle = Angle(0, 0, 0) },
 	["ValveBiped.clip"] = { scale = Vector(0.009, 0.009, 0.009), pos = Vector(0, 0, 0), angle = Angle(0, 0, 0) }
 }
+
 SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
@@ -66,22 +52,75 @@ SWEP.Bullets = {
 }
 
 sound.Add {
-	name = "Weapon_RayGun.Single",
+	name = "waw_raygun.Single",
 	channel = CHAN_WEAPON,
 	pitch = {95, 105},
 	level = 70,
 	sound = {
-		"weapons/raygun/raygun_fire.wav",
+		"weapons/waw_raygun/fire.wav",
+		"weapons/waw_raygun/fire1.wav",
 	}
 }
 
-SWEP.Primary.Sound = "Weapon_RayGun.Single"
+sound.Add {
+	name = "waw_raygun.open",
+	channel = CHAN_WEAPON,
+	pitch = 100,
+	level = 70,
+	sound = {
+		"weapons/waw_raygun/open.wav",
+	}
+}
+
+sound.Add {
+	name = "waw_raygun.out",
+	channel = CHAN_WEAPON,
+	pitch = 100,
+	level = 70,
+	sound = {
+		"weapons/waw_raygun/out.wav",
+	}
+}
+
+sound.Add {
+	name = "waw_raygun.in",
+	channel = CHAN_WEAPON,
+	pitch = 100,
+	level = 70,
+	sound = {
+		"weapons/waw_raygun/in.wav",
+	}
+}
+
+sound.Add {
+	name = "waw_raygun.open",
+	channel = CHAN_WEAPON,
+	pitch = 100,
+	level = 70,
+	sound = {
+		"weapons/waw_raygun/open.wav",
+	}
+}
+
+sound.Add {
+	name = "waw_raygun.close",
+	channel = CHAN_WEAPON,
+	pitch = 100,
+	level = 70,
+	sound = {
+		"weapons/waw_raygun/close.wav",
+	}
+}
+
+SWEP.Primary.Sound = "waw_raygun.Single"
 
 SWEP.Primary.ClipSize = 10
 SWEP.Primary.DefaultClip = 10
 SWEP.Primary.Delay = 0.45
 SWEP.Primary.Ammo = "Pistol"
 SWEP.HoldType = "pistol"
+
+DEFINE_BASECLASS(SWEP.Base)
 
 
 function SWEP:_DispatchEffect(EFFECTSTR)
@@ -128,6 +167,10 @@ function SWEP:_ImpactEffect(traceHit)
 	if (SERVER and traceHit.Entity and IsValid(traceHit.Entity) and string.find(traceHit.Entity:GetClass(), "ragdoll")) then
 		traceHit.Entity:Fire "StartRagdollBoogie"
 	end
+end
+
+function SWEP:GetViewModelPosition(eyepos, eyeang)
+	return BaseClass.GetViewModelPosition(self, eyepos + eyeang:Forward() * 5, eyeang)
 end
 
 SWEP.RecoilInstructions = {

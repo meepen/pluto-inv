@@ -89,6 +89,7 @@ pluto.files.load {
 
 		"122274673", -- nes zapper
 		"329057380", -- raygun
+		"923947785", -- raygun 2
 		"317267606", -- stealth box
 	},
 }
