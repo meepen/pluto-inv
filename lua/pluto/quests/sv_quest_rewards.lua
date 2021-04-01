@@ -373,7 +373,7 @@ pluto.quests.rewards = {
 		{
 			Type = "currency",
 			Currency = "tp",
-			Amount = 1,
+			Amount = 25,
 			Shares = 1,
 		},
 		{
