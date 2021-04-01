@@ -105,6 +105,4 @@ function SWEP:DoPlayerDeath(ply, atk, dmg)
 	pluto.statuses.heal(self:GetOwner(), amt, amt / 20)
 end
 
-function SWEP:OnRemove()
-	hook.Remove("DoPlayerDeath", self)
-end
+SWEP.Ortho = {-1.5, 0, angle = Angle(65, -130)}

@@ -3,7 +3,7 @@ local options = {
 	-- NEVER REMOVE ITEMS, SET SHARES TO 0
 	{
 		Shares = 1,
-		Price = 255,
+		Price = 485,
 		Item = setmetatable({
 			Type = "Weapon",
 			Mods = {},
@@ -13,7 +13,7 @@ local options = {
 	},
 	{
 		Shares = 1,
-		Price = 275,
+		Price = 505,
 		Item = setmetatable({
 			Type = "Weapon",
 			Mods = {},
@@ -23,7 +23,7 @@ local options = {
 	},
 	{
 		Shares = 1,
-		Price = 325,
+		Price = 520,
 		Item = setmetatable({
 			Type = "Weapon",
 			Mods = {},
@@ -33,7 +33,7 @@ local options = {
 	},
 	{
 		Shares = 1,
-		Price = 250,
+		Price = 500,
 		Item = setmetatable({
 			Type = "Weapon",
 			Mods = {},
@@ -43,7 +43,7 @@ local options = {
 	},
 	{
 		Shares = 1,
-		Price = 283,
+		Price = 498,
 		Item = setmetatable({
 			Type = "Weapon",
 			Mods = {},
@@ -53,7 +53,7 @@ local options = {
 	},
 	{
 		Shares = 1,
-		Price = 290,
+		Price = 450,
 		Item = setmetatable({
 			Type = "Weapon",
 			Mods = {},
@@ -63,12 +63,52 @@ local options = {
 	},
 	{
 		Shares = 1,
-		Price = 150,
+		Price = 350,
 		Item = setmetatable({
 			Type = "Weapon",
 			Mods = {},
 			ClassName = "weapon_lightsaber_rb",
 			Tier = pluto.tiers.byname.unique,
+		}, pluto.inv.item_mt)
+	},
+	{
+		Shares = 1,
+		Price = 350,
+		Item = setmetatable({
+			Type = "Weapon",
+			Mods = {},
+			ClassName = "weapon_lightsaber_rb",
+			Tier = pluto.tiers.byname.unique,
+		}, pluto.inv.item_mt)
+	},
+	{
+		Shares = 1,
+		Price = 365,
+		Item = setmetatable({
+			Type = "Weapon",
+			Mods = {},
+			ClassName = "tfa_cso_skull1",
+			Tier = pluto.tiers.byname.unique,
+		}, pluto.inv.item_mt)
+	},
+	{
+		Shares = 1,
+		Price = 385,
+		Item = setmetatable({
+			Type = "Weapon",
+			Mods = {},
+			ClassName = "tfa_cso_skull5",
+			Tier = pluto.tiers.byname.legendary,
+		}, pluto.inv.item_mt)
+	},
+	{
+		Shares = 1,
+		Price = 435,
+		Item = setmetatable({
+			Type = "Weapon",
+			Mods = {},
+			ClassName = "tfa_cso_skull9",
+			Tier = pluto.tiers.byname.legendary,
 		}, pluto.inv.item_mt)
 	},
 }

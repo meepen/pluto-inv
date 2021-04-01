@@ -149,3 +149,5 @@ function SWEP:PrimaryAttack()
 
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 end
+
+SWEP.Ortho = {-6, 15, angle = Angle(-45, 90)}

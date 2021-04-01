@@ -92,3 +92,5 @@ function SWEP:FireBulletsCallback(tr, dmginfo, data)
 		end
 	end
 end
+
+SWEP.Ortho = {-2, 3, angle = Angle(0, -130, 155), size = 0.8}

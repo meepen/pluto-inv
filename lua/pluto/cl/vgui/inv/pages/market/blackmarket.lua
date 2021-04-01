@@ -183,11 +183,11 @@ local function install(panel)
 			total_size = total_size + child:GetWide()
 		end
 
-		local sx = w / 2 - total_size / 2 - (25 * (#self.Items - 1)) / 2
+		local sx = w / 2 - total_size / 2 - (5 * (#self.Items - 1)) / 2
 
 		for _, item in ipairs(self.Items) do
 			item:SetPos(sx, h / 2 - item:GetTall() / 2)
-			sx = sx + item:GetWide() + 25
+			sx = sx + item:GetWide() + 5
 		end
 	end
 end
