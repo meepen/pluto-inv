@@ -70,7 +70,7 @@ SWEP.RecoilInstructions = {
 }
 SWEP.Primary.RecoilTiming  = 0.09
 
-SWEP.Primary.PenetrationValue = 50
+SWEP.Primary.PenetrationValue = 80
 
 function SWEP:GetReloadDuration(speed)
 	return 2 / speed + 0.1
