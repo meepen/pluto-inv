@@ -1,376 +1,199 @@
-SWEP.Base				= "tfa_gun_base"
-SWEP.Category				= "TFA CS:O" 
-SWEP.Author				= "Anri" 
-SWEP.Contact				= "" 
-SWEP.Purpose				= "" 
-SWEP.Instructions				= "" 
-SWEP.Spawnable				= true 
-SWEP.AdminSpawnable			= true 
-SWEP.DrawCrosshair			= true		
-SWEP.PrintName				= "Batista"		
-SWEP.NZPaPName				= "Zaldívar"			
-SWEP.Slot				= 3				
-SWEP.SlotPos				= 73			
-SWEP.DrawAmmo				= true		
-SWEP.DrawWeaponInfoBox			= false		
-SWEP.BounceWeaponIcon   		= 	false	
-SWEP.AutoSwitchTo			= true		
-SWEP.AutoSwitchFrom			= true		
-SWEP.Weight				= 30			
+SWEP.Base = "weapon_ttt_shotgun"
+SWEP.Category = "TFA CS:O" 
 
---[[WEAPON HANDLING]]--
+SWEP.Author = "Anri" 
+SWEP.Editor = "add___123" -- Changed basically everything
 
---Firing related
-SWEP.Primary.Sound 			= Sound("Batista.Fire")				
-SWEP.Primary.Damage		= 15					
-SWEP.DamageType = DMG_BULLET 
-SWEP.Primary.NumShots	= 12 
-SWEP.Primary.Automatic			= false					
-SWEP.Primary.RPM				= 400					
-SWEP.Primary.RPM_Burst				= 5000					
-SWEP.FiresUnderwater = false
+SWEP.PrintName = "Chronobreaker"
+SWEP.Slot = 2
 
--- nZombies Stuff
-SWEP.NZWonderWeapon		= false	
---SWEP.NZRePaPText		= "your text here"	-- When RePaPing, what should be shown? Example: Press E to your text here for 2000 points.
-SWEP.NZPaPName			= "Gwendolyn"	
---SWEP.NZPaPReplacement 	= "nil"	-- If Pack-a-Punched, replace this gun with the entity class shown here.
-SWEP.NZPreventBox		= false	
-SWEP.NZTotalBlackList	= false	
+SWEP.Primary.Sound = Sound("tfa_cso2_m3dragon.1")				
+SWEP.Primary.Damage = 5
 
--- Selective Fire Stuff
+SWEP.Secondary.Sound = Sound("AlyxEMP.Charge")
 
-SWEP.SelectiveFire		= true 
-SWEP.DisableBurstFire	= false 
-SWEP.OnlyBurstFire		= false 
-SWEP.DefaultFireMode 	= "Semi" 
-SWEP.FireModes = {"Semi","2Burst"}
+SWEP.Bullets = {
+	HullSize = 0,
+	Num = 12,
+	DamageDropoffRange = 900,
+	DamageDropoffRangeMax = 4000,
+	DamageMinimumPercent = 0.1,
+	Spread = Vector(0.1, 0.1),
+	TracerName = "tfa_tracer_incendiary"
+}
 
---Ammo Related
+SWEP.Primary.Delay = 1.25
+SWEP.Primary.Automatic = true
 
-SWEP.Primary.ClipSize			= 2					
-SWEP.Primary.DefaultClip			= 34				
-SWEP.Primary.Ammo			= "buckshot"					
---Pistol, buckshot, and slam like to ricochet. Use AirboatGun for a light metal peircing shotgun pellets
+SWEP.Primary.ClipSize = 2		
+SWEP.Primary.DefaultClip = 24
 
-SWEP.DisableChambering = true 
-
---Recoil Related
-SWEP.Primary.KickUp			= 0.5					
-SWEP.Primary.KickDown			= 0.35					
-SWEP.Primary.KickHorizontal			= 0.03				
-SWEP.Primary.StaticRecoilFactor = 0.65 	
-
---Firing Cone Related
-
-SWEP.Primary.Spread		= .04					
-SWEP.Primary.IronAccuracy = .035	
-
---Unless you can do this manually, autodetect it.  If you decide to manually do these, uncomment this block and remove this line.
-SWEP.Primary.SpreadMultiplierMax = 2.5 
-SWEP.Primary.SpreadIncrement = 1/3.5 
-SWEP.Primary.SpreadRecovery = 2 
-
---Range Related
-SWEP.Primary.Range = -1 
-SWEP.Primary.RangeFalloff = 0.8 
-
-
---Penetration Related
-
-SWEP.MaxPenetrationCounter=2 
-
---Misc
-SWEP.IronRecoilMultiplier=0.5 
-SWEP.CrouchRecoilMultiplier=0.65  
-SWEP.JumpRecoilMultiplier=1.3  
-SWEP.WallRecoilMultiplier=1.1  
-SWEP.ChangeStateRecoilMultiplier=1.3  
-SWEP.CrouchAccuracyMultiplier=0.5
-SWEP.ChangeStateAccuracyMultiplier=1.5 
-SWEP.JumpAccuracyMultiplier=2
-SWEP.WalkAccuracyMultiplier=1.35
-SWEP.IronSightTime = 0.3 
-SWEP.NearWallTime = 0.25 
-SWEP.ToCrouchTime = 0.05 
-SWEP.WeaponLength = 50 
-SWEP.MoveSpeed = 1 
-SWEP.IronSightsMoveSpeed = 0.8 
-SWEP.SprintFOVOffset = 3.75 
-
---[[PROJECTILES]]--
-
-SWEP.ProjectileEntity = nil 
-SWEP.ProjectileVelocity = 0 
-SWEP.ProjectileModel = nil 
-
---[[VIEWMODEL]]--
-
-SWEP.ViewModel			= "models/weapons/tfa_cso/c_batista.mdl" 
-SWEP.ViewModelFOV			= 80		
-SWEP.ViewModelFlip			= true		
-SWEP.UseHands = true 
-SWEP.VMPos = Vector(0,0,0) 
-SWEP.VMAng = Vector(0,0,0) 
-
---[[WORLDMODEL]]--
-
-SWEP.WorldModel			= "models/weapons/tfa_cso/w_batista.mdl" 
-
-SWEP.HoldType 				= "ar2"		
--- normal melee melee2 fist knife smg ar2 pistol rpg physgun grenade shotgun crossbow slam passive
--- You're mostly going to use ar2, smg, shotgun or pistol. rpg and crossbow make for good sniper rifles
-
+SWEP.ViewModelFOV = 90
+SWEP.ViewModelFlip = true
+SWEP.UseHands = true
+SWEP.HoldType = "ar2"
 SWEP.Offset = { 
-		Pos = {
+	Pos = {
 		Up = -6,
 		Right = 1.5,
 		Forward = 12,
-		},
-		Ang = {
+	},
+	Ang = {
 		Up = 90,
 		Right = 0,
 		Forward = 190
-		},
-		Scale = 1.15
+	},
+	Scale = 1.15
 }
 
-SWEP.ThirdPersonReloadDisable=false 
+SWEP.Ortho = {-3, 3, angle = Angle(10, 20, -30)}
 
---[[SCOPES]]--
+SWEP.Ironsights = false
 
-SWEP.BoltAction			= false  
-SWEP.Scoped				= false  
+SWEP.Spawnable = false
+SWEP.AutoSpawnable = false
+SWEP.PlutoSpawnable = false
+SWEP.AdminSpawnable = false
 
-SWEP.ScopeOverlayThreshold = 0.875 
-SWEP.BoltTimerOffset = 0.15 
+SWEP.WorldModel = "models/weapons/tfa_cso/w_batista.mdl"
+SWEP.ViewModel = "models/weapons/tfa_cso/c_batista.mdl"
 
-SWEP.ScopeScale = 0.5 
-SWEP.ReticleScale = 0.7 
-
---GDCW Overlay Options.  Only choose one.
-
-SWEP.Secondary.UseACOG			= false	 
-SWEP.Secondary.UseMilDot			= false			 
-SWEP.Secondary.UseSVD			= true		 
-SWEP.Secondary.UseParabolic		= false		 
-SWEP.Secondary.UseElcan			= false	 
-SWEP.Secondary.UseGreenDuplex		= false		 
-
---[[SHOTGUN CODE]]--
-
-SWEP.Shotgun = false 
-
-SWEP.ShellTime			= .35 
-
---[[SPRINTING]]--
-
-SWEP.RunSightsPos = Vector(-5.788, -1.009, 0)
-SWEP.RunSightsAng = Vector(-16.223, -35.562, 0)
-
---[[IRONSIGHTS]]--
-
-SWEP.data 				= {}
-SWEP.data.ironsights			= 0 
-SWEP.Secondary.IronFOV			= 55					
-
-SWEP.IronSightsPos = Vector(5.84, 0, 2)
-SWEP.IronSightsAng = Vector(0, 0, 0)
-
---[[INSPECTION]]--
-
-SWEP.InspectPos = nil 
-SWEP.InspectAng = nil 
-SWEP.InspectionLoop = true 
-
---[[VIEWMODEL ANIMATION HANDLING]]--
-
-SWEP.ShootWhileDraw=false 
-SWEP.AllowReloadWhileDraw=false 
-SWEP.SightWhileDraw=false 
-SWEP.AllowReloadWhileHolster=true 
-SWEP.ShootWhileHolster=true 
-SWEP.SightWhileHolster=false 
-SWEP.UnSightOnReload=true 
-SWEP.AllowReloadWhileSprinting=false 
-SWEP.AllowReloadWhileNearWall=false 
-SWEP.SprintBobMult=1.5 
-SWEP.IronBobMult=0  
-SWEP.AllowViewAttachment = true 
-
---[[HOLDTYPES]]--
-
-SWEP.IronSightHoldTypeOverride=""  
-SWEP.SprintHoldTypeOverride=""  
-
---[[VIEWMODEL BLOWBACK]]--
-
-SWEP.BlowbackEnabled = true 
-SWEP.BlowbackVector = Vector(-0.225,-1,0) 
-SWEP.BlowbackCurrentRoot = 0 
-SWEP.BlowbackCurrent = 0 
-SWEP.Blowback_Only_Iron = true 
-SWEP.Blowback_PistolMode = false 
-SWEP.Blowback_Shell_Enabled = false
-SWEP.Blowback_Shell_Effect = "RifleShellEject"
-
---[[ANIMATION]]--
-
-SWEP.ForceDryFireOff = true 
-SWEP.DisableIdleAnimations = false 
-SWEP.ForceEmptyFireOff = true 
-
---If you really want, you can remove things from SWEP.actlist and manually enable animations and set their lengths.
-
-SWEP.SequenceEnabled = {} 
-SWEP.SequenceLength = {}  
-SWEP.SequenceLengthOverride={
-//	[ACT_VM_RELOAD] = 2,
-}
---[[EFFECTS]]--
-
-
-
---Muzzle Flash
-
-SWEP.MuzzleAttachment			= "1" 		
---SWEP.MuzzleAttachmentRaw = 1 --This will override whatever string you gave.  This is the raw attachment number.  This is overridden or created when a gun makes a muzzle event.
-SWEP.ShellAttachment			= "2" 		
-
-SWEP.DoMuzzleFlash = true 
-SWEP.CustomMuzzleFlash = true 
-SWEP.AutoDetectMuzzleAttachment = true 
-SWEP.MuzzleFlashEffect = nil 
-
---Tracer Stuff
-
-SWEP.Tracer				= 0		
-SWEP.TracerName 		= nil 	
-								
-SWEP.TracerCount 		= 1 	
-
-
-SWEP.TracerLua 			= false 
-SWEP.TracerDelay		= 0.01 
-
---[[EVENT TABLE]]--
-
-SWEP.EventTable = {} 
-
---example:
---SWEP.EventTable = {
---	[ACT_VM_RELOAD] = {
---		{ ['time'] = 0.1, ['type'] = "lua", ['value'] = examplefunction, ['client'] = true, ['server'] = false  },
---		{ ['time'] = 0.2, ['type'] = "sound", ['value'] = Sound("ExampleGun.Sound1", ['client'] = true, ['server'] = false ) }
---	}
---}
-
-
---[[RENDER TARGET]]--
-
-SWEP.RTMaterialOverride = nil 
-
-SWEP.RTOpaque = false 
-
-SWEP.RTCode = nil
-
---[[AKIMBO]]--
-
-SWEP.Akimbo = false 
-SWEP.AnimCycle = 0 
-
---[[TTT]]--
-
-local gm = engine.ActiveGamemode()
-if string.find(gm,"ttt") or string.find(gm,"terrorist") then
-	SWEP.Kind = WEAPON_HEAVY
-	SWEP.AutoSpawnable = false
-	SWEP.AllowDrop = true
-	SWEP.AmmoEnt = "item_ammo_smg1_ttt"
-	SWEP.Base = "weapon_tttbase"
-	DEFINE_BASECLASS("weapon_tttbase")
-else
-	SWEP.Base = "weapon_base"
-	DEFINE_BASECLASS("weapon_base")
-end
-
-
-
---[[MISC INFO FOR MODELERS]]--
-
---[[
-
-Used Animations (for modelers):
-
-ACT_VM_DRAW - Draw
-ACT_VM_DRAW_EMPTY - Draw empty
-ACT_VM_DRAW_SILENCED - Draw silenced, overrides empty
-
-ACT_VM_IDLE - Idle
-ACT_VM_IDLE_SILENCED - Idle empty, overwritten by silenced
-ACT_VM_IDLE_SILENCED - Idle silenced
-
-ACT_VM_PRIMARYATTACK - Shoot
-ACT_VM_PRIMARYATTACK_EMPTY - Shoot last chambered bullet
-ACT_VM_PRIMARYATTACK_SILENCED - Shoot silenced, overrides empty
-ACT_VM_PRIMARYATTACK_1 - Shoot ironsights, overriden by everything besides normal shooting
-ACT_VM_DRYFIRE - Dryfire
-
-ACT_VM_RELOAD - Reload / Tactical Reload / Insert Shotgun Shell
-ACT_SHOTGUN_RELOAD_START - Start shotgun reload, unless ACT_VM_RELOAD_EMPTY is there.
-ACT_SHOTGUN_RELOAD_FINISH - End shotgun reload.
-ACT_VM_RELOAD_EMPTY - Empty mag reload, chambers the new round.  Works for shotguns too, where applicable.
-ACT_VM_RELOAD_SILENCED - Silenced reload, overwrites all
-
-
-ACT_VM_HOLSTER - Holster
-ACT_VM_HOLSTER_SILENCED - Holster empty, overwritten by silenced
-ACT_VM_HOLSTER_SILENCED - Holster silenced
-
-]]--
-
---[[Stuff you SHOULD NOT touch after this]]--
-
---Allowed VAnimations.  These are autodetected, so not really needed except as an extra precaution.  Do NOT change these, unless absolutely necessary.
-
-SWEP.CanDrawAnimate=true
-SWEP.CanDrawAnimateEmpty=true
-SWEP.CanDrawAnimateSilenced=false
-SWEP.CanHolsterAnimate=true
-SWEP.CanHolsterAnimateEmpty=false
-SWEP.CanIdleAnimate=true
-SWEP.CanIdleAnimateEmpty=true
-SWEP.CanIdleAnimateSilenced=false
-SWEP.CanShootAnimate=true
-SWEP.CanShootAnimateSilenced=false
-SWEP.CanReloadAnimate=true
-SWEP.CanReloadAnimateEmpty=false
-SWEP.CanReloadAnimateSilenced=false
-SWEP.CanDryFireAnimate=false
-SWEP.CanDryFireAnimateSilenced=false
-SWEP.CanSilencerAttachAnimate=false
-SWEP.CanSilencerDetachAnimate=false
-
---Misc
-
-SWEP.ShouldDrawAmmoHUD=false
-SWEP.DefaultFOV=90 
-
---Disable secondary crap
-
-SWEP.Secondary.ClipSize			= 0					
-SWEP.Secondary.DefaultClip			= 0					
-SWEP.Secondary.Automatic			= false					
-SWEP.Secondary.Ammo			= "none" 
-
-SWEP.Base				= "tfa_gun_base"
+SWEP.DrawCrosshair = true
 
 DEFINE_BASECLASS(SWEP.Base)
-function SWEP:Holster( ... )
-	self:StopSound("Batista.Idle")
-	return BaseClass.Holster(self,...)
+
+function SWEP:Initialize()
+	BaseClass.Initialize(self)
+
+	if (SERVER) then
+		timer.Create(tostring(self) .. "Times", 0.1, 0, function()
+			local ply = self:GetOwner()
+			if (not IsValid(ply)) then
+				return
+			end
+
+			self.Times = self.Times or {}
+
+			table.insert(self.Times, {
+				Pos = ply:GetPos(),
+				EyeAngles = ply:EyeAngles(),
+				Health = ply:Health(),
+				Armor = ply:Armor(),
+				Velocity = ply:GetVelocity(),
+				Clip1 = self:Clip1() or 0,
+				Ammo = ply:GetAmmoCount(self:GetPrimaryAmmoType()),
+			})
+		end)
+
+		hook.Add("DoPlayerDeath", self, function(ply, att, dmg)
+			if (IsValid(self) and IsValid(self:GetOwner()) and IsValid(att) and self:GetOwner() == att) then
+				self:SetCharge(self:GetCharge() + 1)
+			end
+		end)
+	end
 end
-if CLIENT then
-	SWEP.WepSelectIconCSO = Material("vgui/killicons/tfa_cso_batista")
-	SWEP.DrawWeaponSelection = TFA_CSO_DrawWeaponSelection
+
+function SWEP:SetupDataTables()
+	BaseClass.SetupDataTables(self)
+
+	self:NetVar("Charge", "Int", 100)
+	self:NetVar("Rewinding", "Bool", false)
+end
+
+function SWEP:OnRemove()
+	if (SERVER) then
+		timer.Remove(tostring(self) .. "Times")
+		timer.Remove(tostring(self) .. "Rewind")
+	end
+end
+
+function SWEP:Reload()
+	if (self:GetReloadEndTime() ~= math.huge or self:Clip1() == self:GetMaxClip1() or self:GetReserveAmmo() <= 0) then
+		return
+	end
+	if (CLIENT) then
+		self:CalcFOV()
+	end
+	self:DoReload(ACT_VM_RELOAD)
+end
+
+function SWEP:CanPrimaryAttack()
+	if (self:Clip1() > 0) then
+		return true
+	end
+	return false
+end
+
+function SWEP:Think()
+	BaseClass.Think(self)
+
+	local reloadtime = self:GetReloadEndTime()
+	if (reloadtime ~= math.huge) then
+		if (reloadtime > CurTime()) then
+			local time = (CurTime() - self:GetReloadStartTime())
+			return
+		end
+
+		local ammocount = self:GetReserveAmmo()
+		local needed = self:GetMaxClip1() - self:Clip1()
+
+		local added = math.min(needed, ammocount)
+
+		self:GetOwner():SetAmmo(ammocount - added, self:GetPrimaryAmmoType())
+
+		self:SetClip1(self:Clip1() + added)
+		self:SetReloadEndTime(math.huge)
+	end
+end
+
+function SWEP:SecondaryAttack()
+	if (timer.Exists(tostring(self) .. "Rewind") or self:GetRewinding()) then
+		return
+	end
+
+	if (SERVER and self.Times and #self.Times > 1 and self:GetCharge() > 0) then
+		self:SetCharge(self:GetCharge() - 1)
+		self:SetRewinding(true)
+
+		local count = 0
+
+		timer.Simple(0, function()
+			self:EmitSound(self.Secondary.Sound)
+		end)
+
+		timer.Create(tostring(self) .. "Rewind", 0.01, 0, function()
+			local info = table.remove(self.Times)
+			local ply = self:GetOwner()
+
+			if (not info or not IsValid(ply) or not ply:Alive() or count >= 50) then
+				timer.Remove(tostring(self) .. "Rewind")
+				self:SetRewinding(false)
+				return
+			end
+
+			ply:SetPos(info.Pos)
+			ply:SetEyeAngles(info.EyeAngles)
+			ply:SetHealth(info.Health)
+			ply:SetArmor(info.Armor)
+			ply:SetVelocity(-1 * ply:GetVelocity() + info.Velocity)
+			self:SetClip1(info.Clip1)
+			ply:SetAmmo(info.Ammo, self:GetPrimaryAmmoType())
+
+			count = count + 1
+		end)
+	end
+end
+
+if (CLIENT) then
+	surface.CreateFont("pluto_chronobreaker", {
+        font = "Roboto",
+        size = 24,
+    })
+
+	local text_color = Color(255, 0, 25)
+	local outline_color = Color(0, 0, 0, 200)
+
+	function SWEP:DrawHUD()
+		draw.SimpleTextOutlined("CHARGE: " .. tostring(self:GetCharge()), "pluto_chronobreaker", ScrW() / 2, ScrH() / 2 + 100, text_color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_color)
+	end
 end
