@@ -89,7 +89,7 @@ function PANEL:SetItem(item)
 	self:InvalidateChildren(true)
 	self.NameContainer:SetColor(item.Model.Color)
 	
-	self.PlayerModel:SetPlutoModel(item.Model, item)
+	self.PlayerModel:SetPlutoModel(item.Model or pluto.models.default, item)
 	self.Name:SetText(item:GetPrintName())
 
 	local curline

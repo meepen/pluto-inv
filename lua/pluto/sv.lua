@@ -88,6 +88,7 @@ pluto.files.load {
 		"1516699044", -- slvbase 2
 		"1516711672", -- skyrim snpcs
 
+		-- TODO(meep): remove later
 		"122274673", -- nes zapper
 		"329057380", -- raygun
 		"923947785", -- raygun 2
