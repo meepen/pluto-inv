@@ -96,7 +96,7 @@ end
 function SWEP:SetupDataTables()
 	BaseClass.SetupDataTables(self)
 
-	self:NetVar("Charge", "Int", 100)
+	self:NetVar("Charge", "Int", 1)
 	self:NetVar("Rewinding", "Bool", false)
 end
 
