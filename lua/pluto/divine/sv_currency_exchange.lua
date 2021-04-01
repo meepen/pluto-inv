@@ -5,27 +5,27 @@ local options = {
 	brainegg = {
 		Shares = 100,
 		Amount = {4, 10},
-		Ratio = {900, 1100},
+		Ratio = {375, 410},
 	},
 	crate1 = {
 		Shares = 100,
 		Amount = {4, 10},
-		Ratio = {900, 1100},
+		Ratio = {375, 410},
 	},
 	mirror = {
 		Shares = 1,
 		Amount = {1, 2},
-		Ratio = {20000, 30000},
+		Ratio = {19500, 22000},
 	},
 	crate3 = {
 		Shares = 10,
 		Amount = {1, 2},
-		Ratio = {8000, 9000},
+		Ratio = {265, 290},
 	},
 	crate3_n = {
 		Shares = 80,
 		Amount = {4, 10},
-		Ratio = {900, 1100},
+		Ratio = {265, 290},
 	}
 }
 
