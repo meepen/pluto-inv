@@ -3,7 +3,7 @@ local options = {
 	-- NEVER REMOVE ITEMS, SET SHARES TO 0
 	{
 		Shares = 1,
-		Price = 485,
+		Price = 455,
 		Item = setmetatable({
 			Type = "Weapon",
 			Mods = {},
@@ -13,7 +13,7 @@ local options = {
 	},
 	{
 		Shares = 1,
-		Price = 505,
+		Price = 475,
 		Item = setmetatable({
 			Type = "Weapon",
 			Mods = {},
@@ -58,16 +58,6 @@ local options = {
 			Type = "Weapon",
 			Mods = {},
 			ClassName = "weapon_cbox",
-			Tier = pluto.tiers.byname.unique,
-		}, pluto.inv.item_mt)
-	},
-	{
-		Shares = 1,
-		Price = 350,
-		Item = setmetatable({
-			Type = "Weapon",
-			Mods = {},
-			ClassName = "weapon_lightsaber_rb",
 			Tier = pluto.tiers.byname.unique,
 		}, pluto.inv.item_mt)
 	},
@@ -200,13 +190,39 @@ concommand.Add("pluto_blackmarket_buy", function(p, cmd, args)
 		end)
 	elseif (num == 2) then
 		pluto.db.transact(function(db)
-			if (not pluto.inv.addcurrency(db, p, CURR.InternalName, -10)) then
+			if (not pluto.inv.addcurrency(db, p, CURR.InternalName, -20)) then
 				p:ChatPrint("You do not have enough ", CURR, " to buy that.")
 				mysql_rollback(db)
 				return
 			end
 			local item = pluto.inv.generatebuffershard(db, p, "BOUGHT", (table.Random(pluto.tiers.filter_real("Weapon", function(tier) return tier.affixes >= 5 end))).InternalName)
-			p:ChatPrint("You bought a ", item, " for 10 ", CURR)
+			p:ChatPrint("You bought a ", item, " for 20 ", CURR)
+			mysql_commit(db)
+		end)
+	elseif (num == 3) then
+		pluto.db.transact(function(db)
+			local unlocked
+			for emoji in RandomPairs(pluto.emoji.byname) do
+				if (not pluto.emoji.unlocks[p][emoji]) then
+					unlocked = emoji
+					break
+				end
+			end
+
+			if (not unlocked) then
+				p:ChatPrint("You already own all the emojis we have!")
+				return
+			end
+
+
+			if (not pluto.inv.addcurrency(db, p, CURR.InternalName, -5)) then
+				p:ChatPrint("You do not have enough ", CURR, " to buy that.")
+				mysql_rollback(db)
+				return
+			end
+
+			pluto.emoji.unlock(db, p, unlocked)
+
 			mysql_commit(db)
 		end)
 

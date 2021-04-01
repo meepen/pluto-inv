@@ -314,15 +314,15 @@ function PANEL:Init()
 
 	cur_select:AddItem({
 		Item = self.FiveMod,
-		Price = 10
+		Price = 20
 	}, function()
 		RunConsoleCommand("pluto_blackmarket_buy", "2")
 	end)
 
 	cur_select:AddCurrency({
-		Currency = pluto.currency.byname.emojibag,
+		Currency = pluto.currency.byname._emojibag,
 		Amount = 1,
-		Price = 2
+		Price = 5
 	}, function()
 		RunConsoleCommand("pluto_blackmarket_buy", "3")
 	end)

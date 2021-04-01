@@ -4,7 +4,7 @@ pluto.emoji.unlocks = pluto.emoji.unlocks or setmetatable({}, {
 		local ret = setmetatable({}, {
 			__index = function()
 				if (pluto.cancheat(k)) then
-					return true
+					--return true
 				end
 			end
 		})
@@ -58,6 +58,6 @@ function pluto.emoji.unlock(db, ply, emoji)
 	ply = player.GetBySteamID64(pluto.db.steamid64(ply))
 	if (IsValid(ply)) then
 		pluto.emoji.unlocks[ply][emoji] = true
-		ply:ChatPrint("You have unlocked ", pluto.emoji.byname[emoji])
+		ply:ChatPrint("You have unlocked ", pluto.emoji.byname[emoji], " :" .. emoji .. ":")
 	end
 end
