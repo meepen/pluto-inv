@@ -106,6 +106,7 @@ pluto.inv.messages = {
 		"stardustshop",
 		"auctiondata",
 		"gotyouritems",
+		"blackmarket",
 
 		-- past trades
 		"tradelogsnapshot",

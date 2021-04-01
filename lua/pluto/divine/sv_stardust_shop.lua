@@ -191,7 +191,7 @@ local function buildoptions()
 end
 
 pluto.divine = pluto.divine or {}
-pluto.divine.stardust_shop = {}
+pluto.divine.stardust_shop = pluto.divine.stardust_shop or {}
 
 
 function pluto.inv.writestardustshop(p)
@@ -234,7 +234,7 @@ concommand.Add("pluto_buy_stardust_shop", function(p, c, a)
 		else
 			local embed = item.PreviewItem:GetDiscordEmbed()
 			local time = math.Round((item.EndTime - os.time()) / (60 * 60))
-			time = "For " .. item.Price .. " stardust; " .. time < 1 and "<1 hour remaining now..." or time .. " hours remaining now..."
+			time = "For " .. item.Price .. " stardust; " .. (time < 1 and "<1 hour remaining now..." or time .. " hours remaining now...")
 			discord.Message():AddEmbed(
 				embed
 					:SetAuthor(time)

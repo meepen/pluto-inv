@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
 SWEP.Base = "weapon_rb566_lightsaber"
-SWEP.PrintName = "Double-bladed Lightsaber"
+SWEP.PrintName = "Dual Rainbow Lightsaber"
 
 DEFINE_BASECLASS(SWEP.Base)
 

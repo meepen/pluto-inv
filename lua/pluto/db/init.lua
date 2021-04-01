@@ -298,5 +298,14 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				UNIQUE(steamid, name)
 			)
 		]])
+
+		mysql_query(db, [[
+			CREATE TABLE IF NOT EXISTS pluto_blackmarket (
+				idx INT UNSIGNED NOT NULL PRIMARY KEY,
+				date DATE NOT NULL, 
+				what INT UNSIGNED NOT NULL,
+				sold TINYINT UNSIGNED NOT NULL DEFAULT 0
+			)
+		]])
 	end)
 end)

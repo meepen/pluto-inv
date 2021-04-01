@@ -59,6 +59,7 @@ pluto.files.load {
 		"divine/sv_currency_exchange.lua",
 		"divine/sv_stardust_shop.lua",
 		"divine/sv_auction_house.lua",
+		"divine/sv_blackmarket.lua",
 
 		"trades/sv_trade_state.lua",
 		"trades/sv_trade_networking.lua",
@@ -89,6 +90,8 @@ pluto.files.load {
 
 		"122274673", -- nes zapper
 		"329057380", -- raygun
+		"923947785", -- raygun 2
+		"317267606", -- stealth box
 	},
 }
 

@@ -48,6 +48,15 @@ SWEP.Offset = {
 	Scale = 1
 }
 
+SWEP.Bullets = {
+	HullSize = 0,
+	Num = 1,
+	DamageDropoffRange = 4500,
+	DamageDropoffRangeMax = 7520,
+	DamageMinimumPercent = 0.1,
+	Spread = vector_origin
+}
+
 SWEP.Ironsights = {
 	Pos = Vector(5, -15, -2),
 	Angle = Vector(2.6, 1.37, 3.5),
