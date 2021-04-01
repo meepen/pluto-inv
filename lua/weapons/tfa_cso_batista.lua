@@ -85,8 +85,8 @@ function SWEP:Initialize()
 			})
 		end)
 
-		hook.Add("DoPlayerDeath", self, function(ply, att, dmg)
-			if (IsValid(self) and IsValid(self:GetOwner()) and IsValid(att) and self:GetOwner() == att) then
+		hook.Add("PlayerDeath", self, function(self, vic, inf, att)
+			if (IsValid(self) and IsValid(inf) and self == inf) then
 				self:SetCharge(self:GetCharge() + 1)
 			end
 		end)
@@ -115,6 +115,25 @@ function SWEP:Reload()
 		self:CalcFOV()
 	end
 	self:DoReload(ACT_VM_RELOAD)
+end
+
+function SWEP:DoReload(act)
+	local speed = self:GetReloadAnimationSpeed() / 1.75
+
+	self:SendWeaponAnim(act)
+	self:SetPlaybackRate(speed)
+	if (IsValid(self:GetOwner())) then
+		self:GetOwner():GetViewModel():SetPlaybackRate(speed)
+		self:GetOwner():DoCustomAnimEvent(PLAYERANIMEVENT_RELOAD, 0)
+	end
+
+	local endtime = CurTime() + self:GetReloadDuration(speed)
+
+	self.LastSound = nil
+	self:SetReloadStartTime(CurTime())
+	self:SetReloadEndTime(endtime)
+	self:SetNextPrimaryFire(endtime)
+	self:SetNextSecondaryFire(endtime)
 end
 
 function SWEP:CanPrimaryAttack()
@@ -146,6 +165,63 @@ function SWEP:Think()
 	end
 end
 
+local function RagdollDissolveEffect(ply)
+    if (not IsValid(BLINK_DISSOLVER)) then
+        BLINK_DISSOLVER = ents.Create "env_entity_dissolver"
+        BLINK_DISSOLVER:SetKeyValue("dissolvetype", 3)
+        BLINK_DISSOLVER:Spawn()
+    end
+
+	if (not IsValid(ply)) then
+		return	
+	end
+
+	local rgd = ents.Create "prop_ragdoll"
+	if (not IsValid(rgd)) then
+		return
+	end
+
+	rgd:SetPos(ply:GetPos())
+	rgd:SetModel(ply:GetModel())
+	rgd:SetAngles(ply:GetAngles())
+	rgd:Spawn()
+	rgd:Activate()
+	rgd:SetGravity(0)
+	rgd:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
+	rgd:SetMaxHealth(100)
+	rgd:SetHealth(100)
+	rgd.Owner = ply
+	rgd:SetOwner(ply)
+	rgd:SetColor(Color(255, 255, 255, 100))
+
+	if IsValid(rgd) then
+		for i = 0, rgd:GetPhysicsObjectCount() - 1 do
+			local phys = rgd:GetPhysicsObjectNum(i)
+			phys:Wake()
+
+			if IsValid(phys) then
+				local pos, ang = ply:GetBonePosition(rgd:TranslatePhysBoneToBone(i))
+				phys:EnableGravity(false)
+
+				if pos and ang then
+					phys:SetPos(pos)
+					phys:SetAngles(ang)
+				end
+			end
+
+			phys:EnableMotion(false)
+
+			timer.Simple(0.1, function()
+				phys:Sleep()
+			end)
+		end
+	end
+
+	rgd.IsSafeToRemove = true
+	rgd:SetName("DissolveID" .. rgd:EntIndex())
+	BLINK_DISSOLVER:Fire("Dissolve", "DissolveID" .. rgd:EntIndex(), 0.01)
+end
+
 function SWEP:SecondaryAttack()
 	if (timer.Exists(tostring(self) .. "Rewind") or self:GetRewinding()) then
 		return
@@ -171,6 +247,10 @@ function SWEP:SecondaryAttack()
 				return
 			end
 
+			if (count % 15 == 0) then
+				RagdollDissolveEffect(ply)
+			end
+
 			ply:SetPos(info.Pos)
 			ply:SetEyeAngles(info.EyeAngles)
 			ply:SetHealth(info.Health)
@@ -190,10 +270,10 @@ if (CLIENT) then
         size = 24,
     })
 
-	local text_color = Color(255, 0, 25)
-	local outline_color = Color(0, 0, 0, 200)
+	local text_color = Color(255, 0, 0)
+	local outline_color = Color(0, 0, 0, 255)
 
 	function SWEP:DrawHUD()
-		draw.SimpleTextOutlined("CHARGE: " .. tostring(self:GetCharge()), "pluto_chronobreaker", ScrW() / 2, ScrH() / 2 + 100, text_color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_color)
+		draw.SimpleTextOutlined("CHARGE: " .. tostring(self:GetCharge()), "pluto_chronobreaker", ScrW() / 2, ScrH() / 2 + 150, text_color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_color)
 	end
 end
