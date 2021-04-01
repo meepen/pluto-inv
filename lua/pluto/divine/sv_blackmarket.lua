@@ -88,7 +88,7 @@ local options = {
 			Type = "Weapon",
 			Mods = {},
 			ClassName = "tfa_cso_skull1",
-			Tier = pluto.tiers.byname.unique,
+			Tier = pluto.tiers.byname.legendary,
 		}, pluto.inv.item_mt)
 	},
 	{
@@ -108,7 +108,7 @@ local options = {
 			Type = "Weapon",
 			Mods = {},
 			ClassName = "tfa_cso_skull9",
-			Tier = pluto.tiers.byname.legendary,
+			Tier = pluto.tiers.byname.unique,
 		}, pluto.inv.item_mt)
 	},
 }
@@ -130,7 +130,7 @@ hook.Add("Initialize", "pluto_blackmarket", function()
 			end
 
 			if (data.sold == 0) then
-				table.insert(offers, data.what)
+				offers[data.idx] = data.what
 			end
 		end
 		mysql_query(db, "UNLOCK TABLES")
@@ -147,9 +147,10 @@ concommand.Add("pluto_send_blackmarket", function(p)
 		:send()
 end)
 
-concommand.Add("pluto_blackmarket_buy", function(p, cmd, args)
+concommand.Add("pluto_blackmarket_buy_offer", function(p, cmd, args)
 	local idx = tonumber(args[1])
-	local what = options[pluto.divine.blackmarket.offers[idx]]
+	local offerid = pluto.divine.blackmarket.offers[idx]
+	local what = options[offerid]
 	if (not what) then
 		p:ChatPrint "No offer exists."
 		return
@@ -168,22 +169,59 @@ concommand.Add("pluto_blackmarket_buy", function(p, cmd, args)
 			mysql_rollback(db)
 			return
 		end
-		mysql_stmt_run(db, "UPDATE pluto_blackmarket SET sold = sold + 1 WHERE idx = ?", idx)
-		table.remove(pluto.divine.blackmarket.offers, idx)
+		local succ = mysql_stmt_run(db, "UPDATE pluto_blackmarket SET sold = sold + 1 WHERE idx = ? AND sold = 0", idx)
+		if (not succ or succ.AFFECTED_ROWS ~= 1) then
+			p:ChatPrint "Sorry, that offer is gone!"
+			mysql_rollback(db)
+			return
+		end
+		pluto.divine.blackmarket.offers[idx] = nil
 
 		pluto.inv.savebufferitem(db, p, item)
+		
+		p:ChatPrint("You have bought ", item, " for " .. what.Price .. " ", CURR)
 		mysql_commit(db)
 	end)
+end)
 
+concommand.Add("pluto_blackmarket_buy", function(p, cmd, args)
+	local num = tonumber(args[1])
 
+	if (num == 1) then
+		pluto.db.transact(function(db)
+			if (not pluto.inv.addcurrency(db, p, CURR.InternalName, -195)) then
+				p:ChatPrint("You do not have enough ", CURR, " to buy that.")
+				mysql_rollback(db)
+				return
+			end
+			pluto.inv.addcurrency(db, p, "potato", 1)
+			p:ChatPrint("You bought a ", pluto.currency.byname.potato, " for 195 ", CURR)
+			mysql_commit(db)
+		end)
+	elseif (num == 2) then
+		pluto.db.transact(function(db)
+			if (not pluto.inv.addcurrency(db, p, CURR.InternalName, -10)) then
+				p:ChatPrint("You do not have enough ", CURR, " to buy that.")
+				mysql_rollback(db)
+				return
+			end
+			local item = pluto.inv.generatebuffershard(db, p, "BOUGHT", (table.Random(pluto.tiers.filter_real("Weapon", function(tier) return tier.affixes >= 5 end))).InternalName)
+			p:ChatPrint("You bought a ", item, " for 10 ", CURR)
+			mysql_commit(db)
+		end)
+
+	else
+		p:ChatPrint "unknown buy"
+	end
 end)
 
 function pluto.inv.writeblackmarket(cl)
 	net.WriteUInt(math.max(0, pluto.divine.blackmarket.next - os.time()), 32)
-	net.WriteUInt(#pluto.divine.blackmarket.offers, 8)
-	for _, offer in ipairs(pluto.divine.blackmarket.offers) do
+	for id, offer in pairs(pluto.divine.blackmarket.offers) do
 		local what = options[offer]
+		net.WriteUInt(id, 8)
 		net.WriteUInt(what.Price, 32)
 		pluto.inv.writebaseitem(cl, what.Item)
 	end
+	net.WriteUInt(0, 8)
 end

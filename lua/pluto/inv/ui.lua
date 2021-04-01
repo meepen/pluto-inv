@@ -390,10 +390,7 @@ function PANEL:SetItem(item)
 		end
 		self.OriginalOwner:SizeToContentsY()
 
-		local h, s, l = ColorToHSL(item.Color or item:GetColor())
-		l = l * 0.85
-
-		self.OriginalOwnerBackground:SetColor(HSLToColor(h, s, l))
+		self.OriginalOwnerBackground:SetColor(item.GetColor and item:GetColor() or item.Color)
 	else
 		self.OriginalOwnerBackground:SetTall(0)
 	end
@@ -416,7 +413,7 @@ function PANEL:SetItem(item)
 	self.ItemBackground:SetTall(self.ItemName:GetTall() * 1.5)
 	local pad = self.ItemName:GetTall() * 0.25
 	self.ItemBackground:DockPadding(pad, pad, pad, pad)
-	self.ItemBackground:SetColor(item.Color or item:GetColor())
+	self.ItemBackground:SetColor(item.GetColor and item:GetColor() or item.Color)
 
 	self.ItemDesc:SetText(item.Description or "")
 	local subdesc = item.Tier and item.Tier:GetSubDescription() or ""

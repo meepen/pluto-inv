@@ -25,8 +25,32 @@ function TIER:GetSubDescription()
 	return desc or ""
 end
 
+function pluto.tiers.filter_real(gun, filter)
+	local type = isstring(gun) and gun or pluto.weapons.type(gun)
+
+	if (not type) then
+		return
+	end
+
+	local typelist = pluto.tiers.bytype[type]
+
+	if (not typelist) then
+		return
+	end
+
+	local newlist = {}
+
+	for _, tier in pairs(typelist.list) do
+		if (filter(tier)) then
+			newlist[#newlist + 1] = tier
+		end
+	end
+
+	return newlist
+end
+
 function pluto.tiers.filter(gun, filter)
-	local type = pluto.weapons.type(gun)
+	local type = isstring(gun) and gun or pluto.weapons.type(gun)
 
 	if (not type) then
 		return
@@ -182,7 +206,6 @@ for _, name in pairs {
 	end
 
 	item.InternalName = name
-
 
 	pluto.tiers.byname[name] = item
 

@@ -407,6 +407,37 @@ local list = {
 		end,
 	},
 	{
+		InternalName = "potato",
+		Shares = 0,
+		Name = "Developer Bag",
+		Icon = "pluto/currencies/potatoes.png",
+		Description = "Contains a developer-only model",
+		SubDescription = "potato",
+		Color = Color(254, 233, 105),
+		ClientsideUse = function()
+		end,
+		Think = function(self)
+			local speed = 4
+			local col = HSVToColor(((CurTime() % speed) / speed) * 360, 1, 1)
+			self.Color.r, self.Color.g, self.Color.b = col.r, col.g, col.b
+		end,
+		NoTarget = true,
+		Category = "Item Boxes",
+		Contents = {
+			model_2b = 1,
+			model_academy_ahri = 1,
+			model_leet_low = 1,
+			model_arctic_low = 1,
+			model_guerilla_l = 1,
+			model_maya = 1,
+			model_kat_2 = 1,
+			model_doomguy = 1,
+			model_low_croft_lo_robe_anim = 1,
+			model_lara_croft_lo_anim = 1,
+		},
+		Types = "None",
+	},
+	{
 		InternalName = "_shootingstar",
 		Name = "Shooting Star",
 		Icon = "pluto/currencies/stardust.png",
@@ -470,7 +501,25 @@ local list = {
 		Fake = true,
 		SkipNotify = true
 	},
+	{
+		Shares = 0,
+		InternalName = "emojibag",
+		Name = "Emoji Bag",
+		Icon = "pluto/emoji/b1.png",
+		Color = Color(192, 191, 190),
+		SkipNotify = true,
+		NoTarget = true,
+		Category = "Item Boxes",
+	},
 }
+
+hook.Add("Think", "pluto_currency_think", function()
+	for _, cur in pairs(pluto.currency.byname) do
+		if (cur.Think) then
+			cur:Think()
+		end
+	end
+end)
 
 pluto.currency.list = {}
 for _, mod in ipairs(list) do
@@ -544,6 +593,10 @@ function CUR:Save(ply, item, used)
 end
 
 function CUR:GetColor()
+	if (self.Think) then
+		self:Think()
+	end
+
 	return self.Color
 end
 

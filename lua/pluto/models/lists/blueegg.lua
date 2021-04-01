@@ -213,17 +213,3 @@ c "jacket" {
 		}
 	end,
 }
-
-c "maya" {
-	Name = "Maya",
-	Model = "models/kuma96/borderlands3/characters/maya/maya_pm.mdl",
-	Hands = "models/kuma96/borderlands3/characters/maya/c_arms_maya.mdl",
-	SubDescription = "<3",
-	Color = rare,
-	GenerateBodygroups = function(item)
-		return {
-			Coat = rand(item.RowID or item.ID) % 2
-		}
-	end,
-	Gender = "Female",
-}

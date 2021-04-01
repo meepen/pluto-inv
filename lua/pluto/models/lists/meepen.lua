@@ -50,6 +50,20 @@ c "academy_ahri" {
 	end,
 }
 
+c "maya" {
+	Name = "Maya",
+	Model = "models/kuma96/borderlands3/characters/maya/maya_pm.mdl",
+	Hands = "models/kuma96/borderlands3/characters/maya/c_arms_maya.mdl",
+	SubDescription = "<3",
+	Color = rare,
+	GenerateBodygroups = function(item)
+		return {
+			Coat = rand(item.RowID or item.ID) % 2
+		}
+	end,
+	Gender = "Female",
+}
+
 c "kat_2" {
 	Name = "KAT WHY",
 	Model = "models/player/dewobedil/vocaloid/yowane_haku/palmer_p.mdl",

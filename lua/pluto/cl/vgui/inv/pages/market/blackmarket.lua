@@ -1,77 +1,7 @@
 local PANEL = {}
 
-local blackmarket_items_test = {
-	Specials = {
-		{
-			Price = 255,
-			Item = setmetatable({
-				Type = "Weapon",
-				Mods = {},
-				ClassName = "weapon_neszapper",
-				Tier = pluto.tiers.byname.legendary,
-			}, pluto.inv.item_mt)
-		},
-		{
-			Price = 275,
-			Item = setmetatable({
-				Type = "Weapon",
-				Mods = {},
-				ClassName = "weapon_raygun",
-				Tier = pluto.tiers.byname.legendary,
-			}, pluto.inv.item_mt)
-		},
-	},
-
-	{
-		Price = 325,
-		Item = setmetatable({
-			Type = "Weapon",
-			Mods = {},
-			ClassName = "weapon_ttt_deagle_gold",
-			Tier = pluto.tiers.byname.unique,
-		}, pluto.inv.item_mt)
-	},
-	{
-		Price = 250,
-		Item = setmetatable({
-			Type = "Weapon",
-			Mods = {},
-			ClassName = "tfa_cso_elvenranger",
-			Tier = pluto.tiers.byname.legendary,
-		}, pluto.inv.item_mt)
-	},
-	{
-		Price = 283,
-		Item = setmetatable({
-			Type = "Weapon",
-			Mods = {},
-			ClassName = "weapon_lightsaber_rainbow",
-			Tier = pluto.tiers.byname.unique,
-		}, pluto.inv.item_mt)
-	},
-	{
-		Price = 290,
-		Item = setmetatable({
-			Type = "Weapon",
-			Mods = {},
-			ClassName = "weapon_cbox",
-			Tier = pluto.tiers.byname.unique,
-		}, pluto.inv.item_mt)
-	},
-
-	{
-		Price = 150,
-		Item = setmetatable({
-			Type = "Weapon",
-			Mods = {},
-			ClassName = "weapon_lightsaber_rb",
-			Tier = pluto.tiers.byname.unique,
-		}, pluto.inv.item_mt)
-	},
-}
-
-local function install(panel)
-	function panel:AddItem(data, offerid)
+local function install(panel, cur)
+	function panel:AddItem(data, buyfn)
 		self.Items = self.Items or {}
 
 		local pnl = self:Add "pluto_inventory_item"
@@ -83,8 +13,8 @@ local function install(panel)
 		end
 		function pnl:OnRightClick()
 			local mn = DermaMenu()
-			mn:AddOption("Buy for " .. pnl.PricePanel:GetText() .. " " .. pluto.currency.byname.tp.Name,function()
-				RunConsoleCommand("pluto_blackmarket_buy", offerid, self:GetItem().ClassName)
+			mn:AddOption("Buy for " .. pnl.PricePanel:GetText() .. " " .. cur.Name,function()
+				buyfn(self)
 			end):SetIcon "icon16/money_delete.png"
 			mn:Open()
 		end
@@ -102,7 +32,7 @@ local function install(panel)
 		local img = container_fill:Add "DImage"
 		img:Dock(RIGHT)
 		img:DockMargin(1, 1, 1, 1)
-		img:SetImage(pluto.currency.byname.tp.Icon)
+		img:SetImage(cur.Icon)
 
 		function container_fill:PerformLayout(w, h)
 			img:SetSize(h - 2, h - 2)
@@ -123,16 +53,14 @@ local function install(panel)
 		self:InvalidateLayout(true)
 	end
 
-	function panel:AddCurrency(data)
+	function panel:AddCurrency(data, buyfn)
 		self.Items = self.Items or {}
 
 		local pnl = self:Add "pluto_inventory_currency_selector"
 		function pnl:OnLeftClick()
 			local mn = DermaMenu()
-			mn:AddOption("Buy for " .. pnl.PricePanel:GetText() .. " stardust",function()
-				pluto.inv.message()
-					:write("exchangestardust", self.Currency.InternalName, 1)
-					:send()
+			mn:AddOption("Buy for " .. pnl.PricePanel:GetText() .. " " .. cur.Name,function()
+				buyfn(self.Currency)
 			end):SetIcon "icon16/money_delete.png"
 			mn:Open()
 		end
@@ -153,7 +81,7 @@ local function install(panel)
 		local img = container_fill:Add "DImage"
 		img:Dock(RIGHT)
 		img:DockMargin(1, 1, 1, 1)
-		img:SetImage(pluto.currency.byname.stardust.Icon)
+		img:SetImage(cur.Icon)
 
 		function container_fill:PerformLayout(w, h)
 			img:SetSize(h - 2, h - 2)
@@ -256,7 +184,7 @@ function PANEL:Init()
 	self.SpecialFill = self.SpecialArea:Add "EditablePanel"
 	self.SpecialFill:Dock(TOP)
 	self.SpecialFill:SetTall(pluto.ui.sizings "ItemSize")
-	install(self.SpecialFill)
+	install(self.SpecialFill, pluto.currency.byname.tp)
 
 	self.Fill = self:Add "EditablePanel"
 	self.Fill:Dock(FILL)
@@ -288,7 +216,7 @@ function PANEL:Init()
 	self.CurrencySpecialFill = self.SpecialCurrencyArea:Add "EditablePanel"
 	self.CurrencySpecialFill:Dock(TOP)
 	self.CurrencySpecialFill:SetTall(pluto.ui.sizings "ItemSize")
-	install(self.CurrencySpecialFill)
+	install(self.CurrencySpecialFill, pluto.currency.byname.stardust)
 
 	self.StardustItems = self.Fill:Add "EditablePanel"
 	self.StardustItems:Dock(TOP)
@@ -365,18 +293,62 @@ function PANEL:Init()
 	hook.Add("ReceiveStardustShop", self, self.ReceiveStardustShop)
 	hook.Add("PlutoBlackmarketReceived", self, self.PlutoBlackmarketReceived)
 
+	local cur_select = self.ShopScroll:Add "EditablePanel"
+	cur_select:Dock(TOP)
+	cur_select:SetTall(pluto.ui.sizings "ItemSize")
+	install(cur_select, pluto.currency.byname.tp)
+
+	cur_select:AddCurrency({
+		Currency = pluto.currency.byname.potato,
+		Amount = 1,
+		Price = 195
+	}, function()
+		RunConsoleCommand("pluto_blackmarket_buy", "1")
+	end)
+
+	self.FiveMod = setmetatable({
+		Type = "Shard",
+		Tier = pluto.tiers.byname.unique,
+		SpecialName = "Random 5+ mod shard"
+	}, pluto.inv.item_mt)
+
+	cur_select:AddItem({
+		Item = self.FiveMod,
+		Price = 10
+	}, function()
+		RunConsoleCommand("pluto_blackmarket_buy", "2")
+	end)
+
+	cur_select:AddCurrency({
+		Currency = pluto.currency.byname.emojibag,
+		Amount = 1,
+		Price = 2
+	}, function()
+		RunConsoleCommand("pluto_blackmarket_buy", "3")
+	end)
+
 	for _, offer in ipairs(self:GetCurrencySpecials()) do
-		self.CurrencySpecialFill:AddCurrency(offer)
+		self.CurrencySpecialFill:AddCurrency(offer, function(cur)
+			pluto.inv.message()
+				:write("exchangestardust", cur.InternalName, 1)
+				:send()
+		end)
 	end
-	for _, data in ipairs(blackmarket_items_test) do
-		self:AddBlackmarketItem(data)
+end
+
+function PANEL:Think()
+	if ((self.LastChange or -math.huge) < CurTime() - 0.4) then
+		self.LastChange = CurTime()
+		self.FiveMod.Tier = table.Random(pluto.tiers.filter_real("Weapon", function(tier) return tier.affixes >= 5 end))
 	end
 end
 
 function PANEL:PlutoBlackmarketReceived(data)
 	self.RefreshTimer.EndTime = os.time() + data.Remaining
-	for id, data in ipairs(data.Offers) do
-		self.SpecialFill:AddItem(data, id)
+	for id, data in pairs(data.Offers) do
+		self.SpecialFill:AddItem(data, function(self)
+			RunConsoleCommand("pluto_blackmarket_buy_offer", id, self:GetItem().ClassName)
+		end)
 	end
 end
 
@@ -469,11 +441,16 @@ function pluto.inv.readblackmarket()
 		Remaining = net.ReadUInt(32),
 		Offers = {}
 	}
-	for i = 1, net.ReadUInt(8) do
+	while (1) do
+		local id = net.ReadUInt(8)
+		if (id == 0) then
+			break
+		end
+
 		local price = net.ReadUInt(32)
 		local what = setmetatable({}, pluto.inv.item_mt)
 		pluto.inv.readbaseitem(what)
-		data.Offers[i] = {
+		data.Offers[id] = {
 			Price = price,
 			Item = what,
 		}
