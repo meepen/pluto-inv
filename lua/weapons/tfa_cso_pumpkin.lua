@@ -36,6 +36,8 @@ SWEP.Offset = {
 	Scale = 1.2
 }
 
+SWEP.Ortho = {-1, 0, angle = Angle(45, -80, 45)}
+
 DEFINE_BASECLASS(SWEP.Base)
 
 function SWEP:Deploy( ... )
