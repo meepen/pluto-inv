@@ -42,6 +42,8 @@ SWEP.Offset = {
 	Scale = 1.2
 }
 
+SWEP.Ortho = {-1, 0, angle = Angle(45, -130, -10)}
+
 SWEP.Ironsights = {
 	Pos = Vector(7.403, -3.84, 0.791),
 	Angle = Vector(-1.152, 5.633, -2.722),

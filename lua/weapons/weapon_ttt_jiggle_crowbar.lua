@@ -5,3 +5,5 @@ SWEP.ViewModel = "models/weapons/c_jrowbar.mdl"
 SWEP.AutoSpawnable = false
 SWEP.Spawnable = false
 SWEP.PlutoSpawnable = false
+
+SWEP.Ortho = {0, 0, angle = Angle(90, 147, -5)}
