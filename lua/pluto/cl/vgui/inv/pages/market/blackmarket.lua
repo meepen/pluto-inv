@@ -314,7 +314,7 @@ function PANEL:Init()
 
 	cur_select:AddItem({
 		Item = self.FiveMod,
-		Price = 20
+		Price = 60
 	}, function()
 		RunConsoleCommand("pluto_blackmarket_buy", "2")
 	end)

@@ -190,13 +190,13 @@ concommand.Add("pluto_blackmarket_buy", function(p, cmd, args)
 		end)
 	elseif (num == 2) then
 		pluto.db.transact(function(db)
-			if (not pluto.inv.addcurrency(db, p, CURR.InternalName, -20)) then
+			if (not pluto.inv.addcurrency(db, p, CURR.InternalName, -60)) then
 				p:ChatPrint("You do not have enough ", CURR, " to buy that.")
 				mysql_rollback(db)
 				return
 			end
 			local item = pluto.inv.generatebuffershard(db, p, "BOUGHT", (table.Random(pluto.tiers.filter_real("Weapon", function(tier) return tier.affixes >= 5 end))).InternalName)
-			p:ChatPrint("You bought a ", item, " for 20 ", CURR)
+			p:ChatPrint("You bought a ", item, " for 60 ", CURR)
 			mysql_commit(db)
 		end)
 	elseif (num == 3) then
