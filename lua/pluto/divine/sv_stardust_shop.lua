@@ -230,7 +230,7 @@ concommand.Add("pluto_buy_stardust_shop", function(p, c, a)
 				embed
 					:SetAuthor("GONE!")
 					:SetTimestamp()
-			):Send "shops"
+			):Send "stardust-shop"
 		else
 			local embed = item.PreviewItem:GetDiscordEmbed()
 			local time = math.Round((item.EndTime - os.time()) / (60 * 60))
@@ -239,7 +239,7 @@ concommand.Add("pluto_buy_stardust_shop", function(p, c, a)
 				embed
 					:SetAuthor(time)
 					:SetTimestamp()
-			):Send "shops"
+			):Send "stardust-shop"
 		end
 	end)
 end)

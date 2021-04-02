@@ -18,7 +18,7 @@ local config = util.JSONToTable [[{
 					"url": "https://discordapp.com/api/webhooks/703593105898864660/l_fVsD63aFf7padeetiXmBLtATpVrcYJhhvXHlaTM4YrNVljegHeLV2JcJC0BreaU1Fo",
 					"authentication": "i4E4%M&j3eQ#M@IF"
 			},
-			"shops": {
+			"stardust-shop": {
 					"url": "https://discord.com/api/webhooks/788164284605005874/1qP_4-vGs7mdj4IfH9NKv8pIYYFFp-C0AUbm6yOCq4WmIItj49aMdL-HpNG1hzBpF7EQ",
 					"authentication": "um 845tv932 %$#V!"
 			},
