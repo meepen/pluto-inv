@@ -106,7 +106,8 @@ local options = {
 pluto.divine = pluto.divine or {}
 pluto.divine.blackmarket = pluto.divine.blackmarket or {}
 
-hook.Add("Initialize", "pluto_blackmarket", function()
+local function init()
+	
 	pluto.db.transact(function(db)
 		local offers = {}
 		mysql_query(db, "LOCK TABLES pluto_blackmarket WRITE")
@@ -115,7 +116,9 @@ hook.Add("Initialize", "pluto_blackmarket", function()
 		for _, data in ipairs(data) do
 			if (data.is_active == 0) then
 				data.what = pluto.inv.roll(options)
+				print ("?", data.what)
 				data.sold = 0
+				data.new = true
 				mysql_stmt_run(db, "UPDATE pluto_blackmarket SET `date` = @date, what = ?, sold = 0 WHERE idx = ?", data.what, data.idx)
 			end
 
@@ -124,12 +127,36 @@ hook.Add("Initialize", "pluto_blackmarket", function()
 			end
 		end
 		mysql_query(db, "UNLOCK TABLES")
+		mysql_commit(db)
 
 		pluto.divine.blackmarket.next = os.time() + mysql_query(db, "SELECT TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, TIMESTAMP(@date) + interval 1 day) as remaining;")[1].remaining
 
+		local msg = discord.Message()
+			:SetText("=== BLACKMARKET RESTOCK ===")
+		local send = false
+		for _, offer in ipairs(data) do
+			if (offer.new) then
+				local what = options[offer.what]
+				if (what.Item) then
+					msg:AddEmbed(
+						what.Item:GetDiscordEmbed()
+							:SetAuthor(what.Price .. " " .. CURR.Name)
+							:SetTimestamp()
+					)
+					send = true
+				end
+			end
+		end
+
+		if (send) then
+			msg:Send "stardust-shop"
+		end
+
 		pluto.divine.blackmarket.offers = offers
 	end)
-end)
+end
+
+hook.Add("Initialize", "pluto_blackmarket", init)
 
 concommand.Add("pluto_send_blackmarket", function(p)
 	pluto.inv.message(p)
