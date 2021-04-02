@@ -66,7 +66,7 @@ local function install(panel, cur)
 		end
 		pnl:ShowAmount(true)
 		pnl:SetCurrency(data.Currency)
-		pnl:SetAmount(data.Amount)
+		pnl:SetAmount(data.Amount .. " left")
 
 		local container = pnl:Add "ttt_curved_panel_outline"
 		container:SetCurve(4)
@@ -300,7 +300,7 @@ function PANEL:Init()
 
 	cur_select:AddCurrency({
 		Currency = pluto.currency.byname.potato,
-		Amount = 1,
+		Amount = "inf",
 		Price = 195
 	}, function()
 		RunConsoleCommand("pluto_blackmarket_buy", "1")
@@ -321,7 +321,7 @@ function PANEL:Init()
 
 	cur_select:AddCurrency({
 		Currency = pluto.currency.byname._emojibag,
-		Amount = 1,
+		Amount = "inf",
 		Price = 5
 	}, function()
 		RunConsoleCommand("pluto_blackmarket_buy", "3")
