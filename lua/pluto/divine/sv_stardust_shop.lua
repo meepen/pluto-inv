@@ -289,7 +289,7 @@ hook.Add("Initialize", "pluto_stardust_shop", function()
 				data.rowid = mysql_stmt_run(db, "INSERT INTO pluto_stardust_shop (item, price, endtime) VALUES(?, ?, TIMESTAMPADD(HOUR, 5, CURRENT_TIMESTAMP))", id, data.Price).LAST_INSERT_ID
 			end
 
-			msg:Send "shops"
+			msg:Send "stardust-shop"
 		end
 
 		mysql_query(db, "UNLOCK TABLES")
