@@ -75,7 +75,7 @@ function PANEL:DataReceived(b)
 end
 
 function PANEL:Think()
-	if (not pluto.crashing) then
+	if (not GetTimeoutInfo()) then
 		self:Remove()
 	end
 end
@@ -158,35 +158,11 @@ end
 
 vgui.Register("pluto_crash_server", PANEL, "ttt_curved_panel_outline")
 
-local t = SysTime
-local function get()
-	return GetGlobalInt("pluto_crash_time", 0)
-end
-
-local update_time = 4
-
-local last = {
-	Time = t(),
-	Value = get()
-}
 
 hook.Add("DrawOverlay", "pluto_crash_detect", function()
-	if (last.Time + update_time > t()) then
-		return
-	end
-	local oldvalue = last.Value
+	local crashing, time = GetTimeoutInfo()
 
-	
-	pluto.crashing = oldvalue == get()
-
-	if (pluto.cancrash and pluto.crashing and not IsValid(pluto_crash_popup)) then
+	if (crashing and time > 9 and not IsValid(pluto_crash_popup)) then
 		pluto_crash_popup = vgui.Create "pluto_crash_popup"
 	end
-
-	last.Time, last.Value = t(), get()
-end)
-
-
-timer.Simple(10, function()
-	pluto.cancrash = true
 end)
