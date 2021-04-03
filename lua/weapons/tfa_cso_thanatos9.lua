@@ -158,7 +158,12 @@ function SWEP:PrimaryAttack()
 	end
 
 	local owner = self:GetOwner()
-	owner:SetAnimation(PLAYER_ATTACK1)
+	timer.Simple(self.Secondary.Attacks[1].delay - 0.1, function()
+		if (IsValid(owner) and owner:GetActiveWeapon() == self) then
+			owner:SetAnimation(PLAYER_ATTACK1)
+		end
+	end)
+
 	self:SetBulletsShot(self:GetBulletsShot() + 1)
 
 	self:SendWeaponAnim(self:GetCurrentAnimation "Secondary".act)

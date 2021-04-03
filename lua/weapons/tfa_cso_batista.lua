@@ -7,7 +7,7 @@ SWEP.Editor = "add___123" -- Changed basically everything
 SWEP.PrintName = "Chronobreaker"
 SWEP.Slot = 2
 
-SWEP.Primary.Sound = Sound("tfa_cso2_m3dragon.1")				
+SWEP.Primary.Sound = "Batista.Fire"				
 SWEP.Primary.Damage = 5
 
 SWEP.Secondary.Sound = Sound("AlyxEMP.Charge")
@@ -15,14 +15,14 @@ SWEP.Secondary.Sound = Sound("AlyxEMP.Charge")
 SWEP.Bullets = {
 	HullSize = 0,
 	Num = 12,
-	DamageDropoffRange = 900,
-	DamageDropoffRangeMax = 4000,
+	DamageDropoffRange = 800,
+	DamageDropoffRangeMax = 3600,
 	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.1, 0.1),
+	Spread = Vector(0.11, 0.11),
 	TracerName = "tfa_tracer_incendiary"
 }
 
-SWEP.Primary.Delay = 1.25
+SWEP.Primary.Delay = 1.2
 SWEP.Primary.Automatic = true
 
 SWEP.Primary.ClipSize = 2		
@@ -59,6 +59,16 @@ SWEP.WorldModel = "models/weapons/tfa_cso/w_batista.mdl"
 SWEP.ViewModel = "models/weapons/tfa_cso/c_batista.mdl"
 
 SWEP.DrawCrosshair = true
+
+sound.Add({
+	name 		= "Batista.Fire" ,
+	channel 	= CHAN_USER_BASE+11,
+	volume 		= 1,
+	soundlevel 	= 80,
+	pitchstart 	= 100,
+	pitchend 	= 100,
+	sound 		= "weapons/tfa_cso/batista/fire.ogg"
+})
 
 DEFINE_BASECLASS(SWEP.Base)
 
@@ -118,7 +128,7 @@ function SWEP:Reload()
 end
 
 function SWEP:DoReload(act)
-	local speed = self:GetReloadAnimationSpeed() / 1.75
+	local speed = self:GetReloadAnimationSpeed() / 1.65
 
 	self:SendWeaponAnim(act)
 	self:SetPlaybackRate(speed)
@@ -133,7 +143,6 @@ function SWEP:DoReload(act)
 	self:SetReloadStartTime(CurTime())
 	self:SetReloadEndTime(endtime)
 	self:SetNextPrimaryFire(endtime)
-	self:SetNextSecondaryFire(endtime)
 end
 
 function SWEP:CanPrimaryAttack()
@@ -231,19 +240,29 @@ function SWEP:SecondaryAttack()
 		self:SetCharge(self:GetCharge() - 1)
 		self:SetRewinding(true)
 
-		local count = 0
-
 		timer.Simple(0, function()
 			self:EmitSound(self.Secondary.Sound)
 		end)
 
+		local ply = self:GetOwner()
+
+		if (not IsValid(ply)) then
+			return
+		end
+
+		self:SetPlaybackRate(-1)
+		ply:GetViewModel():SetPlaybackRate(-1)
+		self:SetReloadEndTime(math.huge)
+
+		local count = 0
+
 		timer.Create(tostring(self) .. "Rewind", 0.01, 0, function()
 			local info = table.remove(self.Times)
-			local ply = self:GetOwner()
 
 			if (not info or not IsValid(ply) or not ply:Alive() or count >= 50) then
 				timer.Remove(tostring(self) .. "Rewind")
 				self:SetRewinding(false)
+				self:SetNextPrimaryFire(CurTime() + 0.1)
 				return
 			end
 
