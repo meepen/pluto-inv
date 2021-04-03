@@ -93,12 +93,22 @@ local options = {
 	},
 	{
 		Shares = 1,
-		Price = 435,
+		Price = 415,
 		Item = setmetatable({
 			Type = "Weapon",
 			Mods = {},
 			ClassName = "tfa_cso_skull9",
 			Tier = pluto.tiers.byname.unique,
+		}, pluto.inv.item_mt)
+	},
+	{
+		Shares = 1,
+		Price = 435,
+		Item = setmetatable({
+			Type = "Weapon",
+			Mods = {},
+			ClassName = "tfa_cso_batista",
+			Tier = pluto.tiers.byname.legendary,
 		}, pluto.inv.item_mt)
 	},
 }
