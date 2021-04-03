@@ -129,7 +129,7 @@ local function init()
 		mysql_query(db, "UNLOCK TABLES")
 		mysql_commit(db)
 
-		pluto.divine.blackmarket.next = os.time() + mysql_query(db, "SELECT TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, TIMESTAMP(@date) + interval 1 day) as remaining;")[1].remaining
+		pluto.divine.blackmarket.next = os.time() + mysql_query(db, "SELECT TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, TIMESTAMP(convert_tz(@date,'-1:00',@@session.time_zone)) + interval 1 day) as remaining;")[1].remaining
 
 		local msg = discord.Message()
 			:SetText("=== BLACKMARKET RESTOCK ===")
