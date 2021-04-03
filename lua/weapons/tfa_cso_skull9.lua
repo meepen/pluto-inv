@@ -14,10 +14,24 @@ SWEP.Spawnable = false
 SWEP.AdminSpawnable = false
 SWEP.DrawCrosshair = true
 
-SWEP.Primary.Range           = 130
-SWEP.Primary.Delay           = 1.2
-SWEP.Primary.Damage          = 60
-SWEP.Secondary.Damage        = 60
+SWEP.Primary.Range = 130
+SWEP.Primary.Delay = 1.2
+SWEP.Primary.Damage = 60
+SWEP.Secondary.Damage = 60
+
+SWEP.Offset = {
+	Pos = {
+        Up = 7,
+        Right = 1,
+        Forward = 14,
+	},
+	Ang = {
+        Up = 90,
+        Right = 0,
+        Forward = 170
+	},
+	Scale = 1.2
+}
 
 SWEP.Primary.Attacks = {
 	{
@@ -103,17 +117,29 @@ function SWEP:DoHit(hitEnt, tr, damage)
 	BaseClass.DoHit(self, hitEnt, tr, damage)
 
 	if (SERVER and ttt.GetRoundState() ~= ttt.ROUNDSTATE_PREPARING) then
-		if (not IsValid(hitEnt) or not hitEnt:IsPlayer()) then
+		local own = self:GetOwner()
+
+		if (not IsValid(hitEnt) or not hitEnt:IsPlayer() or not IsValid(own)) then
 			return 
 		end
 
 		local dmg = damage or self.Primary.Damage
 
 		if (hitEnt:Health() > 0) then
-			pluto.statuses.poison(self:GetOwner(), {
+			pluto.statuses.poison(own, {
 				Weapon = self,
-				Damage = dmg * (3 / 4)
+				Damage = 30
 			})
+		else
+			own:SetMaxHealth(own:GetMaxHealth() + 30)
+
+			pluto.statuses.heal(own, 30, 30 / 10)
+
+			timer.Simple(5, function()
+				if (IsValid(own) and own:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_PREPARING) then
+					own:SetMaxHealth(own:GetMaxHealth() - 30)
+				end
+			end)
 		end
 	end
 end
@@ -141,7 +167,12 @@ function SWEP:PrimaryAttack()
 	end
 
 	local owner = self:GetOwner()
-	owner:SetAnimation(PLAYER_ATTACK1)
+	timer.Simple(self.Secondary.Attacks[1].delay - 0.1, function()
+		if (IsValid(owner) and owner:GetActiveWeapon() == self) then
+			owner:SetAnimation(PLAYER_ATTACK1)
+		end
+	end)
+
 	self:SetBulletsShot(self:GetBulletsShot() + 1)
 
 	self:SendWeaponAnim(self:GetCurrentAnimation "Secondary".act)

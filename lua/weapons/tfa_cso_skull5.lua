@@ -83,7 +83,15 @@ function SWEP:FireBulletsCallback(tr, dmginfo, data)
 		end
 
 		if (IsValid(ent) and ent:IsPlayer()) then
-			pluto.statuses.heal(own, math.min(15, dmginfo:GetDamage()), 1)
+			own:SetMaxHealth(own:GetMaxHealth() + 15)
+
+			pluto.statuses.heal(own, 15, 15 / 10)
+
+			timer.Simple(5, function()
+				if (IsValid(own) and own:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_PREPARING) then
+					own:SetMaxHealth(own:GetMaxHealth() - 15)
+				end
+			end)
 		else
 			pluto.statuses.poison(own, {
 				Weapon = self,

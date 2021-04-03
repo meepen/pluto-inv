@@ -33,9 +33,9 @@ DEFINE_BASECLASS(SWEP.Base)
 
 SWEP.Offset = {
 	Pos = {
-        Up = -4.5,
+        Up = -3,
         Right = 1,
-        Forward = 7,
+        Forward = 4.5,
 	},
 	Ang = {
         Up = -90,
@@ -64,9 +64,9 @@ function SWEP:Initialize()
 
 	if (SERVER) then
 		self.Damaged = {}
-	end
 
-	hook.Add("DoPlayerDeath", self, self.DoPlayerDeath)
+		hook.Add("DoPlayerDeath", self, self.DoPlayerDeath)
+	end
 end
 
 function SWEP:FireBulletsCallback(tr, dmginfo, data)
@@ -95,14 +95,24 @@ function SWEP:FireBulletsCallback(tr, dmginfo, data)
 end
 
 function SWEP:DoPlayerDeath(ply, atk, dmg)
-	if (not self.Damaged or not self.Damaged[ply]) then
+	local own = self:GetOwner()
+
+	if (not self.Damaged or not self.Damaged[ply] or not IsValid(own) or ttt.GetRoundState() == ttt.ROUNDSTATE_PREPARING) then
 		return
 	end
 
 	local amt = self.Damaged[ply] * 2
 	self.Damaged[ply] = nil
 
-	pluto.statuses.heal(self:GetOwner(), amt, amt / 20)
+	own:SetMaxHealth(own:GetMaxHealth() + amt)
+	
+	pluto.statuses.heal(own, amt, amt / 10)
+
+	timer.Simple(5, function()
+		if (IsValid(own) and own:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_PREPARING) then
+			own:SetMaxHealth(own:GetMaxHealth() - amt)
+		end
+	end)
 end
 
 SWEP.Ortho = {-1.5, 0, angle = Angle(65, -130)}
