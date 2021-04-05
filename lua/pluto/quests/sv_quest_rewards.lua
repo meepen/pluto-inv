@@ -227,6 +227,12 @@ pluto.quests.rewards = {
 			Shares = 1.5,
 		},
 		{
+			Type = "currency",
+			Currency = "tp",
+			Amount = 3,
+			Shares = 1.5,
+		},
+		{
 			Type = "weapon",
 			RandomImplicit = true,
 			ModMax = 5,
@@ -288,6 +294,12 @@ pluto.quests.rewards = {
 			Type = "currency",
 			Currency = "stardust",
 			Amount = 125,
+			Shares = 1.5,
+		},
+		{
+			Type = "currency",
+			Currency = "tp",
+			Amount = 15,
 			Shares = 1.5,
 		},
 		{
@@ -373,7 +385,7 @@ pluto.quests.rewards = {
 		{
 			Type = "currency",
 			Currency = "tp",
-			Amount = 25,
+			Amount = 50,
 			Shares = 1,
 		},
 		{

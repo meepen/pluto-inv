@@ -73,7 +73,7 @@ local options = {
 	},
 	{
 		Shares = 1,
-		Price = 365,
+		Price = 335,
 		Item = setmetatable({
 			Type = "Weapon",
 			Mods = {},
@@ -83,7 +83,7 @@ local options = {
 	},
 	{
 		Shares = 1,
-		Price = 385,
+		Price = 355,
 		Item = setmetatable({
 			Type = "Weapon",
 			Mods = {},
@@ -93,7 +93,7 @@ local options = {
 	},
 	{
 		Shares = 1,
-		Price = 415,
+		Price = 315,
 		Item = setmetatable({
 			Type = "Weapon",
 			Mods = {},
@@ -102,7 +102,7 @@ local options = {
 		}, pluto.inv.item_mt)
 	},
 	{
-		Shares = 1,
+		Shares = 3,
 		Price = 435,
 		Item = setmetatable({
 			Type = "Weapon",
