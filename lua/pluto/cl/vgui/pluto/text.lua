@@ -349,6 +349,9 @@ function PANEL:OnMousePressed(m)
 			for _, ele in ipairs(startline) do
 				if (ele == startpnl) then
 					found = true
+				elseif (ele == endpnl) then
+					text = text .. utf8.force(ele:GetText()):sub(1, endele)
+					break
 				elseif (found) then
 					text = text .. ele:GetText()
 				end
@@ -363,12 +366,14 @@ function PANEL:OnMousePressed(m)
 				text = text .. "\n"
 			end
 
-			for _, ele in ipairs(endline) do
-				if (endpnl == ele) then
-					text = text .. utf8.force(ele:GetText()):sub(1, endele)
-					break
-				else
-					text = text .. ele:GetText()
+			if (endline ~= startline) then
+				for _, ele in ipairs(endline) do
+					if (endpnl == ele) then
+						text = text .. utf8.force(ele:GetText()):sub(1, endele)
+						break
+					else
+						text = text .. ele:GetText()
+					end
 				end
 			end
 		end
@@ -460,7 +465,6 @@ function PANEL:PaintOver(w, h)
 			local tex = surface.GetTextSize(txt:sub(1, endele)) + endpnl:GetPos()
 			surface.DrawRect(tsx, ey, tex - tsx, eh)
 		else
-
 			-- highlight start ele to end
 			if (startpnl:GetText() ~= "") then
 				local surface = startpnl:GetRenderSystem()
@@ -476,6 +480,8 @@ function PANEL:PaintOver(w, h)
 			for _, ele in ipairs(startline) do
 				if (ele == startpnl) then
 					found = true
+				elseif (ele == endpnl) then
+					break
 				elseif (found) then
 					local x, y = ele:GetPos()
 					local w, h = ele:GetSize()
@@ -492,13 +498,15 @@ function PANEL:PaintOver(w, h)
 				end
 			end
 
-			for _, ele in ipairs(endline) do
-				if (endpnl == ele) then
-					break
-				else
-					local x, y = ele:GetPos()
-					local w, h = ele:GetSize()
-					surface.DrawRect(x, y, w, h)
+			if (endline ~= startline) then
+				for _, ele in ipairs(endline) do
+					if (endpnl == ele) then
+						break
+					else
+						local x, y = ele:GetPos()
+						local w, h = ele:GetSize()
+						surface.DrawRect(x, y, w, h)
+					end
 				end
 			end
 
