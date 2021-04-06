@@ -119,6 +119,9 @@ pluto.inv.messages = {
 
 		-- donator
 		"playertokens",
+
+		-- EMOJIS
+		"emojis",
 	}
 }
 

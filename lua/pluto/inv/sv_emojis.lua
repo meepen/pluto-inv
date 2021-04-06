@@ -27,6 +27,20 @@ function pluto.emoji.init(ply)
 	end)
 end
 
+function pluto.inv.writeemojis(cl)
+	local unlocked = {}
+	for emoji in pairs(pluto.emoji.byname) do
+		if (pluto.emoji.unlocks[cl][emoji]) then
+			table.insert(unlocked, emoji)
+		end
+	end
+
+	net.WriteUInt(#unlocked, 16)
+	for _, emoji in ipairs(unlocked) do
+		net.WriteString(emoji)
+	end
+end
+
 concommand.Add("pluto_emoji_unlock", function(ply, cmd, args)
 	if (not pluto.cancheat(ply)) then
 		return

@@ -185,14 +185,18 @@ function pluto.inv.sendfullupdate(ply)
 			ply:StripAmmo()
 			hook.Run("PlayerLoadout", ply)
 		end
-		pluto.inv.message(ply):write "fullupdate":send()
+		pluto.inv.message(ply)
+			:write "fullupdate"
+			:write "emojis"
+			:send()
 	end)
 end
 
 concommand.Add("pluto_fullupdate", function(ply, cmd, args)
-	if (not pluto.cancheat(ply)) then
+	if (not pluto.cancheat(ply) or (ply.LastFullUpdate or -math.huge) > CurTime() - 5) then
 		return
 	end
+	ply.LastFullUpdate = CurTime()
 	pluto.inv.sendfullupdate(ply)
 end)
 

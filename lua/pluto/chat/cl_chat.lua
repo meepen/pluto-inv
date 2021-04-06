@@ -104,6 +104,15 @@ function chat.AddText(...)
 	hook.Run("PlutoChatMessageReceived", "Server", {...}, false)
 end
 
+function pluto.inv.reademojis()
+	local unlocked = {}
+	for i = 1, net.ReadUInt(16) do
+		unlocked[i] = net.ReadString()
+	end
+	
+	pluto.cl_emojis = unlocked
+end
+
 function pluto.inv.readchatmessage()
 	local teamchat = net.ReadBool()
 	local channel = net.ReadString()
@@ -205,6 +214,9 @@ function PANEL:Init()
 	function self.Emojis:PerformLayout(w, h)
 		self:SetWide(h)
 	end
+	function self.Emojis.OnMousePressed()
+		self:OpenEmojis()
+	end
 
 	self.ChatLabel = self.Input:Add "pluto_label"
 	self.ChatLabel:Dock(LEFT)
@@ -259,16 +271,100 @@ function PANEL:Init()
 	self:EnableInput(false)
 end
 
+function PANEL:OnRemove()
+	if (IsValid(self.EmojiWindow)) then
+		self.EmojiWindow:Remove()
+	end
+end
+
+function PANEL:OpenEmojis()
+	if (IsValid(self.EmojiWindow)) then
+		self.EmojiWindow:Remove()
+		return
+	end
+
+	local image_size = 24
+	local pad = 4
+	local perline = 10
+
+	self.EmojiWindow = self:Add "ttt_curved_panel"
+	self.EmojiWindow:SetCurve(4)
+	self.EmojiWindow:SetColor(self.Container:GetColor())
+	self.EmojiWindow:SetCurveBottomLeft(false)
+	self.EmojiWindow:SetCurveTopLeft(false)
+	self.EmojiWindow:MakePopup()
+	self.EmojiWindow:DockPadding(9, 14, 9, 14)
+	self.EmojiWindow:SetSize(image_size * (perline + 1) + pad * perline + pad * 2, 200)
+	function self.EmojiWindow.UpdatePosition()
+		local x, y = self:LocalToScreen(self:GetSize(), 0)
+		self.EmojiWindow:SetPos(x, y + self:GetTall() / 2 - self.EmojiWindow:GetTall() / 2)
+	end
+	self.EmojiWindow:UpdatePosition()
+
+	self.EmojiScroller = self.EmojiWindow:Add "DScrollPanel"
+	self.EmojiScroller:Dock(FILL)
+
+	local last_line
+	local function getline()
+		if (IsValid(last_line)) then
+			return last_line
+		end
+
+		local pnl = self.EmojiScroller:Add "EditablePanel"
+		pnl:DockMargin(0, 0, 0, pad)
+		pnl:Dock(TOP)
+		last_line = pnl
+		return pnl
+	end
+
+	local function getimage()
+		local pnl = getline()
+		local img = pnl:Add "pluto_image"
+		img:DockMargin(0, 0, 4, 0)
+		img:Dock(LEFT)
+		if (#pnl:GetChildren() >= perline) then
+			last_line = nil
+		end
+
+		return img
+	end
+
+	for emoji, data in pairs(pluto.emoji.byname) do
+		local pnl = getimage()
+		pnl:SetFromURL(data.URL)
+		pnl:SetImageSize(image_size, image_size)
+		pnl:SetClickable {
+			Run = function()
+				self:AddInput(":" .. emoji .. ":")
+			end,
+			Cursor = "hand"
+		}
+		pnl:SetTextColor(Color(0, 0, 0))
+		pnl:SetTall(32)
+	end
+
+end
+
 function PANEL:OnPositionUpdated()
 	local x, y = self:GetPos()
 	
-	x = math.Clamp(x, 0, ScrW() - self:GetWide())
-	y = math.Clamp(y, 0, ScrH() - self:GetTall())
+	x = math.Round(math.Clamp(x, 0, ScrW() - self:GetWide()))
+	y = math.Round(math.Clamp(y, 0, ScrH() - self:GetTall()))
 
 	pluto_chatbox_x:SetFloat(x / ScrW())
 	pluto_chatbox_y:SetFloat((ScrH() - y) / ScrH())
 
 	self:SetPos(x, y)
+	if (IsValid(self.EmojiWindow)) then
+		self.EmojiWindow:UpdatePosition()
+	end
+end
+
+function PANEL:AddInput(what)
+	local t = self.Input:GetText()
+	local caret = self.Input:GetCaretPos()
+	self.Input:SetText(t:sub(1, caret) .. what .. t:sub(caret + 1))
+	self.Input:SetCaretPos(caret + what:len())
 end
 
 function PANEL:PlutoChatMessageReceived(channel, content, teamonly)
@@ -396,6 +492,9 @@ function PANEL:EnableInput(on)
 			text:ResetAllFades(true, false, -1 or pluto_chat_fade_sustain:GetFloat())
 		end
 	else
+		if (IsValid(self.EmojiWindow)) then
+			self.EmojiWindow:Remove()
+		end
 		self:SetTeamChat(false)
 		self.Input:SetText ""
 		self.Container:SetColor(ColorAlpha(self.Container:GetColor(), 0))
