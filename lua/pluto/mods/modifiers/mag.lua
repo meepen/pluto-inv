@@ -15,6 +15,10 @@ end
 
 MOD.Description = "Clip size is increased by %s"
 
+function MOD:CanRollOn(class)
+	return class.PrintName ~= "Chronobreaker"
+end
+
 MOD.Tiers = {
 	{ 20, 30 },
 	{ 10, 20 },
