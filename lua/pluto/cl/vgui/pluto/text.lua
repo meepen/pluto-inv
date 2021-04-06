@@ -26,7 +26,7 @@ function PANEL:SetCurrentRenderSystem(system)
 	self.surface = system
 end
 function PANEL:GetCurrentRenderSystem()
-	return self.surface or pluto.fonts.systems[self:GetDefaultRenderSystem() or "default"]
+	return self.surface or pluto.fonts.systems[self:GetDefaultRenderSystem() or "default"] or surface
 end
 
 function PANEL:SetCurrentFont(font)
@@ -161,6 +161,7 @@ function PANEL:NewLine()
 end
 
 function PANEL:AddText(what)
+	local surface = self:GetCurrentRenderSystem()
 	surface.SetFont(self:GetCurrentFont())
 
 	for nl1, m, nl2, npos in what:gmatch "([\r\n]*)([^\r\n]*)([\r\n]*)()" do
@@ -558,11 +559,11 @@ function PANEL:InsertFade(sustain, length)
 end
 
 function PANEL:SignalClose()
+	self.StartDrag = nil
+	self.EndDrag = nil
 	if (IsValid(self.Showcase)) then
 		self.Showcase:Remove()
-		self.DragStart = nil
 		hook.Remove("Think", self)
-		self.DragEnd = nil
 	end
 end
 

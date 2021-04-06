@@ -10,12 +10,11 @@ local function initfont()
 		weight = pluto_chat_font_weight:GetFloat(),
 	})
 
-	surface.CreateFont("pluto_chat_font_clickable", {
+	surface.CreateFont("pluto_chat_font_s", {
 		font = pluto_chat_font:GetString(),
-		size = 20,
+		size = 16,
 		bold = pluto_chat_font_bold:GetBool(),
 		weight = pluto_chat_font_weight:GetFloat(),
-		underline = true,
 	})
 end
 

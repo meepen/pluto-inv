@@ -15,6 +15,11 @@ for idx, name in pairs(debug.getregistry()[3]) do
 	end
 end
 
+local PLAYER = FindMetaTable "Player"
+function PLAYER:Say(t, teamonly)
+	hook.Run("RealPlayerSay", self, t, teamonly)
+end
+
 local function GetLoadoutItem(ply, i)
 	local item = pluto.itemids[tonumber(ply:GetInfo("pluto_loadout_slot" .. i, nil))]
 	if (item and item.Owner == ply:SteamID64()) then
@@ -30,17 +35,30 @@ local function GetCosmeticItem(ply, i)
 end
 
 hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
-	print((teamchat and "[TEAM]" or "") .. from:Nick() .. ": " .. texts)
 	local content = {
 		from,
 	}
 
-	if (texts:StartWith "//") then
-		texts = texts:sub(3):Trim()
-	end
 	local replace = hook.Run("PlayerSay", from, texts, teamchat)
 
-	if replace == "" or not replace then return "" end
+	if (replace == "" or not replace) then
+		return ""
+	end
+
+	-- find channel sending in
+	local sent_in
+
+	for _, channel in ipairs(pluto.chat.channels) do
+		if (replace:StartWith(channel.Prefix)) then
+			sent_in = channel
+			replace = replace:sub(channel.Prefix:len() + 1)
+			break
+		end
+	end
+
+	if (not sent_in) then
+		sent_in = pluto.chat.channels.byname.Server
+	end
 
 	local last_pos = 1
 	local length = 0
@@ -172,12 +190,29 @@ hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 		return ""
 	end
 
-	for _,ply in pairs(player.GetAll()) do
-		local canSee = hook.Run("PlayerCanSeePlayersChat", texts, teamchat, ply, from)
-		if canSee then
-			pluto.inv.message(ply)
-				:write("chatmessage", content, "Server", teamchat)
-			:send()
+	Msg("[" .. sent_in.Name .. "] ")
+	for index, data in ipairs(content) do
+		if (IsEntity(data) and data:IsPlayer()) then
+			Msg(data:Nick())
+			if (index == 1) then
+				Msg ": "
+			end
+		else
+			Msg(tostring(data))
+		end
+	end
+	MsgN ""
+
+	if (sent_in.Send) then
+		sent_in.Send(from, content)
+	else
+		for _, ply in pairs(player.GetAll()) do
+			local canSee = hook.Run("PlayerCanSeePlayersChat", texts, teamchat, ply, from)
+			if canSee then
+				pluto.inv.message(ply)
+					:write("chatmessage", content, "Server", teamchat)
+				:send()
+			end
 		end
 	end
 

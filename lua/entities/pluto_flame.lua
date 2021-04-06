@@ -31,7 +31,7 @@ function ENT:Tick()
 
 	local damages = self.Damages[1]
 
-	if (not damages or not p:Alive()) then
+	if (not IsValid(p) or not damages or not p:Alive()) then
 		self:Remove()
 		return
 	end

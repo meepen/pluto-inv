@@ -99,34 +99,9 @@ for _, cmd in ipairs(pluto.chat.cl_commands) do
 	end
 end
 
-cvars.AddChangeCallback(pluto_chatbox_x:GetName(), reposition, pluto_chatbox_x:GetName())
-cvars.AddChangeCallback(pluto_chatbox_y:GetName(), reposition, pluto_chatbox_y:GetName())
-
-hook.Add("HUDShouldDraw", "plutoHideChatBox", function(name) 
-	if (name == "CHudChat") then
-		return false
-	end 
-end)
-
-hook.Add("PlayerBindPress", "plutoChatBind", function(ply, bind, pressed)
-	if (bind == "messagemode") then
-		pluto.chat.Open()
-	elseif (bind == "messagemode2") then
-		pluto.chat.Open(true)
-	else
-		return
-	end
-
-	return true
-end)
-
-local closed_alpha = 0.75 * 255
-local opened_alpha = 0.75 * 255
-
 local chatAddText = chat.AddText
-
 function chat.AddText(...)
-	pluto.chat.Add({...}, "Server")
+	hook.Run("PlutoChatMessageReceived", "Server", {...}, false)
 end
 
 function pluto.inv.readchatmessage()
@@ -158,636 +133,349 @@ function pluto.inv.readchatmessage()
 		table.insert(content, data)
 	end
 
-	pluto.chat.Add(content, channel, teamchat)
+	hook.Run("PlutoChatMessageReceived", channel, content, teamchat)
 end
 
 function pluto.inv.writechat(teamchat, data)
 	net.WriteBool(teamchat)
-	for i = #data, 1, -1 do
-		if (type(data[i]) ~= "string") then
-			table.remove(data, i)
-		end
-	end
 
 	net.WriteString(table.concat(data, " "))
-end
-
-function pluto.chat.Add(content, channel, teamchat)
-	local data = pluto.chat.channels.byname[channel]
-	if (not data) then
-		return
-	end
-	if (data.Relay) then
-		for _, channel in pairs(data.Relay) do
-			pluto.chat.Add(table.Copy(content), channel, teamchat)
-		end
-	end
-	local from
-	pluto.chat.Box:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
-	pluto.chat.Box:DefaultFade(pluto.chat.Box.Tabs.active.name)
-
-	if (type(content[1]) ~= "string" and IsValid(content[1]) and content[1]:IsPlayer()) then
-		from = table.remove(content, 1)
-		if (channel == "Server") then 
-			if (not from:Alive()) then
-				pluto.chat.Box:Color(channel, 255, 0, 0, 255)
-				pluto.chat.Box:Text(channel, "*DEAD* ")
-			elseif (teamchat) then
-				pluto.chat.Box:Color(channel, from:GetRoleData().Color)
-				pluto.chat.Box:Text(channel, "(TEAM) ")
-			end
-		end
-
-		local col = ttt.teams.innocent.Color
-		pluto.chat.Box:Color(channel, col.r, col.g, col.b, 255)
-
-		pluto.chat.Box:Text(channel, from:Nick())
-		pluto.chat.Box:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
-		pluto.chat.Box:Text(channel, ": ")
-	end
-
-
-	for k,v in pairs(content) do
-		if (IsColor(v)) then
-			pluto.chat.Box:Color(channel, v)
-		elseif (type(v) == "string") then
-			pluto.chat.Box:Text(channel, v)
-		elseif (IsValid(v) and v:IsPlayer()) then
-			local col = ttt.teams.innocent.Color
-			pluto.chat.Box:Color(channel, col.r, col.g, col.b, 255)
-			pluto.chat.Box:Text(channel, v:Nick())
-			pluto.chat.Box:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
-			--pluto.chat.Box:Text(channel, ": ")
-		else
-			if (v.Type == "emoji") then
-				pluto.chat.Box.Tabs.table[channel]:AddImageFromURL(v.URL, v.Size.x, v.Size.y)
-			elseif (v.Type ~= nil) then
-				pluto.chat.Box:Item(channel, v)
-			elseif (v.InternalName ~= nil) then
-				pluto.chat.Box:Cur(channel, v)
-			end
-		end
-	end
-
-	pluto.chat.Box:Newline(channel)
-end
-
-function pluto.chat.Open(teamchat)
-	if (pluto.chat.isOpened) then return end
-
-	pluto.chat.isOpened = true
-	pluto.chat.teamchat = teamchat or false
-
-	pluto.chat.Box:SetAlpha(opened_alpha)
-	pluto.chat.Box:ResetFade(true)
-
-	if (not teamchat) then
-		pluto.inv.message()
-			:write("chatopen", true)
-			:send()
-	end
-
-	pluto.chat.Box:MakePopup()
-	pluto.chat.Box.Chatbox.TextEntry:RequestFocus()
-end
-
-function pluto.chat.Close()
-	pluto.chat.isOpened = false
-
-	pluto.chat.Box:SetAlpha(closed_alpha * pluto_chat_closed_alpha:GetFloat())
-	pluto.chat.Box:ResetFade(false)
-	pluto.chat.Box:ScrollToBottom()
-	pluto.chat.Box:SignalClose()
-	timer.Remove "AlphaSetChatbox"
-
-	if (not pluto.chat.teamchat) then
-		pluto.inv.message()
-			:write("chatopen", false)
-			:send()
-	end
-
-	pluto.chat.teamchat = false
-
-	pluto.chat.Box:SetMouseInputEnabled(false)
-	pluto.chat.Box:SetKeyboardInputEnabled(false)
 end
 
 function pluto.inv.writechatopen(b)
 	net.WriteBool(b)
 end
 
-local PANEL = {}
-DEFINE_BASECLASS "ttt_curved_button"
 
-function PANEL:Init()
-	self:SetTall(25)
-	self:SetText("")
-	self:SetColor(ColorAlpha(main_color, 200))
-	self:DockMargin(5, 5, 5, 5)
-	self:SetCurve(4)
-end
-
-function PANEL:SetImage(icon)
-	if (IsValid(self.Icon)) then
-		self.Icon:Remove()
-	end
-	self.Icon = self:Add "DImage"
-	self.Icon:Dock(FILL)
-	self.Icon:DockMargin(4, 4, 4, 4)
-	self.Icon:SetImage(icon)
-end
-
-vgui.Register("pluto_chatbox_button", PANEL, "ttt_curved_button")
-
-local PANEL = {}
-
-function PANEL:Init()
-	self.Tabs = {}
-	self.CurPos = 0
-end
-
-function PANEL:SetTab(name)
-	self:Select(self.Tabs[name])
-end
-
-local function PerformLayoutHack(self, w, h)
-	if (self.OldPerformLayout) then
-		self:OldPerformLayout(w, h)
-	end
-
-	if (IsValid(self.Before)) then
-		self.Position = self.Before.Position + self.Before:GetWide() + 4
-	else
-		self.Position = 0
-	end
-
-	self:GetParent():Recalculate(self)
-end
-
-function PANEL:Recalculate(tab)
-	tab:SetPos(tab.Position - self.CurPos, 0)
-	if (IsValid(tab.Next)) then
-		tab.Next.Position = tab.Position + tab:GetWide() + 4
-		return self:Recalculate(tab.Next)
-	end
-end
-
-function PANEL:Select(tab)
-	if (self.Current == tab) then
-		return
-	end
-
-	if (IsValid(self.Current)) then
-		self.Current.Selected = false
-		self.Current:Unselect()
-	end
-
-	self.Current = tab
-	if (tab.Position < self.CurPos) then
-		self.CurPos = tab.Position
-		self:Recalculate(tab)
-	end
-
-	if (tab.Position + tab:GetWide() > self.CurPos + self:GetWide()) then
-		self.CurPos = self.CurPos + tab.Position + tab:GetWide() - (self.CurPos + self:GetWide())
-		if (self.CurPos > tab.Position) then
-			self.CurPos = tab.Position
-		end
-		self:Recalculate(self.Next)
-	end
-
-	self:DoSelect(tab)
-	tab.Selected = true
-	if (tab.OnSelect) then
-		tab:OnSelect()
-	end
-end
-
-function PANEL:DoSelect(tab)
-end
-
-function PANEL:PerformLayout(w, h)
-	for _, tab in pairs(self.Tabs) do
-		tab:SetTall(h)
-	end
-
-	if (IsValid(self.Current)) then
-		self:Select(self.Current)
-	end
-end
-
-function PANEL:OnMouseWheeled(delta)
-	local totalwide = self.Last.Position + self.Last:GetWide() - self:GetWide()
-	if (totalwide < 0) then
-		return
-	end
-
-	self.CurPos = math.Clamp(self.CurPos - delta * 30, 0, totalwide)
-
-	self:Recalculate(self.Next)
-end
-
-vgui.Register("ttt_chat_tabs", PANEL, "EditablePanel")
-
-local PANEL = {}
-DEFINE_BASECLASS "ttt_curved_panel"
-
-function PANEL:Init()
-	self:SetCurve(8)
-	self.Inner = self:Add "ttt_curved_panel"
-	self.Inner:SetCurve(8)
-	self.Inner:Dock(FILL)
-	self.Inner:SetColor(Color(255,0,0))
-	self.Inner:SetCurveTopLeft(false)
-	self:SetCurveTopLeft(false)
-	self.Inner:SetCurveTopRight(false)
-	self:SetCurveTopRight(false)
-
-	self.Chat = self.Inner:Add("EditablePanel")
-	--self.Chat = vgui.Create("EditablePanel")
-	self.Chat:DockMargin(10, 10, 10, 10)
-	self.Chat:Dock(FILL)
-
-	self.Text = self.Chat:Add "EditablePanel"
-	self.Text:Dock(FILL)
-
-	self.TextEntry = self.Chat:Add "DTextEntry"
-	self.TextEntry:SetTall(25)
-	self.TextEntry:Dock(BOTTOM)
-	function self.TextEntry:OnMousePressed(m)
-		self:SetKeyboardInputEnabled(true)
-		pluto.chat.Box:SetKeyboardInputEnabled(true)
-	end
-	self.TextEntry:DockMargin(0, 5, 0, 0)
-
-	self.TextEntry:SetFont "pluto_chat_font"
-	self.TextEntry:SetEnterAllowed(false)
-
-	function self.TextEntry:Think()
-		if (pluto.chat.isOpened and not self:HasFocus()) then
-			if (not IsValid(vgui.GetKeyboardFocus()) or vgui.GetKeyboardFocus():GetClassName() ~= "pluto_text") then
-				self:RequestFocus()
-			end
-		end
-	end
-
-	function self.TextEntry:OnValueChange(val)
-		for _, channel in ipairs(pluto.chat.channels) do
-			if (val:StartWith(channel.Prefix)) then
-				pluto.chat.Box:SelectTab(channel.Name)
-			end
-		end
-	end
-
-	self.TextEntry:SetUpdateOnType(true)
-
-	function self.TextEntry:OnKeyCode(code)
-		if (code == KEY_ESCAPE) then
-			self:SetText("")
-			gui.HideGameUI()
-			pluto.chat.Close()
-		elseif (code == KEY_TAB) then
-			local text = string.Explode(" ", self:GetText():Trim())
-
-			if (not text or #text == 0 or (#text == 1 and text[1][1] == "!" or text[1][1] == "/")) then
-				return
-			end
-
-			local complete = text[#text]
-
-			if (select(1, string.find(complete, "\"")) == 1) then
-				complete = string.sub(complete, 2)
-			end
-
-			for _, ply in ipairs(player.GetAll()) do
-				if (not IsValid(ply) or not ply:Nick():lower():StartWith(complete:lower())) then
-					continue 
-				end
-
-				complete = ply:Nick()
-
-				if (text[1][1] == "!" or text[1][1] == "/") then
-					complete = "\"" .. complete .. "\""
-				end
-
-				break
-			end
-
-			text[#text] = complete
-
-			self:SetText(table.concat(text, " "))
-		elseif (code == KEY_ENTER) then
-			local text = self:GetText():Trim()
-
-			self:SetText ""
-			if (text ~= "") then
-				if (text:StartWith "!" or text:StartWith "/") then
-					local curcmd = text:sub(2)
-					local cmd = pluto.chat.cl_commands.byname[curcmd]
-					if (not cmd) then
-						cmd = hook.Run("PlutoGetChatCommand", curcmd)
-					end
-					if (cmd) then
-						if (not isbool(cmd)) then
-							cmd.Run(pluto.chat.Box.Tabs.active.name)
-						end
-						pluto.chat.Close()
-						return
-					end
-				end
-				local selected = false
-				for prefix, tab in pairs(pluto.chat.Box.Tabs.prefixes) do
-					if (text:StartWith(prefix)) then
-						pluto.chat.Box:SelectTab(tab)
-						selected = true
-					end
-				end
-
-				if (not selected) then
-					text = pluto.chat.Box.Tabs.active.prefix .. text
-				end
-
-				pluto.inv.message()
-					:write("chat", pluto.chat.teamchat, {text})
-				:send()
-			end
-			pluto.chat.Close()
-		end
-	end
-
-	self.Buttons = self.Inner:Add("EditablePanel")
-	self.Buttons:SetWide(35)
-	self.Buttons:DockMargin(0, 5, 0, 5)
-	self.Buttons:Dock(RIGHT)
-
-	self.Buttons.Mover = self.Buttons:Add "pluto_chatbox_button"
-	self.Buttons.Mover:SetCursor "sizeall"
-	self.Buttons.Mover:SetImage "icon16/arrow_out.png"
-	self.Buttons.Mover:Dock(TOP)
-
-	function self.Buttons.Mover:OnMousePressed(code)
-		if (code ~= MOUSE_LEFT) then
-			return
-		end
-
-		local cur = pluto.chat.Box
-		local basex, basey = gui.MousePos()
-		local ox, oy = pluto_chatbox_x:GetFloat(), pluto_chatbox_y:GetFloat()
-		hook.Add("Think", "pluto_chatbox", function()
-			if (not IsValid(cur) or pluto.chat.Box ~= cur or not input.IsMouseDown(MOUSE_LEFT)) then
-				hook.Remove("Think", "pluto_chatbox")
-				return
-			end
-
-			local curx, cury = gui.MousePos()
-
-			pluto_chatbox_x:SetFloat(ox + (curx - basex) / ScrW())
-			pluto_chatbox_y:SetFloat(oy + (basey - cury) / ScrH())
-		end)
-	end
-
-	self.Buttons.Inventory = self.Buttons:Add "pluto_chatbox_button"
-	self.Buttons.Inventory:Dock(TOP)
-	self.Buttons.Inventory:SetImage("icon16/controller.png")
-
-	function self.Buttons.Inventory:DoClick()
-		pluto.ui.toggle()
-	end
-
-	local pad = self.Inner:GetCurve() / 2
-	self.Inner:DockPadding(pad, 0, pad, pad)
-
-	
-	self.Buttons.Links = self.Buttons:Add "pluto_chatbox_button"
-	self.Buttons.Links:Dock(TOP)
-	self.Buttons.Links:SetImage("icon16/world_link.png")
-	local links = {
-		{
-			Name = "Discord",
-			URL = "https://discord.gg/pluto",
-			Icon = "icon16/email.png"
-		},
-		{
-			Name = "Website",
-			URL = "https://pluto.gg",
-			Icon = "icon16/world.png"
-		},
-		{
-			Name = "Wiki",
-			URL = "https://pluto.fandom.com/wiki/Pluto.gg_Wiki",
-			Icon = "icon16/newspaper.png"
-		},
-	}
-	function self.Buttons.Links:DoClick()
-		local mn = DermaMenu()
-		for _, link in ipairs(links) do
-			mn:AddOption(link.Name, function() gui.OpenURL(link.URL) end):SetImage(link.Icon)
-		end
-		mn:Open()
-	end
-end
-
-function PANEL:SetAlpha(a)
-	self.Inner:SetColor(ColorAlpha(main_color, a))
-	self:SetColor(ColorAlpha(solid_color, a))
-	self.TextEntry:SetAlpha(a)
-	self.Buttons:SetAlpha(a)
-end
-
-vgui.Register("pluto_chatbox_inner", PANEL, "ttt_curved_panel_outline")
+local _chat = pluto.newchat or {}
+pluto.newchat = _chat
 
 local PANEL = {}
 
 function PANEL:Init()
 	self:SetSize(math.max(450, ScrW()/4),math.max(300, ScrH()/4))
-	pluto.chat.Box = self
-	reposition()
+	self:SetPos(0, 0)
+	self:MakePopup()
 
-	self.Tabs = self:Add "EditablePanel"
-	self.Tabs:Dock(TOP)
-	self.Tabs:SetTall(50)
+	self.Input = self.EmptyContainerContainer:Add "pluto_inventory_textentry"
+	self.Input:SetFont "pluto_chat_font"
+	self.Input:Dock(BOTTOM)
+	function self.Input:OnKeyCode(key)
+		if (key == KEY_UP) then
+			self:SetText(self.LastMessage or "")
+			self:SetCaretPos(#self:GetText())
+			return true
+		elseif (key == KEY_TAB) then
+			local pos = self:GetCaretPos()
+			local text = self:GetText()
+			local last_space = text:sub(1, pos):match("[^ ]+$")
+			if (last_space) then
+				for _, ply in pairs(player.GetAll()) do
+					local nick = ply:Nick()
+					if (nick:lower():StartWith(last_space:lower())) then
+						self:SetText(text:sub(1, pos - last_space:len()) .. nick .. text:sub(pos + 1))
+						self:SetCaretPos(pos - last_space:len() + nick:len())
+					end
+				end
+			end
 
-	self.Tabs.table = {}
-	self.Tabs.prefixes = {}
-	
-	self.Chatbox = self:Add "pluto_chatbox_inner"
-	self.Chatbox:Dock(FILL)
+			return true
+		end
+	end
+	function self.Input.OnEnter(_, text)
+		self:OnInput(text)
+	end
+	function self.Input.OnChange(s)
+		local t = s:GetText()
+		for _, channel in ipairs(pluto.chat.channels) do
+			if (t:StartWith(channel.Prefix)) then
+				s:SetText(t:sub(channel.Prefix:len() + 1))
+				self:ChangeToTab(channel.Name)
+			end
+		end
+	end
+	self.Input:DockMargin(0, 4, 0, 0)
 
-	local first = true
+	self.Emojis = self.Input:Add "DImage"
+	self.Emojis:SetCursor "hand"
+	self.Emojis:Dock(RIGHT)
+	self.Emojis:SetMouseInputEnabled(true)
+	self.Emojis:DockMargin(4, 2, 4, 2)
+	self.Emojis:SetImage "icon16/cross.png"
+	function self.Emojis:PerformLayout(w, h)
+		self:SetWide(h)
+	end
+
+	self.ChatLabel = self.Input:Add "pluto_label"
+	self.ChatLabel:Dock(LEFT)
+	self.ChatLabel:DockMargin(4, 2, 4, 2)
+	self.ChatLabel:SetFont "pluto_chat_font_s"
+	self.ChatLabel:SetContentAlignment(5)
+	self.ChatLabel:SetTextColor(Color(255, 255, 255))
+	self.ChatLabel:SetText "ALL"
+	self.ChatLabel:SizeToContentsX()
+
+	self.TextHistories = {}
+
 	for _, channel in ipairs(pluto.chat.channels) do
-		self:AddTab(channel.Name, channel.Prefix)
+		self:AddTab(channel.Name, function(p)
+			local text = p:Add "pluto_text"
+			text:Dock(FILL)
+			text:SetDefaultRenderSystem "shadow"
+			text:SetDefaultFont "pluto_chat_font"
+			text:SetDefaultTextColor(Color(255, 255, 255))
+			text.Channel = channel
+			self.TextHistories[channel.Name] = text
+		end, true)
+		self:ChangeToTab(channel.Name) -- cache it NOW or else
 	end
+	self:ChangeToTab(pluto.chat.channels[1].Name)
 
-	self:SelectTab(pluto.chat.channels[1].Name)
+	hook.Add("PlayerBindPress", self, function(self, ply, bind, pressed)
+		if (bind == "messagemode") then
+			self:OpenForInput()
+			return true
+		elseif (bind == "messagemode2") then
+			self:OpenForInput(true)
+			return true
+		end
+	end)
 
-	self:SetAlpha(closed_alpha * pluto_chat_closed_alpha:GetFloat())
+	hook.Add("HUDShouldDraw", self, function(self, name) 
+		if (name == "CHudChat") then
+			return false
+		end
+	end)
 
-	self.Showcase = nil
+	hook.Add("PlutoChatMessageReceived", self, self.PlutoChatMessageReceived)
+
+	self.PlayerColor = ttt.roles.Innocent.Color
+	self.ChatLinkColor = Color(128, 128, 200)
+	self.DeadColor = Color(200, 20, 60)
+	local x, y = pluto_chatbox_x:GetFloat(), pluto_chatbox_y:GetFloat()
+	self:SetPos(ScrW() * x, ScrH() * (1 - y))
+	self:OnPositionUpdated()
+
+	self:EnableInput(false)
 end
 
-function PANEL:SetAlpha(a)
-	self.Tabs:SetAlpha(a)
-	self.Chatbox:SetAlpha(a)
-	self.Tabs.active.Scrollbar:SetAlpha(a)
-end
-
-function PANEL:AddTab(name, prefix)
-	local chat = self.Chatbox.Text:Add "pluto_text"
-	chat:SetDefaultFont "pluto_chat_font"
-	chat:SetDefaultRenderSystem "shadow"
-	chat:SetDefaultTextColor(white_text)
-	chat:Hide()
-	chat:Dock(FILL)
+function PANEL:OnPositionUpdated()
+	local x, y = self:GetPos()
 	
-	chat.name = name
-	chat.prefix = prefix
+	x = math.Clamp(x, 0, ScrW() - self:GetWide())
+	y = math.Clamp(y, 0, ScrH() - self:GetTall())
 
-	local tab = self.Tabs:Add "tttrw_base_tab"
-	tab.name = name
-	tab:SetText(name)
-	tab:Dock(LEFT)
+	pluto_chatbox_x:SetFloat(x / ScrW())
+	pluto_chatbox_y:SetFloat((ScrH() - y) / ScrH())
 
-	function tab:DoClick()
-		pluto.chat.Box:SelectTab(self.name)
-	end
+	self:SetPos(x, y)
+end
 
-	function chat:PerformLayout()
-		self:SetFontInternal "pluto_chat_font"
-		self:SetUnderlineFont "pluto_chat_font_clickable"
-	end
-
-	function chat:ActionSignal(name, value)
-		if (name == "TextClicked") then
-			local x = util.JSONToTable(value)
-			local thing
-
-			if (x.type == "item") then
-				thing = pluto.received.item[x.val]
-			elseif (x.type == "currency") then
-				thing = pluto.currency.byname[x.val]
-			end
-
-			local x,y = input.GetCursorPos()
-			if (IsValid(pluto.chat.Box.Showcase)) then
-				pluto.chat.Box.Showcase:Remove()
-			end
-
-			pluto.chat.Box.Showcase = pluto.ui.showcase(thing)
-			pluto.chat.Box.Showcase:MakePopup()
-			pluto.chat.Box.Showcase:SetPos(x,y-pluto.chat.Box.Showcase:GetTall() - 20)
-			local i = 0
-			function pluto.chat.Box.Showcase:OnFocusChanged(gained)
-				if (not gained) then
-					pluto.chat.Box.Showcase:Remove()
+function PANEL:PlutoChatMessageReceived(channel, content, teamonly)
+	local text = self.TextHistories[channel]
+	if (IsValid(text)) then
+		self:AddTextLine(text, content, teamonly)
+		local channel = pluto.chat.channels.byname[channel]
+		if (channel and channel.Relay) then
+			for _, relay in pairs(channel.Relay) do
+				text = self.TextHistories[relay]
+				if (IsValid(text)) then
+					self:AddTextLine(text, content, teamonly)
 				end
 			end
 		end
 	end
-
-	self.Tabs.table[name] = chat
-	self.Tabs.prefixes[prefix] = name
-
-	self:DefaultFade(name)
-	chat:AppendText("Channel: " .. name .. "\n")
 end
 
-function PANEL:SelectTab(name)
-	if (self.Tabs.active ~= nil) then
-		if (self.Tabs.active.name == name) then return end
-		
-		self.Tabs.active:Hide()
+function PANEL:AddToText(text, what, index)
+	local found = false
+	if (IsColor(what) or what == nil) then
+		text:SetCurrentTextColor(what)
+		found = true
+	elseif (IsEntity(what) and what:IsPlayer()) then
+		local old = text:GetCurrentTextColor()
+
+		if (not what:Alive() and (not LocalPlayer():Alive() or ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE)) then
+			text:SetCurrentTextColor(self.DeadColor)
+			self:AddToText(text, "*DEAD* ")
+		end
+
+		text:SetCurrentTextColor(self.PlayerColor)
+		self:AddToText(text, what:Nick(), index)
+		text:SetCurrentTextColor(old)
+
+		if (index == 1) then
+			self:AddToText(text, ": ", index)
+		end
+		found = true
+	elseif (istable(what)) then
+		local old = text:SetCurrentTextColor()
+		if (pluto.isitem(what)) then
+			found = true
+			text:InsertShowcaseItem(what)
+		elseif (what.Type == "emoji") then
+			found = true
+			text:AddImageFromURL(what.URL, what.Size.x, what.Size.y)
+		elseif (what.Type == "Currency") then
+			found = true
+			text:InsertShowcaseItem(what)
+		end
+		if (found) then
+			text:SetCurrentTextColor(old)
+		end
 	end
 
-	self.Tabs.table[name]:Show()
-	self.Tabs.active = self.Tabs.table[name]
-
-	self.Chatbox.Text:InvalidateLayout()
-	pluto.chat.Box:ResetFade(false)
+	if (not found) then
+		local function append(t)
+			MsgC(text:GetCurrentTextColor(), t)
+			text:AppendText(t)
+		end
+		local t = tostring(what)
+		local last = 1
+		for before, url, after in t:gmatch "()(https?://[a-zA-Z0-9%.]+/?%S+)()" do
+			if (last ~= before) then
+				append(t:sub(last, before - 1))
+			end
+			text:InsertClickableTextStart(function()
+				self:OnLinkClicked(url)
+			end)
+			local col = text:GetCurrentTextColor()
+			text:SetCurrentTextColor(self.ChatLinkColor)
+			append(url)
+			text:SetCurrentTextColor(col)
+			text:InsertClickableTextEnd()
+			last = after
+		end
+		if (last <= t:len()) then
+			append(t:sub(last))
+		end
+	end
 end
 
-function PANEL:Text(channel, text)
-	MsgC(self.Tabs.table[channel]:GetCurrentTextColor(), text)
-	self:DefaultFade(channel)
-	self.Tabs.table[channel]:AppendText(text)
+function PANEL:OnLinkClicked(url)
 end
 
-function PANEL:Color(channel, col, g, b, a)
-	local r
-	if (IsColor(col)) then
-		r = col.r
-		g = col.g
-		b = col.b
-		a = col.a
+function PANEL:AddTextLine(text, content, teamonly)
+	self:InsertFade(text)
+	text:SetCurrentTextColor()
+	if (teamonly) then
+		self:AddToText(text, LocalPlayer():GetRoleData().Color)
+		self:AddToText(text, "[TEAM] ")
+		self:AddToText(text)
+	end
+	for i, what in ipairs(content) do
+		self:AddToText(text, what, i)
+	end
+	self:AddToText(text, "\n", i)
+end
+
+function PANEL:EnableInput(on)
+	self:SetKeyboardInputEnabled(on)
+	self:SetMouseInputEnabled(on)
+	self.TabContainer:SetVisible(on)
+	self.BorderContainer:SetVisible(on)
+	self.Input:SetAlpha(on and 255 or 1)
+
+	local text = self.TextHistories[self.ActiveTab]
+	if (IsValid(text)) then
+		if (IsValid(text.Scrollbar)) then
+			text.Scrollbar:SetAlpha(on and 255 or 0)
+		end
+
+		if (not on) then
+			text:SignalClose()
+		end
+	end
+
+	if (on) then
+		self.Input:Focus()
+		self.Container:SetColor(ColorAlpha(self.Container:GetColor(), 255))
+		self.Main:SetColor(ColorAlpha(self.Main:GetColor(), 255))
+
+		if (IsValid(text)) then
+			text:ResetAllFades(true, false, -1 or pluto_chat_fade_sustain:GetFloat())
+		end
 	else
-		r = col
-	end
-
-	self.Tabs.table[channel]:InsertColorChange(r, g, b, a)
-end
-
-function PANEL:Item(channel, item)
-	local box = self.Tabs.table[channel]
-	self:Color(channel, item:GetColor())
-	self:InsertShowcaseItem(channel, item)
-	self:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
-end
-
-function PANEL:Cur(channel, cur)
-	local box = self.Tabs.table[channel]
-
-	if not cur then return end
-
-	self:InsertShowcaseItem(channel, cur)
-	self:Color(channel, white_text.r, white_text.g, white_text.b, white_text.a)
-	self:DefaultFade(channel)
-end
-
-function PANEL:DefaultFade(channel)
-	self.Tabs.table[channel]:InsertFade(pluto.chat.isOpened and -1 or pluto_chat_fade_enable:GetBool() and pluto_chat_fade_sustain:GetFloat() or -1, pluto_chat_fade_length:GetFloat())
-end
-
-function PANEL:Newline(channel)
-	self:DefaultFade(channel)
-	self.Tabs.table[channel]:AppendText("\n")
-	if (not pluto.chat.isOpened) then
-		self:ScrollToBottom()
-	end
-	MsgN ""
-end
-
-function PANEL:InsertShowcaseItem(channel, item)
-	self:DefaultFade(channel)
-	self.Tabs.table[channel]:InsertShowcaseItem(item)
-	MsgC(item:GetColor(), item:GetPrintName())
-end
-
-function PANEL:ResetFade(enable)
-	if (self.Tabs.active ~= nil) then
-		self.Tabs.active:ResetAllFades(enable, false, enable and -1 or pluto_chat_fade_sustain:GetFloat())
+		self:SetTeamChat(false)
+		self.Input:SetText ""
+		self.Container:SetColor(ColorAlpha(self.Container:GetColor(), 0))
+		self.Main:SetColor(ColorAlpha(self.Main:GetColor(), 0))
+		
+		if (IsValid(text)) then
+			text:ResetAllFades(false, false, pluto_chat_fade_sustain:GetFloat())
+		end
 	end
 end
 
-function PANEL:ScrollToBottom()
-	self.Tabs.active:ScrollToBottom()
+function PANEL:SetTeamChat(teamchat)
+	self.TeamChat = teamchat
+	self.ChatLabel:SetText(teamchat and "TEAM" or "ALL")
+	self.ChatLabel:SizeToContentsX()
 end
 
-function PANEL:SignalClose()
-	self.Tabs.active:SignalClose()
+function PANEL:GetTeamChat()
+	return self.TeamChat
 end
 
-vgui.Register("pluto_chatbox", PANEL, "EditablePanel")
+function PANEL:OpenForInput(teamchat)
+	self:SetTeamChat(teamchat)
+	self:EnableInput(true)
+end
 
-if (IsValid(pluto.chat.Box)) then
-	if (IsValid(pluto.chat.Box.Showcase)) then
-		pluto.chat.Box.Showcase:Remove()
+function PANEL:DoClose(menu)
+	local r
+	if (menu) then
+		r = self:IsMouseInputEnabled()
 	end
-	pluto.chat:Close()
-	pluto.chat.Box:Remove()
-	pluto.chat.Box = vgui.Create "pluto_chatbox"
-	pluto.chat.Box:ScrollToBottom()
+	self:EnableInput(false)
+	return r
 end
 
-hook.Add("Initialize", "init_chatbox", function()
-	pluto.chat.Box = vgui.Create "pluto_chatbox"
-	pluto.chat.Box:ScrollToBottom()
+function PANEL:InsertFade(text)
+	text:InsertFade(self:IsMouseInputEnabled() and -1 or pluto_chat_fade_enable:GetBool() and pluto_chat_fade_sustain:GetFloat() or -1, pluto_chat_fade_length:GetFloat())
+end
+
+function PANEL:OnInput(text)
+	if (text:StartWith "!" or text:StartWith "/") then
+		local found
+		for cmd, data in pairs(pluto.chat.cl_commands.byname) do
+			if (text:sub(2):StartWith(cmd)) then
+				found = data
+				break
+			end
+		end
+		if (not found) then
+			found = hook.Run("PlutoGetChatCommand", text:sub(2))
+		end
+
+		if (found) then
+			if (istable(found)) then
+				found.Run(self.ActiveTab)
+			end
+		end
+	elseif (text ~= "") then
+		self.Input.LastMessage = text
+		pluto.inv.message()
+			:write("chat", self:GetTeamChat(), {pluto.chat.channels.byname[self.ActiveTab].Prefix .. text})
+			:send()
+	end
+	self.Input:SetText ""
+	self:EnableInput(false)
+end
+
+vgui.Register("pluto_chatbox_new", PANEL, "pluto_window")
+
+local function init_chat()
+	if (IsValid(_chat.panel)) then
+		_chat.panel:Remove()
+	end
+
+	_chat.panel = vgui.Create "pluto_chatbox_new"
+end
+
+hook.Add("HUDPaint", "pluto_chat_init", function()
+	init_chat()
+	hook.Remove("HUDPaint", "pluto_chat_init")
 end)
+
+hook.Add("OnScreenSizeChanged", "pluto_chat_init", init_chat)

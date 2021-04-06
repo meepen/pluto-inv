@@ -18,11 +18,14 @@ pluto.chat.channels = {
 		Prefix = "@",
 		Relay = {
 			"Server",
-		}
+		},
 	},
 	{
 		Name = "Cross",
 		Prefix = "#",
+		Send = function(from, data)
+			hook.Run("DoPlutoCrossChat", from, data)
+		end,
 	},
 	byname = {}
 }

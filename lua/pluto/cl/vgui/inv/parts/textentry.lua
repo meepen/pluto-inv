@@ -9,6 +9,10 @@ function PANEL:Init()
 	self.Entry:SetMouseInputEnabled(true)
 	self.Entry:SetTextColor(pluto.ui.theme "TextActive")
 
+	self.Entry.OnEnter = function(s, val)
+		self:OnEnter(val)
+	end
+
 	function self.Entry.OnChange()
 		self:OnChange()
 	end
@@ -20,8 +24,17 @@ function PANEL:Init()
 			oldpress(s, m)
 		end
 
-		if (self:IsChildOfInventory()) then
-			pluto.ui.SetKeyboardFocus(s, true)
+		pluto.ui.SetKeyboardFocus(s, true)
+	end
+
+	local old = self.Entry.OnKeyCodeTyped
+	function self.Entry.OnKeyCodeTyped(s, key)
+		local r = self:OnKeyCode(key)
+		if (r ~= nil) then
+			return r
+		end
+		if (old) then
+			return old(s, key)
 		end
 	end
 
@@ -49,6 +62,16 @@ function PANEL:Init()
 	self:SetCurve(2)
 end
 
+function PANEL:GetCaretPos()
+	return self.Entry:GetCaretPos()
+end
+function PANEL:SetCaretPos(c)
+	return self.Entry:SetCaretPos(c)
+end
+
+function PANEL:OnKeyCode(key)
+end
+
 function PANEL:IsParentOf(p)
 	while (IsValid(p)) do
 		if (p == self) then
@@ -61,24 +84,15 @@ function PANEL:IsParentOf(p)
 	return p and p == self
 end
 
+function PANEL:Focus()
+	self.Entry:RequestFocus()
+end
+
 function PANEL:GetAutoComplete(t)
 end
 
 function PANEL:OpenAutoComplete(...)
 	self.Entry:OpenAutoComplete(...)
-end
-
-function PANEL:IsChildOfInventory()
-	local p = self
-	while (IsValid(p)) do
-		if (p == pluto.ui.pnl) then
-			break
-		end
-
-		p = p:GetParent()
-	end
-
-	return p == pluto.ui.pnl and p
 end
 
 function PANEL:SetText(t)
@@ -90,6 +104,13 @@ end
 
 function PANEL:GetText()
 	return self.Entry:GetText()
+end
+
+function PANEL:OnEnter(text)
+end
+
+function PANEL:SetFont(font)
+	self.Entry:SetFont(font)
 end
 
 vgui.Register("pluto_inventory_textentry", PANEL, "ttt_curved_panel_outline")

@@ -536,6 +536,11 @@ end
 pluto.currency_mt = pluto.currency_mt or {}
 local CUR = pluto.currency_mt.__index or {}
 pluto.currency_mt.__index = CUR
+function pluto.currency_mt:__tostring()
+	return self:GetPrintName()
+end
+
+CUR.Type = "Currency"
 
 function CUR:GetMaterial()
 	if (not self.Material) then

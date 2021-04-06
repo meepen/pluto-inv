@@ -27,6 +27,11 @@ function PANEL:Init()
 	self.TabContainer = self.Main:Add "EditablePanel"
 	self.TabContainer:Dock(TOP)
 	self.TabContainer:SetTall(self.TopSize)
+	function self.TabContainer.OnMousePressed(s, m)
+		if (m == MOUSE_LEFT) then
+			self.MovingFrom = {self:ScreenToLocal(gui.MousePos())}
+		end
+	end
 
 	self.CloseButton = self.TabContainer:Add "pluto_label"
 	self.CloseButton:Dock(RIGHT)
@@ -38,12 +43,17 @@ function PANEL:Init()
 	self.CloseButton:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.CloseButton:SetCursor "hand"
 	self.CloseButton:SetMouseInputEnabled(true)
-	self.CloseButton:SizeToContentsX()
-	self.CloseButton:DockMargin(0, 0, 5, 0)
+	self.CloseButton:SizeToContentsX(20)
 	self.CloseButton.AllowClickThrough = true
+	self.CloseButton.PaintUnder = function(s, w, h)
+		if (s:IsHovered()) then
+			surface.SetDrawColor(0, 0, 0, 64)
+			surface.DrawRect(0, 0, w, h)
+		end
+	end
 	function self.CloseButton.OnMousePressed(s, m)
 		if (m == MOUSE_LEFT) then
-			self:Remove()
+			self:DoClose()
 		end
 	end
 
@@ -56,8 +66,11 @@ function PANEL:Init()
 	self.Container:SetCurve(4)
 	self.Container:DockPadding(15, 9, 15, 9)
 
-	self.EmptyContainer = self.Container:Add "EditablePanel"
+	self.EmptyContainerContainer = self.Container:Add "EditablePanel"
+
+	self.EmptyContainer = self.EmptyContainerContainer:Add "EditablePanel"
 	self.EmptyContainer:SetName "pluto_empty_container"
+	self.EmptyContainer:Dock(FILL)
 
 	function self.Container.PerformLayout(s, w, h)
 		local x, y = 15, 9
@@ -67,6 +80,7 @@ function PANEL:Init()
 		for _, child in pairs(s:GetChildren()) do
 			child:SetPos(x, y)
 			child:SetSize(w, h - self.BottomSize)
+			child:InvalidateLayout(true)
 		end
 	end
 
@@ -83,6 +97,36 @@ function PANEL:Init()
 	self.ActiveTab = nil
 end
 
+function PANEL:DoClose()
+	self:Remove()
+	return true
+end
+
+function PANEL:Think()
+	if (input.IsKeyDown(KEY_ESCAPE) and gui.IsGameUIVisible()) then
+		if (self:DoClose(true)) then
+			gui.HideGameUI()
+		end
+	end
+
+	if (self.MovingFrom) then
+		if (input.IsMouseDown(MOUSE_LEFT)) then
+			local offsetx, offsety = self:ScreenToLocal(gui.MousePos())
+			offsetx = offsetx - self.MovingFrom[1]
+			offsety = offsety - self.MovingFrom[2]
+			if (offsetx ~= 0 or offsety ~= 0) then
+				local x, y = self:GetPos()
+				self:SetPos(x + offsetx, y + offsety)
+				self:OnPositionUpdated()
+			end
+		else
+			self.MovingFrom = nil
+		end
+	end
+end
+
+function PANEL:OnPositionUpdated()
+end
 
 function PANEL:ClearContainer()
 	for _, pnl in pairs(self.Container:GetChildren()) do
@@ -145,15 +189,14 @@ local gradient_up = Material "gui/gradient_up"
 function PANEL:AddTab(name, func, cache, col)
 	local lbl = self.TabContainer:Add "pluto_label"
 	local old_paint = lbl.Paint
-	function lbl.Paint(s, w, h)
+	function lbl.PaintUnder(s, w, h)
 		if (self.ActiveTab == name) then
 			surface.SetMaterial(gradient_up)
 			surface.SetDrawColor(255, 255, 255, 10)
 			surface.DrawTexturedRect(0, 0, w, h)
-		end
-
-		if (old_paint) then
-			old_paint(s, w, h)
+		elseif (s:IsHovered()) then
+			surface.SetDrawColor(0, 0, 0, 64)
+			surface.DrawRect(0, 0, w, h)
 		end
 	end
 	self.Tabs[name] = {
@@ -191,7 +234,7 @@ function PANEL:AddTab(name, func, cache, col)
 end
 
 function PANEL:OnRemove()
-	for _, pnl in pairs(self.CachedTabs) do
+	for _, pnl in pairs(self.CachedTabs or {}) do
 		if (IsValid(pnl)) then
 			pnl:Remove()
 		end
@@ -204,7 +247,7 @@ function PANEL:SetKeyboardFocus(what, b)
 	self:SetKeyboardInputEnabled(table.Count(self.KeyboardFocus) > 0)
 end
 
-vgui.Register("pluto_tabbed_frame", PANEL, "EditablePanel")
+vgui.Register("pluto_window", PANEL, "EditablePanel")
 
 if (IsValid(pluto.testingpnl)) then
 	pluto.testingpnl:Remove()

@@ -611,8 +611,13 @@ function PANEL:SetKeyboardFocus(what, b)
 end
 
 function pluto.ui.SetKeyboardFocus(what, b)
-	if (IsValid(pluto.ui.pnl)) then
-		pluto.ui.pnl:SetKeyboardFocus(what, b)
+	local p = what
+	while (IsValid(p)) do
+		if (p.SetKeyboardFocus) then
+			p:SetKeyboardFocus(what, b)
+		end
+		
+		p = p:GetParent()
 	end
 end
 

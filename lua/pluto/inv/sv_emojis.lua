@@ -4,7 +4,7 @@ pluto.emoji.unlocks = pluto.emoji.unlocks or setmetatable({}, {
 		local ret = setmetatable({}, {
 			__index = function()
 				if (pluto.cancheat(k)) then
-					--return true
+					return true
 				end
 			end
 		})

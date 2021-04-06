@@ -27,7 +27,6 @@ pluto.files.load {
 		"divine/cl_crafting_bench.lua",
 		"divine/cl_auction_house.lua",
 
-		"chat/cl_chat.lua",
 		"chat/cl_settings.lua",
 		"chat/cl_filter.lua",
 
@@ -95,6 +94,8 @@ pluto.files.load {
 		"cl/vgui/showcase/model/container.lua",
 		"cl/vgui/showcase/weapon/container.lua",
 		"cl/vgui/showcase/weapon/bar.lua",
+
+		"chat/cl_chat.lua",
 
 		"trades/cl_trade_state.lua",
 		"trades/cl_trade_networking.lua",
