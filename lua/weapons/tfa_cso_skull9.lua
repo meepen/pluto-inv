@@ -135,7 +135,7 @@ function SWEP:DoHit(hitEnt, tr, damage)
 
 			pluto.statuses.heal(own, 30, 30 / 10)
 
-			timer.Simple(5, function()
+			timer.Simple(8, function()
 				if (IsValid(own) and own:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_PREPARING) then
 					own:SetMaxHealth(own:GetMaxHealth() - 30)
 				end
