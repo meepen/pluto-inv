@@ -10,7 +10,7 @@ SWEP.Slot = 1
 
 SWEP.Primary.Sound = Sound("Dartpistol.Fire")
 
-SWEP.Primary.Delay = 60 / 90
+SWEP.Primary.Delay = 60 / 100
 SWEP.Primary.Damage = 40
 SWEP.Primary.Recoil = 1
 SWEP.Primary.RecoilTiming  = 0.2
@@ -62,7 +62,7 @@ function SWEP:Initialize()
 end
 
 function SWEP:DoPlayerDeath(ply, atk, dmg)
-	if (dmg and dmg:GetInflictor() == self and IsValid(atk)) then
+	if (dmg and dmg:GetInflictor() == self and IsValid(atk) and atk:Alive()) then
 		self.OldModel = self.OldModel or atk:GetModel()
 		self.CurrentModel = pluto.models[(math.random() > 0.5 and "fe" or "") .. "male_child"].Model
 
@@ -73,13 +73,15 @@ function SWEP:DoPlayerDeath(ply, atk, dmg)
 			net.WriteBool(true)
 		net.Send(atk)
 
+		atk:SetJumpPower(atk:GetJumpPower() + 100)
+
 		hook.Add("TTTUpdatePlayerSpeed", "pluto_dart_" .. atk:Nick(), function(ply, data)
 			if (atk == ply) then
 				data.dart = 1.5
 			end
 		end)
 
-		timer.Create("dartpistol" .. atk:Nick(), 8, 1, function()
+		timer.Create("dartpistol" .. atk:Nick(), 10, 1, function()
 			if (IsValid(atk)) then
 				atk:ChatPrint(white_text, " The power of the dart gun fades...")
 
@@ -91,6 +93,7 @@ function SWEP:DoPlayerDeath(ply, atk, dmg)
 
 				if (atk:Alive() and atk:GetModel() == self.CurrentModel) then
 					atk:SetModel(self.OldModel)
+					atk:SetJumpPower(atk:GetJumpPower() - 100)
 				end
 				
 				self.OldModel = nil
