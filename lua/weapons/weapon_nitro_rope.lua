@@ -110,7 +110,7 @@ function SWEP:Tick()
 	end
 
 	if (IsValid(self:GetOwner()) and IsValid(self.FakePlayer)) then
-		self.FakePlayer:SetPos(self:GetOwner():GetPos() + vector_up * 20)
+		self.FakePlayer:SetPos(self:GetOwner():GetPos() + vector_up * 40)
 		self.FakePlayer:SetAngles(self:GetOwner():GetAngles())
 	end
 
