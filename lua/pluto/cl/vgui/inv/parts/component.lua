@@ -60,9 +60,9 @@ vgui.Register("pluto_inventory_component_noshadow", PANEL, "EditablePanel")
 local PANEL = {}
 
 function PANEL:Init()
-	self.ComponentShadow = self:Add "ttt_curved_panel"
+	self.ComponentShadow = self:Add "ttt_curved_panel_outline"
 	self.ComponentShadow:SetColor(Color(0, 0, 0, 128))
-	self.ComponentOutline = self:Add "ttt_curved_panel"
+	self.ComponentOutline = self:Add "ttt_curved_panel_outline"
 	self.ComponentOutline:SetColor(pluto.ui.theme "InnerColorSeperator")
 	self.ComponentInner = self.ComponentOutline:Add "ttt_curved_panel"
 	self.ComponentInner:Dock(FILL)
@@ -73,8 +73,18 @@ function PANEL:Init()
 	end
 end
 
+function PANEL:SetInvisible(b)
+	self.ComponentShadow:SetVisible(not b)
+	self.ComponentOutline:SetVisible(not b)
+	self.ComponentInner:SetVisible(not b)
+end
+
+function PANEL:ChangeDockPadding(l, t, r, b)
+	self.ComponentInner:DockPadding(l, t, r, b)
+end
+
 function PANEL:ChangeDockInner(l, t, r, b)
-	self.ComponentInner:DockMargin(l, t, r, b)
+	self.ComponentOutline:DockPadding(l, t, r, b)
 	self:InvalidateChildren(true)
 end
 

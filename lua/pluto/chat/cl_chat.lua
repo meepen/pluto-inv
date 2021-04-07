@@ -210,7 +210,7 @@ function PANEL:Init()
 	self.Emojis:Dock(RIGHT)
 	self.Emojis:SetMouseInputEnabled(true)
 	self.Emojis:DockMargin(4, 2, 4, 2)
-	self.Emojis:SetImage "icon16/cross.png"
+	self.Emojis:SetImage "icon16/emoticon_evilgrin.png"
 	function self.Emojis:PerformLayout(w, h)
 		self:SetWide(h)
 	end
@@ -231,12 +231,20 @@ function PANEL:Init()
 
 	for _, channel in ipairs(pluto.chat.channels) do
 		self:AddTab(channel.Name, function(p)
-			local text = p:Add "pluto_text"
+			local container = p:Add "pluto_inventory_component"
+			container:Dock(FILL)
+			container:SetColor(Color(0, 0, 0, 0))
+			container:SetCurve(4)
+
+			
+			local text = container:Add "pluto_text"
+			text:DockMargin(4, 4, 4, 9)
 			text:Dock(FILL)
 			text:SetDefaultRenderSystem "shadow"
 			text:SetDefaultFont "pluto_chat_font"
 			text:SetDefaultTextColor(Color(255, 255, 255))
 			text.Channel = channel
+			text.Container = container
 			self.TextHistories[channel.Name] = text
 		end, true)
 		self:ChangeToTab(channel.Name) -- cache it NOW or else
@@ -305,8 +313,8 @@ function PANEL:OpenEmojis()
 	self.EmojiScroller:Dock(FILL)
 
 	local last_line
-	local function getline()
-		if (IsValid(last_line)) then
+	local function getline(forcenew)
+		if (IsValid(last_line) and not forcenew) then
 			return last_line
 		end
 
@@ -329,7 +337,26 @@ function PANEL:OpenEmojis()
 		return img
 	end
 
-	for emoji, data in pairs(pluto.emoji.byname) do
+	local done = {}
+
+	local seperator = getline(true)
+	local curve = seperator:Add "ttt_curved_panel"
+	curve:SetCurve(4)
+	curve:SetColor(pluto.ui.theme "InnerColor")
+	curve:Dock(FILL)
+	curve.Text = curve:Add "pluto_label"
+	curve.Text:Dock(FILL)
+	curve.Text:SetContentAlignment(4)
+	curve.Text:SetTextColor(Color(255, 255, 255))
+	curve.Text:SetFont "pluto_inventory_font"
+	curve.Text:SetText "Unlocked Emotes"
+	curve.Text:DockMargin(4, 4, 4, 4)
+
+	getline(true)
+
+	for _, emoji in ipairs(pluto.cl_emojis) do
+		local data = pluto.emoji.byname[emoji]
+		done[emoji] = true
 		local pnl = getimage()
 		pnl:SetFromURL(data.URL)
 		pnl:SetImageSize(image_size, image_size)
@@ -341,6 +368,40 @@ function PANEL:OpenEmojis()
 		}
 		pnl:SetTextColor(Color(0, 0, 0))
 		pnl:SetTall(32)
+		pnl:SetTooltip(":" .. emoji .. ":")
+	end
+
+	seperator = getline(true)
+	local curve = seperator:Add "ttt_curved_panel"
+	curve:SetCurve(4)
+	curve:SetColor(pluto.ui.theme "InnerColor")
+	curve:Dock(FILL)
+	curve.Text = curve:Add "pluto_label"
+	curve.Text:Dock(FILL)
+	curve.Text:SetContentAlignment(4)
+	curve.Text:SetTextColor(Color(255, 255, 255))
+	curve.Text:SetFont "pluto_inventory_font"
+	curve.Text:SetText "Locked Emotes"
+	curve.Text:DockMargin(4, 4, 4, 4)
+	getline(true)
+
+	for emoji, data in pairs(pluto.emoji.byname) do
+		if (done[emoji]) then
+			continue
+		end
+
+		local pnl = getimage()
+		pnl:SetFromURL(data.URL)
+		pnl:SetImageSize(image_size, image_size)
+		pnl:SetClickable {
+			Run = function()
+				self:AddInput(":" .. emoji .. ":")
+			end,
+			Cursor = "hand"
+		}
+		pnl:SetTextColor(Color(0, 0, 0))
+		pnl:SetTall(32)
+		pnl:SetTooltip(":" .. emoji .. ":")
 	end
 
 end
@@ -476,6 +537,10 @@ function PANEL:EnableInput(on)
 	if (IsValid(text)) then
 		if (IsValid(text.Scrollbar)) then
 			text.Scrollbar:SetAlpha(on and 255 or 0)
+		end
+
+		if (IsValid(text.Container)) then
+			text.Container:SetInvisible(not on)
 		end
 
 		if (not on) then
