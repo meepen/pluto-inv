@@ -14,15 +14,15 @@ SWEP.Secondary.Sound = Sound("AlyxEMP.Charge")
 
 SWEP.Bullets = {
 	HullSize = 0,
-	Num = 12,
-	DamageDropoffRange = 700,
-	DamageDropoffRangeMax = 3200,
+	Num = 10,
+	DamageDropoffRange = 300,
+	DamageDropoffRangeMax = 1200,
 	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.13, 0.13),
+	Spread = Vector(0.16, 0.1),
 	TracerName = "tfa_tracer_incendiary"
 }
 
-SWEP.Primary.Delay = 1.2
+SWEP.Primary.Delay = 1.3
 SWEP.Primary.Automatic = true
 
 SWEP.Primary.ClipSize = 2		
@@ -256,6 +256,13 @@ function SWEP:SecondaryAttack()
 
 		local count = 0
 
+		for _, e in pairs(ply:GetChildren()) do
+			local eclass = e:GetClass()
+			if (eclass == "pluto_bleed" or eclass == "pluto_flame" or eclass == "pluto_poison" or eclass == "pluto_heal") then
+				e:Remove()
+			end
+		end
+
 		timer.Create(tostring(self) .. "Rewind", 0.01, 0, function()
 			local info = table.remove(self.Times)
 
@@ -274,7 +281,11 @@ function SWEP:SecondaryAttack()
 			ply:SetEyeAngles(info.EyeAngles)
 			ply:SetHealth(info.Health)
 			ply:SetArmor(info.Armor)
-			ply:SetVelocity(-1 * ply:GetVelocity() + info.Velocity)
+			if (count >= 49) then
+				ply:SetVelocity(-1 * ply:GetVelocity() + info.Velocity)
+			else
+				ply:SetVelocity(-1 * ply:GetVelocity())
+			end
 			self:SetClip1(info.Clip1)
 			ply:SetAmmo(info.Ammo, self:GetPrimaryAmmoType())
 

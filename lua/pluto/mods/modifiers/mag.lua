@@ -15,6 +15,10 @@ end
 
 MOD.Description = "Clip size is increased by %s"
 
+function MOD:CanRollOn(class)
+	return class.ClassName ~= "tfa_cso_batista"
+end
+
 MOD.Tiers = {
 	{ 20, 30 },
 	{ 10, 20 },

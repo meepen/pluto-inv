@@ -9,7 +9,7 @@ SWEP.DrawCrosshair = true
 SWEP.PrintName = "Vitality's Offer"
 SWEP.Slot = 1
 
-SWEP.Primary.Damage = 30
+SWEP.Primary.Damage = 35
 SWEP.Primary.Sound = Sound "Skull1.Fire"
 SWEP.Primary.Delay = 0.5
 SWEP.Primary.Recoil = 3
@@ -106,9 +106,9 @@ function SWEP:DoPlayerDeath(ply, atk, dmg)
 
 	own:SetMaxHealth(own:GetMaxHealth() + amt)
 	
-	pluto.statuses.heal(own, amt, amt / 10)
+	pluto.statuses.heal(own, amt, amt / 15)
 
-	timer.Simple(5, function()
+	timer.Simple(8, function()
 		if (IsValid(own) and own:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_PREPARING) then
 			own:SetMaxHealth(own:GetMaxHealth() - amt)
 		end
