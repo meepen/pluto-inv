@@ -16,7 +16,7 @@ end
 MOD.Description = "Clip size is increased by %s"
 
 function MOD:CanRollOn(class)
-	return class.PrintName ~= "Chronobreaker"
+	return class.ClassName ~= "tfa_cso_batista"
 end
 
 MOD.Tiers = {
