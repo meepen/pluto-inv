@@ -35,14 +35,17 @@ function MOD:ModifyWeapon(wep, rolls)
 		end
 
 		local cb = data.Callback
+		local has_fired = false
 		function data.Callback(atk, tr, dmg)
 			if (cb) then
 				cb(atk, tr, dmg)
 			end
 
-			if (tr.HitregHitregCallback) then
+			if (tr.HitregHitregCallback or has_fired) then
 				return
 			end
+
+			has_fired = true
 
 			local dmgowner = self:GetOwner()
 
