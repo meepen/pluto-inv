@@ -46,6 +46,9 @@ function MOD:ModifyWeapon(wep, rolls)
 
 	local ang = math.cos(math.rad(15))
 	hook.Add("PostDrawOpaqueRenderables", wep, function(self)
+		if (self:GetPenetration() > 10) then
+			return
+		end
 		if (not self:GetIronsights() or self:GetIronsightsTime() + 2 > CurTime()) then
 			return
 		end
