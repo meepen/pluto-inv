@@ -47,6 +47,7 @@ function MOD:ModifyWeapon(wep, rolls)
 			local dmgowner = self:GetOwner()
 
 			local flame = ents.Create "ttt_flame"
+			flame.Avoidable = true
 			flame:SetPos(tr.HitPos)
 			if (IsValid(dmgowner) and dmgowner:IsPlayer()) then
 				flame:SetDamageParent(dmgowner)
