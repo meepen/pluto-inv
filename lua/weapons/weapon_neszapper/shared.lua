@@ -13,7 +13,7 @@ SWEP.HoldType = "pistol"
 SWEP.Spawnable = false
 
 SWEP.Primary.ClipSize = 10
-SWEP.Primary.DefaultClip = 10
+SWEP.Primary.DefaultClip = 20
 SWEP.Primary.RecoilTiming  = 0.06
 SWEP.Primary.Delay = 0.2
 SWEP.Primary.Ammo = "Pistol"
