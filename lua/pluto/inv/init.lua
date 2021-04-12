@@ -358,57 +358,85 @@ function pluto.inv.readmodrow(weapons, item)
 	})
 end
 
+--[[
+	i = pluto_items
+	t = pluto_tabs
+]]
+function pluto.inv.queryitems(db, where_clause, ...)
+	local join_clause = ""
+	if (istable(where_clause)) then
+		join_clause = where_clause.join or ""
+		where_clause = where_clause.where or ""
+	elseif (not isstring(where_clause)) then
+		where_clause = ""
+	end
+
+	local i = 0
+	local args = {...}
+	local stringified = (join_clause .. "; " .. where_clause):gsub("%?", function()
+		i = i + 1
+		return tostring(args[i])
+	end)
+
+	local rows, err = mysql_stmt_run(db, "SELECT i.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable, CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method FROM pluto_items i LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx JOIN pluto_tabs t ON t.idx = i.tab_id " .. join_clause .. " ".. where_clause, ...)
+
+	if (not rows) then
+		return nil, err
+	end
+	pluto.message("WEAP", "Retrieved " .. #rows .. " rows from pluto_items for " .. stringified)
+
+	local weapons = {}
+
+	for i, item in ipairs(rows) do
+		local it = pluto.inv.itemfromrow(item)
+
+		weapons[item.idx] = it
+		pluto.itemids[it.RowID] = it
+	end
+	
+	local mods, err = mysql_stmt_run(db, [[
+		SELECT m.idx as idx, gun_index, modname, m.tier as tier, roll1, roll2, roll3 FROM pluto_mods m
+			INNER JOIN pluto_items i ON m.gun_index = i.idx
+			INNER JOIN pluto_tabs t ON i.tab_id = t.idx
+			]] .. join_clause .. [[
+		]] .. where_clause, ...)
+
+	if (not mods) then
+		print(err)
+		return nil, err
+	end
+
+	pluto.message("WEAP", "Retrieved " .. #mods .. " rows from pluto_mods for " .. stringified)
+
+	for _, mod in ipairs(mods) do
+		pluto.inv.readmodrow(weapons, mod)
+	end
+
+	local nodes, err = mysql_stmt_run(db, [[SELECT nodes.* FROM pluto_item_nodes nodes INNER JOIN pluto_items i ON i.idx = nodes.item_id INNER JOIN pluto_tabs t ON i.tab_id = t.idx ]] .. join_clause .. " " .. where_clause, ...)
+
+	if (not nodes) then
+		return nil, err
+	end
+
+	pluto.message("WEAP", "Retrieved " .. #nodes .. " rows from pluto_item_nodes for " .. stringified)
+
+	local constellations = pluto.nodes.fromrows(nodes)
+
+	for id, bubbles in pairs(constellations) do
+		weapons[id].constellations = bubbles
+	end
+
+	return weapons
+end
+
 function pluto.inv.retrieveitems(steamid, cb)
 	steamid = pluto.db.steamid64(steamid)
 	local ply = player.GetBySteamID64(steamid)
 
 	pluto.message("WEAP", "Retrieving weapon list for ", steamid)
 
-	pluto.db.simplequery("SELECT i.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable, CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method FROM pluto_items i LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx JOIN pluto_tabs t ON t.idx = i.tab_id WHERE owner = ?", {steamid}, function(d, err)
-		if (not d) then
-			pwarnf("sql error: %s\n%s", err, debug.traceback())
-			return
-		end
-
-
-		local weapons = {}
-
-		for i, item in ipairs(d) do
-			local it = pluto.inv.itemfromrow(item)
-
-			weapons[item.idx] = it
-			pluto.itemids[it.RowID] = it
-		end
-
-		pluto.message("WEAP", "Retrieved weapon list for ", steamid)
-		pluto.db.simplequery([[
-			SELECT pluto_mods.idx as idx, gun_index, modname, pluto_mods.tier as tier, roll1, roll2, roll3 FROM pluto_mods
-				JOIN pluto_items ON pluto_mods.gun_index = pluto_items.idx
-				JOIN pluto_tabs ON pluto_items.tab_id = pluto_tabs.idx
-			WHERE owner = ? ORDER BY pluto_mods.idx ASC]], {steamid}, function(d, err)
-				
-				
-			pluto.message("WEAP", "Retrieved mod list for ", steamid)
-
-			if (not d) then
-				pluto.error("WEAP", "Error in mod retrieval callback for ", steamid, ": ", debug.traceback())
-				return
-			end
-
-			for _, item in ipairs(d) do
-				pluto.inv.readmodrow(weapons, item)
-			end
-
-			pluto.db.simplequery("SELECT nodes.* FROM pluto_item_nodes nodes INNER JOIN pluto_items i ON i.idx = nodes.item_id INNER JOIN pluto_tabs t ON i.tab_id = t.idx WHERE t.owner = ?", {steamid}, function(d, err)
-				pluto.message("WEAP", "Retrieved constellation list for ", steamid)
-				local constellations = pluto.nodes.fromrows(d)
-
-				for id, bubbles in pairs(constellations) do
-					weapons[id].constellations = bubbles
-				end
-				cb(weapons)
-			end)
-		end)
+	pluto.db.instance(function(db)
+		cb(pluto.inv.queryitems(db, "WHERE t.owner = ?", steamid))
 	end)
 end
 

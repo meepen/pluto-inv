@@ -85,7 +85,7 @@ function pluto.ui.rightclickmenu(item, pre)
 		end
 	end
 
-	if (item.Type == "Weapon") then
+	if (item.Type == "Weapon" and (item.Owner == LocalPlayer():SteamID64() or item.constellations)) then
 		rightclick_menu:AddOption("Open Constellations", function()
 			pluto.ui.showconstellations(item)
 		end):SetIcon "icon16/star.png"
