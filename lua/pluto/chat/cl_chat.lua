@@ -600,6 +600,7 @@ function PANEL:InsertFade(text)
 end
 
 function PANEL:OnInput(text)
+	local ran_command = false
 	if (text:StartWith "!" or text:StartWith "/") then
 		local found
 		for cmd, data in pairs(pluto.chat.cl_commands.byname) do
@@ -615,9 +616,12 @@ function PANEL:OnInput(text)
 		if (found) then
 			if (istable(found)) then
 				found.Run(self.ActiveTab)
+				ran_command = true
 			end
 		end
-	elseif (text ~= "") then
+	end
+
+	if (not ran_command and text:Trim() ~= "") then
 		self.Input.LastMessage = text
 		pluto.inv.message()
 			:write("chat", self:GetTeamChat(), {pluto.chat.channels.byname[self.ActiveTab].Prefix .. text})

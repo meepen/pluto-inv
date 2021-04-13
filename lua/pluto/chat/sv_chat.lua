@@ -39,11 +39,7 @@ hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 		from,
 	}
 
-	local replace = hook.Run("PlayerSay", from, texts, teamchat)
-
-	if (replace == "" or not replace) then
-		return ""
-	end
+	local replace = texts
 
 	-- find channel sending in
 	local sent_in
@@ -58,6 +54,14 @@ hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 
 	if (not sent_in) then
 		sent_in = pluto.chat.channels.byname.Server
+	end
+
+	if (sent_in == pluto.chat.channels.byname.Server) then
+		replace = hook.Run("PlayerSay", from, replace, teamchat)
+
+		if (replace == "" or not replace) then
+			return ""
+		end
 	end
 
 	local last_pos = 1
