@@ -616,8 +616,8 @@ function PANEL:OnInput(text)
 		if (found) then
 			if (istable(found)) then
 				found.Run(self.ActiveTab)
-				ran_command = true
 			end
+			ran_command = true
 		end
 	end
 
