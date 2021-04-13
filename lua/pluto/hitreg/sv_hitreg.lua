@@ -68,8 +68,8 @@ function RunCallback(cldata, entry)
 	entry.Trace.HitPos = hitpos
 	entry.Trace.HitGroup = hitboxes[hitbox].Group
 	entry.Trace.HitBox = hitbox
-	entry.Trace.HitregHitregCallback = true
-	entry.Callback(shootent, entry.Trace, dmg)
+	
+	shootent:DoDamageDropoff(entry.Trace, dmg)
 
 	hitent:TakeDamageInfo(dmg)
 	hook.Run("PlutoHitregOverride", shootent)
@@ -110,7 +110,6 @@ net.Receive("pluto_hitreg", function(len, cl)
 	hitreg_pellets[shootent][bullet_num][pellet] = nil
 
 	RunCallback(cldata, entry)
-
 end)
 
 local function SnapshotHitboxes()

@@ -176,7 +176,8 @@ function SWEP:ImpactTrace(tr)
 end
 
 function SWEP:PenetrateBullet(dir, vecStart, flDistance, iPenetration, iDamage,
-	flRangeModifier, fPenetrationPower, flPenetrationDistance, flCurrentDistance, alreadyHit)
+	flRangeModifier, fPenetrationPower, flPenetrationDistance, flCurrentDistance, alreadyHit, realStart)
+	realStart = realStart or vecStart
 	alreadyHit = alreadyHit or {}
 	flCurrentDistance = flCurrentDistance or 0
 	self:SetBulletsShot(self:GetBulletsShot() + 1)
@@ -184,7 +185,7 @@ function SWEP:PenetrateBullet(dir, vecStart, flDistance, iPenetration, iDamage,
 	self:FireBullets {
 		AmmoType = self.Primary.Ammo,
 		Distance = flDistance,
-		Tracer = 1,
+		Tracer = 0,
 		Attacker = self:GetOwner(),
 		Damage = iDamage,
 		Src = vecStart,
@@ -192,17 +193,20 @@ function SWEP:PenetrateBullet(dir, vecStart, flDistance, iPenetration, iDamage,
 		Spread = vector_origin,
 		Num = 1,
 		IgnoreEntity = lasthit,
-		Callback = function( hitent , trace , dmginfo )
-			self:TracerEffect(trace, dmginfo)
+		Callback = function( hitent , trace , dmginfo)
+			local function showeffect()
+				if (trace.HitregHitregCallback) then
+					return
+				end
+				trace.StartPos = realStart
+				self:TracerEffect(trace, dmginfo)
+			end
+			_trace, _dmginfo = trace, dmginfo
 			--TODO: penetration
 			--unfortunately this can't be done with a static function or we'd need to set global variables for range and shit
 
-			if flRangeModifier then
-				--Jvs: the damage modifier valve actually uses
-				local flCurrentDistance = trace.Fraction * flDistance
-				dmginfo:SetDamageType(DMG_BULLET)
-				dmginfo:SetDamage( dmginfo:GetDamage() * math.pow( flRangeModifier, ( flCurrentDistance / 500 ) ) )
-			end
+			self:DoDamageDropoff(trace, dmginfo)
+			iDamage = dmginfo:GetDamage()
 
 			if (alreadyHit[trace.Entity]) then
 				dmginfo:SetDamage(0)
@@ -214,6 +218,7 @@ function SWEP:PenetrateBullet(dir, vecStart, flDistance, iPenetration, iDamage,
 			end
 
 			if (trace.Fraction == 1) then
+				showeffect()
 				return
 			end
 			-- TODO: convert this to physprops? there doesn't seem to be a way to get penetration from those
@@ -221,23 +226,25 @@ function SWEP:PenetrateBullet(dir, vecStart, flDistance, iPenetration, iDamage,
 			local flPenetrationModifier, flDamageModifier = unpack(PenetrationValues[trace.MatType] or PenetrationValues[MAT_DEFAULT])
 
 			flCurrentDistance = flCurrentDistance + trace.Fraction * (trace.HitPos - vecStart):Length()
-			iDamage = iDamage * flRangeModifier ^ (flCurrentDistance / 500)
 
 			if (flCurrentDistance > flPenetrationDistance && iPenetration > 0) then
 				iPenetration = 0;
 			end
 
 			if iPenetration == 0 and not trace.MatType == MAT_GRATE then
+				showeffect()
 				return
 			end
 
 			if iPenetration < 0 then
+				showeffect()
 				return
 			end
 
 			local penetrationEnd = Vector()
 
 			if not self:TraceToExit(trace.HitPos, dir, penetrationEnd, 24, 128) then
+				showeffect()
 				return
 			end
 
@@ -261,6 +268,7 @@ function SWEP:PenetrateBullet(dir, vecStart, flDistance, iPenetration, iDamage,
 			local flTraceDistance = tr.HitPos:Distance(trace.HitPos)
 
 			if (flTraceDistance > (fPenetrationPower * flPenetrationModifier)) then
+				showeffect()
 				return
 			end
 			self:ImpactTrace(tr)
@@ -278,11 +286,12 @@ function SWEP:PenetrateBullet(dir, vecStart, flDistance, iPenetration, iDamage,
 				local glass = trace.MatType == MAT_GLASS and trace.MatType or tr.MatType
 				local other = trace.MatType == glass and tr.MatType or trace.MatType
 				if (glass ~= other and other ~= MAT_FLESH) then
+					showeffect()
 					return
 				end
 			end
 
-			self:PenetrateBullet(dir, vecStart, flDistance, iPenetration, iDamage, flRangeModifier, fPenetrationPower, flPenetrationDistance, flCurrentDistance, alreadyHit)
+			self:PenetrateBullet(dir, vecStart, flDistance, iPenetration, iDamage, flRangeModifier, fPenetrationPower, flPenetrationDistance, flCurrentDistance, alreadyHit, realStart)
 		end
 	}
 end
@@ -310,7 +319,7 @@ function SWEP:DoFireBullets(...)
 		dir = dir + up + right
 
 		self:PenetrateBullet(dir, self:GetOwner():GetShootPos(), 8192, 4, self:GetDamage(),
-			0.99, pen, 8000)
+			nil, pen, 8000)
 		return 1
 	else
 		return BaseClass.DoFireBullets(self, ...)
