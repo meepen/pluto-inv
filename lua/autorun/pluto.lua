@@ -29,8 +29,6 @@ pluto.files.load {
 
 		"chat/cl_settings.lua",
 		"chat/cl_filter.lua",
-
-		"cosmetics/cl_test.lua",
 		"cosmetics/cl_sparkle.lua",
 
 		"events/pass/cl_passevent.lua",
@@ -103,6 +101,8 @@ pluto.files.load {
 		"cl/credits.lua",
 	},
 	Shared = {
+		"perfmon/sh_perfmon.lua",
+
 		"co_net.lua",
 		"init.lua",
 		"weapons/override.lua",
@@ -127,6 +127,7 @@ pluto.files.load {
 		"util.lua",
 
 		"chat/sh_chat.lua",
+		"cosmetics/cosmetics.lua",
 
 		"mods/shared/limp.lua",
 

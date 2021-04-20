@@ -3,7 +3,7 @@ local function realfile(fname)
 		return fname
 	end
 
-	local upv = debug.getinfo(2, "S").short_src:GetPathFromFilename():gsub("^addons/[^/]+/", ""):gsub("^lua/", "") .. fname
+	local upv = debug.getinfo(3, "S").short_src:GetPathFromFilename():gsub("^addons/[^/]+/", ""):gsub("^lua/", "") .. fname
 
 	if (file.Exists(upv, "LUA")) then
 		return upv
