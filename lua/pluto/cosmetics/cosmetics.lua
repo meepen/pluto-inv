@@ -5,6 +5,8 @@ pluto.files.load {
 	Shared = {
 		"sh_cosmetic_registrar.lua",
 		"list/base.lua",
+		"list/turtle.lua",
+		"list/car.lua",
 	},
 	Server = {},
 	Resources = {}, -- keep blank

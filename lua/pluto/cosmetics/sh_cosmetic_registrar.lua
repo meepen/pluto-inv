@@ -1,4 +1,4 @@
-pluto.cosmetics = {}
+pluto.cosmetics = pluto.cosmetics or {}
 pluto.cosmetics.byname = pluto.cosmetics.byname or {}
 pluto.cosmetics.mt = pluto.cosmetics.mt or {}
 
@@ -8,19 +8,25 @@ function pluto.cosmetics.mt:__call(self, data)
 	table.Empty(self)
 	table.Merge(self, data)
 	self.mt = mt
-	print "SAVED"
 end
-print "SAVED"
 
 setmetatable(pluto.cosmetics.byname, {
-	__call = function(self, name)
-		print(name)
+	__call = function(self, name, parent)
 		local dat = self[name]
 		if (not dat) then
 			dat = {
 				mt = {}
 			}
-			dat.mt.__index = dat
+			dat.mt.__index = function(self, k)
+				if (dat[k]) then
+					return dat[k]
+				end
+
+				local parent_table = pluto.cosmetics.byname[parent]
+				if (parent_table) then
+					return parent_table.mt.__index(parent_table.mt, k)
+				end
+			end
 			self[name] = dat
 			dat.MetaName = name
 		end

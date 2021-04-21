@@ -45,7 +45,7 @@ hook.Add("PostPlayerDraw", "pluto_showhitgroups", function(ply)
 
 		local hitgroup = ply:GetHitBoxHitGroup(hitbox, set)
 
-		render.DrawWireframeBox(origin, angles, mins, maxs, Color(ColorLerp(hitbox / (count - 1), first, middle, last)))
+		render.DrawWireframeBox(origin, angles, mins, maxs, ColorLerp(hitbox / (count - 1), first, middle, last))
 	end
 
 	surface.SetFont "BudgetLabel"
@@ -78,7 +78,7 @@ hook.Add("PostPlayerDraw", "pluto_showhitgroups", function(ply)
 
 			surface.SetTextPos(mid.x - w / 2, mid.y - h / 2)
 
-			surface.SetTextColor(Color(ColorLerp(hitbox / (count - 1), first, middle, last)))
+			surface.SetTextColor(ColorLerp(hitbox / (count - 1), first, middle, last))
 
 			surface.DrawText(text)
 		end

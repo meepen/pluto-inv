@@ -4,6 +4,9 @@ COSMETIC.MountData = {
 	Type = "bone",
 	Bone = "ValveBiped.Bip01_Head1"
 }
+COSMETIC.Scale = 0.15
+COSMETIC.Offset = Vector(-2, 0, -1.3)
+COSMETIC.Angle = Angle(0, 0, 0)
 
 function COSMETIC:ValidForModel(ent)
 	if (self.MountData) then
@@ -33,8 +36,10 @@ function COSMETIC:Init(ent)
 			self.ModelInstance:Remove()
 		end
 	end)
-	self.ModelInstance:SetModelScale(0.15, 0)
-	self.ModelInstance:SetMaterial "models/player/shared/gold_player"
+	self.ModelInstance:SetModelScale(self.Scale, 0)
+	if (self.Material) then
+		self.ModelInstance:SetMaterial(self.Material)
+	end
 	self.rand = math.random()
 
 	self:OnParentChanged()
@@ -73,19 +78,30 @@ function COSMETIC:Remove()
 	return true
 end
 
+function COSMETIC:GetPosition(pos, ang)
+	return pos, ang
+end
+
+function COSMETIC:GetOffset()
+	local offset = self.Offset * 1
+	local set = self.Parent:GetHitboxSet()
+	for hitbox = 0, self.Parent:GetHitBoxCount(set) - 1 do
+		local bone = self.Parent:GetHitBoxBone(hitbox, set)
+		if (bone == self.BoneID) then
+			local mins, maxs = self.Parent:GetHitBoxBounds(hitbox, set)
+			local what = "x"
+			offset[what] = offset[what] - mins[what] + maxs[what]
+			break
+		end
+	end
+	return offset
+end
+
 function COSMETIC:Think()
-	local rotate_time = 3
-	local rotate_time2 = 4
-	local time = CurTime() + self.rand
-	local ang = Angle((time % rotate_time) / rotate_time * 360, (time % rotate_time2) / rotate_time2 * 360)
-	self.ModelInstance:SetAngles(ang)
+	local pos, ang = self:GetPosition(self:GetMountPosition())
 
-	local center_offset = Vector(0, 0, 1)
-	center_offset:Rotate(ang)
-	local offset = Vector(0, 8, 4)
+	local bpos, bang = LocalToWorld(self:GetOffset(), self.Angle, pos, ang)
 
-	local bpos = self:GetMountPosition()
-	local base = LocalToWorld(offset, angle_zero, bpos, self.Parent:EyeAngles())
-
-	self.ModelInstance:SetPos(base - center_offset)
+	self.ModelInstance:SetAngles(bang)
+	self.ModelInstance:SetPos(bpos)
 end

@@ -74,8 +74,6 @@ function pluto.cosmetics.render(ply, datas)
 		end
 	end
 
-	-- TODO(meep): do the render
-
 	for _, cosmetic in ipairs(tracked) do
 		cosmetic:Think()
 	end
@@ -84,6 +82,7 @@ end
 function pluto.cosmetics.localdata()
 	-- TODO
 end
+local rand = math.random()
 
 function pluto.cosmetics.playerdata(ply)
 	if (ply == LocalPlayer()) then
@@ -91,8 +90,8 @@ function pluto.cosmetics.playerdata(ply)
 	end
 	
 	return {
-		[ply:UserID()] = {
-			Type = "base",
+		[rand] = {
+			Type = "car",
 			Data = {},
 		}
 	}
