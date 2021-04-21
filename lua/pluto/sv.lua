@@ -79,6 +79,8 @@ pluto.files.load {
 		"materials/pluto/seamless/galaxy.png",
 		"materials/pluto/seamless/bullets.png",
 		"materials/pluto/seamless/blackhole.png",
+
+		"materials/pluto/currencies/plutonicvial.png",
 	},
 	Workshop = {
 		"2275087857",

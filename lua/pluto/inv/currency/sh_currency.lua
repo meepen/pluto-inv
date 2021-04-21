@@ -305,12 +305,12 @@ local list = {
 	},
 	{
 		InternalName = "tp",
-		Name = "Toilet Paper",
+		Name = "Refinium Vial",
 		GroundData = {
-			Icon = "pluto/currencies/toiletpaper.png",
+			Icon = "pluto/currencies/refined_ingot.png",
 			Amount = 25,
 		},
-		Icon = "pluto/currencies/toiletsquare.png",
+		Icon = "pluto/currencies/plutonicvial.png",
 		Description = "Valuable Black Market Currency",
 		SubDescription = "Once the mission was complete, it was revealed what Yaari was truly after...",
 		Color = Color(213, 213, 213),
