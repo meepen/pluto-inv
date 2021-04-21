@@ -115,6 +115,25 @@ function PANEL:Init()
 		end
 	end
 
+	self.SettingsButton = self.TabContainer:Add "pluto_label"
+	self.SettingsButton:Dock(RIGHT)
+	self.SettingsButton:SetSize(self.TopSize, self.TopSize)
+	self.SettingsButton:SetFont "pluto_inventory_x"
+	self.SettingsButton:SetText "?"
+	self.SettingsButton:SetTextColor(pluto.ui.theme "XButton")
+	self.SettingsButton:SetContentAlignment(5)
+	self.SettingsButton:SetRenderSystem(pluto.fonts.systems.shadow)
+	self.SettingsButton:SetCursor "hand"
+	self.SettingsButton:SetMouseInputEnabled(true)
+	self.SettingsButton:SizeToContentsX(20)
+	self.SettingsButton.AllowClickThrough = true
+	self.SettingsButton.PaintUnder = function(s, w, h)
+		if (s:IsHovered()) then
+			surface.SetDrawColor(0, 0, 0, 64)
+			surface.DrawRect(0, 0, w, h)
+		end
+	end
+
 	self.BorderContainer = self.Main:Add "pluto_inv_border"
 	self.BorderContainer:Dock(TOP)
 

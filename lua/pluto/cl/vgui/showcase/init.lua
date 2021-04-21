@@ -11,15 +11,16 @@ surface.CreateFont("pluto_showcase_name_real", {
 })
 
 surface.CreateFont("pluto_showcase_small", {
-	font = "Roboto Lt",
-	size = 14,
-	weight = 450,
+	font = "Roboto",
+	size = 16,
+	weight = 450
 })
 
 surface.CreateFont("pluto_showcase_xsmall", {
-	font = "Roboto Lt",
-	size = 13,
+	font = "Roboto",
+	size = 12,
 	weight = 450,
+	italic = true
 })
 
 surface.CreateFont("pluto_showcase_suffix_text", {
@@ -36,6 +37,11 @@ function pluto.ui.showcase(item)
 		return container
 	elseif (item.Type == "Model") then
 		local container = vgui.Create "pluto_showcase_model"
+		container:SetItem(item)
+
+		return container
+	elseif (item.Type == "Currency") then
+		local container = vgui.Create "pluto_showcase_currency"
 		container:SetItem(item)
 
 		return container

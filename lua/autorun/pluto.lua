@@ -94,6 +94,7 @@ pluto.files.load {
 		"cl/vgui/showcase/model/container.lua",
 		"cl/vgui/showcase/weapon/container.lua",
 		"cl/vgui/showcase/weapon/bar.lua",
+		"cl/vgui/showcase/currency/container.lua",
 
 		"chat/cl_chat.lua",
 

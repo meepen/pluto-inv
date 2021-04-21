@@ -521,7 +521,7 @@ local list = {
 		Icon = "pluto/currencies/plutonicvial.png",
 		Description = "Valuable Black Market Currency",
 		SubDescription = "Once the mission was complete, it was revealed what Yaari was truly after...",
-		Color = Color(213, 213, 213),
+		Color = Color(150, 50, 213),
 	},
 	{
 		InternalName = "brainegg",
@@ -636,6 +636,7 @@ local list = {
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
 		end,
+		DefaultTier = "easter_unique",
 		Contents = {
 			tfa_cso_serpent_blade = {
 				Rare = true,

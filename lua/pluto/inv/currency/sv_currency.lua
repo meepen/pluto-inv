@@ -407,7 +407,6 @@ for name, values in pairs {
 	crate3 = {
 		Shares = 0,
 		Types = "None",
-		DefaultTier = "easter_unique",
 
 		Pickup = function(ply)
 			if (player.GetCount() >= 8) then
