@@ -132,6 +132,40 @@ local list = {
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
 		end,
+		Contents = {
+			model_jacket = 400,
+			model_sauron = 200,
+			model_odst = 100,
+			model_helga = 100,
+			model_wonderw = 100,
+			model_plague = 70,
+			model_bigboss = 70,
+			model_daedric = 40,
+			model_chewie = 30,
+			model_lilith = 25,
+			model_a2lh = {
+				Rare = true,
+				Shares = 15,
+			},
+			model_a2 = {
+				Rare = true,
+				Shares = 15,
+			},
+			model_wick2 = {
+				Rare = true,
+				Shares = 3,
+			},
+			weapon_ttt_ak47_u = {
+				Rare = true,
+				Tier = "unique",
+				Shares = 0.5,
+			},
+			weapon_ttt_deagle_u = {
+				Rare = true,
+				Tier = "unique",
+				Shares = 0.5,
+			},
+		},
 
 		Category = "Item Boxes",
 	},
@@ -156,6 +190,80 @@ local list = {
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
 		end,
+		Contents = {
+			weapon_ttt_chargeup = {
+				Rare = true,
+				Shares = 1,
+			},
+			weapon_tfa_cso2_m3dragon = {
+				Rare = true,
+				Shares = 1
+			},
+
+			model_ciri = {
+				Rare = true,
+				Shares = 4
+			},
+			model_spacesuit = {
+				Rare = true,
+				Shares = 4
+			},
+			model_zer0 = {
+				Rare = true,
+				Shares = 4
+			},
+			model_deadpool = {
+				Rare = true,
+				Shares = 4,
+			},
+
+			model_tachanka = {
+				Rare = true,
+				Shares = 12,
+			},
+			model_noob_saibo = {
+				Rare = true,
+				Shares = 12,
+			},
+			model_raincoat = {
+				Rare = true,
+				Shares = 12,
+			},
+			model_psycho = {
+				Rare = true,
+				Shares = 12,
+			},
+
+			model_tron_anon = 30,
+
+			model_wolffe = 50,
+			model_bomb_squad = 50,
+			model_lieutenant = 50,
+			model_clone = 50,
+			model_commander = 50,
+			model_general = 50,
+			model_sergeant = 50,
+			model_captain = 50,
+			model_brown_spar = 30,
+			model_white_spar = 30,
+			model_teal_spart = 30,
+			model_red_sparta = 30,
+			model_purple_spa = 30,
+			model_olive_spar = 30,
+			model_cyan_spart = 30,
+			model_cobalt_spa = 30,
+			model_crimson_sp = 30,
+			model_sage_spart = 30,
+			model_master_chi = 30,
+			model_blue_spart = 30,
+			model_tan_sparta = 30,
+			model_steel_spar = 30,
+			model_orange_spa = 30,
+			model_green_spar = 30,
+			model_pink_spart = 30,
+			model_gold_spart = 30,
+			model_violet_spa = 30,
+		},
 
 		Category = "Item Boxes",
 	},
@@ -180,6 +288,61 @@ local list = {
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
 		end,
+		Contents = {
+			model_osrsbob = 50,
+			model_puggamax = 40,
+			model_warmor = 100,
+			model_nigt1 = 100,
+			model_nigt2 = 100,
+
+			model_metro_female_5 = crate1_fill,
+			model_metro_female_4 = crate1_fill,
+			model_metro_female_3 = crate1_fill,
+			model_metro_female_2 = crate1_fill,
+			model_metro_female_1 = crate1_fill,
+
+			model_metro6 = crate1_fill,
+			model_metro5 = crate1_fill,
+			model_metro4 = crate1_fill,
+			model_metro3 = crate1_fill,
+			model_metro2 = crate1_fill,
+			model_metro1 = crate1_fill,
+
+			model_metro_male_9 = crate1_fill,
+			model_metro_male_8 = crate1_fill,
+			model_metro_male_7 = crate1_fill,
+			model_metro_male_6 = crate1_fill,
+			model_metro_male_5 = crate1_fill,
+			model_metro_male_4 = crate1_fill,
+			model_metro_male_3 = crate1_fill,
+			model_metro_male_2 = crate1_fill,
+			model_metro_male_1 = crate1_fill,
+
+			model_cayde6 = {
+				Rare = true,
+				Shares = 20,
+			},
+			model_hansolo = {
+				Rare = true,
+				Shares = 30,
+			},
+			model_tomb = {
+				Rare = true,
+				Shares = 20,
+			},
+			model_zerosamus = {
+				Rare = true,
+				Shares = 2,
+			},
+			model_weebshit = {
+				Rare = true,
+				Shares = 1,
+			},
+			model_santa = {
+				Rare = true,
+				Shares = 5,
+			},
+		},
 
 		Category = "Item Boxes",
 	},
@@ -204,6 +367,51 @@ local list = {
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
 		end,
+		Contents = {
+			tfa_cso_m1887xmas = {
+				Shares = 0.2,
+				Tier = "unique",
+				Rare = true,
+			},
+			model_tfacso2natalie01 = {
+				Shares = 1,
+				Rare = true
+			},
+			model_kleiaorgana = {
+				Shares = 1,
+				Rare = true
+			},
+			model_xmas_imp = {
+				Shares = 1,
+				Rare = true
+			},
+			model_ghilliewinter01 = {
+				Shares = 1,
+				Rare = true
+			},
+			model_xmas_spiderman = {
+				Shares = 1,
+				Rare = true
+			},
+			tfa_cso_m95_xmas = {
+				Tier = "festive",
+				Shares = 20,
+			},
+
+			model_elftrooper = xmas2020_fill,
+			model_santatrooper = xmas2020_fill,
+			model_treetrooper = xmas2020_fill,
+			model_snowmantrooper = xmas2020_fill,
+			model_hannukahtrooper = xmas2020_fill,
+			model_reindeertrooper = xmas2020_fill,
+			model_snow7 = xmas2020_fill,
+			model_snow6 = xmas2020_fill,
+			model_snow5 = xmas2020_fill,
+			model_snow4 = xmas2020_fill,
+			model_snow3 = xmas2020_fill,
+			model_snow2 = xmas2020_fill,
+			model_snow1 = xmas2020_fill,
+		},
 
 		Category = "Item Boxes",
 	},
@@ -336,6 +544,74 @@ local list = {
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
 		end,
+		Contents = {
+			--model_ghostface = 1,
+			tfa_cso_tbarrel = {
+				Rare = true,
+				Shares = 0.5,
+			},
+			tfa_cso_tomahawk = {
+				Rare = true,
+				Shares = 0.6,
+			},
+			tfa_cso_thanatos9 = {
+				Rare = true,
+				Shares = 0.7,
+			},
+
+			model_jason_unmask = {
+				Rare = true,
+				Shares = 1,
+			},
+			model_joker_2019 = {
+				Rare = true,
+				Shares = 1,
+			},
+			model_terminator = {
+				Rare = true,
+				Shares = 2,
+			},
+
+			model_richtofen        = {
+				Rare = true,
+				Shares = 5,
+			},
+			model_dempsey          = {
+				Rare = true,
+				Shares = 5,
+			},
+			model_nikolai          = {
+				Rare = true,
+				Shares = 5,
+			},
+			model_takeo            = {
+				Rare = true,
+				Shares = 5,
+			},
+			model_ghostfacereddevi = {
+				Rare = true,
+				Shares = 5,
+			},
+
+			model_darkwraith       = 6,
+			model_jason            = 7,
+			model_husk             = 7,
+			model_scarecrow        = 8,
+			model_ghostfacetheghos = 9,
+			model_death            = 11,
+
+			model_ghostfaceclassic = 12,
+			model_blackmask        = 14,
+			model_death_paint      = 15,
+			model_ghost_rider      = 16,
+			model_death_class      = 17,
+
+			--[[
+			model_markus_1 = 1,
+			model_markus_3 = 1,
+			model_markus_2 = 1,
+			model_detr_connor = 1,]]
+		},
 
 		Category = "Item Boxes",
 	},
@@ -360,6 +636,28 @@ local list = {
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
 		end,
+		Contents = {
+			tfa_cso_serpent_blade = {
+				Rare = true,
+				Shares = 1
+			},
+			tfa_cso_dreadnova = {
+				Rare = true,
+				Shares = 1
+			},
+			tfa_cso_ruyi = {
+				Rare = true,
+				Shares = 1
+			},
+			tfa_cso_mp7unicorn = {
+				Rare = true,
+				Shares = 1
+			},
+			tfa_cso_pchan = {
+				Rare = true,
+				Shares = 1
+			}
+		},
 
 		Category = "Item Boxes",
 	},
@@ -384,6 +682,57 @@ local list = {
 			pluto.opener:Center()
 			pluto.opener:MakePopup()
 		end,
+		Contents = {
+			-- consumed versions
+			tfa_cso_serpent_blade = {
+				Tier = "easter_unique",
+				Rare = true,
+				Shares = 1
+			},
+			tfa_cso_dreadnova = {
+				Tier = "easter_unique",
+				Rare = true,
+				Shares = 1
+			},
+			tfa_cso_ruyi = {
+				Tier = "easter_unique",
+				Rare = true,
+				Shares = 1
+			},
+			tfa_cso_mp7unicorn = {
+				Tier = "easter_unique",
+				Rare = true,
+				Shares = 1
+			},
+			tfa_cso_pchan = {
+				Tier = "easter_unique",
+				Rare = true,
+				Shares = 1
+			},
+			tfa_cso_ethereal = {
+				Rare = true,
+				Shares = 0--.1,
+			},
+
+			tfa_cso_m82 = {
+				Tier = "unusual",
+				Shares = 150
+			},
+
+			tfa_cso_charger5 = {
+				Tier = "unusual",
+				Shares = 150,
+			},
+			tfa_cso_m95 = {
+				Tier = "unusual",
+				Shares = 150,
+			},
+			tfa_cso_darkknight_v6 = {
+				Rare = true,
+				Tier = "easter_unique",
+				Shares = 0.1,
+			},
+		},
 
 		Category = "Item Boxes",
 	},
