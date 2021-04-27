@@ -24,7 +24,7 @@ function pluto.cosmetics.render(ply, datas)
 		end
 	end
 
-	local nodraw = ply:IsDormant() or not ply:Alive() or ply == LocalPlayer() and not ply:ShouldDrawLocalPlayer()
+	local nodraw = ply:IsDormant() or not ply:Alive() or ply == LocalPlayer() and not ply:ShouldDrawLocalPlayer() or LocalPlayer():GetObserverMode() == OBS_MODE_IN_EYE and LocalPlayer():GetObserverTarget() == ply
 	if (tracked.NoDraw ~= nodraw) then
 		tracked.NoDraw = nodraw
 		for _, cosmetic in ipairs(tracked) do
