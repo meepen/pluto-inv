@@ -61,7 +61,7 @@ function pluto.cosmetics.render(ply, datas)
 			end
 		end
 
-		if (not found) then
+		if (not found and pluto.cosmetics.byname[data.Type]) then
 			local newcosmetic = setmetatable({
 				ID = id
 			}, pluto.cosmetics.byname[data.Type].mt)
@@ -91,7 +91,7 @@ function pluto.cosmetics.playerdata(ply)
 	
 	return {
 		[rand] = {
-			Type = "car",
+			Type = "headcrab",
 			Data = {},
 		}
 	}
