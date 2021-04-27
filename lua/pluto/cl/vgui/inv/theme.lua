@@ -7,6 +7,7 @@ pluto.ui = pluto.ui or {}
 pluto.ui.theme = setmetatable({
 	default = {
 		XButton = Color(0xd7, 0x2c, 0x2d),
+		["?Button"] = Color(0x2c, 0xd7, 0x2d),
 		InnerColor = Color(64, 66, 74),
 		InnerColorInactive = Color(35, 36, 43),
 		TextActive = Color(255, 255, 255),

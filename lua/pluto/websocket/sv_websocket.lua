@@ -8,6 +8,14 @@ local config = util.JSONToTable [[{
 	"host": "va1.pluto.gg"
 }]]
 
+if (false) then
+	config = util.JSONToTable [[{
+		"secret": "2tve4#$@!VFf4123!@RFD#$ WX@B",
+		"port": 9001,
+		"host": "localtest.me"
+	}]]
+end
+
 if (pluto.WS) then
 	pluto.WS:close()
 end
@@ -32,6 +40,8 @@ function WS:onMessage(msg)
 		pluto.inv.message(player.GetAll())
 			:write("chatmessage", data, "Cross", false)
 			:send()
+	else
+		hook.Run("PlutoWebsocketMessage", json)
 	end
 end
 

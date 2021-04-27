@@ -42,7 +42,7 @@ pluto.files.load {
 
 		"weapons/cl_hover.lua",
 
-		"minigame/cl.lua",
+		"minigame/cl_snake.lua",
 
 		"inv/nodes/cl_nodes.lua",
 
@@ -76,10 +76,14 @@ pluto.files.load {
 		"cl/vgui/inv/pages/trading.lua",
 		"cl/vgui/inv/pages/donate.lua",
 
+		"cl/vgui/inv/pages/other/snake.lua",
+		"cl/vgui/inv/pages/other.lua",
+
 		"cl/vgui/inv/pages/market/auction.lua",
 		"cl/vgui/inv/pages/market/reclaim.lua",
 		"cl/vgui/inv/pages/market/blackmarket.lua",
 		"cl/vgui/inv/pages/divine_market.lua",
+
 
 		"cl/vgui/inv/shape.lua",
 		"cl/vgui/inv/item.lua",

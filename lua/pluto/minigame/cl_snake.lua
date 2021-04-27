@@ -1,3 +1,7 @@
+local SNAKE = {
+	url = true and "http://va1.pluto.gg:7777/app/snake" or "http://localtest.me:9001/app/snake"
+}
+
 local PANEL = {}
 
 function PANEL:Paint(w, h)
@@ -204,47 +208,143 @@ local directions = {
 	"up",
 	"down"
 }
-net.Receive("pluto_snake", function(len, cl)
+
+local colors = {
+	["76561198050165746"] = function()
+		local timing = 5
+		local col = HSVToColor((CurTime() % timing) / timing * 360, 1, 1)
+		return Color(col.r, col.g, col.b)
+	end,
+	["76561198280637226"] = function()
+		return HexColor "#341c02"
+	end
+}
+
+local mt = {
+	__index = function(self, k)
+		if (k == "Color") then
+			return colors[self.SteamID64]()
+		end
+	end
+}
+
+function pluto.inv.readsnakeauth()
+	if (IsValid(snake_mp)) then
+		snake_mp.Authorization = net.ReadString()
+		print "AUTHORIZATION RECEIVED"
+		print(snake_mp.Authorization)
+	end
+end
+
+function pluto.inv.writegetsnakeauth()
+end
+
+function PANEL:Init()
+	snake_mp = self
+	self.UpdateInterval = 0.05
+	self.LastUpdate = -math.huge
+
+	self.LastRequest = -math.huge
+	self.RequestInterval = 20
+end
+
+function PANEL:UpdateGameBoard(json)
+	if (json.waiting) then
+		return
+	end
+
 	local game = {
-		BoardSize = net.ReadUInt(8),
+		BoardSize = json.boardSize,
 		BoardInfo = {},
+		Players = {}
 	}
 	for x = 1, game.BoardSize do
 		game.BoardInfo[x] = {}
 	end
+
+	for i, snake in ipairs(json.snakes) do
+		local ply = {}
+		local col = HSVToColor(i / #json.snakes * 255, 1, 1)
+		ply.Name = snake.info.displayname
+		ply.SteamID64 = snake.info.steamid
+		ply.Color = ply.SteamID64 == LocalPlayer():SteamID64() and Color(255, 255, 255) or Color(col.r, col.g, col.b)
+		ply.ID = snake.id
+		ply.Dead = snake.dead
+		ply.Score = snake.length
+		ply.info = snake.info
+		if (colors[ply.SteamID64]) then
+			setmetatable(ply, mt)
+			ply.Color = nil
+		end
+		game.Players[ply.ID] = ply
+	end
 	local max = game.BoardSize * game.BoardSize
-	local x, y = net.ReadUInt(8), net.ReadUInt(8)
-	while (x ~= 0) do
-		local is_food = net.ReadBool()
+
+	for _, data in ipairs(json.board) do
+		local is_food = data.what == "food"
 		local obj
 		if (is_food) then
 			obj = {
 				Type = "food",
-				Color = HSVToColor((x + y * game.BoardSize) / max * 360, 1, 0.3)
+				Color = ColorRand(),
 			}
 		else
 			obj = {
-				IsYou = net.ReadBool(),
 				Type = "snake",
-				Direction = "Head",
+				Direction = data.direction or "Head",
 			}
-			obj.Direction = directions[net.ReadUInt(3)]
-			if (net.ReadBool()) then
-				obj.From = directions[net.ReadUInt(2) + 1]
-			end
-			obj.Color = Color(net.ReadUInt(8), net.ReadUInt(8), net.ReadUInt(8))
+			obj.Player = game.Players[data.snake]
 		end
 
-		game.BoardInfo[x][y] = obj
-		x, y = net.ReadUInt(8), net.ReadUInt(8)
+		game.BoardInfo[data.x + 1][data.y + 1] = obj
 	end
 	if (IsValid(snake_mp)) then
 		snake_mp.Board = game
 	end
-end)
+end
 
-function PANEL:Init()
-	snake_mp = self
+
+function PANEL:Think()
+	if (self.LastRequest + self.RequestInterval <= RealTime()) then
+		self.LastRequest = RealTime()
+		pluto.inv.message()
+			:write "getsnakeauth"
+			:send()
+	end
+
+	if (self.LastUpdate + self.UpdateInterval > RealTime()) then
+		return
+	end
+	self.LastUpdate = RealTime()
+
+	http.Fetch(SNAKE.url, function(body)
+		local json = util.JSONToTable(body)
+		if (IsValid(snake_mp)) then
+			self:UpdateGameBoard(json)
+		end
+	end, function(...)
+		if (IsValid(self)) then
+			self.LastUpdate = RealTime() + 5
+		end
+	end)
+end
+
+function PANEL:SendMovement(direction)
+	if (not self.Authorization) then
+		return
+	end
+
+	HTTP {
+		url = SNAKE.url .. "/" .. self.Authorization,
+		method = "POST",
+		success = function(code, body, headers)
+			print(body)
+		end,
+		parameters = {
+			direction = direction
+		},
+		failed = print
+	}
 end
 
 function PANEL:OnMousePressed()
@@ -257,27 +357,15 @@ function PANEL:OnMousePressed()
 		end
 	end
 
-	function self.InputPanel:OnKeyCodePressed(code)
+	function self.InputPanel.OnKeyCodePressed(s, code)
 		if (code == KEY_W) then
-			net.Start "pluto_snake"
-				net.WriteUInt(0, 3)
-				net.WriteUInt(2, 3)
-			net.SendToServer()
+			self:SendMovement "up"
 		elseif (code == KEY_S) then
-			net.Start "pluto_snake"
-				net.WriteUInt(0, 3)
-				net.WriteUInt(3, 3)
-			net.SendToServer()
+			self:SendMovement "down"
 		elseif (code == KEY_A) then
-			net.Start "pluto_snake"
-				net.WriteUInt(0, 3)
-				net.WriteUInt(0, 3)
-			net.SendToServer()
+			self:SendMovement "left"
 		elseif (code == KEY_D) then
-			net.Start "pluto_snake"
-				net.WriteUInt(0, 3)
-				net.WriteUInt(1, 3)
-			net.SendToServer()
+			self:SendMovement "right"
 		end
 	end
  
@@ -292,19 +380,41 @@ end
 function PANEL:Paint(w, h)
 	local board = self.Board
 	if (not board) then
-		net.Start "pluto_snake"
-			net.WriteUInt(1, 3) -- get lobbies
-		net.SendToServer()
+		surface.SetDrawColor(255, 0, 0, 100)
+		surface.DrawRect(0, 0, w, h)
 		return
 	end
 
+	local players = {}
+	for _, ply in pairs(board.Players) do
+		table.insert(players, ply)
+	end
+
+	table.sort(players, function(a, b)
+		return a.Score > b.Score
+	end)
+
+	local y = 0
+	surface.SetFont "BudgetLabel"
+	surface.SetTextColor(Color(255, 255, 255))
+	local _, th = surface.GetTextSize "A"
+	for _, ply in pairs(players) do
+		surface.SetDrawColor(ply.Color)
+		surface.DrawRect(0, y, th, th)
+		surface.SetTextPos(th + 3, y)
+		surface.DrawText(ply.Name or ply.SteamID64)
+		y = y + th + 3
+	end
+
+
 	local boardsize = board.BoardSize
-	local squaresize = math.floor(w / boardsize)
+	local squaresize = math.floor(math.min(w, h) / boardsize)
 	local snakesize = squaresize * boardsize
 	local xoff, yoff = (w - snakesize) / 2, (h - snakesize) / 2
 
 	surface.SetDrawColor(255, 255, 255, 128)
 	surface.DrawOutlinedRect(xoff, yoff, snakesize, snakesize)
+	surface.SetMaterial(pluto.currency.byname._banna:GetMaterial())
 
 	for x = 1, boardsize do
 		for y = 1, boardsize do
@@ -314,44 +424,26 @@ function PANEL:Paint(w, h)
 			end
 			local basex, basey = xoff + (x - 1) * squaresize, yoff + (y - 1) * squaresize 
 			if (info.Type == "food") then
-				surface.SetDrawColor(info.Color)
-				for i = 0, 2 do
-					surface.DrawOutlinedRect(basex + i, basey + i, squaresize - i * 2, squaresize - i * 2)
-				end
+				surface.SetDrawColor(255, 255, 255)
+				surface.DrawTexturedRect(basex, basey, squaresize, squaresize)
 			elseif (info.Type == "snake") then
-				if (info.IsYou) then
-					surface.SetDrawColor(255, 255, 255, 255)
-					surface.DrawRect(basex + 2, basey + 2, squaresize - 4, squaresize - 4)
-					if (info.Direction == "left" or info.From == "right") then
-						surface.DrawRect(basex, basey + 2, 2, squaresize - 4)
-					end
-					if (info.Direction == "right" or info.From == "left") then
-						surface.DrawRect(basex + squaresize - 2, basey + 2, 2, squaresize - 4)
-					end
-					
-					if (info.Direction == "up" or info.From == "down") then
-						surface.DrawRect(basex + 2, basey, squaresize - 4, 2)
-					end
-					if (info.Direction == "down" or info.From == "up") then
-						surface.DrawRect(basex + 2, basey + squaresize - 2, squaresize - 4, 2)
-					end
+				local siding = 2
+				local sx, sy, sw, sh = basex + siding, basey + siding, squaresize - siding * 2, squaresize - siding * 2
+				surface.SetDrawColor(info.Player.Color)
+
+				if (info.Direction == "right") then
+					sw = sw + siding * 2
+				elseif (info.Direction == "left") then
+					sw = sw + siding * 2
+					sx = sx - siding * 2
+				elseif (info.Direction == "up") then
+					sy = sy - siding * 2
+					sh = sh + siding * 2
+				elseif (info.Direction == "down") then
+					sh = sh + siding * 2
 				end
 
-				surface.SetDrawColor(info.Color)
-				surface.DrawRect(basex + 4, basey + 4, squaresize - 8, squaresize - 8)
-				if (info.Direction == "left" or info.From == "right") then
-					surface.DrawRect(basex, basey + 4, 4, squaresize - 8)
-				end
-				if (info.Direction == "right" or info.From == "left") then
-					surface.DrawRect(basex + squaresize - 4, basey + 4, 4, squaresize - 8)
-				end
-				
-				if (info.Direction == "up" or info.From == "down") then
-					surface.DrawRect(basex + 4, basey, squaresize - 8, 4)
-				end
-				if (info.Direction == "down" or info.From == "up") then
-					surface.DrawRect(basex + 4, basey + squaresize - 4, squaresize - 8, 4)
-				end
+				surface.DrawRect(sx, sy, sw, sh)
 			end
 		end
 	end
@@ -372,15 +464,3 @@ end
 
 vgui.Register("pluto_minigame_snake", PANEL, "EditablePanel")
 
-local PANEL = {}
-
-function PANEL:SetTab(tab)
-end
-
-function PANEL:Init()
-	self:DockPadding(20, 16, 20, 10)
-	self.Inner = self:Add "pluto_minigame_snake"
-	self.Inner:Dock(FILL)
-end
-
-vgui.Register("pluto_minigame", PANEL, "pluto_inventory_base")

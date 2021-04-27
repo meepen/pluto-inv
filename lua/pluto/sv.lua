@@ -53,7 +53,7 @@ pluto.files.load {
 
 		"sv/ammospawn.lua",
 
-		"minigame/sv.lua",
+		"minigame/sv_snake.lua",
 
 		"inv/nodes/sv_nodes.lua",
 		"divine/sv_currency_exchange.lua",

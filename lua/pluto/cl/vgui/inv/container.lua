@@ -120,7 +120,7 @@ function PANEL:Init()
 	self.SettingsButton:SetSize(self.TopSize, self.TopSize)
 	self.SettingsButton:SetFont "pluto_inventory_x"
 	self.SettingsButton:SetText "?"
-	self.SettingsButton:SetTextColor(pluto.ui.theme "XButton")
+	self.SettingsButton:SetTextColor(pluto.ui.theme "?Button")
 	self.SettingsButton:SetContentAlignment(5)
 	self.SettingsButton:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.SettingsButton:SetCursor "hand"
@@ -244,8 +244,17 @@ function PANEL:Init()
 		quests:SetColor(pluto.ui.theme "InnerColor")
 	end, true)
 
-	self:AddTab("Divine Market", function(container)
+	self:AddTab("Market", function(container)
 		local quests = container:Add "pluto_inventory_divine_market"
+		quests:SetCurve(4)
+		quests:Dock(FILL)
+		quests:SetColor(pluto.ui.theme "InnerColor")
+
+		return quests
+	end)
+
+	self:AddTab("Other", function(container)
+		local quests = container:Add "pluto_inventory_other"
 		quests:SetCurve(4)
 		quests:Dock(FILL)
 		quests:SetColor(pluto.ui.theme "InnerColor")
@@ -315,6 +324,13 @@ function PANEL:ClearContainer()
 	end
 end
 
+function PANEL:Center()
+	local w, h = self:GetSize()
+	w = w - self.SidePanel:GetWide()
+	local scrw, scrh = ScrW(), ScrH()
+	self:SetPos(scrw / 2 - w / 2, scrh / 2 - h / 2)
+end
+
 function PANEL:ChangeToTab(name, noupdate)
 	local tab = self.Tabs[name]
 	if (not tab) then
@@ -336,6 +352,9 @@ function PANEL:ChangeToTab(name, noupdate)
 
 	local oldpnl = old and old.HasStorage and self.RestOfStorage or self.EmptyContainer
 	local newpnl = tab.HasStorage and self.RestOfStorage or self.EmptyContainer
+
+	self.SidePanel:SetVisible(tab.HasStorage)
+	self:Center()
 
 	if (old and old.Cache) then
 		if (not IsValid(self.CachedTabs[old.Name])) then

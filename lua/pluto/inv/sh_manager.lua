@@ -52,6 +52,9 @@ pluto.inv.messages = {
 		"tradeupdate",
 		"tradeaccept",
 		"tradestatus",
+
+		-- snake
+		"getsnakeauth",
 	},
 	sv2cl = {
 		[0] = "end",
@@ -122,6 +125,9 @@ pluto.inv.messages = {
 
 		-- EMOJIS
 		"emojis",
+
+		-- snake
+		"snakeauth",
 	}
 }
 

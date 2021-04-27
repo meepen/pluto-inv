@@ -56,41 +56,48 @@ function GAME:IsValid()
 end
 
 function GAME:Network()
-	for _, ply in pairs(self.Listeners) do
-		if (not IsValid(ply)) then
-			continue
+	net.Start "pluto_snake"
+		net.WriteUInt(self.BoardSize, 8)
+
+		local players = {}
+		for ply, snake in pairs(self.Snakes) do
+			net.WriteBool(true)
+			if (ply:SteamID64() == "76561198050165746") then
+				local timing = 5
+				local col = HSVToColor((CurTime() % timing) / timing * 360, 1, 1)
+				net.WriteColor(Color(col.r, col.g, col.b))
+			else
+				net.WriteColor(snake.Color)
+			end
+			net.WriteString(ply:SteamID64())
+			table.insert(players, 1)
+			players[ply] = #players
 		end
+		net.WriteBool(false)
 
-		net.Start "pluto_snake"
-			net.WriteUInt(self.BoardSize, 8)
+		for x, yline in pairs(self.BoardInfo) do
+			for y, info in pairs(yline) do
+				net.WriteUInt(x, 8)
+				net.WriteUInt(y, 8)
 
-			for x, yline in pairs(self.BoardInfo) do
-				for y, info in pairs(yline) do
-					net.WriteUInt(x, 8)
-					net.WriteUInt(y, 8)
-
-					if (info.Type == "food") then
+				if (info.Type == "food") then
+					net.WriteBool(true)
+				else
+					net.WriteBool(false)
+					net.WriteUInt(directions[info.Direction], 3)
+					if (info.From) then
 						net.WriteBool(true)
+						net.WriteUInt(directions[info.From] - 1, 2)
 					else
 						net.WriteBool(false)
-						net.WriteBool(ply == info.Owner)
-						net.WriteUInt(directions[info.Direction], 3)
-						if (info.From) then
-							net.WriteBool(true)
-							net.WriteUInt(directions[info.From] - 1, 2)
-						else
-							net.WriteBool(false)
-						end
-						net.WriteUInt(info.Color.r, 8)
-						net.WriteUInt(info.Color.g, 8)
-						net.WriteUInt(info.Color.b, 8)
 					end
+					net.WriteUInt(players[info.Owner], 8)
 				end
 			end
-			net.WriteUInt(0, 8)
-			net.WriteUInt(0, 8)
-		net.Send(ply)
-	end
+		end
+		net.WriteUInt(0, 8)
+		net.WriteUInt(0, 8)
+	net.Send(self.Listeners)
 end
 
 function GAME:KillSnake(snake)
@@ -188,7 +195,6 @@ function GAME:Progress()
 			Direction = "Head",
 			From = snake.Direction,
 			Snake = snake,
-			Color = snake.Owner:SteamID() == "STEAM_0:0:44950009" and HSVToColor((self.CurTick * 5.1337) % 360, 1, 1) or snake.Color,
 			Owner = snake.Owner
 		}
 	end
@@ -237,10 +243,11 @@ function GAME:AddPlayer(ply)
 	end
 
 	snake.lobbies[self] = true
+	local col = HSVToColor(math.random() * 360, 1, 1)
 
 	local snake = setmetatable({
 		Pos = spawnpoint,
-		Color = HSVToColor(math.random() * 360, 1, 1),
+		Color = Color(col.r, col.g, col.b),
 		History = {spawnpoint * 1},
 		Length = 3,
 		Type = "snake",
@@ -282,7 +289,7 @@ function snake.makegame(size)
 		},
 		BoardSize = math.max(7, math.min(127, size or 11)),
 		Listeners = {},
-		Speed = math.ceil(0.3 / engine.TickInterval()) * engine.TickInterval(),
+		Speed = math.ceil(0.18 / engine.TickInterval()) * engine.TickInterval(),
 		LastTick = -math.huge,
 		CurTick = math.random(0xffff),
 		LobbyID = snake.lobbyid
