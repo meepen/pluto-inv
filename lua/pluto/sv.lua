@@ -45,6 +45,8 @@ pluto.files.load {
 
 		"inv/currency/object/sv_object.lua",
 
+		"playercards/sv_cards.lua",
+
 		"chat/sv_chat.lua",
 
 		"cheaters/sv_nocheats.lua",

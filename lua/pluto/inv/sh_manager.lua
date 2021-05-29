@@ -46,6 +46,9 @@ pluto.inv.messages = {
 		"gettrades",
 		"gettradesnapshot",
 
+		-- playercards
+		"playercardreq",
+
 		-- trade
 		"requesttrade",
 		"trademessage",
@@ -114,6 +117,9 @@ pluto.inv.messages = {
 		-- past trades
 		"tradelogsnapshot",
 		"traderequestinfo",
+
+		-- playercards
+		"playercardinfo",
 
 		-- trading
 		"trademessage",
