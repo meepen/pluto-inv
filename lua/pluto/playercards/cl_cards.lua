@@ -185,11 +185,60 @@ end
 
 vgui.Register("pluto_playercard", PANEL, "ttt_curved_panel")
 
-if (x != nil) then
+--[[if (x != nil) then
 	x:Remove()
 end
 
 pluto.ui.playercard(LocalPlayer(), function(self)
 	x = self
 	self:SetPos(100, 100)
+end)]]
+
+hook.Add("TTTRWScoreboardPlayer", "pluto_level", function(ply, add, self)
+	function self.Avatar:OnCursorEntered()
+		print("CURSOR ENTER")
+		if (pluto.scoreboard_playercard != nil) then
+			pluto.scoreboard_playercard:Remove()
+			pluto.scoreboard_playercard = nil
+		end
+
+		pluto.ui.playercard(ply, function(card)
+			pluto.scoreboard_playercard = card
+			local x, y = input.GetCursorPos()
+			card:SetPos(x, y + 20)
+			card:MakePopup()
+			card:SetKeyboardInputEnabled(false)
+			card:MoveToFront()
+
+			card.Think = function(card)
+				if (!self:IsHovered() or pluto.scoreboard_playercard ~= card) then
+					card:Remove()
+					pluto.scoreboard_playercard = nil
+				else if (input.IsMouseDown(MOUSE_LEFT)) then
+					local steamid = ply:SteamID64() or ""
+						gui.OpenURL("https://steamcommunity.com/profiles/" .. steamid)
+					end
+				end
+			end
+		end)
+	end
+
+	function self.Avatar:OnCursorMoved(x, y)
+		print("CURSOR MOVE")
+		if (pluto.scoreboard_playercard != nil) then
+			pluto.scoreboard_playercard:SetPos(self:LocalToScreen(x, y + 20))
+		end
+	end
+
+	self.Avatar:SetCursor("hand")
+
+	function self.Avatar:Think()
+		
+	end
+end)
+
+hook.Add("ScoreboardHide", "RemovePlayercard", function()
+	if (pluto.scoreboard_playercard != nil) then
+		pluto.scoreboard_playercard:Remove()
+	end
 end)

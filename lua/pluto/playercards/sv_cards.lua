@@ -1,9 +1,14 @@
 function pluto.inv.readplayercardreq(requester)
 	local ply = net.ReadEntity()
 	pluto.db.simplequery("SELECT time_played FROM pluto_player_info WHERE steamid = ?", {ply:SteamID64()}, function(d)
-		playtime = d[1].time_played
+		local playtime
+		if (d["AFFECTED_ROWS"] != 0) then
+			playtime = d[1].time_played
+		else
+			playtime = 0
+		end
 
-		pluto.inv.message(ply)
+		pluto.inv.message(requester)
 			:write("playercardinfo", ply, playtime)
 		:send()
 	end)
