@@ -147,16 +147,19 @@ end
 
 function PANEL:SetPlayer(ply)
 	self.Player = ply
-	pluto.inv.readplayercardinfo = function()
-		if not IsValid(self) then return end
-		cachePlayercard(ply)
-		self:PlayerInfo()
+
+	if (not IsValid(pluto.playercards.cache[ply:SteamID64()])) then
+		pluto.inv.readplayercardinfo = function()
+			if not IsValid(self) then return end
+			cachePlayercard(ply)
+			self:PlayerInfo()
+		end
+	
+		pluto.inv.message()
+			:write("playercardreq", ply)
+		:send()
 	end
-
-	pluto.inv.message()
-		:write("playercardreq", ply)
-	:send()
-
+	
 	self.Player = ply
 	self.Username:SetText(ply:GetName())
 	self.Username:SizeToContents()
