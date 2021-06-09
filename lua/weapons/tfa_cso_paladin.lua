@@ -213,14 +213,13 @@ local function CreateShadow(self, ply)
 		end
 	end
 
-	local rope = constraint.Rope(self.Anchor, rgd, 0, 0, vector_origin, vector_origin,
-		10, 10, 0,
-		2, "models/props_combine/stasisshield_sheet", false)
+	local rope = constraint.Slider(self.Anchor, rgd, 0, 0, vector_origin, vector_origin,
+		--10, 10, 0,
+		2, "cable/physbeam") --, false)--]]
 
 	rgd.IsSafeToRemove = true
 	rgd:SetName("DissolveID" .. rgd:EntIndex())
-	--MakeGold(rgd, "models/player/shared/steel_player")
-	rgd:SetMaterial("models/props_combine/stasisshield_sheet")
+	rgd:SetMaterial("cable/physbeam")
 
 	self.Ragdoll = rgd
 end
@@ -254,8 +253,21 @@ function SWEP:SecondaryAttack()
 			dashVelocity.z = 0.15
 			ply:SetVelocity(dashVelocity * 1500)
 		else
-			ply:SetVelocity(dashVelocity * 200)
+			ply:SetVelocity(dashVelocity * 100)
 		end
+
+		--[[hook.Add("TTTUpdatePlayerSpeed", self, function(self, ply, data)
+			print(self:GetOwner(), ply)
+			if (self:GetOwner() == ply) then
+				print("speedying " .. ply:Nick())
+				data.paladin = 3
+			end
+		end)
+
+		timer.Simple(0.3, function()
+			print("removing speedy hook")
+			hook.Remove("TTTUpdatePlayerSpeed", self)
+		end)--]]
 
 		self:SetDashed(true)
 		self.AllowDrop = false
@@ -269,7 +281,6 @@ function SWEP:SecondaryAttack()
 		end)
 
 		CreateShadow(self, ply)
-		-- Create connection
 	elseif (self:GetDashed()) then
 		self:SetCharge(0)
 	end
@@ -302,14 +313,13 @@ function SWEP:DoThink()
 			return
 		end
 		
-		local reps = math.Clamp(dist / 80, 40, 60)
+		local reps = math.Clamp(dist / 80, 5, 60) + 10
 		local count = 0
 
 		self:SetDashed(false)
 
 		timer.Simple(0.01, function()
 			self:EmitSound(self.Secondary.Sound1)
-			--self:EmitSound(self.Secondary.Sound2)
 		end)
 
 		timer.Create(tostring(self) .. "Returning", 0.01, 0, function()
@@ -318,7 +328,6 @@ function SWEP:DoThink()
 			if (not IsValid(ply) or not ply:Alive() or count > reps) then
 				timer.Remove(tostring(self) .. "Returning")
 				self.AllowDrop = true
-				--self:StopSound(self.Secondary.Sound2)
 				self.Primary.Damage = self.Primary.BaseDamage
 				if (IsValid(self.Ragdoll)) then
 					BLINK_DISSOLVER:Fire("Dissolve", "DissolveID" .. self.Ragdoll:EntIndex(), 0.01)
