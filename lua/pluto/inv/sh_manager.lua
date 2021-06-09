@@ -206,7 +206,6 @@ local a = {
 				end
 			end)
 			for _, msg in ipairs(self.Messages) do
-				print("WHAT", msg.what)
 				self:writemessage(ply, msg.what, unpack(msg.args, 1, msg.args.n))
 			end
 			self:writemessage(ply, "end")
