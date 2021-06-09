@@ -12,7 +12,7 @@ pluto.playercards = {cache = {}, waiting = {}}
 
 local function cachePlayercard(ply)
 	if not IsValid(ply) then return end
-	pluto.playercards.cache[ply:SteamID64()] = {
+	pluto.playercards.cache[ply:SteamID64() or ply:Nick()] = {
 		valid = true,
 		playtime = net.ReadUInt(32), 
 		IsValid = function(self)
@@ -186,7 +186,7 @@ function PANEL:SetPlayer(ply)
 	self.Rank:SetText(hook.Run("TTTGetRankPrintName", ply:GetUserGroup()) or ply:GetUserGroup())
 	self.Rank:SizeToContents()
 
-	self.Playtime:SetText("Loading...")
+	self.Playtime:SetText("")
 	self.Playtime:SizeToContentsX()
 
 	local x,_,y = self.TextContainer:GetDockMargin()
@@ -199,7 +199,7 @@ function PANEL:SetPlayer(ply)
 end
 
 function PANEL:PlayerInfo()
-	local cache = pluto.playercards.cache[self.Player:SteamID64()]
+	local cache = pluto.playercards.cache[self.Player:SteamID64() or self.Player:Nick()]
 	self.Playtime:SetText(admin.nicetimeshort(cache.playtime))
 	self.Playtime:SizeToContentsX()
 
