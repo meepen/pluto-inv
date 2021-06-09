@@ -248,7 +248,7 @@ function SWEP:SecondaryAttack()
 			ply:SetVelocity(dashVelocity * 1500)
 		else
 			ply:SetVelocity(dashVelocity * 200)
-		end--]]
+		end
 
 		hook.Add("TTTUpdatePlayerSpeed", self, function(self, ply, data)
 			if (self:GetOwner() == ply) then
@@ -258,7 +258,7 @@ function SWEP:SecondaryAttack()
 
 		timer.Simple(1, function()
 			hook.Remove("TTTUpdatePlayerSpeed", self)
-		end)
+		end)--]]
 
 		if (CLIENT) then
 			return
