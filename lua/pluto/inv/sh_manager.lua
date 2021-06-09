@@ -166,6 +166,8 @@ function pluto.inv.readmessage(cl)
 	local uid = net.ReadUInt(8)
 	local id = (SERVER and pluto.inv.messages.cl2sv or pluto.inv.messages.sv2cl)[uid]
 
+	if (id == nil) then return end
+
 	if (id == "end") then
 		pluto.inv.readend()
 		return true
@@ -204,6 +206,7 @@ local a = {
 				end
 			end)
 			for _, msg in ipairs(self.Messages) do
+				print("WHAT", msg.what)
 				self:writemessage(ply, msg.what, unpack(msg.args, 1, msg.args.n))
 			end
 			self:writemessage(ply, "end")
