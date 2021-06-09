@@ -1,20 +1,24 @@
-function pluto.ui.playercard(player, fn)
-	fn = fn or function() end
-	local container
-
-	pluto.inv.readplayercardinfo = function()
-		container = vgui.Create("pluto_playercard")
-		container:SetPlayer(player)
-		fn(container)
-	end
-
-	pluto.inv.message()
-		:write("playercardreq", player)
-	:send()
+function pluto.ui.playercard(player)
+	local container = vgui.Create("pluto_playercard")
+	container:SetPlayer(player)
+	return container	
 end
 
 function pluto.inv.writeplayercardreq(ply)
 	net.WriteEntity(ply)
+end
+
+pluto.playercards = {cache = {}, waiting = {}}
+
+local function cachePlayercard(ply)
+	if not IsValid(ply) then return end
+	pluto.playercards.cache[ply:SteamID64()] = {
+		valid = true,
+		playtime = net.ReadUInt(32), 
+		IsValid = function(self)
+			return self.valid
+		end
+	}
 end
 
 local PANEL = {}
@@ -143,6 +147,17 @@ end
 
 function PANEL:SetPlayer(ply)
 	self.Player = ply
+	pluto.inv.readplayercardinfo = function()
+		if not IsValid(self) then return end
+		cachePlayercard(ply)
+		self:PlayerInfo()
+	end
+
+	pluto.inv.message()
+		:write("playercardreq", ply)
+	:send()
+
+	self.Player = ply
 	self.Username:SetText(ply:GetName())
 	self.Username:SizeToContents()
 	self.SteamID:SetText(ply:SteamID())
@@ -171,7 +186,21 @@ function PANEL:SetPlayer(ply)
 	self.Rank:SetText(hook.Run("TTTGetRankPrintName", ply:GetUserGroup()) or ply:GetUserGroup())
 	self.Rank:SizeToContents()
 
-	self.Playtime:SetText(admin.nicetimeshort(net.ReadUInt(32)))
+	self.Playtime:SetText("Loading...")
+	self.Playtime:SizeToContentsX()
+
+	local x,_,y = self.TextContainer:GetDockMargin()
+	local u,_,v = self.InfoContainer:GetDockPadding()
+	self:SetWide(self.Username:GetWide() + self.Level:GetWide() + self.Avatar:GetWide() + x + y + u + v + self.Level:GetDockMargin())
+
+	if (IsValid(pluto.playercards.cache[ply:SteamID64()])) then
+		self:PlayerInfo()
+	end
+end
+
+function PANEL:PlayerInfo()
+	local cache = pluto.playercards.cache[self.Player:SteamID64()]
+	self.Playtime:SetText(admin.nicetimeshort(cache.playtime))
 	self.Playtime:SizeToContentsX()
 
 	local x,_,y = self.TextContainer:GetDockMargin()
@@ -196,37 +225,34 @@ end)]]
 
 hook.Add("TTTRWScoreboardPlayer", "pluto_level", function(ply, add, self)
 	function self.Avatar:OnCursorEntered()
-		print("CURSOR ENTER")
 		if (pluto.scoreboard_playercard != nil) then
 			pluto.scoreboard_playercard:Remove()
 			pluto.scoreboard_playercard = nil
 		end
 
-		pluto.ui.playercard(ply, function(card)
-			pluto.scoreboard_playercard = card
-			local x, y = input.GetCursorPos()
-			card:SetPos(x, y + 20)
-			card:MakePopup()
-			card:SetKeyboardInputEnabled(false)
-			card:MoveToFront()
+		local card = pluto.ui.playercard(ply)
+		pluto.scoreboard_playercard = card
+		local x, y = input.GetCursorPos()
+		card:SetPos(x, y + 25)
+		card:MakePopup()
+		card:SetKeyboardInputEnabled(false)
+		card:MoveToFront()
 
-			card.Think = function(card)
-				if (!self:IsHovered() or pluto.scoreboard_playercard ~= card) then
-					card:Remove()
-					pluto.scoreboard_playercard = nil
-				else if (input.IsMouseDown(MOUSE_LEFT)) then
-					local steamid = ply:SteamID64() or ""
-						gui.OpenURL("https://steamcommunity.com/profiles/" .. steamid)
-					end
+		card.Think = function(card)
+			if (!self:IsHovered() or pluto.scoreboard_playercard ~= card) then
+				card:Remove()
+				pluto.scoreboard_playercard = nil
+			else if (input.IsMouseDown(MOUSE_LEFT)) then
+				local steamid = ply:SteamID64() or ""
+					gui.OpenURL("https://steamcommunity.com/profiles/" .. steamid)
 				end
 			end
-		end)
+		end
 	end
 
 	function self.Avatar:OnCursorMoved(x, y)
-		print("CURSOR MOVE")
 		if (pluto.scoreboard_playercard != nil) then
-			pluto.scoreboard_playercard:SetPos(self:LocalToScreen(x, y + 20))
+			pluto.scoreboard_playercard:SetPos(self:LocalToScreen(x, y + 25))
 		end
 	end
 
