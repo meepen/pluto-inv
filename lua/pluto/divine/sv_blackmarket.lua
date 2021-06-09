@@ -102,7 +102,7 @@ local options = {
 		}, pluto.inv.item_mt)
 	},
 	{
-		Shares = 3,
+		Shares = 1,
 		Price = 435,
 		Item = setmetatable({
 			Type = "Weapon",

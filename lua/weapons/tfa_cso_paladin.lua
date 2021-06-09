@@ -30,7 +30,7 @@ SWEP.Primary.Automatic = true
 SWEP.Secondary.Delay = 45
 SWEP.Secondary.Duration = 6
 SWEP.Secondary.Sound1 = "Weapon_Mortar.Single"
-SWEP.Secondary.Sound2 = "TripwireGrenade.ShootRope"
+--SWEP.Secondary.Sound2 = "TripwireGrenade.ShootRope"
 SWEP.Secondary.KillCooldown = 0.5
 SWEP.Secondary.KillExtension = 0.5
 SWEP.AllowDrop = true
@@ -215,12 +215,12 @@ local function CreateShadow(self, ply)
 
 	local rope = constraint.Rope(self.Anchor, rgd, 0, 0, vector_origin, vector_origin,
 		10, 10, 0,
-		10, "cable/xbeam", false)
+		2, "models/props_combine/stasisshield_sheet", false)
 
 	rgd.IsSafeToRemove = true
 	rgd:SetName("DissolveID" .. rgd:EntIndex())
 	--MakeGold(rgd, "models/player/shared/steel_player")
-	rgd:SetMaterial("cable/xbeam")
+	rgd:SetMaterial("models/props_combine/stasisshield_sheet")
 
 	self.Ragdoll = rgd
 end
@@ -237,11 +237,15 @@ function SWEP:SecondaryAttack()
 	if (self:GetCharge() == 1 and not self:GetDashed()) then
 		local ply = self:GetOwner()
 
-		if (not IsValid(ply) or not ply:Alive() or CurTime() - last_dash < 0.1) then
+		if (not IsValid(ply) or not ply:Alive() or CurTime() - last_dash < 0.3) then
 			return
 		end
 
 		last_dash = CurTime()
+
+		if (CLIENT) then
+			return
+		end
 
 		local dashVelocity = ply:GetVelocity()
 		dashVelocity.z = 0
@@ -251,11 +255,6 @@ function SWEP:SecondaryAttack()
 			ply:SetVelocity(dashVelocity * 1500)
 		else
 			ply:SetVelocity(dashVelocity * 200)
-		end
-		print("ADDING VELOCITY")
-
-		if (CLIENT) then
-			return
 		end
 
 		self:SetDashed(true)
@@ -309,7 +308,8 @@ function SWEP:DoThink()
 		self:SetDashed(false)
 
 		timer.Simple(0.01, function()
-			self:EmitSound(self.Secondary.Sound2)
+			self:EmitSound(self.Secondary.Sound1)
+			--self:EmitSound(self.Secondary.Sound2)
 		end)
 
 		timer.Create(tostring(self) .. "Returning", 0.01, 0, function()
@@ -318,12 +318,11 @@ function SWEP:DoThink()
 			if (not IsValid(ply) or not ply:Alive() or count > reps) then
 				timer.Remove(tostring(self) .. "Returning")
 				self.AllowDrop = true
-				self:StopSound(self.Secondary.Sound2)
+				--self:StopSound(self.Secondary.Sound2)
 				self.Primary.Damage = self.Primary.BaseDamage
 				if (IsValid(self.Ragdoll)) then
 					BLINK_DISSOLVER:Fire("Dissolve", "DissolveID" .. self.Ragdoll:EntIndex(), 0.01)
 					self.Ragdoll = nil
-					-- Remove connection if dissolving doesn't automatically do it
 				end
 				return
 			end
