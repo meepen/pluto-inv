@@ -16,7 +16,7 @@ SWEP.Slot = 2
 SWEP.Primary.Sound = Sound("Paladin.Fire")
 
 SWEP.Primary.Delay = 0.15
-SWEP.Primary.BaseDamage = 25
+SWEP.Primary.BaseDamage = 20
 SWEP.Primary.DashBonus = 5
 SWEP.Primary.KillBonus = 5
 SWEP.Primary.Damage = SWEP.Primary.BaseDamage
