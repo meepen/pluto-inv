@@ -84,7 +84,6 @@ function SWEP:Initialize()
 			if (IsValid(self:GetOwner()) and IsValid(vic) and self:GetOwner() == vic and self.Ragdoll) then
 				BLINK_DISSOLVER:Fire("Dissolve", "DissolveID" .. self.Ragdoll:EntIndex(), 0.01)
 				self.Ragdoll = nil
-				-- Remove connection
 				return
 			end
 
@@ -213,9 +212,7 @@ local function CreateShadow(self, ply)
 		end
 	end
 
-	local rope = constraint.Slider(self.Anchor, rgd, 0, 0, vector_origin, vector_origin,
-		--10, 10, 0,
-		2, "cable/physbeam") --, false)--]]
+	local rope = constraint.Slider(self.Anchor, rgd, 0, 0, vector_origin, vector_origin, 5, "cable/physbeam")
 
 	rgd.IsSafeToRemove = true
 	rgd:SetName("DissolveID" .. rgd:EntIndex())
@@ -242,32 +239,30 @@ function SWEP:SecondaryAttack()
 
 		last_dash = CurTime()
 
-		if (CLIENT) then
-			return
-		end
-
-		local dashVelocity = ply:GetVelocity()
+		--[[local dashVelocity = ply:GetVelocity()
 		dashVelocity.z = 0
 		dashVelocity = dashVelocity:GetNormalized()
+		ply:SetVelocity(-1 * ply:GetVelocity())
 		if (ply:OnGround()) then
 			dashVelocity.z = 0.15
 			ply:SetVelocity(dashVelocity * 1500)
 		else
-			ply:SetVelocity(dashVelocity * 100)
-		end
+			ply:SetVelocity(dashVelocity * 200)
+		end--]]
 
-		--[[hook.Add("TTTUpdatePlayerSpeed", self, function(self, ply, data)
-			print(self:GetOwner(), ply)
+		hook.Add("TTTUpdatePlayerSpeed", self, function(self, ply, data)
 			if (self:GetOwner() == ply) then
-				print("speedying " .. ply:Nick())
-				data.paladin = 3
+				data.paladin = 1.5
 			end
 		end)
 
-		timer.Simple(0.3, function()
-			print("removing speedy hook")
+		timer.Simple(1, function()
 			hook.Remove("TTTUpdatePlayerSpeed", self)
-		end)--]]
+		end)
+
+		if (CLIENT) then
+			return
+		end
 
 		self:SetDashed(true)
 		self.AllowDrop = false
@@ -313,7 +308,7 @@ function SWEP:DoThink()
 			return
 		end
 		
-		local reps = math.Clamp(dist / 80, 5, 60) + 10
+		local reps = math.Clamp(dist / 80, 5, 60) + 20
 		local count = 0
 
 		self:SetDashed(false)
