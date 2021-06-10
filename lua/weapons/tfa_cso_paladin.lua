@@ -27,11 +27,14 @@ SWEP.Primary.Ammo = "ar2"
 
 SWEP.Primary.Automatic = true
 
-SWEP.Secondary.Delay = 45
+SWEP.Secondary.Delay = 40
 SWEP.Secondary.Duration = 6
 SWEP.Secondary.Sound1 = "Weapon_Mortar.Single"
 SWEP.Secondary.KillCooldown = 0.5
 SWEP.Secondary.KillExtension = 0.5
+
+SWEP.Secondary.Automatic = false
+
 SWEP.AllowDrop = true
 
 SWEP.ViewModel = "models/weapons/tfa_cso/c_paladin.mdl"
@@ -229,10 +232,11 @@ end
 local last_dash = 0
 
 function SWEP:SecondaryAttack()
+	self:SetNextSecondaryFire(CurTime() + 0.25)
 	if (self:GetCharge() == 1 and not self:GetDashed()) then
 		local ply = self:GetOwner()
 
-		if (not IsValid(ply) or not ply:Alive() or CurTime() - last_dash < 0.3) then
+		if (not IsValid(ply) or not ply:Alive() or CurTime() - last_dash < 0.25) then
 			return
 		end
 
@@ -265,7 +269,7 @@ function SWEP:SecondaryAttack()
 		end)
 
 		CreateShadow(self, ply)
-	elseif (self:GetDashed()) then
+	elseif (self:GetDashed() and (CurTime() - last_dash) >= 0.25 and SERVER) then
 		self:SetCharge(0)
 	end
 end
@@ -276,11 +280,15 @@ function SWEP:DoThink()
 		self.Anchor:SetAngles(self:GetOwner():GetAngles())
 	end
 
-	if (not timer.Exists(tostring(self) .. "Returning") and not self:GetDashed() and self:GetCharge() ~= 1) then
+	if (timer.Exists(tostring(self) .. "Returning")) then
+		return
+	end
+
+	if (not self:GetDashed() and self:GetCharge() ~= 1) then
 		self:SetCharge(math.min(1, self:GetCharge() + FrameTime() / self.Secondary.Delay))
-	elseif (not timer.Exists(tostring(self) .. "Returning") and self:GetDashed() and self:GetCharge() ~= 0) then
+	elseif (self:GetDashed() and self:GetCharge() ~= 0) then
 		self:SetCharge(math.max(0, self:GetCharge() - FrameTime() / self.Secondary.Duration))
-	elseif (not timer.Exists(tostring(self) .. "Returning") and self:GetDashed() and self:GetCharge() == 0) then
+	elseif (self:GetDashed() and self:GetCharge() == 0) then
 		local ply = self:GetOwner()
 
 		if (not IsValid(ply) or not ply:Alive() or not self.ReturnPos or not self.ReturnEyeAngles --[[or not self.ReturnVelocity]]) then
