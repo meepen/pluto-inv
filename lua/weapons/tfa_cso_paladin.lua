@@ -30,7 +30,6 @@ SWEP.Primary.Automatic = true
 SWEP.Secondary.Delay = 45
 SWEP.Secondary.Duration = 6
 SWEP.Secondary.Sound1 = "Weapon_Mortar.Single"
---SWEP.Secondary.Sound2 = "TripwireGrenade.ShootRope"
 SWEP.Secondary.KillCooldown = 0.5
 SWEP.Secondary.KillExtension = 0.5
 SWEP.AllowDrop = true
@@ -180,10 +179,10 @@ local function CreateShadow(self, ply)
 	end
 
 	rgd:SetAngles(ply:GetAngles())
+	rgd:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 	rgd:Spawn()
 	rgd:Activate()
 	rgd:SetGravity(0)
-	rgd:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 	rgd:SetMaxHealth(10000)
 	rgd:SetHealth(10000)
 	rgd.Owner = ply
@@ -206,17 +205,17 @@ local function CreateShadow(self, ply)
 
 			phys:EnableMotion(false)
 
-			timer.Simple(0.1, function()
+			timer.Simple(0.01, function()
 				phys:Sleep()
 			end)
 		end
 	end
 
-	local rope = constraint.Slider(self.Anchor, rgd, 0, 0, vector_origin, vector_origin, 5, "cable/physbeam")
+	local rope = constraint.Slider(self.Anchor, rgd, 0, 0, vector_origin, vector_origin, 2, "models/props_combine/tprings_globe")
 
 	rgd.IsSafeToRemove = true
 	rgd:SetName("DissolveID" .. rgd:EntIndex())
-	rgd:SetMaterial("cable/physbeam")
+	rgd:SetMaterial("models/props_combine/tprings_globe")
 
 	self.Ragdoll = rgd
 end
@@ -239,7 +238,7 @@ function SWEP:SecondaryAttack()
 
 		last_dash = CurTime()
 
-		--[[local dashVelocity = ply:GetVelocity()
+		local dashVelocity = ply:GetVelocity()
 		dashVelocity.z = 0
 		dashVelocity = dashVelocity:GetNormalized()
 		ply:SetVelocity(-1 * ply:GetVelocity())
@@ -249,16 +248,6 @@ function SWEP:SecondaryAttack()
 		else
 			ply:SetVelocity(dashVelocity * 200)
 		end
-
-		hook.Add("TTTUpdatePlayerSpeed", self, function(self, ply, data)
-			if (self:GetOwner() == ply) then
-				data.paladin = 1.5
-			end
-		end)
-
-		timer.Simple(1, function()
-			hook.Remove("TTTUpdatePlayerSpeed", self)
-		end)--]]
 
 		if (CLIENT) then
 			return
@@ -316,6 +305,14 @@ function SWEP:DoThink()
 		timer.Simple(0.01, function()
 			self:EmitSound(self.Secondary.Sound1)
 		end)
+
+		if (math.abs(oldEyeAngles.yaw - self.ReturnEyeAngles.yaw) > 180) then
+			if (oldEyeAngles.yaw <= 0) then
+				oldEyeAngles.yaw = oldEyeAngles.yaw + 360
+			else
+				oldEyeAngles.yaw = oldEyeAngles.yaw - 360
+			end
+		end
 
 		timer.Create(tostring(self) .. "Returning", 0.01, 0, function()
 			count = count + 1
