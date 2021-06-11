@@ -4,13 +4,17 @@ pluto.divine = pluto.divine or {}
 local options = {
 	brainegg = {
 		Shares = 100,
-		Amount = {4, 10},
-		Ratio = {375, 410},
+		Amount = {1, 3},
+		Ratio = {75, 85},
+		--Amount = {4, 10},
+		--Ratio = {375, 410},
 	},
 	crate1 = {
 		Shares = 100,
-		Amount = {4, 10},
-		Ratio = {375, 410},
+		Amount = {1, 3},
+		Ratio = {75, 85},
+		--Amount = {4, 10},
+		--Ratio = {375, 410},
 	},
 	mirror = {
 		Shares = 1,
@@ -20,12 +24,26 @@ local options = {
 	crate3 = {
 		Shares = 10,
 		Amount = {1, 2},
-		Ratio = {265, 290},
+		Ratio = {55, 65},
+		--Amount = {1, 2},
+		--Ratio = {265, 290},
 	},
 	crate3_n = {
 		Shares = 80,
-		Amount = {4, 10},
-		Ratio = {265, 290},
+		Amount = {1, 3},
+		Ratio = {55, 65},
+		--Amount = {4, 10},
+		--Ratio = {265, 290},
+	},
+	crate0 = {
+		Shares = 50,
+		Amount = {1, 3},
+		Ratio = {25, 35},
+	},
+	crate2 = {
+		Shares = 50,
+		Amount = {1, 3},
+		Ratio = {25, 35},
 	}
 }
 
@@ -42,6 +60,7 @@ end
 
 pluto.divine.currency_exchange = pluto.divine.currency_exchange or {
 	Offers = {
+		generate(),
 		generate(),
 		generate(),
 	}

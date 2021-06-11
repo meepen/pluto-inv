@@ -111,6 +111,16 @@ local options = {
 			Tier = pluto.tiers.byname.legendary,
 		}, pluto.inv.item_mt)
 	},
+	{
+		Shares = 1,
+		Price = 415,
+		Item = setmetatable({
+			Type = "Weapon",
+			Mods = {},
+			ClassName = "tfa_cso_paladin",
+			Tier = pluto.tiers.byname.legendary,
+		}, pluto.inv.item_mt)
+	},
 }
 
 pluto.divine = pluto.divine or {}
