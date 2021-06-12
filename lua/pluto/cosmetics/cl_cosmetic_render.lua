@@ -105,9 +105,8 @@ cvars.AddChangeCallback(pluto_cosmetic_level:GetName(), function(cv, old, new)
 end)
 
 hook.Add("PreRender", "pluto_cosmetics", function()
-	return -- TODO(meep) (added by Addi) Temporarily removed because I deployed on accident
 	-- TODO(meep): different cosmetic levels will be handled in cosmetics themselves
-	if (pluto_cosmetic_level:GetInt() ~= 0) then
+	if (pluto_cosmetic_level:GetInt() ~= 0 or true) then-- TODO(meep) (added by Addi) Temporarily removed because I deployed on accident
 		return
 	end
 
