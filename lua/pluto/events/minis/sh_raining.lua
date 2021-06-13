@@ -16,7 +16,7 @@ if (SERVER) then
 
 		pluto.rounds.minis.raining = nil
 
-		ttt.chat(white_text, "It's ", pluto.currency.byname.droplet.Color, "pouring", white_text, " outside!")
+		pluto.rounds.Notify("It's pouring droplets!", pluto.currency.byname.droplet.Color)
 
 		local count = #player.GetHumans()
 

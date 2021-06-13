@@ -14,6 +14,7 @@ util.AddNetworkString "cheer_data"
 ROUND.Boss = true
 
 local colors = {"blue", "green", "red", "yellow"}
+local WriteRoundData = pluto.rounds.WriteRoundData
 
 function ROUND:Prepare(state)
 	timer.Create("pluto_event_timer", 5, 0, function()
@@ -127,9 +128,9 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 			
 			net.Start "cheer_data"
 				net.WriteString "message"
-				net.WriteString "The cheer that's here is great combined; the toys this tool will help you find!"
 				net.WriteBool(true)
 			net.Broadcast()
+			pluto.rounds.Notify("Toy radar unlocked!", ttt.roles.Innocent.Color)
 		end,
 		false,
 		function(state)
@@ -137,9 +138,9 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 			
 			net.Start "cheer_data"
 				net.WriteString "message"
-				net.WriteString "To locate the player that you seek, use this radar to get a peek!"
 				net.WriteBool(true)
 			net.Broadcast()
+			pluto.rounds.Notify("Friend finder unlocked!", ttt.roles["S.A.N.T.A. Agent"].Color)
 		end,
 		false,
 		function(state)
@@ -147,9 +148,9 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 
 			net.Start "cheer_data"
 				net.WriteString "message"
-				net.WriteString "You've already got all you need, so here's a little boost of speed!"
 				net.WriteBool(true)
 			net.Broadcast()
+			pluto.rounds.Notify("Speed boost unlocked!", ttt.roles.Innocent.Color)
 		end,
 	}
 
@@ -181,34 +182,13 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 			Color = table.Random(colors),
 		}
 		
-		net.Start "cheer_data"
-			net.WriteString "target"
-			net.WriteString(state.target[ply].Player:Nick())
-		net.Send(ply)
-		
-		net.Start "cheer_data"
-			net.WriteString "color"
-			net.WriteString(state.target[ply].Color)
-		net.Send(ply)
+		WriteRoundData("target", state.target[ply].Player:Nick(), ply)
+		WriteRoundData("color", state.target[ply].Color, ply)
 	end
 
-	pluto.rounds.WriteData("cheer", 0)
-	pluto.rounds.WriteData("collected", false)
-	pluto.rounds.WriteData("bonus", state.bonus)
-	--[[net.Start "cheer_data"
-		net.WriteString "cheer"
-		net.WriteUInt(0, 32)
-	net.Broadcast()
-
-	net.Start "cheer_data"
-		net.WriteString "collected"
-		net.WriteBool(false)
-	net.Broadcast()
-
-	net.Start "cheer_data"
-		net.WriteString "bonus"
-		net.WriteUInt(state.bonus, 32)
-	net.Broadcast()--]]
+	WriteRoundData("reward", 0)
+	WriteRoundData("collected", false)
+	WriteRoundData("bonus", state.bonus)
 
 	GetConVar("ttt_karma"):SetBool(false)
 
@@ -230,22 +210,11 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 				}
 
 				state.collected[ply] = nil
-				
-				net.Start "cheer_data"
-					net.WriteString "target"
-					net.WriteString(state.target[ply].Player:Nick())
-				net.Send(ply)
-				
-				net.Start "cheer_data"
-					net.WriteString "color"
-					net.WriteString(state.target[ply].Color)
-				net.Send(ply)
+
+				WriteRoundData("target", state.target[ply].Player:Nick(), ply)
+				WriteRoundData("color", state.target[ply].Color, ply)
 	
-				pluto.rounds.WriteData("found", false, ply)
-				--[[net.Start "cheer_data"
-					net.WriteString "found"
-					net.WriteBool(false)
-				net.Send(ply)--]]
+				WriteRoundData("found", false, ply)
 			end
 		end
 	end)
@@ -273,11 +242,12 @@ function ROUND:UpdateScore(state, ply)
 			state.rewards[1](state)
 		else
 			state.reward = state.reward + 1
+			WriteRoundData("reward", state.reward)
 			net.Start "cheer_data"
 				net.WriteString "message"
-				net.WriteString "Our spirits you have worked to lift, so at the end you get a gift!"
 				net.WriteBool(true)
 			net.Broadcast()
+			pluto.rounds.Notify("New present earned!", pluto.currency.byname.xmas2020.Color, nil)
 		end
 
 		if (#state.rewards > 0) then
@@ -286,22 +256,13 @@ function ROUND:UpdateScore(state, ply)
 	else
 		net.Start "cheer_data"
 			net.WriteString "message"
-			net.WriteString "Because of your efforts, we've reason to revel, our cheer unmatched on a new level!"
 			net.WriteBool(true)
 		net.Send(ply)
+			pluto.rounds.Notify("Great job, now look for another!", nil, ply, true)
 	end
 
-	pluto.rounds.WriteData("cheer", state.cheer)
-	pluto.rounds.WriteData("bonus", state.bonus)
-	--[[net.Start "cheer_data"
-		net.WriteString "cheer"
-		net.WriteUInt(state.cheer, 32)
-	net.Broadcast()
-
-	net.Start "cheer_data"
-		net.WriteString "bonus"
-		net.WriteUInt(state.bonus, 32)
-	net.Broadcast()--]]
+	WriteRoundData("cheer", state.cheer)
+	WriteRoundData("bonus", state.bonus)
 
 	hook.Run("PlutoToyDelivered", ply)
 end
@@ -361,10 +322,9 @@ function ROUND:TTTEndRound(state)
 				togive = math.min(state.scores[ply], state.reward)
 			end
 
-			ply:ChatPrint(white_text, "For the way your team did work, have a gift as a perk!")
 			pluto.db.instance(function(db)
 				pluto.inv.addcurrency(db, ply, self.Reward, togive)
-				ply:ChatPrint(white_text, togive, " ", pluto.currency.byname[self.Reward], togive > 1 and "s" or "", white_text, togive > 1 and " are" or " is", " now yours for reaching such a level of scores")
+				pluto.rounds.Notify("Presents earned: " .. tostring(togive), pluto.currency.byname[self.Reward].Color, ply)
 			end)
 		end
 	end
@@ -392,34 +352,24 @@ ROUND:Hook("PlutoToyPickup", function(self, state, ply, color, cur)
 		end
 	end
 
-	if (state.target[ply] and state.target[ply].Color == color) then
-		if (state.collected[ply] == true) then
-			net.Start "cheer_data"
-				net.WriteString "message"
-				net.WriteString "You have got a toy already, fix your eyes and keep them steady!"
-				net.WriteBool(false)
-			net.Send(ply)
-			return
-		end
-
-		state.collected[ply] = true
-		
-		pluto.rounds.WriteData("found", true, ply)
-		--[[net.Start "cheer_data"
-			net.WriteString "found"
-			net.WriteBool(true)
-		net.Send(ply)--]]
-
+	if (state.collected[ply] == true) then
 		net.Start "cheer_data"
 			net.WriteString "message"
-			net.WriteString "Your findings here I do commend, now take this toy right to your friend!"
+			net.WriteBool(false)
 		net.Send(ply)
+		pluto.rounds.Notify("You already have a toy!", ttt.roles.Traitor.Color, ply, true)
+	elseif (state.target[ply] and state.target[ply].Color == color) then
+		state.collected[ply] = true
+		
+		WriteRoundData("found", true, ply)
+
+		pluto.rounds.Notify("Got it, now find your friend!", nil, ply, true)
 	else
 		net.Start "cheer_data"
 			net.WriteString "message"
-			net.WriteString "Are you sure you're not too chilly? That's the wrong color, please don't be silly!"
 			net.WriteBool(false)
 		net.Send(ply)
+		pluto.rounds.Notify("That's the wrong color!", ttt.roles.Traitor.Color, ply, true)
 	end
 end)
 
@@ -462,17 +412,13 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 
 	state.collected[vic] = nil
 	
-	pluto.rounds.WriteData("found", false, vic)
-	--[[net.Start "cheer_data"
-		net.WriteString "found"
-		net.WriteBool(false)
-	net.Send(vic)--]]
+	WriteRoundData("found", false, vic)
 
 	net.Start "cheer_data"
 		net.WriteString "message"
-		net.WriteString "It seems that as your life has flopped, so too the toy you had was dropped."
 		net.WriteBool(false)
 	net.Send(vic)
+	pluto.rounds.Notify("You dropped your toy!", ttt.roles.Traitor.Color, vic, true)
 end)
 
 ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)

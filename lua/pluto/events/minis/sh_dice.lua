@@ -18,8 +18,8 @@ if (SERVER) then
 
         pluto.rounds.minis.dice = nil
 
-        ttt.chat(pluto.currency.byname.dice.Color, "Chance Dice", white_text, " have spawned around the map!")
-
+        pluto.rounds.Notify("Chance Dice have spawned around the map!", pluto.currency.byname._chancedice.Color)
+        
         local count = #player.GetHumans()
 
         for _, ply in pairs(player.GetHumans()) do

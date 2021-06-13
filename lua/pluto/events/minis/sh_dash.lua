@@ -71,7 +71,7 @@ if (SERVER) then
             net.WriteFloat(pluto.rounds.speeds[dasher])
         net.Send(dasher)
 
-        ttt.chat(Color(255, 128, 0), dasher:Nick(), " has stolen your models! Kill them to get back your look!")
+        pluto.rounds.Notify(dasher:Nick() .. " has stolen your models! Kill them to get back your look!", Color(255, 128, 0))
 
         local models = {}
 
@@ -90,16 +90,17 @@ if (SERVER) then
             end
         end)
 
-        hook.Add("DoPlayerDeath", "pluto_mini_dash", function(ply, att, dmg)
-            if (not IsValid(ply) or ply ~= dasher) then
+        hook.Add("DoPlayerDeath", "pluto_mini_dash", function(vic, att, dmg)
+            if (not IsValid(vic) or vic ~= dasher) then
                 return
             end
-            
-            ttt.chat(Color(255, 128, 0), dasher:Nick(), " has been vanquished! Your model has been returned.")
 
             for _, ply in ipairs(player.GetAll()) do
                 if (IsValid(ply) and ply:Alive() and models[ply]) then
                     ply:SetModel(models[ply])
+                    pluto.rounds.Notify(dasher:Nick() .. " has been killed! Your model has been returned.", Color(255, 128, 0), ply)
+                else
+                    pluto.rounds.Notify(dasher:Nick() .. " has been killed!", Color(255, 128, 0), ply)
                 end
             end
 

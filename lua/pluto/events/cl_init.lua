@@ -35,15 +35,50 @@ pluto.rounds.AppendStats = function(str, size, y, col)
 	return y + doDraw(str, size, 5, y, col, TEXT_ALIGN_LEFT)
 end
 
+local top_limit = 100
+local top_time = 1
+local time_limit = 8
+local round_notifications = {}
+
+pluto.rounds.Notify = function(message, color, short)
+	table.insert(round_notifications, 1, {
+		String = message,
+		Color = color,
+		Short = short,
+		Time = CurTime(),
+	})
+
+	print(message)
+end
+
+hook.Add("HUDPaint", "round_notify", function()
+	y = ScrH() + 20
+	for k, msg in ipairs(round_notifications) do
+		if (k == #round_notifications and CurTime() - msg.Time >= time_limit) then
+			round_notifications[k] = nil
+			return
+		end
+
+		if (msg.Short and (CurTime() - msg.Time) >= time_limit / 2) then
+			continue
+		end
+
+		this_y = math.min(ScrH() - Lerp((CurTime() - msg.Time) / top_time, -20, top_limit), y)
+
+		local _, h = draw.SimpleTextOutlined(msg.String, "round_medium", ScrW() / 2, this_y, msg.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
+		y = this_y - h
+	end
+end)
+
 net.Receive("round_data", function()
 	if (not pluto.rounds.state) then
+		print("pluto.rounds.state not found")
 		return
 	end
 
 	local name = net.ReadString()
 	local typ = net.ReadString()
 	local var
-
 	if (typ == "string") then
 		var = net.ReadString()
 	elseif (typ == "number") then
@@ -55,21 +90,9 @@ net.Receive("round_data", function()
 	pluto.rounds.state[name] = var
 end)
 
-local top_limit = 100
-local top_time = 1
-local time_limit = 10
-
-pluto.rounds.Notify = function(message, color, speedy)
-	local start_time = CurTime()
-
-	hook.Add("HUDPaint", "round_notify", function()
-		draw.SimpleTextOutlined(message, "round_medium", ScrW() / 2, ScrH() - Lerp((CurTime() - start_time) / top_time * (speedy and 0.5 or 1), -20, top_limit), color or color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, color_black)
-	end)
-
-	timer.Simple(time_limit * (speedy and 0.5 or 1), function()
-		hook.Remove("HUDPaint", "round_notify")
-	end)
-end
+net.Receive("round_notify", function()
+	pluto.rounds.Notify(net.ReadString(), Color(net.ReadUInt(8), net.ReadUInt(8), net.ReadUInt(8)), net.ReadBool())
+end)
 
 --- Minis ---
 
@@ -95,7 +118,7 @@ function PANEL:ChangeText(text)
 	self:SetText(text)
 	local w, h = self:GetTextSize()
 	self:SetSize(w + 50, 75)
-	self:SetPos((ScrW() - (w + 50)) / 2, ScrH() - 200)
+	self:SetPos((ScrW() - (w + 50)) / 2, ScrH() - 300)
 end
 
 function PANEL:DoClick()

@@ -547,21 +547,21 @@ for name, values in pairs {
 				function()
 					ply:SetMaxHealth(ply:GetMaxHealth() + 10)
 					ply:SetHealth(ply:Health() + 10)
-					ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 1: Gain 10 Max Health!")
+					pluto.rounds.Notify("You rolled a 1: Gain 10 Max Health!", pluto.currency.byname._chancedice.Color, ply, true)
 				end,
 				function()
 					ply:SetJumpPower(ply:GetJumpPower() + 20)
-					ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 2: Gain Jump Power!")
+					pluto.rounds.Notify("You rolled a 2: Gain Jump Power!", pluto.currency.byname._chancedice.Color, ply, true)
 				end,
 				function()
 					ply:SetMaxArmor(ply:GetMaxArmor() + 10)
 					ply:SetArmor(ply:Armor() + 10)
-					ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 3: Gain 10 Armor!")
+					pluto.rounds.Notify("You rolled a 3: Gain 10 Armor!", pluto.currency.byname._chancedice.Color, ply, true)
 				end,
 				function()
 					pluto.db.instance(function(db)
 						pluto.inv.addcurrency(db, ply, "dice", 5)
-						ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 4: Gain 5 Dice!")
+						pluto.rounds.Notify("You rolled a 4: Gain 5 Dice!", pluto.currency.byname._chancedice.Color, ply, true)
 					end)
 				end,
 				function()
@@ -570,19 +570,20 @@ for name, values in pairs {
 						net.Start "mini_speed"
 							net.WriteFloat(pluto.rounds.speeds[ply])
 						net.Send(ply)
-						ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 5: Gain Speed!")
+						pluto.rounds.Notify("You rolled a 5: Gain Speed!", pluto.currency.byname._chancedice.Color, ply, true)
 					end
 				end,
 				function()
-					if (math.random() <= 0.005) then
-						ply:ChatPrint(color_black, "WHY DO YOU BOTHER ME WITH YOUR CHANCES AND DICE? BEGONE, GAMBLING ANNOYANCE!")
+					if (math.random() <= 0.01) then
+						pluto.rounds.Notify("WHY DO YOU BOTHER ME WITH YOUR DICE? BEGONE, BEFORE I STRIKE BACK!", color_black, ply, true)
 						return
 					end
+
 					local dmg = DamageInfo()
 					dmg:SetDamageType(DMG_BURN)
 					dmg:SetDamage(math.random(10, 30))
 					ply:TakeDamageInfo(dmg)
-					ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 6: Take Damage!")
+					pluto.rounds.Notify("You rolled a 6: Take Damage!", pluto.currency.byname._chancedice.Color, ply, true)
 				end,
 			}
 

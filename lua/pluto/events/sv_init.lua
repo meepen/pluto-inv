@@ -1,11 +1,12 @@
 util.AddNetworkString "round_data"
 util.AddNetworkString "mini_speed"
+util.AddNetworkString "round_notify"
 
 --- Rounds ---
 
 pluto.rounds = pluto.rounds or {}
 
-pluto.rounds.WriteData = function(name, arg, ply)
+pluto.rounds.WriteRoundData = function(name, arg, ply)
     net.Start "round_data"
         local typ = type(arg)
         net.WriteString(name)
@@ -17,6 +18,22 @@ pluto.rounds.WriteData = function(name, arg, ply)
         elseif (typ == "bool") then
             var = net.WriteBool(arg)
         end
+    if (IsValid(ply)) then
+        net.Send(ply)
+    else
+        net.Broadcast()
+    end
+end
+
+pluto.rounds.Notify = function(msg, col, ply, short)
+    col = col or color_white
+
+    net.Start "round_notify"
+        net.WriteString(msg)
+        net.WriteUInt(col.r, 8)
+        net.WriteUInt(col.g, 8)
+        net.WriteUInt(col.b, 8)
+        net.WriteBool(short or false)
     if (IsValid(ply)) then
         net.Send(ply)
     else

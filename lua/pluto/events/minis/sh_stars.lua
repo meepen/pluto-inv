@@ -16,8 +16,8 @@ if (SERVER) then
 
 		pluto.rounds.minis.stars = nil
 
-		ttt.chat(white_text, "It's ", pluto.currency.byname.stardust.Color, "shooting stars", white_text, "!")
-		
+		pluto.rounds.Notify("It's shooting stars!", pluto.currency.byname.stardust.Color)
+
 		local count = #player.GetHumans()
 
 		timer.Create("pluto_shooting_stars", math.max(3, 2 + count / 8), math.max(20 - count / 6, 15), function()
