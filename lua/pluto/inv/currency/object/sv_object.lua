@@ -41,9 +41,9 @@ function CURRENCY:TryReward(e)
 			end
 		end)
 		if ((grounddata.Amount or 1) > 1) then
-			e:ChatPrint(cur.Color, "+ ", white_text, "You have found " .. grounddata.Amount .. " ", cur)
+			e:ChatPrint(cur.Color, "+ ", white_text, "You have found ", cur, " × ", grounddata.Amount, ".")
 		else
-			e:ChatPrint(cur.Color, "+ ", white_text, "You have found ", startswithvowel(cur.Name) and "an " or "a ", cur)
+			e:ChatPrint(cur.Color, "+ ", white_text, "You have found ", startswithvowel(cur.Name) and "an " or "a ", cur, ".")
 		end
 	end
 

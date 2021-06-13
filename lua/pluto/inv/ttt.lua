@@ -144,7 +144,7 @@ hook.Add("TTTEndRound", "pluto_endround", function()
 		end
 		pluto.db.instance(function(db)
 			pluto.inv.addcurrency(db, ply, "endround", 1)
-			ply:ChatPrint(white_text, "You obtained a ", pluto.currency.byname.endround)
+			ply:ChatPrint(white_text, "You obtained ", pluto.currency.byname.endround, " × 1.")
 		end)
 	end
 end)
