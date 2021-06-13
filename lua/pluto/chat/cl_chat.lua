@@ -458,7 +458,8 @@ function PANEL:AddToText(text, what, index)
 		end
 
 		text:SetCurrentTextColor(self.PlayerColor)
-		self:AddToText(text, what:Nick(), index)
+		--self:AddToText(text, what:Nick(), index)
+		text:InsertPlayer(what)
 		text:SetCurrentTextColor(old)
 
 		if (index == 1) then
@@ -629,6 +630,21 @@ function PANEL:OnInput(text)
 	end
 	self.Input:SetText ""
 	self:EnableInput(false)
+end
+
+function PANEL:ChangeToTab(...)
+	if (IsValid(pluto.opened_showcase)) then
+		pluto.opened_showcase:Remove()
+	end
+
+	if (IsValid(pluto.opened_chat_player)) then
+		pluto.opened_chat_player:Remove()
+		print("yes")
+	end
+
+	DEFINE_BASECLASS("pluto_window")
+
+	BaseClass.ChangeToTab(self, unpack({...}))
 end
 
 vgui.Register("pluto_chatbox_new", PANEL, "pluto_window")

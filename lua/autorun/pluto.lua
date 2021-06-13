@@ -98,6 +98,8 @@ pluto.files.load {
 		"cl/vgui/showcase/weapon/bar.lua",
 		"cl/vgui/showcase/currency/container.lua",
 
+		"playercards/cl_cards.lua",
+
 		"chat/cl_chat.lua",
 
 		"trades/cl_trade_state.lua",

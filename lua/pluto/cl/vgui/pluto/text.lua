@@ -382,10 +382,46 @@ function PANEL:OnMousePressed(m)
 	end
 end
 
+function PANEL:InsertPlayer(ply)
+	self:InsertClickableTextStart(function()
+		if (IsValid(pluto.opened_chat_player)) then
+			pluto.opened_chat_player:Remove()
+		end
+
+		if (IsValid(pluto.opened_showcase)) then
+			pluto.opened_showcase:Remove()
+		end
+
+		local showcase = pluto.ui.playercard(ply)
+		pluto.opened_chat_player = showcase
+
+		local posx, posy = self:LocalToScreen(self:GetWide(), 0)
+		posx = posx + 50
+		posy = posy - 50
+		if (showcase:GetTall() + posy > ScrH()) then
+			posy = ScrH() - showcase:GetTall()
+		end
+		if (showcase:GetWide() + posx > ScrW()) then
+			posx = ScrW() - showcase:GetWide()
+		end
+		showcase:SetPos(posx, posy)
+		self.Showcase = showcase
+	end)
+
+	self:AppendText(ply:Nick())
+
+	self:InsertClickableTextEnd()
+end
+
 function PANEL:InsertShowcaseItem(item)
 	self:InsertClickableTextStart(function()
 		if (IsValid(pluto.opened_showcase)) then
 			pluto.opened_showcase:Remove()
+		end
+
+		if (IsValid(pluto.opened_chat_player)) then
+			pluto.opened_chat_player:Remove()
+			print("yes")
 		end
 
 		local showcase = pluto.ui.showcase(item)
@@ -640,6 +676,7 @@ end
 Proxy "AppendText"
 Proxy "AddImage"
 Proxy "AddImageFromURL"
+Proxy "InsertPlayer"
 Proxy "InsertShowcaseItem"
 
 

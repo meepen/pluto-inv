@@ -46,6 +46,9 @@ pluto.inv.messages = {
 		"gettrades",
 		"gettradesnapshot",
 
+		-- playercards
+		"playercardreq",
+
 		-- trade
 		"requesttrade",
 		"trademessage",
@@ -115,6 +118,9 @@ pluto.inv.messages = {
 		"tradelogsnapshot",
 		"traderequestinfo",
 
+		-- playercards
+		"playercardinfo",
+
 		-- trading
 		"trademessage",
 		"tradeupdate",
@@ -159,6 +165,8 @@ end)
 function pluto.inv.readmessage(cl)
 	local uid = net.ReadUInt(8)
 	local id = (SERVER and pluto.inv.messages.cl2sv or pluto.inv.messages.sv2cl)[uid]
+
+	if (id == nil) then return end
 
 	if (id == "end") then
 		pluto.inv.readend()
