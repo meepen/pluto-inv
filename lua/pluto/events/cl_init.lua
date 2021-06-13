@@ -1,3 +1,78 @@
+--- Rounds ---
+
+pluto.rounds = pluto.rounds or {}
+
+surface.CreateFont("round_small", {
+	font = "Roboto",
+	size = math.max(16, ScrH() * 0.025),
+})
+surface.CreateFont("round_medium", {
+	font = "Roboto",
+	size = math.max(20, ScrH() * 0.0375),
+})
+surface.CreateFont("round_large", {
+	font = "Roboto",
+	size = math.max(24, ScrH() * 0.05),
+})
+surface.CreateFont("round_header", {
+	font = "Lato",
+	size = math.max(28, ScrH() * 0.0625),
+})
+
+local fonts = {"round_small", "round_medium", "round_large", "round_header"}
+local outline_text = Color(12, 13, 15)
+
+local function doDraw(str, size, x, y, col, align)
+	local _, h = draw.SimpleTextOutlined(str, fonts[size], x, y, col or white_text, align, TEXT_ALIGN_CENTER, math.ceil(size / 2), outline_text)
+	return h
+end
+
+pluto.rounds.AppendHeader = function(str, size, y, col)
+	return y + doDraw(str, size, ScrW() / 2, y, col, TEXT_ALIGN_CENTER)
+end
+
+pluto.rounds.AppendStats = function(str, size, y, col)
+	return y + doDraw(str, size, 5, y, col, TEXT_ALIGN_LEFT)
+end
+
+net.Receive("round_data", function()
+	if (not pluto.rounds.state) then
+		return
+	end
+
+	local name = net.ReadString()
+	local typ = net.ReadString()
+	local var
+
+	if (typ == "string") then
+		var = net.ReadString()
+	elseif (typ == "number") then
+		var = net.ReadUInt(32)
+	elseif (typ == "bool") then
+		var = net.ReadBool()
+	end
+
+	pluto.rounds.state[name] = var
+end)
+
+local top_limit = 100
+local top_time = 1
+local time_limit = 10
+
+pluto.rounds.Notify = function(message, color, speedy)
+	local start_time = CurTime()
+
+	hook.Add("HUDPaint", "round_notify", function()
+		draw.SimpleTextOutlined(message, "round_medium", ScrW() / 2, ScrH() - Lerp((CurTime() - start_time) / top_time * (speedy and 0.5 or 1), -20, top_limit), color or color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, color_black)
+	end)
+
+	timer.Simple(time_limit * (speedy and 0.5 or 1), function()
+		hook.Remove("HUDPaint", "round_notify")
+	end)
+end
+
+--- Minis ---
+
 surface.CreateFont("pluto_mini_button", {
 	font = "Lato",
 	size = 25,

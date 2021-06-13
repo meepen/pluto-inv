@@ -84,9 +84,8 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	state.speed = 1.1
 	state.reward = 0
 	state.rewards = {
-		false,
 		function(state)
-			timer.Create("pluto_cheer_radar", 3, 0, function()
+			timer.Create("pluto_cheer_radar", 1.5, 0, function()
 				for k, ply in ipairs(state.players) do
 					if (not state.target[ply]) then
 						return
@@ -193,7 +192,10 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		net.Send(ply)
 	end
 
-	net.Start "cheer_data"
+	pluto.rounds.WriteData("cheer", 0)
+	pluto.rounds.WriteData("collected", false)
+	pluto.rounds.WriteData("bonus", state.bonus)
+	--[[net.Start "cheer_data"
 		net.WriteString "cheer"
 		net.WriteUInt(0, 32)
 	net.Broadcast()
@@ -206,7 +208,7 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	net.Start "cheer_data"
 		net.WriteString "bonus"
 		net.WriteUInt(state.bonus, 32)
-	net.Broadcast()
+	net.Broadcast()--]]
 
 	GetConVar("ttt_karma"):SetBool(false)
 
@@ -239,10 +241,11 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 					net.WriteString(state.target[ply].Color)
 				net.Send(ply)
 	
-				net.Start "cheer_data"
+				pluto.rounds.WriteData("found", false, ply)
+				--[[net.Start "cheer_data"
 					net.WriteString "found"
 					net.WriteBool(false)
-				net.Send(ply)
+				net.Send(ply)--]]
 			end
 		end
 	end)
@@ -288,7 +291,9 @@ function ROUND:UpdateScore(state, ply)
 		net.Send(ply)
 	end
 
-	net.Start "cheer_data"
+	pluto.rounds.WriteData("cheer", state.cheer)
+	pluto.rounds.WriteData("bonus", state.bonus)
+	--[[net.Start "cheer_data"
 		net.WriteString "cheer"
 		net.WriteUInt(state.cheer, 32)
 	net.Broadcast()
@@ -296,7 +301,7 @@ function ROUND:UpdateScore(state, ply)
 	net.Start "cheer_data"
 		net.WriteString "bonus"
 		net.WriteUInt(state.bonus, 32)
-	net.Broadcast()
+	net.Broadcast()--]]
 
 	hook.Run("PlutoToyDelivered", ply)
 end
@@ -399,10 +404,11 @@ ROUND:Hook("PlutoToyPickup", function(self, state, ply, color, cur)
 
 		state.collected[ply] = true
 		
-		net.Start "cheer_data"
+		pluto.rounds.WriteData("found", true, ply)
+		--[[net.Start "cheer_data"
 			net.WriteString "found"
 			net.WriteBool(true)
-		net.Send(ply)
+		net.Send(ply)--]]
 
 		net.Start "cheer_data"
 			net.WriteString "message"
@@ -456,10 +462,11 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 
 	state.collected[vic] = nil
 	
-	net.Start "cheer_data"
+	pluto.rounds.WriteData("found", false, vic)
+	--[[net.Start "cheer_data"
 		net.WriteString "found"
 		net.WriteBool(false)
-	net.Send(vic)
+	net.Send(vic)--]]
 
 	net.Start "cheer_data"
 		net.WriteString "message"

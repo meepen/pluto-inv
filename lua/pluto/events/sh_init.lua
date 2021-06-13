@@ -52,10 +52,11 @@ for _, mini in ipairs {
 	include(fname)
 end
 
+--- Rounds ---
+
 local ROUND_DATA = {}
 pluto.rounds.mt = pluto.rounds.mt or {}
 pluto.rounds.mt.__index = ROUND_DATA
-
 
 function ROUND_DATA:Hook(event, func)
 	self.Hooks = self.Hooks or {}
@@ -105,7 +106,7 @@ end
 
 function pluto.rounds.prepare(name)
 	if (not SERVER) then
-		return
+		return false, "Server function only"
 	end
 
 	local event = pluto.rounds.byname[name]
@@ -124,7 +125,17 @@ function pluto.rounds.prepare(name)
 
 	ttt.SetNextRoundEvent(name)
 
-	return true
+	return true, "NextRoundEvent set to " .. name
+end
+
+function pluto.rounds.clear()
+	if (not SERVER) then
+		return false, "Server function only"
+	end
+
+	ttt.SetNextRoundEvent("")
+
+	return true, "NextRoundEvent cleared"
 end
 
 hook.Add("TTTPrepareNetworkingVariables", "pluto_event", function(vars)
@@ -149,6 +160,7 @@ hook.Add("TTTGetHiddenPlayerVariables", "pluto_event", function(vars)
 end)
 
 hook.Add("OnNextRoundEventChange", "pluto_event", function(old, new)
+	print("NextRoundEvent has changed from " .. old .. " to " .. new)
 	local event = pluto.rounds.get(new)
 	if (event and event.NotifyPrepare) then
 		event:NotifyPrepare()
@@ -213,6 +225,8 @@ hook.Add("TTTEndRound", "pluto_event_manager", function()
 	ttt.SetCurrentRoundEvent ""
 end)
 
+--- Minis ---
+
 pluto.rounds.speeds = {}
 
 hook.Add("TTTUpdatePlayerSpeed", "pluto_mini_speeds", function(ply, data)
@@ -222,26 +236,3 @@ end)
 hook.Add("TTTEndRound", "pluto_remove_minis", function()
 	pluto.rounds.speeds = {}
 end)
-
-if (SERVER) then
-	util.AddNetworkString "mini_speed"
-	concommand.Add("pluto_prepare_round", function(ply, cmd, args)
-		if (not pluto.cancheat(ply) or not args[1]) then
-			return
-		end
-
-		pluto.rounds.prepare(args[1])
-	end)
-
-	pluto.rounds.minis = {}
-
-	concommand.Add("pluto_prepare_mini", function(ply, cmd, args)
-		if (not pluto.cancheat(ply) or not args[1]) then
-			return
-		end
-
-		pluto.rounds.minis[args[1]] = true
-		pluto.rounds.args = args
-		ply:ChatPrint("The " .. tostring(args[1]) .. " mini-event will take place next round.")
-	end)
-end

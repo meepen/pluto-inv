@@ -79,6 +79,10 @@ function ROUND:Prepare(state)
 end
 
 ROUND:Hook("HUDPaint", function(self, state)
+	if (not pluto.rounds.state) then
+		return
+	end
+	
 	if (ttt.GetRoundState() == ttt.ROUNDSTATE_PREPARING) then
 		RenderHeader(state)
 	elseif (ttt.GetRoundState() == ttt.ROUNDSTATE_ACTIVE) then

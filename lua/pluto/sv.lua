@@ -37,6 +37,8 @@ pluto.files.load {
 		"quests/sv_quest_networking.lua",
 		"quests/sv_quests.lua",
 		"quests/sv_quest_rewards.lua",
+		
+		"events/sv_init.lua",
 
 		"inv/currency/sv_currency.lua",
 		"inv/currency/sv_crossmap.lua",
@@ -107,4 +109,12 @@ concommand.Add("pluto_reload", function(ply)
 
 	include "autorun/pluto.lua"
 	BroadcastLua [[include "autorun/pluto.lua"]]
+end)
+
+concommand.Add("pluto_end_round", function(ply)
+    if (not pluto.cancheat(ply) or ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE) then
+        return
+    end
+
+	round.SetRoundEndTime(CurTime() + 1)
 end)
