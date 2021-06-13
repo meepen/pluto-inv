@@ -238,7 +238,7 @@ hook.Add("TTTRWScoreboardPlayer", "pluto_level", function(ply, add, self)
 		local x, y = input.GetCursorPos()
 		card:SetPos(x, y + 25)
 		card:MakePopup()
-		--card:SetKeyboardInputEnabled(false)
+		card:SetKeyboardInputEnabled(false)
 		card:MoveToFront()
 
 		card.Think = function(card)
