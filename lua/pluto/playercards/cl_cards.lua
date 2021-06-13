@@ -238,10 +238,11 @@ hook.Add("TTTRWScoreboardPlayer", "pluto_level", function(ply, add, self)
 		local x, y = input.GetCursorPos()
 		card:SetPos(x, y + 25)
 		card:MakePopup()
-		card:SetKeyboardInputEnabled(false)
+		--card:SetKeyboardInputEnabled(false)
 		card:MoveToFront()
 
 		card.Think = function(card)
+			card:MoveToFront()
 			if (!self:IsHovered() or pluto.scoreboard_playercard ~= card) then
 				card:Remove()
 				pluto.scoreboard_playercard = nil
