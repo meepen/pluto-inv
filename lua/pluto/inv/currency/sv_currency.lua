@@ -547,21 +547,21 @@ for name, values in pairs {
 				function()
 					ply:SetMaxHealth(ply:GetMaxHealth() + 10)
 					ply:SetHealth(ply:Health() + 10)
-					ply:ChatPrint(white_text, "You gained max health!!")
+					ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 1: Gain 10 Max Health!")
 				end,
 				function()
 					ply:SetJumpPower(ply:GetJumpPower() + 20)
-					ply:ChatPrint(white_text, "You gained jump power!")
+					ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 2: Gain Jump Power!")
 				end,
 				function()
 					ply:SetMaxArmor(ply:GetMaxArmor() + 10)
 					ply:SetArmor(ply:Armor() + 10)
-					ply:ChatPrint(white_text, "You gained 10 armor!!")
+					ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 3: Gain 10 Armor!")
 				end,
 				function()
 					pluto.db.instance(function(db)
-						pluto.inv.addcurrency(db, ply, "dice", 10)
-						ply:ChatPrint(white_text, "You got an additional 10 ", pluto.currency.byname.dice, white_text, "!")
+						pluto.inv.addcurrency(db, ply, "dice", 5)
+						ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 4: Gain 5 Dice!")
 					end)
 				end,
 				function()
@@ -570,22 +570,21 @@ for name, values in pairs {
 						net.Start "mini_speed"
 							net.WriteFloat(pluto.rounds.speeds[ply])
 						net.Send(ply)
-						ply:ChatPrint(white_text, "You gained speed!")
+						ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 5: Gain Speed!")
 					end
 				end,
 				function()
+					if (math.random() <= 0.005) then
+						ply:ChatPrint(color_black, "WHY DO YOU BOTHER ME WITH YOUR CHANCES AND DICE? BEGONE, GAMBLING ANNOYANCE!")
+						return
+					end
 					local dmg = DamageInfo()
 					dmg:SetDamageType(DMG_BURN)
-					dmg:SetDamage(math.random(20, 40))
+					dmg:SetDamage(math.random(10, 30))
 					ply:TakeDamageInfo(dmg)
-					ply:ChatPrint(white_text, "Uh oh, looks like that was a bad one!")
+					ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 6: Take Damage!")
 				end,
 			}
-
-			pluto.db.instance(function(db)
-				pluto.inv.addcurrency(db, ply, "dice", 1)
-				ply:ChatPrint(white_text, "You got a ", pluto.currency.byname.dice, white_text, "!")
-			end)
 
 			chances[math.random(6)]()
 

@@ -847,7 +847,7 @@ local list = {
 		InternalName = "_chancedice",
 		Name = "Chance Dice",
 		Icon = "pluto/currencies/chancedice.png",
-		Color = Color(255, 208, 86),
+		Color = Color(255, 175, 75),
 		Fake = true,
 		SkipNotify = true
 	},
