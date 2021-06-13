@@ -87,7 +87,7 @@ function PANEL:SetItem(item)
 
 	self:InvalidateLayout(true)
 	self:InvalidateChildren(true)
-	self.NameContainer:SetColor(item.Model.Color)
+	self.NameContainer:SetColor(item.Model.Color or color_white)
 	
 	self.PlayerModel:SetPlutoModel(item.Model or pluto.models.default, item)
 	self.Name:SetText(item:GetPrintName())
