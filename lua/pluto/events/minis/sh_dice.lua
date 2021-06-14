@@ -12,7 +12,7 @@ if (SERVER) then
             return
         end
 
-        if (not pluto.rounds.minis.dice and math.random(30) ~= 1) then
+        if (not pluto.rounds.minis.dice and math.random(40) ~= 1) then
             return
         end
 

@@ -38,14 +38,14 @@ end
 function ROUND:Loadout(ply)
 	ply:StripWeapons()
 	pluto.NextWeaponSpawn = false
-	ply:Give "weapon_ttt_unarmed"
+	ply:Give "weapon_noise_nitro"
 end
 
 ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 	for i, ply in ipairs(plys) do
 		ply:StripWeapons()
 		pluto.NextWeaponSpawn = false
-		ply:Give "weapon_ttt_unarmed"
+		ply:Give "weapon_noise_nitro"
 
 		round.Players[i] = {
 			Player = ply,
@@ -374,7 +374,7 @@ ROUND:Hook("PlutoToyPickup", function(self, state, ply, color, cur)
 end)
 
 ROUND:Hook("PlayerCanPickupWeapon", function(self, state, ply, wep)
-	return wep:GetClass() == "weapon_ttt_unarmed"
+	return wep:GetClass() == "weapon_noise_nitro"
 end)
 
 ROUND:Hook("TTTHasRoundBeenWon", function(self, state)

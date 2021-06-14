@@ -17,12 +17,14 @@ local function RenderHeader(state)
 	local y = ScrH() / 10
 	y = AppendHeader("Find the right toy to bring back some joy!", 4, y, AgentColor)
 
-	if (state.bonus) then
-		y = AppendHeader(string.format("%i more scored to get a reward!", state.bonus), 1, y)
+	if (state.color and not state.found) then
+		y = AppendHeader("Find a " .. state.color .. " toy!", 3, y)
+	elseif (state.target) then
+		y = AppendHeader("Find " .. state.target .. "!", 3, y)
 	end
 
-	if (state.message) then
-		y = AppendHeader(state.message, 2, y)
+	if (state.bonus) then
+		y = AppendHeader(string.format("%i more scored to get a reward!", state.bonus), 1, y, ChildColor)
 	end
 end
 

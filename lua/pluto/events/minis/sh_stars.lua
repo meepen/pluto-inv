@@ -10,7 +10,7 @@ if (SERVER) then
 			return
 		end
 
-		if (not pluto.rounds.minis.stars and math.random(30) ~= 1) then
+		if (not pluto.rounds.minis.stars and math.random(40) ~= 1) then
 			return
 		end
 

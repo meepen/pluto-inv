@@ -581,7 +581,7 @@ for name, values in pairs {
 
 					local dmg = DamageInfo()
 					dmg:SetDamageType(DMG_BURN)
-					dmg:SetDamage(math.random(10, 30))
+					dmg:SetDamage(math.random(15, 30))
 					ply:TakeDamageInfo(dmg)
 					pluto.rounds.Notify("You rolled a 6: Take Damage!", pluto.currency.byname._chancedice.Color, ply, true)
 				end,

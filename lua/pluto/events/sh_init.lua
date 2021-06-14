@@ -40,6 +40,11 @@ for _, mini in ipairs {
 	"dice",
 	"stars",
 	"dash",
+	"hops",
+	"panic",
+	"leak",
+	"jugg",
+	"die",
 } do
 	local fname = "pluto/events/minis/sh_" .. mini .. ".lua"
 	if (not file.Exists (fname, "LUA")) then
