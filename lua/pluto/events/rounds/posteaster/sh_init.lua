@@ -1,9 +1,10 @@
 ROUND.PrintName = "Bunny Attack"
+ROUND.Author = "Meepen"
 ROUND.Type = "Special"
 
 function ROUND:TTTPrepareRoles(Team, Role)
 	Role("Bunny", "traitor")
-		:SetColor(Color(235, 70, 150, 255))
+		:SetColor(Color(235, 70, 150))
 		:SetCalculateAmountFunc(function(total_players)
 			return 0
 		end)
@@ -15,4 +16,4 @@ function ROUND:TTTPrepareRoles(Team, Role)
 		:SetCalculateAmountFunc(function(total_players)
 			return 0
 		end)
-end
+end 

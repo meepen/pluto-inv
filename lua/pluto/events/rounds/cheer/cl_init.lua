@@ -131,5 +131,6 @@ end)
 function ROUND:NotifyPrepare()
 	ChildColor = ttt.roles.Child.Color
 	AgentColor = ttt.roles["S.A.N.T.A. Agent"].Color
+
 	pluto.rounds.Notify("In the distance, bells begin to jingle...", AgentColor)
 end

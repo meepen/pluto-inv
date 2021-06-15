@@ -1,5 +1,7 @@
 -- Author: add___123
 
+local time_limit = 15
+
 if (SERVER) then
     util.AddNetworkString "pluto_mini_dash"
     resource.AddFile "materials/pluto/roles/dasher.png"
@@ -52,7 +54,7 @@ if (SERVER) then
 
         net.Start "pluto_mini_dash"
         net.Send(dasher)
-        time = CurTime() + 15
+        time = CurTime() + time_limit
 
         pluto.rounds.args = {}
     end)
@@ -118,7 +120,7 @@ else
         dashbutton:ChangeMini "dash"
         dashbutton.FillColor = Color(255, 128, 0)
 
-        timer.Simple(14, function()
+        timer.Simple(time_limit - 1, function()
             if (IsValid(dashbutton)) then
                 dashbutton:Remove()
             end

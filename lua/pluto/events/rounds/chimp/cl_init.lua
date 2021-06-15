@@ -62,5 +62,6 @@ function ROUND:NotifyPrepare()
 	MonkeColor = ttt.roles.Monke.Color
 	BossColor = ttt.roles["Banna Boss"].Color
 	AgentColor = ttt.roles["S.A.N.T.A. Agent"].Color
+
 	pluto.rounds.Notify("OOK! OOK! AH AH AH!", MonkeColor)
 end

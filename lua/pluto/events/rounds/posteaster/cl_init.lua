@@ -1,81 +1,51 @@
---
-surface.CreateFont("posteaster_header", {
-	font = "Lato",
-	size = math.max(24, ScrH() * 0.05),
-})
-surface.CreateFont("posteaster_small", {
-	font = "Roboto",
-	size = math.max(16, ScrH() * 0.025),
-})
+local AppendHeader = pluto.rounds.AppendHeader
+local AppendStats = pluto.rounds.AppendStats
+local BunnyColor
+local ChildColor
 
-local outline_text = Color(12, 13, 15)
+local function RenderIntro()
+	local y = ScrH() / 10
+
+	y = AppendHeader("The bunnies want their eggs back...", 4, y, BunnyColor)
+	y = AppendHeader("Children have misused the treasures inside the eggs and they want them back!", 2, y, ChildColor)
+end
 
 local function RenderHeader()
 	local y = ScrH() / 10
-	local _, h = draw.SimpleTextOutlined("The bunnies want their eggs back...", "posteaster_header", ScrW() / 2, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, outline_text)
-	y = y + h
 
-	_, h = draw.SimpleTextOutlined("Children have misused the treasures inside of their eggs and now they want them back.", "posteaster_small", ScrW() / 2, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
-end
+	local team = LocalPlayer():GetRoleTeam()
 
-local function RenderRole()
-	local ply = ttt.GetHUDTarget()
-	if (not IsValid(ply) or not ply:Alive()) then
-		return
-	end
-
-	local team = ply:GetRoleTeam()
-	local data = ply:GetRoleData()
-
-	local y = ScrH() / 10
-	local x = ScrW() / 2
-	local _, h
 	if (team == "innocent") then
-		_, h = draw.SimpleTextOutlined("You are a child.", "posteaster_header", x, y, data.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, outline_text)
-		y = y + h
-	
-		_, h = draw.SimpleTextOutlined("Protect your eggs at all costs.", "posteaster_small", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
+		y = AppendHeader("You are a child.", 4, y, ChildColor)
+		y = AppendHeader("Protect your eggs at all costs!", 2, y)
 	else
-		_, h = draw.SimpleTextOutlined("You are a bunny.", "posteaster_header", x, y, data.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, outline_text)
-		y = y + h
-	
-		_, h = draw.SimpleTextOutlined("Take your eggs back.", "posteaster_small", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
-		y = y + h
-
-		_, h = draw.SimpleTextOutlined("Cooperate with other bunnies to succeed.", "posteaster_small", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
-		y = y + h
+		y = AppendHeader("You are a bunny.", 4, y, BunnyColor)
+		y = AppendHeader("Take your eggs back!", 2, y)
 	end
 end
 
 local function RenderStats(state)
 	local y = ScrH() / 5
-	local x = 4
-	local _, h
-	if (state.total_lives_left) then
-		_, h = draw.SimpleTextOutlined(string.format("%i bunnies remaining", state.total_lives_left), "posteaster_small", x, y, ttt.roles.Bunny.Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, outline_text)
-		y = y + h
+
+	if (state.total_lives) then
+		y = AppendHeader(string.format("%i bunnies remaining", state.total_lives), 1, y, BunnyColor)
 	end
 
-	if (state.currency_left) then
-		_, h = draw.SimpleTextOutlined(string.format("%i eggs remaining", state.currency_left), "posteaster_small", x, y, ttt.roles.Child.Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, outline_text)
-		y = y + h
+	if (state.lives) then
+		y = AppendHeader(string.format("yYou have %i lives left", state.lives), 1, y, BunnyColor)
 	end
 
-	if (state.Start) then
-		_, h = draw.SimpleTextOutlined(string.format("%is until next wave", 11 - math.ceil((CurTime() - state.Start) % 10)), "posteaster_small", x, y, ttt.roles.Bunny.Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, outline_text)
-		y = y + h
+	if (state.left) then
+		y = AppendHeader(string.format("%i eggs remaining", state.left), 1, y, ChildColor)
+	end
+
+	if (state.start) then
+		y = AppendHeader(string.format("%is until next wave", 11 - math.ceil((CurTime() - state.start) % 10)), 1, y)
 	end
 end
 
-net.Receive("posteaster_data", function()
-	local str = net.ReadString()
-	if (str == "currency_left" or str == "lives_left" or str == "total_lives_left") then
-		pluto.rounds.state[str] = net.ReadUInt(32)
-	end
-end)
-
 function ROUND:Prepare(state)
-	state.Start = CurTime()
+	state.start = CurTime()
 end
 
 ROUND:Hook("HUDPaint", function(self, state)
@@ -84,9 +54,9 @@ ROUND:Hook("HUDPaint", function(self, state)
 	end
 	
 	if (ttt.GetRoundState() == ttt.ROUNDSTATE_PREPARING) then
-		RenderHeader(state)
+		RenderIntro(state)
 	elseif (ttt.GetRoundState() == ttt.ROUNDSTATE_ACTIVE) then
-		RenderRole(state)
+		RenderHeader(state)
 		RenderStats(state)
 	end
 end)
@@ -116,5 +86,8 @@ ROUND:Hook("CalcView", function(self, state, ply, pos, ang, fov, znear, zfar)
 end)
 
 function ROUND:NotifyPrepare()
-	chat.AddText(ttt.roles.Bunny.Color, "Bunnies", white_text, " whispers get louder..")
+	BunnyColor = ttt.roles.Bunny.Color
+	ChildColor = ttt.roles.Child.Color
+
+	pluto.rounds.Notify("Bunny whispers get louder...", BunnyColor)
 end
