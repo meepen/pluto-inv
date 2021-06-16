@@ -710,11 +710,10 @@ local list = {
 				Rare = true,
 				Shares = 1
 			},
-			tfa_cso_ethereal = {
+			--[[tfa_cso_ethereal = {
 				Rare = true,
 				Shares = 0--.1,
-			},
-
+			},--]]
 			tfa_cso_m82 = {
 				Tier = "unusual",
 				Shares = 150

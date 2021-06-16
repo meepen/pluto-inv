@@ -6,6 +6,7 @@ pluto.rounds.byname = pluto.rounds.byname or {}
 
 local random_rounds = {
 	"hotshot",
+	"blackmarket",
 }
 
 local event_rounds = {
@@ -173,7 +174,6 @@ hook.Add("TTTGetHiddenPlayerVariables", "pluto_event", function(vars)
 end)
 
 hook.Add("OnNextRoundEventChange", "pluto_event", function(old, new)
-	print("NextRoundEvent has changed from " .. old .. " to " .. new)
 	local event = pluto.rounds.get(new)
 	if (event and event.NotifyPrepare) then
 		event:NotifyPrepare()

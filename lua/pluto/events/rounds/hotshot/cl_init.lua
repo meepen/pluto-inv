@@ -20,8 +20,8 @@ end
 local function RenderStats(state)
 	local y = ScrH() / 5
 
-	if (state.leader and state.leaderpoints) then
-		y = AppendStats(string.format("%s is the Hotshot with %i points!", state.leader, state.leaderpoints), 1, y, HotshotColor)
+	if (state.leader and state.leaderscore) then
+		y = AppendStats(string.format("%s is the Hotshot with the most points: %i!", state.leader, state.leaderscore), 1, y, HotshotColor)
 	end
 
 	if (state.score) then

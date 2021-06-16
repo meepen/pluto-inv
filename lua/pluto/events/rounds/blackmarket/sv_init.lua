@@ -1,7 +1,49 @@
 ROUND.Reward = "tp"
 ROUND.WinnerEarnings = 25
-ROUND.WinnerBonus = 20
+ROUND.WinnerBonus = 10
 ROUND.EachDecrease = 5
+
+ROUND.Primaries = {
+	"weapon_ttt_ak47_u",
+	"weapon_ttt_chargeup",
+	"weapon_tfa_cso2_m3dragon",
+	"tfa_cso_darkknight_v6",
+	"tfa_cso_elvenranger",
+	"tfa_cso_skull5",
+	"tfa_cso_batista",
+	"tfa_cso_paladin",
+	"tfa_cso_starchaserar",
+	"tfa_cso_starchasersr",
+}
+
+ROUND.Secondaries = {
+	"weapon_ttt_deagle_u",
+	"tfa_cso_tbarrel",
+	"weapon_neszapper",
+	"weapon_raygun",
+	"weapon_ttt_deagle_gold",
+	"tfa_cso_skull1",
+	"tfa_cso_sapientia",
+}
+
+ROUND.Melees = {
+	"tfa_cso_tomahawk",
+	"tfa_cso_thanatos9",
+	"weapon_lightsaber_rainbow",
+	"weapon_lightsaber_rb",
+	"tfa_cso_skull9",
+}
+
+ROUND.Pickups = {}
+for k, v in ipairs(ROUND.Primaries) do
+	ROUND.Pickups[v] = true	
+end
+for k, v in ipairs(ROUND.Secondaries) do
+	ROUND.Pickups[v] = true	
+end
+for k, v in ipairs(ROUND.Melees) do
+	ROUND.Pickups[v] = true	
+end
 
 ROUND.Boss = true
 
@@ -9,10 +51,10 @@ local WriteRoundData = pluto.rounds.WriteRoundData
 
 function ROUND:Prepare(state)
 	timer.Create("pluto_event_timer", 5, 0, function()
-		if (not state.scores) then
+		if (not state.kills) then
 			return
 		end
-		for ply, count in pairs(state.scores) do
+		for ply, count in pairs(state.kills) do
 			if (IsValid(ply) and not ply:Alive()) then
 				ttt.ForcePlayerSpawn(ply)
 			end
@@ -29,10 +71,11 @@ end
 function ROUND:Loadout(ply)
 	ply:StripWeapons()
 	pluto.NextWeaponSpawn = false
-	ply:Give "weapon_ttt_deagle_hs"
-	ply:SetAmmo(1000, "AlyxGun")
+	ply:Give(table.Random(self.Primaries))
 	pluto.NextWeaponSpawn = false
-	ply:Give "weapon_ttt_crowbar"
+	ply:Give(table.Random(self.Secondaries))
+	pluto.NextWeaponSpawn = false
+	ply:Give(table.Random(self.Melees))
 end
 
 ROUND:Hook("TTTSelectRoles", function(self, state, plys)
@@ -43,29 +86,18 @@ ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 	}
 
 	for i, ply in ipairs(plys) do
-		local role, amt = next(roles_needed)
-		if (role) then
-			if (amt == 1) then
-				roles_needed[role] = nil
-			else
-				roles_needed[role] = amt - 1
-			end
-		else
-			role = "Innocent"
-		end
-
-		ply:StripWeapons()
 		pluto.NextWeaponSpawn = false
-		ply:Give "weapon_ttt_deagle_hs"
-		ply:SetAmmo(1000, "AlyxGun")
+		ply:Give(table.Random(self.Primaries))
 		pluto.NextWeaponSpawn = false
-		ply:Give "weapon_ttt_crowbar"
+		ply:Give(table.Random(self.Secondaries))
+		pluto.NextWeaponSpawn = false
+		ply:Give(table.Random(self.Melees))
 
 		round.Players[i] = {
 			Player = ply,
 			SteamID = ply:SteamID(),
 			Nick = ply:Nick(),
-			Role = ttt.roles[role]
+			Role = ttt.roles.Innocent
 		}
 	end
 
@@ -88,27 +120,19 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	end
 
 	local innos = round.GetActivePlayersByRole "Innocent"
-	local hotshot = round.GetActivePlayersByRole "Hotshot"
-	state.scores = {}
+	state.kills = {}
+	state.deaths = {}
 
 	for k, ply in pairs(innos) do
-		state.scores[ply] = 0
-		self:UpdateScore(state, ply, 0)
+		state.kills[ply] = 0
+		state.deaths[ply] = 0
+		WriteRoundData("kills", 0, ply)
+		WriteRoundData("deaths", 0, ply)
 		if (ply:Alive()) then
 			self:Initialize(state, ply)
 		end
-		ply:SetMaxHealth(10)
-		ply:SetHealth(10)
-	end
-
-	for k, ply in pairs(hotshot) do
-		state.scores[ply] = 0
-		self:UpdateScore(state, ply, 0)
-		if (ply:Alive()) then
-			self:Initialize(state, ply)
-		end
-		ply:SetMaxHealth(10)
-		ply:SetHealth(10)
+		ply:SetMaxHealth(100)
+		ply:SetHealth(100)
 	end
 
 	self:ChooseLeader(state)
@@ -133,30 +157,39 @@ end
 local last_notification = 0
 
 function ROUND:ChooseLeader(state)
-	local new = table.SortByKey(state.scores)[1]
+	local sorted = {}
+
+	for ply, kills in pairs(state.kills) do
+		table.insert(sorted, {
+			Player = ply,
+			Score = kills - (state.deaths[ply] or 0),
+		})
+	end
+
+	table.SortByMember(sorted, "Score")
+
+	local new = sorted[1].Player
 
 	if (not IsValid(new)) then
 		return
 	end
 
 	if (IsValid(state.leader) and new ~= state.leader) then
-		state.leader:SetRole("Innocent")
 		if (CurTime() - last_notification >= 0.25) then
 			last_notification = CurTime()
-			pluto.rounds.Notify(new:Nick() .. " has become the Hotshot! Kill them for double points!", ttt.roles.Hotshot.Color, nil, true)
+			pluto.rounds.Notify(string.format("%s has taken the lead!", new:Nick()), Color(255, 225, 75), nil, true)
 		end
 	end
 	
 	state.leader = new
-	new:SetRole("Hotshot")
 	WriteRoundData("leader", new:Nick())
-	WriteRoundData("leaderscore", state.scores[new])
+	WriteRoundData("leaderkills", state.kills[new])
 end
 
-function ROUND:UpdateScore(state, ply, amt)
-	state.scores[ply] = math.max(0, (state.scores[ply] or 0) + amt)
+function ROUND:UpdateScore(state, ply)
+	state.kills[ply] = (state.kills[ply] or 0) + 1
 
-	WriteRoundData("score", state.scores[ply], ply)
+	WriteRoundData("kills", state.kills[ply], ply)
 
 	self:ChooseLeader(state)
 end
@@ -169,8 +202,8 @@ ROUND:Hook("SetupMove", function(self, state, ply, mv)
 end)
 
 function ROUND:Spawn(state, ply)
-	ply:SetMaxHealth(10)
-	ply:SetHealth(10)
+	ply:SetMaxHealth(100)
+	ply:SetHealth(100)
 end
 
 ROUND:Hook("PlayerSpawn", ROUND.Spawn)
@@ -188,10 +221,10 @@ function ROUND:TTTEndRound(state)
 
 	local sorted = {}
 
-	for ply, score in pairs(state.scores) do
+	for ply, kills in pairs(state.kills) do
 		table.insert(sorted, {
 			Player = ply,
-			Score = score,
+			Score = kills - (state.deaths[ply] or 0),
 		})
 	end
 
@@ -211,13 +244,13 @@ function ROUND:TTTEndRound(state)
 	end
 
 	if (IsValid(state.leader)) then
-		pluto.rounds.Notify(state.leader:Nick() .. " is the true Hotshot!", ttt.roles.Hotshot.Color)
+		pluto.rounds.Notify(state.leader:Nick() .. " is the leading brawler!", Color(255, 225, 75))
 		pluto.db.instance(function(db)
 			pluto.inv.addcurrency(db, state.leader, self.Reward, self.WinnerBonus)
-			pluto.rounds.Notify(string.format("You get %i extra Refinium Vials claiming the title of Hotshot!", self.WinnerBonus), pluto.currency.byname[self.Reward].Color, state.leader)
+			pluto.rounds.Notify(string.format("You get %i extra Refinium Vials for winning!", self.WinnerBonus), pluto.currency.byname[self.Reward].Color, state.leader)
 		end)
 	else
-		pluto.rounds.Notify("No Hotshot here...")
+		pluto.rounds.Notify("No winners here...")
 	end
 
 	GetConVar("ttt_karma"):Revert()
@@ -226,7 +259,13 @@ function ROUND:TTTEndRound(state)
 end
 
 ROUND:Hook("PlayerCanPickupWeapon", function(self, state, ply, wep)
-	return wep:GetClass() == "weapon_ttt_deagle_hs" or wep:GetClass() == "weapon_ttt_crowbar"
+	for k, _wep in ipairs(ply:GetWeapons()) do
+		if wep:GetSlot() == _wep:GetSlot() then
+			return false
+		end		
+	end
+
+	return self.Pickups[wep:GetClass()] or false
 end)
 
 ROUND:Hook("TTTHasRoundBeenWon", function(self, state)
@@ -238,25 +277,28 @@ ROUND:Hook("TTTHasRoundBeenWon", function(self, state)
 end)
 
 ROUND:Hook("PlayerDisconnected", function(self, state, ply)
-	if (not state.scores or not state.scores[ply]) then
+	if (not state.kills or not state.kills[ply]) then
 		return
 	end
 
-	state.scores[ply] = nil
+	state.kills[ply] = nil
+	state.deaths[ply] = nil
 end)
 
 ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
-	if (not IsValid(vic) or not state.scores) then
+	if (not IsValid(vic) or not state.kills or not state.deaths) then
 		return
 	end
 
-	self:UpdateScore(state, vic, -1)
+	state.deaths[vic] = (state.deaths[vic] or 0) + 1
+
+	WriteRoundData("deaths", state.deaths[vic], vic)
 
 	if (not IsValid(atk) or not atk:IsPlayer() or vic == atk) then
 		return
 	end
 
-	self:UpdateScore(state, atk, atk:GetActiveWeapon():GetClass() == "weapon_ttt_crowbar" and 5 or 2)
+	self:UpdateScore(state, atk)
 end)
 
 ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)
