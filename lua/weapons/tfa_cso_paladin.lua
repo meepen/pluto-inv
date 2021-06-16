@@ -155,6 +155,12 @@ function SWEP:OnRemove()
 		if (IsValid(self.Anchor)) then
 			self.Anchor:Remove()
 		end
+
+		if (IsValid(self:GetOwner())) then
+			net.Start "paladin_duck"
+				net.WriteBool(false)
+			net.Send(self:GetOwner())
+		end
 	end
 end
 
@@ -242,6 +248,12 @@ function SWEP:SecondaryAttack()
 
 		last_dash = CurTime()
 
+		if (SERVER) then
+			self.ReturnPos = ply:GetPos()
+			self.ReturnEyeAngles = ply:EyeAngles()
+			self.Crouched = ply:Crouching()
+		end
+
 		local dashVelocity = ply:GetVelocity()
 		dashVelocity.z = 0
 		dashVelocity = dashVelocity:GetNormalized()
@@ -259,8 +271,6 @@ function SWEP:SecondaryAttack()
 
 		self:SetDashed(true)
 		self.AllowDrop = false
-		self.ReturnPos = ply:GetPos()
-		self.ReturnEyeAngles = ply:EyeAngles()
 
 		self.Primary.Damage = self.Primary.Damage + self.Primary.DashBonus
 
@@ -294,6 +304,7 @@ function SWEP:DoThink()
 		if (not IsValid(ply) or not ply:Alive() or not self.ReturnPos or not self.ReturnEyeAngles --[[or not self.ReturnVelocity]]) then
 			self:SetDashed(false)
 			self.AllowDrop = true
+			self.Crouched = ply:Crouching()
 			return
 		end
 
@@ -333,10 +344,23 @@ function SWEP:DoThink()
 					BLINK_DISSOLVER:Fire("Dissolve", "DissolveID" .. self.Ragdoll:EntIndex(), 0.01)
 					self.Ragdoll = nil
 				end
+				if (IsValid(ply) and ply:Alive()) then
+					ply:SetPos(self.ReturnPos)
+					ply:SetEyeAngles(self.ReturnEyeAngles)
+				end
+				net.Start "paladin_duck"
+					net.WriteBool(false)
+				net.Send(ply)
 				return
 			end
 
-			local newPos = Vector(Lerp(count / reps, oldPos.x, self.ReturnPos.x), Lerp(count / reps, oldPos.y, self.ReturnPos.y), Lerp(count / reps, oldPos.z, self.ReturnPos.z) + (5 * count / reps))
+			if (count / reps >= 0.9 and not ply:Crouching()) then
+				net.Start "paladin_duck"
+					net.WriteBool(true)
+				net.Send(ply)
+			end
+
+			local newPos = Vector(Lerp(count / reps, oldPos.x, self.ReturnPos.x), Lerp(count / reps, oldPos.y, self.ReturnPos.y), Lerp(count / reps, oldPos.z, self.ReturnPos.z))
 			local newEyeAngles = Angle(Lerp(count / reps, oldEyeAngles.p, self.ReturnEyeAngles.p), Lerp(count / reps, oldEyeAngles.y, self.ReturnEyeAngles.y), Lerp(count / reps, oldEyeAngles.r, self.ReturnEyeAngles.r))
 
 			ply:SetPos(newPos)
@@ -351,7 +375,9 @@ function SWEP:Holster( ... )
 	return BaseClass.Holster(self,...)
 end
 
-if (CLIENT) then
+if (SERVER) then
+	util.AddNetworkString "paladin_duck"
+else
 	function SWEP:DrawHUD()
 		local w = 15
 		local left = ScrW() / 2 - 50 - w / 2
@@ -375,4 +401,12 @@ if (CLIENT) then
 
 		BaseClass.DrawHUD(self)
 	end
+
+	net.Receive("paladin_duck", function()
+		if (net.ReadBool()) then
+			RunConsoleCommand "+duck"
+		else
+			RunConsoleCommand "-duck"
+		end
+	end)
 end
