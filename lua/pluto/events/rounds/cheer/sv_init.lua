@@ -1,6 +1,5 @@
 resource.AddFile("sound/pluto/cheersong.ogg")
 
-ROUND.Name = "Operation Cheer"
 ROUND.MinPlayers = 6
 ROUND.BaseToys = 3
 ROUND.ToysIncrement = 0.2

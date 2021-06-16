@@ -35,7 +35,6 @@ local function RenderStats(state)
 end
 
 function ROUND:Prepare(state)
-	state.Start = CurTime()
 	timer.Simple(5, function()
 		EmitSound("pluto/dkrap.ogg", vector_origin, -2, CHAN_STATIC, 1)
 	end)

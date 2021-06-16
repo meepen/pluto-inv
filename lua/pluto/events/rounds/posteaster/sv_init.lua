@@ -1,4 +1,3 @@
-ROUND.Name = "Bunny Attack"
 ROUND.EggsPerCluster = 8
 ROUND.EggSpread = 50
 ROUND.BunnyLives = 3

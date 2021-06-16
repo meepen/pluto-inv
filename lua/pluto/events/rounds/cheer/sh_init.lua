@@ -1,4 +1,5 @@
 ROUND.PrintName = "Operation Cheer"
+ROUND.Name = "Operation Cheer"
 ROUND.Author = "add___123"
 ROUND.Type = "Special"
 

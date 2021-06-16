@@ -4,11 +4,19 @@ pluto.rounds.files = pluto.rounds.files or {}
 
 pluto.rounds.byname = pluto.rounds.byname or {}
 
-for _, event in ipairs {
+local random_rounds = {
+	"hotshot",
+}
+
+local event_rounds = {
 	"posteaster",
 	"chimp",
 	"cheer",
-} do
+}
+
+table.Merge(event_rounds, random_rounds)
+
+for _, event in ipairs (event_rounds) do
 	local folder = "pluto/events/rounds/" .. event .. "/"
 
 	pluto.rounds.files[event] = {}

@@ -1,6 +1,5 @@
 resource.AddFile("sound/pluto/dkrap.ogg")
 
-ROUND.Name = "Monke Mania"
 ROUND.BananasPerPlayer = 6
 ROUND.KillSteal = 1
 ROUND.BananasForEgg = 5
@@ -117,7 +116,6 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		if IsValid(ply) then
 			state.playerscores[ply] = 0
 			state.lastactive[ply] = CurTime()
-			ply:SetNWInt("MonkeScore", 0)
 			local tospawn = self.BananasPerPlayer
 			while (tospawn > 0) do
 				tospawn = tospawn - 1
@@ -175,7 +173,6 @@ function ROUND:ChooseLeader(state)
 
 	if (IsValid(state.leader) and new ~= state.leader) then
 		state.leader:SetRole("Monke")
-		state.leader:SetModelScale(1, 0)
 		if (CurTime() - last_notification >= 0.25) then
 			last_notification = CurTime()
 			pluto.rounds.Notify(new:Nick() .. " new Banna Boss!", ttt.roles["Banna Boss"].Color, nil, true)
@@ -183,7 +180,6 @@ function ROUND:ChooseLeader(state)
 	end
 	
 	state.leader = new
-	--new:SetModelScale(1.2, 1)
 	new:SetRole("Banna Boss")
 	WriteRoundData("leader", new:Nick() .. " Banna Boss for hav " .. tostring(state.playerscores[new]) .. " banna")
 end
@@ -191,7 +187,6 @@ end
 function ROUND:UpdateScore(state, ply, amt)
 	state.playerscores[ply] = (state.playerscores[ply] or 0) + amt
 	state.lastactive[ply] = CurTime()
-	ply:SetNWInt("MonkeScore", state.playerscores[ply])
 
 	if (state.playerscores[ply] >= self.BananasForEgg and not state.rewarded[ply]) then
 		state.rewarded[ply] = true
@@ -239,8 +234,6 @@ function ROUND:TTTEndRound(state)
 	end
 
 	self:ChooseLeader(state)
-
-	state.leader:SetModelScale(1, 0)
 
 	for ply, score in pairs(state.playerscores) do
 		if (state.rewarded[ply]) then

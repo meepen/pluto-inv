@@ -1,4 +1,5 @@
 ROUND.PrintName = "Bunny Attack"
+ROUND.Name = "Bunny Attack"
 ROUND.Author = "Meepen"
 ROUND.Type = "Special"
 
