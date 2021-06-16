@@ -14,11 +14,11 @@ SWEP.Secondary.Sound = Sound("AlyxEMP.Charge")
 
 SWEP.Bullets = {
 	HullSize = 0,
-	Num = 10,
+	Num = 12,
 	DamageDropoffRange = 300,
 	DamageDropoffRangeMax = 1200,
 	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.16, 0.1),
+	Spread = Vector(0.15, 0.1),
 	TracerName = "tfa_tracer_incendiary"
 }
 
