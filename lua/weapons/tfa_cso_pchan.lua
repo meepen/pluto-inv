@@ -79,7 +79,7 @@ SWEP.Ortho = {-2, 8}
 DEFINE_BASECLASS(SWEP.Base)
 
 SWEP.BaseJump = 160
-SWEP.PerKill = 10
+SWEP.PerKill = 30
 
 function SWEP:SetupDataTables()
 	BaseClass.SetupDataTables(self)
