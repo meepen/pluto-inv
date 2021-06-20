@@ -7,6 +7,7 @@ pluto.rounds.byname = pluto.rounds.byname or {}
 local random_rounds = {
 	"hotshot",
 	"blackmarket",
+	"boom",
 }
 
 local event_rounds = {

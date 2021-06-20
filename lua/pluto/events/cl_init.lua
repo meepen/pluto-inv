@@ -51,6 +51,101 @@ pluto.rounds.Notify = function(message, color, short)
 	print(message)
 end
 
+local songs = {
+	{	
+		Name = "music/hl1_song10.mp3",
+		Length = 106,
+	},
+	{	
+		Name = "music/hl1_song14.mp3",
+		Length = 90,
+	},
+	{	
+		Name = "music/hl1_song15.mp3",
+		Length = 120,
+	},
+	{	
+		Name = "music/hl1_song17.mp3",
+		Length = 124,
+	},
+	{	
+		Name = "music/hl1_song25_remix3.mp3",
+		Length = 62,
+		Volume = 0.8
+	},
+	{	
+		Name = "music/hl2_song1.mp3",
+		Length = 100,
+	},
+	{	
+		Name = "music/hl2_song12_long.mp3",
+		Length = 72,
+		Volume = 0.8,
+	},
+	{
+		Name = "music/hl2_song14.mp3",
+		Length = 160,
+		Volume = 0.7,
+	},
+	{
+		Name = "music/hl2_song15.mp3",
+		Length = 70,
+		Volume = 0.7,
+	},
+	{
+		Name = "music/hl2_song16.mp3",
+		Length = 171,
+		Volume = 0.7,
+	},
+	{
+		Name = "music/hl2_song20_submix0.mp3",
+		Length = 100,
+	},
+	{
+		Name = "music/hl2_song20_submix4.mp3",
+		Length = 142,
+	},
+	{
+		Name = "music/hl2_song29.mp3",
+		Length = 130,
+	},
+	{
+		Name = "music/hl2_song3.mp3",
+		Length = 90,
+		Volume = 0.7,
+	},
+	{
+		Name = "music/hl2_song31.mp3",
+		Length = 100,
+		Volume = 0.8,
+	},
+	{
+		Name = "music/hl2_song33.mp3",
+		Length = 44,
+	},
+	{
+		Name = "music/hl2_song4.mp3",
+		Length = 65,
+	},
+}
+
+pluto.rounds.FillerMusic = function()
+	if (ttt.GetCurrentRoundEvent() == "" or timer.Exists "pluto_rounds_music") then
+		timer.Remove "pluto_rounds_music"
+		return
+	end
+
+	local song = table.Random(songs)
+	EmitSound(song.Name, vector_origin, -2, CHAN_STATIC, 0.5 * (song.Volume or 1))
+	print("Playing " .. song.Name)
+
+	timer.Create("pluto_rounds_music", song.Length, 1, pluto.rounds.FillerMusic)
+end
+
+hook.Add("TTTEndRound", "pluto_rounds_music", function()
+	timer.Remove "pluto_rounds_music" 
+end)
+
 hook.Add("HUDPaint", "round_notify", function()
 	y = ScrH() + 20
 	for k, msg in ipairs(round_notifications) do

@@ -102,9 +102,9 @@ net.Receive("cheer_data", function()
 end)
 
 ROUND:Hook("TTTBeginRound", function(self, state)
-	EmitSound("pluto/cheersong.ogg", vector_origin, -2, CHAN_STATIC, 1)
+	EmitSound("pluto/cheersong.ogg", vector_origin, -2, CHAN_STATIC, 0.7)
 	timer.Simple(85, function()
-		EmitSound("pluto/cheersong.ogg", vector_origin, -2, CHAN_STATIC, 1)
+		EmitSound("pluto/cheersong.ogg", vector_origin, -2, CHAN_STATIC, 0.7)
 	end)
 end)
 

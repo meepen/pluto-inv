@@ -27,6 +27,7 @@ end
 
 function ROUND:Finish()
 	timer.Remove "pluto_event_timer"
+	timer.Remove "pluto_monke_timer"
 end
 
 function ROUND:Loadout(ply)
@@ -256,7 +257,6 @@ function ROUND:TTTEndRound(state)
 
 	GetConVar("ttt_karma"):Revert()
 
-	timer.Remove("pluto_monke_timer")
 	timer.UnPause("tttrw_afk")
 end
 

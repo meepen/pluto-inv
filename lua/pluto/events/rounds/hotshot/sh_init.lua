@@ -9,4 +9,9 @@ function ROUND:TTTPrepareRoles(Team, Role)
 		:SetCalculateAmountFunc(function(total_players)
 			return 0
 		end)
+
+	Role("Fighter", "innocent")
+		:SetCalculateAmountFunc(function(total_players)
+			return 0
+		end)
 end

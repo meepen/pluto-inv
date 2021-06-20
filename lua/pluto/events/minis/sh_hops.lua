@@ -1,6 +1,8 @@
 -- Author: add___123
 
 if (SERVER) then
+    local last_hops = {}
+
     hook.Add("TTTBeginRound", "pluto_mini_hops", function()
         if (ttt.GetCurrentRoundEvent() ~= "") then
             return
@@ -16,7 +18,9 @@ if (SERVER) then
 
         pluto.rounds.minis.hops = nil
 
-        pluto.rounds.Notify("It's leg day! Each time you jump, you'll get even hoppier!", ttt.roles.Bunny.Color)
+        pluto.rounds.Notify("It's leg day! Each hop will make you hoppier!", Color(235, 70, 150))
+
+        last_hops = {}
 
         hook.Add("Move", "pluto_mini_hops", function(ply, mv)
             if (not ply:Alive() or ply:WaterLevel() >= 2) then
@@ -31,7 +35,12 @@ if (SERVER) then
                 return
             end
 
+            if (CurTime() - (last_hops[ply] or 0) < 0.25) then
+                return
+            end
+
             ply:SetJumpPower(ply:GetJumpPower() + 3)
+            last_hops[ply] = CurTime()
         end)
     end)
 

@@ -1,6 +1,5 @@
 ROUND.Reward = "tp"
 ROUND.WinnerEarnings = 25
-ROUND.WinnerBonus = 20
 ROUND.EachDecrease = 5
 
 ROUND.Boss = true
@@ -29,7 +28,13 @@ end
 function ROUND:Loadout(ply)
 	ply:StripWeapons()
 	pluto.NextWeaponSpawn = false
-	ply:Give "weapon_ttt_deagle_hs"
+	local wep = ply:Give "weapon_ttt_deagle"
+	wep.Primary.Damage        = 50
+	wep.Primary.Delay         = 1
+	wep.Primary.Recoil        = 4
+	wep.Primary.ClipSize      = 3
+	wep.Primary.DefaultClip   = 1000
+	wep:SetClip1(3)
 	ply:SetAmmo(1000, "AlyxGun")
 	pluto.NextWeaponSpawn = false
 	ply:Give "weapon_ttt_crowbar"
@@ -51,12 +56,17 @@ ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 				roles_needed[role] = amt - 1
 			end
 		else
-			role = "Innocent"
+			role = "Fighter"
 		end
 
 		ply:StripWeapons()
 		pluto.NextWeaponSpawn = false
-		ply:Give "weapon_ttt_deagle_hs"
+		local wep = ply:Give "weapon_ttt_deagle"
+		wep.Primary.Damage        = 50
+		wep.Primary.Delay         = 1
+		wep.Primary.Recoil        = 4
+		wep.Primary.ClipSize      = 3
+		wep.Primary.DefaultClip   = 1000
 		ply:SetAmmo(1000, "AlyxGun")
 		pluto.NextWeaponSpawn = false
 		ply:Give "weapon_ttt_crowbar"
@@ -87,11 +97,11 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		end
 	end
 
-	local innos = round.GetActivePlayersByRole "Innocent"
+	local fighters = round.GetActivePlayersByRole "Fighter"
 	local hotshot = round.GetActivePlayersByRole "Hotshot"
 	state.scores = {}
 
-	for k, ply in pairs(innos) do
+	for k, ply in pairs(fighters) do
 		state.scores[ply] = 0
 		self:UpdateScore(state, ply, 0)
 		if (ply:Alive()) then
@@ -116,8 +126,8 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	GetConVar("ttt_karma"):SetBool(false)
 	
 	timer.Simple(1, function()
-		round.SetRoundEndTime(CurTime() + 150)
-		ttt.SetVisibleRoundEndTime(CurTime() + 150)
+		round.SetRoundEndTime(CurTime() + 180)
+		ttt.SetVisibleRoundEndTime(CurTime() + 180)
 	end)
 end)
 
@@ -140,7 +150,7 @@ function ROUND:ChooseLeader(state)
 	end
 
 	if (IsValid(state.leader) and new ~= state.leader) then
-		state.leader:SetRole("Innocent")
+		state.leader:SetRole("Fighter")
 		if (CurTime() - last_notification >= 0.25) then
 			last_notification = CurTime()
 			pluto.rounds.Notify(new:Nick() .. " has become the Hotshot! Kill them for double points!", ttt.roles.Hotshot.Color, nil, true)
@@ -197,8 +207,14 @@ function ROUND:TTTEndRound(state)
 
 	table.SortByMember(sorted, "Score")
 
+	if (IsValid(state.leader)) then
+		pluto.rounds.Notify(state.leader:Nick() .. " is the true Hotshot!", ttt.roles.Hotshot.Color)
+	else
+		pluto.rounds.Notify("No Hotshot here...")
+	end
+
 	for k, entry in ipairs(sorted) do
-		local amt = self.WinnerEarnings - (k * self.EachDecrease)
+		local amt = self.WinnerEarnings - ((k - 1) * self.EachDecrease)
 
 		if (not IsValid(entry.Player) or amt <= 0) then
 			break 
@@ -206,18 +222,8 @@ function ROUND:TTTEndRound(state)
 
 		pluto.db.instance(function(db)
 			pluto.inv.addcurrency(db, entry.Player, self.Reward, amt)
-			pluto.rounds.Notify(string.format("You earned %i Refinium Vials for achieving place #%i!", amt, k), pluto.currency.byname[self.Reward].Color, entry.Player)
+			pluto.rounds.Notify(string.format("You earned %i Refinium Vials for placing #%i!", amt, k), pluto.currency.byname[self.Reward].Color, entry.Player)
 		end)
-	end
-
-	if (IsValid(state.leader)) then
-		pluto.rounds.Notify(state.leader:Nick() .. " is the true Hotshot!", ttt.roles.Hotshot.Color)
-		pluto.db.instance(function(db)
-			pluto.inv.addcurrency(db, state.leader, self.Reward, self.WinnerBonus)
-			pluto.rounds.Notify(string.format("You get %i extra Refinium Vials claiming the title of Hotshot!", self.WinnerBonus), pluto.currency.byname[self.Reward].Color, state.leader)
-		end)
-	else
-		pluto.rounds.Notify("No Hotshot here...")
 	end
 
 	GetConVar("ttt_karma"):Revert()
@@ -226,11 +232,11 @@ function ROUND:TTTEndRound(state)
 end
 
 ROUND:Hook("PlayerCanPickupWeapon", function(self, state, ply, wep)
-	return wep:GetClass() == "weapon_ttt_deagle_hs" or wep:GetClass() == "weapon_ttt_crowbar"
+	return wep:GetClass() == "weapon_ttt_deagle" or wep:GetClass() == "weapon_ttt_crowbar"
 end)
 
 ROUND:Hook("TTTHasRoundBeenWon", function(self, state)
-	if (#round.GetActivePlayersByRole "Innocent" == 0) then
+	if (#round.GetActivePlayersByRole "Fighter" == 0) then
 		return true, "traitor", false
 	end
 
@@ -238,11 +244,13 @@ ROUND:Hook("TTTHasRoundBeenWon", function(self, state)
 end)
 
 ROUND:Hook("PlayerDisconnected", function(self, state, ply)
-	if (not state.scores or not state.scores[ply]) then
+	if (not state.scores) then
 		return
 	end
 
 	state.scores[ply] = nil
+
+	ttt.CheckTeamWin()
 end)
 
 ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)

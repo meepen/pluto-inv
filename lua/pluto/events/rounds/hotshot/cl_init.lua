@@ -25,13 +25,13 @@ local function RenderStats(state)
 	end
 
 	if (state.score) then
-		y = AppendStats(string.format("You have %i points", state.score), 1, y)
+		y = AppendStats(string.format("Your points: %i", state.score), 1, y)
 	end
 end
 
---[[function ROUND:Prepare(state)
-
-end--]]
+ROUND:Hook("TTTBeginRound", function(self, state)	
+	pluto.rounds.FillerMusic()
+end)
 
 ROUND:Hook("HUDPaint", function(self, state)
 	if (not pluto.rounds.state) then

@@ -221,7 +221,9 @@ local function RagdollDissolveEffect(ply)
 			phys:EnableMotion(false)
 
 			timer.Simple(0.1, function()
-				phys:Sleep()
+				if IsValid(phys) then
+					phys:Sleep()
+				end
 			end)
 		end
 	end

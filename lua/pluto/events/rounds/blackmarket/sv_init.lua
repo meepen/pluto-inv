@@ -1,6 +1,5 @@
 ROUND.Reward = "tp"
 ROUND.WinnerEarnings = 25
-ROUND.WinnerBonus = 10
 ROUND.EachDecrease = 5
 
 ROUND.Primaries = {
@@ -36,13 +35,13 @@ ROUND.Melees = {
 
 ROUND.Pickups = {}
 for k, v in ipairs(ROUND.Primaries) do
-	ROUND.Pickups[v] = true	
+	ROUND.Pickups[v] = true
 end
 for k, v in ipairs(ROUND.Secondaries) do
-	ROUND.Pickups[v] = true	
+	ROUND.Pickups[v] = true
 end
 for k, v in ipairs(ROUND.Melees) do
-	ROUND.Pickups[v] = true	
+	ROUND.Pickups[v] = true
 end
 
 ROUND.Boss = true
@@ -76,14 +75,16 @@ function ROUND:Loadout(ply)
 	ply:Give(table.Random(self.Secondaries))
 	pluto.NextWeaponSpawn = false
 	ply:Give(table.Random(self.Melees))
+
+	for k, wep in ipairs(ply:GetWeapons()) do
+		if (wep.Primary and wep.Primary.Ammo and wep.Primary.Ammo ~= "none") then
+			ply:SetAmmo(500, wep.Primary.Ammo)
+		end
+	end
 end
 
 ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 	plys = table.shuffle(plys)
-
-	local roles_needed = {
-		Hotshot = 1,
-	}
 
 	for i, ply in ipairs(plys) do
 		pluto.NextWeaponSpawn = false
@@ -93,11 +94,17 @@ ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 		pluto.NextWeaponSpawn = false
 		ply:Give(table.Random(self.Melees))
 
+		for k, wep in ipairs(ply:GetWeapons()) do
+			if (wep.Primary and wep.Primary.Ammo and wep.Primary.Ammo ~= "none") then
+				ply:SetAmmo(500, wep.Primary.Ammo)
+			end
+		end
+
 		round.Players[i] = {
 			Player = ply,
 			SteamID = ply:SteamID(),
 			Nick = ply:Nick(),
-			Role = ttt.roles.Innocent
+			Role = ttt.roles.Fighter
 		}
 	end
 
@@ -119,11 +126,11 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		end
 	end
 
-	local innos = round.GetActivePlayersByRole "Innocent"
+	local fighters = round.GetActivePlayersByRole "Fighter"
 	state.kills = {}
 	state.deaths = {}
 
-	for k, ply in pairs(innos) do
+	for k, ply in pairs(fighters) do
 		state.kills[ply] = 0
 		state.deaths[ply] = 0
 		WriteRoundData("kills", 0, ply)
@@ -140,8 +147,8 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	GetConVar("ttt_karma"):SetBool(false)
 	
 	timer.Simple(1, function()
-		round.SetRoundEndTime(CurTime() + 150)
-		ttt.SetVisibleRoundEndTime(CurTime() + 150)
+		round.SetRoundEndTime(CurTime() + 180)
+		ttt.SetVisibleRoundEndTime(CurTime() + 180)
 	end)
 end)
 
@@ -168,7 +175,7 @@ function ROUND:ChooseLeader(state)
 
 	table.SortByMember(sorted, "Score")
 
-	local new = sorted[1].Player
+	local new = (sorted[1] and sorted[1].Player or nil)
 
 	if (not IsValid(new)) then
 		return
@@ -269,7 +276,7 @@ ROUND:Hook("PlayerCanPickupWeapon", function(self, state, ply, wep)
 end)
 
 ROUND:Hook("TTTHasRoundBeenWon", function(self, state)
-	if (#round.GetActivePlayersByRole "Innocent" == 0) then
+	if (#round.GetActivePlayersByRole "Fighter" == 0) then
 		return true, "traitor", false
 	end
 

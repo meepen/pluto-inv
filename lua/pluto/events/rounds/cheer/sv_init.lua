@@ -32,6 +32,9 @@ end
 
 function ROUND:Finish()
 	timer.Remove "pluto_event_timer"
+	timer.Remove "pluto_cheer_checker"
+	timer.Remove "pluto_cheer_finder"
+	timer.Remove "pluto_cheer_radar"
 end
 
 function ROUND:Loadout(ply)
@@ -327,10 +330,6 @@ function ROUND:TTTEndRound(state)
 			end)
 		end
 	end
-
-	timer.Remove("pluto_cheer_checker")
-	timer.Remove("pluto_cheer_finder")
-	timer.Remove("pluto_cheer_radar")
 
 	GetConVar("ttt_karma"):Revert()
 	timer.UnPause("tttrw_afk")
