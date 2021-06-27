@@ -130,7 +130,7 @@ local songs = {
 }
 
 pluto.rounds.FillerMusic = function()
-	if (ttt.GetCurrentRoundEvent() == "" or timer.Exists "pluto_rounds_music") then
+	if (ttt.GetCurrentRoundEvent() == "") then
 		timer.Remove "pluto_rounds_music"
 		return
 	end
@@ -205,14 +205,14 @@ function PANEL:Init()
 	self:SetTextColor(Color(0, 0, 0))
 	self:ChangeText("Click Me")
 	self.BorderColor = Color(0, 0, 0)
-	self.FillColor = Color(255, 255, 255)
+	self.FillColor = Color(210, 210, 225)
 	self.Mini = ""
 end
 
 function PANEL:ChangeText(text)
 	self:SetText(text)
 	local w, h = self:GetTextSize()
-	self:SetSize(w + 50, 75)
+	self:SetSize(w + 30, 60)
 	self:SetPos((ScrW() - (w + 50)) / 2, ScrH() - 300)
 end
 

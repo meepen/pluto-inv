@@ -592,6 +592,15 @@ for name, values in pairs {
 			return true
 		end,
 	},
+	_quill = {
+		Shares = 0,
+		Global = true,
+		Pickup = function(ply, self)
+			hook.Run("PlutoQuillPickup", ply)
+
+			return true
+		end,
+	}
 } do
 	table.Merge(pluto.currency.byname[name], values)
 end

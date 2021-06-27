@@ -240,7 +240,7 @@ function ROUND:TTTEndRound(state)
 		if (state.rewarded[ply]) then
 			pluto.db.instance(function(db)
 				pluto.inv.addcurrency(db, ply, self.Reward, 1)
-				pluto.rounds.Notify("Me get brain egg for havd " .. tostring(self.BananasForEgg) .. "!", pluto.currency.byname._banna.Color, ply)
+				pluto.rounds.Notify("Me get brain egg for havd " .. tostring(self.BananasForEgg) .. "!", pluto.currency.byname[self.Reward].Color, ply)
 			end)
 		end
 	end

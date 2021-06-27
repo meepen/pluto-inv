@@ -8,6 +8,7 @@ local random_rounds = {
 	"hotshot",
 	"blackmarket",
 	"boom",
+	"kingofthehill",
 }
 
 local event_rounds = {
@@ -16,7 +17,7 @@ local event_rounds = {
 	"cheer",
 }
 
-table.Merge(event_rounds, random_rounds)
+table.Add(event_rounds, random_rounds)
 
 for _, event in ipairs (event_rounds) do
 	local folder = "pluto/events/rounds/" .. event .. "/"
@@ -97,6 +98,13 @@ hook.Add("TTTPrepareRoles", "pluto_events_roles", function(Team, Role)
 			event:TTTPrepareRoles(Team, Role)
 		end
 	end
+	
+	Role("Fighter", "traitor")
+		:SetCalculateAmountFunc(function(total_players)
+			return 0
+		end)
+		:SetCanUseBuyMenu(false)
+		:SetCanSeeThroughWalls(false)
 end)
 
 if (gmod.GetGamemode()) then

@@ -861,6 +861,15 @@ local list = {
 		NoTarget = true,
 		Category = "Item Boxes",
 	},
+	{
+		Shares = 0,
+		InternalName = "_quill",
+		Name = "Quill",
+		Icon = "pluto/currencies/gold_quill.png",
+		Color = Color(255, 213, 0),
+		SkipNotify = true,
+		Fake = true,
+	},
 }
 
 hook.Add("Think", "pluto_currency_think", function()

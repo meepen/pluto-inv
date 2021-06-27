@@ -16,7 +16,7 @@ if (SERVER) then
 
 		pluto.rounds.minis.raining = nil
 
-		pluto.rounds.Notify("It's pouring droplets!", pluto.currency.byname.droplet.Color)
+		pluto.rounds.Notify("It's raining droplets!", pluto.currency.byname.droplet.Color)
 
 		local count = #player.GetHumans()
 

@@ -86,8 +86,21 @@ if (SERVER) then
                 continue
             end
 
-            models[ply] = ply:GetModel()
+            local model = ply:GetModel()
+            local bodygroups = {}
+            for k, group in ipairs(ply:GetBodyGroups()) do
+                bodygroups[group.id] = ply:GetBodygroup(group.id)
+            end
+
+            models[ply] = {
+                Model = model,
+                BodyGroups = bodygroups,
+            }
+
             ply:SetModel(dasher:GetModel())
+            for k, group in ipairs(dasher:GetBodyGroups()) do
+                ply:SetBodygroup(group.id, dasher:GetBodygroup(group.id))
+            end
         end
 
         hook.Add("PlayerCanPickupWeapon", "pluto_mini_dash", function(ply, wep)
@@ -103,7 +116,10 @@ if (SERVER) then
 
             for _, ply in ipairs(player.GetAll()) do
                 if (IsValid(ply) and ply:Alive() and models[ply]) then
-                    ply:SetModel(models[ply])
+                    ply:SetModel(models[ply].Model)
+                    for id, value in pairs(models[ply].BodyGroups) do
+                        ply:SetBodygroup(id, value)
+                    end
                     pluto.rounds.Notify(dasher:Nick() .. " has been killed! Your model has been returned.", Color(255, 128, 0), ply)
                 else
                     pluto.rounds.Notify(dasher:Nick() .. " has been killed!", Color(255, 128, 0), ply)
@@ -118,7 +134,6 @@ else
         local dashbutton = vgui.Create "pluto_mini_button"
         dashbutton:ChangeText "Click to steal all models! (KOSable)"
         dashbutton:ChangeMini "dash"
-        dashbutton.FillColor = Color(255, 128, 0)
 
         timer.Simple(time_limit - 1, function()
             if (IsValid(dashbutton)) then

@@ -60,7 +60,7 @@ if (SERVER) then
         else
             pluto.db.instance(function(db)
                 pluto.inv.addcurrency(db, ply, "tp", 5)
-                pluto.rounds.Notify(ply:Nick() .. " have received 5 vials of refinium!", pluto.currency.byname.tp.Color, ply, true)
+                pluto.rounds.Notify(ply:Nick() .. " has received 5 vials of refinium!", pluto.currency.byname.tp.Color, ply, true)
                 net.Start "pluto_mini_luck"
                 net.Send(ply)
                 player_times[ply] = CurTime() + time_limit
@@ -73,7 +73,6 @@ else
         local luckbutton = vgui.Create "pluto_mini_button"
         luckbutton:ChangeText "Press to push your luck! Danger of death."
         luckbutton:ChangeMini "luck"
-        luckbutton.FillColor = Color(150, 150, 200)
 
         timer.Simple(time_limit - 1, function()
             if (IsValid(luckbutton)) then
