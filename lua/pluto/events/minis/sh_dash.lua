@@ -1,5 +1,7 @@
 -- Author: add___123
 
+local name = "dash"
+
 local time_limit = 15
 
 if (SERVER) then
@@ -17,19 +19,11 @@ if (SERVER) then
     end)
 
     hook.Add("TTTBeginRound", "pluto_mini_dash", function()
-        if (ttt.GetCurrentRoundEvent() ~= "") then
+        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
             return
         end
 
-        if (not pluto.rounds or not pluto.rounds.minis) then
-            return
-        end
-
-        if (not pluto.rounds.minis.dash and math.random(50) ~= 1) then
-            return
-        end
-        
-        pluto.rounds.minis.dash = nil
+		pluto.rounds.minis[name] = nil
 
         if (pluto.rounds.args and pluto.rounds.args[2]) then
             for k, ply in ipairs(player.GetHumans()) do

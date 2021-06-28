@@ -6,6 +6,85 @@ util.AddNetworkString "round_notify"
 
 pluto.rounds = pluto.rounds or {}
 
+pluto.rounds.minis = pluto.rounds.minis or {}
+
+function pluto.rounds.prepare(name)
+    if (not name) then
+        return false, "No name provided"
+    end
+
+	local event = pluto.rounds.byname[name]
+
+	if (not event) then
+		return false, "Event does not exist"
+	end
+
+	if (ttt.GetNextRoundEvent() ~= "") then
+		return false, "Event already prepared"
+	end
+
+	if (GetConVar "ttt_round_limit":GetInt() <= ttt.GetRoundNumber()) then
+		return false, "Round limit"
+	end
+
+	ttt.SetNextRoundEvent(name)
+
+	return true, "NextRoundEvent set to " .. name
+end
+
+function pluto.rounds.queue(name)
+    if (not name) then
+        return false, "No name provided"
+    end
+
+    local idx_var = GetConVar "pluto_cross_id"
+    local idx = (idx_var and idx_var:GetString()) or "test"
+
+    -- Queue round in database here
+end
+
+function pluto.rounds.minplayersmet(name)
+	local event = pluto.rounds.infobyname[name]
+
+	if (not event) then
+		return false, "Event does not exist"
+	end
+
+	if (not event.MinPlayers or #player.GetAll() < event.MinPlayers) then
+		return false, "Not enough players"
+	end
+
+	return true
+end
+
+function pluto.rounds.chooserandom(typ, needminplayers)
+	local events = {}
+
+	for name, event in pairs(random_rounds) do
+		if (not event.Type or event.Type ~= typ) then
+			continue
+		end
+
+		if (needminplayers and not pluto.rounds.minplayersmet(name)) then
+			continue
+		end
+
+		events[name] = event
+	end
+
+	if (table.Count(events) == 0) then
+		return
+	end
+
+	return pluto.inv.roll(events)
+end
+
+function pluto.rounds.clear()
+	ttt.SetNextRoundEvent("")
+
+	return true, "NextRoundEvent cleared"
+end
+
 pluto.rounds.WriteRoundData = function(name, arg, ply)
     net.Start "round_data"
         local typ = type(arg)
@@ -63,6 +142,76 @@ pluto.rounds.GiveDefaults = function(ply)
 	ply:Give "weapon_ttt_magneto"
 end
 
+hook.Add("TTTPrepareRound", "pluto_minis", function()
+	if (ttt.GetCurrentRoundEvent() ~= "" or not pluto.rounds.infobyname or not pluto.rounds.minis) then
+		return
+	end
+
+    for name, event in pairs(pluto.rounds.infobyname) do
+        if (not event.Type or event.Type ~= "Mini") then
+            continue
+        end
+
+        if (pluto.rounds.minis[name]) then
+            continue
+        end
+
+        if (pluto.rounds.infobyname[name].Disabled) then
+            continue
+        end
+
+        if (not pluto.rounds.minplayersmet(name)) then
+            continue
+        end
+
+        if (math.random() > pluto.rounds.infobyname[name].Odds) then
+            continue
+        end
+
+        print("Preparing Mini-Event: " .. name)
+        pluto.rounds.minis[name] = true
+    end
+end)
+
+--[[hook.Add("TTTBeginRound", "pluto_round_queue", function()
+    if (ttt.GetNextRoundEvent() ~= "" or GetConVar "ttt_round_limit":GetInt() <= ttt.GetRoundNumber()) then
+        return
+    end
+
+    if (not pluto.rounds.infobyname) then
+        return
+    end
+
+    local idx_var = GetConVar "pluto_cross_id"
+    local idx = (idx_var and idx_var:GetString()) or "test"
+
+    local rounds -- Get all unfinished rounds in the queue, in order    
+
+    for k, round in ipairs(rounds) do
+        local name -- Get the name of the round from the round info
+
+        if (not pluto.rounds.byname[name]) then
+            -- set this idx to finished in the database
+            -- notify players to tell one of the developers that an invalid round was somehow queued
+            continue
+        end
+
+        if (not pluto.rounds.infobyname[name] or pluto.rounds.infobyname[name].MinPlayers > #player.GetAll()) then
+            continue
+        end
+
+        local success, e = pluto.rounds.prepare(name)
+
+        if (success) then
+            -- set this idx to finished in the database
+            break
+        else
+            -- notify players that there was an unexpected error (e) and to tell a developer
+            continue
+        end
+    end
+end)--]]
+
 concommand.Add("pluto_prepare_round", function(ply, cmd, args)
     if (not pluto.cancheat(ply) or not args[1]) then
         return
@@ -85,8 +234,6 @@ end)
 
 --- Minis ---
 
-pluto.rounds.minis = pluto.rounds.minis or {}
-
 concommand.Add("pluto_prepare_mini", function(ply, cmd, args)
     if (not pluto.cancheat(ply) or not args[1]) then
         return
@@ -94,5 +241,5 @@ concommand.Add("pluto_prepare_mini", function(ply, cmd, args)
 
     pluto.rounds.minis[args[1]] = true
     pluto.rounds.args = args
-    ply:ChatPrint("The " .. tostring(args[1]) .. " mini-event will take place next round.")
+    ply:ChatPrint("The " .. tostring(args[1]) .. " Mini-Event has been prepared.")
 end)

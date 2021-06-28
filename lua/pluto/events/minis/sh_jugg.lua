@@ -1,24 +1,18 @@
 -- Author: add___123
 
+local name = "jugg"
+
 local jugg_mult = 3
 
 if (SERVER) then
     hook.Add("TTTBeginRound", "pluto_mini_jugg", function()
-        if (ttt.GetCurrentRoundEvent() ~= "") then
+        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
             return
         end
 
-        if (not pluto.rounds or not pluto.rounds.minis) then
-            return
-        end
+		pluto.rounds.minis[name] = nil
 
-        if (not pluto.rounds.minis.jugg --[[ and math.random(50) ~= 1--]]) then
-            return
-        end
-
-        pluto.rounds.minis.jugg = nil
-
-        pluto.rounds.Notify("Operation JUGG was a success! You have all grown " .. tostring(jugg_mult) .. " times sturdier.", Color(50, 220, 70))
+        pluto.rounds.Notify("Operation JUGG: success! You have grown " .. tostring(jugg_mult) .. " times sturdier.", Color(50, 220, 70))
 
         timer.Simple(0.1, function()
             for k, ply in ipairs(player.GetAll()) do

@@ -1,5 +1,7 @@
 -- Author: add___123
 
+local name = "luck"
+
 local time_limit = 20
 
 if (SERVER) then
@@ -11,19 +13,11 @@ if (SERVER) then
     local luck_active = false
 
     hook.Add("TTTBeginRound", "pluto_mini_luck", function()
-        if (ttt.GetCurrentRoundEvent() ~= "") then
+        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
             return
         end
 
-        if (not pluto.rounds or not pluto.rounds.minis) then
-            return
-        end
-
-        if (not pluto.rounds.minis.luck --[[and math.random(50) ~= 1]]) then
-            return
-        end
-        
-        pluto.rounds.minis.luck = nil
+		pluto.rounds.minis[name] = nil
 
         for k, ply in ipairs(player.GetAll()) do
             net.Start "pluto_mini_luck"

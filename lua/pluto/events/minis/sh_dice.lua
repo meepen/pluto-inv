@@ -1,22 +1,16 @@
 -- Author: add___123
 
+local name = "dice"
+
 if (SERVER) then
     local chancedice = {}
 
     hook.Add("TTTBeginRound", "pluto_mini_dice", function()
-        if (ttt.GetCurrentRoundEvent() ~= "") then
+        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
             return
         end
 
-        if (not pluto.rounds or not pluto.rounds.minis) then
-            return
-        end
-
-        if (not pluto.rounds.minis.dice and math.random(40) ~= 1) then
-            return
-        end
-
-        pluto.rounds.minis.dice = nil
+		pluto.rounds.minis[name] = nil
 
         pluto.rounds.Notify("Chance Dice have spawned around the map!", pluto.currency.byname._chancedice.Color)
         

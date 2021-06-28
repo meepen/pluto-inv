@@ -1,20 +1,14 @@
 -- Author: add___123
 
+local name = "stars"
+
 if (SERVER) then
 	hook.Add("TTTBeginRound", "pluto_shooting_stars", function()
-		if (ttt.GetCurrentRoundEvent() ~= "") then
-			return
-		end
+        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
+            return
+        end
 
-		if (not pluto.rounds or not pluto.rounds.minis) then
-			return
-		end
-
-		if (not pluto.rounds.minis.stars and math.random(40) ~= 1) then
-			return
-		end
-
-		pluto.rounds.minis.stars = nil
+		pluto.rounds.minis[name] = nil
 
 		pluto.rounds.Notify("It's shooting stars!", pluto.currency.byname.stardust.Color)
 

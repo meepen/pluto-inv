@@ -1,5 +1,7 @@
 -- Author: add___123
 
+local name = "leak"
+
 if (SERVER) then
     local leak_color = Color(225, 50, 25)
 
@@ -96,19 +98,11 @@ if (SERVER) then
     }
 
     hook.Add("TTTBeginRound", "pluto_mini_leak", function()
-        if (ttt.GetCurrentRoundEvent() ~= "") then
+        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
             return
         end
 
-        if (not pluto.rounds or not pluto.rounds.minis) then
-            return
-        end
-
-        if (not pluto.rounds.minis.leak --[[ and math.random(50) ~= 1--]]) then
-            return
-        end
-
-        pluto.rounds.minis.leak = nil
+		pluto.rounds.minis[name] = nil
 
         pluto.rounds.Notify("INTEL LEAK: TRAITOR PURCHASES MAY HAVE UNINTENDED CONSEQUENCES!", leak_color)
 

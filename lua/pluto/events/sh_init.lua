@@ -4,69 +4,161 @@ pluto.rounds.files = pluto.rounds.files or {}
 
 pluto.rounds.byname = pluto.rounds.byname or {}
 
-local random_rounds = {
-	"hotshot",
-	"blackmarket",
-	"boom",
-	"kingofthehill",
+pluto.rounds.minis = pluto.rounds.minis or {}
+
+pluto.rounds.infobyname = {
+	-- Event Rounds
+	posteaster = {
+		Type = "Event",
+		MinPlayers = 8,
+		Shares = 1,
+		Disabled = true,
+	},
+	chimp = {
+		Type = "Event",
+		MinPlayers = 6,
+		Shares = 1,
+	},
+	cheer = {
+		Type = "Event",
+		MinPlayers = 8,
+		Shares = 1,
+	},
+
+	-- Random Rounds
+	hotshot = {
+		Type = "Random",
+		MinPlayers = 4,
+		Shares = 1,
+	},
+	blackmarket = {
+		Type = "Random",
+		MinPlayers = 6,
+		Shares = 1,
+	},
+	boom = {
+		Type = "Random",
+		MinPlayers = 6,
+		Shares = 1,
+	},
+	kingofthehill = {
+		Type = "Random",
+		MinPlayers = 4,
+		Shares = 1,
+	},
+
+	-- Mini Events
+	aprilfools = {
+		Type = "Mini",
+		MinPlayers = 2,
+		Shares = 1,
+		Odds = 1 / 16,
+		Disabled = true,
+	},
+	raining = {
+		Type = "Mini",
+		MinPlayers = 3,
+		Shares = 1,
+		Odds = 1 / 32,
+	},
+	dice = {
+		Type = "Mini",
+		MinPlayers = 3,
+		Shares = 1,
+		Odds = 1 / 32,
+	},
+	stars = {
+		Type = "Mini",
+		MinPlayers = 3,
+		Shares = 1,
+		Odds = 1 / 32,
+	},
+	dash = {
+		Type = "Mini",
+		MinPlayers = 4,
+		Shares = 1,
+		Odds = 1 / 48,
+	},
+	hops = {
+		Type = "Mini",
+		MinPlayers = 2,
+		Shares = 1,
+		Odds = 1 / 48,
+	},
+	panic = {
+		Type = "Mini",
+		MinPlayers = 2,
+		Shares = 1,
+		Odds = 1 / 48,
+	},
+	leak = {
+		Type = "Mini",
+		MinPlayers = 4,
+		Shares = 1,
+		Odds = 1 / 48,
+	},
+	jugg = {
+		Type = "Mini",
+		MinPlayers = 2,
+		Shares = 1,
+		Odds = 1 / 48,
+	},
+	luck = {
+		Type = "Mini",
+		MinPlayers = 4,
+		Shares = 1,
+		Odds = 1 / 48,
+	},
+	rise = {
+		Type = "Mini",
+		MinPlayers = 4,
+		Shares = 1,
+		Odds = 1 / 48,
+	},
+	saber = {
+		Type = "Mini",
+		MinPlayers = 2,
+		Shares = 1,
+		Odds = 1 / 48,
+	},
 }
 
-local event_rounds = {
-	"posteaster",
-	"chimp",
-	"cheer",
-}
+for name, event in pairs(pluto.rounds.infobyname) do
+	if (event.Type and event.Type == "Mini") then
+		local fname = "pluto/events/minis/sh_" .. name .. ".lua"
+		if (not file.Exists (fname, "LUA")) then
+			continue
+		end
 
-table.Add(event_rounds, random_rounds)
+		if (SERVER) then
+			AddCSLuaFile(fname)
+		end
+		include(fname)
+	else
+		local folder = "pluto/events/rounds/" .. name .. "/"
 
-for _, event in ipairs (event_rounds) do
-	local folder = "pluto/events/rounds/" .. event .. "/"
-
-	pluto.rounds.files[event] = {}
-	
-	for _, extra in ipairs {
-		"sh_init",
-		"sv_init",
-		"cl_init",
-	} do
-		fname = folder .. extra .. ".lua"
-		if (file.Exists(fname, "LUA")) then
-			if (SERVER and extra ~= "sv_init") then
-				AddCSLuaFile(fname)
-			end
-			if (SERVER and extra == "sv_init" or CLIENT and extra == "cl_init" or extra == "sh_init") then
-				local fn = CompileFile(fname)
-				if (not fn) then
-					continue
+		pluto.rounds.files[name] = {}
+		
+		for _, extra in ipairs {
+			"sh_init",
+			"sv_init",
+			"cl_init",
+		} do
+			fname = folder .. extra .. ".lua"
+			if (file.Exists(fname, "LUA")) then
+				if (SERVER and extra ~= "sv_init") then
+					AddCSLuaFile(fname)
 				end
-				table.insert(pluto.rounds.files[event], fn)
+				if (SERVER and extra == "sv_init" or CLIENT and extra == "cl_init" or extra == "sh_init") then
+					local fn = CompileFile(fname)
+					if (not fn) then
+						continue
+					end
+					table.insert(pluto.rounds.files[name], fn)
+				end
 			end
 		end
 	end
-end
-
-for _, mini in ipairs {
-	"aprilfools",
-	"raining",
-	"dice",
-	"stars",
-	"dash",
-	"hops",
-	"panic",
-	"leak",
-	"jugg",
-	"luck",
-	"rise",
-} do
-	local fname = "pluto/events/minis/sh_" .. mini .. ".lua"
-	if (not file.Exists (fname, "LUA")) then
-		continue
-	end
-
-	if (SERVER) then
-		AddCSLuaFile(fname)
-	end
-	include(fname)
 end
 
 --- Rounds ---
@@ -126,40 +218,6 @@ end
 
 function pluto.rounds.get(name)
 	return pluto.rounds.byname[name]
-end
-
-function pluto.rounds.prepare(name)
-	if (not SERVER) then
-		return false, "Server function only"
-	end
-
-	local event = pluto.rounds.byname[name]
-
-	if (not event) then
-		return false, "Event does not exist"
-	end
-
-	if (ttt.GetNextRoundEvent() ~= "") then
-		return false, "Event already prepared"
-	end
-
-	if (GetConVar "ttt_round_limit":GetInt() <= ttt.GetRoundNumber()) then
-		return false, "Round limit"
-	end
-
-	ttt.SetNextRoundEvent(name)
-
-	return true, "NextRoundEvent set to " .. name
-end
-
-function pluto.rounds.clear()
-	if (not SERVER) then
-		return false, "Server function only"
-	end
-
-	ttt.SetNextRoundEvent("")
-
-	return true, "NextRoundEvent cleared"
 end
 
 hook.Add("TTTPrepareNetworkingVariables", "pluto_event", function(vars)

@@ -1,20 +1,14 @@
 -- Author: add___123
 
+local name = "rise"
+
 if (SERVER) then
     hook.Add("TTTBeginRound", "pluto_mini_rise", function()
-        if (ttt.GetCurrentRoundEvent() ~= "") then
+        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
             return
         end
 
-        if (not pluto.rounds or not pluto.rounds.minis) then
-            return
-        end
-
-        if (not pluto.rounds.minis.rise --[[ and math.random(50) ~= 1--]]) then
-            return
-        end
-
-        pluto.rounds.minis.rise = nil
+		pluto.rounds.minis[name] = nil
 
         pluto.rounds.Notify("Rise, dead, and strike down your enemies!", Color(0, 100, 0))
 

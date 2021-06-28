@@ -1,20 +1,14 @@
 -- Author: Meepen
 
+local name = "raining"
+
 if (SERVER) then
 	hook.Add("TTTBeginRound", "pluto_mini_raining", function()
-		if (ttt.GetCurrentRoundEvent() ~= "") then
-			return
-		end
+        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
+            return
+        end
 
-		if (not pluto.rounds or not pluto.rounds.minis) then
-			return
-		end
-
-		if (not pluto.rounds.minis.raining and math.random(40) ~= 1) then
-			return
-		end
-
-		pluto.rounds.minis.raining = nil
+		pluto.rounds.minis[name] = nil
 
 		pluto.rounds.Notify("It's raining droplets!", pluto.currency.byname.droplet.Color)
 

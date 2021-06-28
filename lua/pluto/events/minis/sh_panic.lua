@@ -1,5 +1,7 @@
 -- Author: add___123
 
+local name = "panic"
+
 local panic_min = 0.8
 local panic_max = 1.6
 
@@ -7,19 +9,11 @@ if (SERVER) then
     util.AddNetworkString "pluto_mini_panic"
 
     hook.Add("TTTBeginRound", "pluto_mini_panic", function()
-        if (ttt.GetCurrentRoundEvent() ~= "") then
+        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
             return
         end
 
-        if (not pluto.rounds or not pluto.rounds.minis) then
-            return
-        end
-
-        if (not pluto.rounds.minis.panic --[[ and math.random(50) ~= 1--]]) then
-            return
-        end
-
-        pluto.rounds.minis.panic = nil
+		pluto.rounds.minis[name] = nil
 
         pluto.rounds.Notify("PANIC is in the air! The more you're hurt, the faster you'll run!", ttt.roles.Traitor.Color)
 

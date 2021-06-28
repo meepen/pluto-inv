@@ -1,22 +1,16 @@
 -- Author: add___123
 
+local name = "hops"
+
 if (SERVER) then
     local last_hops = {}
 
     hook.Add("TTTBeginRound", "pluto_mini_hops", function()
-        if (ttt.GetCurrentRoundEvent() ~= "") then
+        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
             return
         end
 
-        if (not pluto.rounds or not pluto.rounds.minis) then
-            return
-        end
-
-        if (not pluto.rounds.minis.hops --[[ and math.random(50) ~= 1--]]) then
-            return
-        end
-
-        pluto.rounds.minis.hops = nil
+		pluto.rounds.minis[name] = nil
 
         pluto.rounds.Notify("It's leg day! Each hop will make you hoppier!", Color(235, 70, 150))
 
