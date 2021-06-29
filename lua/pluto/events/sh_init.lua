@@ -54,6 +54,12 @@ pluto.rounds.infobyname = {
 		MinPlayers = 4,
 		Shares = 1,
 	},
+	hitlist = {
+		PrintName = "Hit List",
+		Type = "Random",
+		MinPlayers = 4,
+		Shares = 1,
+	},
 
 	-- Mini Events
 	aprilfools = {
