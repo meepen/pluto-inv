@@ -1,0 +1,33 @@
+-- Author: add___123
+
+local name = "overflow"
+
+if (SERVER) then
+    hook.Add("TTTBeginRound", "pluto_mini_overflow", function()
+        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
+            return
+        end
+
+		pluto.rounds.minis[name] = nil
+
+        local weps = {}
+
+        for classname, ent in pairs(ttt.Equipment.List) do
+            if (ent.IsWeapon and ent.CanBuy and ent.CanBuy.traitor) then
+                table.insert(weps, classname)
+            end
+        end
+
+        pluto.rounds.Notify("Equipment Overflow! Everyone has been given a random traitor weapon", Color(0, 102, 92))
+
+        timer.Simple(0.1, function()
+            for k, ply in ipairs(player.GetAll()) do
+                if (IsValid(ply) and ply:Alive()) then
+                    ply:Give(weps[math.random(#weps)])
+                end
+            end
+        end)
+    end)
+else
+
+end

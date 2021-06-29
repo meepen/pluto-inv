@@ -154,7 +154,14 @@ pluto.rounds.infobyname = {
 	wink = {
 		PrintName = "Wink Round",
 		Type = "Mini",
-		MinPlayers = 4,
+		MinPlayers = 3,
+		Shares = 1,
+		Odds = 1 / 48,
+	},
+	overflow = {
+		PrintName = "Equipment Overflow",
+		Type = "Mini",
+		MinPlayers = 3,
 		Shares = 1,
 		Odds = 1 / 48,
 	},
