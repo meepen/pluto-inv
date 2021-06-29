@@ -37,10 +37,13 @@ function pluto.rounds.queue(name)
         return false, "No name provided"
     end
 
-    local idx_var = GetConVar "pluto_cross_id"
-    local idx = (idx_var and idx_var:GetString()) or "test"
+    local serv_var = GetConVar "pluto_cross_id"
+    local serv = (serv_var and serv_var:GetString()) or "test"
 
-    -- Queue round in database here
+    --[[pluto.db.instance(function(db)
+        mysql_stmt_run(db, "INSERT INTO pluto_round_queue (server, time, name) VALUES (?, NOW(), ?)", serv, name)
+        return true, "Round queued"
+    end)--]]
 end
 
 function pluto.rounds.minplayersmet(name)
@@ -60,10 +63,14 @@ end
 function pluto.rounds.chooserandom(typ, needminplayers)
 	local events = {}
 
-	for name, event in pairs(random_rounds) do
+	for name, event in pairs(pluto.rounds.infobyname) do
 		if (not event.Type or event.Type ~= typ) then
 			continue
 		end
+
+        if (event.NoRandom) then
+            continue
+        end
 
 		if (needminplayers and not pluto.rounds.minplayersmet(name)) then
 			continue
@@ -156,7 +163,7 @@ hook.Add("TTTPrepareRound", "pluto_minis", function()
             continue
         end
 
-        if (pluto.rounds.infobyname[name].Disabled) then
+        if (pluto.rounds.infobyname[name].NoRandom) then
             continue
         end
 
@@ -173,43 +180,50 @@ hook.Add("TTTPrepareRound", "pluto_minis", function()
     end
 end)
 
---[[hook.Add("TTTBeginRound", "pluto_round_queue", function()
+--[[hook.Add("TTTEndRound", "pluto_round_queue", function()
+    print("trying to queue a round")
     if (ttt.GetNextRoundEvent() ~= "" or GetConVar "ttt_round_limit":GetInt() <= ttt.GetRoundNumber()) then
+        print "returning due to already prepared or round limit"
         return
     end
 
     if (not pluto.rounds.infobyname) then
+        print "returning due to lack of infobyname"
         return
     end
 
-    local idx_var = GetConVar "pluto_cross_id"
-    local idx = (idx_var and idx_var:GetString()) or "test"
+    local serv_var = GetConVar "pluto_cross_id"
+    local serv = (serv_var and serv_var:GetString()) or "test"
 
-    local rounds -- Get all unfinished rounds in the queue, in order    
+    pluto.db.instance(function(db)
+        local rounds = mysql_stmt_run(db, "SELECT * from pluto_round_queue WHERE server = ? AND NOT finished WHERE x AND time <= NOW()", serv) 
 
-    for k, round in ipairs(rounds) do
-        local name -- Get the name of the round from the round info
-
-        if (not pluto.rounds.byname[name]) then
-            -- set this idx to finished in the database
-            -- notify players to tell one of the developers that an invalid round was somehow queued
-            continue
+        if (not rounds) then
+            print "returning due to lack of rounds"
+            return
         end
 
-        if (not pluto.rounds.infobyname[name] or pluto.rounds.infobyname[name].MinPlayers > #player.GetAll()) then
-            continue
-        end
+        for k, round in ipairs(rounds) do
+            local name = round.name
 
-        local success, e = pluto.rounds.prepare(name)
+            if (not name or not pluto.rounds.byname[name]) then
+                mysql_stmt_run(db, "UPDATE pluto_round_queue SET finished = true WHERE idx = ?", round.idx)
+                pluto.rounds.Notify(string.format("Please tell developers invalid round was queued with id: %i", round.idx))
+                continue
+            end
 
-        if (success) then
-            -- set this idx to finished in the database
-            break
-        else
-            -- notify players that there was an unexpected error (e) and to tell a developer
-            continue
+            if (not pluto.rounds.infobyname[name] or pluto.rounds.infobyname[name].MinPlayers > #player.GetAll()) then
+                continue
+            end
+
+            local success, e = pluto.rounds.prepare(name)
+
+            if (success) then
+                mysql_stmt_run(db, "UPDATE pluto_round_queue SET finished = true WHERE idx = ?", round.idx)
+                break
+            end
         end
-    end
+    end)
 end)--]]
 
 concommand.Add("pluto_prepare_round", function(ply, cmd, args)

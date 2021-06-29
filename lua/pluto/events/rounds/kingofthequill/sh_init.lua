@@ -15,13 +15,13 @@ end
 
 ROUND:Hook("TTTUpdatePlayerSpeed", function(self, state, ply, data)
 	if (not state or not state.holder) then
-        data.kingofthehill = 1.25
+        data.kingofthequill = 1.25
 		return
 	end
 
     if (state.holder == ply) then
-	    data.kingofthehill = 0.75
+	    data.kingofthequill = 0.75
 	else
-		data.kingofthehill = 1.1
+		data.kingofthequill = 1.1
     end
 end)

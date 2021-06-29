@@ -109,7 +109,7 @@ local list = {
 			pluto.opener:MakePopup()
 		end,
 
-		Category = "Item Boxes",
+		Category = "Unbox",
 	},
 	{
 		InternalName = "crate0",
@@ -167,7 +167,7 @@ local list = {
 			},
 		},
 
-		Category = "Item Boxes",
+		Category = "Unbox",
 	},
 	{
 		InternalName = "crate2",
@@ -265,7 +265,7 @@ local list = {
 			model_violet_spa = 30,
 		},
 
-		Category = "Item Boxes",
+		Category = "Unbox",
 	},
 	{
 		InternalName = "crate1",
@@ -344,7 +344,7 @@ local list = {
 			},
 		},
 
-		Category = "Item Boxes",
+		Category = "Unbox",
 	},
 	{
 		InternalName = "xmas2020",
@@ -413,7 +413,7 @@ local list = {
 			model_snow1 = xmas2020_fill,
 		},
 
-		Category = "Item Boxes",
+		Category = "Unbox",
 	},
 	{
 		InternalName = "heart",
@@ -613,7 +613,7 @@ local list = {
 			model_detr_connor = 1,]]
 		},
 
-		Category = "Item Boxes",
+		Category = "Unbox",
 	},
 	{
 		InternalName = "crate3",
@@ -660,7 +660,7 @@ local list = {
 			}
 		},
 
-		Category = "Item Boxes",
+		Category = "Unbox",
 	},
 	{
 		InternalName = "crate3_n",
@@ -734,7 +734,7 @@ local list = {
 			},
 		},
 
-		Category = "Item Boxes",
+		Category = "Unbox",
 	},
 	{
 		InternalName = "eye",
@@ -771,7 +771,7 @@ local list = {
 			self.Color.r, self.Color.g, self.Color.b = col.r, col.g, col.b
 		end,
 		NoTarget = true,
-		Category = "Item Boxes",
+		Category = "Unbox",
 		Contents = {
 			model_2b = 1,
 			model_academy_ahri = 1,
@@ -785,6 +785,18 @@ local list = {
 			model_lara_croft_lo_anim = 1,
 		},
 		Types = "None",
+	},
+	{
+		InternalName = "ticket",
+		Shares = 0,
+		Name = "Round Ticket",
+		Icon = "pluto/currencies/ticket.png",
+		Description = "Exchanged to activate special rounds",
+		SubDescription = "Mini, random, or event? You decide.",
+		Color = Color(153, 0, 0),
+		NoTarget = true,
+		ClientsideUse = function()
+		end,
 	},
 	{
 		InternalName = "_shootingstar",
@@ -859,7 +871,7 @@ local list = {
 		SkipNotify = true,
 		Fake = true,
 		NoTarget = true,
-		Category = "Item Boxes",
+		Category = "Unbox",
 	},
 	{
 		Shares = 0,

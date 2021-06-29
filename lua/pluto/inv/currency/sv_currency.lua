@@ -449,6 +449,22 @@ for name, values in pairs {
 	eye = {
 		Shares = 0,
 	},
+	brainegg = {
+		Shares = 0,
+		Types = "None",
+	},
+	stardust = {
+		Shares = 1500,
+	},
+	ticket = {
+		Shares = 1,
+		Pickup = function(ply)
+			hook.Run("PlutoTicketPickup", ply)
+			
+			return true
+		end,
+	},
+	-- Fakes
 	_banna = {
 		Shares = 0,
 		Global = true,
@@ -463,13 +479,6 @@ for name, values in pairs {
 
 			return true
 		end,
-	},
-	brainegg = {
-		Shares = 0,
-		Types = "None",
-	},
-	stardust = {
-		Shares = 1500,
 	},
 	_toy_blue = {
 		Shares = 0,

@@ -13,8 +13,8 @@ function PANEL:Init()
 	self.CurrencyDone = {}
 
 	self:AddTab(HexColor "ff1a1a", "Modify")
-	self:AddTab(HexColor "7ef524", "Item Boxes", false, true)
-	self:AddTab(HexColor "fcde1d", "Misc.", true)
+	self:AddTab(HexColor "7ef524", "Unbox", false, true)
+	self:AddTab(HexColor "fcde1d", "Other", true)
 
 	timer.Simple(0, function()
 		if (not IsValid(self)) then
@@ -233,7 +233,7 @@ function PANEL:OnMousePressed(m)
 			return
 		end
 		if (curtype and curtype.NoTarget) then
-			if (curtype.Category == "Item Boxes") then
+			if (curtype.Category == "Unbox") then
 				self:SelectItemBox(curtype)
 			elseif (curtype.ClientsideUse) then
 				curtype.ClientsideUse(self.Item)

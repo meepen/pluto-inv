@@ -9,17 +9,21 @@ pluto.rounds.minis = pluto.rounds.minis or {}
 pluto.rounds.infobyname = {
 	-- Event Rounds
 	posteaster = {
+		PrintName = "Bunny Attack",
 		Type = "Event",
 		MinPlayers = 8,
 		Shares = 1,
-		Disabled = true,
+		NoRandom = true,
+		NoBuy = true,
 	},
 	chimp = {
+		PrintName = "Monke Mania",
 		Type = "Event",
 		MinPlayers = 6,
 		Shares = 1,
 	},
 	cheer = {
+		PrintName = "Operation Cheer",
 		Type = "Event",
 		MinPlayers = 8,
 		Shares = 1,
@@ -27,21 +31,25 @@ pluto.rounds.infobyname = {
 
 	-- Random Rounds
 	hotshot = {
+		PrintName = "Hotshot",
 		Type = "Random",
 		MinPlayers = 4,
 		Shares = 1,
 	},
 	blackmarket = {
+		PrintName = "Black Market Brawl",
 		Type = "Random",
 		MinPlayers = 6,
 		Shares = 1,
 	},
 	boom = {
+		PrintName = "Boomer Time",
 		Type = "Random",
 		MinPlayers = 6,
 		Shares = 1,
 	},
-	kingofthehill = {
+	kingofthequill = {
+		PrintName = "King of the Quill",
 		Type = "Random",
 		MinPlayers = 4,
 		Shares = 1,
@@ -49,75 +57,104 @@ pluto.rounds.infobyname = {
 
 	-- Mini Events
 	aprilfools = {
+		PrintName = "April Fools",
 		Type = "Mini",
 		MinPlayers = 2,
 		Shares = 1,
 		Odds = 1 / 16,
-		Disabled = true,
+		NoRandom = true,
+		--NoBuy = true,
 	},
 	raining = {
+		PrintName = "Droplet Rain",
 		Type = "Mini",
 		MinPlayers = 3,
 		Shares = 1,
 		Odds = 1 / 32,
 	},
 	dice = {
+		PrintName = "Chance Dice",
 		Type = "Mini",
 		MinPlayers = 3,
 		Shares = 1,
 		Odds = 1 / 32,
 	},
 	stars = {
+		PrintName = "Shooting Stars",
 		Type = "Mini",
 		MinPlayers = 3,
 		Shares = 1,
 		Odds = 1 / 32,
 	},
 	dash = {
+		PrintName = "Dasher",
 		Type = "Mini",
 		MinPlayers = 4,
 		Shares = 1,
 		Odds = 1 / 48,
 	},
 	hops = {
+		PrintName = "Leg Day",
 		Type = "Mini",
 		MinPlayers = 2,
 		Shares = 1,
 		Odds = 1 / 48,
 	},
 	panic = {
+		PrintName = "Panic",
 		Type = "Mini",
 		MinPlayers = 2,
 		Shares = 1,
 		Odds = 1 / 48,
 	},
 	leak = {
+		PrintName = "Intel Leak",
 		Type = "Mini",
 		MinPlayers = 4,
 		Shares = 1,
 		Odds = 1 / 48,
 	},
 	jugg = {
+		PrintName = "Operation JUGG",
 		Type = "Mini",
 		MinPlayers = 2,
 		Shares = 1,
 		Odds = 1 / 48,
 	},
 	luck = {
+		PrintName = "Press Your Luck",
 		Type = "Mini",
 		MinPlayers = 4,
 		Shares = 1,
 		Odds = 1 / 48,
 	},
 	rise = {
+		PrintName = "Rise, Dead!",
 		Type = "Mini",
 		MinPlayers = 4,
 		Shares = 1,
 		Odds = 1 / 48,
 	},
 	saber = {
+		PrintName = "Saber Round",
 		Type = "Mini",
 		MinPlayers = 2,
+		Shares = 1,
+		Odds = 1 / 48,
+	},
+	ticket = {
+		PrintName = "Ticket Round",
+		Type = "Mini",
+		MinPlayers = 5,
+		Shares = 1,
+		Odds = 1 / 32,
+		NoRandom = true, -- Remove
+		NoBuy = true,
+	},
+	wink = {
+		PrintName = "Wink Round",
+		Type = "Mini",
+		MinPlayers = 4,
 		Shares = 1,
 		Odds = 1 / 48,
 	},
