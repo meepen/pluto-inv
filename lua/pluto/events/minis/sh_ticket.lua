@@ -44,16 +44,15 @@ if (SERVER) then
 
         local name = pluto.rounds.chooserandom("Random", true)
 
-        pluto.rounds.Notify(string.format("%s has found the ticket and queued a random round!", ply:Nick()), pluto.currency.byname.ticket.Color)
+        pluto.rounds.Notify(string.format("%s has found the ticket and queued %s!", ply:Nick(), pluto.rounds.infobyname[name].PrintName), pluto.currency.byname.ticket.Color)
 
         local success, e = pluto.rounds.prepare(name)
 
         if (success) then
-            print "round successfully prepared"
             return
         end
 
-        --pluto.rounds.queue(name)
+        pluto.rounds.queue(name)
     end)
 else
 

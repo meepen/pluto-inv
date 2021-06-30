@@ -40,10 +40,10 @@ function pluto.rounds.queue(name)
     local serv_var = GetConVar "pluto_cross_id"
     local serv = (serv_var and serv_var:GetString()) or "test"
 
-    --[[pluto.db.instance(function(db)
+    pluto.db.instance(function(db)
         mysql_stmt_run(db, "INSERT INTO pluto_round_queue (server, time, name) VALUES (?, NOW(), ?)", serv, name)
         return true, "Round queued"
-    end)--]]
+    end)
 end
 
 function pluto.rounds.minplayersmet(name)
@@ -147,6 +147,16 @@ pluto.rounds.GiveDefaults = function(ply)
 	ply:Give "weapon_ttt_crowbar"
 	ply:Give "weapon_ttt_unarmed"
 	ply:Give "weapon_ttt_magneto"
+
+    pluto.rounds.LoadAmmo(ply)
+end
+
+pluto.rounds.LoadAmmo = function(ply)
+    for k, wep in ipairs(ply:GetWeapons()) do
+		if (wep.Primary and wep.Primary.Ammo and wep.Primary.ClipSize) then
+			ply:SetAmmo(wep.Primary.ClipSize * 100, wep.Primary.Ammo)
+		end
+	end
 end
 
 hook.Add("TTTPrepareRound", "pluto_minis", function()
@@ -180,15 +190,12 @@ hook.Add("TTTPrepareRound", "pluto_minis", function()
     end
 end)
 
---[[hook.Add("TTTEndRound", "pluto_round_queue", function()
-    print("trying to queue a round")
+hook.Add("TTTEndRound", "pluto_round_queue", function()
     if (ttt.GetNextRoundEvent() ~= "" or GetConVar "ttt_round_limit":GetInt() <= ttt.GetRoundNumber()) then
-        print "returning due to already prepared or round limit"
         return
     end
 
     if (not pluto.rounds.infobyname) then
-        print "returning due to lack of infobyname"
         return
     end
 
@@ -196,10 +203,9 @@ end)
     local serv = (serv_var and serv_var:GetString()) or "test"
 
     pluto.db.instance(function(db)
-        local rounds = mysql_stmt_run(db, "SELECT * from pluto_round_queue WHERE server = ? AND NOT finished WHERE x AND time <= NOW()", serv) 
-
+        local rounds = mysql_stmt_run(db, "SELECT * from pluto_round_queue WHERE server = ? AND NOT finished AND time <= NOW()", serv) 
+        
         if (not rounds) then
-            print "returning due to lack of rounds"
             return
         end
 
@@ -224,7 +230,7 @@ end)
             end
         end
     end)
-end)--]]
+end)
 
 concommand.Add("pluto_prepare_round", function(ply, cmd, args)
     if (not pluto.cancheat(ply) or not args[1]) then

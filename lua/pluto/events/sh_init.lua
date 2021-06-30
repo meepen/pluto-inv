@@ -60,6 +60,12 @@ pluto.rounds.infobyname = {
 		MinPlayers = 4,
 		Shares = 1,
 	},
+	phantom = {
+		PrintName = "Phantom Fight",
+		Type = "Random",
+		MinPlayers = 8,
+		Shares = 1,
+	},
 
 	-- Mini Events
 	aprilfools = {
@@ -135,7 +141,7 @@ pluto.rounds.infobyname = {
 		Odds = 1 / 48,
 	},
 	rise = {
-		PrintName = "Rise, Dead!",
+		PrintName = "Rise, Dead",
 		Type = "Mini",
 		MinPlayers = 4,
 		Shares = 1,
@@ -153,8 +159,7 @@ pluto.rounds.infobyname = {
 		Type = "Mini",
 		MinPlayers = 5,
 		Shares = 1,
-		Odds = 1 / 32,
-		NoRandom = true, -- Remove
+		Odds = 1 / 16,
 		NoBuy = true,
 	},
 	wink = {
@@ -234,11 +239,37 @@ local function Initialize()
 	end
 end
 
+local colors = {
+	red = Color(255, 0, 0),
+	green = Color(0, 255, 0),
+	blue = Color(0, 0, 255),
+	--[[
+	yellow = Color(255, 255, 0),
+	pink = Color(255, 0, 255),
+	cyan = Color(0, 255, 255),
+	white = Color(255, 255, 255),
+	black = Color(0, 0, 0),
+	]]--
+}
+
+local function capitalize(name)
+	return (string.upper(string.sub(name, 1, 1)) .. string.sub(name, 2))
+end
+
 hook.Add("TTTPrepareRoles", "pluto_events_roles", function(Team, Role)
-	for _, event in pairs(pluto.rounds.byname) do
-		if (event.TTTPrepareRoles) then
-			event:TTTPrepareRoles(Team, Role)
-		end
+	for name, color in pairs(colors) do
+		Team(name)
+			:SetColor(color)
+			:TeamChatSeenBy(name)
+			:SetVoiceChannel(name)
+			:SetDeathIcon("materials/pluto/roles/" .. name .. ".png")
+			:SetSeeTeammateOutlines(true)
+
+		Role(capitalize(name), name)
+			:SeenByAll()
+			:SetCalculateAmountFunc(function(total_players)
+				return 0
+			end)
 	end
 	
 	Role("Fighter", "traitor")
@@ -247,6 +278,12 @@ hook.Add("TTTPrepareRoles", "pluto_events_roles", function(Team, Role)
 		end)
 		:SetCanUseBuyMenu(false)
 		:SetCanSeeThroughWalls(false)
+
+	for _, event in pairs(pluto.rounds.byname) do
+		if (event.TTTPrepareRoles) then
+			event:TTTPrepareRoles(Team, Role)
+		end
+	end
 end)
 
 if (gmod.GetGamemode()) then

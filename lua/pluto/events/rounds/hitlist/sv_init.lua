@@ -17,7 +17,6 @@ end
 
 function ROUND:Loadout(ply)
 	pluto.rounds.GiveDefaults(ply)
-	self:LoadAmmo(ply)
 end
 
 ROUND:Hook("TTTSelectRoles", function(self, state, plys)
@@ -25,7 +24,6 @@ ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 
 	for i, ply in ipairs(plys) do
 		pluto.rounds.GiveDefaults(ply)
-		self:LoadAmmo(ply)
 
 		round.Players[i] = {
 			Player = ply,
@@ -201,21 +199,13 @@ function ROUND:TTTEndRound(state)
 
 		pluto.db.instance(function(db)
 			pluto.inv.addcurrency(db, ply, self.Reward, self.EarningsPerScore * score)
-			pluto.rounds.Notify(string.format("You get %i Refinium Vials from have a score of %i!", self.EarningsPerScore * score, score), pluto.currency.byname[self.Reward].Color, ply)
+			pluto.rounds.Notify(string.format("You get %i Refinium Vials for having a score of %i!", self.EarningsPerScore * score, score), pluto.currency.byname[self.Reward].Color, ply)
 		end)
 	end
 
 	GetConVar("ttt_karma"):Revert()
 
 	timer.UnPause("tttrw_afk")
-end
-
-function ROUND:LoadAmmo(ply)
-	for k, wep in ipairs(ply:GetWeapons()) do
-		if (wep.Primary and wep.Primary.Ammo and wep.Primary.ClipSize) then
-			ply:SetAmmo(wep.Primary.ClipSize * 100, wep.Primary.Ammo)
-		end
-	end
 end
 
 --[[ROUND:Hook("PlayerCanPickupWeapon", function(self, state, ply, wep)

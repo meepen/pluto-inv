@@ -1,6 +1,7 @@
 ROUND.Reward = "tp"
-ROUND.WinnerEarnings = 25
+ROUND.WinnerEarnings = 20
 ROUND.EachDecrease = 5
+ROUND.WinnerBonus = 10
 
 ROUND.Primaries = {
 	"weapon_ttt_ak47_u",
@@ -76,11 +77,7 @@ function ROUND:Loadout(ply)
 	pluto.NextWeaponSpawn = false
 	ply:Give(table.Random(self.Melees))
 
-	for k, wep in ipairs(ply:GetWeapons()) do
-		if (wep.Primary and wep.Primary.Ammo and wep.Primary.Ammo ~= "none") then
-			ply:SetAmmo(500, wep.Primary.Ammo)
-		end
-	end
+	pluto.rounds.LoadAmmo(ply)
 end
 
 ROUND:Hook("TTTSelectRoles", function(self, state, plys)
@@ -94,11 +91,7 @@ ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 		pluto.NextWeaponSpawn = false
 		ply:Give(table.Random(self.Melees))
 
-		for k, wep in ipairs(ply:GetWeapons()) do
-			if (wep.Primary and wep.Primary.Ammo and wep.Primary.Ammo ~= "none") then
-				ply:SetAmmo(500, wep.Primary.Ammo)
-			end
-		end
+		pluto.rounds.LoadAmmo(ply)
 
 		round.Players[i] = {
 			Player = ply,

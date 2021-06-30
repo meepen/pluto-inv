@@ -307,5 +307,17 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				sold TINYINT UNSIGNED NOT NULL DEFAULT 0
 			)
 		]])
+
+		mysql_query(db, [[
+			CREATE TABLE IF NOT EXISTS pluto_round_queue (
+				idx INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+				server VARCHAR(16) NOT NULL,
+				time TIMESTAMP NOT NULL,
+				name VARCHAR(32) NOT NULL,
+				finished BOOLEAN NOT NULL DEFAULT FALSE,
+				INDEX(time),
+				INDEX(finished)
+			)
+		]])
 	end)
 end)
