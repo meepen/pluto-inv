@@ -5,8 +5,8 @@ local name = "hops"
 if (SERVER) then
     local last_hops = {}
 
-    hook.Add("TTTBeginRound", "pluto_mini_hops", function()
-        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
+    hook.Add("TTTBeginRound", "pluto_mini_" .. name, function()
+        if (not pluto.rounds.minis[name]) then
             return
         end
 
@@ -16,7 +16,7 @@ if (SERVER) then
 
         last_hops = {}
 
-        hook.Add("Move", "pluto_mini_hops", function(ply, mv)
+        hook.Add("Move", "pluto_mini_" .. name, function(ply, mv)
             if (not ply:Alive() or ply:WaterLevel() >= 2) then
                 return
             end
@@ -38,8 +38,8 @@ if (SERVER) then
         end)
     end)
 
-    hook.Add("TTTEndRound", "pluto_mini_hops", function()
-        hook.Remove("Move", "pluto_mini_hops")
+    hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+        hook.Remove("Move", "pluto_mini_" .. name)
     end)
 else
 

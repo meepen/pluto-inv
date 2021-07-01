@@ -46,16 +46,20 @@ function pluto.rounds.queue(name)
     end)
 end
 
-function pluto.rounds.minplayersmet(name)
+function pluto.rounds.goodplayercount(name)
 	local event = pluto.rounds.infobyname[name]
 
 	if (not event) then
 		return false, "Event does not exist"
 	end
 
-	if (not event.MinPlayers or #player.GetAll() < event.MinPlayers) then
+	if (event.MinPlayers and #player.GetAll() < event.MinPlayers) then
 		return false, "Not enough players"
 	end
+
+    if (event.MaxPlayers and #player.GetAll() > event.MaxPlayers) then
+        return false, "Too many players"
+    end
 
 	return true
 end
@@ -72,7 +76,7 @@ function pluto.rounds.chooserandom(typ, needminplayers)
             continue
         end
 
-		if (needminplayers and not pluto.rounds.minplayersmet(name)) then
+		if (needminplayers and not pluto.rounds.goodplayercount(name)) then
 			continue
 		end
 
@@ -177,7 +181,7 @@ hook.Add("TTTPrepareRound", "pluto_minis", function()
             continue
         end
 
-        if (not pluto.rounds.minplayersmet(name)) then
+        if (not pluto.rounds.goodplayercount(name)) then
             continue
         end
 

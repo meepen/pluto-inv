@@ -3,8 +3,8 @@
 local name = "rise"
 
 if (SERVER) then
-    hook.Add("TTTBeginRound", "pluto_mini_rise", function()
-        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
+    hook.Add("TTTBeginRound", "pluto_mini_" .. name, function()
+        if (not pluto.rounds.minis[name]) then
             return
         end
 
@@ -14,7 +14,7 @@ if (SERVER) then
 
         local risen = {}
 
-        hook.Add("DoPlayerDeath", "pluto_mini_rise", function(ply, att, dmg)
+        hook.Add("DoPlayerDeath", "pluto_mini_" .. name, function(ply, att, dmg)
             if (not IsValid(ply) or risen[ply]) then
                 return
             end
@@ -43,7 +43,7 @@ if (SERVER) then
             end)
         end)
 
-        hook.Add("EntityTakeDamage", "pluto_mini_rise", function(att, dmg)
+        hook.Add("EntityTakeDamage", "pluto_mini_" .. name, function(att, dmg)
             local att = dmg:GetAttacker()
 
             if (not IsValid(att) or not att:IsPlayer() or not risen[att]) then
@@ -53,25 +53,25 @@ if (SERVER) then
             pluto.statuses.heal(att, 25, 1)
         end)
 
-        hook.Add("PlayerCanPickupWeapon", "pluto_mini_rise", function(ply, wep)
+        hook.Add("PlayerCanPickupWeapon", "pluto_mini_" .. name, function(ply, wep)
             if (risen[ply] and wep:GetClass() ~= "weapon_ttt_fists") then
                 return false
             end
         end)
 
-        hook.Add("PlayerCanHearPlayersVoice", "pluto_mini_rise", function(listener, speaker)
+        hook.Add("PlayerCanHearPlayersVoice", "pluto_mini_" .. name, function(listener, speaker)
             if (IsValid(speaker) and IsValid(listener) and risen[speaker] and speaker:Alive() and listener:Alive()) then
                 return listener == speaker
             end
         end)
 
-        hook.Add("PlayerCanSeePlayersChat", "pluto_mini_rise", function(text, _, listener, speaker)
+        hook.Add("PlayerCanSeePlayersChat", "pluto_mini_" .. name, function(text, _, listener, speaker)
             if (IsValid(speaker) and IsValid(listener) and risen[speaker] and speaker:Alive() and listener:Alive()) then
                 return listener == speaker
             end
         end)
 
-        timer.Create("pluto_mini_rise", 1, 0, function()
+        timer.Create("pluto_mini_" .. name, 1, 0, function()
             for _, ply in ipairs(player.GetAll()) do
                 if (not IsValid(ply) or not ply:Alive() or not risen[ply]) then
                     continue
@@ -85,13 +85,13 @@ if (SERVER) then
         end)
     end)
 
-    hook.Add("TTTEndRound", "pluto_mini_rise", function()
-        hook.Remove("DoPlayerDeath", "pluto_mini_rise")
-        hook.Remove("EntityTakeDamage", "pluto_mini_rise")
-        hook.Remove("PlayerCanPickupWeapon", "pluto_mini_rise")
-        hook.Remove("PlayerCanHearPlayersVoice", "pluto_mini_rise")
-        hook.Remove("PlayerCanSeePlayersChat", "pluto_mini_rise")
-        timer.Remove("pluto_mini_rise")
+    hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+        hook.Remove("DoPlayerDeath", "pluto_mini_" .. name)
+        hook.Remove("EntityTakeDamage", "pluto_mini_" .. name)
+        hook.Remove("PlayerCanPickupWeapon", "pluto_mini_" .. name)
+        hook.Remove("PlayerCanHearPlayersVoice", "pluto_mini_" .. name)
+        hook.Remove("PlayerCanSeePlayersChat", "pluto_mini_" .. name)
+        timer.Remove("pluto_mini_" .. name)
     end)
 else
 

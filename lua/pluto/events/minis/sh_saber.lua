@@ -5,8 +5,8 @@ local name = "saber"
 if (SERVER) then
     local sabers = {}
 
-    hook.Add("TTTBeginRound", "pluto_mini_saber", function()
-        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
+    hook.Add("TTTBeginRound", "pluto_mini_" .. name, function()
+        if (not pluto.rounds.minis[name]) then
             return
         end
 
@@ -22,7 +22,7 @@ if (SERVER) then
         end
     end)
 
-    hook.Add("TTTEndRound", "pluto_mini_saber", function()
+    hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
         for k, cur in ipairs(sabers) do
             cur:Remove()
         end

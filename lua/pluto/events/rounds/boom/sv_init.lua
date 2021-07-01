@@ -193,25 +193,18 @@ ROUND:Hook("PlayerCanPickupWeapon", function(self, state, ply, wep)
 end)
 
 ROUND:Hook("TTTHasRoundBeenWon", function(self, state)
-	PrintTable(round.GetActivePlayersByRole "Fighter")
-
 	if (#round.GetActivePlayersByRole "Fighter" == 0) then
 		return true, "traitor", false
 	end
 
 	if (not state.living) then
-		print "NO STATE.LIVING"
 		return
 	end
-
-	PrintTable(state.living)
 
 	if (table.Count(state.living) <= 1) then
 		return true, "innocent", false
 	end
-
-	print "ROUND NOT WON"
-	print(table.Count(state.living))
+	
 	return false
 end)
 

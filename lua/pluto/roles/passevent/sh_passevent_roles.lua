@@ -8,6 +8,7 @@ hook.Add("TTTPrepareRoles", "passevent", function(Team, Role)
 		:SetCalculateAmountFunc(function(total_players)
 			return 1
 		end)
+		:SeenBy {"Yaari Spy"}
 end)
 
 hook.Add("TTTRolesSelected", "passevent", function(plys)

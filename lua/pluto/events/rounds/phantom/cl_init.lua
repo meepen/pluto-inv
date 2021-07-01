@@ -59,4 +59,5 @@ function ROUND:NotifyPrepare()
 	SecondColor = Color(160, 160, 170)
 
 	pluto.rounds.Notify("A ghostly battle looms ahead...", FirstColor)
+	print("Credits to Limeinade for the inspiration via the Ghosting idea")
 end

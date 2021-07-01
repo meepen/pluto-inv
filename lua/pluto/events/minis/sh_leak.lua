@@ -97,8 +97,8 @@ if (SERVER) then
         },
     }
 
-    hook.Add("TTTBeginRound", "pluto_mini_leak", function()
-        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
+    hook.Add("TTTBeginRound", "pluto_mini_" .. name, function()
+        if (not pluto.rounds.minis[name]) then
             return
         end
 
@@ -106,7 +106,7 @@ if (SERVER) then
 
         pluto.rounds.Notify("INTEL LEAK: TRAITOR PURCHASES MAY HAVE UNINTENDED CONSEQUENCES!", leak_color)
 
-        hook.Add("TTTOrderedEquipment", "pluto_mini_leak", function(ply, class, is_item, cost)
+        hook.Add("TTTOrderedEquipment", "pluto_mini_" .. name, function(ply, class, is_item, cost)
             if (not IsValid(ply) or ply:GetRoleTeam() ~= "traitor" or not class or not cost) then
                 return
             end
@@ -125,8 +125,8 @@ if (SERVER) then
         end)
     end)
 
-    hook.Add("TTTEndRound", "pluto_mini_leak", function()
-        hook.Remove("TTTOrderedEquipment", "pluto_mini_leak")
+    hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+        hook.Remove("TTTOrderedEquipment", "pluto_mini_" .. name)
     end)
 else
 

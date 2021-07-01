@@ -3,8 +3,8 @@
 local name = "overflow"
 
 if (SERVER) then
-    hook.Add("TTTBeginRound", "pluto_mini_overflow", function()
-        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
+    hook.Add("TTTBeginRound", "pluto_mini_" .. name, function()
+        if (not pluto.rounds.minis[name]) then
             return
         end
 
@@ -22,9 +22,11 @@ if (SERVER) then
 
         timer.Simple(0.1, function()
             for k, ply in ipairs(player.GetAll()) do
-                if (IsValid(ply) and ply:Alive()) then
-                    ply:Give(weps[math.random(#weps)])
+                if (not IsValid(ply) or not ply:Alive()) then
+                    continue
                 end
+
+                ply:Give(weps[math.random(#weps)])
             end
         end)
     end)

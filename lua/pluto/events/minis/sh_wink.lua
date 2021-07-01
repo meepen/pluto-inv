@@ -3,8 +3,8 @@
 local name = "wink"
 
 if (SERVER) then
-    hook.Add("TTTBeginRound", "pluto_mini_wink", function()
-        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
+    hook.Add("TTTBeginRound", "pluto_mini_" .. name, function()
+        if (not pluto.rounds.minis[name]) then
             return
         end
 

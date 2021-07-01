@@ -53,4 +53,5 @@ end)
 
 function ROUND:NotifyPrepare()
 	pluto.rounds.Notify("Get ready to turn up the heat!", FirstColor)
+	print("Credits to damiankiller1243 for the original Crossbow Mayhem idea")
 end

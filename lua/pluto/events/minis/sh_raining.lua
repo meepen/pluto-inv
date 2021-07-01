@@ -3,8 +3,8 @@
 local name = "raining"
 
 if (SERVER) then
-	hook.Add("TTTBeginRound", "pluto_mini_raining", function()
-        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
+	hook.Add("TTTBeginRound", "pluto_mini_" .. name, function()
+        if (not pluto.rounds.minis[name]) then
             return
         end
 
@@ -14,7 +14,7 @@ if (SERVER) then
 
 		local count = #player.GetHumans()
 
-		timer.Create("pluto_mini_raining", math.max(0.5, 0.5 + count / 12), math.max(40, 50 - count / 12), function()
+		timer.Create("pluto_mini_" .. name, math.max(0.5, 0.5 + count / 12), math.max(40, 50 - count / 12), function()
 			for _, ply in pairs(player.GetHumans()) do
 				if (not ply:Alive()) then
 					continue
@@ -30,6 +30,10 @@ if (SERVER) then
 				e:Update()
 			end
 		end)
+	end)
+
+	hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+		timer.Remove("pluto_mini_" .. name)
 	end)
 else
 

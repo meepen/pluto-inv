@@ -71,7 +71,6 @@ pluto.rounds.infobyname = {
 	aprilfools = {
 		PrintName = "April Fools",
 		Type = "Mini",
-		MinPlayers = 2,
 		Shares = 1,
 		Odds = 1 / 16,
 		NoRandom = true,
@@ -108,14 +107,13 @@ pluto.rounds.infobyname = {
 	hops = {
 		PrintName = "Leg Day",
 		Type = "Mini",
-		MinPlayers = 2,
+		MaxPlayers = 10,
 		Shares = 1,
 		Odds = 1 / 48,
 	},
 	panic = {
 		PrintName = "Panic",
 		Type = "Mini",
-		MinPlayers = 2,
 		Shares = 1,
 		Odds = 1 / 48,
 	},
@@ -129,7 +127,6 @@ pluto.rounds.infobyname = {
 	jugg = {
 		PrintName = "Operation JUGG",
 		Type = "Mini",
-		MinPlayers = 2,
 		Shares = 1,
 		Odds = 1 / 48,
 	},
@@ -137,6 +134,7 @@ pluto.rounds.infobyname = {
 		PrintName = "Press Your Luck",
 		Type = "Mini",
 		MinPlayers = 4,
+		MaxPlayers = 10,
 		Shares = 1,
 		Odds = 1 / 48,
 	},
@@ -144,13 +142,14 @@ pluto.rounds.infobyname = {
 		PrintName = "Rise, Dead",
 		Type = "Mini",
 		MinPlayers = 4,
+		MaxPlayers = 10,
 		Shares = 1,
 		Odds = 1 / 48,
 	},
 	saber = {
 		PrintName = "Saber Round",
 		Type = "Mini",
-		MinPlayers = 2,
+		MaxPlayers = 10,
 		Shares = 1,
 		Odds = 1 / 48,
 	},
@@ -165,16 +164,21 @@ pluto.rounds.infobyname = {
 	wink = {
 		PrintName = "Wink Round",
 		Type = "Mini",
-		MinPlayers = 3,
 		Shares = 1,
 		Odds = 1 / 48,
 	},
 	overflow = {
 		PrintName = "Equipment Overflow",
 		Type = "Mini",
-		MinPlayers = 3,
 		Shares = 1,
 		Odds = 1 / 48,
+	},
+	ttv = {
+		PrintName = "TTVillage",
+		Type = "Mini",
+		MinPlayers = 8,
+		Shares = 1,
+		Odds = 1 / 24,
 	},
 }
 

@@ -119,8 +119,7 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		ply:SetHealth(250)
 	end
 
-	WriteRoundData("redliving", table.Count(state.redliving))
-	WriteRoundData("blueliving", table.Count(state.blueliving))
+	self:WriteLiving(state)
 
 	GetConVar("ttt_karma"):SetBool(false)
 	
@@ -182,13 +181,13 @@ function ROUND:TTTEndRound(state)
 	end
 
 	if (state.winner) then
-		local winnerrole = string.upper(string.sub(name, 1, 1)) .. string.sub(name, 2)
+		local winnerrole = string.upper(string.sub(state.winner, 1, 1)) .. string.sub(state.winner, 2)
 		pluto.rounds.Notify(winnerrole .. " is the winning team!", ttt.roles[winnerrole].Color)
 		for k, ply in ipairs(state[state.winner]) do
 			
 			pluto.db.instance(function(db)
 				pluto.inv.addcurrency(db, ply, self.Reward, self.WinnerEarnings)
-				pluto.rounds.Notify(string.format("You get %i Refinium Vials for winning!", self.WinnerEarnings), pluto.currency.byname[self.Reward].Color, state.leader)
+				pluto.rounds.Notify(string.format("You get %i Refinium Vials for winning!", self.WinnerEarnings), pluto.currency.byname[self.Reward].Color, ply)
 			end)
 		end
 	else
@@ -209,9 +208,8 @@ function ROUND:RemovePlayer(state, ply, disconnected)
 		state.redliving[ply] = nil
 		local key = table.KeyFromValue(state.red, ply)
 		if (disconnected and key) then
-			state.blue[key] = nil
+			table.remove(state.red, key)
 		end
-		WriteRoundData("redliving", table.Count(state.redliving))
 		if (table.Count(state.redliving) == 0) then
 			state.winner = "blue"
 			ttt.CheckTeamWin()
@@ -220,13 +218,30 @@ function ROUND:RemovePlayer(state, ply, disconnected)
 		state.blueliving[ply] = nil
 		local key = table.KeyFromValue(state.blue, ply)
 		if (disconnected and key) then
-			state.blue[key] = nil
+			table.remove(state.blue, key)
 		end
-		WriteRoundData("blueliving", table.Count(state.blueliving))
 		if (table.Count(state.blueliving) == 0) then
 			state.winner = "red"
 			ttt.CheckTeamWin()
 		end
+	end
+
+	self:WriteLiving(state)
+end
+
+function ROUND:WriteLiving(state)
+	if (not state or not state.red or not state.blue) then
+		return
+	end
+
+	for k, ply in ipairs(state.red) do
+		WriteRoundData("teamlives", table.Count(state.redliving), ply)
+		WriteRoundData("enemylives", table.Count(state.blueliving), ply)
+	end
+
+	for k, ply in ipairs(state.blue) do
+		WriteRoundData("enemylives", table.Count(state.redliving), ply)
+		WriteRoundData("teamlives", table.Count(state.blueliving), ply)
 	end
 end
 
@@ -235,14 +250,20 @@ end
 end)--]]
 
 ROUND:Hook("TTTHasRoundBeenWon", function(self, state)
-	if (not state) then
-		return false
+	state = state or (pluto.rounds and pluto.rounds.state)
+
+	if (state.winner) then
+		return true, state.winner, false
 	end
 
-	if (#round.GetActivePlayersByRole "Red" == 0) then
+	if (not state.redliving or not state.blueliving) then
+		return
+	end
+
+	if (table.Count(state.redliving) == 0) then
 		state.winner = "blue"
 		return true, "blue", false
-	elseif (#round.GetActivePlayersByRole "Blue" == 0) then
+	elseif (table.Count(state.blueliving) == 0) then
 		state.winner = "red"
 		return true, "red", false
 	end
@@ -263,9 +284,9 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 		return
 	end
 
-	self:RemovePlayer(state, ply)
+	self:RemovePlayer(state, vic)
 
-	pluto.rounds.Notify("You have died, but you can still speak to guide your teammates!", Color(160, 160, 170), ply)
+	pluto.rounds.Notify("You have died, but you can still speak to guide your teammates!", Color(160, 160, 170), vic)
 end)
 
 ROUND:Hook("PlayerShouldTakeDamage", function(self, state, ply, atk)

@@ -5,8 +5,8 @@ local name = "jugg"
 local jugg_mult = 3
 
 if (SERVER) then
-    hook.Add("TTTBeginRound", "pluto_mini_jugg", function()
-        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
+    hook.Add("TTTBeginRound", "pluto_mini_" .. name, function()
+        if (not pluto.rounds.minis[name]) then
             return
         end
 

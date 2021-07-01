@@ -5,21 +5,14 @@ local name = "dash"
 local time_limit = 15
 
 if (SERVER) then
-    util.AddNetworkString "pluto_mini_dash"
+    util.AddNetworkString("pluto_mini_" .. name)
     resource.AddFile "materials/pluto/roles/dasher.png"
 
     local dasher
     local time = 0
 
-    hook.Add("TTTEndRound", "pluto_mini_dash", function()
-        hook.Remove("PlayerCanPickupWeapon", "pluto_mini_dash")
-        hook.Remove("DoPlayerDeath", "pluto_mini_dash")
-
-        dasher = nil
-    end)
-
-    hook.Add("TTTBeginRound", "pluto_mini_dash", function()
-        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
+    hook.Add("TTTBeginRound", "pluto_mini_" .. name, function()
+        if (not pluto.rounds.minis[name]) then
             return
         end
 
@@ -46,14 +39,14 @@ if (SERVER) then
             return
         end
 
-        net.Start "pluto_mini_dash"
+        net.Start("pluto_mini_" .. name)
         net.Send(dasher)
         time = CurTime() + time_limit
 
         pluto.rounds.args = {}
     end)
 
-    net.Receive("pluto_mini_dash", function(len, ply)
+    net.Receive("pluto_mini_" .. name, function(len, ply)
         if (not IsValid(ply) or not IsValid(dasher) or not dasher:Alive() or ply ~= dasher or time < CurTime()) then
             return 
         end
@@ -95,15 +88,16 @@ if (SERVER) then
             for k, group in ipairs(dasher:GetBodyGroups()) do
                 ply:SetBodygroup(group.id, dasher:GetBodygroup(group.id))
             end
+            ply:SetupHands()
         end
 
-        hook.Add("PlayerCanPickupWeapon", "pluto_mini_dash", function(ply, wep)
+        hook.Add("PlayerCanPickupWeapon", "pluto_mini_" .. name, function(ply, wep)
             if (ply == dasher) then
                 return wep:GetClass() == "weapon_ttt_unarmed"
             end
         end)
 
-        hook.Add("DoPlayerDeath", "pluto_mini_dash", function(vic, att, dmg)
+        hook.Add("DoPlayerDeath", "pluto_mini_" .. name, function(vic, att, dmg)
             if (not IsValid(vic) or vic ~= dasher) then
                 return
             end
@@ -114,20 +108,29 @@ if (SERVER) then
                     for id, value in pairs(models[ply].BodyGroups) do
                         ply:SetBodygroup(id, value)
                     end
+                    ply:SetupHands()
                     pluto.rounds.Notify(dasher:Nick() .. " has been killed! Your model has been returned.", Color(255, 128, 0), ply)
                 else
                     pluto.rounds.Notify(dasher:Nick() .. " has been killed!", Color(255, 128, 0), ply)
                 end
             end
 
-            hook.Remove("DoPlayerDeath", "pluto_mini_dash")
+            hook.Remove("DoPlayerDeath", "pluto_mini_" .. name)
+            hook.Remove("PlayerCanPickupWeapon", "pluto_mini_" .. name)
         end)
     end)
+
+    hook.Add("TTTEndRound", "pluto_mini" .. name, function()
+        hook.Remove("DoPlayerDeath", "pluto_mini_" .. name)
+        hook.Remove("PlayerCanPickupWeapon", "pluto_mini_" .. name)
+
+        dasher = nil
+    end)
 else
-    net.Receive("pluto_mini_dash", function()
+    net.Receive("pluto_mini_" .. name, function()
         local dashbutton = vgui.Create "pluto_mini_button"
         dashbutton:ChangeText "Click to steal all models! (KOSable)"
-        dashbutton:ChangeMini "dash"
+        dashbutton:ChangeMini(name)
 
         timer.Simple(time_limit - 1, function()
             if (IsValid(dashbutton)) then
@@ -140,7 +143,7 @@ end
 hook.Add("TTTPrepareRoles", "dasher", function(Team, Role)
 	Team "dasher"
 		:SetColor(Color(255, 128, 0))
-		:SeenBy {"traitor", "innocent"}
+		:SeenByAll()
 		:SetDeathIcon "materials/pluto/roles/dasher.png"
 
 	Role("Dasher", "dasher")

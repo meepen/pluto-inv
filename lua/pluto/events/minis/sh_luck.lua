@@ -5,22 +5,22 @@ local name = "luck"
 local time_limit = 20
 
 if (SERVER) then
-    util.AddNetworkString "pluto_mini_luck"
+    util.AddNetworkString("pluto_mini_" .. name)
 
     local time = 0
     local player_times = {}
     local player_scores = {}
     local luck_active = false
 
-    hook.Add("TTTBeginRound", "pluto_mini_luck", function()
-        if (not pluto.rounds or not pluto.rounds.minis or not pluto.rounds.minis[name]) then
+    hook.Add("TTTBeginRound", "pluto_mini_" .. name, function()
+        if (not pluto.rounds.minis[name]) then
             return
         end
 
 		pluto.rounds.minis[name] = nil
 
         for k, ply in ipairs(player.GetAll()) do
-            net.Start "pluto_mini_luck"
+            net.Start("pluto_mini_" .. name)
             net.Send(ply)  
             player_times[ply] = CurTime() + time_limit
             player_scores[ply] = 0
@@ -29,13 +29,13 @@ if (SERVER) then
         luck_active = true
     end)
 
-    hook.Add("TTTEndRound", "pluto_mini_luck", function()
+    hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
         player_times = {}
         player_scores = {}
         luck_active = false
     end)
 
-    net.Receive("pluto_mini_luck", function(len, ply)
+    net.Receive("pluto_mini_" .. name, function(len, ply)
         if (not IsValid(ply) or not ply:Alive() or not luck_active) then
             return 
         end
@@ -55,7 +55,7 @@ if (SERVER) then
             pluto.db.instance(function(db)
                 pluto.inv.addcurrency(db, ply, "tp", 5)
                 pluto.rounds.Notify(ply:Nick() .. " has received 5 vials of refinium!", pluto.currency.byname.tp.Color, ply, true)
-                net.Start "pluto_mini_luck"
+                net.Start("pluto_mini_" .. name)
                 net.Send(ply)
                 player_times[ply] = CurTime() + time_limit
                 player_scores[ply] = player_scores[ply] + 0.1
@@ -63,7 +63,7 @@ if (SERVER) then
         end
     end)
 else
-    net.Receive("pluto_mini_luck", function()
+    net.Receive("pluto_mini_" .. name, function()
         local luckbutton = vgui.Create "pluto_mini_button"
         luckbutton:ChangeText "Press to push your luck! Danger of death."
         luckbutton:ChangeMini "luck"

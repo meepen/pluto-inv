@@ -167,7 +167,6 @@ end)
 
 net.Receive("round_data", function()
 	if (not pluto.rounds.state) then
-		print("pluto.rounds.state not found")
 		return
 	end
 
