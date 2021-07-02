@@ -20,14 +20,15 @@ if (SERVER) then
             end
             table.insert(sabers, pluto.currency.spawnfor(ply, "_lightsaber", nil, true))
         end
-    end)
 
-    hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
-        for k, cur in ipairs(sabers) do
-            cur:Remove()
-        end
+        hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+            hook.Remove("TTTEndRound", "pluto_mini_" .. name)
+            for k, cur in ipairs(sabers) do
+                cur:Remove()
+            end
 
-        sabers = {}
+            sabers = {}
+        end)
     end)
 else
 

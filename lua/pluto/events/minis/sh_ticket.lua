@@ -38,17 +38,18 @@ if (SERVER) then
 
             pluto.rounds.queue(name)
         end)
-    end)
 
     hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+        hook.Remove("TTTEndRound", "pluto_mini_" .. name)
+        hook.Remove("PlutoTicketPickup", "pluto_mini_" .. name)
+        
         if (IsValid(ticket)) then
             ticket:Remove()
         end
 
         ticket = nil
         active = false
-
-        hook.Remove("PlutoTicketPickup", "pluto_mini_" .. name)
+    end)
     end)
 else
 

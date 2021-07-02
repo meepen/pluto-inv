@@ -118,13 +118,14 @@ if (SERVER) then
             hook.Remove("DoPlayerDeath", "pluto_mini_" .. name)
             hook.Remove("PlayerCanPickupWeapon", "pluto_mini_" .. name)
         end)
-    end)
 
-    hook.Add("TTTEndRound", "pluto_mini" .. name, function()
-        hook.Remove("DoPlayerDeath", "pluto_mini_" .. name)
-        hook.Remove("PlayerCanPickupWeapon", "pluto_mini_" .. name)
+        hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+            hook.Remove("TTTEndRound", "pluto_mini_" .. name)
+            hook.Remove("DoPlayerDeath", "pluto_mini_" .. name)
+            hook.Remove("PlayerCanPickupWeapon", "pluto_mini_" .. name)
 
-        dasher = nil
+            dasher = nil
+        end)
     end)
 else
     net.Receive("pluto_mini_" .. name, function()

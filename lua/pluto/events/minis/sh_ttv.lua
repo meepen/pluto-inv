@@ -99,7 +99,7 @@ if (SERVER) then
             pluto.rounds.Notify("You are an Infiltrator! See Buddies and pretend to be an innocent Wannabe!", ttt.roles[role].Color, ply)
         end,
         Assassin = function(ply, role)
-            pluto.rounds.Notify("You are an Asassin! Deal extra damage to Detectives and Deputies!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are an Assassin! Deal more damage to Detectives/Deputies and less to others!", ttt.roles[role].Color, ply)
         end,
         Hoarder = function(ply, role)
             pluto.rounds.Notify("You are a Hoarder! Enjoy the bonus equipment credits!", ttt.roles[role].Color, ply)
@@ -214,7 +214,7 @@ if (SERVER) then
         finisher_powered = false
         redeemer_powered = false
 
-        hook.Add("EntityTakeDamage", "pluto_mini" .. name, function(vic, dmg)
+        hook.Add("EntityTakeDamage", "pluto_mini_" .. name, function(vic, dmg)
             if (not IsValid(vic) or not vic:IsPlayer() or not vic:Alive() or not dmg) then
                 return 
             end
@@ -226,8 +226,12 @@ if (SERVER) then
                     dmg:SetDamage(dmg:GetDamage() * power_mult)       
                 end
 
-                if (att:GetRole() == "Assassin" and (vic:GetRole() == "Detective" or vic:GetRole() == "Deputy")) then
-                    dmg:SetDamage(dmg:GetDamage() * power_mult)
+                if (att:GetRole() == "Assassin") then  
+                    if (vic:GetRole() == "Detective" or vic:GetRole() == "Deputy") then
+                        dmg:SetDamage(dmg:GetDamage() * power_mult)
+                    else
+                        dmg:SetDamage(dmg:GetDamage() / power_mult)
+                    end
                 end
 
                 if (att:GetRole() == "Destroyer") then
@@ -258,7 +262,7 @@ if (SERVER) then
             end
         end)
 
-        hook.Add("PlayerDeath", "pluto_mini" .. name, function(vic, inf, atk)
+        hook.Add("PlayerDeath", "pluto_mini_" .. name, function(vic, inf, atk)
             if (not IsValid(vic)) then
                 return
             end
@@ -272,6 +276,7 @@ if (SERVER) then
             end
 
             for k, ply in ipairs(round.GetActivePlayersByRole "Listener") do
+                print("PlayerDeath notifying")
                 pluto.rounds.Notify(string.format("Listen, and behold: %s, with the role of %s, has been eliminated!", vic:Nick(), vic:GetRole()), ttt.roles.Listener.Color, ply)
             end
 
@@ -313,15 +318,16 @@ if (SERVER) then
                 end
             end
         end)
-    end)
 
-    hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
-        hook.Remove("PlayerTakeDamage", "pluto_mini" .. name)
-        hook.Remove("PlayerDeath", "pluto_mini" .. name)
-        hook.Remove("PlayerDisconnected", "pluto_mini" .. name)
-        hook.Remove("PlayerCanPickupWeapon", "pluto_mini" .. name)
-        hook.Remove("PlayerCanHearPlayersVoice", "pluto_mini" .. name)
-        hook.Remove("PlayerCanSeePlayersChat", "pluto_mini" .. name)
+        hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+            hook.Remove("TTTEndRound", "pluto_mini_" .. name)
+            hook.Remove("PlayerTakeDamage", "pluto_mini_" .. name)
+            hook.Remove("PlayerDeath", "pluto_mini_" .. name)
+            hook.Remove("PlayerDisconnected", "pluto_mini_" .. name)
+            hook.Remove("PlayerCanPickupWeapon", "pluto_mini_" .. name)
+            hook.Remove("PlayerCanHearPlayersVoice", "pluto_mini_" .. name)
+            hook.Remove("PlayerCanSeePlayersChat", "pluto_mini_" .. name)
+        end)
     end)
 else
 
@@ -465,4 +471,5 @@ hook.Add("TTTPrepareRoles", "pluto_mini_" .. name, function(Team, Role)
 		end)
         :SetColor(23, 75, 18)
         :SeenBy {"Sanguine Seer"}
+        :SetSeeTeammateOutlines(true)
 end)

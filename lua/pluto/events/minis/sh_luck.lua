@@ -27,12 +27,13 @@ if (SERVER) then
         end
 
         luck_active = true
-    end)
 
-    hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
-        player_times = {}
-        player_scores = {}
-        luck_active = false
+        hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+            hook.Remove("TTTEndRound", "pluto_mini_" .. name)
+            player_times = {}
+            player_scores = {}
+            luck_active = false
+        end)
     end)
 
     net.Receive("pluto_mini_" .. name, function(len, ply)

@@ -2,6 +2,8 @@ util.AddNetworkString "round_data"
 util.AddNetworkString "mini_speed"
 util.AddNetworkString "round_notify"
 
+local pluto_mini_boost = CreateConVar("pluto_mini_boost", 1, FCVAR_ARCHIVE, "Direct multiplier to the odds of mini-events occuring", 0)
+
 --- Rounds ---
 
 pluto.rounds = pluto.rounds or {}
@@ -13,9 +15,7 @@ function pluto.rounds.prepare(name)
         return false, "No name provided"
     end
 
-	local event = pluto.rounds.byname[name]
-
-	if (not event) then
+	if (not pluto.rounds.byname[name]) then
 		return false, "Event does not exist"
 	end
 
@@ -36,6 +36,10 @@ function pluto.rounds.queue(name)
     if (not name) then
         return false, "No name provided"
     end
+
+	if (not pluto.rounds.byname[name]) then
+		return false, "Event does not exist"
+	end
 
     local serv_var = GetConVar "pluto_cross_id"
     local serv = (serv_var and serv_var:GetString()) or "test"
@@ -185,7 +189,7 @@ hook.Add("TTTPrepareRound", "pluto_minis", function()
             continue
         end
 
-        if (math.random() > pluto.rounds.infobyname[name].Odds) then
+        if (math.random() > pluto.rounds.infobyname[name].Odds * pluto_mini_boost:GetFloat()) then
             continue
         end
 

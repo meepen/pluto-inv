@@ -83,15 +83,16 @@ if (SERVER) then
                 ply:TakeDamageInfo(dmg)                
             end
         end)
-    end)
 
-    hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
-        hook.Remove("DoPlayerDeath", "pluto_mini_" .. name)
-        hook.Remove("EntityTakeDamage", "pluto_mini_" .. name)
-        hook.Remove("PlayerCanPickupWeapon", "pluto_mini_" .. name)
-        hook.Remove("PlayerCanHearPlayersVoice", "pluto_mini_" .. name)
-        hook.Remove("PlayerCanSeePlayersChat", "pluto_mini_" .. name)
-        timer.Remove("pluto_mini_" .. name)
+        hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+            hook.Remove("TTTEndRound", "pluto_mini_" .. name)
+            hook.Remove("DoPlayerDeath", "pluto_mini_" .. name)
+            hook.Remove("EntityTakeDamage", "pluto_mini_" .. name)
+            hook.Remove("PlayerCanPickupWeapon", "pluto_mini_" .. name)
+            hook.Remove("PlayerCanHearPlayersVoice", "pluto_mini_" .. name)
+            hook.Remove("PlayerCanSeePlayersChat", "pluto_mini_" .. name)
+            timer.Remove("pluto_mini_" .. name)
+        end)
     end)
 else
 

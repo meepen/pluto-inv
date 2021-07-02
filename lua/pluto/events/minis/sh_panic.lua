@@ -23,15 +23,21 @@ if (SERVER) then
 
         net.Start("pluto_mini_" .. name)
         net.Broadcast()
+
+        hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+            hook.Remove("TTTEndRound", "pluto_mini_" .. name)
+            hook.Remove("TTTUpdatePlayerSpeed", "pluto_mini_" .. name)
+        end)
     end)
 else
     net.Receive("pluto_mini_" .. name, function()
         hook.Add("TTTUpdatePlayerSpeed", "pluto_mini_" .. name, function(ply, data)
             data.panic = Lerp((ply:GetMaxHealth() - ply:Health()) / ply:GetMaxHealth(), panic_min, panic_max)
         end)
+
+        hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+            hook.Remove("TTTEndRound", "pluto_mini_" .. name)
+            hook.Remove("TTTUpdatePlayerSpeed", "pluto_mini_" .. name)
+        end)
     end)
 end
-
-hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
-    hook.Remove("TTTUpdatePlayerSpeed", "pluto_mini_" .. name)
-end)

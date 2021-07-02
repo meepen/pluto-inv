@@ -36,10 +36,11 @@ if (SERVER) then
             ply:SetJumpPower(ply:GetJumpPower() + 3)
             last_hops[ply] = CurTime()
         end)
-    end)
 
-    hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
-        hook.Remove("Move", "pluto_mini_" .. name)
+        hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+            hook.Remove("TTTEndRound", "pluto_mini_" .. name)
+            hook.Remove("Move", "pluto_mini_" .. name)
+        end)
     end)
 else
 

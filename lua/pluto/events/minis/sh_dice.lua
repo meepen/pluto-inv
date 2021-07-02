@@ -24,14 +24,15 @@ if (SERVER) then
                 table.insert(chancedice, pluto.currency.spawnfor(ply, "_chancedice", nil, true))
             end
         end
-    end)
 
-    hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
-        for k, cur in ipairs(chancedice) do
-            cur:Remove()
-        end
+        hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+            hook.Remove("TTTEndRound", "pluto_mini_" .. name)
+            for k, cur in ipairs(chancedice) do
+                cur:Remove()
+            end
 
-        chancedice = {}
+            chancedice = {}
+        end)
     end)
 else
 

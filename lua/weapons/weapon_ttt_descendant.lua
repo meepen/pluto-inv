@@ -141,11 +141,9 @@ function SWEP:Think()
 
     if (self:GetScanning()) then
         if (not IsValid(self.Target) or not self.Target:Alive()) then
-			print("SetScanning false 1")
 			self:SetScanning(false)
 			self.Target = nil
 		elseif (self:GetCharge() >= 1) then
-			print("SetScanning false 2")
 			self:SetScanning(false)
 			self:SetCharge(0)
 			self:SetTarget("")
@@ -199,7 +197,6 @@ if (CLIENT) then
             surface.DrawRect(x - w/2 + 1, y - h + 1, w * charge - 2, h - 2)
 
 			local msg
-			print(self:GetScanning(), self:GetTarget() ~= "")
 			if (self:GetScanning() and self:GetTarget() ~= "") then
 				msg = string.format("Scanning target: %s", self:GetTarget())
 			elseif (self:GetCharge() < 1) then

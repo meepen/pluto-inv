@@ -66,6 +66,12 @@ pluto.rounds.infobyname = {
 		MinPlayers = 8,
 		Shares = 1,
 	},
+	trifight = {
+		PrintName = "Tri-Fight",
+		Type = "Random",
+		MinPlayers = 9,
+		Shares = 1,
+	},
 
 	-- Mini Events
 	aprilfools = {
