@@ -429,11 +429,12 @@ end)
 
 function ROUND:PlayerSetModel(state, ply)
 	ply:SetModel(pluto.models["santa"].Model)
+	ply:SetupHands()
 
 	return true
 end
 
-concommand.Add("pluto_test_cheer", function(ply, cmd, args)
+--[[concommand.Add("pluto_test_cheer", function(ply, cmd, args)
 	if (not pluto.cancheat(ply) or not pluto.rounds.state) then
 		return
 	end
@@ -454,4 +455,4 @@ concommand.Add("pluto_test_cheer", function(ply, cmd, args)
 			ply:SetPos(target.Player:GetPos())
 		end
 	end)
-end)
+end)--]]

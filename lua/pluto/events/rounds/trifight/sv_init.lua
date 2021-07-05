@@ -268,7 +268,7 @@ function ROUND:TTTEndRound(state)
 end
 
 function ROUND:UpdateScore(state, ply)
-	state = state or (pluto.rounds and pluto.rounds.state)
+	state = state or pluto.rounds.state
 
 	if (not state.redkills or not state.greenkills or not state.bluekills) then
 		return
@@ -286,7 +286,7 @@ function ROUND:UpdateScore(state, ply)
 end
 
 function ROUND:WriteScores(state, order)
-	state = state or (pluto.rounds and pluto.rounds.state)
+	state = state or pluto.rounds.state
 
 	if (not state.red or not state.green or not state.blue) then
 		return
@@ -345,7 +345,7 @@ end
 end)--]]
 
 ROUND:Hook("TTTHasRoundBeenWon", function(self, state)
-	state = state or (pluto.rounds and pluto.rounds.state)
+	state = state or pluto.rounds.state
 
 	if (#round.GetActivePlayersByRole "red" == 0 and #round.GetActivePlayersByRole "green" == 0 and #round.GetActivePlayersByRole "blue" == 0) then
 		return true, "traitor", false
@@ -355,7 +355,7 @@ ROUND:Hook("TTTHasRoundBeenWon", function(self, state)
 end)
 
 ROUND:Hook("PlayerDisconnected", function(self, state, ply)
-	state = state or (pluto.rounds and pluto.rounds.state)
+	state = state or pluto.rounds.state
 
 	if (not IsValid(ply)) then
 		return
@@ -376,7 +376,7 @@ ROUND:Hook("PlayerDisconnected", function(self, state, ply)
 end)
 
 ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
-	state = state or (pluto.rounds and pluto.rounds.state)
+	state = state or pluto.rounds.state
 
 	if (not IsValid(vic)) then
 		return 

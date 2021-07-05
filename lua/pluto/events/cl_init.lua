@@ -177,7 +177,7 @@ net.Receive("round_data", function()
 		var = net.ReadString()
 	elseif (typ == "number") then
 		var = net.ReadUInt(32)
-	elseif (typ == "bool") then
+	elseif (typ == "boolean") then
 		var = net.ReadBool()
 	end
 

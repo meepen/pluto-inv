@@ -109,7 +109,7 @@ pluto.rounds.WriteRoundData = function(name, arg, ply)
             var = net.WriteString(arg)
         elseif (typ == "number") then
             var = net.WriteUInt(arg, 32)
-        elseif (typ == "bool") then
+        elseif (typ == "boolean") then
             var = net.WriteBool(arg)
         end
     if (IsValid(ply)) then
@@ -168,7 +168,7 @@ pluto.rounds.LoadAmmo = function(ply)
 end
 
 hook.Add("TTTPrepareRound", "pluto_minis", function()
-	if (ttt.GetCurrentRoundEvent() ~= "" or not pluto.rounds.infobyname or not pluto.rounds.minis) then
+	if (ttt.GetCurrentRoundEvent() ~= "" or ttt.GetNextRoundEvent() ~= "" or not pluto.rounds.infobyname or not pluto.rounds.minis) then
 		return
 	end
 

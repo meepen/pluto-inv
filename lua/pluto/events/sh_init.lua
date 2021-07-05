@@ -72,6 +72,12 @@ pluto.rounds.infobyname = {
 		MinPlayers = 9,
 		Shares = 1,
 	},
+	infection = {
+		PrintName = "Infection",
+		Type = "Random",
+		MinPlayers = 4,
+		Shares = 1,
+	},
 
 	-- Mini Events
 	aprilfools = {
@@ -140,7 +146,6 @@ pluto.rounds.infobyname = {
 		PrintName = "Press Your Luck",
 		Type = "Mini",
 		MinPlayers = 4,
-		MaxPlayers = 10,
 		Shares = 1,
 		Odds = 1 / 48,
 	},
@@ -170,8 +175,10 @@ pluto.rounds.infobyname = {
 	wink = {
 		PrintName = "Wink Round",
 		Type = "Mini",
+		MaxPlayers = 7,
 		Shares = 1,
-		Odds = 1 / 48,
+		Odds = 1 / 24,
+		NoBuy = true,
 	},
 	overflow = {
 		PrintName = "Equipment Overflow",
@@ -192,6 +199,14 @@ pluto.rounds.infobyname = {
 		MaxPlayers = 7,
 		Shares = 1,
 		Odds = 1 / 256,
+		NoBuy = true,
+	},
+	wave = {
+		PrintName = "Wave Speed",
+		Type = "Mini",
+		MaxPlayers = 7,
+		Shares = 1,
+		Odds = 1 / 24,
 		NoBuy = true,
 	},
 }

@@ -513,6 +513,7 @@ function ROUND:PlayerSetModel(state, ply)
 	else
 		ply:SetModel(GetModel(state.Data.ChildModel))
 	end
+	ply:SetupHands()
 
 	return true
 end

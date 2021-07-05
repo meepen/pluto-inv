@@ -250,7 +250,7 @@ end
 end)--]]
 
 ROUND:Hook("TTTHasRoundBeenWon", function(self, state)
-	state = state or (pluto.rounds and pluto.rounds.state)
+	state = state or pluto.rounds.state
 
 	if (state.winner) then
 		return true, state.winner, false

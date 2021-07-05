@@ -358,6 +358,7 @@ end)
 
 function ROUND:PlayerSetModel(state, ply)
 	ply:SetModel(pluto.models["chimp"].Model)
+	ply:SetupHands()
 
 	return true
 end

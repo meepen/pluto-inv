@@ -18,7 +18,7 @@ if (SERVER) then
             end
         end
 
-        if (not IsValid(lime) or not lime:Alive()) then
+        if (not IsValid(lime) or not lime:Alive() or lime:GetRole() ~= "Innocent") then
             return
         end
         
@@ -33,8 +33,10 @@ if (SERVER) then
             end
         end)
 
-        lime:SetMaxHealth(lime:GetMaxHealth() * 2)
-        lime:SetHealth(lime:GetMaxHealth() * 2)
+        lime:SetRole("Green")
+
+        lime:SetMaxHealth(math.min(500, lime:GetMaxHealth() * 3))
+        lime:SetHealth(math.min(500, lime:GetMaxHealth() * 3))
         lime:SetJumpPower(lime:GetJumpPower() + 50)
 
         lime:StripWeapons()
@@ -59,7 +61,7 @@ if (SERVER) then
             net.Send(atk)
 
             atk:SetMaxHealth(atk:GetMaxHealth() * 1.5)
-            atk:SetHealth(atk:Health() * 2)
+            atk:SetHealth(atk:Health() * 1.5)
             atk:SetJumpPower(atk:GetJumpPower() + 25)
 
             pluto.rounds.Notify(string.format("%s has successfully RDMed Lime and absorbed his power!", atk:Nick()), Color(85, 255, 0), nil, true)
