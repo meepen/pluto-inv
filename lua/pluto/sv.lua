@@ -71,6 +71,8 @@ pluto.files.load {
 		"websocket/sv_websocket.lua",
 
 		"donate/sv_donate.lua",
+
+		"highscores/sv_highscores.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty

@@ -16,6 +16,7 @@ local function buildoptions()
 					pluto.inv.generatebuffershard(db, ply, "BOUGHT", "otherworldly")
 					mysql_stmt_run(db, "UPDATE pluto_stardust_shop SET endtime = endtime - INTERVAL 1 HOUR WHERE id = ?", item.rowid)
 					mysql_commit(db)
+					hook.Run("PlutoCurrencySpent", ply, "stardust", item.Price)
 				end)
 			end,
 			PreviewItem = {
@@ -35,6 +36,7 @@ local function buildoptions()
 					pluto.inv.generatebuffershard(db, ply, "BOUGHT", "confused")
 					mysql_stmt_run(db, "UPDATE pluto_stardust_shop SET endtime = endtime - INTERVAL 1 HOUR WHERE id = ?", item.rowid)
 					mysql_commit(db)
+					hook.Run("PlutoCurrencySpent", ply, "stardust", item.Price)
 					if (finish) then
 						finish()
 					end
@@ -57,6 +59,7 @@ local function buildoptions()
 					pluto.inv.generatebufferweapon(db, ply, "BOUGHT", "unusual", "tfa_cso_starchaserar")
 					mysql_stmt_run(db, "UPDATE pluto_stardust_shop SET endtime = endtime - INTERVAL 1 HOUR WHERE id = ?", item.rowid)
 					mysql_commit(db)
+					hook.Run("PlutoCurrencySpent", ply, "stardust", item.Price)
 					if (finish) then
 						finish()
 					end
@@ -89,6 +92,7 @@ local function buildoptions()
 					pluto.inv.savebufferitem(db, ply, new_item)
 					mysql_stmt_run(db, "UPDATE pluto_stardust_shop SET endtime = endtime - INTERVAL 1 HOUR WHERE id = ?", item.rowid)
 					mysql_commit(db)
+					hook.Run("PlutoCurrencySpent", ply, "stardust", item.Price)
 					finish()
 				end)
 			end,
@@ -125,6 +129,7 @@ local function buildoptions()
 					pluto.inv.generatebufferweapon(db, ply, "BOUGHT", "promised", wep)
 					mysql_stmt_run(db, "UPDATE pluto_stardust_shop SET endtime = endtime - INTERVAL 1 HOUR WHERE id = ?", item.rowid)
 					mysql_commit(db)
+					hook.Run("PlutoCurrencySpent", ply, "stardust", item.Price)
 					if (finish) then
 						finish()
 					end
@@ -163,6 +168,7 @@ local function buildoptions()
 					
 					mysql_stmt_run(db, "UPDATE pluto_stardust_shop SET endtime = endtime - INTERVAL 1 HOUR WHERE id = ?", item.rowid)
 					mysql_commit(db)
+					hook.Run("PlutoCurrencySpent", ply, "stardust", item.Price)
 					if (finish) then
 						finish()
 					end

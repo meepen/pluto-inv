@@ -247,6 +247,7 @@ function ROUND:TTTEndRound(state)
 
 	if (IsValid(state.leader)) then
 		pluto.rounds.Notify(state.leader:Nick() .. " banna king!", ttt.roles["Banna Boss"].Color)
+		hook.Run("PlutoSpecialWon", {state.leader})
 		pluto.db.instance(function(db)
 			pluto.inv.addcurrency(db, state.leader, self.Reward, self.WinnerBonus)
 			pluto.rounds.Notify("Me get " .. tostring(self.WinnerBonus) .. " extra brain egg for win banna king!", pluto.currency.byname[self.Reward].Color, state.leader)

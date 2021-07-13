@@ -192,15 +192,28 @@ end
 ROUND:Hook("PlayerSelectSpawnPosition", ROUND.ResetPosition)
 
 function ROUND:TTTEndRound(state)
+	local max_score = 0
+	local winner
+
 	for ply, score in pairs(state.scores) do
 		if (score == 0) then
 			continue
+		end
+
+		if (score > max_score) then
+			max_score = score
+			winner = ply
 		end
 
 		pluto.db.instance(function(db)
 			pluto.inv.addcurrency(db, ply, self.Reward, self.EarningsPerScore * score)
 			pluto.rounds.Notify(string.format("You get %i Refinium Vials for having a score of %i!", self.EarningsPerScore * score, score), pluto.currency.byname[self.Reward].Color, ply)
 		end)
+	end
+
+	if (IsValid(winner)) then
+		pluto.rounds.Notify(winner:Nick() .. " is the superior hitman!", Color(38, 0, 77))
+		hook.Run("PlutoSpecialWon", {winner})
 	end
 
 	GetConVar("ttt_karma"):Revert()

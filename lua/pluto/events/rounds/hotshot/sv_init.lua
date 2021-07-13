@@ -209,6 +209,7 @@ function ROUND:TTTEndRound(state)
 
 	if (IsValid(state.leader)) then
 		pluto.rounds.Notify(state.leader:Nick() .. " is the true Hotshot!", ttt.roles.Hotshot.Color)
+		hook.Run("PlutoSpecialWon", {state.leader})
 	else
 		pluto.rounds.Notify("No Hotshot here...")
 	end
@@ -253,18 +254,24 @@ ROUND:Hook("PlayerDisconnected", function(self, state, ply)
 	ttt.CheckTeamWin()
 end)
 
-ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
+ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)	
 	if (not IsValid(vic) or not state.scores) then
 		return
 	end
 
 	self:UpdateScore(state, vic, -1)
 
+	local mult = 1
+
 	if (not IsValid(atk) or not atk:IsPlayer() or vic == atk) then
 		return
 	end
 
-	self:UpdateScore(state, atk, atk:GetActiveWeapon():GetClass() == "weapon_ttt_crowbar" and 5 or 2)
+	if (vic:GetRole() == "Hotshot") then
+		mult = 2
+	end
+
+	self:UpdateScore(state, atk, (atk:GetActiveWeapon():GetClass() == "weapon_ttt_crowbar" and 5 or 2) * mult)
 end)
 
 ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)

@@ -46,6 +46,8 @@ pluto.files.load {
 
 		"treelib/cl.lua",
 
+		--"highscores/cl_highscores.lua",
+
 		"cl/fontstuff.lua",
 
 		"cl/vgui/pluto/frame.lua",
@@ -161,6 +163,8 @@ pluto.files.load {
 		"treelib/sh.lua",
 
 		"inv/nodes/sh_nodes.lua",
+
+		"highscores/sh_highscores.lua",
 
 		-- "unicode/init.lua",
 		-- "unicode/casefolding.lua",

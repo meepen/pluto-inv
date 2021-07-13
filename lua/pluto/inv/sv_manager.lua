@@ -508,6 +508,9 @@ function pluto.inv.readitemdelete(ply)
 		
 		if (IsValid(ply) and i.Type == "Weapon" and i.Tier.InternalName ~= "crafted" and math.random() < 0.8) then
 			pluto.inv.generatebuffershard(db, ply, "DELETE", i.Tier.InternalName)
+			if (pluto.tiers.byname[i.Tier.InternalName] and pluto.tiers.byname[i.Tier.InternalName].affixes >= 5) then
+				hook.Run("PlutoRareDrop", ply, "Shard")
+			end
 		end
 
 		mysql_commit(db)
@@ -565,12 +568,14 @@ function pluto.inv.readcurrencyuse(ply)
 			end
 
 			if (istable(data) and data.Rare) then
+				hook.Run("PlutoRareDrop", ply, type)
 				discord.Message():AddEmbed(
 					wpn:GetDiscordEmbed()
 						:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
 				):Send "drops"
 			end
 
+			hook.Run("PlayerCurrencyUse", ply, nil, currency)
 			mysql_commit(db)
 		end)
 	else

@@ -245,6 +245,7 @@ function ROUND:TTTEndRound(state)
 
 	if (IsValid(state.leader)) then
 		pluto.rounds.Notify(state.leader:Nick() .. " is the leading brawler!", Color(255, 225, 75))
+		hook.Run("PlutoSpecialWon", {state.leader})
 		pluto.db.instance(function(db)
 			pluto.inv.addcurrency(db, state.leader, self.Reward, self.WinnerBonus)
 			pluto.rounds.Notify(string.format("You get %i extra Refinium Vials for winning!", self.WinnerBonus), pluto.currency.byname[self.Reward].Color, state.leader)

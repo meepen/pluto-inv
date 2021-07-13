@@ -218,6 +218,7 @@ concommand.Add("pluto_blackmarket_buy_offer", function(p, cmd, args)
 		
 		p:ChatPrint("You have bought ", item, " for " .. what.Price .. " ", CURR)
 		mysql_commit(db)
+		hook.Run("PlutoCurrencySpent", p, CURR.InternalName, what.Price)
 	end)
 end)
 
@@ -234,6 +235,7 @@ concommand.Add("pluto_blackmarket_buy", function(p, cmd, args)
 			pluto.inv.addcurrency(db, p, "potato", 1)
 			p:ChatPrint("You bought a ", pluto.currency.byname.potato, " for 195 ", CURR)
 			mysql_commit(db)
+			hook.Run("PlutoCurrencySpent", p, CURR.InternalName, 195)
 		end)
 	elseif (num == 2) then
 		pluto.db.transact(function(db)
@@ -245,6 +247,7 @@ concommand.Add("pluto_blackmarket_buy", function(p, cmd, args)
 			local item = pluto.inv.generatebuffershard(db, p, "BOUGHT", (table.Random(pluto.tiers.filter_real("Weapon", function(tier) return tier.affixes >= 5 end))).InternalName)
 			p:ChatPrint("You bought a ", item, " for 60 ", CURR)
 			mysql_commit(db)
+			hook.Run("PlutoCurrencySpent", p, CURR.InternalName, 60)
 		end)
 	elseif (num == 3) then
 		pluto.db.transact(function(db)
@@ -271,6 +274,7 @@ concommand.Add("pluto_blackmarket_buy", function(p, cmd, args)
 			pluto.emoji.unlock(db, p, unlocked)
 
 			mysql_commit(db)
+			hook.Run("PlutoCurrencySpent", p, CURR.InternalName, 5)
 		end)
 
 	else
