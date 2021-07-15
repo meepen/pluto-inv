@@ -6,6 +6,12 @@ pluto.rounds.byname = pluto.rounds.byname or {}
 
 pluto.rounds.minis = pluto.rounds.minis or {}
 
+pluto.rounds.cost = {
+	Event = 5,
+	Random = 3,
+	Mini = 1
+}
+
 pluto.rounds.infobyname = {
 	-- Event Rounds
 	posteaster = {
