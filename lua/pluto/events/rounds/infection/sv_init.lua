@@ -186,14 +186,26 @@ function ROUND:TTTEndRound(state)
 	if (state.kills) then
 		local totalkills = 0
 		local totalreward = 0
+		local max_kills = 0
+		local winner
 
 		for ply, kills in pairs(state.kills) do
 			if (not IsValid(ply)) then
 				continue
 			end
 
+			if (kills > max_kills) then
+				max_kills = kills
+				winner = ply
+			end
+
 			totalkills = totalkills + kills
 			totalreward = totalreward + self.EarningsPerPerson			
+		end
+
+		if (IsValid(winner)) then
+			pluto.rounds.Notify(winner:Nick() .. " had the most survivor kills!", Color(0, 128, 0))
+			hook.Run("PlutoSpecialWon", {winner})
 		end
 
 		for ply, kills in pairs(state.kills) do
@@ -219,6 +231,8 @@ function ROUND:TTTEndRound(state)
 	if (state.timesurvived) then
 		local totaltimesurvived = 0
 		local totalreward = 0
+		local max_timesurvived = 0
+		local winner
 
 		for ply, timesurvived in pairs(state.timesurvived) do
 			if (not IsValid(ply)) then
@@ -227,6 +241,11 @@ function ROUND:TTTEndRound(state)
 
 			totaltimesurvived = totaltimesurvived + timesurvived
 			totalreward = totalreward + self.EarningsPerPerson			
+		end
+
+		if (IsValid(winner)) then
+			pluto.rounds.Notify(winner:Nick() .. " survived the longest!", Color(128, 85, 0))
+			hook.Run("PlutoSpecialWon", {winner})
 		end
 
 		for ply, timesurvived in pairs(state.timesurvived) do

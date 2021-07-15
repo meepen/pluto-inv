@@ -188,6 +188,7 @@ function ROUND:TTTEndRound(state)
 
 	if (IsValid(state.leader)) then
 		pluto.rounds.Notify(state.leader:Nick() .. " is the King of the Quill!", pluto.currency.byname._quill.Color)
+		hook.Run("PlutoSpecialWon", {state.leader})
 		pluto.db.instance(function(db)
 			pluto.inv.addcurrency(db, state.leader, self.Reward, self.WinnerEarnings)
 			pluto.rounds.Notify(string.format("You get %i Glass Quill for winning!", self.WinnerEarnings), pluto.currency.byname[self.Reward].Color, state.leader)

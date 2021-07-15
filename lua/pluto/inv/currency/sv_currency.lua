@@ -323,6 +323,7 @@ for name, values in pairs {
 					local item = pluto.inv.generatebufferweapon(db, ply, "DROPPED")
 
 					if (item:GetMaxAffixes() >= 5) then
+						hook.Run("PlutoRareDrop", ply, "Weapon")
 						local msg = discord.Message()
 
 						msg:AddEmbed(item:GetDiscordEmbed()
@@ -410,7 +411,9 @@ for name, values in pairs {
 
 		Pickup = function(ply)
 			if (player.GetCount() >= 8) then
-				pluto.rounds.prepare "posteaster"
+				if (pluto.rounds.prepare "posteaster") then
+					hook.Run("PlutoSpecialStarted", ply, "posteaster")
+				end
 			end
 
 			return true
@@ -473,7 +476,9 @@ for name, values in pairs {
 				hook.Run("PlutoBannaPickup", ply)
 			elseif (ttt.GetCurrentRoundEvent() ~= "chimp") then
 				if (player.GetCount() >= 6) then
-					pluto.rounds.prepare "chimp"
+					if (pluto.rounds.prepare "chimp") then
+						hook.Run("PlutoSpecialStarted", ply, "chimp")
+					end
 				end
 			end
 
@@ -486,7 +491,9 @@ for name, values in pairs {
 		Pickup = function(ply, cur)
 			hook.Run("PlutoToyPickup", ply, "blue", cur)
 			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
-				pluto.rounds.prepare "cheer"
+				if (pluto.rounds.prepare "cheer") then
+					hook.Run("PlutoSpecialStarted", ply, "cheer")
+				end
 			end
 			return true
 		end,
@@ -497,7 +504,9 @@ for name, values in pairs {
 		Pickup = function(ply, cur)
 			hook.Run("PlutoToyPickup", ply, "green", cur)
 			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
-				pluto.rounds.prepare "cheer"
+				if (pluto.rounds.prepare "cheer") then
+					hook.Run("PlutoSpecialStarted", ply, "cheer")
+				end
 			end
 			return true
 		end,
@@ -508,7 +517,9 @@ for name, values in pairs {
 		Pickup = function(ply, cur)
 			hook.Run("PlutoToyPickup", ply, "red", cur)
 			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
-				pluto.rounds.prepare "cheer"
+				if (pluto.rounds.prepare "cheer") then
+					hook.Run("PlutoSpecialStarted", ply, "cheer")
+				end
 			end
 			return true
 		end,
@@ -519,7 +530,9 @@ for name, values in pairs {
 		Pickup = function(ply, cur)
 			hook.Run("PlutoToyPickup", ply, "yellow", cur)
 			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
-				pluto.rounds.prepare "cheer"
+				if (pluto.rounds.prepare "cheer") then
+					hook.Run("PlutoSpecialStarted", ply, "cheer")
+				end
 			end
 
 			return true
@@ -1111,6 +1124,8 @@ function pluto.inv.readmasscurrencyuse(ply)
 			break
 		end
 	end
+
+	hook.Run("PlayerCurrencyUse", ply, item, currency.InternalName, used)
 
 	currency:Save(ply, item, used):next(function()
 		pluto.inv.message(ply)

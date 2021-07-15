@@ -320,5 +320,15 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				INDEX(finished)
 			)
 		]])
+
+		mysql_query(db, [[
+			CREATE TABLE IF NOT EXISTS pluto_highscores (
+				player BIGINT UNSIGNED NOT NULL,
+				highscore VARCHAR(16) NOT NULL,
+				score INT UNSIGNED NOT NULL DEFAULT 0,
+				PRIMARY KEY(player, highscore),
+				INDEX(score)
+			)
+		]])
 	end)
 end)

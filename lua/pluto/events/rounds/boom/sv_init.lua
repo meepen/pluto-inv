@@ -157,12 +157,16 @@ end
 ROUND:Hook("PlayerSelectSpawnPosition", ROUND.ResetPosition)
 
 function ROUND:TTTEndRound(state)
+	local winners = {}
+
 	for ply, bool in pairs(state.living) do
 		local amt = self.WinnerEarnings
 
 		if (not IsValid(ply)) then
-			break 
+			continue 
 		end
+
+		table.insert(winners, ply)
 
 		pluto.db.instance(function(db)
 			pluto.inv.addcurrency(db, ply, self.Reward, amt)
@@ -170,11 +174,13 @@ function ROUND:TTTEndRound(state)
 		end)
 	end
 
+	hook.Run("PlutoSpecialWon", winners)
+
 	for k, ply in ipairs(state.dead) do
 		local amt = self.WinnerEarnings - ((k - 1) * self.EachDecrease)
 
 		if (not IsValid(ply) or amt <= 0) then
-			break
+			continue
 		end
 
 		pluto.db.instance(function(db)

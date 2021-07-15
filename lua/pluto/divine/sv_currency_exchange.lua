@@ -128,5 +128,6 @@ function pluto.inv.readexchangestardust(cl)
 
 		mysql_commit(db)
 		cl:ChatPrint("You traded " .. (math.ceil(howmany * ratio)) .. " ", pluto.currency.byname.stardust, " for " .. howmany .. " ", pluto.currency.byname[forwhat])
+		hook.Run("PlutoCurrencySpent", cl, "stardust", howmany * ratio)
 	end)
 end

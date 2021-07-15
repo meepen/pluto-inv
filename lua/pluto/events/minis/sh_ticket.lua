@@ -37,6 +37,8 @@ if (SERVER) then
             end
 
             pluto.rounds.queue(name)
+
+            hook.Run("PlutoSpecialStarted", ply, name)
         end)
 
     hook.Add("TTTEndRound", "pluto_mini_" .. name, function()

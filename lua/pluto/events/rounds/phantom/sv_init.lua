@@ -183,8 +183,8 @@ function ROUND:TTTEndRound(state)
 	if (state.winner) then
 		local winnerrole = string.upper(string.sub(state.winner, 1, 1)) .. string.sub(state.winner, 2)
 		pluto.rounds.Notify(winnerrole .. " is the winning team!", ttt.roles[winnerrole].Color)
+		hook.Run("PlutoSpecialWon", state[state.winner])
 		for k, ply in ipairs(state[state.winner]) do
-			
 			pluto.db.instance(function(db)
 				pluto.inv.addcurrency(db, ply, self.Reward, self.WinnerEarnings)
 				pluto.rounds.Notify(string.format("You get %i Refinium Vials for winning!", self.WinnerEarnings), pluto.currency.byname[self.Reward].Color, ply)
