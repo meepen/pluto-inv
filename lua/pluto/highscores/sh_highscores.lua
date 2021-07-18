@@ -223,7 +223,7 @@ local list = {
         Category = "Crafting",
     },
     {
-        InternalName = "currencycrafts", -- Check
+        InternalName = "currencycrafts",
         Name = "Currency Crafts",
         Description = "Number of currency-modded crafts",
         Category = "Crafting",

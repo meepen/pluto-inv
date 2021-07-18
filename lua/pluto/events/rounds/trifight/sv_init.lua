@@ -89,9 +89,9 @@ function ROUND:Prepare(state)
 	end)
 end
 
---[[function ROUND:Finish()
-
-end--]]
+function ROUND:Finish()
+	timer.Remove "pluto_event_timer"
+end
 
 function ROUND:Loadout(ply)
 	pluto.rounds.GiveDefaults(ply)

@@ -285,6 +285,10 @@ local colors = {
 	]]--
 }
 
+for name, color in pairs(colors) do -- REMOVE?
+	resource.AddFile("materials/pluto/roles/" .. name .. ".png")
+end
+
 local function capitalize(name)
 	return (string.upper(string.sub(name, 1, 1)) .. string.sub(name, 2))
 end
@@ -437,3 +441,17 @@ end)
 hook.Add("TTTEndRound", "pluto_remove_minis", function()
 	pluto.rounds.speeds = {}
 end)
+
+------- TESTING -------
+--[[for k, ply in ipairs(player.GetAll()) do
+	if (SERVER) then
+		ply:StripWeapons()
+		ply:Give("weapon_ttt_knife")
+		ply:SetModel("models/player/skeleton.mdl")
+		ply:SetupHands()
+		ply:SetRenderMode(RENDERMODE_TRANSCOLOR)
+		ply:SetColor(Color(0, 0, 0, 50))
+	else
+		-- Add darkness
+	end
+end--]]

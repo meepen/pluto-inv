@@ -13,7 +13,7 @@ end
 local function RenderHeader()
 	local y = ScrH() / 10
 
-	y = AppendHeader("Queen of the Quill: Fight to claim the golden quill!", 4, y, FirstColor)
+	y = AppendHeader("King of the Quill: Fight to claim the golden quill!", 4, y, FirstColor)
 	y = AppendHeader("Hold the quill for the longest to win!", 2, y)
 end
 

@@ -405,6 +405,22 @@ for name, values in pairs {
 					pluto.highscores.addscore(db, vic, "timesurvived", math.min(600, CurTime() - start))
 				end)
 			end)
+			
+			hook.Add("TTTEndRound", "pluto_highscores_timesurvived", function()
+				if (ttt.GetCurrentRoundEvent() ~= "") then
+					return
+				end
+				
+				if (not start or start == 0 or not players) then
+					return 
+				end
+
+				for ply, bool in pairs(players) do
+					pluto.db.instance(function(db)
+						pluto.highscores.addscore(db, ply, "timesurvived", math.min(600, CurTime() - start))
+					end)
+				end
+			end)
 		end,
 	},
     specialswon = {

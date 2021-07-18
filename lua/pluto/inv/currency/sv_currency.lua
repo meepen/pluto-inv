@@ -428,14 +428,18 @@ for name, values in pairs {
 		Global = true,
 		Pickup = function(ply)
 			local found = false
+			local melee = false
 			for _, wep in pairs(ply:GetWeapons()) do
-				if (wep.Slot == 0 and not rb655_IsLightsaber(wep)) then
-					found = true
-					wep:Remove()
+				if (wep.Slot == 0) then
+					melee = true
+					if (not rb655_IsLightsaber(wep)) then
+						found = true
+						wep:Remove()
+					end
 				end
 			end
 
-			if (not found) then
+			if (not found and melee) then
 				return false
 			end
 

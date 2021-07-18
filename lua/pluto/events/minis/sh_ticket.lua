@@ -33,11 +33,11 @@ if (SERVER) then
             local success, e = pluto.rounds.prepare(name)
 
             if (success) then
+                hook.Run("PlutoSpecialStarted", ply, name)
                 return
             end
 
             pluto.rounds.queue(name)
-
             hook.Run("PlutoSpecialStarted", ply, name)
         end)
 
