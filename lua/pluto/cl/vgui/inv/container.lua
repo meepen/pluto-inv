@@ -269,6 +269,13 @@ function PANEL:Init()
 		quests:SetColor(pluto.ui.theme "InnerColor")
 	end, nil, nil, Color(207, 204, 3))
 
+	self:AddTab("Events", function(container)
+		local events = container:Add("pluto_inventory_events")
+		--events:SetCurve(4)
+		--events:Dock(FILL)
+		--events:SetColor(pluto.ui.theme("InnerColor"))
+	end, nil, nil, Color(153, 0, 0))
+
 	self:CreateOrdered()
 
 	tab_order_table = {}

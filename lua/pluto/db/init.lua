@@ -314,6 +314,7 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				server VARCHAR(16) NOT NULL,
 				time TIMESTAMP NOT NULL,
 				name VARCHAR(32) NOT NULL,
+				owner BIGINT UNSIGNED NOT NULL REFERENCES pluto_player_info(steamid),
 				finished BOOLEAN NOT NULL DEFAULT FALSE,
 				INDEX(time),
 				INDEX(finished)

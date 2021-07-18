@@ -75,6 +75,7 @@ pluto.files.load {
 		"cl/vgui/inv/pages/crafting.lua",
 		"cl/vgui/inv/pages/trading.lua",
 		"cl/vgui/inv/pages/donate.lua",
+		"cl/vgui/inv/pages/event.lua",
 
 		"cl/vgui/inv/pages/other/snake.lua",
 		"cl/vgui/inv/pages/other.lua",

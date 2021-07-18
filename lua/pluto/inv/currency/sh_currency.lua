@@ -792,10 +792,13 @@ local list = {
 		Name = "Round Ticket",
 		Icon = "pluto/currencies/ticket.png",
 		Description = "Exchanged to activate special rounds",
-		SubDescription = "Mini, random, or event? You decide.",
+		SubDescription = "What will be your fate, I wonder?",
 		Color = Color(153, 0, 0),
 		NoTarget = true,
 		ClientsideUse = function()
+			if IsValid(pluto.ui.pnl) then
+				pluto.ui.pnl:ChangeToTab("Events")
+			end
 		end,
 	},
 	{
