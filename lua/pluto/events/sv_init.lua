@@ -26,7 +26,7 @@ function pluto.rounds.prepare(name)
     end
 
     if (type == "Mini") then
-        if (pluto.rounds.minis[name]]) then
+        if (pluto.rounds.minis[name]) then
             return false, "Already queued mini"
         end
 
