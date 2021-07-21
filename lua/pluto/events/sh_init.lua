@@ -295,6 +295,10 @@ for name, color in pairs(colors) do -- REMOVE?
 	resource.AddFile("materials/pluto/roles/" .. name .. ".png")
 end
 
+-- Temporary
+resource.AddFile("materials/pluto/currencies/gold_quill.png")
+resource.AddFile("materials/pluto/currencies/ticket.png")
+
 local function capitalize(name)
 	return (string.upper(string.sub(name, 1, 1)) .. string.sub(name, 2))
 end
