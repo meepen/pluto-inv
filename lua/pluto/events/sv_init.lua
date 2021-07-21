@@ -279,7 +279,10 @@ end
 hook.Add("TTTEndRound", "pluto_round_queue", checkRoundQueue)
 
 function eventQueueUpdate(requester)
-    pluto.db.simplequery("SELECT name, usr.displayname from pluto_round_queue LEFT OUTER JOIN pluto_player_info usr ON usr.steamid = pluto_round_queue.requester WHERE server = ? AND NOT finished AND time <= NOW()", {serv_var and serv_var:GetString() or "test"}, function(rounds, err)
+    local serv_var = GetConVar "pluto_cross_id"
+    local serv = (serv_var and serv_var:GetString()) or "test"
+
+    pluto.db.simplequery("SELECT name, usr.displayname from pluto_round_queue LEFT OUTER JOIN pluto_player_info usr ON usr.steamid = pluto_round_queue.requester WHERE server = ? AND NOT finished AND time <= NOW()", {serv}, function(rounds, err)
         pluto.inv.message(requester)
             :write("eventqueue", rounds)
         :send()

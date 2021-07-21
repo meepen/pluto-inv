@@ -1,5 +1,5 @@
 ROUND.Reward = "tp"
-ROUND.EarningsPerPerson = 10
+ROUND.EarningsPerPerson = 5
 ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
 
 ROUND.Boss = true

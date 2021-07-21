@@ -1,5 +1,5 @@
 ROUND.Reward = "tp"
-ROUND.WinnerEarnings = 25
+ROUND.WinnerEarnings = 20
 ROUND.EachDecrease = 5
 
 ROUND.Boss = true
@@ -43,22 +43,7 @@ end
 ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 	plys = table.shuffle(plys)
 
-	local roles_needed = {
-		Hotshot = 1,
-	}
-
 	for i, ply in ipairs(plys) do
-		local role, amt = next(roles_needed)
-		if (role) then
-			if (amt == 1) then
-				roles_needed[role] = nil
-			else
-				roles_needed[role] = amt - 1
-			end
-		else
-			role = "Fighter"
-		end
-
 		ply:StripWeapons()
 		pluto.NextWeaponSpawn = false
 		local wep = ply:Give "weapon_ttt_deagle"
@@ -75,7 +60,7 @@ ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 			Player = ply,
 			SteamID = ply:SteamID(),
 			Nick = ply:Nick(),
-			Role = ttt.roles[role]
+			Role = ttt.roles.Fighter
 		}
 	end
 

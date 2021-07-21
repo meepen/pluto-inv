@@ -107,8 +107,12 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 			pluto.rounds.Notify("Respawning all players for the next round of Hit List!", Color(34, 102, 0))
 
 			for ply, count in pairs(state.scores) do
-				if (IsValid(ply) and not ply:Alive()) then
-					ttt.ForcePlayerSpawn(ply)
+				if (IsValid(ply)) then
+					if (ply:Alive()) then
+						ply:SetHealth(ply:GetMaxHealth())
+					else
+						ttt.ForcePlayerSpawn(ply)
+					end
 				end
 			end
 

@@ -1,7 +1,7 @@
 ROUND.Reward = "tp"
 ROUND.WinnerEarnings = 20
 ROUND.EachDecrease = 5
-ROUND.WinnerBonus = 10
+ROUND.WinnerBonus = 5
 
 ROUND.Primaries = {
 	"weapon_ttt_ak47_u",
