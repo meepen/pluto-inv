@@ -50,7 +50,7 @@ if (SERVER) then
                 return
             end
 
-            pluto.statuses.heal(att, 25, 1)
+            att:SetHealth(math.min(att:GetMaxHealth(), att:Health() + 25))
         end)
 
         hook.Add("PlayerCanPickupWeapon", "pluto_mini_" .. name, function(ply, wep)

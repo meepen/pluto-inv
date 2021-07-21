@@ -412,7 +412,6 @@ hook.Add("TTTPrepareRoles", "pluto_mini_" .. name, function(Team, Role)
 			return 0
 		end)
         :SetColor(100, 171, 100)
-        :SeenBy {"Buddy"}
 
     Role("True Innocent", "innocent")
         :SetCalculateAmountFunc(function(total_players)

@@ -1,5 +1,5 @@
 ROUND.Reward = "tp"
-ROUND.WinnerEarnings = 25
+ROUND.WinnerEarnings = 20
 ROUND.EachDecrease = 5
 ROUND.DamagePerSecond = 0.8
 ROUND.ResistancePerKill = 20

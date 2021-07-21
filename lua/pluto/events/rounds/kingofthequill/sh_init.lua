@@ -19,7 +19,7 @@ ROUND:Hook("TTTUpdatePlayerSpeed", function(self, state, ply, data)
 		return
 	end
 
-    if (state.holder == ply) then
+    if ((SERVER and state.holder == ply) or (CLIENT and LocalPlayer():GetRole() == "Quill Holder")) then
 	    data.kingofthequill = 0.75
 	else
 		data.kingofthequill = 1.1

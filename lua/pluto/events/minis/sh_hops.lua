@@ -29,7 +29,7 @@ if (SERVER) then
                 return
             end
 
-            if (CurTime() - (last_hops[ply] or 0) < 0.25) then
+            if (CurTime() - (last_hops[ply] or 0) < 0.2) then
                 return
             end
 
