@@ -152,7 +152,7 @@ local list = {
         InternalName = "dnatracks",
         Name = "DNA Tracks",
         Description = "Traitors tracked via body DNA",
-        Category = "Kills",
+        Category = "Performance",
     },
     -- Quests
     {
