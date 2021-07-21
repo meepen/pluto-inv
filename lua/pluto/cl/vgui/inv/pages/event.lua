@@ -48,8 +48,8 @@ function PANEL:Init()
 	self.EventList:SetMultiSelect(false)
 
 	local w = self.EventList:GetWide()
-	self.EventList:AddColumn("Event Name"):SetWidth(w*.5)
-	self.EventList:AddColumn("Min Players"):SetWidth(w*.2)
+	self.EventList:AddColumn("Event Name"):SetWidth(w*.45)
+	self.EventList:AddColumn("Players Needed"):SetWidth(w*.25)
 	self.EventList:AddColumn("Type"):SetWidth(w*.2)
 	self.EventList:AddColumn("Cost"):SetWidth(w*.1 + 1)
 	-- hidden row 5 - event internal name
@@ -59,7 +59,22 @@ function PANEL:Init()
 	end
 	
 	for k,v in pairs(pluto.rounds.infobyname) do
-		self.EventList:AddLine(v.PrintName, v.MinPlayers or 0, v.Type, pluto.rounds.cost[v.Type] or 5, k)
+		if (v.NoBuy) then
+			continue
+		end
+
+		local plycountmsg = "1 or more"
+		if (v.MinPlayers) then
+			if (v.MaxPlayers) then
+				plycountmsg = string.format("%i - %i", v.MinPlayers, v.MaxPlayers)
+			else
+				plycountmsg = string.format("%i or more", v.MinPlayers)
+			end
+		elseif (v.MaxPlayers) then
+			plycountmsg = string.format("1 - %i", v.MaxPlayers)
+		end
+
+		self.EventList:AddLine(v.PrintName, plycountmsg, v.Type, pluto.rounds.cost[v.Type] or 5, k)
 	end
 	
 	self.EventList:SortByColumns(4, false, 1)
@@ -83,7 +98,6 @@ function PANEL:Init()
 	self.QueueButton:SetEnabled(false)
 
 	self.QueueButton.DoClick = function(_)
-		print("CLICK")
 		self:QueueEvent(self.Selected)
 		self.QueueButton:SetEnabled(false)
 	end
@@ -109,12 +123,11 @@ function PANEL:UpdateEvents()
 
 		local count = net.ReadInt(8)
 
-		print("ROUND COUNT", count)
 		for i = 1, count do
 			local x = net.ReadString()
 			local y = net.ReadString()
-			print("yes", x, y)
 			--self.QueuedEvents:AddLine(net.ReadString(), net.ReadString())
+			x = pluto.rounds.infobyname[x] and pluto.rounds.infobyname[x].PrintName or x
 			self.QueuedEvents:AddLine(x, y)
 		end
 
@@ -127,6 +140,10 @@ function PANEL:UpdateEvents()
 end
 
 function PANEL:QueueEvent(name)
+	if (not name) then
+		return
+	end
+
 	pluto.inv.message()
 		:write("queueevent", name)
 	:send()

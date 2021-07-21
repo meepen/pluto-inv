@@ -45,7 +45,7 @@ function pluto.rounds.prepare(name)
 
 end
 
-function pluto.rounds.queue(name, steamid)
+function pluto.rounds.queue(name, steamid, db)
     steamid = steamid or 0
     if (not name) then
         return false, "No name provided"
@@ -55,14 +55,18 @@ function pluto.rounds.queue(name, steamid)
 		return false, "Event does not exist"
 	end
 
-
     local serv_var = GetConVar "pluto_cross_id"
     local serv = (serv_var and serv_var:GetString()) or "test"
-    
-    pluto.db.instance(function(db)
-        local x, y = mysql_stmt_run(db, "INSERT INTO pluto_round_queue (server, time, name, requester) VALUES (?, NOW(), ?, ?)", serv, name, steamid)
-        return true, "Round queued"
-    end)
+
+    if (db) then
+        pluto.db.instance(function(db)
+            mysql_stmt_run(db, "INSERT INTO pluto_round_queue (server, time, name, requester) VALUES (?, NOW(), ?, ?)", serv, name, steamid)
+        end)
+    else
+        mysql_stmt_run(db, "INSERT INTO pluto_round_queue (server, time, name, requester) VALUES (?, NOW(), ?, ?)", serv, name, steamid)
+    end
+
+    return true, "Event Queue Attempted"
 end
 
 function pluto.rounds.goodplayercount(name)
@@ -213,7 +217,7 @@ hook.Add("TTTPrepareRound", "pluto_minis", function()
 end)
 
 function checkRoundQueue()
-    if (ttt.GetNextRoundEvent() ~= "" or GetConVar "ttt_round_limit":GetInt() <= ttt.GetRoundNumber()) then
+    if (ttt.GetNextRoundEvent() ~= "" or GetConVar "ttt_round_limit":GetInt() <= ttt.GetRoundNumber() + 1) then
         return
     end
 
@@ -231,6 +235,8 @@ function checkRoundQueue()
             return
         end
 
+        local minisonly = false
+
         for k, round in ipairs(rounds) do
             local name = round.name
 
@@ -240,19 +246,31 @@ function checkRoundQueue()
                 continue
             end
 
-            if (not pluto.rounds.infobyname[name] or pluto.rounds.infobyname[name].MinPlayers > #player.GetAll()) then
+            if (minisonly and pluto.rounds.infobyname[name].Type ~= "Mini") then
+                continue
+            end
+
+            if (pluto.rounds.infobyname[name].MinPlayers and pluto.rounds.infobyname[name].MinPlayers > #player.GetAll()) then
+                continue
+            end
+
+            if (pluto.rounds.infobyname[name].MaxPlayers and pluto.rounds.infobyname[name].MaxPlayers < #player.GetAll()) then
                 continue
             end
 
             local success, e = pluto.rounds.prepare(name)
 
-            if (success and pluto.rounds.infobyname[name].Type == "Mini") then
-                checkRoundQueue()
-            end
+            --[[if (success and pluto.rounds.infobyname[name].Type == "Mini") then
+                --checkRoundQueue()
+            end--]]
 
             if (success) then
                 mysql_stmt_run(db, "UPDATE pluto_round_queue SET finished = true WHERE idx = ?", round.idx)
-                break
+                if (pluto.rounds.infobyname[name].Type == "Mini") then
+                    minisonly = true
+                else
+                    break
+                end
             end
         end
     end)
@@ -261,7 +279,7 @@ end
 hook.Add("TTTEndRound", "pluto_round_queue", checkRoundQueue)
 
 function eventQueueUpdate(requester)
-    pluto.db.simplequery("SELECT name, usr.displayname from pluto_round_queue LEFT OUTER JOIN pluto_player_info usr ON usr.steamid = pluto_round_queue.requester WHERE server = ? AND NOT finished AND time <= NOW()", {serv_var and serv_var:GetString() or "unknown"}, function(rounds, err)
+    pluto.db.simplequery("SELECT name, usr.displayname from pluto_round_queue LEFT OUTER JOIN pluto_player_info usr ON usr.steamid = pluto_round_queue.requester WHERE server = ? AND NOT finished AND time <= NOW()", {serv_var and serv_var:GetString() or "test"}, function(rounds, err)
         pluto.inv.message(requester)
             :write("eventqueue", rounds)
         :send()
@@ -288,27 +306,44 @@ function pluto.inv.writeeventqueue(requester, rounds)
 end
 
 function pluto.inv.readqueueevent(requester)
-    -- TODO CHECK CURRENCY
+    if (not IsValid(requester)) then return end
+
     local name = net.ReadString()
     local res = false 
     local msg = "Unknown error!"
-    --[[if (pluto.rounds.infobyname[name] and pluto.rounds.infobyname[name].Type == "Mini") then
-        pluto.rounds.minis[name] = true
-        res = true 
-        msg = "Mini round queued!"
-    else ]]
-        res, msg = pluto.rounds.queue(name, requester:SteamID64())
-   -- end
 
-    if not IsValid(requester) then return end
-    
-    if (res) then
-        requester:ChatPrint(Color(50, 200, 50), msg)
-    else
-        requester:ChatPrint(Color(200, 50, 50), msg)
+    local round = pluto.rounds.infobyname[name]
+
+    if (not round or round.NoBuy or not round.Type) then
+        return
     end
 
-    eventQueueUpdate(requester)
+    local price = -pluto.rounds.cost[round.Type]
+
+    if (not price) then
+        return
+    end
+    
+    pluto.db.transact(function(db) 
+		if (not pluto.inv.addcurrency(db, requester, "ticket", price)) then
+			mysql_rollback(db)
+			return
+		end
+        
+        local res, msg = pluto.rounds.queue(name, requester:SteamID64(), db)
+
+		mysql_commit(db)
+
+        if (res and msg) then
+            requester:ChatPrint(Color(50, 200, 50), msg)
+        elseif (msg) then
+            requester:ChatPrint(Color(200, 50, 50), msg)
+        end
+
+        for k, ply in ipairs(player.GetAll()) do
+            eventQueueUpdate(ply)
+        end
+	end)
 end
 
 concommand.Add("pluto_prepare_round", function(ply, cmd, args)
