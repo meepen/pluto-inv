@@ -1,26 +1,20 @@
 -- Author: Meepen
 
+local name = "raining"
+
 if (SERVER) then
-	hook.Add("TTTBeginRound", "pluto_mini_raining", function()
-		if (ttt.GetCurrentRoundEvent() ~= "") then
-			return
-		end
+	hook.Add("TTTBeginRound", "pluto_mini_" .. name, function()
+        if (not pluto.rounds.minis[name]) then
+            return
+        end
 
-		if (not pluto.rounds or not pluto.rounds.minis) then
-			return
-		end
+		pluto.rounds.minis[name] = nil
 
-		if (not pluto.rounds.minis.raining and math.random(30) ~= 1) then
-			return
-		end
-
-		pluto.rounds.minis.raining = nil
-
-		ttt.chat(white_text, "It's ", pluto.currency.byname.droplet.Color, "pouring", white_text, " outside!")
+		pluto.rounds.Notify("It's raining droplets!", pluto.currency.byname.droplet.Color)
 
 		local count = #player.GetHumans()
 
-		timer.Create("pluto_mini_raining", math.max(0.5, 0.5 + count / 12), math.max(40, 50 - count / 12), function()
+		timer.Create("pluto_mini_" .. name, math.max(0.5, 0.5 + count / 12), math.max(40, 50 - count / 12), function()
 			for _, ply in pairs(player.GetHumans()) do
 				if (not ply:Alive()) then
 					continue
@@ -36,6 +30,15 @@ if (SERVER) then
 				e:Update()
 			end
 		end)
+
+		hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+            hook.Remove("TTTEndRound", "pluto_mini_" .. name)
+			timer.Remove("pluto_mini_" .. name)
+		end)
+	end)
+
+	hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+		timer.Remove("pluto_mini_" .. name)
 	end)
 else
 

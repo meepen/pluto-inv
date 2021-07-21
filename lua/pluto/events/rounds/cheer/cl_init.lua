@@ -1,74 +1,45 @@
-surface.CreateFont("cheer_header", {
-	font = "Lato",
-	size = math.max(24, ScrH() * 0.05),
-})
-surface.CreateFont("cheer_medium", {
-	font = "Roboto",
-	size = math.max(20, ScrH() * 0.0375),
-})
-surface.CreateFont("cheer_small", {
-	font = "Roboto",
-	size = math.max(16, ScrH() * 0.025),
-})
-
-local outline_text = Color(12, 13, 15)
-
-local color_words = {
-	blue = "blue, delivered by you!",
-	green = "green, they are quite keen!",
-	red = "red, to get joy spread!",
-	yellow = "yellow, so be a kind fellow!",
-}
+local AppendHeader = pluto.rounds.AppendHeader
+local AppendStats = pluto.rounds.AppendStats
+local ChildColor
+local AgentColor
 
 local radar_outline = Color(0, 0, 0)
 local indicator = surface.GetTextureID("effects/select_ring")
 
 local function RenderIntro()
 	local y = ScrH() / 10
-	local _, h = draw.SimpleTextOutlined("This, hard, hard year has drained us of cheer.", "cheer_header", ScrW() / 2, y, ttt.roles.Child.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, outline_text)
-	y = y + h
 
-	_, h = draw.SimpleTextOutlined("Find and deliver toys to bring back our joys!", "cheer_medium", ScrW() / 2, y, ttt.roles["S.A.N.T.A. Agent"].Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
+	y = AppendHeader("This hard year has drained our cheer.", 4, y, ChildColor)
+	y = AppendHeader("Find the right toy to bring back some joy!", 2, y, AgentColor)
 end
 
 local function RenderHeader(state)
 	local y = ScrH() / 10
-	local x = ScrW() / 2
+	y = AppendHeader("Find the right toy to bring back some joy!", 4, y, AgentColor)
 
-	local _, h = draw.SimpleTextOutlined("Find and deliver toys to bring back our joys!", "cheer_header", x, y, ttt.roles["S.A.N.T.A. Agent"].Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, outline_text)
-	y = y + h
+	if (state.color and not state.found) then
+		y = AppendHeader("Find a " .. state.color .. " toy!", 3, y)
+	elseif (state.target) then
+		y = AppendHeader("Find " .. state.target .. "!", 3, y)
+	end
 
 	if (state.bonus) then
-		_, h = draw.SimpleTextOutlined(string.format("You need %i more scored to get a reward!", state.bonus), "cheer_small", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
-		y = y + h
-	end
-
-	if (state.target and state.color) then
-		_, h = draw.SimpleTextOutlined(state.target .. " needs a toy of " .. color_words[state.color], "cheer_small", x, y, pluto.currency.byname["_toy_" .. state.color].Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
-		y = y + h
-	end
-
-	if (state.message) then
-		y = y + h / 2
-		_, h = draw.SimpleTextOutlined(state.message, "cheer_medium", x, y, white_text, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_text)
-		y = y + h
+		y = AppendHeader(string.format("%i more scored to get a reward!", state.bonus), 1, y, ChildColor)
 	end
 end
 
 local function RenderStats(state)
 	local y = ScrH() / 5
-	local x = 4
-	if (state.cheer) then
-		local _, h = draw.SimpleTextOutlined(string.format("Cheer Level: %i!", state.cheer), "cheer_small", x, y, ttt.roles["S.A.N.T.A. Agent"].Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, outline_text)
-		y = y + h
-	end
 
 	if (state.found and state.target) then
-		_, h = draw.SimpleTextOutlined("Give your toy to " .. state.target .. "!", "cheer_small", x, y, pluto.currency.byname["_toy_" .. state.color].Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, outline_text)
+		y = AppendStats("Give your toy to " .. state.target .. "!", 1, y, pluto.currency.byname["_toy_" .. state.color].Color)
 		y = y + h
-	elseif (state.color) then
-		_, h = draw.SimpleTextOutlined("Find a " .. state.color .. " toy!", "cheer_small", x, y, pluto.currency.byname["_toy_" .. state.color].Color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, outline_text)
-		y = y + h
+	elseif (state.color and state.target) then
+		y = AppendStats("Find a " .. state.color .. " toy for " .. state.target .. "!", 1, y, pluto.currency.byname["_toy_" .. state.color].Color)
+	end
+
+	if (state.reward) then
+		y = AppendStats(string.format("You've earned %i presents!", state.reward), 1, y)
 	end
 end
 
@@ -113,25 +84,12 @@ net.Receive("cheer_data", function()
 	end
 
 	local str = net.ReadString()
-	if (str == "cheer" or str == "bonus") then
-		pluto.rounds.state[str] = net.ReadUInt(32)
-	elseif (str == "target" or str == "color") then
-		pluto.rounds.state[str] = net.ReadString()
-		EmitSound("ambient/levels/canals/drip3.wav", vector_origin, -2, CHAN_STATIC, 1)
-	elseif (str == "found") then
-		pluto.rounds.state[str] = net.ReadBool()
-	elseif (str == "message") then
-		pluto.rounds.state.message = net.ReadString()
+	if (str == "message") then
 		if (net.ReadBool()) then
 			EmitSound("ambient/levels/canals/windchime2.wav", vector_origin, -2, CHAN_STATIC, 1)
 		else
 			EmitSound("common/warning.wav", vector_origin, -2, CHAN_STATIC, 1)
 		end
-		timer.Create("pluto_cheer_message", 8, 1, function()
-			if (pluto.rounds and pluto.rounds.state) then
-				pluto.rounds.state.message = nil 
-			end
-		end)
 	elseif (str == "radar") then
 		pluto.rounds.state.radar = {}
 		for i = 1, net.ReadUInt(32) do
@@ -144,15 +102,14 @@ net.Receive("cheer_data", function()
 end)
 
 ROUND:Hook("TTTBeginRound", function(self, state)
-	EmitSound("pluto/cheersong.ogg", vector_origin, -2, CHAN_STATIC, 1)
+	EmitSound("pluto/cheersong.ogg", vector_origin, -2, CHAN_STATIC, 0.7)
 	timer.Simple(85, function()
-		EmitSound("pluto/cheersong.ogg", vector_origin, -2, CHAN_STATIC, 1)
+		EmitSound("pluto/cheersong.ogg", vector_origin, -2, CHAN_STATIC, 0.7)
 	end)
 end)
 
 ROUND:Hook("HUDPaint", function(self, state)
 	if (not pluto.rounds.state) then
-		print("SOMETHING IS WRONG HERE")
 		return
 	end
 
@@ -172,5 +129,8 @@ ROUND:Hook("PreventRDMManagerPopup", function()
 end)
 
 function ROUND:NotifyPrepare()
-	chat.AddText(white_text, "In the distance,", ttt.roles["S.A.N.T.A. Agent"].Color, " bells", white_text, " begin to", ttt.roles["S.A.N.T.A. Agent"].Color, " jingle...")
+	ChildColor = ttt.roles.Child.Color
+	AgentColor = ttt.roles["S.A.N.T.A. Agent"].Color
+
+	pluto.rounds.Notify("In the distance, bells begin to jingle...", AgentColor)
 end

@@ -1,4 +1,5 @@
 ROUND.PrintName = "Monke Mania"
+ROUND.Name = "Monke Mania"
 ROUND.Author = "add___123"
 ROUND.Type = "Special"
 
@@ -21,5 +22,5 @@ function ROUND:TTTPrepareRoles(Team, Role)
 end
 
 ROUND:Hook("TTTUpdatePlayerSpeed", function(self, state, ply, data)
-	data.chimp = 1.05 + math.min(0.1, (ply:GetNWInt("MonkeScore", 0) * 0.01))
+	data.chimp = 1.1
 end)

@@ -8,7 +8,7 @@ pluto.quests.rewardhandlers = {
             local amount = self.Amount or 1
 
 			pluto.inv.addcurrency(db, data.Player, self.Currency, amount)
-			data.Player:ChatPrint(white_text, "You have received ", amount, " ", cur, amount == 1 and "" or "s", white_text, " for completing ", data:GetQuestData().Color, data:GetQuestData().Name, white_text, "!")
+			data.Player:ChatPrint(white_text, "You have received ", cur, " × ", amount, white_text, " for completing ", data:GetQuestData().Color, data:GetQuestData().Name, white_text, ".")
 
 			return true
 		end,

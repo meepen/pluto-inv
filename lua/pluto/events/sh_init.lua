@@ -4,58 +4,262 @@ pluto.rounds.files = pluto.rounds.files or {}
 
 pluto.rounds.byname = pluto.rounds.byname or {}
 
-for _, event in ipairs {
-	"posteaster",
-	"chimp",
-	"cheer",
-} do
-	local folder = "pluto/events/rounds/" .. event .. "/"
+pluto.rounds.minis = pluto.rounds.minis or {}
 
-	pluto.rounds.files[event] = {}
-	
-	for _, extra in ipairs {
-		"sh_init",
-		"sv_init",
-		"cl_init",
-	} do
-		fname = folder .. extra .. ".lua"
-		if (file.Exists(fname, "LUA")) then
-			if (SERVER and extra ~= "sv_init") then
-				AddCSLuaFile(fname)
-			end
-			if (SERVER and extra == "sv_init" or CLIENT and extra == "cl_init" or extra == "sh_init") then
-				local fn = CompileFile(fname)
-				if (not fn) then
-					continue
+pluto.rounds.cost = {
+	Event = 5,
+	Random = 3,
+	Mini = 1
+}
+
+pluto.rounds.infobyname = {
+	-- Event Rounds
+	posteaster = {
+		PrintName = "Bunny Attack",
+		Type = "Event",
+		MinPlayers = 8,
+		Shares = 1,
+		NoRandom = true,
+		NoBuy = true,
+	},
+	chimp = {
+		PrintName = "Monke Mania",
+		Type = "Event",
+		MinPlayers = 6,
+		Shares = 1,
+	},
+	cheer = {
+		PrintName = "Operation Cheer",
+		Type = "Event",
+		MinPlayers = 8,
+		Shares = 1,
+	},
+
+	-- Random Rounds
+	hotshot = {
+		PrintName = "Hotshot",
+		Type = "Random",
+		MinPlayers = 4,
+		Shares = 1,
+	},
+	blackmarket = {
+		PrintName = "Black Market Brawl",
+		Type = "Random",
+		MinPlayers = 4,
+		Shares = 1,
+	},
+	boom = {
+		PrintName = "Boomer Time",
+		Type = "Random",
+		MinPlayers = 6,
+		Shares = 1,
+	},
+	kingofthequill = {
+		PrintName = "King of the Quill",
+		Type = "Random",
+		MinPlayers = 6,
+		Shares = 1,
+	},
+	hitlist = {
+		PrintName = "Hit List",
+		Type = "Random",
+		MinPlayers = 6,
+		Shares = 1,
+	},
+	phantom = {
+		PrintName = "Phantom Fight",
+		Type = "Random",
+		MinPlayers = 6,
+		Shares = 1,
+	},
+	trifight = {
+		PrintName = "Tri-Fight",
+		Type = "Random",
+		MinPlayers = 9,
+		Shares = 1,
+	},
+	infection = {
+		PrintName = "Infection",
+		Type = "Random",
+		MinPlayers = 4,
+		Shares = 1,
+	},
+
+	-- Mini Events
+	aprilfools = {
+		PrintName = "April Fools",
+		Type = "Mini",
+		Shares = 1,
+		Odds = 1 / 16,
+		NoRandom = true,
+		NoBuy = true,
+	},
+	raining = {
+		PrintName = "Droplet Rain",
+		Type = "Mini",
+		MinPlayers = 3,
+		Shares = 1,
+		Odds = 1 / 32,
+	},
+	dice = {
+		PrintName = "Chance Dice",
+		Type = "Mini",
+		MinPlayers = 3,
+		Shares = 1,
+		Odds = 1 / 32,
+	},
+	stars = {
+		PrintName = "Shooting Stars",
+		Type = "Mini",
+		MinPlayers = 3,
+		Shares = 1,
+		Odds = 1 / 32,
+	},
+	dash = {
+		PrintName = "Dasher",
+		Type = "Mini",
+		MinPlayers = 4,
+		Shares = 1,
+		Odds = 1 / 48,
+	},
+	hops = {
+		PrintName = "Leg Day",
+		Type = "Mini",
+		MaxPlayers = 10,
+		Shares = 1,
+		Odds = 0, -- Odds = 1 / 48,
+	},
+	panic = {
+		PrintName = "Panic",
+		Type = "Mini",
+		Shares = 1,
+		Odds = 0, -- Odds = 1 / 48,
+	},
+	leak = {
+		PrintName = "Intel Leak",
+		Type = "Mini",
+		MinPlayers = 4,
+		Shares = 1,
+		Odds = 0, -- Odds = 1 / 48,
+	},
+	jugg = {
+		PrintName = "Operation JUGG",
+		Type = "Mini",
+		Shares = 1,
+		Odds = 0, -- Odds = 1 / 48,
+	},
+	luck = {
+		PrintName = "Press Your Luck",
+		Type = "Mini",
+		MinPlayers = 4,
+		Shares = 1,
+		Odds = 0, -- Odds = 1 / 48,
+	},
+	rise = {
+		PrintName = "Rise, Dead",
+		Type = "Mini",
+		MinPlayers = 4,
+		MaxPlayers = 10,
+		Shares = 1,
+		Odds = 0, -- Odds = 1 / 48,
+	},
+	saber = {
+		PrintName = "Saber Round",
+		Type = "Mini",
+		MaxPlayers = 10,
+		Shares = 1,
+		Odds = 0, -- Odds = 1 / 48,
+	},
+	ticket = {
+		PrintName = "Ticket Round",
+		Type = "Mini",
+		MinPlayers = 5,
+		Shares = 1,
+		Odds = 0, -- Odds = 1 / 16,
+		NoBuy = true,
+	},
+	wink = {
+		PrintName = "Wink Round",
+		Type = "Mini",
+		MaxPlayers = 7,
+		Shares = 1,
+		Odds = 0, -- Odds = 1 / 24,
+		NoBuy = true,
+	},
+	overflow = {
+		PrintName = "Equipment Overflow",
+		Type = "Mini",
+		Shares = 1,
+		Odds = 0, -- Odds = 1 / 48,
+	},
+	ttv = {
+		PrintName = "TTVillage",
+		Type = "Mini",
+		MinPlayers = 8,
+		Shares = 1,
+		Odds = 0, -- Odds = 1 / 24,
+	},
+	lime = {
+		PrintName = "RDM Limeinade Round",
+		Type = "Mini",
+		MaxPlayers = 7,
+		Shares = 1,
+		Odds = 0, -- Odds = 1 / 256,
+		NoBuy = true,
+	},
+	wave = {
+		PrintName = "Wave Speed",
+		Type = "Mini",
+		MaxPlayers = 7,
+		Shares = 1,
+		Odds = 0, -- Odds = 1 / 24,
+		NoBuy = true,
+	},
+}
+
+for name, event in pairs(pluto.rounds.infobyname) do
+	if (event.Type and event.Type == "Mini") then
+		local fname = "pluto/events/minis/sh_" .. name .. ".lua"
+		if (not file.Exists (fname, "LUA")) then
+			continue
+		end
+
+		if (SERVER) then
+			AddCSLuaFile(fname)
+		end
+		include(fname)
+	else
+		local folder = "pluto/events/rounds/" .. name .. "/"
+
+		pluto.rounds.files[name] = {}
+		
+		for _, extra in ipairs {
+			"sh_init",
+			"sv_init",
+			"cl_init",
+		} do
+			fname = folder .. extra .. ".lua"
+			if (file.Exists(fname, "LUA")) then
+				if (SERVER and extra ~= "sv_init") then
+					AddCSLuaFile(fname)
 				end
-				table.insert(pluto.rounds.files[event], fn)
+				if (SERVER and extra == "sv_init" or CLIENT and extra == "cl_init" or extra == "sh_init") then
+					local fn = CompileFile(fname)
+					if (not fn) then
+						continue
+					end
+					table.insert(pluto.rounds.files[name], fn)
+				end
 			end
 		end
 	end
 end
 
-for _, mini in ipairs {
-	"aprilfools",
-	"raining",
-	"dice",
-	"stars",
-	"dash",
-} do
-	local fname = "pluto/events/minis/sh_" .. mini .. ".lua"
-	if (not file.Exists (fname, "LUA")) then
-		continue
-	end
-
-	if (SERVER) then
-		AddCSLuaFile(fname)
-	end
-	include(fname)
-end
+--- Rounds ---
 
 local ROUND_DATA = {}
 pluto.rounds.mt = pluto.rounds.mt or {}
 pluto.rounds.mt.__index = ROUND_DATA
-
 
 function ROUND_DATA:Hook(event, func)
 	self.Hooks = self.Hooks or {}
@@ -74,7 +278,50 @@ local function Initialize()
 	end
 end
 
+local colors = {
+	red = Color(255, 0, 0),
+	green = Color(0, 255, 0),
+	blue = Color(0, 0, 255),
+	--[[
+	yellow = Color(255, 255, 0),
+	pink = Color(255, 0, 255),
+	cyan = Color(0, 255, 255),
+	white = Color(255, 255, 255),
+	black = Color(0, 0, 0),
+	]]--
+}
+
+for name, color in pairs(colors) do -- REMOVE?
+	resource.AddFile("materials/pluto/roles/" .. name .. ".png")
+end
+
+local function capitalize(name)
+	return (string.upper(string.sub(name, 1, 1)) .. string.sub(name, 2))
+end
+
 hook.Add("TTTPrepareRoles", "pluto_events_roles", function(Team, Role)
+	for name, color in pairs(colors) do
+		Team(name)
+			:SetColor(color)
+			:TeamChatSeenBy(name)
+			:SetVoiceChannel(name)
+			:SetDeathIcon("materials/pluto/roles/" .. name .. ".png")
+			:SetSeeTeammateOutlines(true)
+
+		Role(capitalize(name), name)
+			:SeenByAll()
+			:SetCalculateAmountFunc(function(total_players)
+				return 0
+			end)
+	end
+	
+	Role("Fighter", "traitor")
+		:SetCalculateAmountFunc(function(total_players)
+			return 0
+		end)
+		:SetCanUseBuyMenu(false)
+		:SetCanSeeThroughWalls(false)
+
 	for _, event in pairs(pluto.rounds.byname) do
 		if (event.TTTPrepareRoles) then
 			event:TTTPrepareRoles(Team, Role)
@@ -101,30 +348,6 @@ end
 
 function pluto.rounds.get(name)
 	return pluto.rounds.byname[name]
-end
-
-function pluto.rounds.prepare(name)
-	if (not SERVER) then
-		return
-	end
-
-	local event = pluto.rounds.byname[name]
-
-	if (not event) then
-		return false, "Event does not exist"
-	end
-
-	if (ttt.GetNextRoundEvent() ~= "") then
-		return false, "Event already prepared"
-	end
-
-	if (GetConVar "ttt_round_limit":GetInt() <= ttt.GetRoundNumber()) then
-		return false, "Round limit"
-	end
-
-	ttt.SetNextRoundEvent(name)
-
-	return true
 end
 
 hook.Add("TTTPrepareNetworkingVariables", "pluto_event", function(vars)
@@ -213,6 +436,8 @@ hook.Add("TTTEndRound", "pluto_event_manager", function()
 	ttt.SetCurrentRoundEvent ""
 end)
 
+--- Minis ---
+
 pluto.rounds.speeds = {}
 
 hook.Add("TTTUpdatePlayerSpeed", "pluto_mini_speeds", function(ply, data)
@@ -223,25 +448,16 @@ hook.Add("TTTEndRound", "pluto_remove_minis", function()
 	pluto.rounds.speeds = {}
 end)
 
-if (SERVER) then
-	util.AddNetworkString "mini_speed"
-	concommand.Add("pluto_prepare_round", function(ply, cmd, args)
-		if (not pluto.cancheat(ply) or not args[1]) then
-			return
-		end
-
-		pluto.rounds.prepare(args[1])
-	end)
-
-	pluto.rounds.minis = {}
-
-	concommand.Add("pluto_prepare_mini", function(ply, cmd, args)
-		if (not pluto.cancheat(ply) or not args[1]) then
-			return
-		end
-
-		pluto.rounds.minis[args[1]] = true
-		pluto.rounds.args = args
-		ply:ChatPrint("The " .. tostring(args[1]) .. " mini-event will take place next round.")
-	end)
-end
+------- TESTING -------
+--[[for k, ply in ipairs(player.GetAll()) do
+	if (SERVER) then
+		ply:StripWeapons()
+		ply:Give("weapon_ttt_knife")
+		ply:SetModel("models/player/skeleton.mdl")
+		ply:SetupHands()
+		ply:SetRenderMode(RENDERMODE_TRANSCOLOR)
+		ply:SetColor(Color(0, 0, 0, 50))
+	else
+		-- Add darkness
+	end
+end--]]

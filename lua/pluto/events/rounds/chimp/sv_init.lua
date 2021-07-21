@@ -1,15 +1,14 @@
 resource.AddFile("sound/pluto/dkrap.ogg")
 
-ROUND.Name = "Monke Mania"
 ROUND.BananasPerPlayer = 6
-ROUND.KillSteal = 0.25
-ROUND.HealthPerBanana = 10
-ROUND.BananasPerEgg = 7
-ROUND.WinnerBonus = 2
-
-util.AddNetworkString "chimp_data"
+ROUND.KillSteal = 1
+ROUND.BananasForEgg = 5
+ROUND.WinnerBonus = 1
+ROUND.Reward = "brainegg"
 
 ROUND.Boss = true
+
+local WriteRoundData = pluto.rounds.WriteRoundData
 
 function ROUND:Prepare(state)
 	timer.Create("pluto_event_timer", 5, 0, function()
@@ -28,11 +27,15 @@ end
 
 function ROUND:Finish()
 	timer.Remove "pluto_event_timer"
+	timer.Remove "pluto_monke_timer"
 end
 
 function ROUND:Loadout(ply)
 	ply:StripWeapons()
+	pluto.NextWeaponSpawn = false
 	ply:Give "tfa_cso_ruyi"
+	pluto.NextWeaponSpawn = false
+	ply:Give "weapon_ttt_unarmed"
 end
 
 ROUND:Hook("TTTSelectRoles", function(self, state, plys)
@@ -57,6 +60,8 @@ ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 		ply:StripWeapons()
 		pluto.NextWeaponSpawn = false
 		ply:Give "tfa_cso_ruyi"
+		pluto.NextWeaponSpawn = false
+		ply:Give "weapon_ttt_unarmed"
 
 		round.Players[i] = {
 			Player = ply,
@@ -112,7 +117,6 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		if IsValid(ply) then
 			state.playerscores[ply] = 0
 			state.lastactive[ply] = CurTime()
-			ply:SetNWInt("MonkeScore", 0)
 			local tospawn = self.BananasPerPlayer
 			while (tospawn > 0) do
 				tospawn = tospawn - 1
@@ -133,14 +137,11 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 			end
 
 			pluto.statuses.bleed(ply, {Damage = 5})
-			ply:ChatPrint(white_text, "Monke get hurt for not fight!")
+			pluto.rounds.Notify("Me get hurt for not fight!", nil, ply, true)
 		end
 	end)
 
-	net.Start "chimp_data"
-		net.WriteString "currency_left"
-		net.WriteUInt(#state.bananas, 32)
-	net.Broadcast()
+	WriteRoundData("left", #state.bananas)
 
 	self:ChooseLeader(state)
 
@@ -162,39 +163,38 @@ function ROUND:Initialize(state, ply)
 	self:Spawn(state, ply)
 end
 
+local last_notification = 0
+
 function ROUND:ChooseLeader(state)
 	local new = table.SortByKey(state.playerscores)[1]
 
-	if (IsValid(new)) then
-		if (IsValid(state.leader) and new ~= state.leader) then
-			state.leader:SetRole("Monke")
-			state.leader:SetModelScale(1, 0)
-			ttt.chat(ttt.roles["Banna Boss"].Color, new:Nick(), white_text, " new banna boss!")
-		end
-		state.leader = new
-		--new:SetModelScale(1.2, 1)
-		new:SetRole("Banna Boss")
-		net.Start "chimp_data"
-			net.WriteString "current_leader"
-			net.WriteString(new:Nick() .. " hav " .. state.playerscores[new] .. " banna")
-		net.Broadcast()
+	if (not IsValid(new)) then
+		return
 	end
+
+	if (IsValid(state.leader) and new ~= state.leader) then
+		state.leader:SetRole("Monke")
+		if (CurTime() - last_notification >= 0.25) then
+			last_notification = CurTime()
+			pluto.rounds.Notify(new:Nick() .. " new Banna Boss!", ttt.roles["Banna Boss"].Color, nil, true)
+		end
+	end
+	
+	state.leader = new
+	new:SetRole("Banna Boss")
+	WriteRoundData("leader", new:Nick() .. " Banna Boss for hav " .. tostring(state.playerscores[new]) .. " banna")
 end
 
 function ROUND:UpdateScore(state, ply, amt)
 	state.playerscores[ply] = (state.playerscores[ply] or 0) + amt
 	state.lastactive[ply] = CurTime()
-	ply:SetNWInt("MonkeScore", state.playerscores[ply])
 
-	if (state.playerscores[ply] >= 7 and not state.rewarded[ply]) then
+	if (state.playerscores[ply] >= self.BananasForEgg and not state.rewarded[ply]) then
 		state.rewarded[ply] = true
-		ply:ChatPrint(white_text, "Monke will get ", pluto.currency.byname.brainegg, white_text, " for getting 7 ", pluto.currency.byname._banna, white_text, " first time!")
+		pluto.rounds.Notify("Me get brain egg for hav " .. tostring(self.BananasForEgg) .. " bannas!", pluto.currency.byname._banna.Color, ply)
 	end
 
-	net.Start "chimp_data"
-		net.WriteString "currency_collected"
-		net.WriteUInt(state.playerscores[ply], 32)
-	net.Send(ply)
+	WriteRoundData("score", state.playerscores[ply], ply)
 
 	self:ChooseLeader(state)
 end
@@ -236,35 +236,28 @@ function ROUND:TTTEndRound(state)
 
 	self:ChooseLeader(state)
 
-	state.leader:SetModelScale(1, 0)
-
 	for ply, score in pairs(state.playerscores) do
 		if (state.rewarded[ply]) then
 			pluto.db.instance(function(db)
-				pluto.inv.addcurrency(db, ply, "brainegg", 1)
-				ply:ChatPrint(white_text, "Monke get ", pluto.currency.byname.brainegg, white_text, " for havd 7 ", pluto.currency.byname._banna, white_text, " at one time!")
+				pluto.inv.addcurrency(db, ply, self.Reward, 1)
+				pluto.rounds.Notify("Me get brain egg for havd " .. tostring(self.BananasForEgg) .. "!", pluto.currency.byname[self.Reward].Color, ply)
 			end)
 		end
-		local togive = math.floor(score / self.BananasPerEgg)
-		pluto.db.instance(function(db)
-			pluto.inv.addcurrency(db, ply, "brainegg", togive)
-			ply:ChatPrint(white_text, "Monke get ", togive, " ", pluto.currency.byname.brainegg, white_text, " for hav ", score, " ", pluto.currency.byname._banna, white_text, "!")
-		end)
 	end
 
 	if (IsValid(state.leader)) then
-		ttt.chat(ttt.roles["Banna Boss"].Color, state.leader:Nick(), white_text, " banna king!")
+		pluto.rounds.Notify(state.leader:Nick() .. " banna king!", ttt.roles["Banna Boss"].Color)
+		hook.Run("PlutoSpecialWon", {state.leader})
 		pluto.db.instance(function(db)
-			pluto.inv.addcurrency(db, state.leader, "brainegg", self.WinnerBonus)
-			state.leader:ChatPrint(white_text, "Monke get ", self.WinnerBonus	, " extra ", pluto.currency.byname.brainegg, white_text, " for be banna king!")
+			pluto.inv.addcurrency(db, state.leader, self.Reward, self.WinnerBonus)
+			pluto.rounds.Notify("Me get " .. tostring(self.WinnerBonus) .. " extra brain egg for win banna king!", pluto.currency.byname[self.Reward].Color, state.leader)
 		end)
 	else
-		ttt.chat("All monke suck")
+		pluto.rounds.Notify("All monke suk")
 	end
 
 	GetConVar("ttt_karma"):Revert()
 
-	timer.Remove("pluto_monke_timer")
 	timer.UnPause("tttrw_afk")
 end
 
@@ -276,24 +269,16 @@ function ROUND:SendUpdateBananas(state)
 		end
 	end
 
-	net.Start "chimp_data"
-		net.WriteString "currency_left"
-		net.WriteUInt(left, 32)
-	net.Broadcast()
+	WriteRoundData("left", left)
 end
 
 ROUND:Hook("PlutoBannaPickup", function(self, state, ply)
 	self:SendUpdateBananas(state)
-
-	if (ply:Alive()) then
-		ply:SetHealth(math.min(ply:GetMaxHealth(), ply:Health() + self.HealthPerBanana))
-	end
-
 	self:UpdateScore(state, ply, 1)
 end)
 
 ROUND:Hook("PlayerCanPickupWeapon", function(self, state, ply, wep)
-	return wep:GetClass() == "tfa_cso_ruyi"
+	return wep:GetClass() == "tfa_cso_ruyi" or wep:GetClass() == "weapon_ttt_unarmed"
 end)
 
 ROUND:Hook("TTTHasRoundBeenWon", function(self, state)
@@ -311,13 +296,6 @@ ROUND:Hook("EntityTakeDamage", function(self, state, targ, dmg)
 	end
 	if (not IsValid(atk) or not atk:IsPlayer()) then
 		return
-	end
-
-	if (state.playerscores[targ] >= 7) then
-		self:UpdateScore(state, targ, -1)
-		self:UpdateScore(state, atk, 1)
-		targ:ChatPrint(ttt.teams.traitor.Color, atk:Nick(), white_text, " stealed 1 banna!")
-		atk:ChatPrint(ttt.roles.Monke.Color, "Monke", white_text, " stealed 1 banna from ", targ:Nick(), "!")
 	end
 
 	state.lastactive[atk] = CurTime()
@@ -344,7 +322,7 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 		return
 	end
 
-	local amt = state.playerscores[vic] > 0 and math.ceil(self.KillSteal * state.playerscores[vic]) or 0
+	local amt = state.playerscores[vic] > self.KillSteal and self.KillSteal or 0
 
 	if ((vic == atk or not IsValid(atk)) and IsValid(vic.LastBannaAttacker)) then
 		atk = vic.LastBannaAttacker
@@ -356,7 +334,7 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 			table.insert(state.bananas, pluto.currency.spawnfor(vic, "_banna", nil, true))
 		end
 	
-		vic:ChatPrint(ttt.teams.traitor.Color, "Monke", white_text, " drop ", amt, " banna!")
+		pluto.rounds.Notify("Me drop banna!", ttt.roles.Traitor.Color, vic, true)
 		return
 	end
 
@@ -364,11 +342,8 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 	self:UpdateScore(state, atk, amt)
 
 	if (amt > 0) then
-		vic:ChatPrint(ttt.teams.traitor.Color, atk:Nick(), white_text, " stealed ", amt, " banna!")
-		atk:ChatPrint(ttt.roles.Monke.Color, "Monke", white_text, " stealed ", amt, " banna from ", vic:Nick(), "!")
-		if (atk:Alive()) then
-			atk:SetHealth(math.min(atk:GetMaxHealth(), atk:Health() + amt * self.HealthPerBanana))
-		end
+		pluto.rounds.Notify(atk:Nick() .. " steal " .. tostring(amt) .. " banna!", ttt.roles.Traitor.Color, vic, true)
+		pluto.rounds.Notify("Me steal " .. tostring(amt) .. " banna from " .. vic:Nick() .. "!", ttt.roles.Monke.Color, atk, true)
 	end
 
 	self:SendUpdateBananas(state)
@@ -384,6 +359,7 @@ end)
 
 function ROUND:PlayerSetModel(state, ply)
 	ply:SetModel(pluto.models["chimp"].Model)
+	ply:SetupHands()
 
 	return true
 end

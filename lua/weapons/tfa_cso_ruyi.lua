@@ -117,8 +117,8 @@ function SWEP:DoPlayerDeath(ply, atk, dmg)
 		
 		self:SetKills(self:GetKills() + 1)
 
-		if (IsValid(atk) and self:GetKills() == 2) then
-			atk:SetModel(pluto.models["chimp"].Model)
+		if (IsValid(atk) and self:GetKills() == 2 and atk:GetModel() ~= pluto.models.chimp.Model) then
+			atk:SetModel(pluto.models.chimp.Model)
 			atk:SetupHands()
 			atk:ChatPrint(white_text, "For get 2", ttt.roles.Monke.Color, " monke", white_text, " smash, you now", ttt.roles.Monke.Color, " monke!", white_text, " OOK OOK!")
 		end

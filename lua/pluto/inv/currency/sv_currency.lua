@@ -323,6 +323,7 @@ for name, values in pairs {
 					local item = pluto.inv.generatebufferweapon(db, ply, "DROPPED")
 
 					if (item:GetMaxAffixes() >= 5) then
+						hook.Run("PlutoRareDrop", ply, "Weapon")
 						local msg = discord.Message()
 
 						msg:AddEmbed(item:GetDiscordEmbed()
@@ -410,7 +411,9 @@ for name, values in pairs {
 
 		Pickup = function(ply)
 			if (player.GetCount() >= 8) then
-				pluto.rounds.prepare "posteaster"
+				if (pluto.rounds.prepare "posteaster") then
+					hook.Run("PlutoSpecialStarted", ply, "posteaster")
+				end
 			end
 
 			return true
@@ -425,14 +428,18 @@ for name, values in pairs {
 		Global = true,
 		Pickup = function(ply)
 			local found = false
+			local melee = false
 			for _, wep in pairs(ply:GetWeapons()) do
-				if (wep.Slot == 0 and not rb655_IsLightsaber(wep)) then
-					found = true
-					wep:Remove()
+				if (wep.Slot == 0) then
+					melee = true
+					if (not rb655_IsLightsaber(wep)) then
+						found = true
+						wep:Remove()
+					end
 				end
 			end
 
-			if (not found) then
+			if (not found and melee) then
 				return false
 			end
 
@@ -449,6 +456,22 @@ for name, values in pairs {
 	eye = {
 		Shares = 0,
 	},
+	brainegg = {
+		Shares = 0,
+		Types = "None",
+	},
+	stardust = {
+		Shares = 1500,
+	},
+	ticket = {
+		Shares = 1,
+		Pickup = function(ply)
+			hook.Run("PlutoTicketPickup", ply)
+			
+			return true
+		end,
+	},
+	-- Fakes
 	_banna = {
 		Shares = 0,
 		Global = true,
@@ -457,19 +480,14 @@ for name, values in pairs {
 				hook.Run("PlutoBannaPickup", ply)
 			elseif (ttt.GetCurrentRoundEvent() ~= "chimp") then
 				if (player.GetCount() >= 6) then
-					pluto.rounds.prepare "chimp"
+					if (pluto.rounds.prepare "chimp") then
+						hook.Run("PlutoSpecialStarted", ply, "chimp")
+					end
 				end
 			end
 
 			return true
 		end,
-	},
-	brainegg = {
-		Shares = 0,
-		Types = "None",
-	},
-	stardust = {
-		Shares = 1500,
 	},
 	_toy_blue = {
 		Shares = 0,
@@ -477,7 +495,9 @@ for name, values in pairs {
 		Pickup = function(ply, cur)
 			hook.Run("PlutoToyPickup", ply, "blue", cur)
 			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
-				pluto.rounds.prepare "cheer"
+				if (pluto.rounds.prepare "cheer") then
+					hook.Run("PlutoSpecialStarted", ply, "cheer")
+				end
 			end
 			return true
 		end,
@@ -488,7 +508,9 @@ for name, values in pairs {
 		Pickup = function(ply, cur)
 			hook.Run("PlutoToyPickup", ply, "green", cur)
 			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
-				pluto.rounds.prepare "cheer"
+				if (pluto.rounds.prepare "cheer") then
+					hook.Run("PlutoSpecialStarted", ply, "cheer")
+				end
 			end
 			return true
 		end,
@@ -499,7 +521,9 @@ for name, values in pairs {
 		Pickup = function(ply, cur)
 			hook.Run("PlutoToyPickup", ply, "red", cur)
 			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
-				pluto.rounds.prepare "cheer"
+				if (pluto.rounds.prepare "cheer") then
+					hook.Run("PlutoSpecialStarted", ply, "cheer")
+				end
 			end
 			return true
 		end,
@@ -510,7 +534,9 @@ for name, values in pairs {
 		Pickup = function(ply, cur)
 			hook.Run("PlutoToyPickup", ply, "yellow", cur)
 			if (ttt.GetCurrentRoundEvent() ~= "cheer" and player.GetCount() >= 6) then
-				pluto.rounds.prepare "cheer"
+				if (pluto.rounds.prepare "cheer") then
+					hook.Run("PlutoSpecialStarted", ply, "cheer")
+				end
 			end
 
 			return true
@@ -547,21 +573,21 @@ for name, values in pairs {
 				function()
 					ply:SetMaxHealth(ply:GetMaxHealth() + 10)
 					ply:SetHealth(ply:Health() + 10)
-					ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 1: Gain 10 Max Health!")
+					pluto.rounds.Notify("You rolled a 1: Gain 10 Max Health!", pluto.currency.byname._chancedice.Color, ply, true)
 				end,
 				function()
 					ply:SetJumpPower(ply:GetJumpPower() + 20)
-					ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 2: Gain Jump Power!")
+					pluto.rounds.Notify("You rolled a 2: Gain Jump Power!", pluto.currency.byname._chancedice.Color, ply, true)
 				end,
 				function()
 					ply:SetMaxArmor(ply:GetMaxArmor() + 10)
 					ply:SetArmor(ply:Armor() + 10)
-					ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 3: Gain 10 Armor!")
+					pluto.rounds.Notify("You rolled a 3: Gain 10 Armor!", pluto.currency.byname._chancedice.Color, ply, true)
 				end,
 				function()
 					pluto.db.instance(function(db)
 						pluto.inv.addcurrency(db, ply, "dice", 5)
-						ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 4: Gain 5 Dice!")
+						pluto.rounds.Notify("You rolled a 4: Gain 5 Dice!", pluto.currency.byname._chancedice.Color, ply, true)
 					end)
 				end,
 				function()
@@ -570,19 +596,20 @@ for name, values in pairs {
 						net.Start "mini_speed"
 							net.WriteFloat(pluto.rounds.speeds[ply])
 						net.Send(ply)
-						ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 5: Gain Speed!")
+						pluto.rounds.Notify("You rolled a 5: Gain Speed!", pluto.currency.byname._chancedice.Color, ply, true)
 					end
 				end,
 				function()
-					if (math.random() <= 0.005) then
-						ply:ChatPrint(color_black, "WHY DO YOU BOTHER ME WITH YOUR CHANCES AND DICE? BEGONE, GAMBLING ANNOYANCE!")
+					if (math.random() <= 0.01) then
+						pluto.rounds.Notify("WHY DO YOU BOTHER ME WITH YOUR DICE? BEGONE, BEFORE I STRIKE BACK!", color_black, ply, true)
 						return
 					end
+
 					local dmg = DamageInfo()
 					dmg:SetDamageType(DMG_BURN)
-					dmg:SetDamage(math.random(10, 30))
+					dmg:SetDamage(math.random(15, 30))
 					ply:TakeDamageInfo(dmg)
-					ply:ChatPrint(pluto.currency.byname._chancedice.Color, "You rolled a 6: Take Damage!")
+					pluto.rounds.Notify("You rolled a 6: Take Damage!", pluto.currency.byname._chancedice.Color, ply, true)
 				end,
 			}
 
@@ -591,6 +618,15 @@ for name, values in pairs {
 			return true
 		end,
 	},
+	_quill = {
+		Shares = 0,
+		Global = true,
+		Pickup = function(ply, self)
+			hook.Run("PlutoQuillPickup", ply)
+
+			return true
+		end,
+	}
 } do
 	table.Merge(pluto.currency.byname[name], values)
 end
@@ -1092,6 +1128,8 @@ function pluto.inv.readmasscurrencyuse(ply)
 			break
 		end
 	end
+
+	hook.Run("PlayerCurrencyUse", ply, item, currency.InternalName, used)
 
 	currency:Save(ply, item, used):next(function()
 		pluto.inv.message(ply)

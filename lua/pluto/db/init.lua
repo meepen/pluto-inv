@@ -307,5 +307,28 @@ hook.Add("PlutoDatabaseInitialize", "pluto_inv_init", function()
 				sold TINYINT UNSIGNED NOT NULL DEFAULT 0
 			)
 		]])
+
+		mysql_query(db, [[
+			CREATE TABLE IF NOT EXISTS pluto_round_queue (
+				idx INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+				server VARCHAR(16) NOT NULL,
+				time TIMESTAMP NOT NULL,
+				name VARCHAR(32) NOT NULL,
+				owner BIGINT UNSIGNED NOT NULL REFERENCES pluto_player_info(steamid),
+				finished BOOLEAN NOT NULL DEFAULT FALSE,
+				INDEX(time),
+				INDEX(finished)
+			)
+		]])
+
+		mysql_query(db, [[
+			CREATE TABLE IF NOT EXISTS pluto_highscores (
+				player BIGINT UNSIGNED NOT NULL,
+				highscore VARCHAR(16) NOT NULL,
+				score INT UNSIGNED NOT NULL DEFAULT 0,
+				PRIMARY KEY(player, highscore),
+				INDEX(score)
+			)
+		]])
 	end)
 end)

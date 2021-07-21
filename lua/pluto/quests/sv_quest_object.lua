@@ -106,6 +106,7 @@ function QUEST:GetRewardText()
 end
 
 function QUEST:Reward(db)
+	hook.Run("PlutoQuestCompleted", self.Player, self, self.Type)
 	return pluto.quests.poolreward(self.RewardData, db, self)
 end
 

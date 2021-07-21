@@ -46,6 +46,8 @@ pluto.files.load {
 
 		"treelib/cl.lua",
 
+		--"highscores/cl_highscores.lua",
+
 		"cl/fontstuff.lua",
 
 		"cl/vgui/pluto/frame.lua",
@@ -73,6 +75,7 @@ pluto.files.load {
 		"cl/vgui/inv/pages/crafting.lua",
 		"cl/vgui/inv/pages/trading.lua",
 		"cl/vgui/inv/pages/donate.lua",
+		"cl/vgui/inv/pages/event.lua",
 
 		"cl/vgui/inv/pages/other/snake.lua",
 		"cl/vgui/inv/pages/other.lua",
@@ -161,6 +164,8 @@ pluto.files.load {
 		"treelib/sh.lua",
 
 		"inv/nodes/sh_nodes.lua",
+
+		"highscores/sh_highscores.lua",
 
 		-- "unicode/init.lua",
 		-- "unicode/casefolding.lua",

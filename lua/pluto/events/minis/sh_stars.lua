@@ -1,26 +1,20 @@
 -- Author: add___123
 
+local name = "stars"
+
 if (SERVER) then
-	hook.Add("TTTBeginRound", "pluto_shooting_stars", function()
-		if (ttt.GetCurrentRoundEvent() ~= "") then
-			return
-		end
+	hook.Add("TTTBeginRound", "pluto_shooting_" .. name, function()
+        if (not pluto.rounds.minis[name]) then
+            return
+        end
 
-		if (not pluto.rounds or not pluto.rounds.minis) then
-			return
-		end
+		pluto.rounds.minis[name] = nil
 
-		if (not pluto.rounds.minis.stars and math.random(30) ~= 1) then
-			return
-		end
+		pluto.rounds.Notify("It's shooting stars!", pluto.currency.byname.stardust.Color)
 
-		pluto.rounds.minis.stars = nil
-
-		ttt.chat(white_text, "It's ", pluto.currency.byname.stardust.Color, "shooting stars", white_text, "!")
-		
 		local count = #player.GetHumans()
 
-		timer.Create("pluto_shooting_stars", math.max(3, 2 + count / 8), math.max(20 - count / 6, 15), function()
+		timer.Create("pluto_mini_" .. name, math.max(3, 2 + count / 8), math.max(20 - count / 6, 15), function()
 			for _, ply in pairs(player.GetHumans()) do
 				if (not ply:Alive()) then
 					continue
@@ -34,6 +28,11 @@ if (SERVER) then
 				e:SetMovementVector((target - start):GetNormalized() * 2.5)
 				e:Update()
 			end
+		end)
+		
+		hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+            hook.Remove("TTTEndRound", "pluto_mini_" .. name)
+			timer.Remove("pluto_mini_" .. name)
 		end)
 	end)
 else

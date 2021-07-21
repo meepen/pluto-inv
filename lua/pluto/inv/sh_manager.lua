@@ -17,6 +17,10 @@ pluto.inv.messages = {
 		"auctionsearch",
 		"getmyitems",
 
+		-- events
+		"geteventqueue",
+		"queueevent",
+
 		-- ui
 		"tabswitch",
 		"tabrename",
@@ -75,6 +79,9 @@ pluto.inv.messages = {
 
 		-- item
 		"itemlock",
+		
+		-- events
+		"eventqueue",
 
 		-- tab data
 		"tabupdate",

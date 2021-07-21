@@ -1,25 +1,19 @@
 -- Author: add___123
 
+local name = "dice"
+
 if (SERVER) then
     local chancedice = {}
 
-    hook.Add("TTTBeginRound", "pluto_mini_dice", function()
-        if (ttt.GetCurrentRoundEvent() ~= "") then
+    hook.Add("TTTBeginRound", "pluto_mini_" .. name, function()
+        if (not pluto.rounds.minis[name]) then
             return
         end
 
-        if (not pluto.rounds or not pluto.rounds.minis) then
-            return
-        end
+		pluto.rounds.minis[name] = nil
 
-        if (not pluto.rounds.minis.dice and math.random(30) ~= 1) then
-            return
-        end
-
-        pluto.rounds.minis.dice = nil
-
-        ttt.chat(pluto.currency.byname.dice.Color, "Chance Dice", white_text, " have spawned around the map!")
-
+        pluto.rounds.Notify("Chance Dice have spawned around the map!", pluto.currency.byname._chancedice.Color)
+        
         local count = #player.GetHumans()
 
         for _, ply in pairs(player.GetHumans()) do
@@ -30,14 +24,15 @@ if (SERVER) then
                 table.insert(chancedice, pluto.currency.spawnfor(ply, "_chancedice", nil, true))
             end
         end
-    end)
 
-    hook.Add("TTTEndRound", "pluto_mini_dice", function()
-        for k, cur in ipairs(chancedice) do
-            cur:Remove()
-        end
+        hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+            hook.Remove("TTTEndRound", "pluto_mini_" .. name)
+            for k, cur in ipairs(chancedice) do
+                cur:Remove()
+            end
 
-        chancedice = {}
+            chancedice = {}
+        end)
     end)
 else
 

@@ -1,11 +1,10 @@
-ROUND.Name = "Bunny Attack"
 ROUND.EggsPerCluster = 8
 ROUND.EggSpread = 50
 ROUND.BunnyLives = 3
 ROUND.CollectionsPerSpawn = 6
 ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
 
-util.AddNetworkString "posteaster_data"
+local WriteRoundData = pluto.rounds.WriteRoundData
 
 ROUND.BunnySpawnDistances = {
 	Min = 1750,
@@ -32,7 +31,7 @@ ROUND.RoundDatas = {
 		BunnyModel = {"dom_rabbit", "wild_rabbit"},
 		Health = 25,
 		ChildModel = {"male_child", "female_child"},
-		Shares = 15,
+		Shares = 25,
 	}
 }
 
@@ -183,6 +182,7 @@ function ROUND:ProcessNav(output, nav, max_distance, target, cur_distance)
 		local processed = output.processed[area:GetID()]
 
 		if (processed and processed.Distance <= distance) then
+			error()
 			continue
 		end
 
@@ -216,7 +216,7 @@ end
 
 function ROUND:ProcessNavAreasNear(output, nav, max_distance, target, cur_distance)
 	local list = {{output, nav, max_distance, target, cur_distance}}
-	--[[ THIS IS WHERE IT MESSES UP MEEPEN! IT GOES INTO AN INFINITE LOOP AND FREEZES THE SERVER
+	--[[ THIS IS WHERE IT MESSES UP MEEPEN! IT GOES INTO AN INFINITE LOOP AND FREEZES THE SERVER --]]
 	while (#list > 0) do
 		local run = coroutine.create(self.ProcessNav)
 		output, nav, max_distance, target, cur_distance = unpack(list[#list])
@@ -318,10 +318,7 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		table.insert(cluster.Currencies, pluto.currency.spawnfor(children[math.ceil(i / self.EggsPerCluster)], "crate3_n", pos, true))
 	end
 
-	net.Start "posteaster_data"
-		net.WriteString "currency_left"
-		net.WriteUInt(#cluster.Currencies, 32)
-	net.Broadcast()
+	WriteRoundData("left", #cluster.Currencies)
 
 	for _, ply in pairs(bunnies) do
 		state.lives[ply] = self.BunnyLives
@@ -344,10 +341,8 @@ function ROUND:UpdateLives(state)
 			total_lives = total_lives + lives + (ply:Alive() and 1 or 0)
 		end
 	end
-	net.Start "posteaster_data"
-		net.WriteString "total_lives_left"
-		net.WriteUInt(total_lives, 32)
-	net.Broadcast()
+
+	WriteRoundData("total_lives", total_lives)
 end
 
 function ROUND:Initialize(state, ply)
@@ -375,14 +370,11 @@ function ROUND:Spawn(state, ply)
 		ply:SetHealth(health)
 		ply:SetMaxHealth(health)
 
-		net.Start "posteaster_data"
-			net.WriteString "lives_left"
-			net.WriteUInt(state.lives[ply], 32)
-		net.Send(ply)
+		WriteRoundData("lives", state.lives[ply])
 
 		self:UpdateLives(state)
 
-		ply:ChatPrint("You have ", ply:GetRoleData().Color, state.lives[ply], white_text, " live(s) left in reserve!")
+		pluto.rounds.Notify("You have " .. tostring(state.lives[ply]) .. "live(s) left!", nil, ply, true)
 	end
 end
 
@@ -434,10 +426,8 @@ ROUND:Hook("PlutoCanPickup", function(self, state, ply, curr)
 				left = left + 1
 			end
 		end
-		net.Start "posteaster_data"
-			net.WriteString "currency_left"
-			net.WriteUInt(left, 32)
-		net.Broadcast()
+
+		WriteRoundData("left", left)
 
 		ply.Collected = (ply.Collected or 0) + 1
 
@@ -523,6 +513,7 @@ function ROUND:PlayerSetModel(state, ply)
 	else
 		ply:SetModel(GetModel(state.Data.ChildModel))
 	end
+	ply:SetupHands()
 
 	return true
 end
