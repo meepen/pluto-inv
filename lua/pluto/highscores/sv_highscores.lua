@@ -802,7 +802,7 @@ function pluto.highscores.addscore(db, ply, highscore, amt)
 		return false
 	end
 
-	print(string.format("%s of %s incremented by %i for %s of steamid %s", highscore, pluto.highscores.byname[highscore].Category, amt, ply:Nick(), steamid))
+	--print(string.format("%s of %s incremented by %i for %s of steamid %s", highscore, pluto.highscores.byname[highscore].Category, amt, ply:Nick(), steamid))
 
 	return true
 end

@@ -33,7 +33,8 @@ end
 function ROUND:Loadout(ply)
 	ply:StripWeapons()
 	pluto.NextWeaponSpawn = false
-	ply:Give "tfa_cso_ruyi"
+	local wep = ply:Give "tfa_cso_ruyi"
+	wep.AllowDrop = false
 	pluto.NextWeaponSpawn = false
 	ply:Give "weapon_ttt_unarmed"
 end
@@ -59,7 +60,8 @@ ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 
 		ply:StripWeapons()
 		pluto.NextWeaponSpawn = false
-		ply:Give "tfa_cso_ruyi"
+		local wep = ply:Give "tfa_cso_ruyi"
+		wep.AllowDrop = false
 		pluto.NextWeaponSpawn = false
 		ply:Give "weapon_ttt_unarmed"
 

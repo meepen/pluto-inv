@@ -49,13 +49,13 @@ if (SERVER) then
             player_scores[ply] = 0
         end
 
-        if (math.random() < 0.4 + player_scores[ply]) then
+        if (math.random() < 0.3 + player_scores[ply]) then
             ply:Kill()
             pluto.rounds.Notify(ply:Nick() .. " has pushed their luck too far!", Color(200, 25, 50), nil, true)
         else
             pluto.db.instance(function(db)
-                pluto.inv.addcurrency(db, ply, "tp", 5)
-                pluto.rounds.Notify(ply:Nick() .. " has received 5 vials of refinium!", pluto.currency.byname.tp.Color, ply, true)
+                pluto.inv.addcurrency(db, ply, "tp", math.max(1, 3 - player_scores[ply] * 10))
+                pluto.rounds.Notify(string.format("You received %i vials of refinium!", math.max(1, 3 - player_scores[ply] * 10)), pluto.currency.byname.tp.Color, ply, true)
                 net.Start("pluto_mini_" .. name)
                 net.Send(ply)
                 player_times[ply] = CurTime() + time_limit

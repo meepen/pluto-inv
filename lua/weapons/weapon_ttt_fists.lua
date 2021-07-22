@@ -8,6 +8,8 @@ SWEP.ViewModelFlip = false
 SWEP.ViewModelFOV = 50
 SWEP.UseHands = true
 
+SWEP.AllowDrop = false
+
 SWEP.Primary.Damage = 25
 
 SWEP.Primary.ClipSize = -1

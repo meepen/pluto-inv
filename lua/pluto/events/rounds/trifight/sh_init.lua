@@ -1,5 +1,5 @@
 ROUND.PrintName = "Tri-Fight"
-ROUND.Name = "Tri-Fightt"
+ROUND.Name = "Tri-Fight"
 ROUND.Author = "add___123"
 ROUND.Type = "Special"
 
@@ -7,6 +7,6 @@ ROUND.Type = "Special"
 
 end--]]
 
-ROUND:Hook("TTTUpdatePlayerSpeed", function(self, state, ply, data)
-	data.trifight = 1.1
-end)
+--[[ROUND:Hook("TTTUpdatePlayerSpeed", function(self, state, ply, data)
+	
+end)--]]

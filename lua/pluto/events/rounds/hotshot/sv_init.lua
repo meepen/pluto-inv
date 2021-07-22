@@ -256,7 +256,7 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 		mult = 2
 	end
 
-	self:UpdateScore(state, atk, (atk:GetActiveWeapon():GetClass() == "weapon_ttt_crowbar" and 5 or 2) * mult)
+	self:UpdateScore(state, atk, (atk:GetActiveWeapon():GetClass() == "weapon_ttt_crowbar" and 5 or 3) * mult)
 end)
 
 ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)

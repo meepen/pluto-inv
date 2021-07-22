@@ -625,7 +625,7 @@ function PANEL:SelectTab(tab, noupdate)
 		last_tab_id:SetInt(tab.ID)
 	end
 	self.ActiveStorageTabBackground:SetTall(22)
-	local fg = self.StorageTabs[tab]
+	local fg = self.StorageTabs[tab] or self.StorageTabs[1]
 	self.ActiveStorageTabBackground:SetWide(fg:GetWide())
 	self.ActiveStorageTabBackground:SetPos(fg:GetPos())
 

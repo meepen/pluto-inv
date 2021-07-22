@@ -7,6 +7,6 @@ ROUND.Type = "Special"
 
 end--]]
 
-ROUND:Hook("TTTUpdatePlayerSpeed", function(self, state, ply, data)
-	data.phantom = 1.2
-end)
+--[[ROUND:Hook("TTTUpdatePlayerSpeed", function(self, state, ply, data)
+	
+end)--]]

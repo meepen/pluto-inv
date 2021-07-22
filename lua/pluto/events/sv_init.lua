@@ -154,11 +154,15 @@ pluto.rounds.Notify = function(msg, col, ply, short)
     end
 end
 
-pluto.rounds.GiveDefaults = function(ply)
+pluto.rounds.GiveDefaults = function(ply, nogrenade)
 	ply:StripAmmo()
 	ply:StripWeapons()
 
     for i = 1, 6 do
+        if (i == 4 and nogrenade) then
+            continue
+        end
+
 		local wepid = tonumber(ply:GetInfo("pluto_loadout_slot" .. i, nil))
         if (not wepid) then
             continue
@@ -167,7 +171,8 @@ pluto.rounds.GiveDefaults = function(ply)
 		local wep = pluto.itemids[wepid]
 		if (wep and wep.Owner == ply:SteamID64()) then
 			pluto.NextWeaponSpawn = wep
-			ply:Give(wep.ClassName)
+			local wep = ply:Give(wep.ClassName)
+            wep.AllowDrop = false
 		end
 	end
 

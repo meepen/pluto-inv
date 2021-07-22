@@ -466,6 +466,10 @@ function PANEL:PlutoMapVotesUpdated()
 end
 
 function PANEL:SetMap(map)
+	if (not map) then
+		return false
+	end
+
 	self.Map = map
 	local info = pluto.mapvote.info[map]
 	self.NameLabel:SetText((game.GetMap() == map and "On " or "Going to ") .. (map:gsub("^ttt_", "")))
@@ -482,6 +486,8 @@ function PANEL:SetMap(map)
 			self.Image:SetMaterial(mat)
 		end
 	end)
+
+	return true
 end
 
 function PANEL:SetLikesDislikes(likes, dislikes)
@@ -564,7 +570,6 @@ vgui.Register("pluto_mapvote", PANEL, "EditablePanel")
 
 
 function pluto.inv.readmapvote()
-
 	local votable = net.ReadUInt(8) -- always 8 for now
 
 	local state = {
@@ -618,15 +623,32 @@ end
 
 function pluto.mapvote_create()
 	local state = pluto.mapvote
+
 	if (IsValid(mapvote)) then
 		mapvote:Remove()
 	end
+
+	if (not state) then
+		return
+	end
+
 	mapvote = vgui.Create "tttrw_base"
 
 	local mv = vgui.Create "pluto_mapvote"
 	for i = 1, #state.votable do
-		mv.Maps[i]:SetMap(state.votable[i])
-		local info = state.info[state.votable[i]]
+		local votable = state.votable[i]
+
+		if (state.info or not votable) then
+			mapvote:Remove()
+			return
+		end
+
+		if (not mv.Maps[i]:SetMap(votable)) then
+			mapvote:Remove()
+			return
+		end
+
+		local info = state.info[votable]
 
 		mv.Maps[i].DoClick = function()
 			pluto.inv.message()
@@ -635,7 +657,10 @@ function pluto.mapvote_create()
 		end
 	end
 	
-	mv.CurrentMap:SetMap(game.GetMap())
+	if (not mv.CurrentMap:SetMap(game.GetMap())) then
+		mapvote:Remove()
+		return
+	end
 	mv.Voted:PlutoMapVotesUpdated()
 	
 	mapvote:AddTab("Mapvote", mv)
@@ -648,3 +673,5 @@ end
 if (pluto.mapvote) then
 	pluto.mapvote_create()
 end
+
+pluto.mapvote_create()

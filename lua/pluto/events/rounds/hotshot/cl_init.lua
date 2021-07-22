@@ -7,14 +7,15 @@ local function RenderIntro()
 	local y = ScrH() / 10
 
 	y = AppendHeader("Hotshot: Sudden Death Free-For-All!", 4, y, HeaderColor)
-	y = AppendHeader("Gunshots are 2 points, melee hits are 5, deaths are -1", 2, y)
+	y = AppendHeader("Shots are 3 points, Melees are 5, Deaths are -1", 2, y)
 end
 
 local function RenderHeader()
 	local y = ScrH() / 10
 
 	y = AppendHeader("Gain the most points to become the Hotshot!", 4, y, HeaderColor)
-	y = AppendHeader("Gunshots are 2 points, melee hits are 5, deaths are -1", 2, y)
+	y = AppendHeader("Shots are 3 points, Melees are 5, Deaths are -1", 2, y)
+	y = AppendHeader("Kill the Hotshot for double points!", 2, y)
 end
 
 local function RenderStats(state)

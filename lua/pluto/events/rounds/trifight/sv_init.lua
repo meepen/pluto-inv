@@ -69,6 +69,7 @@ function ROUND:Prepare(state)
 			for k, ply in ipairs(state.red) do
 				if (IsValid(ply) and not ply:Alive()) then
 					ttt.ForcePlayerSpawn(ply)
+					state.spawntime[ply] = CurTime()
 				end
 			end
 		end
@@ -76,6 +77,7 @@ function ROUND:Prepare(state)
 			for k, ply in ipairs(state.green) do
 				if (IsValid(ply) and not ply:Alive()) then
 					ttt.ForcePlayerSpawn(ply)
+					state.spawntime[ply] = CurTime()
 				end
 			end
 		end
@@ -83,6 +85,7 @@ function ROUND:Prepare(state)
 			for k, ply in ipairs(state.blue) do
 				if (IsValid(ply) and not ply:Alive()) then
 					ttt.ForcePlayerSpawn(ply)
+					state.spawntime[ply] = CurTime()
 				end
 			end
 		end
@@ -94,14 +97,14 @@ function ROUND:Finish()
 end
 
 function ROUND:Loadout(ply)
-	pluto.rounds.GiveDefaults(ply)
+	pluto.rounds.GiveDefaults(ply, true)
 end
 
 ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 	plys = table.shuffle(plys)
 
 	for i, ply in ipairs(plys) do
-		pluto.rounds.GiveDefaults(ply)
+		pluto.rounds.GiveDefaults(ply, true)
 
 		local role = ttt.roles.Red
 		if (i % 3 == 1) then
@@ -145,10 +148,12 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	state.greenkills = {}
 	state.blue = {}
 	state.bluekills = {}
+	state.spawntime = {}
 
 	for k, ply in ipairs(reds) do
 		state.red[#state.red + 1] = ply
 		state.redkills[ply] = 0
+		state.spawntime[ply] = CurTime()
 		if (ply:Alive()) then
 			self:Initialize(state, ply)
 		end
@@ -159,6 +164,7 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	for k, ply in ipairs(greens) do
 		state.green[#state.green + 1] = ply
 		state.greenkills[ply] = 0
+		state.spawntime[ply] = CurTime()
 		if (ply:Alive()) then
 			self:Initialize(state, ply)
 		end
@@ -169,6 +175,7 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	for k, ply in ipairs(blues) do
 		state.blue[#state.blue + 1] = ply
 		state.bluekills[ply] = 0
+		state.spawntime[ply] = CurTime()
 		if (ply:Alive()) then
 			self:Initialize(state, ply)
 		end
@@ -392,7 +399,7 @@ end)
 
 ROUND:Hook("PlayerShouldTakeDamage", function(self, state, ply, atk)
 	if (IsValid(ply) and IsValid(atk) and atk:IsPlayer() and ply:IsPlayer()) then
-		return (ply:GetRoleTeam() ~= atk:GetRoleTeam())
+		return (ply:GetRoleTeam() ~= atk:GetRoleTeam() and (state and state.spawntime and state.spawntime[ply] and state.spawntime[ply] + 3 < CurTime()))
 	end
 end)
 

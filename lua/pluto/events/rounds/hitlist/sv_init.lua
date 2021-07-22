@@ -308,7 +308,7 @@ end)
 
 ROUND:Hook("PlayerShouldTakeDamage", function(self, state, ply, atk)
 	if (IsValid(ply) and IsValid(atk) and atk:IsPlayer() and ply:IsPlayer()) then
-		return (state.targets and (state.targets[atk] == ply or state.targets[ply] == atk)) or (atk == ply)
+		return (state.targets and state.targets[atk] == ply) or (atk == ply)
 	end
 end)
 

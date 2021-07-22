@@ -57,6 +57,7 @@ function ROUND:Prepare(state)
 		for ply, count in pairs(state.kills) do
 			if (IsValid(ply) and not ply:Alive()) then
 				ttt.ForcePlayerSpawn(ply)
+				state.spawntime[ply] = CurTime()
 			end
 		end
 	end)
@@ -71,11 +72,14 @@ end
 function ROUND:Loadout(ply)
 	ply:StripWeapons()
 	pluto.NextWeaponSpawn = false
-	ply:Give(table.Random(self.Primaries))
+	local wep = ply:Give(table.Random(self.Primaries))
+	wep.AllowDrop = false
 	pluto.NextWeaponSpawn = false
-	ply:Give(table.Random(self.Secondaries))
+	local wep = ply:Give(table.Random(self.Secondaries))
+	wep.AllowDrop = false
 	pluto.NextWeaponSpawn = false
-	ply:Give(table.Random(self.Melees))
+	local wep = ply:Give(table.Random(self.Melees))
+	wep.AllowDrop = false
 
 	pluto.rounds.LoadAmmo(ply)
 end
@@ -85,11 +89,14 @@ ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 
 	for i, ply in ipairs(plys) do
 		pluto.NextWeaponSpawn = false
-		ply:Give(table.Random(self.Primaries))
+		local wep = ply:Give(table.Random(self.Primaries))
+		wep.AllowDrop = false
 		pluto.NextWeaponSpawn = false
-		ply:Give(table.Random(self.Secondaries))
+		local wep = ply:Give(table.Random(self.Secondaries))
+		wep.AllowDrop = false
 		pluto.NextWeaponSpawn = false
-		ply:Give(table.Random(self.Melees))
+		local wep = ply:Give(table.Random(self.Melees))
+		wep.AllowDrop = false
 
 		pluto.rounds.LoadAmmo(ply)
 
@@ -122,17 +129,19 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	local fighters = round.GetActivePlayersByRole "Fighter"
 	state.kills = {}
 	state.deaths = {}
+	state.spawntime = {}
 
 	for k, ply in pairs(fighters) do
 		state.kills[ply] = 0
 		state.deaths[ply] = 0
+		state.spawntime[ply] = CurTime()
 		WriteRoundData("kills", 0, ply)
 		WriteRoundData("deaths", 0, ply)
 		if (ply:Alive()) then
 			self:Initialize(state, ply)
 		end
-		ply:SetMaxHealth(100)
-		ply:SetHealth(100)
+		ply:SetMaxHealth(150)
+		ply:SetHealth(150)
 	end
 
 	self:ChooseLeader(state)
@@ -300,6 +309,12 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 	end
 
 	self:UpdateScore(state, atk)
+end)
+
+ROUND:Hook("PlayerShouldTakeDamage", function(self, state, ply, atk)
+	if (IsValid(ply) and IsValid(atk) and atk:IsPlayer() and ply:IsPlayer()) then
+		return (state and state.spawntime and state.spawntime[ply] and state.spawntime[ply] + 3 < CurTime())
+	end
 end)
 
 ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)

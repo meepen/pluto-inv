@@ -24,8 +24,10 @@ function ROUND:Loadout(ply)
 	local wep = ply:Give "tfa_cso_stinger"
     wep.Primary.Delay = 1.5
     wep:SetClip1(200)
+	wep.AllowDrop = false
 	pluto.NextWeaponSpawn = false
-	ply:Give "weapon_ttt_molotov"
+	local wep = ply:Give "weapon_ttt_molotov"
+	wep.AllowDrop = false
 end
 
 ROUND:Hook("TTTSelectRoles", function(self, state, plys)
@@ -37,8 +39,10 @@ ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 		local wep = ply:Give "tfa_cso_stinger"
 		wep.Primary.Delay = 1.5
 		wep:SetClip1(200)
+		wep.AllowDrop = false
 		pluto.NextWeaponSpawn = false
-		ply:Give "weapon_ttt_molotov"
+		local wep = ply:Give "weapon_ttt_molotov"
+		wep.AllowDrop = false
 
 		round.Players[i] = {
 			Player = ply,
@@ -99,7 +103,9 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 			dmg:SetDamageType(DMG_SLOWBURN)
 			ply:TakeDamageInfo(dmg)
 
-			ply:Give "weapon_ttt_molotov"
+			pluto.NextWeaponSpawn = false
+			local wep = ply:Give "weapon_ttt_molotov"
+			wep.AllowDrop = false
 		end
 	end)
 

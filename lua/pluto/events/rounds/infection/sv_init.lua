@@ -30,9 +30,15 @@ function ROUND:Loadout(ply)
 	local state = pluto.rounds.state
 
 	if (not state or not state.infected or not state.infected[ply]) then
-		pluto.rounds.GiveDefaults(ply)
+		pluto.rounds.GiveDefaults(ply, true)
+		for k, wep in ipairs(ply:GetWeapons()) do
+			if (wep.Primary and wep.Primary.Delay) then
+				wep.Primary.Delay = wep.Primary.Delay * 1.2
+			end
+		end
 	else
-		ply:Give "weapon_ttt_fists"
+		local wep = ply:Give "weapon_ttt_fists"
+		wep.Primary.Damage = 50
 	end
 end
 
@@ -81,8 +87,8 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		if (ply:Alive()) then
 			self:Initialize(state, ply)
 		end
-		ply:SetMaxHealth(250)
-		ply:SetHealth(250)
+		ply:SetMaxHealth(150)
+		ply:SetHealth(150)
 	end
 
 	self:WriteLiving(state)
@@ -153,7 +159,7 @@ end)
 function ROUND:Spawn(state, ply)
 	ply:SetCollisionGroup(self.CollisionGroup)
 
-	local hp = 250
+	local hp = 150
 
 	if (state and state.infected and state.infected[ply] and state.survivors) then
 		local inf = table.Count(state.infected)
@@ -161,7 +167,10 @@ function ROUND:Spawn(state, ply)
 		if (inf <= 0) then
 			inf = 1
 		end
-		hp = math.Clamp(hp * sur / inf, 75, 750)
+		hp = math.Clamp(hp * sur / inf * 1.5, 100, 1000)
+		ply:SetJumpPower(ply:GetJumpPower() * 1.25)
+	else
+		ply:SetJumpPower(ply:GetJumpPower() / 1.25)
 	end
 
 	ply:SetMaxHealth(hp)

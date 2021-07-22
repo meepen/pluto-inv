@@ -23,17 +23,18 @@ end
 function ROUND:Finish()
 	timer.Remove "pluto_event_timer"
 	timer.Remove "pluto_koth_timer"
+	--timer.Remove "pluto_quill_timer"
 end
 
 function ROUND:Loadout(ply)
-	pluto.rounds.GiveDefaults(ply)
+	pluto.rounds.GiveDefaults(ply, true)
 end
 
 ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 	plys = table.shuffle(plys)
 
 	for i, ply in ipairs(plys) do
-		pluto.rounds.GiveDefaults(ply)
+		pluto.rounds.GiveDefaults(ply, true)
 
 		round.Players[i] = {
 			Player = ply,
@@ -84,8 +85,10 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		if (IsValid(state.holder) and state.holder:Alive()) then
 			self:UpdateScore(state, state.holder)
 		end
+	end)
 
-		--[[if (math.random() < 0.03 and not IsValid(state.holder) and IsValid(state.leader)) then
+	--[[timer.Create("pluto_quill_timer", 20, 0, function()
+		if not IsValid(state.holder) and IsValid(state.leader)) then
 			if (IsValid(state.quill)) then
 				state.quill:Remove()
 			end
@@ -93,14 +96,14 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 			state.quill = pluto.currency.spawnfor(state.leader, "_quill", nil, true)
 
 			pluto.rounds.Notify("The quill has been moved!", nil, nil, true)
-		end--]]
-	end)
+		end
+	end)--]]
 
 	GetConVar("ttt_karma"):SetBool(false)
 	
 	timer.Simple(1, function()
-		round.SetRoundEndTime(CurTime() + 240)
-		ttt.SetVisibleRoundEndTime(CurTime() + 240)
+		round.SetRoundEndTime(CurTime() + 210)
+		ttt.SetVisibleRoundEndTime(CurTime() + 210)
 	end)
 end)
 
@@ -242,6 +245,12 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 	state.quill = pluto.currency.spawnfor(vic, "_quill", vic:GetPos(), true)
 end)
 
+ROUND:Hook("PlayerShouldTakeDamage", function(self, state, ply, atk)
+	if (IsValid(ply) and IsValid(atk) and atk:IsPlayer() and ply:IsPlayer()) then
+		return (ply:GetRole() ~= atk:GetRole())
+	end
+end)
+
 ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)
 	timer.Simple(5, function()
 		if (IsValid(rag)) then
@@ -263,6 +272,7 @@ ROUND:Hook("PlutoQuillPickup", function(self, state, ply)
 	ply:SetMaxHealth(250)
 	ply:SetHealth(250)
 	ply:SetRole "Quill Holder"
+	ply.ForcePos = self:ResetPosition(state, ply)
 
 	pluto.rounds.Notify(string.format("%s has picked up the gold quill! Work together to kill them!", ply:Nick()), pluto.currency.byname._quill.Color, nil, true)
 end)

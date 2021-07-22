@@ -3,7 +3,7 @@
 local name = "panic"
 
 local panic_min = 0.8
-local panic_max = 1.6
+local panic_max = 1.7
 
 if (SERVER) then
     util.AddNetworkString("pluto_mini_" .. name)
