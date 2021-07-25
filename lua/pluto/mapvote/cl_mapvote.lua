@@ -570,6 +570,8 @@ vgui.Register("pluto_mapvote", PANEL, "EditablePanel")
 
 
 function pluto.inv.readmapvote()
+	print("reading mapvote")
+
 	local votable = net.ReadUInt(8) -- always 8 for now
 
 	local state = {
@@ -588,6 +590,8 @@ function pluto.inv.readmapvote()
 			dislikes = net.ReadUInt(32),
 			played = net.ReadUInt(32),
 		}
+		print(i, state.votable[i])
+		PrintTable(state.info[state.votable[i]])
 	end
 
 	state.info[game.GetMap()] = {
@@ -596,10 +600,13 @@ function pluto.inv.readmapvote()
 		played = net.ReadUInt(32),
 	}
 
+	PrintTable(state.info[game.GetMap()])
+
 	pluto.mapvote_create()
 end
 
 function pluto.inv.readmapvotes()
+	print("reading map votes")
 	pluto.mapvote.total = 0
 	pluto.mapvote.votes = {}
 	for i = 1, net.ReadUInt(8) do
@@ -607,6 +614,7 @@ function pluto.inv.readmapvotes()
 		local votes = net.ReadUInt(8)
 		pluto.mapvote.votes[map] = votes
 		pluto.mapvote.total = pluto.mapvote.total + votes
+		print(i, map, votes)
 	end
 
 	hook.Run "PlutoMapVotesUpdated"
@@ -622,13 +630,17 @@ function pluto.inv.writevotemap(s)
 end
 
 function pluto.mapvote_create()
+	print("mapvote_create called")
+
 	local state = pluto.mapvote
 
 	if (IsValid(mapvote)) then
+		print("removing old mapvote")
 		mapvote:Remove()
 	end
 
 	if (not state) then
+		print("returning due to no state")
 		return
 	end
 
@@ -636,14 +648,17 @@ function pluto.mapvote_create()
 
 	local mv = vgui.Create "pluto_mapvote"
 	for i = 1, #state.votable do
+		print(i)
 		local votable = state.votable[i]
 
 		if (state.info or not votable) then
+			print("state.info or not votable, removing mapvote and returning")
 			mapvote:Remove()
 			return
 		end
 
 		if (not mv.Maps[i]:SetMap(votable)) then
+			print("not mv.Maps[i]:SetMap(votable), removing mapvote and returning")
 			mapvote:Remove()
 			return
 		end
@@ -658,6 +673,7 @@ function pluto.mapvote_create()
 	end
 	
 	if (not mv.CurrentMap:SetMap(game.GetMap())) then
+		print("not mv.CurrentMap:SetMap(game.GetMap()), removing mapvote and returning")
 		mapvote:Remove()
 		return
 	end
@@ -673,5 +689,3 @@ end
 if (pluto.mapvote) then
 	pluto.mapvote_create()
 end
-
-pluto.mapvote_create()

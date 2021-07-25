@@ -92,12 +92,12 @@ if (SERVER) then
         ["Soulbound Red"] = function(ply, role)
             pluto.rounds.Notify("You are a Soulbound Red! Your fate is tied to the innocent Soulbound Green!", ttt.roles[role].Color, ply)
         end,
-        ["Sanguine Seer"] = function(ply, role)
-            pluto.rounds.Notify("You are a Sanguine Seer! See all innocent roles except Buddy, Wannabe and Descendant!", ttt.roles[role].Color, ply)
+        ["Savage Seer"] = function(ply, role)
+            pluto.rounds.Notify("You are a Savage Seer! You can see all hidden innocent roles!", ttt.roles[role].Color, ply)
         end,
-        Infiltrator = function(ply, role)
+        --[[Infiltrator = function(ply, role)
             pluto.rounds.Notify("You are an Infiltrator! See Buddies and pretend to be an innocent Wannabe!", ttt.roles[role].Color, ply)
-        end,
+        end,--]]
         Assassin = function(ply, role)
             pluto.rounds.Notify("You are an Assassin! Deal more damage to Detectives/Deputies and less to others!", ttt.roles[role].Color, ply)
         end,
@@ -106,14 +106,14 @@ if (SERVER) then
             ply:SetCredits(ply:GetCredits() + 3)
         end,
         ["Yaari Spy"] = function(ply, role)
-            pluto.rounds.Notify("You are a Yaari Spy! Kill the Descendant before they reveal your team!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Yaari Spy! You can see the Descendant and are immune to their scanner!", ttt.roles[role].Color, ply)
         end,
         Buddy = function(ply, role)
-            pluto.rounds.Notify("You are a Buddy, with a Buddy! Some traitors and innocents see you too!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Buddy, with a Buddy! Pair up with them to survive!", ttt.roles[role].Color, ply)
         end,
-        Wannabe = function(ply, role)
+        --[[Wannabe = function(ply, role)
             pluto.rounds.Notify("You are a Wannabe! See the roles of the Buddies, but they don't see yours!", ttt.roles[role].Color, ply)
-        end,
+        end,--]]
         ["True Innocent"] = function(ply, role)
             pluto.rounds.Notify("You are a True Innocent! Your role is seen by all!", ttt.roles[role].Color, ply)
         end,
@@ -133,10 +133,10 @@ if (SERVER) then
             pluto.rounds.Notify("You are a Soulbound Green! Your fate is tied to the traitor Soulbound Red!", ttt.roles[role].Color, ply)
         end,
         Deputy = function(ply, role)
-            pluto.rounds.Notify("You are a Deputy! Your role is seen by the detective(s)!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Deputy! Detectives see your role, so you can help them!", ttt.roles[role].Color, ply)
         end,
         Coward = function(ply, role)
-            pluto.rounds.Notify("You are a Coward! Take armor and a wink and get out of here!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Coward! Take armor and a wink and get running!", ttt.roles[role].Color, ply)
             try_give(ply, "ttt_bodyarmor")
             ply:Give "weapon_ttt_wink"
         end,
@@ -147,7 +147,7 @@ if (SERVER) then
             ply:Give "weapon_ttt_fists"
         end,
         Descendant = function(ply, role)
-            pluto.rounds.Notify("You are a Descendant! Scan the roles of others before the Yaari Spy finds you!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Descendant! Use your role scanner but beware the immune Yaari Spy!", ttt.roles[role].Color, ply)
             ply:Give "weapon_ttt_descendant"
         end,
     }
@@ -159,15 +159,15 @@ if (SERVER) then
 
 		pluto.rounds.minis[name] = nil
 
-        pluto.rounds.Notify("Welcome to TTVillage! Extra roles included.", Color(0, 102, 92))
+        pluto.rounds.Notify("Welcome to TTVillage! Extra roles, extra goals.", Color(0, 102, 92))
 
         local priority_innocents = {"Soulbound Green", "Buddy", "Buddy"}
         local single_innocents = table.shuffle({"True Innocent", "Redeemer", "Deputy", "Silent Seer"})
-        local extra_innocents = {"Wannabe", "Private Investigator", "Listener", "Coward"}
+        local extra_innocents = {--[["Wannabe",--]] "Private Investigator", "Listener", "Coward"}
 
         local priority_traitors = {"Soulbound Red"}
-        local single_traitors = table.shuffle({"Finisher", "Nearly a Destroyer", "Sanguine Seer", "Assassin"})
-        local extra_traitors = {"Infiltrator", "Shapeshifter", "Hoarder"}
+        local single_traitors = table.shuffle({"Finisher", "Nearly a Destroyer", "Savage Seer", "Assassin"})
+        local extra_traitors = {--[["Infiltrator",--]] "Shapeshifter", "Hoarder"}
 
         timer.Simple(1, function()
             for k, ply in ipairs(table.shuffle(round.GetActivePlayersByRole "Innocent")) do
@@ -376,17 +376,17 @@ hook.Add("TTTPrepareRoles", "pluto_mini_" .. name, function(Team, Role)
         :SetColor(99, 83, 0)
         :SeenBy {"Soulbound Green"}
 
-    Role("Sanguine Seer", "traitor")
+    Role("Savage Seer", "traitor")
         :SetCalculateAmountFunc(function(total_players)
 			return 0
 		end)
         :SetColor(220, 90, 90)
 
-    Role("Infiltrator", "traitor")
+    --[[Role("Infiltrator", "traitor")
         :SetCalculateAmountFunc(function(total_players)
 			return 0
 		end)
-        :SetColor(221, 88, 0)
+        :SetColor(221, 88, 0)--]]
 
     Role("Assassin", "traitor")
         :SetCalculateAmountFunc(function(total_players)
@@ -400,18 +400,21 @@ hook.Add("TTTPrepareRoles", "pluto_mini_" .. name, function(Team, Role)
 		end)
         :SetColor(255, 179, 0)
 
+    -- Traitor who revives as a zombie after death?
+
     Role("Buddy", "innocent")
         :SetCalculateAmountFunc(function(total_players)
 			return 0
 		end)
         :SetColor(19, 188, 77)
-        :SeenBy {"Buddy", "Wannabe", "Infiltrator"}
+        :SeenBy {"Buddy", "Savage Seer",--[["Wannabe", "Infiltrator"--]]}
 
-    Role("Wannabe", "innocent")
+    --[[Role("Wannabe", "innocent")
         :SetCalculateAmountFunc(function(total_players)
 			return 0
 		end)
         :SetColor(100, 171, 100)
+        :SeenBy {"Savage Seer"}--]]
 
     Role("True Innocent", "innocent")
         :SetCalculateAmountFunc(function(total_players)
@@ -425,35 +428,35 @@ hook.Add("TTTPrepareRoles", "pluto_mini_" .. name, function(Team, Role)
 			return 0
 		end)
         :SetColor(5, 142, 113)
-        :SeenBy {"Sanguine Seer"}
+        :SeenBy {"Savage Seer"}
 
     Role("Redeemer", "innocent")
         :SetCalculateAmountFunc(function(total_players)
 			return 0
         end)
         :SetColor(22, 125, 22)
-        :SeenBy {"Sanguine Seer"}
+        :SeenBy {"Savage Seer"}
     
     Role("Listener", "innocent")
         :SetCalculateAmountFunc(function(total_players)
 			return 0
         end)
         :SetColor(148, 213, 149)
-        :SeenBy {"Sanguine Seer"}
+        :SeenBy {"Savage Seer"}
 
     Role("Soulbound Green", "innocent")
         :SetCalculateAmountFunc(function(total_players)
 			return 0
 		end)
         :SetColor(99, 83, 0)
-        :SeenBy {"Soulbound Red", "Sanguine Seer"}
+        :SeenBy {"Soulbound Red", "Savage Seer"}
 
     Role("Deputy", "innocent")
         :SetCalculateAmountFunc(function(total_players)
 			return 0
 		end)
         :SetColor(5, 142, 153)
-        :SeenBy {"Detective", "Sanguine Seer", "Assassin"}
+        :SeenBy {"Detective", "Savage Seer", "Assassin"}
 		:TeamChatSeenBy "Detective"
 		:SetVoiceChannel "Detective"
 
@@ -462,13 +465,13 @@ hook.Add("TTTPrepareRoles", "pluto_mini_" .. name, function(Team, Role)
 			return 0
 		end)
         :SetColor(47, 106, 18)
-        :SeenBy {"Sanguine Seer"}
+        :SeenBy {"Savage Seer"}
 
     Role("Silent Seer", "innocent")
         :SetCalculateAmountFunc(function(total_players)
 			return 0
 		end)
         :SetColor(23, 75, 18)
-        :SeenBy {"Sanguine Seer"}
+        :SeenBy {"Savage Seer"}
         :SetSeeTeammateOutlines(true)
 end)
