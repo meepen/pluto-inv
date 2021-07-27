@@ -73,9 +73,9 @@ if (gmod.GetGamemode()) then
 end
 
 function pluto.mapvote.broadcast()
-	print("broadcasting mapvote")
+	--]]print("broadcasting mapvote")
 	for _, ply in pairs(player.GetAll()) do
-		print("writing mapvote to", ply)
+		--]]print("writing mapvote to", ply)
 		pluto.inv.message(ply)
 			:write "mapvote"
 			:send()
@@ -83,15 +83,15 @@ function pluto.mapvote.broadcast()
 
 	
 	round.SetState(ttt.ROUNDSTATE_WAITING, 15):_then(function()
-		print("second part of mapvote")
+		--]]print("second part of mapvote")
 		local votes = {}
 		for map in pairs(pluto.mapvote.state.votable) do
-			print("setting map", map)
+			--]]print("setting map", map)
 			votes[map] = 0
 		end
 		for ply, map in pairs(pluto.mapvote.state.votes) do
 			if (IsValid(ply)) then
-				print("counting vote for", map, "from", ply)
+				--]]print("counting vote for", map, "from", ply)
 				votes[map] = (votes[map] or 0) + 1
 			end
 		end
@@ -108,15 +108,15 @@ function pluto.mapvote.broadcast()
 			return a.Votes > b.Votes
 		end)
 
-		print("changing level to", v[1].Map)		
+		--]]print("changing level to", v[1].Map)		
 		RunConsoleCommand("changelevel", v[1].Map)
 	end)
 end
 
 function pluto.inv.writemapvote(cl)
 	local state = pluto.mapvote.state
-	print(state)
-	PrintTable(state)
+	--]]print(state)
+	--]]PrintTable(state)
 	net.WriteUInt(table.Count(state.votable), 8)
 
 	for map in pairs(state.votable) do
@@ -126,7 +126,7 @@ function pluto.inv.writemapvote(cl)
 		net.WriteUInt(info.likes, 32)
 		net.WriteUInt(info.dislikes, 32)
 		net.WriteUInt(info.played, 32)
-		print("written", map, info.likes, info.dislikes, info.played)
+		--]]print("written", map, info.likes, info.dislikes, info.played)
 	end
 
 	local info = state.maps[game.GetMap()]
@@ -134,7 +134,7 @@ function pluto.inv.writemapvote(cl)
 	net.WriteUInt(info.likes, 32)
 	net.WriteUInt(info.dislikes, 32)
 	net.WriteUInt(info.played, 32)
-	print("written about current map", game.GetMap(), info.likes, info.dislikes, info.played)
+	--]]print("written about current map", game.GetMap(), info.likes, info.dislikes, info.played)
 end
 
 function pluto.inv.readlikemap(cl)
@@ -144,16 +144,16 @@ function pluto.inv.readlikemap(cl)
 end
 
 function pluto.inv.readvotemap(cl)
-	print(cl, "voted on map")
+	--]]print(cl, "voted on map")
 	if (not pluto.mapvote.state) then
-		print("return no pluto.mapvote.state")
+		--]]print("return no pluto.mapvote.state")
 		return
 	end
 
 	local map = net.ReadString()
 
 	if (not pluto.mapvote.state.votable[map]) then
-		print("return no pluto.mapvote.state.votable[map]")
+		--]]print("return no pluto.mapvote.state.votable[map]")
 		return
 	end
 
@@ -168,7 +168,7 @@ function pluto.inv.readvotemap(cl)
 	end
 
 	for _, ply in pairs(player.GetAll()) do
-		print("writing mapvotes to", ply)
+		--]]print("writing mapvotes to", ply)
 		pluto.inv.message(ply)
 			:write("mapvotes", votes)
 			:send()
@@ -185,10 +185,10 @@ function pluto.inv.writemapvotes(cl, votes)
 end
 
 function pluto.mapvote.start()
-	print("starting pluto mapvote")
+	--]]print("starting pluto mapvote")
 	local valid = pluto.GetValidMaps()
 
-	print("removing current map")
+	--]]print("removing current map")
 	for i, map in pairs(valid) do
 		if (map == game.GetMap()) then
 			table.remove(valid, i)
@@ -196,7 +196,7 @@ function pluto.mapvote.start()
 		end
 	end
 
-	print("doing last played")
+	--]]print("doing last played")
 	for _, data in pairs(last_played) do
 		if (#valid <= 8) then
 			break
@@ -206,7 +206,7 @@ function pluto.mapvote.start()
 
 		for i, map in pairs(valid) do
 			if (map == maptoremove) then
-				print("removing", map)
+				--]]print("removing", map)
 				table.remove(valid, i)
 				break
 			end
@@ -231,8 +231,8 @@ function pluto.mapvote.start()
 		valid[i] = valid[i][1]
 	end
 
-	print("sorted:")
-	PrintTable(valid)
+	--]]print("sorted:")
+	--]]PrintTable(valid)
 
 	-- one popular map
 	for i = 1, 8 do
@@ -258,8 +258,8 @@ function pluto.mapvote.start()
 		end
 	end
 
-	print("one popular:")
-	PrintTable(valid)
+	--]]print("one popular:")
+	--]]PrintTable(valid)
 
 	local mediums = 0
 	-- two medium popular
@@ -284,8 +284,8 @@ function pluto.mapvote.start()
 		end
 	end
 
-	print("one popular:")
-	PrintTable(valid)
+	--]]print("one popular:")
+	--]]PrintTable(valid)
 
 	for i = 9, #valid do
 		valid[i] = nil
@@ -299,8 +299,8 @@ function pluto.mapvote.start()
 		valid[9 - i] = boost
 	end
 
-	print("after boosts:")
-	PrintTable(valid)
+	--]]print("after boosts:")
+	--]]PrintTable(valid)
 
 	local state = {
 		maps = {},
@@ -329,7 +329,7 @@ function pluto.mapvote.start()
 	end
 
 	local function checkdone(from)
-		print("checking done", from)
+		--]]print("checking done", from)
 		state.needed[from] = nil
 		if (table.Count(state.needed) == 0) then
 			pluto.mapvote.broadcast()
@@ -373,7 +373,7 @@ hook.Add("Initialize", "pluto_map", function()
 			return
 		end
 
-		print "updated map played thing"
+		--]]print "updated map played thing"
 	end)
 end)
 

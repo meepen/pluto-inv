@@ -49,6 +49,7 @@ vgui.Register("pluto_inv_border", PANEL, "EditablePanel")
 local PANEL = {}
 
 function PANEL:Init()
+	--[[]]print("Initializing pluto inv")
 	self.KeyboardFocus = {}
 	self.StorageTabs = {}
 
@@ -339,6 +340,7 @@ function PANEL:Center()
 end
 
 function PANEL:ChangeToTab(name, noupdate)
+	--[[]]print("Changing to tab", name, noupdate)
 	local tab = self.Tabs[name]
 	if (not tab) then
 		return
@@ -397,6 +399,7 @@ end
 local gradient_up = Material "gui/gradient_up"
 
 function PANEL:AddTab(name, func, has_storage, cache, col)
+	--[[]]print("adding tab", name, func, has_storage, cache, col)
 	local lbl = self.TabContainer:Add "pluto_label"
 	function lbl.PaintUnder(s, w, h)
 		if (self.ActiveTab == name) then
@@ -444,6 +447,7 @@ function PANEL:AddTab(name, func, has_storage, cache, col)
 end
 
 function PANEL:HandleStorageScroll(wheeled)
+	--[[]]print("handling storage scroll", wheeled)
 	local current_position
 	for i, tab in ipairs(self.TabList) do
 		if (tab.Tab == self.ActiveStorageTab) then
@@ -456,6 +460,7 @@ function PANEL:HandleStorageScroll(wheeled)
 end
 
 function PANEL:AddStorageTab(tab)
+	--[[]]print("adding storage tab", tab)
 	self.Storage:AddTab(tab)
 	local pnl = self.StorageTabList:Add "EditablePanel"
 	pnl.AllowClickThrough = true
@@ -621,11 +626,15 @@ function PANEL:AddStorageTab(tab)
 end
 
 function PANEL:SelectTab(tab, noupdate)
+	--[[]]print("doing selecttab 1", noupdate, "with tab name:", tab.Name)
+	--]]PrintTable(tab)
+
 	if (not noupdate) then
 		last_tab_id:SetInt(tab.ID)
 	end
 	self.ActiveStorageTabBackground:SetTall(22)
-	local fg = self.StorageTabs[tab] or self.StorageTabs[1]
+	local fg = self.StorageTabs[tab]
+	--[[]]print("possible fg", fg)
 	self.ActiveStorageTabBackground:SetWide(fg:GetWide())
 	self.ActiveStorageTabBackground:SetPos(fg:GetPos())
 
@@ -677,11 +686,14 @@ vgui.Register("pluto_inv", PANEL, "EditablePanel")
 
 
 function pluto.ui.toggle()
+	--[[]]print("running pluto.ui.toggle")
 	if (IsValid(pluto.ui.pnl)) then
 		pluto.ui.pnl:Remove()
+		--[[]]print("removing pluto.ui.pnl")
 		return
 	end
 
+	--[[]]print("creating pluto.ui.pnl")
 	pluto.ui.pnl = vgui.Create "pluto_inv"
 	pluto.ui.pnl:Center()
 	pluto.ui.pnl:MakePopup()
@@ -690,6 +702,7 @@ function pluto.ui.toggle()
 end
 
 function pluto.ui.highlight(item)
+	--[[]]print("running pluto.ui.highlight on", item)
 	if (not IsValid(pluto.ui.pnl)) then
 		return
 	end

@@ -235,6 +235,7 @@ function PANEL:Init()
 	self.Items = {}
 	self.Cosmetics = {}
 
+	--[[]]print("adding multiple pluto_inventory_item instances for CosmeticsContainer and LoadoutContainer")
 	for i = 1, 6 do
 		local item2 = self.CosmeticsContainer:Add "pluto_inventory_item"
 		local item = self.LoadoutContainer:Add "pluto_inventory_item"
@@ -311,6 +312,8 @@ function PANEL:Init()
 			end)
 		end
 		function item.OnLeftClick(s)
+			--[[]]print("runnning item.OnLeftClick with item", s)
+			--[[]]PrintTable(s)
 			if (not s.Item) then
 				return
 			end
