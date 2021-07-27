@@ -1,13 +1,14 @@
 ROUND.Reward = "tp"
-ROUND.EarningsPerPerson = 5
+ROUND.EarningsPerPerson = 3
 ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
+ROUND.Health = 150
 
 ROUND.Boss = true
 
 local WriteRoundData = pluto.rounds.WriteRoundData
 
 function ROUND:Prepare(state)
-	timer.Create("pluto_event_timer", 5, 0, function()
+	timer.Create("pluto_event_timer", 3, 0, function()
 		if (not state.infected) then
 			return
 		end
@@ -33,7 +34,7 @@ function ROUND:Loadout(ply)
 		pluto.rounds.GiveDefaults(ply, true)
 		for k, wep in ipairs(ply:GetWeapons()) do
 			if (wep.Primary and wep.Primary.Delay) then
-				wep.Primary.Delay = wep.Primary.Delay * 1.2
+				wep.Primary.Delay = wep.Primary.Delay * 1.5
 			end
 		end
 	else
@@ -159,7 +160,7 @@ end)
 function ROUND:Spawn(state, ply)
 	ply:SetCollisionGroup(self.CollisionGroup)
 
-	local hp = 150
+	local hp = self.Health
 
 	if (state and state.infected and state.infected[ply] and state.survivors) then
 		local inf = table.Count(state.infected)
@@ -167,10 +168,10 @@ function ROUND:Spawn(state, ply)
 		if (inf <= 0) then
 			inf = 1
 		end
-		hp = math.Clamp(hp * sur / inf * 1.5, 100, 1000)
-		ply:SetJumpPower(ply:GetJumpPower() * 1.25)
+		hp = math.Clamp(hp * sur / inf * 1.5, 250, 1000)
+		ply:SetJumpPower(ply:GetJumpPower() * 1.75)
 	else
-		ply:SetJumpPower(ply:GetJumpPower() / 1.25)
+		ply:SetJumpPower(ply:GetJumpPower() / 1.75)
 	end
 
 	ply:SetMaxHealth(hp)
@@ -349,8 +350,8 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 					continue
 				end
 
-				ply:SetMaxHealth(250)
-				ply:SetHealth(250)
+				ply:SetMaxHealth(self.Health)
+				ply:SetHealth(self.Health)
 
 				state.infectedfound = true
 			end
@@ -376,6 +377,12 @@ ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)
 			rag:Remove()
 		end
 	end)
+end)
+
+ROUND:Hook("PlutoHealthGain", function(self, state, ply)
+	if (IsValid(ply) and ply:GetRole() == "Survivor") then
+		return true
+	end
 end)
 
 function ROUND:PlayerSetModel(state, ply)

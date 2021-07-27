@@ -2,7 +2,7 @@ ROUND.Reward = "tp"
 ROUND.WinnerEarnings = 10
 ROUND.SecondEarnings = 5
 ROUND.CollisionGroup = COLLISION_GROUP_DEBRIS_TRIGGER
-ROUND.Health = 150
+ROUND.Health = 250
 
 ROUND.Boss = true
 

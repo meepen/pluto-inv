@@ -633,6 +633,7 @@ function pluto.mapvote_create()
 	print("mapvote_create called")
 
 	local state = pluto.mapvote
+	PrintTable(state)
 
 	if (IsValid(mapvote)) then
 		print("removing old mapvote")
@@ -651,8 +652,8 @@ function pluto.mapvote_create()
 		print(i)
 		local votable = state.votable[i]
 
-		if (state.info or not votable) then
-			print("state.info or not votable, removing mapvote and returning")
+		if (not state.info or not votable) then
+			print("not state.info or not votable, removing mapvote and returning")
 			mapvote:Remove()
 			return
 		end
