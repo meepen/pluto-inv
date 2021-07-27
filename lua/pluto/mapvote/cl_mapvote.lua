@@ -241,12 +241,14 @@ function PANEL:OnMousePressed()
 end
 
 function PANEL:SetMap(map)
+	print("doing other setmap for", self, map)
 	self.Map = map
 	local info = pluto.mapvote.info[map]
 
 	self.NameLabel:SetText((map:gsub("^ttt_", "")))
 
 	if (info) then
+		print("found info", info)
 		self:SetLikesDislikes(info.likes, info.dislikes)
 	end
 
@@ -257,6 +259,8 @@ function PANEL:SetMap(map)
 			self:SetMaterial(mat)
 		end
 	end)
+
+	print("done but no return")
 end
 
 function PANEL:SetLikesDislikes(likes, dislikes)
@@ -466,7 +470,9 @@ function PANEL:PlutoMapVotesUpdated()
 end
 
 function PANEL:SetMap(map)
+	print("setting panel/map", self, map)
 	if (not map) then
+		print("returning because no map")
 		return false
 	end
 
@@ -475,6 +481,7 @@ function PANEL:SetMap(map)
 	self.NameLabel:SetText((game.GetMap() == map and "On " or "Going to ") .. (map:gsub("^ttt_", "")))
 
 	if (info) then
+		print("info found", info)
 		self:SetLikesDislikes(info.likes, info.dislikes)
 		self.LikesInfo:SetText(info.likes)
 		self.DislikesInfo:SetText(info.dislikes)
