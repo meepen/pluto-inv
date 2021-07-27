@@ -260,7 +260,7 @@ function PANEL:SetMap(map)
 		end
 	end)
 
-	print("done but no return")
+	return true
 end
 
 function PANEL:SetLikesDislikes(likes, dislikes)
