@@ -614,6 +614,13 @@ end
 
 function pluto.inv.readmapvotes()
 	--]]print("reading map votes")
+	pluto.mapvote = pluto.mapvote or {
+		votable = {}, -- {maps...}
+		info = {}, -- [map] = {likes, dislikes, played}
+		votes = {}, -- [map] = amt
+		total = 0,
+	}
+
 	pluto.mapvote.total = 0
 	pluto.mapvote.votes = {}
 	for i = 1, net.ReadUInt(8) do

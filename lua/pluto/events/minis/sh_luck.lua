@@ -56,9 +56,9 @@ if (SERVER) then
             pluto.db.instance(function(db)
                 pluto.inv.addcurrency(db, ply, "tp", math.max(1, 3 - player_scores[ply] * 10))
                 pluto.rounds.Notify(string.format("You received %i vials of refinium!", math.max(1, 3 - player_scores[ply] * 10)), pluto.currency.byname.tp.Color, ply, true)
-                net.Start("pluto_mini_" .. name)
-                net.Send(ply)
-                player_times[ply] = CurTime() + time_limit
+                --net.Start("pluto_mini_" .. name)
+                --net.Send(ply)
+                player_times[ply] = CurTime()-- + time_limit
                 player_scores[ply] = player_scores[ply] + 0.1
             end)
         end

@@ -40,6 +40,7 @@ function ROUND:Loadout(ply)
 	else
 		local wep = ply:Give "weapon_ttt_fists"
 		wep.Primary.Damage = 50
+		wep.HitDistance = 96
 	end
 end
 

@@ -33,7 +33,6 @@ local function RenderStats(state)
 
 	if (state.found and state.target) then
 		y = AppendStats("Give your toy to " .. state.target .. "!", 1, y, pluto.currency.byname["_toy_" .. state.color].Color)
-		y = y + h
 	elseif (state.color and state.target) then
 		y = AppendStats("Find a " .. state.color .. " toy for " .. state.target .. "!", 1, y, pluto.currency.byname["_toy_" .. state.color].Color)
 	end
