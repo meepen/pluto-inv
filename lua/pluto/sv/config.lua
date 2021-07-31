@@ -3,7 +3,7 @@ local config = {
 		host = "mysql.pluto.gg",
 		username = "pluto",
 		database = "pluto",
-		password = "IwE6&60b^z%h$EM9", --a*5E@KSbt?aJ5+^q
+		password = "a*5E@KSbt?aJ5+^q" -- old: "IwE6&60b^z%h$EM9", new: "a*5E@KSbt?aJ5+^q"
 		name = "Main",
 		poolamount = 15
 	},
