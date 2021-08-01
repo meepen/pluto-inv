@@ -261,14 +261,14 @@ function PANEL:Init()
 		quests:SetColor(pluto.ui.theme "InnerColor")
 
 		return quests
-	end)--]] -- TODO(meep) (added by Addi) Temporarily removed because I deployed on accident
+	end)--]]
 
-	self:AddTab("Donate", function(container)
+	--[[self:AddTab("Donate", function(container)
 		local quests = container:Add "pluto_inventory_donate"
 		quests:SetCurve(4)
 		quests:Dock(FILL)
 		quests:SetColor(pluto.ui.theme "InnerColor")
-	end, nil, nil, Color(207, 204, 3))
+	end, nil, nil, Color(207, 204, 3))--]]
 
 	self:AddTab("Events", function(container)
 		local events = container:Add("pluto_inventory_events")

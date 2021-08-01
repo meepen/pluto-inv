@@ -128,8 +128,7 @@ local NitroRewards = {
 	},
 }
 
-
-hook.Add("PlutoInventoryLoad", "pluto_admin", function(p)
+--[[hook.Add("PlutoInventoryLoad", "pluto_admin", function(p)
 	local sid = pluto.db.steamid64(p)
 
 	local boost, rewards
@@ -218,7 +217,7 @@ hook.Add("PlutoInventoryLoad", "pluto_admin", function(p)
 
 		try_finish(nil, dat)
 	end)
-end)
+end)--]]
 
 function pluto.inv.writenitro(cl, reward_num, ply)
 	net.WriteEntity(ply)
