@@ -6,12 +6,12 @@ hook.Add("TTTPrepareRoles", "passevent", function(Team, Role)
 
 	Role("Descendant", "innocent")
 		:SetCalculateAmountFunc(function(total_players)
-			return 1
+			return 0
 		end)
 		:SeenBy {"Yaari Spy"}
 end)
 
-hook.Add("TTTRolesSelected", "passevent", function(plys)
+--[[hook.Add("TTTRolesSelected", "passevent", function(plys)
 	if (#round.Players >= 8) then
 		for _, info in ipairs(round.Players) do
 			if info.Role.Name == "Traitor" then
@@ -20,4 +20,4 @@ hook.Add("TTTRolesSelected", "passevent", function(plys)
 			end
 		end
 	end
-end)
+end)--]]
