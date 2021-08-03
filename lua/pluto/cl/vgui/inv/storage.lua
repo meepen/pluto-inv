@@ -26,7 +26,7 @@ function PANEL:Init()
 	self.SearchyBoi:SetTextColor(pluto.ui.theme "TextActive")
 	self.SearchyBoi:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.SearchyBoi:SetFont "pluto_inventory_font"
-	self.SearchyBoi:SetText "Search:"
+	self.SearchyBoi:SetText "Highlight:" -- Changed from "Search:"
 	self.SearchyBoi:DockMargin(0, 4, 5, 3)
 	self.SearchyBoi:SizeToContentsX()
 
@@ -62,7 +62,7 @@ function PANEL:Init()
 	self.BufferLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.BufferLabel:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.BufferLabel:Dock(FILL)
-	self.BufferLabel:SetText "Buffer"
+	self.BufferLabel:SetText "Drops" -- Changed from "Buffer"
 	self.BufferLabel:SizeToContentsX()
 	self.BufferLabel:SetMouseInputEnabled(false)
 	self.BufferContainer:SetWide(self.BufferLabel:GetWide() + 25)
