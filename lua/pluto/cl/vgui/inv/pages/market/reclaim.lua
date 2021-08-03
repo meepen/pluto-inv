@@ -172,7 +172,7 @@ function PANEL:Init()
 
 	self.TaxLabel = self.ListDataContainer:Add "pluto_label"
 	self.TaxLabel:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.TaxLabel:SetText "10 + 7.5% up to 200 tax"
+	self.TaxLabel:SetText "Tax: 10 + 7.5%"
 	self.TaxLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.TaxLabel:SetContentAlignment(2)
 	self.TaxLabel:SetFont "pluto_inventory_font_s"
@@ -274,7 +274,9 @@ function PANEL:SendSearch()
 end
 
 function PANEL:DoList()
-	if (not self.ListItem.Item.ID) then
+	if (not self.ListItem.Item or not self.ListItem.Item.ID) then
+		chat.AddText("Right Click an item to create a listing!") -- TODO(Addi) Make more clear
+		pluto.ui.pnl:ChangeToTab "Loadout" -- TODO(Addi) Make into a pop-up instead
 		return
 	end
 
@@ -311,5 +313,5 @@ function pluto.ui.listitem(item)
 
 	pluto.ui.listeditem = item
 
-	pluto.ui.pnl:ChangeToTab "Divine Market":SelectTab "Your Items"
+	pluto.ui.pnl:ChangeToTab "Market":SelectTab "Your Listings"
 end

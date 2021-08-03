@@ -156,28 +156,30 @@ function PANEL:Init()
 	self.WeaponSearchArea = self.SearchArea:AddTab "Weapon"
 
 	local type = self.WeaponSearchArea:Add "pluto_inventory_auction_search_dropdown"
-	type:SetText "Choose weapon type:"
+	type:SetText "Weapon Slot:"
 	type:AddOption "Any"
 	type:AddOption "Primary"
 	type:AddOption "Secondary"
 	type:AddOption "Melee"
 	type:AddOption "Grenade"
+	--type:AddOption "Tool"
+	--type:AddOption "Hands"
 	type:Dock(TOP)
 	
-	local ammotype = self.WeaponSearchArea:Add "pluto_inventory_auction_search_dropdown"
+	--[[local ammotype = self.WeaponSearchArea:Add "pluto_inventory_auction_search_dropdown"
 	ammotype:SetText "Choose ammo type:"
 	ammotype:AddOption "Any"
 	ammotype:AddOption "Sniper"
 	ammotype:AddOption "Pistol"
 	ammotype:AddOption "SMG"
 	ammotype:AddOption "None"
-	ammotype:Dock(TOP)
+	ammotype:Dock(TOP)--]]
 
 	local mod_count = self.WeaponSearchArea:Add "pluto_inventory_auction_search_input_two"
 	mod_count:Dock(TOP)
-	mod_count:SetText "Maximum mods:"
+	mod_count:SetText "Mod Count:"
 
-	local current_mods = self.WeaponSearchArea:Add "pluto_inventory_auction_search_input_two"
+	--[[local current_mods = self.WeaponSearchArea:Add "pluto_inventory_auction_search_input_two"
 	current_mods:Dock(TOP)
 	current_mods:SetText "Current mods:"
 
@@ -187,7 +189,7 @@ function PANEL:Init()
 
 	local current_prefixes = self.WeaponSearchArea:Add "pluto_inventory_auction_search_input_two"
 	current_prefixes:Dock(TOP)
-	current_prefixes:SetText "Current prefixes:"
+	current_prefixes:SetText "Current prefixes:"--]]
 
 	self.WeaponSearchArea:InvalidateChildren(true)
 	self.WeaponSearchArea:SizeToChildren(false, true)
@@ -198,7 +200,7 @@ function PANEL:Init()
 
 	local mod_count = self.ShardSearch:Add "pluto_inventory_auction_search_input_two"
 	mod_count:Dock(TOP)
-	mod_count:SetText "Maximum mods:"
+	mod_count:SetText "Mod Count:"
 	self.ShardSearch:InvalidateChildren(true)
 	self.ShardSearch:SizeToChildren(false, true)
 
@@ -209,7 +211,14 @@ function PANEL:Init()
 	self:StartNewSearch()
 end
 
+local print_updated = false -- Confirmation message for when a player updates the search filters
+
 function PANEL:PlutoReceiveAuctionData(items, pages)
+	if (print_updated) then
+		print_updated = false
+		chat.AddText "Marketplace filters updated!"
+	end
+
 	self:SetPageMax(pages)
 
 	for i = 1, 36 do
@@ -324,7 +333,7 @@ function PANEL:Init()
 	self.SearchButton:SetWide(120)
 	self.SearchLabel = self.SearchButton:Add "pluto_label"
 	self.SearchLabel:SetRenderSystem(pluto.fonts.systems.shadow)
-	self.SearchLabel:SetText "Update search"
+	self.SearchLabel:SetText "Update Search"
 	self.SearchLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.SearchLabel:SetContentAlignment(5)
 	self.SearchLabel:SetFont "pluto_inventory_font"
@@ -334,30 +343,32 @@ function PANEL:Init()
 		self.SearchButton:Center()
 	end
 	function self.SearchButton.DoClick()
+		chat.AddText("Updating marketplace filters...")
+		print_updated = true
 		self:StartNewSearch()
 	end
 	
 	self.SortBy = self.TabArea:Add "pluto_inventory_auction_search_dropdown"
 	self.SortBy:Dock(TOP)
-	self.SortBy:SetText "Sort by:"
-	self.SortBy:AddOption "Newest to Oldest"
-	self.SortBy:AddOption "Oldest to Newest"
-	self.SortBy:AddOption "ID Low to High"
-	self.SortBy:AddOption "ID High to Low"
-	self.SortBy:AddOption "Price Low to High"
-	self.SortBy:AddOption "Price High to Low"
+	self.SortBy:SetText "See First:"
+	self.SortBy:AddOption "Newest Offers"
+	self.SortBy:AddOption "Oldest Offers"
+	self.SortBy:AddOption "Lowest ID"
+	self.SortBy:AddOption "Highest ID"
+	self.SortBy:AddOption "Lowest Price"
+	self.SortBy:AddOption "Highest Price"
 
 	self.Price = self.TabArea:Add "pluto_inventory_auction_search_input_two"
 	self.Price:Dock(TOP)
-	self.Price:SetText "Price:"
+	self.Price:SetText "Price Range:"
 
-	self.ItemID = self.TabArea:Add "pluto_inventory_auction_search_input_two"
+	--[[self.ItemID = self.TabArea:Add "pluto_inventory_auction_search_input_two"
 	self.ItemID:Dock(TOP)
-	self.ItemID:SetText "Item ID:"
+	self.ItemID:SetText "Item ID:"--]]
 
 	self.ItemName = self.TabArea:Add "pluto_inventory_auction_search_input"
 	self.ItemName:Dock(TOP)
-	self.ItemName:SetText "Item name:"
+	self.ItemName:SetText "Item Name:"
 
 	self.Parameters = {}
 
@@ -367,8 +378,8 @@ function PANEL:Init()
 	end
 	
 	hook.Add("PlutoSearchChanged", self.SortBy, update)
-	hook.Add("PlutoSearchChanged", self.ItemID, update)
 	hook.Add("PlutoSearchChanged", self.Price, update)
+	--hook.Add("PlutoSearchChanged", self.ItemID, update)
 	hook.Add("PlutoSearchChanged", self.ItemName, update)
 end
 

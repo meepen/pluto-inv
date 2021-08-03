@@ -96,27 +96,33 @@ end)
 concommand.Add("pluto_auction_list", function(p, c, a)
 	local itemid = tonumber(a[1])
 	if (not itemid) then
+		p:ChatPrint "Error: Invalid item"
 		return
 	end
 
 	local gun = pluto.itemids[itemid]
 	if (not gun or gun.Owner ~= p:SteamID64() or gun.Untradeable) then
-		p:ChatPrint "no"
+		p:ChatPrint "Error: You cannot trade this item"
 		return
 	end
 
 	if (not tonumber(a[2])) then
-		p:ChatPrint "invalid price"
+		p:ChatPrint "Error: Invalid price"
 		return
 	end
 
-	local price = math.Clamp(tonumber(a[2]), 15, 90000)
-	local tax = math.ceil(math.min(200, 10 + 0.075 * price))
+	local price = math.Clamp(tonumber(a[2]), 100, 50000)
+	local tax = math.ceil(math.min(250, 10 + 0.075 * price))
 
-	if (price ~= price) then
-		p:ChatPrint "invalid price"
+	if (tonumber(a[2]) < price) then
+		p:ChatPrint "Error: Minimum price is 100 stardust"
+		return
+	elseif (tonumber(a[2]) > price) then
+		p:ChatPrint "Error: Maximum price is 50,000 stardust"
 		return
 	end
+
+	p:ChatPrint "Listing item..."
 
 	pluto.db.transact(function(db)
 		local tab_id = get_auction_idx(db)
@@ -131,6 +137,7 @@ concommand.Add("pluto_auction_list", function(p, c, a)
 		pluto.inv.invs[p][gun.TabID].Items[gun.TabIndex] = nil
 
 		if (not pluto.inv.addcurrency(db, p, "stardust", -tax)) then
+			p:ChatPrint "You cannot afford the tax!"
 			mysql_rollback(db)
 			return
 		end
@@ -138,6 +145,8 @@ concommand.Add("pluto_auction_list", function(p, c, a)
 		pluto.inv.message(p)
 			:write("tabupdate", gun.TabID, gun.TabIndex)
 			:send()
+
+		-- TODO(Addi) Send an update to reset the item listing, and to update "You Listings""
 
 		gun.Owner = AUCTION_HOUSE_ID
 		gun.TabID = tab_id
@@ -149,6 +158,8 @@ concommand.Add("pluto_auction_list", function(p, c, a)
 			gun:GetDiscordEmbed()
 				:SetAuthor("Listed for " .. price .. " stardust...")
 		):Send "auction-house"
+
+		p:ChatPrint "Item listed!"
 	end)
 end)
 
@@ -197,23 +208,23 @@ local searchlist = {
 			filter = "i.class = 'shard'"
 		}
 	},
-	["Sort by:"] = {
-		["Oldest to Newest"] = {
+	["See First:"] = {
+		["Oldest Offers"] = {
 			sort = "ORDER BY listed ASC"
 		},
-		["Newest to Oldest"] = {
+		["Newest Offers"] = {
 			sort = "ORDER BY listed DESC"
 		},
-		["ID Low to High"] = {
+		["Lowest ID"] = {
 			sort = "ORDER BY idx ASC",
 		},
-		["ID High to Low"] = {
+		["Highest ID"] = {
 			sort = "ORDER BY idx DESC",
 		},
-		["Price Low to High"] = {
+		["Lowest Price"] = {
 			sort = "ORDER BY auction.price ASC",
 		},
-		["Price High to Low"] = {
+		["Highest Price"] = {
 			sort = "ORDER BY auction.price DESC",
 		},
 	},
@@ -223,13 +234,13 @@ local searchlist = {
 			return tonumber(a) or 0, tonumber(b) or 0xffffffff
 		end
 	},
-	["Item name:"] = {
+	["Item Name:"] = {
 		filter = "auction.name like CONCAT('%', ?, '%')",
 		arguments = function(a)
 			return a
 		end
 	},
-	["Choose weapon type:"] = {
+	["Weapon Slot:"] = {
 		filter = "slot.v = ?",
 		arguments = function(a)
 			if (a == "Primary") then
@@ -253,7 +264,7 @@ local searchlist = {
 		end,
 		join = "modcount",
 	},
-	["Maximum mods:"] = { -- TODO(meep)
+	["Mod Count:"] = { -- TODO(meep)
 		filter = "auction.max_mods >= ? and auction.max_mods <= ?",
 		arguments = function(a, b)
 			return tonumber(a) or 0, tonumber(b) or 16
@@ -288,7 +299,7 @@ local searchlist = {
 		end,
 		join = "ammo"
 	},
-	["Price:"] = {
+	["Price Range:"] = {
 		filter = "price >= ? and price <= ?",
 		arguments = function(a, b)
 			return tonumber(a) or 0, tonumber(b) or 0xfffffffe
@@ -330,7 +341,7 @@ function pluto.inv.readauctionsearch(p)
 			rawset(self, #self + 1, k)
 		end
 	})
-	local sort = searchlist["Sort by:"]["Newest to Oldest"].sort
+	local sort = searchlist["See First:"]["Oldest Offers"].sort
 	local joins = setmetatable({}, {
 		__newindex = function(self, k, v)
 			if (not k or not joins[k]) then
@@ -430,8 +441,11 @@ end
 concommand.Add("pluto_auction_buy", function(p, c, a)
 	local itemid = tonumber(a[1])
 	if (not itemid) then
+		p:ChatPrint "Error: Invalid item"
 		return
 	end
+
+	p:ChatPrint "Buying item..."
 
 	pluto.db.transact(function(db)
 		local tab_id = get_auction_idx(db)
@@ -440,17 +454,20 @@ concommand.Add("pluto_auction_buy", function(p, c, a)
 
 		local item = pluto.inv.queryitems(db, "WHERE i.idx = ?", itemid)[itemid]
 		if (not item) then
+			p:ChatPrint "Error: Invalid item"
 			mysql_rollback(db)
 			return
 		end
 		local auction_data = mysql_stmt_run(db, "SELECT cast(owner as varchar(64)) as lister, price from pluto_auction_info WHERE idx = ?", item.TabIndex)[1]
 
 		if (not auction_data) then
+			p:ChatPrint "Error: Auction data not found"
 			mysql_rollback(db)
 			return
 		end
 
 		if (not pluto.inv.addcurrency(db, p, "stardust", -auction_data.price)) then
+			p:ChatPrint "Error: You cannot afford this item!"
 			mysql_rollback(db)
 			return
 		end
@@ -460,12 +477,14 @@ concommand.Add("pluto_auction_buy", function(p, c, a)
 		pluto.inv.pushbuffer(db, p)
 		local data, err = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = 1 WHERE idx = ? AND tab_id = ?", tab.RowID, item.RowID, tab_id)
 		if (not data or data.AFFECTED_ROWS ~= 1) then
+			p:ChatPrint "Error: Could not send item to buffer"
 			mysql_rollback(db)
 			return
 		end
 		
 		local dat = mysql_stmt_run(db, "DELETE FROM pluto_auction_info WHERE idx = ?", item.TabIndex)
 		if (not dat or dat.AFFECTED_ROWS ~= 1) then
+			p:ChatPrint "Error: Could not remove item from auction"
 			mysql_rollback(db)
 			return
 		end
@@ -478,6 +497,8 @@ concommand.Add("pluto_auction_buy", function(p, c, a)
 		pluto.inv.notifybufferitem(p, item)
 		tab.Items[1] = item
 		mysql_commit(db)
+
+		p:ChatPrint "Item bought!"
 	end)
 end)
 
@@ -555,8 +576,11 @@ end
 concommand.Add("pluto_auction_reclaim", function(p, c, a)
 	local itemid = tonumber(a[1])
 	if (not itemid) then
+		p:ChatPrint "Error: Invalid item"
 		return
 	end
+
+	p:ChatPrint "Reclaiming item..."
 
 	pluto.db.transact(function(db)
 		local tab_id = get_auction_idx(db)
@@ -568,6 +592,7 @@ concommand.Add("pluto_auction_reclaim", function(p, c, a)
 		pluto.inv.pushbuffer(db, p)
 		local data, err = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = 1 WHERE idx = ? AND tab_id = ?", tab.RowID, item.RowID, tab_id)
 		if (not data or data.AFFECTED_ROWS ~= 1) then
+			p:ChatPrint "Error: Could not send item to buffer"
 			mysql_rollback(db)
 			return
 		end
@@ -580,5 +605,7 @@ concommand.Add("pluto_auction_reclaim", function(p, c, a)
 		pluto.inv.notifybufferitem(p, item)
 		tab.Items[1] = item
 		mysql_commit(db)
+
+		p:ChatPrint "Item reclaimed!"
 	end)
 end)
