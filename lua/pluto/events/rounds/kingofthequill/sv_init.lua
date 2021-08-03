@@ -183,11 +183,20 @@ end
 ROUND:Hook("PlayerSelectSpawnPosition", ROUND.ResetPosition)
 
 function ROUND:TTTEndRound(state)
-	self:ChooseLeader(state)
+	GetConVar("ttt_karma"):Revert()
+	timer.UnPause("tttrw_afk")
 
 	if (IsValid(state.quill)) then
 		state.quill:Remove()
 	end
+
+	if (pluto.rounds.forfun) then
+		pluto.rounds.forfun = nil
+		pluto.rounds.Notify("This round was for fun only, thanks for playing!")
+		return
+	end
+	
+	self:ChooseLeader(state)
 
 	if (IsValid(state.leader)) then
 		pluto.rounds.Notify(state.leader:Nick() .. " is the King of the Quill!", pluto.currency.byname._quill.Color)
@@ -199,10 +208,6 @@ function ROUND:TTTEndRound(state)
 	else
 		pluto.rounds.Notify("No kings here...")
 	end
-
-	GetConVar("ttt_karma"):Revert()
-
-	timer.UnPause("tttrw_afk")
 end
 
 --[[ROUND:Hook("PlayerCanPickupWeapon", function(self, state, ply, wep)

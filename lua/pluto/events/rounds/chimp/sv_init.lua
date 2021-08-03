@@ -236,6 +236,15 @@ function ROUND:TTTEndRound(state)
 		end
 	end
 
+	GetConVar("ttt_karma"):Revert()
+	timer.UnPause("tttrw_afk")
+
+	if (pluto.rounds.forfun) then
+		pluto.rounds.forfun = nil
+		pluto.rounds.Notify("This round was for fun only, thanks for playing!")
+		return
+	end
+	
 	self:ChooseLeader(state)
 
 	for ply, score in pairs(state.playerscores) do
@@ -257,10 +266,6 @@ function ROUND:TTTEndRound(state)
 	else
 		pluto.rounds.Notify("All monke suk")
 	end
-
-	GetConVar("ttt_karma"):Revert()
-
-	timer.UnPause("tttrw_afk")
 end
 
 function ROUND:SendUpdateBananas(state)

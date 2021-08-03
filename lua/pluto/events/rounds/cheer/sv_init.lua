@@ -316,6 +316,16 @@ function ROUND:TTTEndRound(state)
 		end
 	end
 
+	GetConVar("ttt_karma"):Revert()
+	timer.UnPause("tttrw_afk")
+
+	if (pluto.rounds.forfun) then
+		pluto.rounds.forfun = nil
+		pluto.rounds.Notify("This round was for fun only, thanks for playing!")
+		return
+	end
+	
+
 	if (state.reward > 0) then
 		for k, ply in ipairs(state.players) do
 			local togive = state.reward
@@ -330,9 +340,6 @@ function ROUND:TTTEndRound(state)
 			end)
 		end
 	end
-
-	GetConVar("ttt_karma"):Revert()
-	timer.UnPause("tttrw_afk")
 end
 
 ROUND:Hook("PlutoToyPickup", function(self, state, ply, color, cur)

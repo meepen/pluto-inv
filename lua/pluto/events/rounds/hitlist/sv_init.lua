@@ -196,6 +196,15 @@ end
 ROUND:Hook("PlayerSelectSpawnPosition", ROUND.ResetPosition)
 
 function ROUND:TTTEndRound(state)
+	GetConVar("ttt_karma"):Revert()
+	timer.UnPause("tttrw_afk")
+
+	if (pluto.rounds.forfun) then
+		pluto.rounds.forfun = nil
+		pluto.rounds.Notify("This round was for fun only, thanks for playing!")
+		return
+	end
+	
 	local max_score = 0
 	local winner
 
@@ -219,10 +228,6 @@ function ROUND:TTTEndRound(state)
 		pluto.rounds.Notify(winner:Nick() .. " is the superior hitman!", Color(38, 0, 77))
 		hook.Run("PlutoSpecialWon", {winner})
 	end
-
-	GetConVar("ttt_karma"):Revert()
-
-	timer.UnPause("tttrw_afk")
 end
 
 --[[ROUND:Hook("PlayerCanPickupWeapon", function(self, state, ply, wep)

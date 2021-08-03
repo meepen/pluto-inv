@@ -179,6 +179,15 @@ end
 ROUND:Hook("PlayerSelectSpawnPosition", ROUND.ResetPosition)
 
 function ROUND:TTTEndRound(state)
+	GetConVar("ttt_karma"):Revert()
+	timer.UnPause("tttrw_afk")
+
+	if (pluto.rounds.forfun) then
+		pluto.rounds.forfun = nil
+		pluto.rounds.Notify("This round was for fun only, thanks for playing!")
+		return
+	end
+	
 	self:ChooseLeader(state)
 
 	local sorted = {}
@@ -211,10 +220,6 @@ function ROUND:TTTEndRound(state)
 			pluto.rounds.Notify(string.format("You earned %i Refinium Vials for placing #%i!", amt, k), pluto.currency.byname[self.Reward].Color, entry.Player)
 		end)
 	end
-
-	GetConVar("ttt_karma"):Revert()
-
-	timer.UnPause("tttrw_afk")
 end
 
 ROUND:Hook("PlayerCanPickupWeapon", function(self, state, ply, wep)

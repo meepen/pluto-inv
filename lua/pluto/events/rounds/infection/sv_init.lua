@@ -190,6 +190,15 @@ end
 ROUND:Hook("PlayerSelectSpawnPosition", ROUND.ResetPosition)
 
 function ROUND:TTTEndRound(state)
+	GetConVar("ttt_karma"):Revert()
+	timer.UnPause("tttrw_afk")
+
+	if (pluto.rounds.forfun) then
+		pluto.rounds.forfun = nil
+		pluto.rounds.Notify("This round was for fun only, thanks for playing!")
+		return
+	end
+	
 	if (not state) then
 		return
 	end
@@ -278,10 +287,6 @@ function ROUND:TTTEndRound(state)
 	else
 		pluto.rounds.Notify("No survivors here...")
 	end
-
-	GetConVar("ttt_karma"):Revert()
-
-	timer.UnPause("tttrw_afk")
 end
 
 function ROUND:RemovePlayer(state, ply)

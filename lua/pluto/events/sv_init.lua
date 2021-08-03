@@ -56,14 +56,14 @@ function pluto.rounds.queue(name, steamid, db)
 	end
 
     local serv_var = GetConVar "pluto_cross_id"
-    local serv = (serv_var and serv_var:GetString()) or "test"
+    local serv = (serv_var and serv_var:GetString()) or "unknown"
 
     if (db) then
+        mysql_stmt_run(db, "INSERT INTO pluto_round_queue (server, time, name, requester) VALUES (?, NOW(), ?, ?)", serv, name, steamid)
+    else
         pluto.db.instance(function(db)
             mysql_stmt_run(db, "INSERT INTO pluto_round_queue (server, time, name, requester) VALUES (?, NOW(), ?, ?)", serv, name, steamid)
         end)
-    else
-        mysql_stmt_run(db, "INSERT INTO pluto_round_queue (server, time, name, requester) VALUES (?, NOW(), ?, ?)", serv, name, steamid)
     end
 
     return true, "Event Queue Attempted"
@@ -115,6 +115,8 @@ end
 
 function pluto.rounds.clear()
 	ttt.SetNextRoundEvent("")
+
+    pluto.rounds.forfun = nil
 
 	return true, "NextRoundEvent cleared"
 end
@@ -231,7 +233,7 @@ function checkRoundQueue()
     end
 
     local serv_var = GetConVar "pluto_cross_id"
-    local serv = (serv_var and serv_var:GetString()) or "test"
+    local serv = (serv_var and serv_var:GetString()) or "unknown"
 
     pluto.db.instance(function(db)
         local rounds = mysql_stmt_run(db, "SELECT * from pluto_round_queue WHERE server = ? AND NOT finished AND time <= NOW()", serv) 
@@ -285,7 +287,7 @@ hook.Add("TTTEndRound", "pluto_round_queue", checkRoundQueue)
 
 function eventQueueUpdate(requester)
     local serv_var = GetConVar "pluto_cross_id"
-    local serv = (serv_var and serv_var:GetString()) or "test"
+    local serv = (serv_var and serv_var:GetString()) or "unknown"
 
     pluto.db.simplequery("SELECT name, usr.displayname from pluto_round_queue LEFT OUTER JOIN pluto_player_info usr ON usr.steamid = pluto_round_queue.requester WHERE server = ? AND NOT finished AND time <= NOW()", {serv}, function(rounds, err)
         pluto.inv.message(requester)
@@ -355,11 +357,24 @@ function pluto.inv.readqueueevent(requester)
 end
 
 concommand.Add("pluto_prepare_round", function(ply, cmd, args)
-    if (not pluto.cancheat(ply) or not args[1]) then
+    name = args[1]
+    forfun = args[2]
+    queue = args[3]
+
+    if (not pluto.cancheat(ply) or not name) then
         return
     end
 
-    local success, msg = pluto.rounds.prepare(args[1])
+    if (forfun) then
+        pluto.rounds.forfun = true
+    end
+
+    if (queue) then
+        local success, msg = pluto.rounds.queue(name, ply:SteamID64())
+    else
+        local success, msg = pluto.rounds.prepare(name)
+    end
+
     ply:ChatPrint(msg)
 end)
 
@@ -384,3 +399,30 @@ concommand.Add("pluto_prepare_mini", function(ply, cmd, args)
     pluto.rounds.args = args
     ply:ChatPrint("The " .. tostring(args[1]) .. " Mini-Event has been prepared.")
 end)
+
+-- Testing --
+concommand.Add("pluto_view_queue", function(ply, cmd, args)
+    if (not pluto.cancheat(ply)) then
+        return
+    end
+
+    local serv_var = GetConVar "pluto_cross_id"
+    local serv = (serv_var and serv_var:GetString()) or "unknown"
+
+    ply:ChatPrint("Viewing queue. Your current server: " .. serv)
+
+    pluto.db.instance(function(db)
+        local rounds = mysql_stmt_run(db, "SELECT * from pluto_round_queue WHERE NOT finished") 
+        
+        if (not rounds) then
+            ply:ChatPrint("No rounds found.")
+            return
+        end
+
+        ply:ChatPrint "Rounds found:"
+        for k, round in ipairs(rounds) do
+            ply:ChatPrint(round.name, round.server)
+        end
+    end)
+end)
+
