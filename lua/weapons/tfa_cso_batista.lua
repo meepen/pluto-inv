@@ -8,17 +8,17 @@ SWEP.PrintName = "Chronobreaker"
 SWEP.Slot = 2
 
 SWEP.Primary.Sound = "Batista.Fire"				
-SWEP.Primary.Damage = 5
+SWEP.Primary.Damage = 6
 
 SWEP.Secondary.Sound = Sound("AlyxEMP.Charge")
 
 SWEP.Bullets = {
 	HullSize = 0,
 	Num = 12,
-	DamageDropoffRange = 300,
+	DamageDropoffRange = 400,
 	DamageDropoffRangeMax = 1200,
 	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.15, 0.1),
+	Spread = Vector(0.1, 0.1),
 	TracerName = "tfa_tracer_incendiary"
 }
 
