@@ -453,9 +453,9 @@ for name, values in pairs {
 			return true
 		end,
 	},
-	eye = {
+	--[[eye = {
 		Shares = 0,
-	},
+	},--]]
 	brainegg = {
 		Shares = 0,
 		Types = "None",
