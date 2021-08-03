@@ -3,13 +3,19 @@
 -- starseeker
 -- sapientia, acr, scar
 
+pluto.divine = pluto.divine or {}
+pluto.divine.stardust_shop = pluto.divine.stardust_shop or {}
+
 local function buildoptions()
 	local options = {
 		ow_shard = {
 			Shares = 20,
 			Buy = function(ply, item, finish)
+				ply:ChatPrint "Buying item..."
+
 				pluto.db.transact(function(db)
 					if (not pluto.inv.addcurrency(db, ply, "stardust", -item.Price)) then
+						ply:ChatPrint "Error: You cannot afford that item"
 						mysql_rollback(db)
 						return
 					end
@@ -17,6 +23,9 @@ local function buildoptions()
 					mysql_stmt_run(db, "UPDATE pluto_stardust_shop SET endtime = endtime - INTERVAL 1 HOUR WHERE id = ?", item.rowid)
 					mysql_commit(db)
 					hook.Run("PlutoCurrencySpent", ply, "stardust", item.Price)
+
+					ply:ChatPrint "Item bought!"
+					-- TODO(Addi) Update tab to remove bought item
 				end)
 			end,
 			PreviewItem = {
@@ -28,8 +37,11 @@ local function buildoptions()
 		conf_shard = {
 			Shares = 20,
 			Buy = function(ply, item, finish)
+				ply:ChatPrint "Buying item..."
+
 				pluto.db.transact(function(db)
 					if (not pluto.inv.addcurrency(db, ply, "stardust", -item.Price)) then
+						ply:ChatPrint "Error: You cannot afford that item"
 						mysql_rollback(db)
 						return
 					end
@@ -40,6 +52,9 @@ local function buildoptions()
 					if (finish) then
 						finish()
 					end
+
+					ply:ChatPrint "Item bought!"
+					-- TODO(Addi) Update tab to remove bought item
 				end)
 			end,
 			PreviewItem = {
@@ -51,8 +66,11 @@ local function buildoptions()
 		starar = {
 			Shares = 1,
 			Buy = function(ply, item, finish)
+				ply:ChatPrint "Buying item..."
+
 				pluto.db.transact(function(db)
 					if (not pluto.inv.addcurrency(db, ply, "stardust", -item.Price)) then
+						ply:ChatPrint "Error: You cannot afford that item"
 						mysql_rollback(db)
 						return
 					end
@@ -63,6 +81,9 @@ local function buildoptions()
 					if (finish) then
 						finish()
 					end
+
+					ply:ChatPrint "Item bought!"
+					-- TODO(Addi) Update tab to remove bought item
 				end)
 			end,
 			PreviewItem = {
@@ -74,13 +95,16 @@ local function buildoptions()
 					suffix = {},
 				}
 			},
-			Price = {22000, 27000},
+			Price = {20000, 25000},
 		},
 		starsr = {
 			Shares = 1,
 			Buy = function(ply, item, finish)
+				ply:ChatPrint "Buying item..."
+
 				pluto.db.transact(function(db)
 					if (not pluto.inv.addcurrency(db, ply, "stardust", -item.Price)) then
+						ply:ChatPrint "Error: You cannot afford that item"
 						mysql_rollback(db)
 						return
 					end
@@ -94,6 +118,9 @@ local function buildoptions()
 					mysql_commit(db)
 					hook.Run("PlutoCurrencySpent", ply, "stardust", item.Price)
 					finish()
+
+					ply:ChatPrint "Item bought!"
+					-- TODO(Addi) Update tab to remove bought item
 				end)
 			end,
 			PreviewItem = {
@@ -111,7 +138,7 @@ local function buildoptions()
 					suffix = {},
 				}
 			},
-			Price = {23000, 28000},
+			Price = {18000, 23000},
 		}
 	}
 
@@ -121,8 +148,11 @@ local function buildoptions()
 		options["promised_" .. wep] = {
 			Shares = promised_shares / #pluto.weapons.guns,
 			Buy = function(ply, item, finish)
+				ply:ChatPrint "Buying item..."
+
 				pluto.db.transact(function(db)
 					if (not pluto.inv.addcurrency(db, ply, "stardust", -item.Price)) then
+						ply:ChatPrint "Error: You cannot afford that item"
 						mysql_rollback(db)
 						return
 					end
@@ -133,6 +163,9 @@ local function buildoptions()
 					if (finish) then
 						finish()
 					end
+
+					ply:ChatPrint "Item bought!"
+					-- TODO(Addi) Update tab to remove bought item
 				end)
 			end,
 			PreviewItem = {
@@ -144,7 +177,7 @@ local function buildoptions()
 					suffix = {},
 				}
 			},
-			Price = {800, 1200}
+			Price = {400, 600}
 		}
 	end
 
@@ -153,8 +186,11 @@ local function buildoptions()
 		options["seeker_" .. wep] = {
 			Shares = seeker_shares / #pluto.weapons.guns,
 			Buy = function(ply, item, finish)
+				ply:ChatPrint "Buying item..."
+
 				pluto.db.transact(function(db)
 					if (not pluto.inv.addcurrency(db, ply, "stardust", -item.Price)) then
+						ply:ChatPrint "Error: You cannot afford that item"
 						mysql_rollback(db)
 						return
 					end
@@ -172,6 +208,9 @@ local function buildoptions()
 					if (finish) then
 						finish()
 					end
+
+					ply:ChatPrint "Item bought!"
+					-- TODO(Addi) Update tab to remove bought item
 				end)
 			end,
 			PreviewItem = {
@@ -196,62 +235,7 @@ local function buildoptions()
 	return options
 end
 
-pluto.divine = pluto.divine or {}
-pluto.divine.stardust_shop = pluto.divine.stardust_shop or {}
-
-
-function pluto.inv.writestardustshop(p)
-	net.WriteUInt(#pluto.divine.stardust_shop.available, 32)
-	for _, item in pairs(pluto.divine.stardust_shop.available) do
-		pluto.inv.writebaseitem(p, item.PreviewItem)
-		net.WriteUInt(item.Price, 32)
-		net.WriteUInt(math.max(0, item.EndTime - os.time()), 32)
-	end
-end
-
-concommand.Add("pluto_buy_stardust_shop", function(p, c, a)
-	if (not pluto.divine.stardust_shop.available) then
-		return
-	end
-
-	local item = pluto.divine.stardust_shop.available[tonumber(a[1])]
-
-	if (not item) then
-		return
-	end
-
-	if (item.EndTime < os.time()) then
-		pluto.divine.stardust_shop = {}
-		p:ChatPrint("That item is no longer available. Reopen the shop.")
-		return
-	end
-
-	item.Buy(p, item, function()
-		item.EndTime = item.EndTime - 60 * 60
-		if (item.EndTime < os.time()) then
-			pluto.divine.stardust_shop = {}
-			local embed = item.PreviewItem:GetDiscordEmbed()
-			local time = math.Round((item.EndTime - os.time()) / (60 * 60))
-			discord.Message():AddEmbed(
-				embed
-					:SetAuthor("GONE!")
-					:SetTimestamp()
-			):Send "stardust-shop"
-		else
-			local embed = item.PreviewItem:GetDiscordEmbed()
-			local time = math.Round((item.EndTime - os.time()) / (60 * 60))
-			time = "For " .. item.Price .. " stardust; " .. (time < 1 and "<1 hour remaining now..." or time .. " hours remaining now...")
-			discord.Message():AddEmbed(
-				embed
-					:SetAuthor(time)
-					:SetTimestamp()
-			):Send "stardust-shop"
-		end
-	end)
-end)
-
-
-hook.Add("Initialize", "pluto_stardust_shop", function()
+local pluto_stardust_initialize = function()
 	local options = buildoptions()
 
 	local available = {}
@@ -299,6 +283,61 @@ hook.Add("Initialize", "pluto_stardust_shop", function()
 		end
 
 		mysql_query(db, "UNLOCK TABLES")
+	end)
+end
+
+hook.Add("Initialize", "pluto_stardust_shop", pluto_stardust_initialize)
+
+function pluto.inv.writestardustshop(p)
+	net.WriteUInt(#pluto.divine.stardust_shop.available, 32)
+	for _, item in pairs(pluto.divine.stardust_shop.available) do
+		pluto.inv.writebaseitem(p, item.PreviewItem)
+		net.WriteUInt(item.Price, 32)
+		net.WriteUInt(math.max(0, item.EndTime - os.time()), 32)
+	end
+end
+
+concommand.Add("pluto_buy_stardust_shop", function(p, c, a)
+	if (not pluto.divine.stardust_shop.available) then
+		return
+	end
+
+	local item = pluto.divine.stardust_shop.available[tonumber(a[1])]
+
+	if (not item) then
+		p:ChatPrint "Error: Invalid item"
+		return
+	end
+
+	if (item.EndTime < os.time()) then
+		--pluto.divine.stardust_shop = {}
+		pluto_stardust_initialize()
+		p:ChatPrint "Error: Item expired, reopen the shop"
+		return
+	end
+
+	item.Buy(p, item, function()
+		item.EndTime = item.EndTime - 60 * 60
+		if (item.EndTime < os.time()) then
+			--pluto.divine.stardust_shop = {}
+			pluto_stardust_initialize()
+			local embed = item.PreviewItem:GetDiscordEmbed()
+			local time = math.Round((item.EndTime - os.time()) / (60 * 60))
+			discord.Message():AddEmbed(
+				embed
+					:SetAuthor("GONE!")
+					:SetTimestamp()
+			):Send "stardust-shop"
+		else
+			local embed = item.PreviewItem:GetDiscordEmbed()
+			local time = math.Round((item.EndTime - os.time()) / (60 * 60))
+			time = "For " .. item.Price .. " stardust; " .. (time < 1 and "<1 hour remaining now..." or time .. " hours remaining now...")
+			discord.Message():AddEmbed(
+				embed
+					:SetAuthor(time)
+					:SetTimestamp()
+			):Send "stardust-shop"
+		end
 	end)
 end)
 

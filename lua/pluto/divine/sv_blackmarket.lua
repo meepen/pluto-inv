@@ -189,26 +189,29 @@ concommand.Add("pluto_blackmarket_buy_offer", function(p, cmd, args)
 	local offerid = pluto.divine.blackmarket.offers[idx]
 	local what = options[offerid]
 	if (not what) then
-		p:ChatPrint "No offer exists."
+		p:ChatPrint "Error: Invalid item."
 		return
 	end
 
 	if (what.Item.ClassName ~= args[2]) then
-		p:ChatPrint "No offer exists. Sorry."
+		p:ChatPrint "Error: Invalid item."
 		return
 	end
 
 	local item = what.Item:Duplicate()
 	item.CreationMethod = "BOUGHT"
+
+	p:ChatPrint "Buying item..."
+
 	pluto.db.transact(function(db)
 		if (not pluto.inv.addcurrency(db, p, CURR.InternalName, -what.Price)) then
-			p:ChatPrint("You do not have enough ", CURR, " to buy that.")
+			p:ChatPrint("Error: You do not have enough ", CURR, " to buy that")
 			mysql_rollback(db)
 			return
 		end
 		local succ = mysql_stmt_run(db, "UPDATE pluto_blackmarket SET sold = sold + 1 WHERE idx = ? AND sold = 0", idx)
 		if (not succ or succ.AFFECTED_ROWS ~= 1) then
-			p:ChatPrint "Sorry, that offer is gone!"
+			p:ChatPrint "Error: Item already sold"
 			mysql_rollback(db)
 			return
 		end
@@ -217,6 +220,9 @@ concommand.Add("pluto_blackmarket_buy_offer", function(p, cmd, args)
 		pluto.inv.savebufferitem(db, p, item)
 		
 		p:ChatPrint("You have bought ", item, " for " .. what.Price .. " ", CURR)
+
+		-- TODO(Addi) Update Tab to remove bought item
+
 		mysql_commit(db)
 		hook.Run("PlutoCurrencySpent", p, CURR.InternalName, what.Price)
 	end)
@@ -225,10 +231,12 @@ end)
 concommand.Add("pluto_blackmarket_buy", function(p, cmd, args)
 	local num = tonumber(args[1])
 
+	p:ChatPrint "Buying item..."
+
 	if (num == 1) then
 		pluto.db.transact(function(db)
 			if (not pluto.inv.addcurrency(db, p, CURR.InternalName, -195)) then
-				p:ChatPrint("You do not have enough ", CURR, " to buy that.")
+				p:ChatPrint("Error: You do not have enough ", CURR, " to buy that")
 				mysql_rollback(db)
 				return
 			end
@@ -240,7 +248,7 @@ concommand.Add("pluto_blackmarket_buy", function(p, cmd, args)
 	elseif (num == 2) then
 		pluto.db.transact(function(db)
 			if (not pluto.inv.addcurrency(db, p, CURR.InternalName, -60)) then
-				p:ChatPrint("You do not have enough ", CURR, " to buy that.")
+				p:ChatPrint("Error: You do not have enough ", CURR, " to buy that")
 				mysql_rollback(db)
 				return
 			end
@@ -260,13 +268,13 @@ concommand.Add("pluto_blackmarket_buy", function(p, cmd, args)
 			end
 
 			if (not unlocked) then
-				p:ChatPrint("You already own all the emojis we have!")
+				p:ChatPrint("Error: You already own all emojis")
 				return
 			end
 
 
 			if (not pluto.inv.addcurrency(db, p, CURR.InternalName, -5)) then
-				p:ChatPrint("You do not have enough ", CURR, " to buy that.")
+				p:ChatPrint("Error: You do not have enough ", CURR, " to buy that.")
 				mysql_rollback(db)
 				return
 			end
@@ -278,7 +286,7 @@ concommand.Add("pluto_blackmarket_buy", function(p, cmd, args)
 		end)
 
 	else
-		p:ChatPrint "unknown buy"
+		p:ChatPrint "Error: Invalid item"
 	end
 end)
 

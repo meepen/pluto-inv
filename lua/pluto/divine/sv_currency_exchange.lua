@@ -72,6 +72,8 @@ function pluto.divine.currency_exchange.update()
 		SetGlobalInt("pluto_currency_exchange.Amount:" .. i, offer.Amount)
 		SetGlobalString("pluto_currency_exchange.Currency:" .. i, offer.Currency)
 	end
+
+	-- TODO(Addi) Tell the client to refresh instantly
 end
 
 function pluto.divine.currency_exchange.lookup()
@@ -115,12 +117,14 @@ function pluto.inv.readexchangestardust(cl)
 
 	pluto.db.transact(function(db)
 		if (not pluto.inv.addcurrency(db, cl, "stardust", math.ceil(-howmany * ratio))) then
+			cl:ChatPrint "Error: You cannot afford this trade!"
 			revert()
 			mysql_rollback(db)
 			return
 		end
 
 		if (not pluto.inv.addcurrency(db, cl, forwhat, math.ceil(howmany))) then
+			cl:ChatPrint "Error: Could not complete trade"
 			revert()
 			mysql_rollback(db)
 			return
