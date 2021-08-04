@@ -150,6 +150,15 @@ if (SERVER) then
             pluto.rounds.Notify("You are a Descendant! Use your role scanner but beware the immune Yaari Spy!", ttt.roles[role].Color, ply)
             ply:Give "weapon_ttt_descendant"
         end,
+        Defector = function(ply, role)
+            pluto.rounds.Notify("You are a Defector! Survive 60 seconds as an innocent to defect!", ttt.roles[role].Color, ply)
+            timer.Create("pluto_mini_defector", 60, 1, function()
+                if (IsValid(ply) and ply:Alive()) then
+                    ply:SetRole("Defected")
+                    pluto.rounds.Notify("An innocent has defected and joined the traitors!", ttt.roles[role].Color)
+                end
+            end)
+        end,
     }
 
     hook.Add("TTTBeginRound", "pluto_mini_" .. name, function()
@@ -161,13 +170,23 @@ if (SERVER) then
 
         pluto.rounds.Notify("Welcome to TTVillage! Extra roles, extra goals.", Color(0, 102, 92))
 
-        local priority_innocents = {"Soulbound Green", "Buddy", "Buddy"}
-        local single_innocents = table.shuffle({"True Innocent", "Redeemer", "Deputy", "Silent Seer"})
-        local extra_innocents = {--[["Wannabe",--]] "Private Investigator", "Listener", "Coward"}
+        local priority_innocents = {}
+        local single_innocents = table.shuffle({"Defector", "True Innocent", "Deputy", "Silent Seer"})
+        local extra_innocents = {--[["Wannabe", --]]"Private Investigator", "Listener", "Coward", "Redeemer"}
 
-        local priority_traitors = {"Soulbound Red"}
-        local single_traitors = table.shuffle({"Finisher", "Nearly a Destroyer", "Savage Seer", "Assassin"})
-        local extra_traitors = {--[["Infiltrator",--]] "Shapeshifter", "Hoarder"}
+        local priority_traitors = {}
+        local single_traitors = table.shuffle({"Nearly a Destroyer", "Savage Seer", "Assassin"})
+        local extra_traitors = {--[["Infiltrator", --]]"Finisher", "Shapeshifter", "Hoarder"}
+
+        if (math.random() > 0.6) then
+            table.insert(priority_innocents, "Soulbound Green")
+            table.insert(priority_traitors, "Soulbound Red")
+        end
+
+        if (math.random() > 0.3) then
+            table.insert(priority_innocents, "Buddy")
+            table.insert(priority_innocents, "Buddy")
+        end
 
         timer.Simple(1, function()
             for k, ply in ipairs(table.shuffle(round.GetActivePlayersByRole "Innocent")) do
@@ -340,6 +359,7 @@ hook.Add("TTTRoleSeesRole", "pluto_mini_" .. name, function(role, sees)
 
     if (role == "innocent") then
         table.insert(sees, "Silent Seer")
+        table.insert(sees, "Savage Seer")
     end
 end)
 
@@ -373,7 +393,7 @@ hook.Add("TTTPrepareRoles", "pluto_mini_" .. name, function(Team, Role)
         :SetCalculateAmountFunc(function(total_players)
 			return 0
 		end)
-        :SetColor(99, 83, 0)
+        :SetColor(109, 73, 0)
         :SeenBy {"Soulbound Green"}
 
     Role("Savage Seer", "traitor")
@@ -400,6 +420,13 @@ hook.Add("TTTPrepareRoles", "pluto_mini_" .. name, function(Team, Role)
 		end)
         :SetColor(255, 179, 0)
 
+    Role("Defected", "traitor")
+        :SetCalculateAmountFunc(function(total_players)
+			return 0
+		end)
+        :SetColor(179, 59, 0)
+        :SeenBy {}
+
     -- Traitor who revives as a zombie after death?
 
     Role("Buddy", "innocent")
@@ -407,14 +434,14 @@ hook.Add("TTTPrepareRoles", "pluto_mini_" .. name, function(Team, Role)
 			return 0
 		end)
         :SetColor(19, 188, 77)
-        :SeenBy {"Buddy", "Savage Seer",--[["Wannabe", "Infiltrator"--]]}
+        :SeenBy {"Buddy",--[["Wannabe", "Infiltrator"--]]}
 
     --[[Role("Wannabe", "innocent")
         :SetCalculateAmountFunc(function(total_players)
 			return 0
 		end)
         :SetColor(100, 171, 100)
-        :SeenBy {"Savage Seer"}--]]
+        :SeenBy {}--]]
 
     Role("True Innocent", "innocent")
         :SetCalculateAmountFunc(function(total_players)
@@ -428,35 +455,35 @@ hook.Add("TTTPrepareRoles", "pluto_mini_" .. name, function(Team, Role)
 			return 0
 		end)
         :SetColor(5, 142, 113)
-        :SeenBy {"Savage Seer"}
+        :SeenBy {}
 
     Role("Redeemer", "innocent")
         :SetCalculateAmountFunc(function(total_players)
 			return 0
         end)
         :SetColor(22, 125, 22)
-        :SeenBy {"Savage Seer"}
+        :SeenBy {}
     
     Role("Listener", "innocent")
         :SetCalculateAmountFunc(function(total_players)
 			return 0
         end)
         :SetColor(148, 213, 149)
-        :SeenBy {"Savage Seer"}
+        :SeenBy {}
 
     Role("Soulbound Green", "innocent")
         :SetCalculateAmountFunc(function(total_players)
 			return 0
 		end)
-        :SetColor(99, 83, 0)
-        :SeenBy {"Soulbound Red", "Savage Seer"}
+        :SetColor(89, 93, 0)
+        :SeenBy {"Soulbound Red"}
 
     Role("Deputy", "innocent")
         :SetCalculateAmountFunc(function(total_players)
 			return 0
 		end)
         :SetColor(5, 142, 153)
-        :SeenBy {"Detective", "Savage Seer", "Assassin"}
+        :SeenBy {"Detective", "Assassin"}
 		:TeamChatSeenBy "Detective"
 		:SetVoiceChannel "Detective"
 
@@ -465,13 +492,20 @@ hook.Add("TTTPrepareRoles", "pluto_mini_" .. name, function(Team, Role)
 			return 0
 		end)
         :SetColor(47, 106, 18)
-        :SeenBy {"Savage Seer"}
+        :SeenBy {}
 
     Role("Silent Seer", "innocent")
         :SetCalculateAmountFunc(function(total_players)
 			return 0
 		end)
         :SetColor(23, 75, 18)
-        :SeenBy {"Savage Seer"}
+        :SeenBy {}
         :SetSeeTeammateOutlines(true)
+
+    Role("Defector", "innocent")
+        :SetCalculateAmountFunc(function(total_players)
+			return 0
+		end)
+        :SetColor(149, 179, 0)
+        :SeenBy {}
 end)
