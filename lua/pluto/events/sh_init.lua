@@ -85,6 +85,17 @@ pluto.rounds.infobyname = {
 		Shares = 1,
 	},
 
+	-- Small Randoms
+	saberfools = {
+		PrintName = "Saber Fools",
+		Type = "Random",
+		MaxPlayers = 8,
+		Shares = 1,
+		NoRandom = true,
+		NoBuy = true,
+		Small = true,
+	},
+
 	-- Mini Events
 	aprilfools = {
 		PrintName = "April Fools",
@@ -215,6 +226,14 @@ pluto.rounds.infobyname = {
 		Odds = 1 / 24,
 		NoBuy = true,
 	},
+	smalls = {
+		PrintName = "Smalls Activator",
+		Type = "Mini",
+		MaxPlayers = 7,
+		Shares = 1,
+		Odds = 1 / 16,
+		NoBuy = true,
+	},
 }
 
 for name, event in pairs(pluto.rounds.infobyname) do
@@ -291,13 +310,9 @@ local colors = {
 	]]--
 }
 
-for name, color in pairs(colors) do -- REMOVE?
+--[[for name, color in pairs(colors) do -- REMOVE?
 	resource.AddFile("materials/pluto/roles/" .. name .. ".png")
-end
-
--- Temporary
-resource.AddFile("materials/pluto/currencies/gold_quill.png")
-resource.AddFile("materials/pluto/currencies/ticket.png")
+end--]]
 
 local function capitalize(name)
 	return (string.upper(string.sub(name, 1, 1)) .. string.sub(name, 2))

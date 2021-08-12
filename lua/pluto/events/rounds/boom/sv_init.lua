@@ -262,7 +262,7 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 		return
 	end
 
-	table.insert(state.dead, 0, vic)
+	table.insert(state.dead, 1, vic)
 	state.living[vic] = nil
 
 	WriteRoundData("living", table.Count(state.living))

@@ -87,7 +87,7 @@ function pluto.rounds.goodplayercount(name)
 	return true
 end
 
-function pluto.rounds.chooserandom(typ, needminplayers)
+function pluto.rounds.chooserandom(typ, needminplayers, smalls)
 	local events = {}
 
 	for name, event in pairs(pluto.rounds.infobyname) do
@@ -95,7 +95,11 @@ function pluto.rounds.chooserandom(typ, needminplayers)
 			continue
 		end
 
-        if (event.NoRandom) then
+        if (event.NoRandom and not smalls) then
+            continue
+        end
+
+        if (smalls and not event.Small) then
             continue
         end
 
