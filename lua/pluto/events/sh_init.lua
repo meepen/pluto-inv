@@ -236,7 +236,7 @@ pluto.rounds.infobyname = {
 		Type = "Mini",
 		MaxPlayers = 7,
 		Shares = 1,
-		Odds = 1 / 16 / 2, -- TODO(Addi) Remove once there are more
+		Odds = 0.3 / 16, -- TODO(Addi) Remove once there are more
 		NoBuy = true,
 	},
 }

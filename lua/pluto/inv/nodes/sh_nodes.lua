@@ -1,3 +1,5 @@
+local pluto_disable_constellations = CreateConVar("pluto_disable_constellations", "0", {FCVAR_REPLICATED, FCVAR_ARCHIVE})
+
 pluto.nodes = pluto.nodes or {
 	byname = {},
 	mt = {

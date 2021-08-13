@@ -155,6 +155,10 @@ function SWEP:SetInventoryItem(gun)
 			return
 		end
 
+		if (GetConVar("pluto_disable_constellations"):GetBool()) then
+			return
+		end
+
 		if (gun.constellations) then
 			pluto.nodes.applyactive(self, gun.constellations)
 		end
