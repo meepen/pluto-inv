@@ -51,7 +51,7 @@ pluto.rounds.infobyname = {
 	boom = {
 		PrintName = "Boomer Time",
 		Type = "Random",
-		MinPlayers = 6,
+		MinPlayers = 4,
 		Shares = 1,
 	},
 	kingofthequill = {
@@ -63,13 +63,13 @@ pluto.rounds.infobyname = {
 	hitlist = {
 		PrintName = "Hit List",
 		Type = "Random",
-		MinPlayers = 6,
+		MinPlayers = 4,
 		Shares = 1,
 	},
 	phantom = {
 		PrintName = "Phantom Fight",
 		Type = "Random",
-		MinPlayers = 6,
+		MinPlayers = 8,
 		Shares = 1,
 	},
 	trifight = {
@@ -80,6 +80,12 @@ pluto.rounds.infobyname = {
 	},
 	infection = {
 		PrintName = "Infection",
+		Type = "Random",
+		MinPlayers = 4,
+		Shares = 1,
+	},
+	soulhoarders = {
+		PrintName = "Soul Hoarders",
 		Type = "Random",
 		MinPlayers = 4,
 		Shares = 1,
@@ -206,16 +212,15 @@ pluto.rounds.infobyname = {
 	ttv = {
 		PrintName = "TTVillage",
 		Type = "Mini",
-		MinPlayers = 8,
+		MinPlayers = 6,
 		Shares = 1,
 		Odds = 1 / 24,
 	},
 	lime = {
 		PrintName = "RDM Limeinade Round",
 		Type = "Mini",
-		MaxPlayers = 7,
 		Shares = 1,
-		Odds = 1 / 256,
+		Odds = 1 / 128,
 		NoBuy = true,
 	},
 	wave = {
@@ -231,7 +236,7 @@ pluto.rounds.infobyname = {
 		Type = "Mini",
 		MaxPlayers = 7,
 		Shares = 1,
-		Odds = 1 / 16,
+		Odds = 1 / 16 / 2, -- TODO(Addi) Remove once there are more
 		NoBuy = true,
 	},
 }

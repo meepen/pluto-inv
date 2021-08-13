@@ -22,6 +22,10 @@ MOD.Tiers = {
 }
 
 function MOD:PreDamage(wep, rolls, vic, dmginfo, state)
+	if (ttt.GetCurrentRoundEvent() ~= "") then
+		return
+	end
+
 	if (IsValid(vic) and vic:IsPlayer() and dmginfo:GetDamage() > 0) then
 		dmginfo:ScaleDamage(1 - rolls[1] / 100)
 		local atk = wep:GetOwner()

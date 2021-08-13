@@ -1,7 +1,7 @@
 local AppendHeader = pluto.rounds.AppendHeader
 local AppendStats = pluto.rounds.AppendStats
-local FirstColor
-local SecondColor
+local FirstColor = Color(0, 128, 0)
+local SecondColor = Color(128, 85, 0)
 
 local function RenderIntro()
 	local y = ScrH() / 10
@@ -59,8 +59,5 @@ ROUND:Hook("PreventRDMManagerPopup", function()
 end)
 
 function ROUND:NotifyPrepare()
-	FirstColor = Color(0, 128, 0)
-	SecondColor = Color(128, 85, 0)
-
 	pluto.rounds.Notify("The infection comes...", FirstColor)
 end

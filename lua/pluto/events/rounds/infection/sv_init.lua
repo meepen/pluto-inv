@@ -25,6 +25,8 @@ end
 function ROUND:Finish()
 	timer.Remove "pluto_event_timer"
 	timer.Remove "pluto_infection_timer"
+	timer.Remove "pluto_infection_wink"
+	timer.Remove "pluto_infection_blink"
 end
 
 function ROUND:Loadout(ply)
@@ -39,8 +41,15 @@ function ROUND:Loadout(ply)
 		end
 	else
 		local wep = ply:Give "weapon_ttt_fists"
-		wep.Primary.Damage = 50
+		wep.Primary.Damage = 30
 		wep.HitDistance = 96
+		if (state.blink) then
+			local wep = ply:Give "weapon_ttt_blink"
+			wep.AllowDrop = true
+		elseif (state.wink) then
+			local wep = ply:Give "weapon_ttt_wink"
+			wep.AllowDrop = true
+		end
 	end
 end
 
@@ -102,6 +111,43 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 					self:UpdateTimeSurvived(state, ply)
 				end
 			end
+		end
+	end)
+
+	timer.Create("pluto_infection_wink", 120, 1, function()
+		state.wink = true
+		pluto.rounds.Notify("The infected have been powered up with the help of winks!", Color(0, 128, 0))
+		for k, ply in ipairs(round.GetActivePlayersByRole "Infected") do
+			if (not ply:Alive()) then
+				continue
+			end
+
+			ply:Give "weapon_ttt_wink"
+		end
+	end)
+
+	timer.Create("pluto_infection_blink", 180, 1, function()
+		state.wink = false
+		state.blink = true
+		pluto.rounds.Notify("The infected winks have been upgraded to blinks!", Color(0, 128, 0))
+		for k, ply in ipairs(round.GetActivePlayersByRole "Infected") do
+			if (not ply:Alive()) then
+				continue
+			end
+
+			for j, wep in ipairs(ply:GetWeapons()) do
+				if (wep:GetClass() == "weapon_ttt_wink") then
+					wep:Remove()
+				end
+			end
+
+			timer.Simple(0.2, function()
+				if (not IsValid(ply) or not ply:Alive()) then
+					return
+				end
+				
+				ply:Give "weapon_ttt_blink"
+			end)
 		end
 	end)
 
@@ -169,10 +215,10 @@ function ROUND:Spawn(state, ply)
 		if (inf <= 0) then
 			inf = 1
 		end
-		hp = math.Clamp(hp * sur / inf * 1.5, 250, 1000)
-		ply:SetJumpPower(ply:GetJumpPower() * 1.75)
+		hp = math.Clamp(hp * sur / inf * 1.5, 200, 750)
+		ply:SetJumpPower(ply:GetJumpPower() * 1.9)
 	else
-		ply:SetJumpPower(ply:GetJumpPower() / 1.75)
+		ply:SetJumpPower(ply:GetJumpPower() / 1.1)
 	end
 
 	ply:SetMaxHealth(hp)
@@ -313,8 +359,8 @@ function ROUND:WriteLiving(state)
 end
 
 ROUND:Hook("PlayerCanPickupWeapon", function(self, state, ply, wep)
-	if (IsValid(ply) and ply:GetRole() == "Infected") then
-		return wep:GetClass() == "weapon_ttt_fists"
+	if (state.infected and state.infected[ply]) then
+		return (wep:GetClass() == "weapon_ttt_fists") or (wep:GetClass() == "weapon_ttt_blink") or (wep:GetClass() == "weapon_ttt_wink")
 	end
 end)
 

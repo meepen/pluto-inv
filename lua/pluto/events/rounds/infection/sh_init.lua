@@ -26,6 +26,6 @@ ROUND:Hook("TTTUpdatePlayerSpeed", function(self, state, ply, data)
 	if (state and state.infected and state.infected[ply]) then
 		data.infection = 1.3
 	else
-		data.infection = 0.7
+		data.infection = 0.9
 	end
 end)

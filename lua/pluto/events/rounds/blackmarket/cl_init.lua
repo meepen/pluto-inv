@@ -20,8 +20,8 @@ end
 local function RenderStats(state)
 	local y = ScrH() / 5
 
-	if (state.leader and state.leaderkills) then
-		y = AppendStats(string.format("%s has the most kills: %i!", state.leader, state.leaderkills), 1, y, FirstColor)
+	if (state.leader) then
+		y = AppendStats(string.format("%s has the best K/D!", state.leader), 1, y, FirstColor)
 	end
 
 	if (state.kills) then

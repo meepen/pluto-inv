@@ -1,6 +1,6 @@
 ROUND.Reward = "tp"
-ROUND.WinnerEarnings = 6
-ROUND.EachDecrease = 1
+ROUND.WinnerEarnings = 10
+ROUND.EachDecrease = 2
 
 ROUND.Boss = true
 
@@ -29,12 +29,14 @@ end
 function ROUND:Loadout(ply)
 	ply:StripWeapons()
 	pluto.NextWeaponSpawn = false
-	local wep = ply:Give "weapon_rb566_lightsaber"
+	local wep = ply:Give "weapon_lightsaber_dual"
 	wep.AllowDrop = false
 		
 	for bone = 0, ply:GetBoneCount() - 1 do
 		ply:ManipulateBoneJiggle(bone, 1)
 	end
+
+	ply:ChatPrint "Press your reload key to pull out your saber!"
 end
 
 ROUND:Hook("TTTSelectRoles", function(self, state, plys)
@@ -42,7 +44,7 @@ ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 
 	for i, ply in ipairs(plys) do
 		pluto.NextWeaponSpawn = false
-		local wep = ply:Give "weapon_rb566_lightsaber"
+		local wep = ply:Give "weapon_lightsaber_dual"
 		wep.AllowDrop = false
 
 		pluto.rounds.LoadAmmo(ply)
@@ -93,8 +95,8 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		if (ply:Alive()) then
 			self:Initialize(state, ply)
 		end
-		ply:SetMaxHealth(150)
-		ply:SetHealth(150)
+		ply:SetMaxHealth(250)
+		ply:SetHealth(250)
 	end
 
 	self:ChooseLeader(state)
@@ -139,13 +141,12 @@ function ROUND:ChooseLeader(state)
 	if (IsValid(state.leader) and new ~= state.leader) then
 		if (CurTime() - last_notification >= 0.25) then
 			last_notification = CurTime()
-			pluto.rounds.Notify(string.format("The council takes notice of %s!", new:Nick()), Color(255, 225, 75), nil, true)
+			pluto.rounds.Notify(string.format("The council takes notice of %s!", new:Nick()), Color(0, 230, 80), nil, true)
 		end
 	end
 	
 	state.leader = new
 	WriteRoundData("leader", new:Nick())
-	WriteRoundData("leaderkills", state.kills[new])
 end
 
 function ROUND:UpdateScore(state, ply)
@@ -164,8 +165,8 @@ ROUND:Hook("SetupMove", function(self, state, ply, mv)
 end)
 
 function ROUND:Spawn(state, ply)
-	ply:SetMaxHealth(100)
-	ply:SetHealth(100)
+	ply:SetMaxHealth(250)
+	ply:SetHealth(250)
 end
 
 ROUND:Hook("PlayerSpawn", ROUND.Spawn)
@@ -215,7 +216,7 @@ function ROUND:TTTEndRound(state)
 	end
 
 	if (IsValid(state.leader)) then
-		pluto.rounds.Notify(state.leader:Nick() .. " has been granted the rank of master!", Color(255, 225, 75))
+		pluto.rounds.Notify(state.leader:Nick() .. " has been granted the rank of master! (Best K/D)", Color(0, 230, 80))
 		hook.Run("PlutoSpecialWon", {state.leader})
 	else
 		pluto.rounds.Notify("No winners here...")
@@ -223,7 +224,7 @@ function ROUND:TTTEndRound(state)
 end
 
 ROUND:Hook("PlayerCanPickupWeapon", function(self, state, ply, wep)
-	return wep:GetClass() == "weapon_rb566_lightsaber"
+	return wep:GetClass() == "weapon_lightsaber_dual"
 end)
 
 ROUND:Hook("TTTHasRoundBeenWon", function(self, state)

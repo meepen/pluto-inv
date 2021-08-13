@@ -54,6 +54,7 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	local fighters = round.GetActivePlayersByRole "Fighter"
 	state.scores = {}
 	state.targets = {}
+	state.attacked = {}
 	state.endtime = CurTime() + 120
 	state.left = 2
 
@@ -65,8 +66,8 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		if (ply:Alive()) then
 			self:Initialize(state, ply)
 		end
-		ply:SetMaxHealth(100)
-		ply:SetHealth(100)
+		ply:SetMaxHealth(150)
+		ply:SetHealth(150)
 	end
 
 	self:ShuffleTargets(state)
@@ -151,6 +152,7 @@ function ROUND:ShuffleTargets(state)
 	local plys = {}
 
 	state.targets = {}
+	state.attacked = {}
 
 	for ply, score in pairs(state.scores) do
 		if (IsValid(ply)) then
@@ -181,8 +183,8 @@ ROUND:Hook("SetupMove", function(self, state, ply, mv)
 end)
 
 function ROUND:Spawn(state, ply)
-	ply:SetMaxHealth(100)
-	ply:SetHealth(100)
+	ply:SetMaxHealth(150)
+	ply:SetHealth(150)
 end
 
 ROUND:Hook("PlayerSpawn", ROUND.Spawn)
@@ -312,8 +314,17 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 end)
 
 ROUND:Hook("PlayerShouldTakeDamage", function(self, state, ply, atk)
-	if (IsValid(ply) and IsValid(atk) and atk:IsPlayer() and ply:IsPlayer()) then
-		return (state.targets and state.targets[atk] == ply) or (atk == ply)
+	if (not state.targets or not state.attacked) then
+		return
+	end
+
+	if (IsValid(ply) and IsValid(atk)) then
+		if (state.targets[atk] == ply) then
+			state.attacked[atk] = ply
+			return true
+		end
+
+		return (atk == ply) or (state.attacked[ply] == atk)
 	end
 end)
 

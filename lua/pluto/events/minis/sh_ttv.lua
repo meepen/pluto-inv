@@ -339,6 +339,9 @@ if (SERVER) then
         end)
 
         hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
+            timer.Remove("pluto_mini_destroyer")
+            timer.Remove("pluto_mini_defector")
+            
             hook.Remove("TTTEndRound", "pluto_mini_" .. name)
             hook.Remove("PlayerTakeDamage", "pluto_mini_" .. name)
             hook.Remove("PlayerDeath", "pluto_mini_" .. name)

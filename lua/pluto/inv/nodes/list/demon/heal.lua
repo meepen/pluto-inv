@@ -5,6 +5,10 @@ NODE.Description = "Once your gun is possessed, full heal on kill."
 NODE.Experience = 7500
 
 function NODE:ModifyWeapon(node, wep)
+	if (ttt.GetCurrentRoundEvent() ~= "") then
+		return
+	end
+
 	timer.Simple(0, function()
 		if (not IsValid(wep)) then
 			return
