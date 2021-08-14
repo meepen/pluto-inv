@@ -73,6 +73,8 @@ pluto.files.load {
 		"donate/sv_donate.lua",
 
 		"highscores/sv_highscores.lua",
+
+		"scalinglib/sv.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty

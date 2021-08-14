@@ -48,6 +48,8 @@ pluto.files.load {
 
 		--"highscores/cl_highscores.lua",
 
+		"scalinglib/sh.lua",
+
 		"cl/fontstuff.lua",
 
 		"cl/vgui/pluto/frame.lua",

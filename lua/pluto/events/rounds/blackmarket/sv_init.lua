@@ -171,7 +171,7 @@ function ROUND:ChooseLeader(state)
 	for ply, kills in pairs(state.kills) do
 		table.insert(sorted, {
 			Player = ply,
-			Score = kills - (state.deaths[ply] or 0),
+			Score = kills / (math.max(1, state.deaths[ply] or 1)),
 		})
 	end
 
@@ -241,7 +241,7 @@ function ROUND:TTTEndRound(state)
 	for ply, kills in pairs(state.kills) do
 		table.insert(sorted, {
 			Player = ply,
-			Score = kills - (state.deaths[ply] or 0),
+			Score = kills / (math.max(1, state.deaths[ply] or 1)),
 		})
 	end
 

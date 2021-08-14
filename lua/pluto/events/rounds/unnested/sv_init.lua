@@ -8,10 +8,10 @@ local WriteRoundData = pluto.rounds.WriteRoundData
 
 function ROUND:Prepare(state)
 	timer.Create("pluto_event_timer", 5, 0, function()
-		if (not state.kills) then
+		if (not state.active) then
 			return
 		end
-		for ply, count in pairs(state.kills) do
+		for ply, count in pairs(state.active) do
 			if (IsValid(ply) and not ply:Alive()) then
 				ttt.ForcePlayerSpawn(ply)
 				state.spawntime[ply] = CurTime()
@@ -27,31 +27,20 @@ function ROUND:Finish()
 end
 
 function ROUND:Loadout(ply)
-	ply:StripWeapons()
-	pluto.NextWeaponSpawn = false
-	local wep = ply:Give "weapon_lightsaber_dual"
-	wep.AllowDrop = false
-		
-	for bone = 0, ply:GetBoneCount() - 1 do
-		ply:ManipulateBoneJiggle(bone, 1)
+	pluto.rounds.GiveDefaults(ply, true)
+
+	if (not pluto.rounds.state or not pluto.rounds.state.active or not pluto.rounds.state.active[ply]) then
+		return
 	end
 
-	ply:ChatPrint "Press your reload key to pull out your saber!"
+	ttt.Equipment.List["ttt_radar"]:OnBuy(ply)
 end
 
 ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 	plys = table.shuffle(plys)
 
 	for i, ply in ipairs(plys) do
-		pluto.NextWeaponSpawn = false
-		local wep = ply:Give "weapon_lightsaber_dual"
-		wep.AllowDrop = false
-
-		pluto.rounds.LoadAmmo(ply)
-		
-		for bone = 0, ply:GetBoneCount() - 1 do
-			ply:ManipulateBoneJiggle(bone, 1)
-		end
+		pluto.rounds.GiveDefaults(ply, true)
 
 		round.Players[i] = {
 			Player = ply,
@@ -60,8 +49,6 @@ ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 			Role = ttt.roles.Fighter
 		}
 	end
-
-	pluto.rounds.Notify("Press your reload key to pull out your saber")
 
 	return true
 end)
@@ -82,11 +69,13 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	end
 
 	local fighters = round.GetActivePlayersByRole "Fighter"
+	state.active = {}
 	state.kills = {}
 	state.deaths = {}
 	state.spawntime = {}
 
 	for k, ply in pairs(fighters) do
+		state.active[ply] = true
 		state.kills[ply] = 0
 		state.deaths[ply] = 0
 		state.spawntime[ply] = CurTime()
@@ -97,9 +86,17 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		end
 		ply:SetMaxHealth(250)
 		ply:SetHealth(250)
+
+		timer.Simple(1, function()
+			if (not IsValid(ply) or not ply:Alive()) then
+				return
+			end
+
+			ttt.Equipment.List["ttt_radar"]:OnBuy(ply)
+		end)
 	end
 
-	self:ChooseLeader(state)
+	WriteRoundData("left", table.Count(state.active))
 
 	GetConVar("ttt_karma"):SetBool(false)
 	
@@ -121,40 +118,13 @@ end
 local last_notification = 0
 
 function ROUND:ChooseLeader(state)
-	local sorted = {}
-
-	for ply, kills in pairs(state.kills) do
-		table.insert(sorted, {
-			Player = ply,
-			Score = kills / (math.max(1, state.deaths[ply] or 1)),
-		})
-	end
-
-	table.SortByMember(sorted, "Score")
-
-	local new = (sorted[1] and sorted[1].Player or nil)
-
-	if (not IsValid(new)) then
-		return
-	end
-
-	if (IsValid(state.leader) and new ~= state.leader) then
-		if (CurTime() - last_notification >= 0.25) then
-			last_notification = CurTime()
-			pluto.rounds.Notify(string.format("The council takes notice of %s!", new:Nick()), Color(0, 230, 80), nil, true)
-		end
-	end
 	
-	state.leader = new
-	WriteRoundData("leader", new:Nick())
 end
 
 function ROUND:UpdateScore(state, ply)
 	state.kills[ply] = (state.kills[ply] or 0) + 1
 
 	WriteRoundData("kills", state.kills[ply], ply)
-
-	self:ChooseLeader(state)
 end
 
 ROUND:Hook("SetupMove", function(self, state, ply, mv)
@@ -165,8 +135,13 @@ ROUND:Hook("SetupMove", function(self, state, ply, mv)
 end)
 
 function ROUND:Spawn(state, ply)
-	ply:SetMaxHealth(250)
-	ply:SetHealth(250)
+	local reduction = 0
+	if (state.deaths and state.deaths[ply]) then
+		reduction = state.deaths[ply] * 75
+	end
+
+	ply:SetMaxHealth(250 - reduction)
+	ply:SetHealth(250 - reduction)
 end
 
 ROUND:Hook("PlayerSpawn", ROUND.Spawn)
@@ -183,20 +158,26 @@ function ROUND:TTTEndRound(state)
 	GetConVar("ttt_karma"):Revert()
 	timer.UnPause("tttrw_afk")
 
+	for k, ply in ipairs(player.GetAll()) do
+		if (not IsValid(ply)) then
+			continue
+		end
+
+		pluto.scaling.reset(ply)
+	end
+
 	if (pluto.rounds.forfun) then
 		pluto.rounds.forfun = nil
 		pluto.rounds.Notify("This round was for fun only, thanks for playing!")
 		return
 	end
 
-	self:ChooseLeader(state)
-
 	local sorted = {}
 
 	for ply, kills in pairs(state.kills) do
 		table.insert(sorted, {
 			Player = ply,
-			Score = kills / (math.max(1, state.deaths[ply] or 1)),
+			Score = kills,
 		})
 	end
 
@@ -213,19 +194,17 @@ function ROUND:TTTEndRound(state)
 			pluto.inv.addcurrency(db, entry.Player, self.Reward, amt)
 			pluto.rounds.Notify(string.format("You earned %i Refinium Vials for achieving place #%i!", amt, k), pluto.currency.byname[self.Reward].Color, entry.Player)
 		end)
-	end
 
-	if (IsValid(state.leader)) then
-		pluto.rounds.Notify(state.leader:Nick() .. " has been granted the rank of master! (Best K/D)", Color(0, 230, 80))
-		hook.Run("PlutoSpecialWon", {state.leader})
-	else
-		pluto.rounds.Notify("No winners here...")
+		if (k == 1) then
+			pluto.rounds.Notify(entry.Player:Nick() .. " was the most lethal doll!", Color(255, 255, 102))
+			hook.Run("PlutoSpecialWon", {entry.Player})
+		end
 	end
 end
 
-ROUND:Hook("PlayerCanPickupWeapon", function(self, state, ply, wep)
-	return wep:GetClass() == "weapon_lightsaber_dual"
-end)
+--[[ROUND:Hook("PlayerCanPickupWeapon", function(self, state, ply, wep)
+	
+end)--]]
 
 ROUND:Hook("TTTHasRoundBeenWon", function(self, state)
 	if (#round.GetActivePlayersByRole "Fighter" == 0) then
@@ -252,6 +231,13 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 	state.deaths[vic] = (state.deaths[vic] or 0) + 1
 
 	WriteRoundData("deaths", state.deaths[vic], vic)
+
+	if (state.deaths[vic] == 4) then
+		state.active[vic] = nil
+		WriteRoundData("left", table.Count(state.active))
+	end
+
+	pluto.scaling.set(vic, math.max(0.4, 1 - (state.deaths[vic] * 0.15)))
 
 	if (not IsValid(atk) or not atk:IsPlayer() or vic == atk) then
 		return

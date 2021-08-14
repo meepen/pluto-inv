@@ -404,7 +404,7 @@ concommand.Add("pluto_prepare_mini", function(ply, cmd, args)
     ply:ChatPrint("The " .. tostring(args[1]) .. " Mini-Event has been prepared.")
 end)
 
--- Testing --
+--- Testing ---
 concommand.Add("pluto_view_queue", function(ply, cmd, args)
     if (not pluto.cancheat(ply)) then
         return

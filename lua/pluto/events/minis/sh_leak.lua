@@ -66,7 +66,7 @@ if (SERVER) then
                 end
                 pluto.rounds.Notify("INTEL LEAK: ALL INNOCENTS RECEIVE " .. string.upper(ttt.Equipment.List[class].Name) .. "!", leak_color)
             end,
-            Shares = 1,
+            Shares = 3,
         },
         {
             func = function(ply, class, cost) -- Picks three random non-detective players and lists them as suspects
