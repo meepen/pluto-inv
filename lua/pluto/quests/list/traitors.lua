@@ -1,3 +1,6 @@
+--[[ * This Source Code Form is subject to the terms of the Mozilla Public
+     * License, v. 2.0. If a copy of the MPL was not distributed with this
+     * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 QUEST.Name = "Flawless Victory"
 QUEST.Description = "Win as a group of 3 or more traitors without anyone dying"
 QUEST.Color = Color(175, 47, 36)

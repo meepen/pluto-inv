@@ -1,3 +1,6 @@
+--[[ * This Source Code Form is subject to the terms of the Mozilla Public
+     * License, v. 2.0. If a copy of the MPL was not distributed with this
+     * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 sql.Query "CREATE TABLE IF NOT EXISTS pluto_currency_crossmap (steamid BIGINT UNSIGNED NOT NULL, currency VARCHAR(32) NOT NULL, amount INT UNSIGNED NOT NULL DEFAULT 0, PRIMARY KEY(steamid, currency))"
 
 pluto.currency = pluto.currency or {}

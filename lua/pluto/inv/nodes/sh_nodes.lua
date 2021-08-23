@@ -1,3 +1,6 @@
+--[[ * This Source Code Form is subject to the terms of the Mozilla Public
+     * License, v. 2.0. If a copy of the MPL was not distributed with this
+     * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 local pluto_disable_constellations = CreateConVar("pluto_disable_constellations", "0", {FCVAR_REPLICATED, FCVAR_ARCHIVE})
 
 pluto.nodes = pluto.nodes or {

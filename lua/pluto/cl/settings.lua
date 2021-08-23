@@ -1,3 +1,6 @@
+--[[ * This Source Code Form is subject to the terms of the Mozilla Public
+     * License, v. 2.0. If a copy of the MPL was not distributed with this
+     * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 local pluto_fov = CreateConVar("pluto_fov", GetConVar "fov_desired":GetFloat(), FCVAR_ARCHIVE, "FOV Addend", 60, 160)
 local pluto_trash_speed = CreateConVar("pluto_trash_speed", 1, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Speed multiplier for item trashing", 1, 5)
 local pluto_open_speed = CreateConVar("pluto_open_speed", 1, {FCVAR_ARCHIVE, FCVAR_UNLOGGED}, "Speed multiplier for item opening", 1, 5)

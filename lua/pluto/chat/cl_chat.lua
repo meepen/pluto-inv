@@ -1,3 +1,6 @@
+--[[ * This Source Code Form is subject to the terms of the Mozilla Public
+     * License, v. 2.0. If a copy of the MPL was not distributed with this
+     * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 local pluto_chatbox_x = CreateConVar("pluto_chatbox_x", 0.05, FCVAR_ARCHIVE, "Pluto chatbox x position", 0, 1)
 local pluto_chatbox_y = CreateConVar("pluto_chatbox_y", 0.15, FCVAR_ARCHIVE, "Pluto chatbox y position", 0, 1)
 local pluto_chat_fade_enable = CreateConVar("pluto_chat_fade_enable", "1", FCVAR_ARCHIVE, "enable", 0, 1)

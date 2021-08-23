@@ -1,3 +1,6 @@
+--[[ * This Source Code Form is subject to the terms of the Mozilla Public
+     * License, v. 2.0. If a copy of the MPL was not distributed with this
+     * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 sql.Query "CREATE TABLE IF NOT EXISTS pluto_map_plays (mapname VARCHAR(32) NOT NULL PRIMARY KEY, last_played INT UNSIGNED NOT NULL)"
 local last_played = sql.Query("SELECT * from pluto_map_plays ORDER BY last_played desc limit 6") or {}
 

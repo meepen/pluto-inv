@@ -1,3 +1,6 @@
+--[[ * This Source Code Form is subject to the terms of the Mozilla Public
+     * License, v. 2.0. If a copy of the MPL was not distributed with this
+     * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 local COSMETIC = pluto.cosmetics.byname("turtle", "base")
 COSMETIC.Model = "models/props/de_tides/vending_turtle.mdl"
 COSMETIC.Angle = Angle(-90, 0, 180)

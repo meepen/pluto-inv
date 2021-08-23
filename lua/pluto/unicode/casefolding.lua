@@ -1,3 +1,6 @@
+--[[ * This Source Code Form is subject to the terms of the Mozilla Public
+     * License, v. 2.0. If a copy of the MPL was not distributed with this
+     * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 return [[# CaseFolding-13.0.0.txt
 # Date: 2019-09-08, 23:30:59 GMT
 # © 2019 Unicode®, Inc.

@@ -1,3 +1,6 @@
+--[[ * This Source Code Form is subject to the terms of the Mozilla Public
+     * License, v. 2.0. If a copy of the MPL was not distributed with this
+     * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 QUEST.Name = "Traitor Tracker"
 QUEST.Description = "Find the DNA of living traitors from their victims"
 QUEST.Color = Color(21, 128, 0)

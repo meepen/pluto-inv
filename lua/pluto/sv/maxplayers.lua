@@ -1,3 +1,6 @@
+--[[ * This Source Code Form is subject to the terms of the Mozilla Public
+     * License, v. 2.0. If a copy of the MPL was not distributed with this
+     * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 local sv_visiblemaxplayers = GetConVar "sv_visiblemaxplayers"
 
 hook.Add("CheckPassword", "pluto_maxplayers", function(sid64, ipaddr, svpwd, clpwd)

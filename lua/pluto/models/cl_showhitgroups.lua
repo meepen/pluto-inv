@@ -1,3 +1,6 @@
+--[[ * This Source Code Form is subject to the terms of the Mozilla Public
+     * License, v. 2.0. If a copy of the MPL was not distributed with this
+     * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 local pluto_showhitgroups = CreateConVar("pluto_showhitgroups", 0, { FCVAR_CHEAT }, "Show hitgroups on player models.", 0, 1)
 
 local pluto_showhitgroups_basic = CreateConVar("pluto_showhitgroups_basic", 1, { FCVAR_CHEAT }, "Show hitgroups with basic text", 0, 1)

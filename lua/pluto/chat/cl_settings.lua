@@ -1,3 +1,6 @@
+--[[ * This Source Code Form is subject to the terms of the Mozilla Public
+     * License, v. 2.0. If a copy of the MPL was not distributed with this
+     * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 local pluto_chat_font = CreateConVar("pluto_chat_font", "Roboto Bk", FCVAR_ARCHIVE)
 local pluto_chat_font_bold = CreateConVar("pluto_chat_font_bold", "1", FCVAR_ARCHIVE, "bold", 0, 1)
 local pluto_chat_font_weight = CreateConVar("pluto_chat_font_weight", "100", FCVAR_ARCHIVE, "weight", 0, 1500)

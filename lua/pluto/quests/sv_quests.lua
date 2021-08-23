@@ -1,3 +1,6 @@
+--[[ * This Source Code Form is subject to the terms of the Mozilla Public
+     * License, v. 2.0. If a copy of the MPL was not distributed with this
+     * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 pluto.quests.byid = pluto.quests.byid or setmetatable({}, {__mode = "v"})
 pluto.quests.player_mt = pluto.quests.player_mt or {__index = {}}
 local PLAYERQUESTS = pluto.quests.player_mt.__index

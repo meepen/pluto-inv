@@ -1,3 +1,6 @@
+--[[ * This Source Code Form is subject to the terms of the Mozilla Public
+     * License, v. 2.0. If a copy of the MPL was not distributed with this
+     * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 local last_tab_id = CreateConVar("pluto_last_tab_opened", "0", FCVAR_ARCHIVE)
 
 local pluto_storage_toggled = CreateConVar("pluto_storage_toggled", 0)

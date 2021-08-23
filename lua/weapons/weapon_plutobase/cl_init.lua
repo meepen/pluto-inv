@@ -1,3 +1,6 @@
+--[[ * This Source Code Form is subject to the terms of the Mozilla Public
+     * License, v. 2.0. If a copy of the MPL was not distributed with this
+     * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 local pluto_inspect_toggle = CreateConVar("pluto_inspect_toggle", 1, FCVAR_ARCHIVE, "Makes the +inspect toggleable")
 local pluto_inspect_toggle_autoclose = CreateConVar("pluto_inspect_toggle_autoclose", 2, FCVAR_ARCHIVE, "Toggle mode +inspect auto close time", 0, 10)
 local pluto_inspect_lifespan = CreateConVar("pluto_inspect_lifespan", 0.2, FCVAR_ARCHIVE, "Lifespan of +inspect menu", 0, 1)

@@ -1,3 +1,6 @@
+--[[ * This Source Code Form is subject to the terms of the Mozilla Public
+     * License, v. 2.0. If a copy of the MPL was not distributed with this
+     * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 function math.fact(x)
 	return math.Round(math.sqrt(2 * math.pi / x) * ((x + 1 / ((12 * x) - 1 / (10 * x))) / math.exp(1)) ^ x)
 end

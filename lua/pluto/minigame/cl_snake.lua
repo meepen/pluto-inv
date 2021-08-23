@@ -1,3 +1,6 @@
+--[[ * This Source Code Form is subject to the terms of the Mozilla Public
+     * License, v. 2.0. If a copy of the MPL was not distributed with this
+     * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 local SNAKE = {
 	url = true and "http://va1.pluto.gg:7777/app/snake" or "http://localtest.me:9001/app/snake"
 }
