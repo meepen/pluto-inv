@@ -65,7 +65,7 @@ for _, v in pairs(Doors) do
 end
 
 ROUND:Hook("TTTBeginRound", function(self, state)
-	for _, ent in pairs(ents.GetAll()) do
+	for _, ent in ipairs(ents.GetAll()) do
 		if (Doors[ent:GetClass()]) then
 			ent:Remove()
 		end

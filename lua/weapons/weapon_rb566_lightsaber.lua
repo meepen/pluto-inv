@@ -95,7 +95,7 @@ function SWEP:SelectTargets( num )
 	} )]]
 
 	local p = {}
-	for id, ply in pairs( ents.GetAll() ) do
+	for id, ply in ipairs( ents.GetAll() ) do
 		if ( !ply:GetModel() or ply:GetModel() == "" or ply == self.Owner or ply:Health() < 1 ) then continue end
 		if ( string.StartWith( ply:GetModel() or "", "models/gibs/" ) ) then continue end
 		if ( string.find( ply:GetModel() or "", "chunk" ) ) then continue end

@@ -47,7 +47,7 @@ if SERVER then
 		fx:SetNormal(data.HitNormal)
 		util.Effect("exp_janus1",fx)
 		self.Entity:EmitSound("PetrolBoomer.Exp", self.Pos, 100, 100 )
-		for k,v in pairs(ents.FindInSphere(self.Entity:GetPos(),350)) do
+		for k,v in ipairs(ents.FindInSphere(self.Entity:GetPos(),350)) do
 			if GetConVar( "sv_tfa_cso_dmg_trinity_detect_player" ):GetInt() == 0 then
 				if v:IsNPC() or v:IsNextBot() or v:GetClass() == "prop_physics" then
 					v:Ignite(15)

@@ -17,9 +17,9 @@ if (SERVER) then
 
         pluto.rounds.Notify("Chance Dice have spawned around the map!", pluto.currency.byname._chancedice.Color)
         
-        local count = #player.GetHumans()
+        local count = player.GetCount()
 
-        for _, ply in pairs(player.GetHumans()) do
+        for _, ply in ipairs(player.GetHumans()) do
             if (not ply:Alive()) then
                 continue
             end

@@ -186,7 +186,7 @@ local NitroRewards = {
 						return
 					end
 					mysql_commit(db)
-					for _, ply in pairs(player.GetAll()) do
+					for _, ply in ipairs(player.GetAll()) do
 						pluto.inv.message(ply)
 							:write("nitro", reward_num, p)
 							:send()

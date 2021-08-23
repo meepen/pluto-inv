@@ -271,7 +271,7 @@ function SWEP:ShootEffects(bSecondary)
 end
 
 function SWEP:EntsInViewCone(pos, flDistance)
-	for k, v in pairs(ents.FindInSphere(pos, flDistance)) do
+	for k, v in ipairs(ents.FindInSphere(pos, flDistance)) do
 		if IsValid(v) && v != self && v != self.Owner && (v:IsPhysicsEntity() || v:IsNPC() || v:IsPlayer()) && self.Owner:EntInViewCone(v,25) then
 			return true
 		end

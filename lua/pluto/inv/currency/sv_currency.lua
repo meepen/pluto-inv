@@ -432,7 +432,7 @@ for name, values in pairs {
 		Pickup = function(ply)
 			local found = false
 			local melee = false
-			for _, wep in pairs(ply:GetWeapons()) do
+			for _, wep in ipairs(ply:GetWeapons()) do
 				if (wep.Slot == 0) then
 					melee = true
 					if (not rb655_IsLightsaber(wep)) then
@@ -661,7 +661,7 @@ function pluto.ghost_killed(e, dmg)
 		pluto.currency.spawnfor(atk, "tome", atk:GetPos())
 	elseif (rand == "all") then
 		admin.chatf(white_text, "The server has been blessed with ", pluto.currency.byname.tome)
-		for _, ply in pairs(player.GetHumans()) do
+		for _, ply in ipairs(player.GetHumans()) do
 			pluto.currency.spawnfor(ply, "tome")
 		end
 	elseif (rand == "share") then

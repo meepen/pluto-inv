@@ -79,11 +79,11 @@ function pluto.rounds.goodplayercount(name)
 		return false, "Event does not exist"
 	end
 
-	if (event.MinPlayers and #player.GetAll() < event.MinPlayers) then
+	if (event.MinPlayers and player.GetCount() < event.MinPlayers) then
 		return false, "Not enough players"
 	end
 
-    if (event.MaxPlayers and #player.GetAll() > event.MaxPlayers) then
+    if (event.MaxPlayers and player.GetCount() > event.MaxPlayers) then
         return false, "Too many players"
     end
 
@@ -264,11 +264,11 @@ function checkRoundQueue()
                 continue
             end
 
-            if (pluto.rounds.infobyname[name].MinPlayers and pluto.rounds.infobyname[name].MinPlayers > #player.GetAll()) then
+            if (pluto.rounds.infobyname[name].MinPlayers and pluto.rounds.infobyname[name].MinPlayers > player.GetCount()) then
                 continue
             end
 
-            if (pluto.rounds.infobyname[name].MaxPlayers and pluto.rounds.infobyname[name].MaxPlayers < #player.GetAll()) then
+            if (pluto.rounds.infobyname[name].MaxPlayers and pluto.rounds.infobyname[name].MaxPlayers < player.GetCount()) then
                 continue
             end
 

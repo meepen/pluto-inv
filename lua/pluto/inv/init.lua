@@ -509,7 +509,7 @@ function pluto.inv.addplayerexperience(ply, exp)
 
 	if (type(ply) == "Player") then
 		ply:SetPlutoExperience(ply:GetPlutoExperience() + exp)
-		for _, oply in pairs(player.GetAll()) do
+		for _, oply in ipairs(player.GetAll()) do
 			pluto.inv.message(oply)
 				:write("playerexp", ply, ply:GetPlutoExperience())
 				:send()

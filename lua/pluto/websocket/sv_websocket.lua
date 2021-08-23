@@ -131,7 +131,7 @@ local function get_for_player(ply)
 		ply.AvatarURL = json.response.players[1].avatarfull
 	end)
 end
-for _, ply in pairs(player.GetAll()) do
+for _, ply in ipairs(player.GetAll()) do
 	get_for_player(ply)
 end
 

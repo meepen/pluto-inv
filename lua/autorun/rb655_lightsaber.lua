@@ -46,7 +46,7 @@ end
 function rb655_GetLightsaber( ply )
 	if ( !IsValid( ply ) ) then return end
 
-	for i, wep in pairs( ply:GetWeapons() ) do
+	for i, wep in ipairs( ply:GetWeapons() ) do
 		if ( wep.IsLightsaber ) then return wep end
 	end
 end
@@ -121,7 +121,7 @@ rb655_AddForcePower( {
 
 		local maxdist = 128 * self._ForceRepulse
 
-		for i, e in pairs( ents.FindInSphere( self.Owner:GetPos(), maxdist ) ) do
+		for i, e in ipairs( ents.FindInSphere( self.Owner:GetPos(), maxdist ) ) do
 			if ( e == self.Owner ) then continue end
 
 			local dist = self.Owner:GetPos():Distance( e:GetPos() )
@@ -269,7 +269,7 @@ rb655_AddForcePower( {
 	action = function( self )
 		if ( self:GetForce() < 16 or CLIENT ) then return end
 
-		for id, ent in pairs( ents.FindInCone( self.Owner:GetShootPos(), self.Owner:GetAimVector(), 500, .01 ) ) do--self:SelectTargets( 5 ) ) do
+		for id, ent in ipairs( ents.FindInCone( self.Owner:GetShootPos(), self.Owner:GetAimVector(), 500, .01 ) ) do--self:SelectTargets( 5 ) ) do
 
 		if ( ent == self.Owner or ent:GetParent() == self.Owner or ent:GetMoveType() == 0 ) then continue end
 			ent:SetVelocity( self.Owner:GetAimVector() * 5000 )

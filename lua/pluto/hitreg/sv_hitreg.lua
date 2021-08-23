@@ -117,7 +117,7 @@ end)
 
 local function SnapshotHitboxes()
 	local ret = {}
-	for _, ply in pairs(player.GetAll()) do
+	for _, ply in ipairs(player.GetAll()) do
 		if (not ply:Alive()) then
 			continue
 		end

@@ -350,7 +350,7 @@ end)
 concommand.Add("test_minigame", function(ply, cmd, arg)
 	local game = snake.makegame(tonumber(arg[1]))
 
-	for _, ply in pairs(player.GetHumans()) do
+	for _, ply in ipairs(player.GetHumans()) do
 		game:AddPlayer(ply)
 	end
 end)

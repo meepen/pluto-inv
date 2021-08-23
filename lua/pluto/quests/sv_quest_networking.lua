@@ -45,7 +45,7 @@ end
 
 -- DEV SERVER RELOAD
 -- also geralt gay
-for _, ply in pairs(player.GetHumans()) do
+for _, ply in ipairs(player.GetHumans()) do
 	pluto.inv.message(ply)
 		:write "quests"
 		:send()

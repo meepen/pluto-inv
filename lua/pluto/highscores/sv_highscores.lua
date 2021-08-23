@@ -792,7 +792,7 @@ function pluto.highscores.addscore(db, ply, highscore, amt)
 		return false
 	end
 
-	if (pluto.highscores.byname[highscore].MinPlayers and #player.GetAll() < pluto.highscores.byname[highscore].MinPlayers) then
+	if (pluto.highscores.byname[highscore].MinPlayers and player.GetCount() < pluto.highscores.byname[highscore].MinPlayers) then
 		-- no error, just too few players
 		return false
 	end

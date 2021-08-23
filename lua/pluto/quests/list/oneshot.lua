@@ -33,7 +33,7 @@ hook.Add("EntityTakeDamage", "oneshot_quest", function(e, dmg)
 end)
 
 hook.Add("TTTBeginRound", "oneshot_quest", function(e, dmg)
-	for _, ply in pairs(player.GetAll()) do
+	for _, ply in ipairs(player.GetAll()) do
 		ply.DamageTakens = {}
 	end
 end)

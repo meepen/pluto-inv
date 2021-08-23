@@ -182,7 +182,7 @@ function PANEL:Init()
 			local text = self:GetText()
 			local last_space = text:sub(1, pos):match("[^ ]+$")
 			if (last_space) then
-				for _, ply in pairs(player.GetAll()) do
+				for _, ply in ipairs(player.GetAll()) do
 					local nick = ply:Nick()
 					if (nick:lower():StartWith(last_space:lower())) then
 						self:SetText(text:sub(1, pos - last_space:len()) .. nick .. text:sub(pos + 1))

@@ -45,7 +45,7 @@ if SERVER then
 		--print("Inital Think")
 		if !self.IsArmed then return end
 		--print("Armed Think")
-		for k,v in pairs(ents.FindInSphere(self.Entity:GetPos(),400)) do
+		for k,v in ipairs(ents.FindInSphere(self.Entity:GetPos(),400)) do
 			if GetConVar( "sv_tfa_cso_dmg_trinity_detect_player" ):GetInt() == 0 then
 				if v:IsNPC() or v:IsNextBot() then
 					if v:Health() > 0 then

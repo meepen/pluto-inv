@@ -24,7 +24,7 @@ local function FindTierByName(name)
 end
 
 local function FindWeaponByName(name)
-	for _, class in pairs(weapons.GetList()) do
+	for _, class in ipairs(weapons.GetList()) do
 		local wep = baseclass.Get(class.ClassName)
 
 		if (name:sub(-wep.PrintName:len()) == wep.PrintName) then

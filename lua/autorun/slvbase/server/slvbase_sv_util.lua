@@ -132,7 +132,7 @@ function util.BlastDmg(inflictor, attacker, pos, radius, dmg, TFilter, dmgType, 
 	TFilter = TFilter && ((type(TFilter) == "function" || type(TFilter) == "table") && TFilter || {TFilter})
 	dmgType = dmgType || DMG_GENERIC
 	local tblEntsHit = {}
-	for k, v in pairs(ents.FindInSphere(pos, radius)) do
+	for k, v in ipairs(ents.FindInSphere(pos, radius)) do
 		if (!TFilter || (type(TFilter) == "table" && !table.HasValue(TFilter, v)) || type(TFilter) != "table" && TFilter(v)) && !util.TraceLine({start = pos, endpos = v:GetPos() +v:OBBCenter(), mask = MASK_NPCWORLDSTATIC}).Hit && (!v:IsPlayer() || !v:SLVIsPossessing()) then
 			local posDmg = v:NearestPoint(pos)
 			tblEntsHit[v] = pos:Distance(posDmg)

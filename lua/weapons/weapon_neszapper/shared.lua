@@ -119,7 +119,7 @@ function SWEP:PlayerRagdollCreated(ply, rag, atk, dmg)
 		return
 	end
 
-	for _, oply in pairs(player.GetAll()) do
+	for _, oply in ipairs(player.GetAll()) do
 		print(oply, oply:Alive(), oply:Visible(rag))
 		if (oply:Alive() and not oply:GetRoleData().Evil and oply:Visible(rag)) then
 			return

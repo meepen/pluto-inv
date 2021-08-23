@@ -98,7 +98,7 @@ function PANEL:Think()
 			child:Remove()
 		end
 
-		for _, ply in pairs(player.GetAll()) do
+		for _, ply in ipairs(player.GetAll()) do
 			if (LocalPlayer() == ply) then
 				continue
 			end

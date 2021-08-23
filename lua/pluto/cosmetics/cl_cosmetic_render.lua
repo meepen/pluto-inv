@@ -114,7 +114,7 @@ hook.Add("PreRender", "pluto_cosmetics", function()
 	end
 
 	perfmon.enter "pluto_cosmetics"
-	for _, p in pairs(player.GetAll()) do
+	for _, p in ipairs(player.GetAll()) do
 		pluto.cosmetics.render(p)
 	end
 	perfmon.exit "pluto_cosmetics"

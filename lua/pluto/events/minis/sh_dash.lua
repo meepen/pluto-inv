@@ -71,7 +71,7 @@ if (SERVER) then
 
         local models = {}
 
-        for _, ply in pairs(player.GetAll()) do
+        for _, ply in ipairs(player.GetAll()) do
             if (not ply:Alive() or ply == dasher) then
                 continue
             end

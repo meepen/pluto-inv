@@ -116,7 +116,7 @@ end
 
 function ents.GetNPCs()
 	local tblNPCs = {}
-	for k, ent in pairs(ents.GetAll()) do
+	for k, ent in ipairs(ents.GetAll()) do
 		if ent:IsNPC() then table.insert(tblNPCs, ent) end
 	end
 	return tblNPCs

@@ -15,10 +15,10 @@ if (SERVER) then
 
 		pluto.rounds.Notify("It's raining droplets!", pluto.currency.byname.droplet.Color)
 
-		local count = #player.GetHumans()
+		local count = player.GetCount()
 
 		timer.Create("pluto_mini_" .. name, math.max(0.5, 0.5 + count / 12), math.max(40, 50 - count / 12), function()
-			for _, ply in pairs(player.GetHumans()) do
+			for _, ply in ipairs(player.GetHumans()) do
 				if (not ply:Alive()) then
 					continue
 				end

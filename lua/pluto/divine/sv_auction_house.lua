@@ -29,7 +29,7 @@ concommand.Add("pluto_update_market_data", function(p)
 	pluto.db.instance(function(db)
 		mysql_stmt_run(db, "DELETE FROM pluto_class_kv WHERE 1")
 
-		for _, wep in pairs(weapons.GetList()) do
+		for _, wep in ipairs(weapons.GetList()) do
 			wep = baseclass.Get(wep.ClassName)
 			mysql_stmt_run(db, "INSERT INTO pluto_class_kv (class, k, v) VALUES (?, 'wep_slot', ?) ON DUPLICATE KEY UPDATE v = v", wep.ClassName, wep.Slot or 255)
 			mysql_stmt_run(db, "INSERT INTO pluto_class_kv (class, k, v) VALUES (?, 'ammo_type', ?) ON DUPLICATE KEY UPDATE v = v", wep.ClassName, pluto.class_kv.ammo_type[string.lower(wep.Primary and wep.Primary.Ammo or "none")])

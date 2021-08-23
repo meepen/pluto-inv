@@ -15,10 +15,10 @@ if (SERVER) then
 
 		pluto.rounds.Notify("It's shooting stars!", pluto.currency.byname.stardust.Color)
 
-		local count = #player.GetHumans()
+		local count = player.GetCount()
 
 		timer.Create("pluto_mini_" .. name, math.max(3, 2 + count / 8), math.max(20 - count / 6, 15), function()
-			for _, ply in pairs(player.GetHumans()) do
+			for _, ply in ipairs(player.GetHumans()) do
 				if (not ply:Alive()) then
 					continue
 				end

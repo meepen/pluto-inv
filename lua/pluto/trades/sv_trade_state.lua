@@ -266,7 +266,7 @@ function pluto.trades.updatefor(ply, oply)
 end
 
 function pluto.trades.start(ply, oply)
-	for _, ply2 in pairs(player.GetAll()) do
+	for _, ply2 in ipairs(player.GetAll()) do
 		if (ply2 == ply or ply2 == oply) then
 			continue
 		end

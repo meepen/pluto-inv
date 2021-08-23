@@ -234,7 +234,7 @@ function SWEP:FireBulletsCallback(tr, dmginfo, data)
 
 		local damage, dist = 20, 100
 
-		for _, ent in pairs(ents.FindInSphere(dmg:GetDamagePosition(), dist)) do
+		for _, ent in ipairs(ents.FindInSphere(dmg:GetDamagePosition(), dist)) do
 			if (ent:IsPlayer() and ent:Alive()) then
 				dmg:SetDamage(damage - ent:GetPos():Distance(dmg:GetDamagePosition()) / dist * damage)
 				ent:TakeDamageInfo(dmg)

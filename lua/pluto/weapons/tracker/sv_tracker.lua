@@ -30,7 +30,7 @@ local function IsPlutoGun(wep)
 end
 
 hook.Add("PlayerPostLoadout", "pluto_tracker", function(ply)
-	for _, wep in pairs(ply:GetWeapons()) do
+	for _, wep in ipairs(ply:GetWeapons()) do
 		if (not IsPlutoGun(wep)) then
 			continue
 		end
@@ -150,7 +150,7 @@ hook.Add("DoPlayerDeath", "pluto_tracker", function(ply, atk, dmg)
 	local classname = wep:GetClass()
 	addstat(classname, "kills", 1)
 
-	for _, vic_wep in pairs(ply:GetWeapons()) do
+	for _, vic_wep in ipairs(ply:GetWeapons()) do
 		if (not IsPlutoGun(vic_wep)) then
 			continue
 		end

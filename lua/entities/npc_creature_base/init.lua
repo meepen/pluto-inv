@@ -1761,7 +1761,7 @@ end
 
 cvars.AddChangeCallback("ai_disabled", function(cvar, prevValue, newValue)
 	if tobool(newValue) then
-		for k, ent in pairs(ents.GetAll()) do
+		for k, ent in ipairs(ents.GetAll()) do
 			if ent:IsNPC() && ent.bScripted then
 				ent:Interrupt()
 			end
@@ -1947,7 +1947,7 @@ function ENT:HearEnemy(ent)
 	if(ent) then
 		return self:OBBDistance(ent) <= self.fHearDistance && (!ent:IsPlayer() || !ent:Crouching() && (ent:KeyDown(IN_FORWARD) || ent:KeyDown(IN_BACK) || ent:KeyDown(IN_MOVELEFT) || ent:KeyDown(IN_MOVERIGHT) || ent:KeyDown(IN_JUMP)) || self:OBBDistance(ent) <= 75)
 	end
-	for _, ent in pairs(ents.FindInSphere(self:GetPos(), self.fHearDistance)) do
+	for _, ent in ipairs(ents.FindInSphere(self:GetPos(), self.fHearDistance)) do
 		if(self:IsEnemy(ent) && (!ent:IsPlayer() || !ent:Crouching() && (ent:KeyDown(IN_FORWARD) || ent:KeyDown(IN_BACK) || ent:KeyDown(IN_MOVELEFT) || ent:KeyDown(IN_MOVERIGHT) || ent:KeyDown(IN_JUMP)) || self:OBBDistance(ent) <= 75)) then
 			self:OnHearEnemy(ent)
 			return true
@@ -2320,7 +2320,7 @@ function ENT:DoMeleeDamage(fDist,iDmg,angViewPunch,iAttachment,funcAdd,bIgnoreAn
 	local posSelf = self:GetPos()
 	local posSelfCenter = posSelf +self:OBBCenter()
 	local bHit
-	for _, ent in pairs(ents.FindInSphere(posDmg,fDist)) do
+	for _, ent in ipairs(ents.FindInSphere(posDmg,fDist)) do
 		if IsValid(ent) && (self:IsEnemy(ent) || ent:IsPhysicsEntity()) && self:Visible(ent) && ent:Health() > 0 then
 			local tgt = self:GetTargetEntity(ent)
 			local posEnemy = tgt:GetPos()
@@ -2401,7 +2401,7 @@ function ENT:DealFlameDamage(dist,dmg,attacker)
 	local dist = dist || self.fRangeDistance
 	local dmg = dmg || GetConVarNumber("sk_" .. self.skName .. "_dmg_flame")
 	local posDmg = self:GetPos() +(self:GetForward() *self:OBBMaxs().y)
-	for _, ent in pairs(ents.FindInSphere(posDmg,dist)) do
+	for _, ent in ipairs(ents.FindInSphere(posDmg,dist)) do
 		if(ent:IsValid() && (self:IsEnemy(ent) || ent:IsPhysicsEntity()) && self:Visible(ent)) then
 			local posEnt = ent:GetPos()
 			local yaw = self:GetAngleToPos(posEnt,self:GetAimAngles()).y
@@ -2595,7 +2595,7 @@ function ENT:SetUpEnemies()
 		if table.HasValue(classes, "player") then iDispPly = disp; break end
 	end
 	
-	for _, pl in pairs(player.GetAll()) do
+	for _, pl in ipairs(player.GetAll()) do
 		local rel = gamemode.Call("SetupRelationship",self,pl)
 		if(rel != true && (!self.SetupRelationship || !self:SetupRelationship(pl))) then self:AddEntityRelationship(pl, iDispPly || D_LI, 10) end
 	end
@@ -2606,7 +2606,7 @@ function ENT:SetUpEnemies()
 		end
 	end)
 	
-	for _, ent in pairs(ents.GetAll()) do
+	for _, ent in ipairs(ents.GetAll()) do
 		if ent:IsNPC() then
 			local class = ent:GetClass()
 			local disp = self.GetDisposition && self:GetDisposition(ent,class) || ent.GetDisposition && ent:GetDisposition(self,self:GetClass())

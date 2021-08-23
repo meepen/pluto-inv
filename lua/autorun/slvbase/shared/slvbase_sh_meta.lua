@@ -263,7 +263,7 @@ function meta:NoCollide(ent)
 		return
 	end
 	if tblEntsNoCollideByClass[self] && tblEntsNoCollideByClass[self][ent] then return end
-	for _, ent in pairs(ents.FindByClass(ent)) do
+	for _, ent in ipairs(ents.FindByClass(ent)) do
 		tblEntsNoCollide[self][ent] = true
 	end
 	for ent, _ in pairs(tblEntsNoCollide[self]) do if !IsValid(ent) then tblEntsNoCollide[self][ent] = nil end end

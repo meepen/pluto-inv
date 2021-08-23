@@ -53,7 +53,7 @@ if SERVER then
 	end
 
 	function ENT:Think()
-		for key,thing in pairs(ents.FindInSphere(self:GetPos(),500))do
+		for key,thing in ipairs(ents.FindInSphere(self:GetPos(),500))do
             if((thing:IsNPC())and(self:Visible(thing)))then
                 if(table.HasValue({"npc_strider","npc_combinegunship","npc_helicopter","npc_turret_floor","npc_turret_ground","npc_turret_ceiling"},thing:GetClass())) then
                     thing:SetHealth(1)

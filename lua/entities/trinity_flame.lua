@@ -45,7 +45,7 @@ if SERVER then
 		--print("Inital Think")
 		if !self.IsArmed then return end
 		--print("Armed Think")
-		for k,v in pairs(ents.FindInSphere(self.Entity:GetPos(),275)) do
+		for k,v in ipairs(ents.FindInSphere(self.Entity:GetPos(),275)) do
 			if GetConVar( "sv_tfa_cso_dmg_trinity_detect_player" ):GetInt() == 0 then
 				if v:IsNPC() or v:IsNextBot() then
 					if v:Health() > 0 then
@@ -80,7 +80,7 @@ if SERVER then
 		fx:SetOrigin(self:GetPos())
 		--fx:SetNormal(data.HitNormal)
 		util.Effect("exp_trinity_flame",fx)
-		for k,v in pairs(ents.FindInSphere(self.Entity:GetPos(),350)) do
+		for k,v in ipairs(ents.FindInSphere(self.Entity:GetPos(),350)) do
 			if GetConVar( "sv_tfa_cso_dmg_trinity_detect_player" ):GetInt() == 0 then
 				if v:IsNPC() or v:IsNextBot() or v:GetClass() == "prop_physics" then
 					v:Ignite(60)

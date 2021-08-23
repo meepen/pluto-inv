@@ -45,7 +45,7 @@ hook.Add("ShutDown", "pluto_currency_crossmap", function()
 		plylist[cur] = (plylist[cur] or 0) + 1
 	end
 
-	for _, ply in pairs(player.GetAll()) do
+	for _, ply in ipairs(player.GetAll()) do
 		local spawns = pluto.currency.tospawn[ply]
 		if (spawns) then
 			list[ply] = list[ply] or {}

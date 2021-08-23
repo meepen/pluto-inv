@@ -610,7 +610,7 @@ end )
 
 
 if SERVER then
-	for k,v in pairs(ents.FindInSphere(self.Owner:GetPos(),190)) do
+	for k,v in ipairs(ents.FindInSphere(self.Owner:GetPos(),190)) do
 		if GetConVar( "sv_tfa_cso_dmg_gunslingers_player" ):GetInt() == 0 then
 			if v != self.Owner and (v:IsNPC() or v:IsNextBot() or v:GetClass() == "func_prop" ) then
 				if v:Health() > 0 then
@@ -667,7 +667,7 @@ local effectdata = EffectData()
 	local phys_force = 1500
 	local push_force = 1024
 
-	for k, target in pairs( ents.FindInSphere( self.Owner:GetPos(), radius ) ) do
+	for k, target in ipairs( ents.FindInSphere( self.Owner:GetPos(), radius ) ) do
 
 		if IsValid( target ) then
 			local tpos = target:LocalToWorld( target:OBBCenter() )

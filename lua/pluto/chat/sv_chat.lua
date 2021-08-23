@@ -213,7 +213,7 @@ hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 	if (sent_in.Send) then
 		sent_in.Send(from, content)
 	else
-		for _, ply in pairs(player.GetAll()) do
+		for _, ply in ipairs(player.GetAll()) do
 			local canSee = hook.Run("PlayerCanSeePlayersChat", texts, teamchat, ply, from)
 			if canSee then
 				pluto.inv.message(ply)

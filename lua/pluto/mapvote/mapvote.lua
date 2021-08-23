@@ -77,7 +77,7 @@ end
 
 function pluto.mapvote.broadcast()
 	--]]print("broadcasting mapvote")
-	for _, ply in pairs(player.GetAll()) do
+	for _, ply in ipairs(player.GetAll()) do
 		--]]print("writing mapvote to", ply)
 		pluto.inv.message(ply)
 			:write "mapvote"
@@ -170,7 +170,7 @@ function pluto.inv.readvotemap(cl)
 		end
 	end
 
-	for _, ply in pairs(player.GetAll()) do
+	for _, ply in ipairs(player.GetAll()) do
 		--]]print("writing mapvotes to", ply)
 		pluto.inv.message(ply)
 			:write("mapvotes", votes)
@@ -381,7 +381,7 @@ hook.Add("Initialize", "pluto_map", function()
 end)
 
 hook.Add("ChangeMap", "pluto_mapvote", function(reason)
-    for _, ply in pairs(player.GetAll()) do
+    for _, ply in ipairs(player.GetAll()) do
         ply:ChatPrint("Server is changing map. Reason: " .. reason)
 	end
 

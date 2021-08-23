@@ -61,7 +61,7 @@ function ENT:Think()
 	if CurTime() >= self.delayRemove then self:Remove(); return end
 	if !self.bHit then
 		if self:WaterLevel() == 3 then
-			for k, v in pairs(ents.FindInSphere(self:GetPos(), 200)) do
+			for k, v in ipairs(ents.FindInSphere(self:GetPos(), 200)) do
 				if IsValid(v) && (v:IsNPC() || v:IsPlayer()) && v:Health() > 0 then
 					local sClass = v:GetClass()
 					if sClass != "monster_shocktrooper" && sClass != "monster_shockroach" then
