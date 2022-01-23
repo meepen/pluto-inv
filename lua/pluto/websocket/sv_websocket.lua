@@ -6,6 +6,7 @@ require "gwsockets"
 local cross_id = CreateConVar("pluto_cross_id", "unknown", FCVAR_ARCHIVE)
 
 local config = util.JSONToTable(file.Read("cfg/pluto.json", "GAME")).nix
+local apikey = util.JSONToTable(file.Read("cfg/pluto.json", "GAME")).steam.apikey
 
 if (pluto.WS) then
 	pluto.WS:close()
@@ -57,22 +58,15 @@ WS:write(util.TableToJSON {
 	client_secret = config.secret
 })
 
-hook.Add("OnPlayerSay", "pluto_cross_chat", function(ply, content)
+hook.Add("DoPlutoCrossChat", "pluto_cross_chat", function(ply, content)
 	if (not pluto.WS) then
 		return
 	end
+	print(ply, content)
 
 	local texts = {}
 	for i = 2, #content do
 		local data = content[i]
-
-		if (i == 2 and (not isstring(data) or data:sub(1, 1) ~= "#")) then
-			return
-		end
-
-		if (i == 2) then
-			data = data:sub(2)
-		end
 
 		if (isstring(data)) then
 			table.insert(texts, data)
@@ -85,15 +79,17 @@ hook.Add("OnPlayerSay", "pluto_cross_chat", function(ply, content)
 
 	local text = table.concat(texts, "")
 
-	if (text and text ~= "") then
-		pluto.WS:write(util.TableToJSON {
-			type = "msg",
-			author = ply:Nick(),
-			content = text,
-			from = cross_id:GetString(),
-			avatar = ply.AvatarURL,
-		})
+	if (not text or text == "") then
+		return
 	end
+
+	pluto.WS:write(util.TableToJSON {
+		type = "msg",
+		author = ply:Nick(),
+		content = text,
+		from = cross_id:GetString(),
+		avatar = ply.AvatarURL,
+	})
 
 	pluto.inv.message(player.GetAll())
 		:write("chatmessage", {"#", ply, ": ", text}, "Cross", false)
@@ -106,7 +102,7 @@ local function get_for_player(ply)
 		return
 	end
 
-	http.Fetch("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=B2B585FB31B418B2C4B14F9F2D6D9750&steamids=" .. ply:SteamID64(), function(dat)
+	http.Fetch("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" .. apikey .. "&steamids=" .. ply:SteamID64(), function(dat)
 		if (not dat) then
 			return
 		end
