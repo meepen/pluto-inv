@@ -5,19 +5,7 @@ require "gwsockets"
 
 local cross_id = CreateConVar("pluto_cross_id", "unknown", FCVAR_ARCHIVE)
 
-local config = util.JSONToTable [[{
-	"secret": "2tve4#$@!VFf4123!@RFD#$ WX@B",
-	"port": 7777,
-	"host": "va1.pluto.gg"
-}]]
-
-if (false) then
-	config = util.JSONToTable [[{
-		"secret": "2tve4#$@!VFf4123!@RFD#$ WX@B",
-		"port": 9001,
-		"host": "localtest.me"
-	}]]
-end
+local config = util.JSONToTable(file.Read("cfg/pluto.json", "GAME")).nix
 
 if (pluto.WS) then
 	pluto.WS:close()

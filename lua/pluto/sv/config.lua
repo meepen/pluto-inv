@@ -1,20 +1,19 @@
 --[[ * This Source Code Form is subject to the terms of the Mozilla Public
      * License, v. 2.0. If a copy of the MPL was not distributed with this
      * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
-local config = {
-	db = {
-		host = "108.61.81.41",
-		username = "pluto",
-		database = "pluto",
-		password = "a*5E@KSbt?aJ5+^q", -- old: "IwE6&60b^z%h$EM9", new: "a*5E@KSbt?aJ5+^q",
-		name = "Main",
-		poolamount = 15
-	},
-}
+
+local config = util.JSONToTable(file.Read("cfg/pluto.json", "GAME"))
 
 include "mysql_pool.lua"
 include "cmysql.lua"
-pluto.pool = pool.create(config.db.poolamount, config.db.host, config.db.username, config.db.password, config.db.database)
+pluto.pool = pool.create(
+	config.mysql.pool or 1,
+	config.mysql.hostname,
+	config.mysql.username,
+	config.mysql.password,
+	config.mysql.database,
+	config.mysql.port
+)
 
 timer.Create("pluto_pool_keepalive", 60, 0, function()
 	pluto.pool:KeepAlive()	

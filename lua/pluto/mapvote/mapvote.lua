@@ -15,7 +15,7 @@ pluto.mapvote.boosts = pluto.mapvote.boosts or {}
 pluto.mapvote.history = {}
 pluto.mapvote.popular = {}
 pluto.mapvote.liked = {}
-for _, map in pairs(sql.Query "SELECT mapname, CAST(strftime('%s', 'now') AS INT UNSIGNED) - last_played as ago FROM pluto_map_plays ORDER BY ago ASC") do
+for _, map in pairs(sql.Query "SELECT mapname, CAST(strftime('%s', 'now') AS INT UNSIGNED) - last_played as ago FROM pluto_map_plays ORDER BY ago ASC" or {}) do
 	table.insert(pluto.mapvote.history, {
 		name = map.mapname,
 		ago = map.ago
