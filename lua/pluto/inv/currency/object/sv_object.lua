@@ -171,7 +171,7 @@ hook.Add("TTTPrepareRound", "pluto_new_currency_die", function()
 
 	for id, cur in pairs(pluto.currency.object_list) do
 		if (cur:GetDieRound() <= round) then
-			cur:Remove()
+			-- cur:Remove()
 		end
 	end
 end)
