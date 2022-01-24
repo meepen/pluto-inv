@@ -46,6 +46,10 @@ local rands = setmetatable({}, {
 })
 
 local function DrawMovingTexture(item, x, y, w, h)
+	do
+		return false
+	end
+
 	local rand = rands[item]
 	local img = textures[item:GetBackgroundTexture()]
 	if (not img) then
