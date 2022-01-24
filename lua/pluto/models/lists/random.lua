@@ -18,6 +18,14 @@ c "spy" {
 	SubDescription = "Well, off to visit your mother!\nSuggested by BURNSY (and Phrot) on the March 2020 Forum Thread"
 }
 
+c "kagamine_len" {
+	Name = "Len Kagamine",
+	Model = "models/captainbigbutt/vocaloid/len.mdl",
+	Hands = nil,
+	Color = Color(255,238,2),
+	SubDescription = "'Wait, weren't you supposed to be weraring a christmas hat?'\n 'I couldn't find it...'"
+}
+
 -- needs hitbox fixer
 c "ror2_commando" {
 	Name = "Risk Of Rain 2 - Commando",
