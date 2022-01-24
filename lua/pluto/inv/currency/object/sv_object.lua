@@ -115,7 +115,7 @@ function pluto.currency.entity()
 	ent:SetNetworkedPositionTime(CurTime())
 	ent:SetMovementType(CURRENCY_MOVESTILL)
 	ent:SetCurrencyType "unknown"
-	ent:SetDieRound(ttt.GetRoundNumber() + 3)
+	ent:SetDieRound(ttt.GetRoundNumber() + 128)
 
 	pluto.currency.object_list[id] = ent
 
@@ -171,7 +171,7 @@ hook.Add("TTTPrepareRound", "pluto_new_currency_die", function()
 
 	for id, cur in pairs(pluto.currency.object_list) do
 		if (cur:GetDieRound() <= round) then
-			-- cur:Remove()
+			cur:Remove()
 		end
 	end
 end)
