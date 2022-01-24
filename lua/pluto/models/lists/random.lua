@@ -21,7 +21,7 @@ c "spy" {
 c "kagamine_len" {
 	Name = "Len Kagamine",
 	Model = "models/captainbigbutt/vocaloid/len.mdl",
-	Hands = nil,
+	Hands = "models/captainbigbutt/vocaloid/c_arms/len.mdl",
 	Color = Color(255,238,2),
 	SubDescription = "'Wait, weren't you supposed to be weraring a christmas hat?'\n 'I couldn't find it...'"
 }
