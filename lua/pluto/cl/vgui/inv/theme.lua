@@ -11,10 +11,12 @@ pluto.ui.theme = setmetatable({
 	default = {
 		XButton = Color(0xd7, 0x2c, 0x2d),
 		["?Button"] = Color(0x2c, 0xd7, 0x2d),
-		InnerColor = Color(64, 66, 74),
-		InnerColorInactive = Color(35, 36, 43),
+		InnerColor = Color(64, 66, 74, 200),
+		InnerColorInactive = Color(35, 36, 43, 150),
 		TextActive = Color(255, 255, 255),
 		InnerColorSeperator = Color(95, 96, 102),
+		BackgroundColor = Color(48, 50, 59, 220),
+		TabBackground = Color(38, 38, 38, 240),
 	}
 }, {
 	__call = function(self, k)

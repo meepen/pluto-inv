@@ -315,9 +315,7 @@ function PANEL:Init()
 			end)
 		end
 		function item.OnLeftClick(s)
-			--[[]]print("runnning item.OnLeftClick with item", s)
-			--[[]]PrintTable(s)
-			if (not s.Item) then
+			if (not s or not s.Item) then
 				return
 			end
 			pluto.ui.highlight(s.Item)

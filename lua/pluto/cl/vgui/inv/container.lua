@@ -52,7 +52,6 @@ vgui.Register("pluto_inv_border", PANEL, "EditablePanel")
 local PANEL = {}
 
 function PANEL:Init()
-	--[[]]print("Initializing pluto inv")
 	self.KeyboardFocus = {}
 	self.StorageTabs = {}
 
@@ -62,7 +61,7 @@ function PANEL:Init()
 	self:SetSize(pluto.ui.sizings "MainWidth" + self.SidePanelSize, pluto.ui.sizings "MainHeight" + self.BottomSize)
 
 	self.SidePanel = self:Add "ttt_curved_panel"
-	self.SidePanel:SetWide(self.SidePanelSize + 10)
+	self.SidePanel:SetWide(self.SidePanelSize)
 
 	self.SidePanelContainer = self.SidePanel:Add "ttt_curved_panel"
 	self.SidePanelContainer:Dock(FILL)
@@ -71,7 +70,7 @@ function PANEL:Init()
 	self.StorageTabListContainer = self.SidePanelContainer:Add "EditablePanel"
 	self.StorageTabListContainer:Dock(FILL)
 	local w_spacing = 5
-	self.StorageTabListContainer:DockPadding(10 + w_spacing, 12, w_spacing, 4)
+	self.StorageTabListContainer:DockPadding(w_spacing, 12, w_spacing, 4)
 
 	function self.StorageTabListContainer.PerformLayout(s, w, h)
 		self:SelectTab(self.ActiveStorageTab, true)
@@ -87,11 +86,11 @@ function PANEL:Init()
 	self.SidePanelBorderContainer = self.SidePanelContainer:Add "pluto_inv_border"
 	self.SidePanelBorderContainer:Dock(TOP)
 
-	self.Main = self:Add "ttt_curved_panel"
+	self.Main = self:Add "EditablePanel"
 	self.Main:DockMargin(0, 0, self.SidePanelSize, 0)
 	self.Main:Dock(FILL)
 
-	self.TabContainer = self.Main:Add "EditablePanel"
+	self.TabContainer = self.Main:Add "ttt_curved_panel"
 	self.TabContainer:Dock(TOP)
 	self.TabContainer:SetTall(self.TopSize)
 
@@ -189,13 +188,13 @@ function PANEL:Init()
 	self.StorageLabel:SetTextColor(pluto.ui.theme "TextActive")
 
 	-- THEME
-	self.Main:SetColor(Color(38, 38, 38))
 	self.SidePanel:SetColor(Color(57, 57, 57))
-	self.Container:SetColor(Color(48, 50, 59))
+	self.TabContainer:SetColor(pluto.ui.theme "TabBackground")
+	self.Container:SetColor(pluto.ui.theme "BackgroundColor")
 	self.SidePanelContainer:SetColor(pluto.ui.theme "InnerColor")
 
-	self.Main:SetCurve(4)
 	self.SidePanel:SetCurve(4)
+	self.TabContainer:SetCurve(4)
 	self.SidePanel:SetCurveTopLeft(false)
 	self.SidePanel:SetCurveBottomLeft(false)
 	self.Container:SetCurveTopLeft(false)
@@ -203,6 +202,8 @@ function PANEL:Init()
 	self.SidePanelContainer:SetCurveTopLeft(false)
 	self.SidePanelContainer:SetCurveBottomLeft(false)
 	self.SidePanelContainer:SetCurveTopRight(false)
+	self.TabContainer:SetCurveBottomRight(false)
+	self.TabContainer:SetCurveBottomLeft(false)
 
 	self.Tabs = {}
 	self.CachedTabs = {}

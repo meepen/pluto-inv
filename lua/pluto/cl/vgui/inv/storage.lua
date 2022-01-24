@@ -29,7 +29,7 @@ function PANEL:Init()
 	self.SearchyBoi:SetTextColor(pluto.ui.theme "TextActive")
 	self.SearchyBoi:SetRenderSystem(pluto.fonts.systems.shadow)
 	self.SearchyBoi:SetFont "pluto_inventory_font"
-	self.SearchyBoi:SetText "Highlight:" -- Changed from "Search:"
+	self.SearchyBoi:SetText "Find:"
 	self.SearchyBoi:DockMargin(0, 4, 5, 3)
 	self.SearchyBoi:SizeToContentsX()
 
