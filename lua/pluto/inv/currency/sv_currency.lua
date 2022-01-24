@@ -464,7 +464,7 @@ for name, values in pairs {
 		Types = "None",
 	},
 	stardust = {
-		Shares = 1500,
+		Shares = 0,
 	},
 	ticket = {
 		Shares = 1,
