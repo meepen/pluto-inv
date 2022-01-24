@@ -3,11 +3,11 @@
      * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 pluto.currency.shares = 0
 
-local global_multiplier = 2
+local global_multiplier = 1
 
-local currency_per_round = 3
+local currency_per_round = 1
 
-local pluto_currency_spawnrate = CreateConVar("pluto_currency_spawnrate", "0.9")
+local pluto_currency_spawnrate = CreateConVar("pluto_currency_spawnrate", "1")
 
 local crate1_fill = 750 / (5 + 6 + 9)
 local xmas2020_fill = 200 / (11)
@@ -927,7 +927,7 @@ hook.Add("DoPlayerDeath", "pluto_currency_add", function(vic, damager, dmg)
 end)
 
 function pluto.currency.givespawns(ply, amt)
-	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or currency_per_round) + amt * pluto_currency_spawnrate:GetFloat() * math.min(2, pluto.currency.navs.total / 70000 * 1.3) * global_multiplier
+	pluto.currency.tospawn[ply] = (pluto.currency.tospawn[ply] or currency_per_round) + amt * pluto_currency_spawnrate:GetFloat() * global_multiplier
 end
 
 function pluto.inv.readrename(cl)
