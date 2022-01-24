@@ -3,5 +3,6 @@
      * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 return {
 	Name = "Mystical",
-	affixes = 5
+	affixes = 5,
+	Color = Color(51, 204, 186),
 }

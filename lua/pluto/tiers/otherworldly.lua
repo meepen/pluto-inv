@@ -10,5 +10,6 @@ return {
 	},
 	SubDescription = {
 		tags = "This gun seems to roll Damage over Time modifiers 2x as often",
-	}
+	},
+	Color = Color(185, 70, 177),
 }

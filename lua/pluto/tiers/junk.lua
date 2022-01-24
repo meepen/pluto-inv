@@ -3,5 +3,6 @@
      * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 return {
 	Name = "Junk",
-	affixes = 2
+	affixes = 2,
+	Color = Color(150, 150, 150),
 }

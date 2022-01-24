@@ -158,7 +158,7 @@ function SWEP:SetInventoryItem(gun)
 			return
 		end
 
-		if (GetConVar("pluto_disable_constellations"):GetBool()) then
+		if (pluto_disable_constellations:GetBool()) then
 			return
 		end
 

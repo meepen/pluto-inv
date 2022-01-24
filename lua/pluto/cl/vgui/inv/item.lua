@@ -416,7 +416,7 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 		surface.DrawTexturedRect(x + w - 15, y + 5, 10, 10)
 	end
 
-	if (self.Item.constellations and not GetConVar("pluto_disable_constellations"):GetBool()) then
+	if (self.Item.constellations and not pluto_disable_constellations:GetBool()) then
 		surface.SetDrawColor(color_white)
 		surface.SetMaterial(pluto.getsuntexture(0))
 		surface.DrawTexturedRect(x + 3, y + 3, 12, 12)

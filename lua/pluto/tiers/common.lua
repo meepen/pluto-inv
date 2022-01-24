@@ -3,5 +3,6 @@
      * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 return {
 	Name = "Common",
-	affixes = 4
+	affixes = 4,
+	Color = Color(65, 190, 73),
 }

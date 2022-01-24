@@ -304,6 +304,10 @@ function pluto.nodes.fromrows(rows)
 end
 
 function pluto.nodes.getfor(db, wep)
+	if (pluto_disable_constellations:GetBool()) then
+		return {}
+	end
+
 	if (wep.constellations) then
 		return wep.constellations
 	end
@@ -362,6 +366,10 @@ function pluto.inv.readunlockmajors(cl)
 	local two = ((one - 2) % 4) + 1
 	one, two = one + 1, two + 1
 
+	if (pluto_disable_constellations:GetBool()) then
+		return
+	end
+
 	local trees = tree.make_bubbles(item.constellations, item.RowID, item.ClassName)
 
 	for i = 2, 5 do
@@ -405,6 +413,10 @@ function pluto.inv.readunlocknode(cl)
 	local id = net.ReadUInt(32)
 	local bubble_id = net.ReadUInt(32)
 	local node_id = net.ReadUInt(32)
+
+	if (pluto_disable_constellations:GetBool()) then
+		return
+	end
 
 	local item = pluto.itemids[id]
 	if (not item or item.Owner ~= cl:SteamID64() or not item.constellations) then
@@ -466,6 +478,10 @@ end
 
 function pluto.inv.readunlockconstellations(cl)
 	local item = pluto.itemids[net.ReadUInt(32)]
+
+	if (pluto_disable_constellations:GetBool()) then
+		return
+	end
 
 	if (not item or item.Owner ~= cl:SteamID64() or item.constellations or item.Type ~= "Weapon" or item.Tier and item.Tier.InternalName == "unique") then
 		cl:ChatPrint("That item is not able to have constellations.")
