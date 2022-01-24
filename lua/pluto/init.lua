@@ -66,8 +66,8 @@ function PLAYER:GetPlutoExperience()
 	return pluto.experience[self:SteamID64()] or 0
 end
 
-local base = 15
-local linear = 22
+local base = 70
+local linear = 15
 local expo = 0.2
 
 local function level_to_exp(lvl)
