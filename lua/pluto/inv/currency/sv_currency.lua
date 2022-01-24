@@ -25,7 +25,7 @@ end
 
 for name, values in pairs {
 	dice = {
-		Shares = 500,
+		Shares = 50,
 		Run = function(self, item)
 			local tier = item.Tier
 
@@ -44,7 +44,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	droplet = {
-		Shares = 1500,
+		Shares = 1000,
 		Run = function(self, item)
 			local affixes = item:GetMaxAffixes()
 
@@ -77,7 +77,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	hand = {
-		Shares = 400,
+		Shares = 35,
 		Run = function(self, item)
 			local possible = {}
 			local incr_possible = {}
@@ -122,7 +122,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	tome = {
-		Shares = 20,
+		Shares = 100,
 		Run = function(self, item)
 			local outcomes = {
 				add1mod = {
@@ -271,7 +271,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	coin = {
-		Shares = 0.3,
+		Shares = 1,
 		Use = function(self, ply)
 			return Promise(function(res, rej)
 				pluto.db.transact(function(db)
@@ -344,7 +344,7 @@ for name, values in pairs {
 		Types = "None"
 	},
 	aciddrop = {
-		Shares = 30,
+		Shares = 100,
 		Run = function(self, item)
 			local affixes = item:GetMaxAffixes()
 
@@ -372,7 +372,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	pdrop = {
-		Shares = 20,
+		Shares = 90,
 		Run = function(self, item)
 			local affixes = item:GetMaxAffixes()
 
@@ -400,7 +400,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	quill = {
-		Shares = 0.2,
+		Shares = 1,
 		Use = function(ply, item)
 		end,
 		Types = "Weapon",
