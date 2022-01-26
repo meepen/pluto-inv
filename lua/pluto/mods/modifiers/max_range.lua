@@ -2,8 +2,8 @@
      * License, v. 2.0. If a copy of the MPL was not distributed with this
      * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 MOD.Type = "prefix"
-MOD.Name = "Range"
-MOD.StatModifier = "DamageDropoffRangeMax"
+MOD.Name = "ded"
+MOD.StatModifier = "Ded"
 MOD.Tags = {
 	"range"
 }
@@ -16,7 +16,11 @@ function MOD:FormatModifier(index, roll)
 	return string.format("%.01f%%", roll)
 end
 
-MOD.Description = "Farthest distance you can damage is %s further"
+MOD.Description = "<Ded mod max_range> :flex:"
+
+function MOD:CanRollOn(class)
+	return false
+end
 
 MOD.Tiers = {
 	{ 30, 50 },

@@ -93,6 +93,12 @@ function SWEP:ReceivePlutoData()
 			local mod = pluto.mods.byname[mod_data.Mod]
 			if (mod and mod.ModifyWeapon) then
 				mod:ModifyWeapon(self, pluto.mods.getrolls(mod, mod_data.Tier, mod_data.Roll))
+			elseif (mod.StatModifierValues) then
+				for _, modifier in pairs(mod.StatModifierValues) do
+					local roll = pluto.mods.getrolls(mod, mod_data.Tier, mod_data.Roll)[1]
+	
+					self.Pluto[modifier] = (self.Pluto[modifier] or 0) + roll / 100
+				end
 			elseif (mod.StatModifier) then
 				local roll = pluto.mods.getrolls(mod, mod_data.Tier, mod_data.Roll)[1]
 

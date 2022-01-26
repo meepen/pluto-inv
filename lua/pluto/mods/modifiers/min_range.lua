@@ -2,8 +2,9 @@
      * License, v. 2.0. If a copy of the MPL was not distributed with this
      * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 MOD.Type = "prefix"
-MOD.Name = "Min. Range"
+MOD.Name = "Range"
 MOD.StatModifier = "DamageDropoffRange"
+MOD.StatModifierValues = { "DamageDropoffRangeMax", "DamageDropoffRange" }
 MOD.Tags = {
 	"range"
 }
@@ -16,7 +17,7 @@ function MOD:FormatModifier(index, roll)
 	return string.format("%.01f%%", roll)
 end
 
-MOD.Description = "Damage dropoff starts %s further"
+MOD.Description = "Damage range is extended by %s"
 
 MOD.Tiers = {
 	{ 30, 50 },

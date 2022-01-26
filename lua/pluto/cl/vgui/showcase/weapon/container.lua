@@ -188,6 +188,10 @@ local function value(a)
 end
 
 local function GetMinMax(compared, statmod)
+	if (istable(statmod)) then
+		statmod = statmod[1]
+	end
+
 	local min, max = math.huge, -math.huge
 	for _, class in pairs(pluto.weapons.guns) do
 		class = baseclass.Get(class)
