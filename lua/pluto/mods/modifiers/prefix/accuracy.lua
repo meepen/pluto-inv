@@ -19,10 +19,10 @@ end
 MOD.Description = "Accuracy is increased by %s"
 
 MOD.Tiers = {
+	{ -25, -35 },
 	{ -15, -25 },
-	{ -5, -15 },
-	{ -2.5, -5 },
-	{ -0.1, -2.5 },
+	{ -7.5, -15 },
+	{ -1, -7.5 },
 }
 
 return MOD
