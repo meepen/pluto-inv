@@ -25,10 +25,10 @@ function MOD:GetDescription(rolls)
 end
 
 MOD.Tiers = {
-	{ 9, 13 },
-	{ 6, 9 },
+	{ 10, 15 },
+	{ 6, 10 },
 	{ 3, 6 },
-	{ 0, 3 },
+	{ 1, 3 },
 }
 
 return MOD
