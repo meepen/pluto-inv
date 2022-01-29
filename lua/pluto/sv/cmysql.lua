@@ -35,7 +35,7 @@ local function handle_resume(co, success, err)
 	if (coroutine.status(co) == "dead") then
 		local finished = mysql.finish_cache[co]
 		if (finished) then
-			finished(success, err)
+			return finished(success, err)
 		end
 	end
 end
@@ -45,12 +45,10 @@ local function wait_promise(promise)
 
 	promise
 		:next(function(...)
-			handle_resume(co, coroutine.resume(co, true, ...))
+			return handle_resume(co, coroutine.resume(co, true, ...))
 		end)
 		:catch(function(...)
-			handle_resume(co, coroutine.resume(co, false, ...))
-			print "error?"
-			print(promise.trace)
+			return handle_resume(co, coroutine.resume(co, false, ...))
 		end)
 
 	return handle_returns(coroutine.yield())
@@ -63,7 +61,19 @@ function env.mysql_init(...)
 end
 
 function env.mysql_query(db, query)
-	return wait_promise(db:query(query))
+	local r, err = wait_promise(db:query(query))
+
+	if (not r) then
+		pwarnf("mysql_query returned %s", err)
+	end
+
+	return r, err
+end
+
+function env.mysql_check_error(r, msg)
+	if (not r) then
+		error(msg, 2)
+	end
 end
 
 function env.mysql_autocommit(db, b)

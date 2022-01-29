@@ -70,7 +70,7 @@ local function init()
 	end)
 end
 
-hook.Add("Initialize", "pluto_mapvote_init", init)
+hook.Add("OnPlutoDatabaseInitialized", "pluto_mapvote_init", init)
 if (gmod.GetGamemode()) then
 	init()
 end

@@ -381,7 +381,7 @@ function pluto.inv.queryitems(db, where_clause, ...)
 		return tostring(args[i])
 	end)
 
-	local rows, err = mysql_stmt_run(db, "SELECT i.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable, CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method FROM pluto_items i LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx JOIN pluto_tabs t ON t.idx = i.tab_id " .. join_clause .. " ".. where_clause, ...)
+	local rows, err = mysql_stmt_run(db, "SELECT i.idx as idx, tier, class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, locked, untradeable, CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method FROM pluto_items i LEFT OUTER JOIN pluto_player_info owner ON owner.steamid = i.original_owner LEFT OUTER JOIN pluto_craft_data c ON c.gun_index = i.idx JOIN pluto_tabs t ON t.idx = i.tab_id " .. join_clause .. " ".. where_clause, ...)
 
 	if (not rows) then
 		return nil, err

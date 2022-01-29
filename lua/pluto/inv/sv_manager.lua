@@ -349,9 +349,9 @@ function pluto.inv.init(ply, cb2)
 		InitTabs()
 	end)
 
-	pluto.inv.retrieveitems(ply, function(_items)
+	pluto.inv.retrieveitems(ply, function(_items, why)
 		if (not _items) then
-			return cb(false, "items")
+			return cb(false, "items: " .. tostring(why))
 		end
 
 		items = _items
