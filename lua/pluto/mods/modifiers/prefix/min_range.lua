@@ -20,10 +20,11 @@ end
 MOD.Description = "Damage range is extended by %s"
 
 MOD.Tiers = {
-	{ 30, 50 },
+	{ 40, 50 },
+	{ 30, 40 },
 	{ 20, 30 },
 	{ 10, 20 },
-	{ 0.1, 10 },
+	{ 5, 10 },
 }
 
 return MOD
