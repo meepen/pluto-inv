@@ -19,10 +19,10 @@ end
 MOD.Description = "Reloads %s faster"
 
 MOD.Tiers = {
-	{ 25, 45 },
-	{ 20, 25 },
-	{ 5, 10 },
-	{ 0.1, 5 },
+	{ 40, 60 },
+	{ 25, 40 },
+	{ 10, 25 },
+	{ -10, 10 },
 }
 
 return MOD
