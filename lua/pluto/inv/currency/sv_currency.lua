@@ -25,7 +25,7 @@ end
 
 for name, values in pairs {
 	dice = {
-		Shares = 500,
+		Shares = 250,
 		Run = function(self, item)
 			local tier = item.Tier
 
@@ -77,7 +77,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	hand = {
-		Shares = 350,
+		Shares = 175,
 		Run = function(self, item)
 			local possible = {}
 			local incr_possible = {}
