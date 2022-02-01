@@ -25,7 +25,7 @@ end
 
 for name, values in pairs {
 	dice = {
-		Shares = 50,
+		Shares = 500,
 		Run = function(self, item)
 			local tier = item.Tier
 
@@ -77,7 +77,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	hand = {
-		Shares = 35,
+		Shares = 350,
 		Run = function(self, item)
 			local possible = {}
 			local incr_possible = {}
@@ -122,7 +122,7 @@ for name, values in pairs {
 		Types = "Weapon",
 	},
 	tome = {
-		Shares = 100,
+		Shares = 90,
 		Run = function(self, item)
 			local outcomes = {
 				add1mod = {
