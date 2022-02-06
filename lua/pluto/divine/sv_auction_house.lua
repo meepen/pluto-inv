@@ -522,7 +522,7 @@ function pluto.inv.readgetmyitems(cl)
 
 	pluto.db.transact(function(db)
 		local itemrows = mysql_stmt_run(db, [[
-	SELECT i.idx as idx, tier, i.class as class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, currency1, currency2, locked, untradeable,
+	SELECT i.idx as idx, tier, i.class as class, tab_id, tab_idx, exp, special_name, nick, tier1, tier2, tier3, locked, untradeable,
 		CAST(original_owner as CHAR(32)) as original_owner, owner.displayname as original_name, cast(creation_method as CHAR(16)) as creation_method,
 		auction.price as price, CAST(auction.owner as CHAR(32)) as lister
 

@@ -91,6 +91,11 @@ function MSG:Send(where)
 		return
 	end
 
+
+	if (config.disabled) then
+		return
+	end
+
 	HTTP {
 		success = function(code, body, headers)
 		end,

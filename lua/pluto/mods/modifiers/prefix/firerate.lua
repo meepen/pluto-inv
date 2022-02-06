@@ -2,10 +2,10 @@
      * License, v. 2.0. If a copy of the MPL was not distributed with this
      * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 MOD.Type = "prefix"
-MOD.Name = "Reload Speed"
-MOD.StatModifier = "ReloadAnimationSpeed"
+MOD.Name = "RPM"
+MOD.StatModifier = "Delay"
 MOD.Tags = {
-	"reload", "speed"
+	"rpm", "speed"
 }
 
 function MOD:IsNegative(roll)
@@ -16,13 +16,15 @@ function MOD:FormatModifier(index, roll)
 	return string.format("%.01f%%", roll)
 end
 
-MOD.Description = "Reloads %s faster"
+function MOD:GetDescription(rolls)
+	return rolls[1] >= 0 and "This gun shoots %s faster" or "This gun shoots %s slower"
+end
 
 MOD.Tiers = {
-	{ 25, 45 },
-	{ 20, 25 },
-	{ 5, 10 },
-	{ 0.1, 5 },
+	{ 15, 20 },
+	{ 10, 15 },
+	{ 6, 10 },
+	{ 1, 6 },
 }
 
 return MOD

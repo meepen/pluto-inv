@@ -44,4 +44,9 @@ function MOD:PostDamage(wep, rolls, vic, dmginfo, state)
 		dmginfo:SetDamage(dmginfo:GetDamage() - state.bleeddamage)
 	end
 end
+
+function MOD:CanRollOn()
+	return false
+end
+
 return MOD

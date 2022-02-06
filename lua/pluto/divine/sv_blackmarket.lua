@@ -130,7 +130,6 @@ pluto.divine = pluto.divine or {}
 pluto.divine.blackmarket = pluto.divine.blackmarket or {}
 
 local function init()
-	
 	pluto.db.transact(function(db)
 		local offers = {}
 		mysql_query(db, "LOCK TABLES pluto_blackmarket WRITE")
@@ -179,7 +178,7 @@ local function init()
 	end)
 end
 
-hook.Add("Initialize", "pluto_blackmarket", init)
+hook.Add("OnPlutoDatabaseInitialized", "pluto_blackmarket", init)
 
 concommand.Add("pluto_send_blackmarket", function(p)
 	pluto.inv.message(p)

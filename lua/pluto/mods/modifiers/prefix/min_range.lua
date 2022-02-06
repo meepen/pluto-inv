@@ -2,10 +2,11 @@
      * License, v. 2.0. If a copy of the MPL was not distributed with this
      * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 MOD.Type = "prefix"
-MOD.Name = "Spread"
-MOD.StatModifier = "Spread"
+MOD.Name = "Range"
+MOD.StatModifier = "DamageDropoffRange"
+MOD.StatModifierValues = { "DamageDropoffRangeMax", "DamageDropoffRange" }
 MOD.Tags = {
-	"accuracy"
+	"range"
 }
 
 function MOD:IsNegative(roll)
@@ -16,13 +17,14 @@ function MOD:FormatModifier(index, roll)
 	return string.format("%.01f%%", roll)
 end
 
-MOD.Description = "Accuracy is increased by %s"
+MOD.Description = "Damage range is extended by %s"
 
 MOD.Tiers = {
-	{ -15, -25 },
-	{ -5, -15 },
-	{ -2.5, -5 },
-	{ -0.1, -2.5 },
+	{ 40, 50 },
+	{ 30, 40 },
+	{ 20, 30 },
+	{ 10, 20 },
+	{ 5, 10 },
 }
 
 return MOD

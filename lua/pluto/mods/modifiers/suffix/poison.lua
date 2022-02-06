@@ -17,12 +17,12 @@ function MOD:FormatModifier(index, roll)
 	return string.format("%.01f%%", roll)
 end
 
-MOD.Description = "Converts %s of your damage and amplifies it by %s to Poison on hit"
+MOD.Description = "Converts %s of your damage to damage over time and amplifies it by %s"
 
 MOD.Tiers = {
-	{ 25, 33, 30, 50 },
-	{ 10, 25, 30, 50 },
-	{ 5,  10, 30, 50 },
+	{ 25, 33, 20, 35 },
+	{ 10, 25, 20, 35 },
+	{ 5,  10, 20, 35 },
 }
 
 function MOD:ModifyWeapon(wep, rolls)

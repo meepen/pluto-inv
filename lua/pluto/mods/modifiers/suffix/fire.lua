@@ -78,5 +78,8 @@ function MOD:ModifyWeapon(wep, rolls)
 	end)
 end
 
+function MOD:CanRollOn()
+	return false
+end
 
 return MOD

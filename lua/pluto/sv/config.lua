@@ -43,7 +43,7 @@ function pluto.db.simplequery(query, params, onfinish)
 	onfinish = onfinish or noop
 
 	local ret = pluto.db.instance(function(db)
-		onfinish(mysql_stmt_run(db, query, unpack(params, 1, params.n)))
+		return onfinish(mysql_stmt_run(db, query, unpack(params, 1, params.n)))
 	end)
 	
 	return ret
@@ -64,7 +64,7 @@ function pluto.db.instance(fn)
 
 	pluto.pool:Request(function(db)
 		cmysql(function()
-			fn(db)
+			return fn(db)
 		end,
 		function()
 			pluto.pool:Return(db)
@@ -113,5 +113,11 @@ function pluto.db.transact(fn)
 end
 
 hook.Add("Initialize", "pluto_database", function()
-	hook.Run "PlutoDatabaseInitialize"
+	pluto.db.instance(function(db)
+		pprintf "Initializing database..."
+		hook.Run("PlutoDatabaseInitialize", db)
+		pprintf "Initializing server database data..."
+		hook.Run "OnPlutoDatabaseInitialized"
+		pprintf "All database information completed!"
+	end)
 end)

@@ -178,78 +178,37 @@ pluto.quests.rewards = {
 		{
 			Type = "currency",
 			Currency = "tome",
-			Amount = 3,
+			Amount = 1,
 			Shares = 1,
 		},
 		{
 			Type = "currency",
-			Currency = "crate3_n",
-			Amount = 1,
-			Shares = 0.1,
-		},
-		{
-			Type = "currency",
-			Currency = "crate3",
-			Amount = 1,
-			Shares = 0.1,
-		},
-		{
-			Type = "currency",
-			Currency = "crate1",
-			Amount = 1,
-			Shares = 0.1,
-		},
-		{
-			Type = "currency",
-			Currency = "brainegg",
-			Amount = 1,
-			Shares = 0.1,
-		},
-		{
-			Type = "currency",
-			Currency = "xmas2020",
-			Amount = 1,
-			Shares = 0.1,
-		},
-		{
-			Type = "currency",
 			Currency = "aciddrop",
-			Amount = 2,
+			Amount = 3,
 			Shares = 1,
 		},
 		{
 			Type = "currency",
 			Currency = "pdrop",
-			Amount = 2,
+			Amount = 3,
 			Shares = 1,
 		},
 		{
 			Type = "currency",
-			Currency = "stardust",
-			Amount = 25,
-			Shares = 1.5,
-		},
-		{
-			Type = "currency",
 			Currency = "tp",
-			Amount = 3,
-			Shares = 1.5,
+			Amount = 1,
+			Shares = 1,
 		},
 		{
 			Type = "weapon",
 			RandomImplicit = true,
 			ModMax = 5,
 			ModMin = 4,
-			Shares = 2,
+			Shares = 0.5,
 		},
 		{
 			Type = "weapon",
 			ModMin = 4,
-			Shares = 1,
-		},
-		{
-			Type = "weapon",
-			Grenade = true,
 			Shares = 1,
 		},
 		{
@@ -260,7 +219,7 @@ pluto.quests.rewards = {
 		{
 			Type = "shard",
 			ModMin = 4,
-			Shares = 2,
+			Shares = 1,
 		},
 		{
 			Type = "shard",
@@ -272,44 +231,38 @@ pluto.quests.rewards = {
 		{
 			Type = "currency",
 			Currency = "crate2",
-			Amount = 10,
+			Amount = 1,
 			Shares = 1,
 		},
 		{
 			Type = "currency",
 			Currency = "crate3_n",
-			Amount = 10,
+			Amount = 1,
 			Shares = 0.1,
 		},
 		{
 			Type = "currency",
 			Currency = "crate3",
-			Amount = 3,
+			Amount = 1,
 			Shares = 0.1,
 		},
 		{
 			Type = "currency",
 			Currency = "crate1",
-			Amount = 3,
+			Amount = 1,
 			Shares = 0.1,
 		},
 		{
 			Type = "currency",
-			Currency = "stardust",
-			Amount = 125,
-			Shares = 1.5,
-		},
-		{
-			Type = "currency",
 			Currency = "tp",
-			Amount = 15,
+			Amount = 5,
 			Shares = 1.5,
 		},
 		{
 			Type = "currency",
 			Currency = "heart",
-			Amount = 2,
-			Shares = 1.5,
+			Amount = 3,
+			Shares = 2,
 		},
 		{
 			Type = "weapon",
@@ -370,7 +323,7 @@ pluto.quests.rewards = {
 		{
 			Type = "currency",
 			Currency = "tome",
-			Amount = 20,
+			Amount = 50,
 			Shares = 0.5,
 		},
 		{
@@ -382,7 +335,7 @@ pluto.quests.rewards = {
 		{
 			Type = "currency",
 			Currency = "quill",
-			Amount = 1,
+			Amount = 2,
 			Shares = 1,
 		},
 		{
@@ -394,7 +347,7 @@ pluto.quests.rewards = {
 		{
 			Type = "currency",
 			Currency = "stardust",
-			Amount = 500,
+			Amount = 25,
 			Shares = 1,
 		},
 		{

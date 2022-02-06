@@ -289,7 +289,7 @@ local pluto_stardust_initialize = function()
 	end)
 end
 
-hook.Add("Initialize", "pluto_stardust_shop", pluto_stardust_initialize)
+hook.Add("OnPlutoDatabaseInitialized", "pluto_stardust_shop", pluto_stardust_initialize)
 
 function pluto.inv.writestardustshop(p)
 	net.WriteUInt(#pluto.divine.stardust_shop.available, 32)

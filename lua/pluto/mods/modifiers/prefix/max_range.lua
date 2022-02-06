@@ -2,10 +2,10 @@
      * License, v. 2.0. If a copy of the MPL was not distributed with this
      * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 MOD.Type = "prefix"
-MOD.Name = "RPM"
-MOD.StatModifier = "Delay"
+MOD.Name = "ded"
+MOD.StatModifier = "Ded"
 MOD.Tags = {
-	"rpm", "speed"
+	"range"
 }
 
 function MOD:IsNegative(roll)
@@ -16,16 +16,17 @@ function MOD:FormatModifier(index, roll)
 	return string.format("%.01f%%", roll)
 end
 
-function MOD:GetDescription(rolls)
-	return rolls[1] >= 0 and "This gun shoots %s faster" or "This gun shoots %s slower"
+MOD.Description = "<Ded mod max_range> :flex:"
+
+function MOD:CanRollOn(class)
+	return false
 end
 
 MOD.Tiers = {
-	{ 9, 13 },
-	{ 6, 9 },
-	{ 5, 6 },
-	{ 3, 5 },
-	{ 0, 3 },
+	{ 30, 50 },
+	{ 20, 30 },
+	{ 10, 20 },
+	{ 0.1, 10 },
 }
 
 return MOD

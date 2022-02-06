@@ -2,30 +2,27 @@
      * License, v. 2.0. If a copy of the MPL was not distributed with this
      * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 MOD.Type = "prefix"
-MOD.Name = "Recoil"
-MOD.StatModifier = "ViewPunchAngles"
+MOD.Name = "Spread"
+MOD.StatModifier = "Spread"
 MOD.Tags = {
-	"recoil"
+	"accuracy"
 }
 
 function MOD:IsNegative(roll)
-	return roll > 0
+	return roll < 0
 end
 
 function MOD:FormatModifier(index, roll)
 	return string.format("%.01f%%", roll)
 end
 
-function MOD:GetDescription(rolls)
-	return rolls[1] < 0 and "Recoil is decreased by %s" or "Recoil is increased by %s"
-end
+MOD.Description = "Accuracy is increased by %s"
 
 MOD.Tiers = {
-	{ -20, -33 },
-	{ -13, -20 },
-	{ -7, -13 },
-	{ -4, -7 },
-	{ -4, -4 },
+	{ -25, -35 },
+	{ -15, -25 },
+	{ -7.5, -15 },
+	{ -1, -7.5 },
 }
 
 return MOD

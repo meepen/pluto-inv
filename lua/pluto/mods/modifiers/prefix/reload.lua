@@ -2,10 +2,10 @@
      * License, v. 2.0. If a copy of the MPL was not distributed with this
      * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
 MOD.Type = "prefix"
-MOD.Name = "Range"
-MOD.StatModifier = "DamageDropoffRangeMax"
+MOD.Name = "Reload Speed"
+MOD.StatModifier = "ReloadAnimationSpeed"
 MOD.Tags = {
-	"range"
+	"reload", "speed"
 }
 
 function MOD:IsNegative(roll)
@@ -16,13 +16,13 @@ function MOD:FormatModifier(index, roll)
 	return string.format("%.01f%%", roll)
 end
 
-MOD.Description = "Farthest distance you can damage is %s further"
+MOD.Description = "Reloads %s faster"
 
 MOD.Tiers = {
-	{ 30, 50 },
-	{ 20, 30 },
-	{ 10, 20 },
-	{ 0.1, 10 },
+	{ 40, 60 },
+	{ 25, 40 },
+	{ 10, 25 },
+	{ -10, 10 },
 }
 
 return MOD
