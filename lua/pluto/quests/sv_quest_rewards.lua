@@ -213,6 +213,7 @@ pluto.quests.rewards = {
 		{
 			Type = "shard",
 			ModMin = 4,
+			ModMax - 4,
 			Shares = 1,
 		},
 		{
@@ -255,7 +256,7 @@ pluto.quests.rewards = {
 		{
 			Type = "currency",
 			Currency = "heart",
-			Amount = 1,
+			Amount = 2,
 			Shares = 2,
 		},
 		{
@@ -292,6 +293,7 @@ pluto.quests.rewards = {
 			Type = "weapon",
 			RandomImplicit = true,
 			ModMin = 4,
+			MoxMax = 5,
 			Shares = 0.5,
 		},
 		{
@@ -299,7 +301,7 @@ pluto.quests.rewards = {
 			Tier = "uncommon",
 			Mods = {"dropletted", "handed", "diced", "hearted"},
 			Small = "Dropletted, Handed, Diced, Hearted Uncommon gun",
-			Shares = 1,
+			Shares = 0.5,
 		},
 		{
 			Type = "weapon",
