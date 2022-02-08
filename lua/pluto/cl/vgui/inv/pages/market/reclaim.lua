@@ -69,7 +69,7 @@ function PANEL:Init()
 			container:SetTall(price:GetTall())
 
 			local img = container_fill:Add "DImage"
-			img:SetImage(pluto.currency.byname.stardust.Icon)
+			img:SetImage(pluto.currency.byname.droplet.Icon)
 			img:Dock(RIGHT)
 			function img.PerformLayout(s, w, h)
 				img:SetWide(h)
