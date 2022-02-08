@@ -53,6 +53,10 @@ end
 
 function PANEL:OnMouseWheeled(delta)
 	self.IsWheeling = true
+	if (not IsValid(self.TextContainer)) then
+		return
+	end
+
 	local min = self.TextContainer:GetTall() - self.Text:GetTall()
 	self.TextContainer.Position = math.Clamp(self.TextContainer.Position + delta * 25, min, 0)
 end
