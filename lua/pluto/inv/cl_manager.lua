@@ -267,6 +267,10 @@ function pluto.inv.readbufferitem()
 	item.IsNewItem = is_new
 	pluto_buffer_notify:SetBool(true)
 
+	if (is_new) then
+		chat.AddText("You have received ", item)
+	end
+
 	table.insert(pluto.buffer, 1, item)
 	for i = 37, #pluto.buffer do
 		pluto.buffer[i] = nil

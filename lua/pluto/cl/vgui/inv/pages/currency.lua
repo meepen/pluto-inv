@@ -45,6 +45,18 @@ function PANEL:AddTab(col, category, add_rest, buffer)
 	end
 	createrow()
 
+	function current:PerformLayout(w, h)
+		for _, child in ipairs(self:GetChildren()) do
+			local max_x = 0
+			for _, curchild in ipairs(child:GetChildren()) do
+				max_x = math.max(max_x, curchild:GetPos() + curchild:GetWide())
+			end
+			print(w, max_x)
+			local pad = math.floor(w - max_x)
+			child:DockMargin(pad / 2, 0, pad / 2, 12)
+		end
+	end
+
 	local amount = 0
 
 	local filter = pluto.ui.selectorfilter or function() return true end
