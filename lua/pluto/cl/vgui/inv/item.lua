@@ -488,7 +488,7 @@ function PANEL:GetCurrentModel()
 		local class = baseclass.Get(item and item.ClassName or self.DefaultClass)
 		return class.PlutoModel or class.WorldModel
 	elseif (item_type == "Model") then
-		return (item or pluto.models[self.DefaultClass]).Model
+		return (item and item.Model or pluto.models[self.DefaultClass]).Model
 	end
 end
 
