@@ -6,6 +6,7 @@ local PANEL = {}
 AccessorFunc(PANEL, "DefaultFont", "DefaultFont")
 AccessorFunc(PANEL, "DefaultTextColor", "DefaultTextColor")
 AccessorFunc(PANEL, "DefaultRenderSystem", "DefaultRenderSystem")
+AccessorFunc(PANEL, "ShouldCenterText", "ShouldCenterText")
 
 function PANEL:SetCurrentTextColor(col)
 	if (col ~= self:GetCurrentTextColor()) then
@@ -424,7 +425,6 @@ function PANEL:InsertShowcaseItem(item)
 
 		if (IsValid(pluto.opened_chat_player)) then
 			pluto.opened_chat_player:Remove()
-			print("yes")
 		end
 
 		local showcase = pluto.ui.showcase(item)
@@ -571,6 +571,8 @@ function PANEL:SetScrollOffset(offset)
 
 	local startline = self:GetLineAt(0, offset)
 
+	local wide = self:GetWide()
+
 	local found = false
 	for _, line in ipairs(self.Lines) do
 		if (line ~= startline and not found) then
@@ -579,9 +581,13 @@ function PANEL:SetScrollOffset(offset)
 
 		found = true
 
+		local max_line_width = #line > 0 and line[#line].CurPos.x + line[#line]:GetWide() or 0
+
+		local offset_x = self:GetShouldCenterText() and wide / 2 - max_line_width / 2 or 0
+
 		for _, pnl in ipairs(line) do
 			pnl:SetVisible(true)
-			pnl:SetPos(pnl.CurPos.x, pnl.CurPos.y - offset)
+			pnl:SetPos(offset_x + pnl.CurPos.x, pnl.CurPos.y - offset)
 		end
 
 		if (line.y - self:GetTall() > offset) then

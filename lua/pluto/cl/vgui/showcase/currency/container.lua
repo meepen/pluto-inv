@@ -6,7 +6,7 @@ local PANEL = {}
 function PANEL:Init()
 	local canvas = self:GetCanvas()
 
-	self:SetSize(400, 350)
+	self:SetSize(300, 150)
 
 	self:MakePopup()
 	self:SetKeyboardInputEnabled(false)
@@ -24,7 +24,7 @@ function PANEL:Init()
 	self.Description:DockMargin(0, 2, 0, 0)
 
 	self.TextContainer = canvas:Add "EditablePanel"
-	self.TextContainer:Dock(FILL)
+	self.TextContainer:Dock(TOP)
 	function self.TextContainer.PerformLayout(_, w, h)
 		self.Text:SetWide(w)
 	end
@@ -34,21 +34,33 @@ function PANEL:Init()
 	function self.TextContainer.Think(s)
 		local height = s:GetTall()
 		local oheight = self.Text:GetTall()
-		if (height < oheight) then
+		if (not self.IsWheeling and height < oheight) then
 			local from, target = s.Position, s.GoingDown and height - oheight or 0
 			s.Position = math.Clamp(from + (target > from and 1 or -1) * FrameTime() * 30, height - oheight, 0)
 			if (s.Position == 0 or s.Position == height - oheight) then
 				s.GoingDown = not s.GoingDown
 			end
-			self.Text:SetPos(0, s.Position)
 		end
+		self.Text:SetPos(0, s.Position)
 	end
 
 	self.Text = self.TextContainer:Add "pluto_text_inner"
+	self.Text:SetShouldCenterText(true)
 	self.Text:SetDefaultFont "pluto_inventory_font_s"
 	self.Text:SetDefaultTextColor(Color(255, 255, 255))
 	self.Text:SetDefaultRenderSystem(pluto.fonts.systems.shadow)
 end
+
+function PANEL:OnMouseWheeled(delta)
+	self.IsWheeling = true
+	if (not IsValid(self.TextContainer)) then
+		return
+	end
+
+	local min = self.TextContainer:GetTall() - self.Text:GetTall()
+	self.TextContainer.Position = math.Clamp(self.TextContainer.Position + delta * 25, min, 0)
+end
+
 
 function PANEL:SetItem(item)
 	self:InvalidateLayout(true)
@@ -88,6 +100,7 @@ function PANEL:SetItem(item)
 			self.Text:AppendText(" (" .. string.format("%.02f%%", item.Shares / total_shares * 100) .. ")\n")
 		end
 		self.Text:SizeToContentsY()
+		self.TextContainer:SetTall(math.min(150, self.Text:GetTall()))
 	else
 		self.TextContainer:Remove()
 		self:SetTall(150)
@@ -146,6 +159,8 @@ function PANEL:SetItem(item)
 			end
 		end
 		finalizeline()
+
+		self.Text:SetScrollOffset(0) -- hack to enable centering lol
 	end
 
 	self.Currency = item

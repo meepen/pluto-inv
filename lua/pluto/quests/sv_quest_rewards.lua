@@ -201,14 +201,8 @@ pluto.quests.rewards = {
 		},
 		{
 			Type = "weapon",
-			RandomImplicit = true,
-			ModMax = 5,
 			ModMin = 4,
-			Shares = 0.5,
-		},
-		{
-			Type = "weapon",
-			ModMin = 4,
+			ModMax = 4,
 			Shares = 1,
 		},
 		{
@@ -219,6 +213,7 @@ pluto.quests.rewards = {
 		{
 			Type = "shard",
 			ModMin = 4,
+			ModMax = 4,
 			Shares = 1,
 		},
 		{
@@ -261,7 +256,7 @@ pluto.quests.rewards = {
 		{
 			Type = "currency",
 			Currency = "heart",
-			Amount = 3,
+			Amount = 2,
 			Shares = 2,
 		},
 		{
@@ -296,15 +291,17 @@ pluto.quests.rewards = {
 		},
 		{
 			Type = "weapon",
-			ModMin = 5,
-			Shares = 2,
+			RandomImplicit = true,
+			ModMin = 4,
+			MoxMax = 5,
+			Shares = 0.5,
 		},
 		{
 			Type = "weapon",
 			Tier = "uncommon",
 			Mods = {"dropletted", "handed", "diced", "hearted"},
 			Small = "Dropletted, Handed, Diced, Hearted Uncommon gun",
-			Shares = 1,
+			Shares = 0.5,
 		},
 		{
 			Type = "weapon",
@@ -315,7 +312,8 @@ pluto.quests.rewards = {
 		},
 		{
 			Type = "shard",
-			ModMin = 5,
+			ModMin = 4,
+			ModMax = 5,
 			Shares = 1,
 		},
 	},
@@ -323,19 +321,19 @@ pluto.quests.rewards = {
 		{
 			Type = "currency",
 			Currency = "tome",
-			Amount = 50,
+			Amount = 25,
 			Shares = 0.5,
 		},
 		{
 			Type = "currency",
 			Currency = "coin",
 			Amount = 1,
-			Shares = 1,
+			Shares = 0.5,
 		},
 		{
 			Type = "currency",
 			Currency = "quill",
-			Amount = 2,
+			Amount = 1,
 			Shares = 1,
 		},
 		{
@@ -352,7 +350,7 @@ pluto.quests.rewards = {
 		},
 		{
 			Type = "weapon",
-			ModMin = 6,
+			ModMin = 5,
 			ModMax = 6,
 			Shares = 1,
 		},
@@ -370,8 +368,8 @@ pluto.quests.rewards = {
 		},
 		{
 			Type = "shard",
-			ModMin = 6,
-			ModMax = 6,
+			ModMin = 5,
+			ModMax = 5,
 			Shares = 1,
 		},
 	},
