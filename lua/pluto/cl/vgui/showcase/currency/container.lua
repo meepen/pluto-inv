@@ -6,7 +6,7 @@ local PANEL = {}
 function PANEL:Init()
 	local canvas = self:GetCanvas()
 
-	self:SetSize(400, 350)
+	self:SetSize(300, 150)
 
 	self:MakePopup()
 	self:SetKeyboardInputEnabled(false)
@@ -24,7 +24,7 @@ function PANEL:Init()
 	self.Description:DockMargin(0, 2, 0, 0)
 
 	self.TextContainer = canvas:Add "EditablePanel"
-	self.TextContainer:Dock(FILL)
+	self.TextContainer:Dock(TOP)
 	function self.TextContainer.PerformLayout(_, w, h)
 		self.Text:SetWide(w)
 	end
@@ -45,6 +45,7 @@ function PANEL:Init()
 	end
 
 	self.Text = self.TextContainer:Add "pluto_text_inner"
+	self.Text:SetShouldCenterText(true)
 	self.Text:SetDefaultFont "pluto_inventory_font_s"
 	self.Text:SetDefaultTextColor(Color(255, 255, 255))
 	self.Text:SetDefaultRenderSystem(pluto.fonts.systems.shadow)
@@ -88,6 +89,7 @@ function PANEL:SetItem(item)
 			self.Text:AppendText(" (" .. string.format("%.02f%%", item.Shares / total_shares * 100) .. ")\n")
 		end
 		self.Text:SizeToContentsY()
+		self.TextContainer:SetTall(math.min(150, self.Text:GetTall()))
 	else
 		self.TextContainer:Remove()
 		self:SetTall(150)
@@ -146,6 +148,8 @@ function PANEL:SetItem(item)
 			end
 		end
 		finalizeline()
+
+		self.Text:SetScrollOffset(0) -- hack to enable centering lol
 	end
 
 	self.Currency = item
