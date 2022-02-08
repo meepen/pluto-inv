@@ -74,7 +74,7 @@ function pluto.inv.savebufferitem(db, ply, new_item)
 
 	pluto.weapons.save(db, new_item, ply)
 
-	pluto.inv.notifybufferitem(ply, new_item)
+	pluto.inv.notifybufferitem(ply, new_item, true)
 
 	return new_item
 end
@@ -121,14 +121,15 @@ function pluto.inv.generatebuffermodel(db, ply, method, mdl)
 	return pluto.inv.savebufferitem(db, ply, new_item)
 end
 
-function pluto.inv.notifybufferitem(ply, i)
+function pluto.inv.notifybufferitem(ply, i, is_new)
 	pluto.inv.message(ply)
-		:write("bufferitem", i)
+		:write("bufferitem", i, is_new)
 		:send()
 end
 
-function pluto.inv.writebufferitem(ply, i)
+function pluto.inv.writebufferitem(ply, i, is_new)
 	pluto.inv.writeitem(ply, i)
+	net.WriteBool(is_new)
 end
 
 function pluto.inv.getbufferitems(owner)

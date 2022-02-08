@@ -497,7 +497,7 @@ concommand.Add("pluto_auction_buy", function(p, c, a)
 		item.Owner = p:SteamID64()
 		pluto.itemids[item.RowID] = item
 
-		pluto.inv.notifybufferitem(p, item)
+		pluto.inv.notifybufferitem(p, item, true)
 		tab.Items[1] = item
 		mysql_commit(db)
 
@@ -605,7 +605,7 @@ concommand.Add("pluto_auction_reclaim", function(p, c, a)
 		item.TabIndex = 1
 		pluto.itemids[item.RowID] = item
 
-		pluto.inv.notifybufferitem(p, item)
+		pluto.inv.notifybufferitem(p, item, true)
 		tab.Items[1] = item
 		mysql_commit(db)
 
