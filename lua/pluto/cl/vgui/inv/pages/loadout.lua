@@ -114,6 +114,18 @@ DEFINE_BASECLASS "pluto_inventory_component"
 local inner_area = 5
 local outer_area = 10
 
+local defaults = {
+	loadout = {
+		{ "weapon_ttt_m4a1", "Weapon" },
+		{ "weapon_ttt_pistol", "Weapon" },
+		{ "weapon_ttt_crowbar", "Weapon" },
+		{ "weapon_ttt_basegrenade", "Weapon" },
+	},
+	cosmetic = {
+		{ "default", "Model" }
+	}
+}
+
 local filters = {
 	[1] = function(item)
 		if (item.Type ~= "Weapon") then
@@ -238,12 +250,16 @@ function PANEL:Init()
 	self.Items = {}
 	self.Cosmetics = {}
 
-	--[[]]print("adding multiple pluto_inventory_item instances for CosmeticsContainer and LoadoutContainer")
 	for i = 1, 6 do
 		local item2 = self.CosmeticsContainer:Add "pluto_inventory_item"
 		local item = self.LoadoutContainer:Add "pluto_inventory_item"
 		item:Dock(TOP)
 		item2:Dock(TOP)
+
+		if (defaults.cosmetic[i]) then
+			local model, type = unpack(defaults.cosmetic[i])
+			item2:SetDefaultClass(model, type)
+		end
 
 		function item2:CanClickWith(other)
 			return cosmetic_filters[i] and cosmetic_filters[i](other.Item)
@@ -288,6 +304,10 @@ function PANEL:Init()
 			end
 		end
 
+		if (defaults.loadout[i]) then
+			local model, type = unpack(defaults.loadout[i])
+			item:SetDefaultClass(model, type)
+		end
 		function item:CanClickWith(other)
 			return filters[i] and filters[i](other.Item)
 		end
