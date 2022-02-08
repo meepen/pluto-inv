@@ -47,11 +47,15 @@ function PANEL:AddTab(col, category, add_rest, buffer)
 
 	function current:PerformLayout(w, h)
 		for _, child in ipairs(self:GetChildren()) do
+			if (child.NoLayout) then
+				continue
+			end
+
 			local max_x = 0
 			for _, curchild in ipairs(child:GetChildren()) do
 				max_x = math.max(max_x, curchild:GetPos() + curchild:GetWide())
 			end
-			print(w, max_x)
+
 			local pad = math.floor(w - max_x)
 			child:DockMargin(pad / 2, 0, pad / 2, 12)
 		end
@@ -93,6 +97,7 @@ function PANEL:AddTab(col, category, add_rest, buffer)
 		opener:Dock(BOTTOM)
 		opener:SetTall(110)
 		opener:DockPadding(14, 0, 14, 3)
+		opener.NoLayout = true
 
 		local image_container = opener:Add "EditablePanel"
 		image_container:Dock(TOP)
