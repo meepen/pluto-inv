@@ -14,14 +14,8 @@ function ENT:Explode()
     ent:SetPos(grenadepos)
     local ownangle = self:GetOwner():EyeAngles()
     ent:SetOwner(self:GetOwner())
-    ent:DropToFloor()
     ent:Spawn()
     ent:SetHealth(1)
     sound.Play("pluto/pop.ogg", self:GetPos(), 75, 100, 1)
-    self:Remove()
 end
 
-
-function ENT:GrenadeBounce()
-    self:Explode()
-end
