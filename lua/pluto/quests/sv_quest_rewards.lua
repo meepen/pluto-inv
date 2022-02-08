@@ -213,7 +213,7 @@ pluto.quests.rewards = {
 		{
 			Type = "shard",
 			ModMin = 4,
-			ModMax - 4,
+			ModMax = 4,
 			Shares = 1,
 		},
 		{
