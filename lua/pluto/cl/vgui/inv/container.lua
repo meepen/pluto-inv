@@ -279,7 +279,7 @@ function PANEL:Init()
 		--events:SetCurve(4)
 		--events:Dock(FILL)
 		--events:SetColor(pluto.ui.theme("InnerColor"))
-	end, nil, nil, Color(153, 0, 0))
+	end, nil, nil, Color(240, 40, 80))
 
 	self:CreateOrdered()
 
@@ -630,15 +630,12 @@ function PANEL:AddStorageTab(tab)
 end
 
 function PANEL:SelectTab(tab, noupdate)
-	--[[]]print("doing selecttab 1", noupdate, "with tab name:", tab.Name)
-	--]]PrintTable(tab)
-
 	if (not noupdate) then
 		last_tab_id:SetInt(tab.ID)
 	end
 	self.ActiveStorageTabBackground:SetTall(22)
 	local fg = self.StorageTabs[tab]
-	--[[]]print("possible fg", fg)
+	
 	self.ActiveStorageTabBackground:SetWide(fg:GetWide())
 	self.ActiveStorageTabBackground:SetPos(fg:GetPos())
 

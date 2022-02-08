@@ -118,10 +118,10 @@ concommand.Add("pluto_auction_list", function(p, c, a)
 	local tax = math.ceil(math.min(250, 10 + 0.075 * price))
 
 	if (tonumber(a[2]) < price) then
-		p:ChatPrint "Error: Minimum price is 100 stardust"
+		p:ChatPrint "Error: Minimum price is 100 droplet"
 		return
 	elseif (tonumber(a[2]) > price) then
-		p:ChatPrint "Error: Maximum price is 50,000 stardust"
+		p:ChatPrint "Error: Maximum price is 50,000 droplet"
 		return
 	end
 
@@ -139,7 +139,7 @@ concommand.Add("pluto_auction_list", function(p, c, a)
 
 		pluto.inv.invs[p][gun.TabID].Items[gun.TabIndex] = nil
 
-		if (not pluto.inv.addcurrency(db, p, "stardust", -tax)) then
+		if (not pluto.inv.addcurrency(db, p, "droplet", -tax)) then
 			p:ChatPrint "You cannot afford the tax!"
 			mysql_rollback(db)
 			return
@@ -159,7 +159,7 @@ concommand.Add("pluto_auction_list", function(p, c, a)
 
 		discord.Message():AddEmbed(
 			gun:GetDiscordEmbed()
-				:SetAuthor("Listed for " .. price .. " stardust...")
+				:SetAuthor("Listed for " .. price .. " droplet...")
 		):Send "auction-house"
 
 		p:ChatPrint "Item listed!"
@@ -469,13 +469,13 @@ concommand.Add("pluto_auction_buy", function(p, c, a)
 			return
 		end
 
-		if (not pluto.inv.addcurrency(db, p, "stardust", -auction_data.price)) then
+		if (not pluto.inv.addcurrency(db, p, "droplet", -auction_data.price)) then
 			p:ChatPrint "Error: You cannot afford this item!"
 			mysql_rollback(db)
 			return
 		end
 
-		pluto.inv.addcurrency(db, auction_data.lister, "stardust", auction_data.price)
+		pluto.inv.addcurrency(db, auction_data.lister, "droplet", auction_data.price)
 
 		pluto.inv.pushbuffer(db, p)
 		local data, err = mysql_stmt_run(db, "UPDATE pluto_items SET tab_id = ?, tab_idx = 1 WHERE idx = ? AND tab_id = ?", tab.RowID, item.RowID, tab_id)
@@ -497,7 +497,7 @@ concommand.Add("pluto_auction_buy", function(p, c, a)
 		item.Owner = p:SteamID64()
 		pluto.itemids[item.RowID] = item
 
-		pluto.inv.notifybufferitem(p, item)
+		pluto.inv.notifybufferitem(p, item, true)
 		tab.Items[1] = item
 		mysql_commit(db)
 
@@ -605,7 +605,7 @@ concommand.Add("pluto_auction_reclaim", function(p, c, a)
 		item.TabIndex = 1
 		pluto.itemids[item.RowID] = item
 
-		pluto.inv.notifybufferitem(p, item)
+		pluto.inv.notifybufferitem(p, item, true)
 		tab.Items[1] = item
 		mysql_commit(db)
 

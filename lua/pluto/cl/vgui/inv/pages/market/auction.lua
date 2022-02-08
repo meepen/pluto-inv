@@ -39,7 +39,7 @@ function PANEL:Init()
 				end
 
 				pluto.ui.rightclickmenu(self.Item, function(menu, item)
-					menu:AddOption("Buy for " .. self.Item.Price .. " stardust", function()
+					menu:AddOption("Buy for " .. self.Item.Price .. " droplets", function()
 						pluto.divine.confirm("Buy " .. self.Item:GetPrintName(), function()
 							RunConsoleCommand("pluto_auction_buy", self.Item.ID)
 						end)
@@ -71,7 +71,7 @@ function PANEL:Init()
 			container:SetTall(price:GetTall())
 
 			local img = container_fill:Add "DImage"
-			img:SetImage(pluto.currency.byname.stardust.Icon)
+			img:SetImage(pluto.currency.byname.droplet.Icon)
 			img:Dock(RIGHT)
 			function img.PerformLayout(s, w, h)
 				img:SetWide(h)
@@ -99,7 +99,7 @@ function PANEL:Init()
 	self.StardustLabel:SetTextColor(pluto.ui.theme "TextActive")
 	self.StardustLabel:SetContentAlignment(5)
 	self.StardustImage = self:Add "DImage"
-	self.StardustImage:SetImage(pluto.currency.byname.stardust.Icon)
+	self.StardustImage:SetImage(pluto.currency.byname.droplet.Icon)
 
 	self.PageDown = self.Pagination:Add "pluto_label"
 	self.PageDown:SetCursor "hand"
@@ -285,7 +285,7 @@ function PANEL:SendSearch()
 end
 
 function PANEL:Think()
-	local text = tostring(pluto.cl_currency.stardust or 0)
+	local text = tostring(pluto.cl_currency.droplet or 0)
 	if (text ~= self.StardustLabel:GetText()) then
 		self.StardustLabel:SetText(text)
 		self.StardustLabel:SizeToContents()

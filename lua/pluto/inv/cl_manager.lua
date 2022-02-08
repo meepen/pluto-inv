@@ -1,6 +1,9 @@
 --[[ * This Source Code Form is subject to the terms of the Mozilla Public
      * License, v. 2.0. If a copy of the MPL was not distributed with this
      * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
+
+pluto_buffer_notify = CreateConVar("pluto_buffer_notify", "0", FCVAR_ARCHIVE, "", 0, 1)
+
 pluto.cl_inv = pluto.cl_inv or {}
 --[[
 	{
@@ -260,6 +263,13 @@ end
 
 function pluto.inv.readbufferitem()
 	local item = pluto.inv.readitem()
+	local is_new = net.ReadBool()
+	item.IsNewItem = is_new
+	pluto_buffer_notify:SetBool(true)
+
+	if (is_new) then
+		chat.AddText("You have received ", item)
+	end
 
 	table.insert(pluto.buffer, 1, item)
 	for i = 37, #pluto.buffer do
