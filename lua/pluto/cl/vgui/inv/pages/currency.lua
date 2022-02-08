@@ -270,6 +270,12 @@ function PANEL:OnMousePressed(m)
 	end
 end
 
+function PANEL:OnMouseWheeled(delta)
+	if (IsValid(self.Showcase)) then
+		self.Showcase:OnMouseWheeled(delta)
+	end
+end
+
 function PANEL:OnCursorEntered()
 	if (IsValid(self.Showcase)) then
 		self.Showcase:Remove()

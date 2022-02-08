@@ -34,14 +34,14 @@ function PANEL:Init()
 	function self.TextContainer.Think(s)
 		local height = s:GetTall()
 		local oheight = self.Text:GetTall()
-		if (height < oheight) then
+		if (not self.IsWheeling and height < oheight) then
 			local from, target = s.Position, s.GoingDown and height - oheight or 0
 			s.Position = math.Clamp(from + (target > from and 1 or -1) * FrameTime() * 30, height - oheight, 0)
 			if (s.Position == 0 or s.Position == height - oheight) then
 				s.GoingDown = not s.GoingDown
 			end
-			self.Text:SetPos(0, s.Position)
 		end
+		self.Text:SetPos(0, s.Position)
 	end
 
 	self.Text = self.TextContainer:Add "pluto_text_inner"
@@ -50,6 +50,13 @@ function PANEL:Init()
 	self.Text:SetDefaultTextColor(Color(255, 255, 255))
 	self.Text:SetDefaultRenderSystem(pluto.fonts.systems.shadow)
 end
+
+function PANEL:OnMouseWheeled(delta)
+	self.IsWheeling = true
+	local min = self.TextContainer:GetTall() - self.Text:GetTall()
+	self.TextContainer.Position = math.Clamp(self.TextContainer.Position + delta * 25, min, 0)
+end
+
 
 function PANEL:SetItem(item)
 	self:InvalidateLayout(true)
