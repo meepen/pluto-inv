@@ -201,6 +201,18 @@ pluto.quests.rewards = {
 		},
 		{
 			Type = "currency",
+			Currency = "hand",
+			Amount = 2,
+			Shares = 1,
+		},
+		{
+			Type = "currency",
+			Currency = "dice",
+			Amount = 5,
+			Shares = 1,
+		},
+		{
+			Type = "currency",
 			Currency = "tp",
 			Amount = 1,
 			Shares = 1,
