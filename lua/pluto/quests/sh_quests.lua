@@ -18,16 +18,16 @@ pluto.quests.types = {
 		Name = "Hourly",
 		RewardPool = "hourly",
 		Time = 60 * 60,
-		Amount = 2,
-		Cooldown = 60 * 7.5,
+		Amount = 3,
+		Cooldown = 60 * 10,
 		Color = HexColor "7ef524",
 	},
 	{
 		Name = "Daily",
 		RewardPool = "daily",
 		Time = 60 * 60 * 24, -- day
-		Amount = 1,
-		Cooldown = 60 * 60 * 6,
+		Amount = 2,
+		Cooldown = 60 * 60 * 4,
 		Color = HexColor "fcde1d"
 	},
 	{
@@ -35,7 +35,7 @@ pluto.quests.types = {
 		RewardPool = "weekly",
 		Time = 60 * 60 * 24 * 7, -- week
 		Amount = 1,
-		Cooldown = 60 * 60 * 24 * 2,
+		Cooldown = 60 * 60 * 24,
 		Color = HexColor "ff1a1a"
 	},
 }

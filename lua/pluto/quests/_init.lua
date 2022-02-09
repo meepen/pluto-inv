@@ -40,6 +40,7 @@ for _, id in pairs {
 	"postround",
 	"minis",
 	"identify",
+	"cubanpete",
 
 	"halloween_nade",
 } do

@@ -178,7 +178,7 @@ pluto.quests.rewards = {
 		{
 			Type = "currency",
 			Currency = "tome",
-			Amount = 1,
+			Amount = 2,
 			Shares = 1,
 		},
 		{
@@ -191,6 +191,12 @@ pluto.quests.rewards = {
 			Type = "currency",
 			Currency = "pdrop",
 			Amount = 3,
+			Shares = 1,
+		},
+		{
+			Type = "currency",
+			Currency = "droplet",
+			Amount = 75,
 			Shares = 1,
 		},
 		{
@@ -208,7 +214,7 @@ pluto.quests.rewards = {
 		{
 			Type = "weapon",
 			Tier = "inevitable",
-			Shares = 2,
+			Shares = 3,
 		},
 		{
 			Type = "shard",
@@ -291,6 +297,36 @@ pluto.quests.rewards = {
 		},
 		{
 			Type = "weapon",
+			ClassName = "weapon_cod4_ak47_silencer",
+			Tier = "promised",
+			Shares = 0.1,
+		},
+		{
+			Type = "weapon",
+			ClassName = "weapon_cod4_m4_silencer",
+			Tier = "promised",
+			Shares = 0.1,
+		},
+		{
+			Type = "weapon",
+			ClassName = "weapon_cod4_m14_silencer",
+			Tier = "promised",
+			Shares = 0.1,
+		},
+		{
+			Type = "weapon",
+			ClassName = "weapon_cod4_g3_silencer",
+			Tier = "promised",
+			Shares = 0.1,
+		},
+		{
+			Type = "weapon",
+			ClassName = "weapon_cod4_g36c_silencer",
+			Tier = "promised",
+			Shares = 0.1,
+		},
+		{
+			Type = "weapon",
 			RandomImplicit = true,
 			ModMin = 4,
 			MoxMax = 5,
@@ -312,18 +348,12 @@ pluto.quests.rewards = {
 		},
 		{
 			Type = "shard",
-			ModMin = 4,
+			ModMin = 5,
 			ModMax = 5,
 			Shares = 1,
 		},
 	},
 	weekly = {
-		{
-			Type = "currency",
-			Currency = "tome",
-			Amount = 25,
-			Shares = 0.5,
-		},
 		{
 			Type = "currency",
 			Currency = "coin",
@@ -343,14 +373,8 @@ pluto.quests.rewards = {
 			Shares = 1,
 		},
 		{
-			Type = "currency",
-			Currency = "stardust",
-			Amount = 25,
-			Shares = 1,
-		},
-		{
 			Type = "weapon",
-			ModMin = 5,
+			ModMin = 6,
 			ModMax = 6,
 			Shares = 1,
 		},
@@ -368,9 +392,8 @@ pluto.quests.rewards = {
 		},
 		{
 			Type = "shard",
-			ModMin = 5,
-			ModMax = 5,
-			Shares = 1,
+			Tier = "otherworldly",
+			Shares = 0.5,
 		},
 	},
 }
