@@ -1,12 +1,13 @@
 AddCSLuaFile()
 
-ENT.PrintName = "Barrel Grenade"
-ENT.Base = "ttt_basegrenade"
+ENT.PrintName = "Rolling Thunder Grenade"
+ENT.Base = "pluto_len_basegrenade"
 ENT.Model = "models/weapons/w_eq_smokegrenade_thrown.mdl"
+ENT.Bounciness(0.75)
 
 function ENT:GetThunderStrikes()
     if self.WeaponData == nil then return end
-    if self.WeaponData == nil then return end
+    if self.WeaponData.ThunderStrikes == nil then return end
     return self.WeaponData.ThunderStrikes
 end
 
@@ -16,7 +17,6 @@ function ENT:Initialize()
     self:SetMoveType(MOVETYPE_NONE)
 	self:SetModel(self.Model)
 	self:DrawShadow(false)
-    self:SetBounciness(0.75)
     timer.Create("thundercrack",10,1, function()
         if self:IsValid() && (SERVER) then
             self.ThunderStrikes = 1
@@ -36,11 +36,11 @@ function ENT:Explode()
 	effect:SetStart(pos)
 	effect:SetOrigin(pos)
 	effect:SetScale(100)
-	effect:SetRadius(150)
+	effect:SetRadius(100 * self:GetRangeMulti())
 	effect:SetMagnitude(1)
 
 	util.Effect("Explosion", effect, true, true)
-	util.BlastDamage(self.Entity, self.Owner, self.Entity:GetPos(), 150, 35)
+	util.BlastDamage(self.Entity, self.Owner, self.Entity:GetPos(), (100 * self:GetRangeMulti()), (35 * self:GetDamageMulti()))
     self.ThunderStrikes = self.ThunderStrikes - 1
     if self.ThunderStrikes == 0 then
         self.Entity:Remove()

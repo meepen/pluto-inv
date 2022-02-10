@@ -8,7 +8,7 @@ return {
 		damage = 2,
 	},
 	SubDescription = {
-		tags = "This gun seems to roll Damage modifiers 2x as often",
+		tags = "This weapon seems to roll Damage modifiers 2x as often",
 	},
 
 	Type = "Grenade",
