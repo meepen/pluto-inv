@@ -3,6 +3,7 @@ AddCSLuaFile()
 ENT.PrintName = "Barrel Grenade"
 ENT.Base = "ttt_basegrenade"
 ENT.Model = "models/weapons/w_eq_smokegrenade_thrown.mdl"
+DEFINE_BASECLASS("pluto_len_basegrenade")
 
 function ENT:Explode()
 

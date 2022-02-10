@@ -1,9 +1,9 @@
 AddCSLuaFile()
 
-SWEP.Base = "weapon_ttt_basegrenade"
+SWEP.Base = "weapon_ttt_len_basegrenade"
 SWEP.PrintName = "Miniature Barrel"
 
-SWEP.Primary.Delay = 3
+SWEP.Primary.Delay = 2
 
 SWEP.Slot = 3
 

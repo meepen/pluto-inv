@@ -1,16 +1,17 @@
 AddCSLuaFile()
 
-SWEP.Base = "weapon_ttt_basegrenade"
-SWEP.PrintName = "Inhibitor Field Grenade"
+SWEP.Base = "weapon_ttt_len_basegrenade"
+SWEP.PrintName = "M.I.R.V. Grenade"
 
 SWEP.Primary.Delay = 3
 
 SWEP.Slot = 3
 
-SWEP.GrenadeEntity = "pluto_ifg"
+SWEP.GrenadeEntity = "pluto_mirv"
 
 SWEP.ViewModelFlip = false
 SWEP.UseHands = true
+
 SWEP.ViewModel          = "models/weapons/cstrike/c_eq_fraggrenade.mdl"
 SWEP.WorldModel         = "models/weapons/w_eq_fraggrenade.mdl"
 

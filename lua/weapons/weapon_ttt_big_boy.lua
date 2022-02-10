@@ -1,11 +1,11 @@
 AddCSLuaFile()
 
-SWEP.Base = "weapon_ttt_basegrenade"
+SWEP.Base = "weapon_ttt_len_basegrenade"
 SWEP.PrintName = "'Big Boy' Grenade"
 
 SWEP.Primary.Delay = 6
 
-SWEP.Slot = 2
+SWEP.Slot = 3
 
 SWEP.GrenadeEntity = "pluto_big_boy"
 

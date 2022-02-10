@@ -1,6 +1,6 @@
 return {
 	Name = "Stabilized",
-	affixes = 3
+	affixes = 3,
 
 	Type = "Grenade",
 }

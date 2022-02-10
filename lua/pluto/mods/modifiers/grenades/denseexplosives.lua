@@ -1,5 +1,5 @@
-MOD.Type = "prefix"
-MOD.Name = "Dense Explosives"
+MOD.Type = "suffix"
+MOD.Name = "Dense Explosions"
 MOD.Tags = {
     "damage"
 }

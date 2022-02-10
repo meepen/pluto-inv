@@ -1,6 +1,6 @@
 AddCSLuaFile()
 
-SWEP.Base = "weapon_ttt_basegrenade"
+SWEP.Base = "weapon_ttt_len_basegrenade"
 SWEP.PrintName = "Rolling Thunder"
 
 SWEP.Primary.Delay = 3
@@ -19,7 +19,5 @@ SWEP.Ortho = {2, 2.6}
 SWEP.PlutoIcon             = "vgui/entities/confetti.png"
 
 SWEP.ThunderStrikes = 3
-SWEP.DamageMulti = 1
-SWEP.RangeMulti = 1
-
+SWEP.Bounciness = 0.75
 SWEP.AutoSpawnable = true 

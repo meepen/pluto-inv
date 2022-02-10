@@ -1,6 +1,6 @@
 AddCSLuaFile()
 
-SWEP.Base = "weapon_ttt_basegrenade"
+SWEP.Base = "weapon_ttt_len_basegrenade"
 SWEP.PrintName = "Jailer's Grenade"
 
 SWEP.Primary.Delay = 3

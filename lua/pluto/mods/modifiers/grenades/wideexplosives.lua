@@ -1,5 +1,5 @@
-MOD.Type = "prefix"
-MOD.Name = "Wide Blast"
+MOD.Type = "suffix"
+MOD.Name = "Giant Blasts"
 MOD.Tags = {}
 
 function MOD:IsNegative(roll)
@@ -11,7 +11,7 @@ function MOD:FormatModifier(index, roll)
 end
 
 function MOD:CanRollOn(wep)
-	return wep.ClassName ~= "weapon_ttt_barrel_grenade" or "weapon_ttt_barrier_grenade" or "weapon_ttt_cage_grenade"
+	return wep.ClassName ~= "weapon_ttt_smoke_grenade" or "weapon_ttt_barrel_grenade" or "weapon_ttt_barrier_grenade" or "weapon_ttt_cage_grenade"
 end
 
 MOD.Description = "This grenade has %s more explosive range."

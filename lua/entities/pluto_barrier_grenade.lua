@@ -3,6 +3,7 @@ AddCSLuaFile()
 ENT.PrintName = "Barrier Grenade"
 ENT.Base = "ttt_basegrenade"
 ENT.Model = "models/weapons/w_eq_smokegrenade_thrown.mdl"
+DEFINE_BASECLASS("pluto_len_basegrenade")
 
 function ENT:Explode()
 
@@ -20,6 +21,7 @@ function ENT:Explode()
     ent:Spawn()
     ent:GetPhysicsObject():EnableMotion(false)
     ent:SetHealth(300)
+    self:FireBomb()
     sound.Play("pluto/pop.ogg", self:GetPos(), 75, 100, 1)
     self:Remove()
 end
