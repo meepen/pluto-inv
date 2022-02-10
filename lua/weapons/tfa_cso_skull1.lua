@@ -9,12 +9,15 @@ SWEP.DrawCrosshair = true
 SWEP.PrintName = "Vitality's Offer"
 SWEP.Slot = 1
 
-SWEP.Primary.Damage = 35
+SWEP.Primary.Damage = 42
 SWEP.Primary.Sound = Sound "Skull1.Fire"
-SWEP.Primary.Delay = 0.5
+SWEP.Primary.Delay = 0.65
 SWEP.Primary.Recoil = 3
 SWEP.Primary.RecoilTiming = 0.08
 SWEP.Primary.Automatic = true
+
+SWEP.HealthCost = 5
+SWEP.HealthGained = 15
 
 SWEP.Primary.ClipSize = 8
 SWEP.Primary.DefaultClip = 32
@@ -56,7 +59,7 @@ SWEP.Ironsights = {
 
 SWEP.RecoilInstructions = {
 	Interval = 1,
-	Angle(-15),
+	Angle(-40),
 }
 
 function SWEP:Initialize()
@@ -87,10 +90,10 @@ function SWEP:FireBulletsCallback(tr, dmginfo, data)
 
 		pluto.statuses.poison(own, {
 			Weapon = self,
-			Damage = 5
+			Damage = self.HealthCost
 		})
 
-		self.Damaged[ent] = (self.Damaged[ent] or 0) + 5
+		self.Damaged[ent] = (self.Damaged[ent] or 0) + 1
 	end
 end
 
@@ -101,7 +104,7 @@ function SWEP:DoPlayerDeath(ply, atk, dmg)
 		return
 	end
 
-	local amt = self.Damaged[ply] * 2
+	local amt = self.Damaged[ply] * self.HealthGained
 	self.Damaged[ply] = nil
 
 	own:SetMaxHealth(own:GetMaxHealth() + amt)
