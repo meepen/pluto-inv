@@ -309,36 +309,6 @@ pluto.quests.rewards = {
 		},
 		{
 			Type = "weapon",
-			ClassName = "weapon_cod4_ak47_silencer",
-			Tier = "promised",
-			Shares = 0.1,
-		},
-		{
-			Type = "weapon",
-			ClassName = "weapon_cod4_m4_silencer",
-			Tier = "promised",
-			Shares = 0.1,
-		},
-		{
-			Type = "weapon",
-			ClassName = "weapon_cod4_m14_silencer",
-			Tier = "promised",
-			Shares = 0.1,
-		},
-		{
-			Type = "weapon",
-			ClassName = "weapon_cod4_g3_silencer",
-			Tier = "promised",
-			Shares = 0.1,
-		},
-		{
-			Type = "weapon",
-			ClassName = "weapon_cod4_g36c_silencer",
-			Tier = "promised",
-			Shares = 0.1,
-		},
-		{
-			Type = "weapon",
 			RandomImplicit = true,
 			ModMin = 4,
 			MoxMax = 5,
@@ -362,7 +332,13 @@ pluto.quests.rewards = {
 			Type = "shard",
 			ModMin = 5,
 			ModMax = 5,
-			Shares = 1,
+			Shares = 0.5,
+		},
+				{
+			Type = "shard",
+			ModMin = 4,
+			ModMax = 5,
+			Shares = 0.5,
 		},
 	},
 	weekly = {
@@ -405,6 +381,12 @@ pluto.quests.rewards = {
 		{
 			Type = "shard",
 			Tier = "otherworldly",
+			Shares = 0.25,
+		},
+				{
+			Type = "shard",
+			ModMin = 5,
+			ModMax = 6,
 			Shares = 0.5,
 		},
 	},
