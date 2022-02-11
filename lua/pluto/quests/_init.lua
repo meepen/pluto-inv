@@ -36,7 +36,7 @@ for _, id in pairs {
 	"dnatrack",
 	"fourcraft",
 	"sacrifices",
-	"burn",
+	--"burn",
 	"postround",
 	"minis",
 	"identify",
