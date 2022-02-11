@@ -69,9 +69,9 @@ end
 SWEP.RecoilInstructions = {
 	Interval = 1,
 	Angle(-2),
-	Angle(-2, 1),
+	Angle(-2, -1),
 	Angle(-2, 2),
-	Angle(-2, 1),
+	Angle(-2, -1),
 }
 
 function SWEP:DoImpactEffect(tr)
