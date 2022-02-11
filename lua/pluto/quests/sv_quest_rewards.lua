@@ -196,7 +196,7 @@ pluto.quests.rewards = {
 		{
 			Type = "currency",
 			Currency = "droplet",
-			Amount = 75,
+			Amount = 50,
 			Shares = 1,
 		},
 		{
@@ -332,7 +332,7 @@ pluto.quests.rewards = {
 			Type = "shard",
 			ModMin = 5,
 			ModMax = 5,
-			Shares = 0.5,
+			Shares = 0.25,
 		},
 				{
 			Type = "shard",
@@ -364,7 +364,7 @@ pluto.quests.rewards = {
 			Type = "weapon",
 			ModMin = 6,
 			ModMax = 6,
-			Shares = 1,
+			Shares = 0.5,
 		},
 		{
 			Type = "weapon",
@@ -381,7 +381,7 @@ pluto.quests.rewards = {
 		{
 			Type = "shard",
 			Tier = "otherworldly",
-			Shares = 0.25,
+			Shares = 0.1,
 		},
 				{
 			Type = "shard",
