@@ -12,7 +12,7 @@ function MOD:FormatModifier(index, roll)
 	return string.format("%i", roll)
 end
 
-MOD.Description = "Carry %s more of this grenade."
+MOD.Description = "Carry an extra of this grenade."
 
 MOD.Tiers = {
 	{ 1, 1 },

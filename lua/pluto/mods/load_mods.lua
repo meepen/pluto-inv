@@ -55,11 +55,7 @@ for _, filename in pairs {
 	"grenades/smokeclr",
 	"grenades/throwspeed",
 	"grenades/thunderous",
-	"grenades/denseexplosives",
-	"grenades/wideexplosives",
-	"grenades/martyrdom",
 	"grenades/extragrenades",
-	"grenades/spicy",
 
 } do
 	local modname = filename:match "[_%w]+$"
