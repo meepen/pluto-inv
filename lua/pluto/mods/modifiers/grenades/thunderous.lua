@@ -7,7 +7,7 @@ function MOD:IsNegative(roll)
 end
 
 function MOD:FormatModifier(index, roll)
-	return string.format("%.01f%%", roll)
+	return string.format("%i", roll)
 end
 
 function MOD:CanRollOn(wep)

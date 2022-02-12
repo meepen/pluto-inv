@@ -9,7 +9,7 @@ function MOD:IsNegative(roll)
 end
 
 function MOD:FormatModifier(index, roll)
-	return string.format("%.01f%%", roll)
+	return string.format("%i", roll)
 end
 
 MOD.Description = "Carry %s more of this grenade."
