@@ -12,7 +12,7 @@ function MOD:FormatModifier(index, roll)
 end
 
 function MOD:CanRollOn(wep)
-	return wep.ClassName ~= "weapon_ttt_barrel_grenade" or "weapon_ttt_barrier_grenade"
+	return wep.ClassName ~= "weapon_ttt_smoke_grenade" or "weapon_ttt_barrel_grenade" or "weapon_ttt_barrier_grenade" or "weapon_ttt_cage_grenade"
 end
 
 MOD.Description = "Grenade has a %s chance to explode into fire!"

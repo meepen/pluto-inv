@@ -11,6 +11,7 @@ SWEP.GrenadeEntity = "pluto_big_boy"
 
 SWEP.ViewModelFlip = false
 SWEP.UseHands = true
+
 SWEP.ViewModel          = "models/weapons/cstrike/c_eq_fraggrenade.mdl"
 SWEP.WorldModel         = "models/weapons/w_eq_fraggrenade.mdl"
 
