@@ -9,10 +9,10 @@ function ENT:Explode()
 
 
     local cases = {
-        [1] = Vector(40,0,55),
-        [2] = Vector(0,40,55),
-        [3] = Vector(-40,0,55),
-        [4] = Vector(0,-40,55)
+        [1] = Vector(60,0,55),
+        [2] = Vector(0,60,55),
+        [3] = Vector(-60,0,55),
+        [4] = Vector(0,-60,55)
     }
 
     local angles = {
@@ -35,7 +35,7 @@ function ENT:Explode()
         ent:DropToFloor()
         ent:Spawn()
         ent:GetPhysicsObject():EnableMotion(false)
-        timer.Simple(2, function()
+        timer.Simple(3, function()
             if ent:IsValid() then
             ent:Remove()
             end

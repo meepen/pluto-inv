@@ -6,13 +6,13 @@ ENT.Model = "models/weapons/w_eq_smokegrenade_thrown.mdl"
 DEFINE_BASECLASS("pluto_len_basegrenade")
 
 function ENT:Explode()
-
+    if (CLIENT) then return end
 
     local cases = {
-        [1] = Vector(80,0,5),
-        [2] = Vector(0,80,5),
-        [3] = Vector(-80,0,5),
-        [4] = Vector(0,-80,5)
+        [1] = Vector(100,0,200),
+        [2] = Vector(0,100,200),
+        [3] = Vector(-100,0,200),
+        [4] = Vector(0,-100,200),
     }
 
     for i = 1,4,1 do
@@ -20,9 +20,10 @@ function ENT:Explode()
         if (not ent:IsValid()) then return end
         local thrower = self:GetOwner()
         local grenadepos = self:GetPos()
-        ent:SetPos(grenadepos + cases[i])
+        ent:SetPos(grenadepos + Vector(0,0,5))
         ent:SetOwner(self:GetOwner())
         ent:Spawn()
+        ent:SetAbsVelocity(cases[i])
         timer.Simple(1.5, function()
             if IsValid(ent) then
                 ent:Explode()
