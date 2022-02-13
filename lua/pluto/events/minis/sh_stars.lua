@@ -28,7 +28,7 @@ if (SERVER) then
 				e.SkipCrossmap = true
 				e:SetPos(start)
 				e:SetMovementType(CURRENCY_MOVEVECTOR)
-				e:SetMovementVector((target - start):GetNormalized() * 2.5)
+				e:SetMovementVector((target - start):GetNormalized() * 7.5)
 				e:Update()
 			end
 		end)

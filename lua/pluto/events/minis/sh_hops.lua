@@ -15,7 +15,7 @@ if (SERVER) then
 
 		pluto.rounds.minis[name] = nil
 
-        pluto.rounds.Notify("It's leg day! Each hop will make you hoppier!", Color(235, 70, 150))
+        pluto.rounds.Notify("Hop round! Jump to gain more jump power.", Color(235, 70, 150))
 
         last_hops = {}
 
@@ -32,7 +32,7 @@ if (SERVER) then
                 return
             end
 
-            if (CurTime() - (last_hops[ply] or 0) < 0.2) then
+            if (CurTime() - (last_hops[ply] or 0) < 0.5) then
                 return
             end
 

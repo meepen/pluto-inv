@@ -55,14 +55,14 @@ if (SERVER) then
         end
 
         dasher:SetRole "Dasher"
-        dasher:SetMaxHealth(250)
-        dasher:SetHealth(250)
-        dasher:SetJumpPower(dasher:GetJumpPower() + 100)
+        dasher:SetMaxHealth(200)
+        dasher:SetHealth(200)
+        dasher:SetJumpPower(dasher:GetJumpPower() + 75)
         dasher:StripWeapons()
         pluto.NextWeaponSpawn = false
         dasher:Give "weapon_ttt_unarmed"
 
-        pluto.rounds.speeds[dasher] = (pluto.rounds.speeds[dasher] or 1) + 0.75
+        pluto.rounds.speeds[dasher] = (pluto.rounds.speeds[dasher] or 1) + 0.5
         net.Start "mini_speed"
             net.WriteFloat(pluto.rounds.speeds[dasher])
         net.Send(dasher)

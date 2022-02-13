@@ -5,8 +5,8 @@
 
 local name = "panic"
 
-local panic_min = 0.8
-local panic_max = 1.7
+local panic_min = 0.9
+local panic_max = 1.3
 
 if (SERVER) then
     util.AddNetworkString("pluto_mini_" .. name)
@@ -18,7 +18,7 @@ if (SERVER) then
 
 		pluto.rounds.minis[name] = nil
 
-        pluto.rounds.Notify("PANIC is in the air! The more you're hurt, the faster you'll run!", ttt.roles.Traitor.Color)
+        pluto.rounds.Notify("Panic round! The more you're hurt, the faster you'll run!", ttt.roles.Traitor.Color)
 
         hook.Add("TTTUpdatePlayerSpeed", "pluto_mini_" .. name, function(ply, data)
             data.panic = Lerp((ply:GetMaxHealth() - ply:Health()) / ply:GetMaxHealth(), panic_min, panic_max)
