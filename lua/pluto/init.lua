@@ -27,7 +27,6 @@ local allowed = {
 	["76561198083846494"] = true, -- KAT
 	["76561198188070674"] = true, -- CROSSMAN
 	["76561198110055555"] = true, -- add___123
-	["76561198042176150"] = true, -- Len Kagamine
 }
 
 function HexColor(h)

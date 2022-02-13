@@ -3,7 +3,7 @@ AddCSLuaFile()
 ENT.PrintName = "Rolling Thunder Grenade"
 ENT.Base = "ttt_basegrenade"
 ENT.Model = "models/weapons/w_eq_smokegrenade_thrown.mdl"
-DEFINE_BASECLASS("pluto_len_basegrenade")
+DEFINE_BASECLASS("ttt_basegrenade")
 
 function ENT:GetThunderStrikes()
     if self.WeaponData == nil then return end
