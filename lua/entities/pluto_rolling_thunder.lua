@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
 ENT.PrintName = "Rolling Thunder Grenade"
-ENT.Base = "pluto_len_basegrenade"
+ENT.Base = "ttt_basegrenade"
 ENT.Model = "models/weapons/w_eq_smokegrenade_thrown.mdl"
 DEFINE_BASECLASS("pluto_len_basegrenade")
 
