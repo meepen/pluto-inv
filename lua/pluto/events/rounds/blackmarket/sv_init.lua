@@ -143,8 +143,8 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		if (ply:Alive()) then
 			self:Initialize(state, ply)
 		end
-		ply:SetMaxHealth(150)
-		ply:SetHealth(150)
+		ply:SetMaxHealth(200)
+		ply:SetHealth(200)
 	end
 
 	self:ChooseLeader(state)
@@ -152,8 +152,8 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	GetConVar("ttt_karma"):SetBool(false)
 	
 	timer.Simple(1, function()
-		round.SetRoundEndTime(CurTime() + 180)
-		ttt.SetVisibleRoundEndTime(CurTime() + 180)
+		round.SetRoundEndTime(CurTime() + 150)
+		ttt.SetVisibleRoundEndTime(CurTime() + 150)
 	end)
 end)
 
@@ -213,8 +213,8 @@ ROUND:Hook("SetupMove", function(self, state, ply, mv)
 end)
 
 function ROUND:Spawn(state, ply)
-	ply:SetMaxHealth(150)
-	ply:SetHealth(150)
+	ply:SetMaxHealth(200)
+	ply:SetHealth(200)
 end
 
 ROUND:Hook("PlayerSpawn", ROUND.Spawn)

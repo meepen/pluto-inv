@@ -36,6 +36,7 @@ function ROUND:Loadout(ply)
 	pluto.NextWeaponSpawn = false
 	local wep = ply:Give "weapon_ttt_ak47_u"
 	wep.AllowDrop = false
+	pluto.rounds.LoadAmmo(ply)
 end
 
 ROUND:Hook("TTTSelectRoles", function(self, state, plys)
@@ -107,8 +108,8 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	GetConVar("ttt_karma"):SetBool(false)
 	
 	timer.Simple(1, function()
-		round.SetRoundEndTime(CurTime() + 180)
-		ttt.SetVisibleRoundEndTime(CurTime() + 180)
+		round.SetRoundEndTime(CurTime() + 150)
+		ttt.SetVisibleRoundEndTime(CurTime() + 150)
 	end)
 end)
 
