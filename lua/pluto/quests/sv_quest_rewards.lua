@@ -184,19 +184,19 @@ pluto.quests.rewards = {
 		{
 			Type = "currency",
 			Currency = "aciddrop",
-			Amount = 3,
+			Amount = 5,
 			Shares = 1,
 		},
 		{
 			Type = "currency",
 			Currency = "pdrop",
-			Amount = 3,
+			Amount = 5,
 			Shares = 1,
 		},
 		{
 			Type = "currency",
 			Currency = "tp",
-			Amount = 1,
+			Amount = 3,
 			Shares = 1,
 		},
 		{
@@ -254,31 +254,31 @@ pluto.quests.rewards = {
 		{
 			Type = "currency",
 			Currency = "crate2",
-			Amount = 1,
+			Amount = 3,
 			Shares = 1,
 		},
 		{
 			Type = "currency",
 			Currency = "crate3_n",
-			Amount = 1,
+			Amount = 3,
 			Shares = 0.3,
 		},
 		{
 			Type = "currency",
 			Currency = "crate3",
-			Amount = 1,
+			Amount = 3,
 			Shares = 0.3,
 		},
 		{
 			Type = "currency",
 			Currency = "crate1",
-			Amount = 1,
+			Amount = 3,
 			Shares = 0.3,
 		},
 		{
 			Type = "currency",
 			Currency = "tp",
-			Amount = 10,
+			Amount = 15,
 			Shares = 1.5,
 		},
 		{
@@ -383,7 +383,7 @@ pluto.quests.rewards = {
 		{
 			Type = "currency",
 			Currency = "quill",
-			Amount = 2,
+			Amount = 1,
 			Shares = 1,
 		},
 		{
@@ -450,7 +450,7 @@ pluto.quests.rewards = {
 			Type = "shard",
 			ModMin = 6,
 			ModMax = 6,
-			Shares = 0.5,
+			Shares = 0.25,
 		},
 	},
 }
