@@ -4,6 +4,7 @@
 return {
 	Name = "Legendary",
 	affixes = 4,
+	SubDescription = "This item is legendary. It cannot be used in crafting",
 	Color = Color(227, 207, 32),
-	CraftChance = 0.2, -- 20%
+	CraftChance = 0 --0.2, -- 20%
 }
