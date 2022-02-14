@@ -5,6 +5,12 @@
 discord = discord or {}
 
 local config = util.JSONToTable(file.Read("cfg/pluto.json", "GAME"))["discord-gmod"]
+
+if (not config) then -- People's test servers will not have this
+	print("No discord config, returning")
+	return
+end
+
 local base_url = config.remote
 
 local ITEM = {}

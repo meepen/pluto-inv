@@ -332,12 +332,14 @@ for name, values in pairs {
 
 					if (item:GetMaxAffixes() >= 5) then
 						hook.Run("PlutoRareDrop", ply, "Weapon")
-						local msg = discord.Message()
+						if (discord and discord.Message) then -- People's test servers will not have this
+							local msg = discord.Message()
 
-						msg:AddEmbed(item:GetDiscordEmbed()
-							:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
-						)
-						msg:Send "drops"
+							msg:AddEmbed(item:GetDiscordEmbed()
+								:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
+							)
+							msg:Send "drops"
+						end
 					end
 
 					ply:ChatPrint("You have received a ", item, white_text, "!")

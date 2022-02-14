@@ -259,7 +259,7 @@ local pluto_stardust_initialize = function()
 			table.insert(available, data)
 		end
 
-		if (#available < 10) then
+		if (discord and discord.Message and #available < 10) then -- People's test servers will not have this
 			local msg = discord.Message()
 
 			for i = #available + 1, 10 do

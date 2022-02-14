@@ -6,6 +6,12 @@ require "gwsockets"
 local cross_id = CreateConVar("pluto_cross_id", "unknown", FCVAR_ARCHIVE)
 
 local config = util.JSONToTable(file.Read("cfg/pluto.json", "GAME")).nix
+
+if (not config) then -- People's test servers will not have this
+	print("no websocket config, returning")
+	return
+end
+
 local apikey = util.JSONToTable(file.Read("cfg/pluto.json", "GAME")).steam.apikey
 
 if (pluto.WS) then

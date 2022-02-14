@@ -315,7 +315,7 @@ function pluto.inv.readcraft(cl)
 		end
 	end
 
-	if (wpn:GetMaxAffixes() >= 4) then
+	if (discord and discord.Message and wpn:GetMaxAffixes() >= 4) then -- People's test servers will not have this
 		discord.Message():AddEmbed(
 			wpn:GetDiscordEmbed()
 				:SetAuthor(cl:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. cl:SteamID64())
