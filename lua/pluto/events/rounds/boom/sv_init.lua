@@ -4,7 +4,7 @@
 ROUND.Reward = "tp"
 ROUND.WinnerEarnings = 20
 ROUND.EachDecrease = 5
-ROUND.DamagePerSecond = 0.8
+ROUND.DamagePerSecond = 1
 ROUND.ResistancePerKill = 20
 ROUND.ResistancePerDamage = 0.05
 ROUND.MaxResistance = 80
@@ -115,8 +115,8 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	GetConVar("ttt_karma"):SetBool(false)
 	
 	timer.Simple(1, function()
-		round.SetRoundEndTime(CurTime() + 180)
-		ttt.SetVisibleRoundEndTime(CurTime() + 180)
+		round.SetRoundEndTime(CurTime() + 165)
+		ttt.SetVisibleRoundEndTime(CurTime() + 165)
 	end)
 end)
 
