@@ -169,13 +169,29 @@ function PANEL:Init()
 		pluto.ChatPanel:Remove()
 	end
 	pluto.ChatPanel = self
-	self:SetSize(math.max(450, ScrW()/4),math.max(300, ScrH()/4))
+	self:SetSize(math.max(300, ScrH() * 0.6),math.max(100, ScrH() * 0.3))
 	self:SetPos(0, 0)
 	self:MakePopup()
 
-	self.Input = self.EmptyContainerContainer:Add "pluto_inventory_textentry"
+	self:SetCurve(4)
+	self:SetColor(Color(10, 11, 12, 255))
+	self:DockMargin(0, 0, 0, 0)
+
+	self.Background = self:Add "ttt_curved_panel"
+	self.Background:Dock(FILL)
+	self.Background:SetColor(ColorAlpha(self:GetColor(), 200))
+	self.Background:DockPadding(5, 5, 5, 5)
+	self.Background:SetCurve(self:GetCurve())
+
+	self.InputBackground = self.Background:Add "ttt_curved_panel"
+	self.InputBackground:SetCurve(2)
+	self.InputBackground:SetColor(ColorAlpha(self:GetColor(), 200))
+	self.InputBackground:Dock(BOTTOM)	
+	self.InputBackground:DockMargin(0, 4, 0, 0)
+
+	self.Input = self.InputBackground:Add "pluto_inventory_textentry"
 	self.Input:SetFont "pluto_chat_font"
-	self.Input:Dock(BOTTOM)
+	self.Input:Dock(FILL)
 	function self.Input:OnKeyCode(key)
 		if (key == KEY_UP) then
 			self:SetText(self.LastMessage or "")
@@ -210,14 +226,13 @@ function PANEL:Init()
 			end
 		end
 	end
-	self.Input:DockMargin(0, 4, 0, 0)
 
 	self.Emojis = self.Input:Add "DImage"
 	self.Emojis:SetCursor "hand"
 	self.Emojis:Dock(RIGHT)
 	self.Emojis:SetMouseInputEnabled(true)
 	self.Emojis:DockMargin(4, 2, 4, 2)
-	self.Emojis:SetImage "icon16/emoticon_evilgrin.png"
+	self.Emojis:SetImage "icon16/box.png"
 	function self.Emojis:PerformLayout(w, h)
 		self:SetWide(h)
 	end
@@ -234,29 +249,18 @@ function PANEL:Init()
 	self.ChatLabel:SetText "ALL"
 	self.ChatLabel:SizeToContentsX()
 
-	self.ChannelEntries = {}
+	self.TextEntry = self.Background:Add "pluto_text"
+	self.TextEntry:DockMargin(4, 4, 4, 9)
+	self.TextEntry:Dock(FILL)
+	self.TextEntry:SetDefaultRenderSystem "shadow"
+	self.TextEntry:SetDefaultFont "pluto_chat_font"
+	self.TextEntry:SetDefaultTextColor(Color(255, 255, 255))
 
+	local channellist = {}
 	for _, channel in ipairs(pluto.chat.channels) do
-		self:AddTab(channel.Name, function(p)
-			local container = p:Add "pluto_inventory_component"
-			container:Dock(FILL)
-			container:SetColor(Color(0, 0, 0, 0))
-			container:SetCurve(4)
-
-			
-			local text = container:Add "pluto_text"
-			text:DockMargin(4, 4, 4, 9)
-			text:Dock(FILL)
-			text:SetDefaultRenderSystem "shadow"
-			text:SetDefaultFont "pluto_chat_font"
-			text:SetDefaultTextColor(Color(255, 255, 255))
-			text.Channel = channel
-			text.Container = container
-			self.ChannelEntries[channel.Name] = text
-		end, true)
-		self:ChangeToTab(channel.Name) -- cache it NOW or else
+		table.insert(channellist, channel.Name)
 	end
-	self:ChangeToTab(pluto.chat.channels[1].Name)
+	-- self:AddFilterType("channel", channellist)
 
 	hook.Add("PlayerBindPress", self, function(self, ply, bind, pressed)
 		if (bind == "messagemode") then
@@ -304,7 +308,7 @@ function PANEL:OpenEmojis()
 
 	self.EmojiWindow = self:Add "ttt_curved_panel"
 	self.EmojiWindow:SetCurve(4)
-	self.EmojiWindow:SetColor(self.Container:GetColor())
+	self.EmojiWindow:SetColor(self:GetColor())
 	self.EmojiWindow:SetCurveBottomLeft(false)
 	self.EmojiWindow:SetCurveTopLeft(false)
 	self.EmojiWindow:MakePopup()
@@ -514,7 +518,7 @@ function PANEL:AddTextToTarget(what, index)
 end
 
 function PANEL:GetTargetChannelTextEntry()
-	return self.ChannelEntries[self.TargetChannel]
+	return self.TextEntry
 end
 
 function PANEL:InsertShowcaseItem(item)
@@ -567,8 +571,6 @@ end
 function PANEL:EnableInput(on)
 	self:SetKeyboardInputEnabled(on)
 	self:SetMouseInputEnabled(on)
-	self.TabContainer:SetVisible(on)
-	self.BorderContainer:SetVisible(on)
 	self.Input:SetAlpha(on and 255 or 1)
 
 	local text = self:GetTargetChannelTextEntry()
@@ -588,8 +590,10 @@ function PANEL:EnableInput(on)
 
 	if (on) then
 		self.Input:Focus()
-		self.Container:SetColor(ColorAlpha(self.Container:GetColor(), 255))
-		self.Main:SetColor(ColorAlpha(self.Main:GetColor(), 255))
+		self:SetColor(ColorAlpha(self:GetColor(), 255))
+		self.Background:SetColor(ColorAlpha(self:GetColor(), 200))
+		self.InputBackground:SetColor(ColorAlpha(self:GetColor(), 200))
+		self.Input:SetVisible(true)
 
 		if (IsValid(text)) then
 			text:ResetAllFades(true, false, -1 or pluto_chat_fade_sustain:GetFloat())
@@ -598,10 +602,13 @@ function PANEL:EnableInput(on)
 		if (IsValid(self.EmojiWindow)) then
 			self.EmojiWindow:Remove()
 		end
+		self:SetColor(ColorAlpha(self:GetColor(), 0))
+		self.Background:SetColor(ColorAlpha(self:GetColor(), 0))
+		self.InputBackground:SetColor(ColorAlpha(self:GetColor(), 0))
+		self.Input:SetVisible(false)
+
 		self:SetTeamChat(false)
 		self.Input:SetText ""
-		self.Container:SetColor(ColorAlpha(self.Container:GetColor(), 0))
-		self.Main:SetColor(ColorAlpha(self.Main:GetColor(), 0))
 		
 		if (IsValid(text)) then
 			text:ResetAllFades(false, false, pluto_chat_fade_sustain:GetFloat())
@@ -611,7 +618,7 @@ end
 
 function PANEL:SetTeamChat(teamchat)
 	self.TeamChat = teamchat
-	self.ChatLabel:SetText(teamchat and "TEAM" or self.ActiveTab == "Server" and "" or self.ActiveTab)
+	self.ChatLabel:SetText(teamchat and "TEAM" or "")
 	self.ChatLabel:SizeToContentsX()
 end
 
@@ -662,29 +669,14 @@ function PANEL:OnInput(text)
 	if (not ran_command and text:Trim() ~= "") then
 		self.Input.LastMessage = text
 		pluto.inv.message()
-			:write("chat", self:GetTeamChat(), {pluto.chat.channels.byname[self.ActiveTab].Prefix .. text})
+			:write("chat", self:GetTeamChat(), {"//" .. text})
 			:send()
 	end
 	self.Input:SetText ""
 	self:EnableInput(false)
 end
 
-function PANEL:ChangeToTab(...)
-	if (IsValid(pluto.opened_showcase)) then
-		pluto.opened_showcase:Remove()
-	end
-
-	if (IsValid(pluto.opened_chat_player)) then
-		pluto.opened_chat_player:Remove()
-		print("yes")
-	end
-
-	DEFINE_BASECLASS("pluto_window")
-
-	BaseClass.ChangeToTab(self, unpack({...}))
-end
-
-vgui.Register("pluto_chatbox_new", PANEL, "pluto_window")
+vgui.Register("pluto_chatbox_new", PANEL, "ttt_curved_panel_outline")
 
 local function init_chat()
 	vgui.Create "pluto_chatbox_new"
