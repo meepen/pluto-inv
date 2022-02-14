@@ -169,7 +169,7 @@ function PANEL:Init()
 		pluto.ChatPanel:Remove()
 	end
 	pluto.ChatPanel = self
-	self:SetSize(math.max(300, ScrH() * 0.6),math.max(100, ScrH() * 0.3))
+	self:SetSize(math.max(300, ScrH() * 0.5), math.max(100, ScrH() * 0.3))
 	self:SetPos(0, 0)
 	self:MakePopup()
 
@@ -182,6 +182,9 @@ function PANEL:Init()
 	self.Background:SetColor(ColorAlpha(self:GetColor(), 200))
 	self.Background:DockPadding(5, 5, 5, 5)
 	self.Background:SetCurve(self:GetCurve())
+	function self.Background.OnMousePressed(s, mouse)
+		self:OnMousePressed(mouse)
+	end
 
 	self.InputBackground = self.Background:Add "ttt_curved_panel"
 	self.InputBackground:SetCurve(2)
@@ -414,7 +417,34 @@ function PANEL:OpenEmojis()
 		pnl:SetTall(32)
 		pnl:SetTooltip(":" .. emoji .. ":")
 	end
+end
 
+function PANEL:OnMousePressed(mouse)
+	if (mouse == MOUSE_LEFT) then
+		self.MouseX, self.MouseY = gui.MousePos()
+		self.DeltaX, self.DeltaY = 0, 0
+		self.BeingPressed = true
+	end
+end
+
+function PANEL:Think()
+	if (not self.BeingPressed) then
+		return
+	end
+	if (not input.IsMouseDown(MOUSE_LEFT)) then
+		self.BeingPressed = false
+		return
+	end
+	self.DeltaX, self.DeltaY = self.DeltaX - self.MouseX, self.DeltaY - self.MouseY
+	self.MouseX, self.MouseY = gui.MousePos()
+	self.DeltaX, self.DeltaY = self.DeltaX + self.MouseX, self.DeltaY + self.MouseY
+
+	local x, y = self:GetPos()
+	x, y = x + self.DeltaX, y + self.DeltaY
+	self:SetPos(x, y)
+	self.DeltaX, self.DeltaY = self.DeltaX % 1, self.DeltaY % 1
+
+	self:OnPositionUpdated()
 end
 
 function PANEL:OnPositionUpdated()
@@ -526,8 +556,8 @@ function PANEL:InsertShowcaseItem(item)
 	MsgC(item:GetColor(), item:GetPrintName())
 end
 
-function PANEL:AddImageFromURL(url)
-	self:GetTargetChannelTextEntry():AddImageFromURL(url)
+function PANEL:AddImageFromURL(url, w, h)
+	self:GetTargetChannelTextEntry():AddImageFromURL(url, w, h)
 	MsgC("<url>")
 end
 

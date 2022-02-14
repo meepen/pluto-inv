@@ -56,7 +56,11 @@ function PANEL:SetFromURL(url)
 
 		self.Image:SetMaterial(mat)
 		self.Loading:SetVisible(false)
-	end):catch(ErrorNoHalt)
+	end):catch(function(err)
+		ErrorNoHalt(err)
+		self.Image:SetImage("icon16/image_link.png")
+		self.Loading:SetVisible(false)
+	end)
 end
 
 function PANEL:SetImageSize(w, h)
