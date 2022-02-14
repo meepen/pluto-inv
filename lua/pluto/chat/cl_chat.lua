@@ -165,6 +165,10 @@ pluto.newchat = _chat
 local PANEL = {}
 
 function PANEL:Init()
+	if (IsValid(pluto.ChatPanel)) then
+		pluto.ChatPanel:Remove()
+	end
+	pluto.ChatPanel = self
 	self:SetSize(math.max(450, ScrW()/4),math.max(300, ScrH()/4))
 	self:SetPos(0, 0)
 	self:MakePopup()
@@ -230,7 +234,7 @@ function PANEL:Init()
 	self.ChatLabel:SetText "ALL"
 	self.ChatLabel:SizeToContentsX()
 
-	self.TextHistories = {}
+	self.ChannelEntries = {}
 
 	for _, channel in ipairs(pluto.chat.channels) do
 		self:AddTab(channel.Name, function(p)
@@ -248,7 +252,7 @@ function PANEL:Init()
 			text:SetDefaultTextColor(Color(255, 255, 255))
 			text.Channel = channel
 			text.Container = container
-			self.TextHistories[channel.Name] = text
+			self.ChannelEntries[channel.Name] = text
 		end, true)
 		self:ChangeToTab(channel.Name) -- cache it NOW or else
 	end
@@ -432,64 +436,60 @@ function PANEL:AddInput(what)
 end
 
 function PANEL:PlutoChatMessageReceived(channel, content, teamonly)
-	local text = self.TextHistories[channel]
-	if (IsValid(text)) then
-		self:AddTextLine(text, content, teamonly)
-		local channel = pluto.chat.channels.byname[channel]
-		if (channel and channel.Relay) then
-			for _, relay in pairs(channel.Relay) do
-				text = self.TextHistories[relay]
-				if (IsValid(text)) then
-					self:AddTextLine(text, content, teamonly)
-				end
-			end
-		end
+	self:SetChannelTarget(channel)
+	self:InsertFade()
+	self:SetCurrentTextColor()
+	if (teamonly) then
+		self:AddTextToTarget(LocalPlayer():GetRoleData().Color)
+		self:AddTextToTarget("[TEAM] ")
 	end
+	for i, what in ipairs(content) do
+		self:AddTextToTarget(what, i)
+	end
+	self:AddTextToTarget("\n", i)
 end
 
-function PANEL:AddToText(text, what, index)
+function PANEL:AddTextToTarget(what, index)
 	local found = false
 	if (IsColor(what) or what == nil) then
-		text:SetCurrentTextColor(what)
+		self:SetCurrentTextColor(what)
 		found = true
 	elseif (IsEntity(what) and what:IsPlayer()) then
-		local old = text:GetCurrentTextColor()
+		local old = self:GetCurrentTextColor()
 
 		if (not what:Alive() and (not LocalPlayer():Alive() or ttt.GetRoundState() ~= ttt.ROUNDSTATE_ACTIVE)) then
-			text:SetCurrentTextColor(self.DeadColor)
-			self:AddToText(text, "*DEAD* ")
+			self:SetCurrentTextColor(self.DeadColor)
+			self:AddTextToTarget(text, "*DEAD* ", index)
 		end
 
-		text:SetCurrentTextColor(self.PlayerColor)
-		--self:AddToText(text, what:Nick(), index)
-		text:InsertPlayer(what)
-		text:SetCurrentTextColor(old)
+		self:SetCurrentTextColor(self.PlayerColor)
+		self:InsertPlayer(what)
+		self:SetCurrentTextColor(old)
 
 		if (index == 1) then
-			self:AddToText(text, ": ", index)
+			self:AddTextToTarget(": ", index)
 		end
 		found = true
 	elseif (istable(what)) then
-		local old = text:SetCurrentTextColor()
+		local old = self:SetCurrentTextColor()
 		if (pluto.isitem(what)) then
 			found = true
-			text:InsertShowcaseItem(what)
+			self:InsertShowcaseItem(what)
 		elseif (what.Type == "emoji") then
 			found = true
-			text:AddImageFromURL(what.URL, what.Size.x, what.Size.y)
+			self:AddImageFromURL(what.URL, what.Size.x, what.Size.y)
 		elseif (what.Type == "Currency") then
 			found = true
-			text:InsertShowcaseItem(what)
+			self:InsertShowcaseItem(what)
 		end
 		if (found) then
-			text:SetCurrentTextColor(old)
+			self:SetCurrentTextColor(old)
 		end
 	end
 
 	if (not found) then
 		local function append(t)
-			MsgC(text:GetCurrentTextColor(), t)
-			text:AppendText(t)
+			self:AppendTargetText(t)
 		end
 		local t = tostring(what)
 		local last = 1
@@ -497,14 +497,14 @@ function PANEL:AddToText(text, what, index)
 			if (last ~= before) then
 				append(t:sub(last, before - 1))
 			end
-			text:InsertClickableTextStart(function()
+			self:InsertClickableTextStart(function()
 				self:OnLinkClicked(url)
 			end)
-			local col = text:GetCurrentTextColor()
-			text:SetCurrentTextColor(self.ChatLinkColor)
+			local col = self:GetCurrentTextColor()
+			self:SetCurrentTextColor(self.ChatLinkColor)
 			append(url)
-			text:SetCurrentTextColor(col)
-			text:InsertClickableTextEnd()
+			self:SetCurrentTextColor(col)
+			self:InsertClickableTextEnd()
 			last = after
 		end
 		if (last <= t:len()) then
@@ -513,21 +513,55 @@ function PANEL:AddToText(text, what, index)
 	end
 end
 
-function PANEL:OnLinkClicked(url)
+function PANEL:GetTargetChannelTextEntry()
+	return self.ChannelEntries[self.TargetChannel]
 end
 
-function PANEL:AddTextLine(text, content, teamonly)
-	self:InsertFade(text)
-	text:SetCurrentTextColor()
-	if (teamonly) then
-		self:AddToText(text, LocalPlayer():GetRoleData().Color)
-		self:AddToText(text, "[TEAM] ")
-		self:AddToText(text)
-	end
-	for i, what in ipairs(content) do
-		self:AddToText(text, what, i)
-	end
-	self:AddToText(text, "\n", i)
+function PANEL:InsertShowcaseItem(item)
+	self:GetTargetChannelTextEntry():InsertShowcaseItem(item)
+	MsgC(item:GetColor(), item:GetPrintName())
+end
+
+function PANEL:AddImageFromURL(url)
+	self:GetTargetChannelTextEntry():AddImageFromURL(url)
+	MsgC("<url>")
+end
+
+function PANEL:GetCurrentTextColor()
+	return self:GetTargetChannelTextEntry():GetCurrentTextColor()
+end
+
+function PANEL:SetCurrentTextColor(col)
+	self:GetTargetChannelTextEntry():SetCurrentTextColor(col)
+end
+
+function PANEL:InsertClickableTextStart(fn)
+	self:GetTargetChannelTextEntry():InsertClickableTextStart(function()
+		self:EnableInput(false)
+		fn()
+	end)
+end
+
+function PANEL:InsertClickableTextEnd()
+	self:GetTargetChannelTextEntry():InsertClickableTextEnd()
+end
+
+function PANEL:InsertPlayer(ply)
+	self:GetTargetChannelTextEntry():InsertPlayer(ply)
+	MsgC(self:GetCurrentTextColor(), ply:Nick())
+end
+
+function PANEL:AppendTargetText(text)
+	MsgC(self:GetCurrentTextColor(), text)
+	self:GetTargetChannelTextEntry():AppendText(text)
+end
+
+function PANEL:OnLinkClicked(url)
+	gui.OpenURL(url)
+end
+
+function PANEL:SetChannelTarget(channel)
+	self.TargetChannel = channel
 end
 
 function PANEL:EnableInput(on)
@@ -537,7 +571,7 @@ function PANEL:EnableInput(on)
 	self.BorderContainer:SetVisible(on)
 	self.Input:SetAlpha(on and 255 or 1)
 
-	local text = self.TextHistories[self.ActiveTab]
+	local text = self:GetTargetChannelTextEntry()
 	if (IsValid(text)) then
 		if (IsValid(text.Scrollbar)) then
 			text.Scrollbar:SetAlpha(on and 255 or 0)
@@ -577,7 +611,7 @@ end
 
 function PANEL:SetTeamChat(teamchat)
 	self.TeamChat = teamchat
-	self.ChatLabel:SetText(teamchat and "TEAM" or "ALL")
+	self.ChatLabel:SetText(teamchat and "TEAM" or self.ActiveTab == "Server" and "" or self.ActiveTab)
 	self.ChatLabel:SizeToContentsX()
 end
 
@@ -600,7 +634,7 @@ function PANEL:DoClose(menu)
 end
 
 function PANEL:InsertFade(text)
-	text:InsertFade(self:IsMouseInputEnabled() and -1 or pluto_chat_fade_enable:GetBool() and pluto_chat_fade_sustain:GetFloat() or -1, pluto_chat_fade_length:GetFloat())
+	self:GetTargetChannelTextEntry():InsertFade(self:IsMouseInputEnabled() and -1 or pluto_chat_fade_enable:GetBool() and pluto_chat_fade_sustain:GetFloat() or -1, pluto_chat_fade_length:GetFloat())
 end
 
 function PANEL:OnInput(text)
@@ -653,11 +687,7 @@ end
 vgui.Register("pluto_chatbox_new", PANEL, "pluto_window")
 
 local function init_chat()
-	if (IsValid(_chat.panel)) then
-		_chat.panel:Remove()
-	end
-
-	_chat.panel = vgui.Create "pluto_chatbox_new"
+	vgui.Create "pluto_chatbox_new"
 end
 
 hook.Add("HUDPaint", "pluto_chat_init", function()
