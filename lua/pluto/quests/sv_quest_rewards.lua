@@ -23,7 +23,7 @@ pluto.quests.rewardhandlers = {
             local cur = pluto.currency.byname[self.Currency]
             local amount = self.Amount or 1
 
-            return (amount == 1 and "" or  amount .. " ") .. cur.Name .. (amount == 1 and "" or "s")
+            return (amount == 1 and "" or amount .. " ") .. cur.Name .. (amount == 1 and "" or "s")
         end,
 	},
 	weapon = {
@@ -260,20 +260,20 @@ pluto.quests.rewards = {
 		{
 			Type = "currency",
 			Currency = "crate3_n",
-			Amount = 3,
-			Shares = 0.3,
+			Amount = 1,
+			Shares = 0.25,
 		},
 		{
 			Type = "currency",
 			Currency = "crate3",
 			Amount = 3,
-			Shares = 0.3,
+			Shares = 0.25,
 		},
 		{
 			Type = "currency",
 			Currency = "crate1",
 			Amount = 3,
-			Shares = 0.3,
+			Shares = 0.25,
 		},
 		{
 			Type = "currency",
@@ -296,32 +296,32 @@ pluto.quests.rewards = {
 		{
 			Type = "weapon",
 			ClassName = "weapon_cod4_ak47_silencer",
-			Tier = "uncommon",
-			Shares = 0.25,
+			Tier = "promised",
+			Shares = 0.2,
 		},
 		{
 			Type = "weapon",
 			ClassName = "weapon_cod4_m4_silencer",
-			Tier = "uncommon",
-			Shares = 0.25,
+			Tier = "promised",
+			Shares = 0.2,
 		},
 		{
 			Type = "weapon",
 			ClassName = "weapon_cod4_m14_silencer",
-			Tier = "uncommon",
-			Shares = 0.25,
+			Tier = "promised",
+			Shares = 0.2,
 		},
 		{
 			Type = "weapon",
 			ClassName = "weapon_cod4_g3_silencer",
-			Tier = "uncommon",
-			Shares = 0.25,
+			Tier = "promised",
+			Shares = 0.2,
 		},
 		{
 			Type = "weapon",
 			ClassName = "weapon_cod4_g36c_silencer",
-			Tier = "uncommon",
-			Shares = 0.25,
+			Tier = "promised",
+			Shares = 0.2,
 		},
 		{
 			Type = "weapon",
@@ -338,14 +338,14 @@ pluto.quests.rewards = {
 		{
 			Type = "weapon",
 			Tier = "uncommon",
-			Mods = {"dropletted", "handed", "diced"},
+			Mods = {"dropletted", "handed", "diced",},
 			Small = "Dropletted, Handed, Diced, Uncommon gun",
 			Shares = 1,
 		},
 		{
 			Type = "weapon",
 			Tier = "uncommon",
-			Mods = {"dropletted", "handed", "diced"},
+			Mods = {"dropletted", "handed", "diced",},
 			Small = "Dropletted, Handed, Diced, Hearted Uncommon gun",
 			Shares = 0.25,
 		},
@@ -384,7 +384,7 @@ pluto.quests.rewards = {
 			Type = "currency",
 			Currency = "quill",
 			Amount = 1,
-			Shares = 1,
+			Shares = 0.5,
 		},
 		{
 			Type = "currency",
@@ -407,14 +407,14 @@ pluto.quests.rewards = {
 		{
 			Type = "weapon",
 			Tier = "mystical",
-			Mods = {"dropletted", "handed", "diced"},
+			Mods = {"dropletted", "handed", "diced",},
 			Small = "Dropletted, Handed, Diced, Mystical gun",
 			Shares = 1,
 		},
 		{
 			Type = "weapon",
 			Tier = "mystical",
-			Mods = {"dropletted", "handed", "diced", "hearted"},
+			Mods = {"dropletted", "handed", "diced", "hearted",},
 			Small = "Dropletted, Handed, Diced, Hearted Mystical gun",
 			Shares = 0.25,
 		},
@@ -422,29 +422,31 @@ pluto.quests.rewards = {
 			Type = "weapon",
 			ClassName = "tfa_cso_batista",
 			Tier = "legendary",
-			Shares = 0.05,
+			Shares = 0.1,
 		},
 		{
 			Type = "weapon",
 			ClassName = "tfa_cso_paladin",
 			Tier = "legendary",
-			Shares = 0.05,
+			Shares = 0.1,
 		},
 		{
 			Type = "weapon",
 			ClassName = "tfa_cso_skull1",
 			Tier = "legendary",
-			Shares = 0.02,
+			Shares = 0.05,
 		},
+		{
 			Type = "weapon",
 			ClassName = "tfa_cso_skull5",
 			Tier = "legendary",
-			Shares = 0.03,
+			Shares = 0.05,
 		},
+		{
 			Type = "weapon",
 			ClassName = "tfa_cso_skull9",
 			Tier = "legendary",
-			Shares = 0.01,
+			Shares = 0.05,
 		},
 		{
 			Type = "shard",
