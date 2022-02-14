@@ -5,7 +5,7 @@
 
 local name = "luck"
 
-local time_limit = 20
+local time_limit = 15
 
 if (SERVER) then
     util.AddNetworkString("pluto_mini_" .. name)
@@ -53,8 +53,8 @@ if (SERVER) then
         end
 
         if (math.random() < 0.3 + player_scores[ply]) then
-            ply:Kill()
-            pluto.rounds.Notify(ply:Nick() .. " has pushed their luck too far!", Color(200, 25, 50), nil, true)
+            ply:SetHealth(1)
+            pluto.rounds.Notify(ply:Nick() .. " pushed their luck too far!", Color(200, 25, 50), nil, true)
         else
             pluto.db.instance(function(db)
                 pluto.inv.addcurrency(db, ply, "tp", math.max(1, 3 - player_scores[ply] * 10))
@@ -69,7 +69,7 @@ if (SERVER) then
 else
     net.Receive("pluto_mini_" .. name, function()
         local luckbutton = vgui.Create "pluto_mini_button"
-        luckbutton:ChangeText "Press to push your luck! Danger of death."
+        luckbutton:ChangeText "Press to push your luck!"
         luckbutton:ChangeMini "luck"
 
         timer.Simple(time_limit - 1, function()

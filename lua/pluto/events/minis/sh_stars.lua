@@ -17,18 +17,18 @@ if (SERVER) then
 
 		local count = #player.GetHumans()
 
-		timer.Create("pluto_mini_" .. name, math.max(3, 2 + count / 8), math.max(20 - count / 6, 15), function()
+		timer.Create("pluto_mini_" .. name, 1.5, 30, function()
 			for _, ply in pairs(player.GetHumans()) do
 				if (not ply:Alive()) then
 					continue
 				end
 				local e = pluto.currency.spawnfor(ply, "_shootingstar", nil, true)
-				local target = ply:GetPos() + Vector(math.random(-80, 80), math.random(-80, 80), 0)
-				local start = target + Vector(math.random(-500, 500), math.random(-500, 500), 350)
+				local target = ply:GetPos() + Vector(math.random(-100, 100), math.random(-100, 100), 0)
+				local start = target + Vector(math.random(-500, 500), math.random(-500, 500), 500)
 				e.SkipCrossmap = true
 				e:SetPos(start)
 				e:SetMovementType(CURRENCY_MOVEVECTOR)
-				e:SetMovementVector((target - start):GetNormalized() * 2.5)
+				e:SetMovementVector((target - start):GetNormalized() * 7.5)
 				e:Update()
 			end
 		end)

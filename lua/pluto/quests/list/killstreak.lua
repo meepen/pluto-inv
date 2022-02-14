@@ -17,7 +17,7 @@ function QUEST:Init(data)
 
 		timer.Remove("Unstoppable" .. atk:Nick())
 
-		timer.Create("Unstoppable" .. atk:Nick(), 4, 0, function()
+		timer.Create("Unstoppable" .. atk:Nick(), 5, 0, function()
 			if (data and IsValid(atk) and data.ProgressLeft > 0) then
 				data:UpdateProgress(data.ProgressLeft - data.TotalProgress)
 			end
