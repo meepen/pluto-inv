@@ -8,22 +8,25 @@ SWEP.PrintName = "Chronobreaker"
 SWEP.Slot = 2
 
 SWEP.Primary.Sound = "Batista.Fire"				
-SWEP.Primary.Damage = 6
+SWEP.Primary.Damage = 7
 
 SWEP.Secondary.Sound = Sound("AlyxEMP.Charge")
 
 SWEP.Bullets = {
 	HullSize = 0,
-	Num = 12,
-	DamageDropoffRange = 400,
+	Num = 11,
+	DamageDropoffRange = 450,
 	DamageDropoffRangeMax = 1200,
-	DamageMinimumPercent = 0.1,
-	Spread = Vector(0.1, 0.1),
+	DamageMinimumPercent = 0.15,
+	Spread = Vector(0.09, 0.09),
 	TracerName = "tfa_tracer_incendiary"
 }
 
-SWEP.Primary.Delay = 1.3
+SWEP.Primary.Delay = 1.1
 SWEP.Primary.Automatic = true
+
+SWEP.RewindCounts = 40
+SWEP.RewindBaseLength = 0.01
 
 SWEP.Primary.ClipSize = 2		
 SWEP.Primary.DefaultClip = 24
@@ -76,13 +79,13 @@ function SWEP:Initialize()
 	BaseClass.Initialize(self)
 
 	if (SERVER) then
-		timer.Create(tostring(self) .. "Times", 0.1, 0, function()
-			local ply = self:GetOwner()
-			if (not IsValid(ply)) then
-				return
-			end
+		self.Times = {}
 
-			self.Times = self.Times or {}
+		timer.Create(tostring(self) .. "Times", 0.1, 0, function() -- Timer tracks player info multiple times a second
+			local ply = self:GetOwner()
+			if (not IsValid(ply) or timer.Exists(tostring(self) .. "Rewind") or self:GetRewinding()) then
+				return -- Skips if there's no owner or if they're currently rewinding
+			end
 
 			table.insert(self.Times, {
 				Pos = ply:GetPos(),
@@ -92,10 +95,11 @@ function SWEP:Initialize()
 				Velocity = ply:GetVelocity(),
 				Clip1 = self:Clip1() or 0,
 				Ammo = ply:GetAmmoCount(self:GetPrimaryAmmoType()),
+				Crouched = ply:Crouching(),
 			})
 		end)
 
-		hook.Add("PlayerDeath", self, function(self, vic, inf, att)
+		hook.Add("PlayerDeath", self, function(self, vic, inf, att) -- Adds a charge if the owner gets a kill
 			if (IsValid(self) and IsValid(inf) and self == inf) then
 				self:SetCharge(self:GetCharge() + 1)
 			end
@@ -114,6 +118,12 @@ function SWEP:OnRemove()
 	if (SERVER) then
 		timer.Remove(tostring(self) .. "Times")
 		timer.Remove(tostring(self) .. "Rewind")
+
+		if (IsValid(self:GetOwner())) then
+			net.Start "batista_duck"
+				net.WriteBool(false)
+			net.Send(self:GetOwner())
+		end
 	end
 end
 
@@ -174,7 +184,7 @@ function SWEP:Think()
 	end
 end
 
-local function RagdollDissolveEffect(ply)
+local function RagdollDissolveEffect(ply) -- Creates the dissolving after-image ragdoll
     if (not IsValid(BLINK_DISSOLVER)) then
         BLINK_DISSOLVER = ents.Create "env_entity_dissolver"
         BLINK_DISSOLVER:SetKeyValue("dissolvetype", 3)
@@ -233,12 +243,12 @@ local function RagdollDissolveEffect(ply)
 	BLINK_DISSOLVER:Fire("Dissolve", "DissolveID" .. rgd:EntIndex(), 0.01)
 end
 
-function SWEP:SecondaryAttack()
+function SWEP:SecondaryAttack() -- Rewinds the player if able
 	if (timer.Exists(tostring(self) .. "Rewind") or self:GetRewinding()) then
 		return
 	end
 
-	if (SERVER and self.Times and #self.Times > 1 and self:GetCharge() > 0) then
+	if (SERVER and #self.Times > 1 and self:GetCharge() > 0) then
 		self:SetCharge(self:GetCharge() - 1)
 		self:SetRewinding(true)
 
@@ -256,26 +266,39 @@ function SWEP:SecondaryAttack()
 		ply:GetViewModel():SetPlaybackRate(-1)
 		self:SetReloadEndTime(math.huge)
 
-		local count = 0
-
-		for _, e in pairs(ply:GetChildren()) do
+		for _, e in pairs(ply:GetChildren()) do -- Removes health-related status effects
 			local eclass = e:GetClass()
 			if (eclass == "pluto_bleed" or eclass == "pluto_flame" or eclass == "pluto_poison" or eclass == "pluto_heal") then
 				e:Remove()
 			end
 		end
 
-		timer.Create(tostring(self) .. "Rewind", 0.01, 0, function()
+		local iteration = 0 -- Counts the number of rewind attempts
+		local count = 0 -- Counts the number of successful rewinds
+		timer.Create(tostring(self) .. "Rewind", self.RewindBaseLength, 0, function()
+			iteration = iteration + 1
+
+			if (iteration <= 40 and iteration % 5 ~= 0) then -- Skips 75% of the time for 8 counts
+				return
+			elseif (iteration <= 56 and iteration % 2 ~= 0) then -- Skips 50% of the time for 8 counts
+				return
+			end -- After that, rewinds for the rest of the counts
+
 			local info = table.remove(self.Times)
 
-			if (not info or not IsValid(ply) or not ply:Alive() or count >= 50) then
+			if (not info or not IsValid(ply) or not ply:Alive() or count >= self.RewindCounts) then -- Ends the rewind
 				timer.Remove(tostring(self) .. "Rewind")
 				self:SetRewinding(false)
 				self:SetNextPrimaryFire(CurTime() + 0.1)
+				if (IsValid(ply)) then
+					net.Start "batista_duck"
+						net.WriteBool(false)
+					net.Send(ply)
+				end
 				return
 			end
 
-			if (count % 15 == 0) then
+			if (iteration % 10 == 0) then -- Creates the dissolving after-image every 10th iteration
 				RagdollDissolveEffect(ply)
 			end
 
@@ -283,9 +306,16 @@ function SWEP:SecondaryAttack()
 			ply:SetEyeAngles(info.EyeAngles)
 			ply:SetHealth(info.Health)
 			ply:SetArmor(info.Armor)
-			if (count >= 49) then
-				ply:SetVelocity(-1 * ply:GetVelocity() + info.Velocity)
-			else
+
+			if (info.Crouched and not ply:Crouching() and (count > math.floor(self.RewindCounts / 2) or #self.Times < 5)) then -- Makes the player crouch if needed
+				net.Start "batista_duck"
+					net.WriteBool(true)
+				net.Send(ply)
+			end
+
+			if (count >= self.RewindCounts - 1 or #self.Times == 0) then -- Resets player velocity at the end
+				ply:SetVelocity(-1 * ply:GetVelocity() + info.Velocity / 1.2)
+			else -- Removes player velocity during the rewind
 				ply:SetVelocity(-1 * ply:GetVelocity())
 			end
 			self:SetClip1(info.Clip1)
@@ -296,7 +326,9 @@ function SWEP:SecondaryAttack()
 	end
 end
 
-if (CLIENT) then
+if (SERVER) then
+	util.AddNetworkString "batista_duck"
+else
 	surface.CreateFont("pluto_chronobreaker", {
         font = "Roboto",
         size = 24,
@@ -306,6 +338,14 @@ if (CLIENT) then
 	local outline_color = Color(0, 0, 0, 255)
 
 	function SWEP:DrawHUD()
-		draw.SimpleTextOutlined("CHARGE: " .. tostring(self:GetCharge()), "pluto_chronobreaker", ScrW() / 2, ScrH() / 2 + 150, text_color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_color)
+		draw.SimpleTextOutlined("CHARGE: " .. tostring(self:GetCharge()), "pluto_chronobreaker", ScrW() / 2, ScrH() / 2 + 80, text_color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, outline_color)
 	end
+
+	net.Receive("batista_duck", function()
+		if (net.ReadBool()) then
+			RunConsoleCommand "+duck"
+		else
+			RunConsoleCommand "-duck"
+		end
+	end)
 end

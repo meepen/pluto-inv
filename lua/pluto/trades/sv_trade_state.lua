@@ -230,7 +230,7 @@ function TRADE:Commit()
 							return
 						end
 
-						pluto.inv.notifybufferitem(oply, item)
+						pluto.inv.notifybufferitem(oply, item, true)
 
 						pluto.inv.message(self.players)
 							:write("item", item)

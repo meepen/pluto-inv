@@ -244,13 +244,23 @@ function PANEL:AddPrefix(prefix, item)
 	local left = 1 - frac_base - 0.2
 	local txt = MOD:FormatModifier(1, rolls[1])
 	local min, max = MOD:GetMinMax()
-	local tier_min = 0.2 + left * (MOD.Tiers[prefix.Tier][1] - min) / (max - min)
+	if (not min or not max) then
+		min, max = 0, 0
+	end
+	local tmin, tmax
+	if (MOD.Tiers[prefix.Tier]) then
+		tmin, tmax = MOD.Tiers[prefix.Tier][1], MOD.Tiers[prefix.Tier][2]
+	else
+		tmin, tmax = 0, 0
+	end
+
+	local tier_min = 0.2 + left * (tmin - min) / (max - min)
 	local cur_value = 0.2 + left * (rolls[1] - min) / (max - min)
-	local tier_max = 0.2 + left * (MOD.Tiers[prefix.Tier][2] - min) / (max - min)
+	local tier_max = 0.2 + left * (tmax - min) / (max - min)
 
 	local text = txt
 	if (self.LastControlState) then
-		text = string.format("%s (%s to %s)", txt, MOD:FormatModifier(1, MOD.Tiers[prefix.Tier][1]), MOD:FormatModifier(1, MOD.Tiers[prefix.Tier][2]))
+		text = string.format("%s (%s to %s)", txt, MOD:FormatModifier(1, tmin), MOD:FormatModifier(1, tmax))
 	end
 
 	local numberlabel = name:Add "pluto_label"

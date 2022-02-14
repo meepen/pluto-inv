@@ -219,6 +219,10 @@ function PANEL:Init()
 	self:SetMouseInputEnabled(true)
 end
 
+function PANEL:SetDefaultClass(class, type)
+	self.DefaultClass, self.DefaultType = class, type
+end
+
 local newshard = Material "pluto/newshard.png"
 local newshardadd = Material "pluto/newshardbg.png"
 local lock = Material "icon16/lock.png"
@@ -268,8 +272,12 @@ function PANEL:DrawItemOverlay(x, y, sx, sy, w, h)
 end
 
 function PANEL:PaintGradientBorder(x, y, sx, sy, w, h, bordercol)
+	if (not self.Item) then
+		return
+	end
+
 	local outlinesize = 2
-	surface.SetDrawColor(self.Item:GetColor())
+	surface.SetDrawColor(self.Item and self.Item:GetColor() or self:GetCurrentModelColor())
 	ttt.DrawCurvedRect(x, y, w, h, self:GetCurve())
 
 	sx = sx + outlinesize
@@ -316,7 +324,7 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 	end
 
 
-	if (not self.Item or self == pluto.ui.realpickedupitem and IsValid(pnl)) then
+	if (not self.Item and not self.DefaultClass or self == pluto.ui.realpickedupitem and IsValid(pnl)) then
 		return
 	end
 
@@ -330,10 +338,15 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 	
 
 	render.SetColorModulation(1, 1, 1)
-	if (IsValid(mdl) and self.Item.Type == "Weapon") then
+	local item_type = self.Item and self.Item.Type or self.DefaultType
+	if (IsValid(mdl) and item_type == "Weapon") then
+		local class_name = self.Item and self.Item.ClassName or self.DefaultClass
+		local item_color = self.Item and self.Item:GetColor() or Color(255, 255, 255, 25)
+		local blend = render.GetBlend()
+		render.SetBlend(item_color.a / 255)
 
 		local mins, maxs = mdl:GetModelBounds()
-		local lookup = weapons.GetStored(self.Item.ClassName).Ortho or baseclass.Get(self.Item.ClassName).Ortho or {0, 0}
+		local lookup = weapons.GetStored(class_name).Ortho or baseclass.Get(class_name).Ortho or {0, 0}
 
 		local angle = lookup.angle or Angle(0, -90)
 		local size = mins:Distance(maxs) / 2.5 * (lookup.size or 1) * 1.1
@@ -372,7 +385,8 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 		render.PopRenderTarget()
 
 		additive:SetTexture("$basetexture", rt)
-		additive:SetVector("$color", self.Item:GetColor():ToVector())
+		additive:SetVector("$color", item_color:ToVector())
+		additive:SetFloat("$alpha", item_color.a / 255)
 		surface.SetMaterial(additive)
 		surface.DrawTexturedRectUV(x, y, w, h, 0, 0, u, v)
 
@@ -391,7 +405,9 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 			cam.EndOrthoView()
 		cam.End3D()
 
-	elseif (IsValid(mdl) and self.Item.Type == "Model") then
+		render.SetBlend(blend)
+
+	elseif (IsValid(mdl) and item_type == "Model") then
 		local mins, maxs = mdl:GetModelBounds()
 		cam.Start3D(Vector(50, 0, (maxs.z - mins.z) / 2), Angle(0, -180), 90, sx, sy, w, h)
 			render.SuppressEngineLighting(true)
@@ -401,7 +417,7 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 
 			render.SuppressEngineLighting(false)
 		cam.End3D()
-	elseif (self.Item.Type == "Shard") then
+	elseif (item_type == "Shard") then
 		local RealColor, AddColor = pluto.inv.colors(self.Item:GetColor() or Color(255, 255, 255))
 		newshard:SetVector("$color", RealColor:ToVector())
 		newshardadd:SetVector("$color", AddColor:ToVector())
@@ -414,13 +430,13 @@ function PANEL:PaintInner(pnl, w, h, x, y)
 	render.SetColorModulation(r, g, b)
 	cam.IgnoreZ(false)
 
-	if (self.Item.Locked) then
+	if (self.Item and self.Item.Locked) then
 		surface.SetDrawColor(color_white)
 		surface.SetMaterial(lock)
 		surface.DrawTexturedRect(x + w - 15, y + 5, 10, 10)
 	end
 
-	if (self.Item.constellations and not pluto_disable_constellations:GetBool()) then
+	if (self.Item and self.Item.constellations and not pluto_disable_constellations:GetBool()) then
 		surface.SetDrawColor(color_white)
 		surface.SetMaterial(pluto.getsuntexture(0))
 		surface.DrawTexturedRect(x + 3, y + 3, 12, 12)
@@ -462,15 +478,25 @@ end
 
 function PANEL:GetCurrentModel()
 	local item = self.Item
-	if (not item) then
+	if (not item and not self.DefaultClass) then
 		return
 	end
 
-	if (item.Type == "Weapon") then
-		local class = baseclass.Get(item.ClassName)
+	local item_type = item and item.Type or self.DefaultType
+
+	if (item_type == "Weapon") then
+		local class = baseclass.Get(item and item.ClassName or self.DefaultClass)
 		return class.PlutoModel or class.WorldModel
-	elseif (item.Type == "Model") then
-		return item.Model.Model
+	elseif (item_type == "Model") then
+		return (item and item.Model or pluto.models[self.DefaultClass]).Model
+	end
+end
+
+function PANEL:GetCurrentModelColor()
+	if (not self.Item) then
+		return Color(255, 255, 255, 100)
+	else
+		return Color(255, 255, 255)
 	end
 end
 
@@ -519,7 +545,7 @@ function PANEL:GetCachedCurrentModel()
 		return
 	end
 
-	mdl = pluto.cached_model(mdl, self.Item.Type)
+	mdl = pluto.cached_model(mdl, self.Item and self.Item.Type or self.DefaultType)
 	local mat = self:GetCurrentModelMaterial()
 
 	if (IsValid(mdl) and mat) then
@@ -528,9 +554,11 @@ function PANEL:GetCachedCurrentModel()
 		mdl:SetMaterial()
 	end
 
-	if (self.Item.Type == "Model") then
+	if ((self.Item and self.Item.Type or self.DefaultType) == "Model") then
 		pluto.updatemodel(mdl, self.Item)
 	end
+
+	mdl:SetColor(self:GetCurrentModelColor())
 
 	return mdl
 end

@@ -65,10 +65,10 @@ SWEP.Primary.Delay = 1.2
 SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
-	DamageDropoffRange = 1000,
+	DamageDropoffRange = 2500,
 	DamageDropoffRangeMax = 6200,
 	DamageMinimumPercent = 0.4,
-	Spread = Vector(0.01, 0.02),
+	Spread = Vector(0.01, 0.01),
 	TracerName = "cso_ajax"
 }
 
@@ -208,7 +208,7 @@ end
 function SWEP:FireBulletsCallback(tr, dmginfo, data)
 	local hunt = (self.Hunted or {})[tr.Entity]
 	if (hunt and hunt.Start < CurTime() - self.HuntTime) then
-		dmginfo:ScaleDamage(2)
+		dmginfo:ScaleDamage(2.5)
 	end
 	return BaseClass.FireBulletsCallback(self, tr, dmginfo, data)
 end

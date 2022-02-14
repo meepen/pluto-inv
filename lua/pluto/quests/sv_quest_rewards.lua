@@ -229,11 +229,11 @@ pluto.quests.rewards = {
 			ModMin = 4,
 			Shares = 1,
 		},
-		--[[{
+		{
 			Type = "weapon",
 			Grenade = true,
 			Shares = 0.5,
-		},--]]
+		},
 		{
 			Type = "weapon",
 			Tier = "inevitable",

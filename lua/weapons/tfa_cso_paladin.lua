@@ -15,10 +15,10 @@ SWEP.Slot = 2
 
 SWEP.Primary.Sound = Sound("Paladin.Fire")
 
-SWEP.Primary.Delay = 0.15
+SWEP.Primary.Delay = 0.13
 SWEP.Primary.BaseDamage = 18
 SWEP.Primary.DashBonus = 3
-SWEP.Primary.KillBonus = 3
+SWEP.Primary.KillBonus = 2
 SWEP.Primary.Damage = SWEP.Primary.BaseDamage
 
 SWEP.Primary.ClipSize = 30
@@ -27,11 +27,11 @@ SWEP.Primary.Ammo = "ar2"
 
 SWEP.Primary.Automatic = true
 
-SWEP.Secondary.Delay = 40
-SWEP.Secondary.Duration = 6
+SWEP.Secondary.Delay = 17.5
+SWEP.Secondary.Duration = 3.5
 SWEP.Secondary.Sound1 = "Weapon_Mortar.Single"
 SWEP.Secondary.KillCooldown = 0.5
-SWEP.Secondary.KillExtension = 0.5
+SWEP.Secondary.KillExtension = 0.33
 
 SWEP.Secondary.Automatic = false
 
@@ -60,7 +60,7 @@ SWEP.Offset = {
 
 }
 
-local pow = 1.5
+local pow = 1.4
 SWEP.RecoilInstructions = {
 	Interval = 1,
 	pow * Angle(-8, -2),
@@ -83,7 +83,7 @@ function SWEP:Initialize()
 		hook.Add("Think", self, self.DoThink)
 
 		hook.Add("DoPlayerDeath", self, function(self, vic, att, dmg)
-			if (IsValid(self:GetOwner()) and IsValid(vic) and self:GetOwner() == vic and self.Ragdoll) then
+			if (IsValid(self:GetOwner()) and IsValid(vic) and self:GetOwner() == vic and self.Ragdoll) then -- Dissolves the shadow image
 				BLINK_DISSOLVER:Fire("Dissolve", "DissolveID" .. self.Ragdoll:EntIndex(), 0.01)
 				self.Ragdoll = nil
 				return
@@ -103,15 +103,15 @@ function SWEP:Initialize()
 				return
 			end
 			
-			if (self:GetDashed()) then
+			if (self:GetDashed()) then -- Extends the dash duration and increases the weapon's damage
 				self:SetCharge(math.min(1, self:GetCharge() + self.Secondary.KillExtension))
 				self.Primary.Damage = self.Primary.Damage + self.Primary.KillBonus
-			else
+			else -- Reduces the dash cooldown
 				self:SetCharge(math.min(1, self:GetCharge() + self.Secondary.KillCooldown))
 			end
 		end)
 
-		self.Anchor = ents.Create "prop_physics"
+		self.Anchor = ents.Create "prop_physics" -- Sets an anchor in the player's body for the shadow image
 		if (IsValid(self.Anchor)) then
 			self.Anchor:SetPos(self:GetPos())
 
@@ -164,7 +164,7 @@ function SWEP:OnRemove()
 	end
 end
 
-local function CreateShadow(self, ply)
+local function CreateShadow(self, ply) -- Creates the shadow image of the dash
     if (not IsValid(BLINK_DISSOLVER)) then
         BLINK_DISSOLVER = ents.Create "env_entity_dissolver"
         BLINK_DISSOLVER:SetKeyValue("dissolvetype", 3)
@@ -237,7 +237,7 @@ end
 
 local last_dash = 0
 
-function SWEP:SecondaryAttack()
+function SWEP:SecondaryAttack() -- Allows the player to dash or return if able
 	self:SetNextSecondaryFire(CurTime() + 0.25)
 	if (self:GetCharge() == 1 and not self:GetDashed()) then
 		local ply = self:GetOwner()
@@ -248,21 +248,21 @@ function SWEP:SecondaryAttack()
 
 		last_dash = CurTime()
 
-		if (SERVER) then
+		if (SERVER) then -- Records the current position
 			self.ReturnPos = ply:GetPos()
 			self.ReturnEyeAngles = ply:EyeAngles()
 			self.Crouched = ply:Crouching()
 		end
 
-		local dashVelocity = ply:GetVelocity()
+		local dashVelocity = ply:GetVelocity() -- Gets the player's current direction of movement
 		dashVelocity.z = 0
 		dashVelocity = dashVelocity:GetNormalized()
 		ply:SetVelocity(-1 * ply:GetVelocity())
-		if (ply:OnGround()) then
+		if (ply:OnGround()) then -- Executes the dash
 			dashVelocity.z = 0.15
 			ply:SetVelocity(dashVelocity * 1500)
 		else
-			ply:SetVelocity(dashVelocity * 200)
+			ply:SetVelocity(dashVelocity * 50)
 		end
 
 		if (CLIENT) then
@@ -279,7 +279,7 @@ function SWEP:SecondaryAttack()
 		end)
 
 		CreateShadow(self, ply)
-	elseif (self:GetDashed() and (CurTime() - last_dash) >= 0.25 and SERVER) then
+	elseif (self:GetDashed() and (CurTime() - last_dash) >= 0.25 and SERVER) then -- Designates the dash as ending
 		self:SetCharge(0)
 	end
 end
@@ -294,11 +294,11 @@ function SWEP:DoThink()
 		return
 	end
 
-	if (not self:GetDashed() and self:GetCharge() ~= 1) then
+	if (not self:GetDashed() and self:GetCharge() ~= 1) then -- Recharging
 		self:SetCharge(math.min(1, self:GetCharge() + FrameTime() / self.Secondary.Delay))
-	elseif (self:GetDashed() and self:GetCharge() ~= 0) then
+	elseif (self:GetDashed() and self:GetCharge() ~= 0) then -- Dashed
 		self:SetCharge(math.max(0, self:GetCharge() - FrameTime() / self.Secondary.Duration))
-	elseif (self:GetDashed() and self:GetCharge() == 0) then
+	elseif (self:GetDashed() and self:GetCharge() == 0) then -- Returning
 		local ply = self:GetOwner()
 
 		if (not IsValid(ply) or not ply:Alive() or not self.ReturnPos or not self.ReturnEyeAngles --[[or not self.ReturnVelocity]]) then
@@ -316,7 +316,7 @@ function SWEP:DoThink()
 			return
 		end
 		
-		local reps = math.Clamp(dist / 80, 5, 60) + 20
+		local reps = math.Clamp(dist / 90, 0, 50) + 20
 		local count = 0
 
 		self:SetDashed(false)
@@ -354,7 +354,7 @@ function SWEP:DoThink()
 				return
 			end
 
-			if (count / reps >= 0.9 and not ply:Crouching()) then
+			if (self.Crouched and not ply:Crouching() and count > math.floor(reps / 2)) then
 				net.Start "paladin_duck"
 					net.WriteBool(true)
 				net.Send(ply)

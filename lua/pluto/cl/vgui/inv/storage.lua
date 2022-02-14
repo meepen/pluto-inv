@@ -168,6 +168,18 @@ function PANEL:Init()
 	self:SelectWhich(self.InventoryContainer)
 end
 
+function PANEL:Think()
+	if (pluto_buffer_notify:GetBool()) then
+		local h, s, v = ColorToHSV(pluto.ui.theme "TextActive")
+		local notify_color = HSVToColor((math.sin(CurTime()) / 2 + 0.5) * 100, 0.9, v)
+
+		
+		self.BufferLabel:SetTextColor(notify_color)
+	else
+		self.BufferLabel:SetTextColor(pluto.ui.theme "TextActive")
+	end
+end
+
 function PANEL:OnBufferPressed()
 	print "TODO: override"
 end
@@ -186,6 +198,10 @@ function PANEL:SelectWhich(t)
 
 	local otherlbl = other == self.InventoryContainer and self.InventoryLabel or self.BufferLabel
 	otherlbl:SetTextColor(inactive_text)
+
+	if (lbl == self.BufferLabel) then
+		pluto_buffer_notify:SetBool(false)
+	end
 end
 
 function PANEL:AddTab(tab)

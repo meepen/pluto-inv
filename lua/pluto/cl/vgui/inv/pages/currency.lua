@@ -45,6 +45,22 @@ function PANEL:AddTab(col, category, add_rest, buffer)
 	end
 	createrow()
 
+	function current:PerformLayout(w, h)
+		for _, child in ipairs(self:GetChildren()) do
+			if (child.NoLayout) then
+				continue
+			end
+
+			local max_x = 0
+			for _, curchild in ipairs(child:GetChildren()) do
+				max_x = math.max(max_x, curchild:GetPos() + curchild:GetWide())
+			end
+
+			local pad = math.floor(w - max_x)
+			child:DockMargin(pad / 2, 0, pad / 2, 12)
+		end
+	end
+
 	local amount = 0
 
 	local filter = pluto.ui.selectorfilter or function() return true end
@@ -81,6 +97,7 @@ function PANEL:AddTab(col, category, add_rest, buffer)
 		opener:Dock(BOTTOM)
 		opener:SetTall(110)
 		opener:DockPadding(14, 0, 14, 3)
+		opener.NoLayout = true
 
 		local image_container = opener:Add "EditablePanel"
 		image_container:Dock(TOP)
@@ -250,6 +267,12 @@ function PANEL:OnMousePressed(m)
 		else
 			pluto.ui.pickupcurrency(self.Currency)
 		end
+	end
+end
+
+function PANEL:OnMouseWheeled(delta)
+	if (IsValid(self.Showcase)) then
+		self.Showcase:OnMouseWheeled(delta)
 	end
 end
 

@@ -19,6 +19,10 @@ SWEP.Primary.Delay = 1.2
 SWEP.Primary.Damage = 60
 SWEP.Secondary.Damage = 60
 
+SWEP.HealthCost = 15
+SWEP.HealthGained = 30
+SWEP.ExecuteDamage = 10
+
 SWEP.Offset = {
 	Pos = {
         Up = 7,
@@ -119,25 +123,32 @@ function SWEP:DoHit(hitEnt, tr, damage)
 	if (SERVER and ttt.GetRoundState() ~= ttt.ROUNDSTATE_PREPARING) then
 		local own = self:GetOwner()
 
-		if (not IsValid(hitEnt) or not hitEnt:IsPlayer() or not IsValid(own)) then
+		if (not IsValid(hitEnt) or not hitEnt:IsPlayer() or not IsValid(own)) then -- If a player wasn't hit
 			return 
 		end
 
 		local dmg = damage or self.Primary.Damage
 
-		if (hitEnt:Health() > 0) then
-			pluto.statuses.poison(own, {
+		if (hitEnt:Health() > self.ExecuteDamage) then -- The victim survives
+			pluto.statuses.poison(own, { -- The attacker takes some damage
 				Weapon = self,
-				Damage = 30
+				Damage = self.HealthCost
 			})
-		else
-			own:SetMaxHealth(own:GetMaxHealth() + 30)
+		else -- The victim dies
+			if (hitEnt:Health() <= self.ExecuteDamage) then -- If the victim survives the initial hit but is at or below 10 hp
+				pluto.statuses.poison(hitEnt, { -- The victim is executed
+					Weapon = self,
+					Damage = self.ExecuteDamage
+				})
+			end
 
-			pluto.statuses.heal(own, 30, 30 / 10)
+			own:SetMaxHealth(own:GetMaxHealth() + self.HealthGained) -- The attacker heals, possibly past original max health
+
+			pluto.statuses.heal(own, self.HealthGained, self.HealthGained / 10)
 
 			timer.Simple(8, function()
 				if (IsValid(own) and own:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_PREPARING) then
-					own:SetMaxHealth(own:GetMaxHealth() - 30)
+					own:SetMaxHealth(own:GetMaxHealth() - self.HealthGained)
 				end
 			end)
 		end
