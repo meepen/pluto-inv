@@ -17,12 +17,6 @@ function ENT:Initialize()
     self:SetMoveType(MOVETYPE_NONE)
 	self:SetModel(self.Model)
 	self:DrawShadow(false)
-    timer.Create("thundercrack",10,1, function()
-        if self:IsValid() && (SERVER) then
-            self.ThunderStrikes = 1
-            self:Explode()
-        end
-    end)
 end
 
 
@@ -43,19 +37,7 @@ function ENT:Explode()
     self.ThunderStrikes = self.ThunderStrikes - 1
     if self.ThunderStrikes <= 0 then
         self.Entity:Remove()
-        timer.Remove("thundercrack")
     end
-end
-
-function ENT:Think()
-    self:Move()
-	self:NextThink(CurTime())
-	if (CLIENT) then
-		self:SetNextClientThink(CurTime())
-		--debugoverlay.Box(self:GetOrigin(), self.Bounds.Mins, self.Bounds.Maxs, 1, color_white)
-	end
-
-	return true
 end
 
 function ENT:GrenadeBounce()
