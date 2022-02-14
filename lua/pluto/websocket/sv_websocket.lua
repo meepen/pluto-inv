@@ -15,7 +15,7 @@ end
 local apikey = util.JSONToTable(file.Read("cfg/pluto.json", "GAME")).steam.apikey
 
 if (pluto.WS) then
-	pluto.WS:close()
+	pluto.WS:closeNow()
 end
 
 pluto.WS = GWSockets.createWebSocket("ws://" .. config.host .. ":" .. config.port)
@@ -48,21 +48,35 @@ function WS:onError(err)
 end
 
 function WS:onConnected()
-	print "connectado"
-	pluto.WS = WS
+	pprintf("Connected to nix websocket!")
+	timer.Remove(tostring(self))
+	
+	WS:write(util.TableToJSON {
+		client_name = cross_id:GetString(),
+		client_type = "gmod",
+		client_secret = config.secret
+	})
+
+	hook.Run("NixConnectionEstablished", WS)
 end
 
 function WS:onDisconnected()
-	print "disconnectado"
-	pluto.WS = nil
+	pprintf("Disconnect from nix!")
+
+	if (pluto.WS == self) then
+		self:tryConnect()
+	end
 end
 
-WS:open()
-WS:write(util.TableToJSON {
-	client_name = cross_id:GetString(),
-	client_type = "gmod",
-	client_secret = config.secret
-})
+function WS:tryConnect()
+	self:open()
+	timer.Create(tostring(self), 15, 1, function()
+		self:closeNow()
+	end)
+end
+
+WS:tryConnect()
+
 
 hook.Add("DoPlutoCrossChat", "pluto_cross_chat", function(ply, content)
 	if (not pluto.WS) then

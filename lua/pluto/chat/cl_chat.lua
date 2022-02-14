@@ -169,7 +169,7 @@ function PANEL:Init()
 		pluto.ChatPanel:Remove()
 	end
 	pluto.ChatPanel = self
-	self:SetSize(math.max(300, ScrH() * 0.5), math.max(100, ScrH() * 0.3))
+	self:SetSize(math.max(400, ScrH() * 0.6), math.max(200, ScrH() * 0.3))
 	self:SetPos(0, 0)
 	self:MakePopup()
 

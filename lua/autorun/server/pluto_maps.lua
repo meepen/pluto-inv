@@ -106,8 +106,25 @@ local map_lookup = {
 	ttt_parkhouse = "296664526",
 	ttt_plaza_b7 = "137891506",
 	ttt_upstate = "2307987701",
-	
 }
+
+hook.Add("PlutoWebsocketMessage", "pluto_maps", function(json)
+	if (json.type ~= "map") then
+		return
+	end
+
+	pprintf("Received data for maps: " .. util.TableToJSON(json.response))
+
+	for map, value in pairs(json.response) do
+
+	end
+end)
+
+hook.Add("NixConnectionEstablished", "pluto_maps", function(WS)
+	WS:write(util.TableToJSON {
+		type = "maps"
+	})
+end)
 
 function pluto.GetValidMaps()
 	local r = {}
