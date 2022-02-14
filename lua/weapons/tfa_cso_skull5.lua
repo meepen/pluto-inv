@@ -11,13 +11,16 @@ SWEP.Slot = 2
 SWEP.HasScope = true
 SWEP.IsSniper = false
 
-SWEP.Primary.Damage = 40
+SWEP.Primary.Damage = 55
 SWEP.Primary.Sound = Sound "Skull5.Fire"
 SWEP.Secondary.Sound = Sound "Default.Zoom"
-SWEP.Primary.Delay = 0.6
-SWEP.Primary.Recoil = 3.7
+SWEP.Primary.Delay = 1.2
+SWEP.Primary.Recoil = 3
 SWEP.Primary.RecoilTiming  = 0.085
 SWEP.Primary.Automatic = true
+
+SWEP.HealthCost = 5
+SWEP.HealthGained = 10
 
 SWEP.Primary.ClipSize = 16
 SWEP.Primary.DefaultClip = 50
@@ -83,19 +86,19 @@ function SWEP:FireBulletsCallback(tr, dmginfo, data)
 		end
 
 		if (IsValid(ent) and ent:IsPlayer()) then
-			own:SetMaxHealth(own:GetMaxHealth() + 15)
+			own:SetMaxHealth(own:GetMaxHealth() + self.HealthGained)
 
-			pluto.statuses.heal(own, 15, 15 / 10)
+			pluto.statuses.heal(own, self.HealthGained, self.HealthGained / 10)
 
 			timer.Simple(8, function()
 				if (IsValid(own) and own:Alive() and ttt.GetRoundState() ~= ttt.ROUNDSTATE_PREPARING) then
-					own:SetMaxHealth(own:GetMaxHealth() - 15)
+					own:SetMaxHealth(own:GetMaxHealth() - self.HealthGained)
 				end
 			end)
 		else
 			pluto.statuses.poison(own, {
 				Weapon = self,
-				Damage = 10
+				Damage = self.HealthCost
 			})
 		end
 	end
