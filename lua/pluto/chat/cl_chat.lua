@@ -428,6 +428,11 @@ function PANEL:OnMousePressed(mouse)
 end
 
 function PANEL:Think()
+	if (gui.IsGameUIVisible() and self.InputEnabled) then
+		self:EnableInput(false)
+		gui.HideGameUI()
+	end
+
 	if (not self.BeingPressed) then
 		return
 	end
@@ -599,6 +604,7 @@ function PANEL:SetChannelTarget(channel)
 end
 
 function PANEL:EnableInput(on)
+	self.InputEnabled = on
 	self:SetKeyboardInputEnabled(on)
 	self:SetMouseInputEnabled(on)
 	self.Input:SetAlpha(on and 255 or 1)
