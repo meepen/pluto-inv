@@ -61,7 +61,7 @@ local discord_emojis = util.JSONToTable [=[[{"name":"pluto","url":"https://cdn.d
 
 for _, emoji in pairs(discord_emojis) do
 	pluto.emoji.byname[emoji.name:lower()] = {
-		URL = "http://va1.pluto.gg:3000/pluto/emojis/" .. emoji.url:GetFileFromFilename():sub(1, -5),
+		URL = "http://nix.pluto.gg/pluto/emojis/" .. emoji.url:GetFileFromFilename():sub(1, -5),
 		Type = "emoji",
 		Name = emoji.name:lower()
 	}

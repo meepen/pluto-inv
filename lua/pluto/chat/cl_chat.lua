@@ -186,6 +186,55 @@ function PANEL:Init()
 		self:OnMousePressed(mouse)
 	end
 
+	self.ChannelFilterLocation = self.Background:Add "EditablePanel"
+	self.ChannelFilterLocation:Dock(TOP)
+	self.ChannelFilterLocation:DockMargin(0, 0, 0, 4)
+	self.ChannelFilterLocation:SetTall(34)
+
+	self.ChannelFilterContainer = self.ChannelFilterLocation:Add "ttt_curved_panel"
+	self.ChannelFilterContainer:Dock(FILL)
+	self.ChannelFilterContainer:SetColor(ColorAlpha(self:GetColor(), 150))
+	self.ChannelFilterContainer:SetCurve(4)
+	self.ChannelFilterContainer:DockPadding(4, 4, 4, 4)
+
+	for _, channel in ipairs(pluto.chat.channels) do
+		local button = self.ChannelFilterContainer:Add "ttt_curved_panel_outline"
+		button:SetCurve(4)
+		button:SetOutlineSize(2)
+		button:SetColor(ColorAlpha(self:GetColor(), 255))
+		button:Dock(LEFT)
+
+		button:SetMouseInputEnabled(true)
+		button:SetCursor "hand"
+
+		local button_color = button:Add "ttt_curved_panel"
+		button_color:Dock(FILL)
+		button_color:SetCurve(4)
+		if (math.random(2) == 1) then
+			button_color:SetColor(Color(255, 40, 30, 20))
+		else
+			button_color:SetColor(Color(0, 0, 0, 0))
+		end
+		button_color:SetMouseInputEnabled(false)
+
+		function button.OnMousePressed()
+		end
+
+		local label = button_color:Add "DLabel"
+		label:SetMouseInputEnabled(false)
+		label:SetText(channel.Name)
+		label:SetContentAlignment(5)
+		label:SetFont "pluto_chat_font"
+		label:SizeToContentsX()
+		button:SetWide(label:GetWide() + 10)
+		button:SetTall(28)
+		label:Dock(FILL)
+		button:DockMargin(0, 0, 5, 0)
+
+
+	end
+
+
 	self.InputBackground = self.Background:Add "ttt_curved_panel"
 	self.InputBackground:SetCurve(2)
 	self.InputBackground:SetColor(ColorAlpha(self:GetColor(), 200))
@@ -225,7 +274,7 @@ function PANEL:Init()
 		for _, channel in ipairs(pluto.chat.channels) do
 			if (t:StartWith(channel.Prefix)) then
 				s:SetText(t:sub(channel.Prefix:len() + 1))
-				self:ChangeToTab(channel.Name)
+				self:ChangeInputChannel(channel)
 			end
 		end
 	end
@@ -251,6 +300,19 @@ function PANEL:Init()
 	self.ChatLabel:SetTextColor(Color(255, 255, 255))
 	self.ChatLabel:SetText "ALL"
 	self.ChatLabel:SizeToContentsX()
+	self.ChatLabel:SetMouseInputEnabled(true)
+	self.ChatLabel:SetCursor "hand"
+
+	function self.ChatLabel.OnMousePressed()
+		local menu = self:ReplaceMenu()
+		for _, channel in ipairs(pluto.chat.channels) do
+			menu:AddOption(channel.Name, function()
+				self:ChangeInputChannel(channel)
+			end)
+		end
+
+		menu:Open()
+	end
 
 	self.TextEntry = self.Background:Add "pluto_text"
 	self.TextEntry:DockMargin(4, 4, 4, 9)
@@ -289,6 +351,8 @@ function PANEL:Init()
 	local x, y = pluto_chatbox_x:GetFloat(), pluto_chatbox_y:GetFloat()
 	self:SetPos(ScrW() * x, ScrH() * (1 - y))
 	self:OnPositionUpdated()
+
+	self.InputChannel = pluto.chat.channels.byname.Server
 
 	self:EnableInput(false)
 end
@@ -630,6 +694,7 @@ function PANEL:EnableInput(on)
 		self.Background:SetColor(ColorAlpha(self:GetColor(), 200))
 		self.InputBackground:SetColor(ColorAlpha(self:GetColor(), 200))
 		self.Input:SetVisible(true)
+		self.ChannelFilterContainer:SetVisible(true)
 
 		if (IsValid(text)) then
 			text:ResetAllFades(true, false, -1 or pluto_chat_fade_sustain:GetFloat())
@@ -638,10 +703,14 @@ function PANEL:EnableInput(on)
 		if (IsValid(self.EmojiWindow)) then
 			self.EmojiWindow:Remove()
 		end
+		if (IsValid(self.Menu)) then
+			self.Menu:Remove()
+		end
 		self:SetColor(ColorAlpha(self:GetColor(), 0))
 		self.Background:SetColor(ColorAlpha(self:GetColor(), 0))
 		self.InputBackground:SetColor(ColorAlpha(self:GetColor(), 0))
 		self.Input:SetVisible(false)
+		self.ChannelFilterContainer:SetVisible(false)
 
 		self:SetTeamChat(false)
 		self.Input:SetText ""
@@ -654,8 +723,17 @@ end
 
 function PANEL:SetTeamChat(teamchat)
 	self.TeamChat = teamchat
-	self.ChatLabel:SetText(teamchat and "TEAM" or "")
+	self.ChatLabel:SetText(teamchat and "TEAM" or self.InputChannel.Name)
 	self.ChatLabel:SizeToContentsX()
+end
+
+function PANEL:ReplaceMenu()
+	if (IsValid(self.Menu)) then
+		self.Menu:Remove()
+	end
+
+	self.Menu = DermaMenu()
+	return self.Menu
 end
 
 function PANEL:GetTeamChat()
@@ -705,11 +783,17 @@ function PANEL:OnInput(text)
 	if (not ran_command and text:Trim() ~= "") then
 		self.Input.LastMessage = text
 		pluto.inv.message()
-			:write("chat", self:GetTeamChat(), {"//" .. text})
+			:write("chat", self:GetTeamChat(), {self.InputChannel.Prefix .. text})
 			:send()
 	end
 	self.Input:SetText ""
 	self:EnableInput(false)
+end
+
+function PANEL:ChangeInputChannel(channel)
+	self.InputChannel = channel
+	self.ChatLabel:SetText(channel.Name)
+	self:SetTeamChat(false)
 end
 
 vgui.Register("pluto_chatbox_new", PANEL, "ttt_curved_panel_outline")
