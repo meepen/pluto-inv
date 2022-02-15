@@ -345,9 +345,9 @@ pluto.quests.rewards = {
 		{
 			Type = "weapon",
 			Tier = "uncommon",
-			Mods = {"dropletted", "handed", "diced",},
+			Mods = {"dropletted", "handed", "diced", "hearted",},
 			Small = "Dropletted, Handed, Diced, Hearted Uncommon gun",
-			Shares = 0.25,
+			Shares = 0.1,
 		},
 		{
 			Type = "weapon",
@@ -416,7 +416,7 @@ pluto.quests.rewards = {
 			Tier = "mystical",
 			Mods = {"dropletted", "handed", "diced", "hearted",},
 			Small = "Dropletted, Handed, Diced, Hearted Mystical gun",
-			Shares = 0.25,
+			Shares = 0.1,
 		},
 		{
 			Type = "weapon",
