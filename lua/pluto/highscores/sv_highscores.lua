@@ -783,6 +783,10 @@ for name, values in pairs {
 end
 
 function pluto.highscores.addscore(db, ply, highscore, amt)
+	if (not IsValid(ply)) then
+		return false
+	end
+
 	mysql_cmysql()
 
 	steamid = pluto.db.steamid64(ply)
