@@ -180,60 +180,121 @@ function PANEL:Init()
 	self.Background = self:Add "ttt_curved_panel"
 	self.Background:Dock(FILL)
 	self.Background:SetColor(ColorAlpha(self:GetColor(), 200))
-	self.Background:DockPadding(5, 5, 5, 5)
+	self.Background:DockPadding(5, 5, 0, 5)
 	self.Background:SetCurve(self:GetCurve())
 	function self.Background.OnMousePressed(s, mouse)
 		self:OnMousePressed(mouse)
 	end
 
 	self.ChannelFilterLocation = self.Background:Add "EditablePanel"
-	self.ChannelFilterLocation:Dock(TOP)
-	self.ChannelFilterLocation:DockMargin(0, 0, 0, 4)
-	self.ChannelFilterLocation:SetTall(34)
+	self.ChannelFilterLocation:Dock(RIGHT)
+	self.ChannelFilterLocation:SetWide(5)
 
 	self.ChannelFilterContainer = self.ChannelFilterLocation:Add "ttt_curved_panel"
+	self.ChannelFilterLocation.Contained = self.ChannelFilterContainer
 	self.ChannelFilterContainer:Dock(FILL)
+
+	self.ChannelFilterToggleButton = self.ChannelFilterContainer:Add "ttt_curved_panel_outline"
+	self.ChannelFilterToggleButton:Dock(TOP)
+	self.ChannelFilterToggleButton:SetCursor "hand"
+	self.ChannelFilterToggleButton:SetCurve(4)
+	self.ChannelFilterToggleButton:SetTall(24)
+
+	function self.ChannelFilterToggleButton.OnMousePressed(s, m)
+		if (m ~= MOUSE_LEFT) then
+			return
+		end
+
+		self.ChannelFilterLocation:SetEnabled(not self.ChannelFilterLocation:IsEnabled())
+	end
+
+	self.ChannelFilterToggleButton.Label = self.ChannelFilterToggleButton:Add "DLabel"
+	self.ChannelFilterToggleButton.Label:SetText "Filters"
+	self.ChannelFilterToggleButton.Label:SetFont "pluto_chat_font_s"
+	self.ChannelFilterToggleButton.Label:Dock(FILL)
+	self.ChannelFilterToggleButton.Label:SetContentAlignment(5)
+
+	self.ChannelFilterLocation.FilterButton = self.ChannelFilterToggleButton
+
+	function self.ChannelFilterLocation:SetEnabled(b)
+		self.Enabled = b
+		for _, child in pairs(self.ChannelFilters) do
+			child:GetParent():SetAlpha(b and 255 or 0)
+			child:GetParent():SetTall(b and 24 or 0)
+		end
+		self.Contained:SetColor(ColorAlpha(self.Contained:GetColor(), b and 200 or 0))
+		self:DockMargin(b and 5 or 0, 0, 0, 0)
+		self.FilterButton:SetColor(ColorAlpha(self.Contained:GetColor(), b and 255 or 0))
+		self.FilterButton.Label:SetText(b and "Filters" or "<")
+
+		if (b) then
+			self:SetWide(self.Wide)
+		else
+			self.Wide = self:GetWide()
+			self:SetWide(15)
+		end
+	end
+
+	function self.ChannelFilterLocation:IsEnabled()
+		return self.Enabled
+	end
+
 	self.ChannelFilterContainer:SetColor(ColorAlpha(self:GetColor(), 150))
 	self.ChannelFilterContainer:SetCurve(4)
-	self.ChannelFilterContainer:DockPadding(4, 4, 4, 4)
+	self.ChannelFilterContainer:SetCurveBottomRight(false)
+	self.ChannelFilterContainer:SetCurveTopRight(false)
+
+	self.ChannelFilters = {}
+	self.ChannelFilterLocation.ChannelFilters = self.ChannelFilters
 
 	for _, channel in ipairs(pluto.chat.channels) do
 		local button = self.ChannelFilterContainer:Add "ttt_curved_panel_outline"
 		button:SetCurve(4)
-		button:SetOutlineSize(2)
-		button:SetColor(ColorAlpha(self:GetColor(), 255))
-		button:Dock(LEFT)
+		button:SetOutlineSize(1)
+		button:SetColor(Color(255, 255, 255))
 
 		button:SetMouseInputEnabled(true)
 		button:SetCursor "hand"
 
 		local button_color = button:Add "ttt_curved_panel"
+		button.Background = button_color
 		button_color:Dock(FILL)
 		button_color:SetCurve(4)
-		if (math.random(2) == 1) then
-			button_color:SetColor(Color(255, 40, 30, 20))
-		else
-			button_color:SetColor(Color(0, 0, 0, 0))
+		function button_color:SetEnabled(b)	
+			if (b) then
+				button_color:SetColor(Color(0, 0, 0, 0))
+			else
+				button_color:SetColor(Color(255, 40, 30, 20))
+			end
+			self.Enabled = b
 		end
+		function button_color:IsEnabled()
+			return self.Enabled
+		end
+		button_color:SetEnabled(true)
 		button_color:SetMouseInputEnabled(false)
 
 		function button.OnMousePressed()
+			button_color:SetEnabled(not button_color:IsEnabled())
 		end
 
 		local label = button_color:Add "DLabel"
 		label:SetMouseInputEnabled(false)
 		label:SetText(channel.Name)
 		label:SetContentAlignment(5)
-		label:SetFont "pluto_chat_font"
+		label:SetFont "pluto_chat_font_s"
 		label:SizeToContentsX()
 		button:SetWide(label:GetWide() + 10)
-		button:SetTall(28)
+		self.ChannelFilterLocation:SetWide(math.max(self.ChannelFilterLocation:GetWide(), button:GetWide() + 15))
+		button:SetTall(24)
+		button:Dock(TOP)
+		button:DockMargin(0, 2, 0, 0)
 		label:Dock(FILL)
-		button:DockMargin(0, 0, 5, 0)
 
-
+		self.ChannelFilters[channel] = button_color
 	end
 
+	self.ChannelFilterLocation:SetEnabled(false)
 
 	self.InputBackground = self.Background:Add "ttt_curved_panel"
 	self.InputBackground:SetCurve(2)
@@ -315,7 +376,7 @@ function PANEL:Init()
 	end
 
 	self.TextEntry = self.Background:Add "pluto_text"
-	self.TextEntry:DockMargin(4, 4, 4, 9)
+	self.TextEntry:DockMargin(4, 4, 4, 0)
 	self.TextEntry:Dock(FILL)
 	self.TextEntry:SetDefaultRenderSystem "shadow"
 	self.TextEntry:SetDefaultFont "pluto_chat_font"
@@ -671,7 +732,10 @@ function PANEL:EnableInput(on)
 	self.InputEnabled = on
 	self:SetKeyboardInputEnabled(on)
 	self:SetMouseInputEnabled(on)
-	self.Input:SetAlpha(on and 255 or 1)
+	for _, child in pairs(self.ChannelFilters) do
+		child:GetParent():SetVisible(on)
+	end
+	self.Input:SetVisible(on)
 
 	local text = self:GetTargetChannelTextEntry()
 	if (IsValid(text)) then
@@ -793,6 +857,7 @@ end
 function PANEL:ChangeInputChannel(channel)
 	self.InputChannel = channel
 	self.ChatLabel:SetText(channel.Name)
+	self.ChannelFilters[channel]:SetEnabled(true)
 	self:SetTeamChat(false)
 end
 
