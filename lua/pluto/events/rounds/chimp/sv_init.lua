@@ -359,14 +359,6 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 	self:SendUpdateBananas(state)
 end)
 
-ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)
-	timer.Simple(5, function()
-		if (IsValid(rag)) then
-			rag:Remove()
-		end
-	end)
-end)
-
 function ROUND:PlayerSetModel(state, ply)
 	ply:SetModel(pluto.models["chimp"].Model)
 	ply:SetupHands()

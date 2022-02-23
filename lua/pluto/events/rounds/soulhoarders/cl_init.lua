@@ -10,14 +10,14 @@ local function RenderIntro()
 	local y = ScrH() / 10
 
 	y = AppendHeader("Soul Hoarders: Kill enemies to steal their souls!", 4, y, FirstColor)
-	y = AppendHeader("Gain one point per second per soul hoarded!", 2, y)
+	y = AppendHeader("Gain points based on souls hoarded!", 2, y)
 end
 
 local function RenderHeader()
 	local y = ScrH() / 10
 
 	y = AppendHeader("Soul Hoard: Kill enemies to steal their souls", 4, y, FirstColor)
-	y = AppendHeader("Gain one point per second per soul hoarded!", 2, y)
+	y = AppendHeader("Gain points based on souls hoarded!", 2, y)
 end
 
 local function RenderStats(state)
@@ -33,10 +33,6 @@ local function RenderStats(state)
 
 	if (state.souls) then
 		y = AppendStats(string.format("Your seeker's souls: %i", state.souls), 1, y, SecondColor)
-	end
-
-	if (state.souls) then
-		y = AppendStats(string.format("Your points per second: %i", math.min(10, state.souls)), 1, y, SecondColor)
 	end
 end
 

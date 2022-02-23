@@ -255,16 +255,8 @@ end)
 
 ROUND:Hook("PlayerShouldTakeDamage", function(self, state, ply, atk)
 	if (IsValid(ply) and IsValid(atk) and atk:IsPlayer() and ply:IsPlayer()) then
-		return (ply:GetRole() ~= atk:GetRole())
+		return (ply:GetRole() ~= atk:GetRole() or not state.holder)
 	end
-end)
-
-ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)
-	timer.Simple(5, function()
-		if (IsValid(rag)) then
-			rag:Remove()
-		end
-	end)
 end)
 
 ROUND:Hook("PlutoQuillPickup", function(self, state, ply)

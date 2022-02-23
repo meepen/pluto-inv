@@ -407,7 +407,7 @@ end)
 
 ROUND:Hook("PlayerShouldTakeDamage", function(self, state, ply, atk)
 	if (IsValid(ply) and IsValid(atk) and atk:IsPlayer() and ply:IsPlayer()) then
-		return (ply:GetRoleTeam() ~= atk:GetRoleTeam() and (state and state.spawntime and state.spawntime[ply] and state.spawntime[ply] + 3 < CurTime()))
+		return ply:GetRoleTeam() ~= atk:GetRoleTeam()
 	end
 end)
 
@@ -421,14 +421,6 @@ ROUND:Hook("PlayerCanSeePlayersChat", function(self, state, text, _, listener, s
 	if (IsValid(speaker) and IsValid(listener)) then
 		return listener:GetRoleTeam() == speaker:GetRoleTeam()
 	end
-end)--]]
-
---[[ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)
-	timer.Simple(5, function()
-		if (IsValid(rag)) then
-			rag:Remove()
-		end
-	end)
 end)--]]
 
 --[[function ROUND:PlayerSetModel(state, ply)

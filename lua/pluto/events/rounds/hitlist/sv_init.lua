@@ -331,14 +331,6 @@ ROUND:Hook("PlayerShouldTakeDamage", function(self, state, ply, atk)
 	end
 end)
 
-ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)
-	timer.Simple(5, function()
-		if (IsValid(rag)) then
-			rag:Remove()
-		end
-	end)
-end)
-
 --[[function ROUND:PlayerSetModel(state, ply)
 
 end--]]
