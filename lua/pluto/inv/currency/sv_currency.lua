@@ -556,10 +556,15 @@ for name, values in pairs {
 		Shares = 0,
 		Global = true,
 		Pickup = function(ply, self)
+			if (math.random() <= 0.01) then
+				pluto.rounds.Notify("I DON'T CARE ABOUT YOUR STARS. LEAVE ME!", color_black, ply, true)
+			end
+
 			if (ply:Alive()) then
 				local dmg = DamageInfo()
 				dmg:SetDamageType(DMG_BURN)
 				dmg:SetDamage(math.random(1, 3))
+				dmg:SetAttacker(game.GetWorld())
 				ply:TakeDamageInfo(dmg)
 			end
 
@@ -583,21 +588,21 @@ for name, values in pairs {
 				function()
 					ply:SetMaxHealth(ply:GetMaxHealth() + 5)
 					ply:SetHealth(ply:Health() + 5)
-					pluto.rounds.Notify("You rolled a 1: Gain 5 Health!", pluto.currency.byname._chancedice.Color, ply, true)
+					pluto.rounds.Notify("1: Gain 5 Health!", pluto.currency.byname._chancedice.Color, ply, true)
 				end,
 				function()
 					ply:SetJumpPower(ply:GetJumpPower() + 10)
-					pluto.rounds.Notify("You rolled a 2: Gain Jump Power!", pluto.currency.byname._chancedice.Color, ply, true)
+					pluto.rounds.Notify("2: Gain Jump Power!", pluto.currency.byname._chancedice.Color, ply, true)
 				end,
 				function()
 					ply:SetMaxArmor(ply:GetMaxArmor() + 5)
 					ply:SetArmor(ply:Armor() + 5)
-					pluto.rounds.Notify("You rolled a 3: Gain 5 Armor!", pluto.currency.byname._chancedice.Color, ply, true)
+					pluto.rounds.Notify("3: Gain 5 Armor!", pluto.currency.byname._chancedice.Color, ply, true)
 				end,
 				function()
 					pluto.db.instance(function(db)
 						pluto.inv.addcurrency(db, ply, "dice", 1)
-						pluto.rounds.Notify("You rolled a 4: Gain a Dice!", pluto.currency.byname._chancedice.Color, ply, true)
+						pluto.rounds.Notify("4: Gain a Dice!", pluto.currency.byname._chancedice.Color, ply, true)
 					end)
 				end,
 				function()
@@ -606,20 +611,21 @@ for name, values in pairs {
 						net.Start "mini_speed"
 							net.WriteFloat(pluto.rounds.speeds[ply])
 						net.Send(ply)
-						pluto.rounds.Notify("You rolled a 5: Gain Speed!", pluto.currency.byname._chancedice.Color, ply, true)
+						pluto.rounds.Notify("5: Gain Speed!", pluto.currency.byname._chancedice.Color, ply, true)
 					end
 				end,
 				function()
-					if (math.random() <= 0.1) then
-						pluto.rounds.Notify("WHY DO YOU BOTHER ME WITH YOUR DICE? BEGONE, BEFORE I STRIKE BACK!", color_black, ply, true)
+					if (math.random() <= 0.05) then
+						pluto.rounds.Notify("WHY DO YOU BOTHER ME WITH YOUR DICE? BEGONE, BEFORE I STRIKE!", color_black, ply, true)
 						return
 					end
 
 					local dmg = DamageInfo()
 					dmg:SetDamageType(DMG_BURN)
 					dmg:SetDamage(math.random(1, 15))
+					dmg:SetAttacker(game.GetWorld())
 					ply:TakeDamageInfo(dmg)
-					pluto.rounds.Notify("You rolled a 6: Take Damage!", pluto.currency.byname._chancedice.Color, ply, true)
+					pluto.rounds.Notify("6: Take Damage!", pluto.currency.byname._chancedice.Color, ply, true)
 				end,
 			}
 
