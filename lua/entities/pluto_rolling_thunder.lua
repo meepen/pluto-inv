@@ -33,7 +33,7 @@ function ENT:Explode()
 	effect:SetRadius(100 * self:GetRangeMultiplier())
 	effect:SetMagnitude(1)
 	util.Effect("Explosion", effect, true, true)
-	util.BlastDamage(self.Entity, self.Owner, self.Entity:GetPos(), (125 * self:GetRangeMultiplier()), (40 * self:GetDamageMultiplier()))
+	util.BlastDamage(self.Entity, self.Owner, self.Entity:GetPos(), (150 * self:GetRangeMultiplier()), (50 * self:GetDamageMultiplier()))
     self.ThunderStrikes = self.ThunderStrikes - 1
     if self.ThunderStrikes <= 0 then
         self.Entity:Remove()
