@@ -5,7 +5,7 @@
 
 local name = "jugg"
 
-local jugg_mult = 2
+local jugg_mult = 1.5
 
 if (SERVER) then
     hook.Add("TTTBeginRound", "pluto_mini_jugg", function()

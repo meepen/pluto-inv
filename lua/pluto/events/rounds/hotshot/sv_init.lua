@@ -268,14 +268,6 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 	self:UpdateScore(state, atk, (atk:GetActiveWeapon():GetClass() == "weapon_ttt_crowbar" and 5 or 3) * mult)
 end)
 
-ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)
-	timer.Simple(5, function()
-		if (IsValid(rag)) then
-			rag:Remove()
-		end
-	end)
-end)
-
 --[[function ROUND:PlayerSetModel(state, ply)
 
 end--]]

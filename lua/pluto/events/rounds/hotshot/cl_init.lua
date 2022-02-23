@@ -57,6 +57,6 @@ end)
 function ROUND:NotifyPrepare()
 	HotshotColor = ttt.roles.Hotshot.Color
 
-	pluto.rounds.Notify("Think you're some hotshot? Get ready to prove it!", HotshotColor)
+	pluto.rounds.Notify("Think you're some hotshot?", HotshotColor)
 	print("Credits to Eppen for the original Hotshot idea")
 end

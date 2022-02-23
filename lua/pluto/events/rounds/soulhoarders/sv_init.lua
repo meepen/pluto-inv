@@ -18,7 +18,6 @@ function ROUND:Prepare(state)
 		for ply, count in pairs(state.score) do
 			if (IsValid(ply) and not ply:Alive()) then
 				ttt.ForcePlayerSpawn(ply)
-				state.spawntime[ply] = CurTime()
 			end
 		end
 	end)
@@ -78,12 +77,10 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	local fighters = round.GetActivePlayersByRole "Fighter"
 	state.score = {}
 	state.souls = {}
-	state.spawntime = {}
 
 	for k, ply in pairs(fighters) do
 		state.score[ply] = 0
 		state.souls[ply] = 0
-		state.spawntime[ply] = CurTime()
 		WriteRoundData("score", 0, ply)
 		WriteRoundData("souls", 0, ply)
 		if (ply:Alive()) then
@@ -97,11 +94,11 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 
 	timer.Create("pluto_souls_timer", 1, 0, function()
 		for ply, souls in pairs(state.souls) do
-			if (souls == 0) then
+			if (souls < 1) then
 				continue
 			end
 
-			self:UpdateScore(state, ply, math.min(10, souls))
+			self:UpdateScore(state, ply, math.floor(math.log(souls, 2)) + 1)
 		end
 	end)
 
@@ -250,7 +247,6 @@ ROUND:Hook("PlayerDisconnected", function(self, state, ply)
 	end
 
 	state.score[ply] = nil
-	state.deaths[ply] = nil
 end)
 
 ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
@@ -281,20 +277,6 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 	end
 
 	wep:SetKills(wep:GetKills() + stolen)
-end)
-
-ROUND:Hook("PlayerShouldTakeDamage", function(self, state, ply, atk)
-	if (IsValid(ply) and IsValid(atk) and atk:IsPlayer() and ply:IsPlayer()) then
-		return (state and state.spawntime and state.spawntime[ply] and state.spawntime[ply] + 3 < CurTime())
-	end
-end)
-
-ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)
-	timer.Simple(5, function()
-		if (IsValid(rag)) then
-			rag:Remove()
-		end
-	end)
 end)
 
 --[[function ROUND:PlayerSetModel(state, ply)

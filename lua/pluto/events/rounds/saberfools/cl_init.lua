@@ -58,5 +58,5 @@ ROUND:Hook("PreventRDMManagerPopup", function()
 end)
 
 function ROUND:NotifyPrepare()
-	pluto.rounds.Notify("A duel of fools approaches!", FirstColor)
+	pluto.rounds.Notify("A saber duel of fools approaches!", FirstColor)
 end
