@@ -43,13 +43,13 @@ pluto.rounds.infobyname = {
 		PrintName = "Hotshot",
 		Type = "Random",
 		MinPlayers = 4,
-		Shares = 1,
+		Shares = 1.5,
 	},
 	blackmarket = {
 		PrintName = "Black Market Brawl",
 		Type = "Random",
 		MinPlayers = 4,
-		Shares = 1,
+		Shares = 1.5,
 	},
 	boom = {
 		PrintName = "Boomer Time",
@@ -61,7 +61,7 @@ pluto.rounds.infobyname = {
 		PrintName = "King of the Quill",
 		Type = "Random",
 		MinPlayers = 6,
-		Shares = 1,
+		Shares = 0.5,
 	},
 	hitlist = {
 		PrintName = "Hit List",
@@ -118,71 +118,60 @@ pluto.rounds.infobyname = {
 	aprilfools = {
 		PrintName = "April Fools",
 		Type = "Mini",
-		Shares = 1,
-		Odds = 1 / 16,
-		NoRandom = true,
+		Shares = 0.25,
 		NoBuy = true,
 	},
 	raining = {
 		PrintName = "Droplet Rain",
 		Type = "Mini",
 		MinPlayers = 3,
-		Shares = 1,
-		Odds = 1 / 32,
+		Shares = 2,
 	},
 	dice = {
 		PrintName = "Chance Dice",
 		Type = "Mini",
 		MinPlayers = 3,
-		Shares = 1,
-		Odds = 1 / 32,
+		Shares = 2,
 	},
 	stars = {
 		PrintName = "Shooting Stars",
 		Type = "Mini",
 		MinPlayers = 3,
-		Shares = 1,
-		Odds = 1 / 32,
+		Shares = 2,
 	},
 	dash = {
 		PrintName = "Dasher",
 		Type = "Mini",
 		MinPlayers = 4,
 		Shares = 1,
-		Odds = 1 / 48,
 	},
 	hops = {
 		PrintName = "Leg Day",
 		Type = "Mini",
 		MaxPlayers = 10,
-		Shares = 1,
-		Odds = 1 / 48,
+		Shares = 1.5,
 	},
 	panic = {
 		PrintName = "Panic",
 		Type = "Mini",
-		Shares = 1,
-		Odds = 1 / 48,
+		Shares = 1.5,
 	},
 	leak = {
 		PrintName = "Intel Leak",
 		Type = "Mini",
 		MinPlayers = 4,
 		Shares = 1,
-		Odds = 1 / 48,
 	},
 	jugg = {
 		PrintName = "Operation JUGG",
 		Type = "Mini",
-		Shares = 1,
-		Odds = 1 / 48,
+		Shares = 1.5,
 	},
 	luck = {
 		PrintName = "Press Your Luck",
 		Type = "Mini",
 		MinPlayers = 4,
 		Shares = 1,
-		Odds = 1 / 48,
 	},
 	rise = {
 		PrintName = "Rise, Dead",
@@ -190,65 +179,56 @@ pluto.rounds.infobyname = {
 		MinPlayers = 4,
 		MaxPlayers = 10,
 		Shares = 1,
-		Odds = 1 / 48,
 	},
 	saber = {
 		PrintName = "Saber Round",
 		Type = "Mini",
 		MaxPlayers = 10,
-		Shares = 1,
-		Odds = 1 / 48,
+		Shares = 1.5,
 	},
 	ticket = {
 		PrintName = "Ticket Round",
 		Type = "Mini",
 		MinPlayers = 5,
-		Shares = 1,
-		Odds = 1 / 16,
+		Shares = 2,
 		NoBuy = true,
 	},
 	wink = {
 		PrintName = "Wink Round",
 		Type = "Mini",
 		MaxPlayers = 7,
-		Shares = 1,
-		Odds = 1 / 24,
+		Shares = 1.5,
 		NoBuy = true,
 	},
 	overflow = {
 		PrintName = "Equipment Overflow",
 		Type = "Mini",
 		Shares = 1,
-		Odds = 1 / 48,
 	},
 	ttv = {
 		PrintName = "TTVillage",
 		Type = "Mini",
 		MinPlayers = 6,
-		Shares = 1,
-		Odds = 1 / 24,
+		Shares = 1.5,
 	},
 	lime = {
 		PrintName = "RDM Limeinade Round",
 		Type = "Mini",
-		Shares = 1,
-		Odds = 1 / 128,
+		Shares = 0.1,
 		NoBuy = true,
 	},
 	wave = {
 		PrintName = "Wave Speed",
 		Type = "Mini",
 		MaxPlayers = 7,
-		Shares = 1,
-		Odds = 1 / 24,
+		Shares = 1.5,
 		NoBuy = true,
 	},
 	smalls = {
 		PrintName = "Smalls Activator",
 		Type = "Mini",
 		MaxPlayers = 7,
-		Shares = 1,
-		Odds = 0.3 / 16, -- TODO(Addi) Remove once there are more
+		Shares = 0.1, -- Raise back to 1 once there are more small rounds in the pool
 		NoBuy = true,
 	},
 }
@@ -453,6 +433,10 @@ hook.Add("OnCurrentRoundEventChange", "pluto_event", function(old, new)
 				return fn(event, pluto.rounds.state, ...)
 			end)
 		end
+
+		if (SERVER) then
+			pluto.rounds.preparecommon(event, pluto.rounds.state)
+		end
 	end
 end)
 
@@ -470,6 +454,10 @@ hook.Add("TTTEndRound", "pluto_event_manager", function()
 	end
 
 	ttt.SetCurrentRoundEvent ""
+
+	if (SERVER) then
+		pluto.rounds.endcommon()
+	end
 end)
 
 --- Minis ---
