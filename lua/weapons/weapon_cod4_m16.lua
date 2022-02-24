@@ -16,11 +16,12 @@ SWEP.Primary.Sound = "Weapon_CoD4_M4.Single"
 SWEP.Primary.ClipSize = 30
 SWEP.Primary.DefaultClip = 90
 SWEP.Primary.Automatic = true
-SWEP.Primary.Damage = 15
-SWEP.Primary.Delay = 0.5
+SWEP.Primary.Damage = 13
+SWEP.Primary.Delay = 0.4
 SWEP.Primary.RecoilTiming  = 0.36 / 6
 
-SWEP.HeadshotMultiplier = 25 / SWEP.Primary.Damage
+SWEP.HeadshotMultiplier = 24 / SWEP.Primary.Damage
+SWEP.DeploySpeed = 0.9
 
 SWEP.AutoSpawnable = true
 
@@ -30,9 +31,9 @@ SWEP.Bullets = {
 	HullSize = 0,
 	Num = 1,
 	DamageDropoffRange = 650,
-	DamageDropoffRangeMax = 4200,
-	DamageMinimumPercent = 0.2,
-	Spread = vector_origin,
+	DamageDropoffRangeMax = 3100,
+	DamageMinimumPercent = 0.1,
+	Spread = Vector(0.02, 0.02),
 }
 
 SWEP.Ironsights = {
