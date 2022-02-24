@@ -170,7 +170,7 @@ function PANEL:SetPlayer(ply)
 	self.SteamID:SizeToContentsX()
 	self.Avatar:SetPlayer(ply, 184)
 
-	local col = self.Player:GetPlutoLevelColor()
+	local col = self.Player:GetPlutoLevelColor() or color_black
 
 	if (isfunction(col)) then
 		hook.Add("Tick", self, function(self)
