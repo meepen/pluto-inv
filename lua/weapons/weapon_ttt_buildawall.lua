@@ -34,9 +34,13 @@ SWEP.AllowDrop              = false
 SWEP.NoSights               = true
 
 SWEP.NextReload = 0
-SWEP.PosLock = nil
 SWEP.Rotahtae = 0
 SWEP.VertOffset1 = 0
+
+function SWEP:SetupDataTables(...)
+    BaseClass.SetupDataTables(self,...)
+    self:NetworkVar("Vector",0,"PosLock")
+end
 
 function SWEP:Think()
     if (CLIENT) then
@@ -59,7 +63,7 @@ function SWEP:Think()
 		    self.c_Model:Spawn()
 		    self.c_Model:SetNoDraw(false)		
 		else
-            if self.PosLock == nil then
+            if self:GetPosLock() == vector_origin then
                 local ownaimvec = self:GetOwner():GetAimVector()
                 local infront = (ownaimvec * 150) + self:GetOwner():GetPos() + Vector(0,0,65)
                 local hitpos = self:GetOwner():GetEyeTrace().HitPos + Vector(0,0,25)
@@ -69,7 +73,7 @@ function SWEP:Think()
                     self.c_Model:SetPos(hitpos + Vector(0,0,self.VertOffset1))
                 end
             else
-                self.c_Model:SetPos(self.PosLock + Vector(0,0,25))
+                self.c_Model:SetPos(self:GetPosLock() + Vector(0,0,25))
             end
             local ownangle = self:GetOwner():EyeAngles()
             local finangle = Angle(90*self.Rotahtae,ownangle.y + 90,0)
@@ -84,11 +88,11 @@ end
 
 function SWEP:PrimaryAttack()
     if (!self:CanPrimaryAttack()) then return end
-    if (CLIENT) then self.PosLock = nil return end
+    if (CLIENT) then self:SetPosLock(vector_origin) return end
     local ent = ents.Create("pluto_barricade")
     if (!ent:IsValid()) then return end
-    if self.PosLock ~= nil then
-        ent:SetPos(self.PosLock + Vector(0,0,25))
+    if self:GetPosLock() ~= vector_origin then
+        ent:SetPos(self:GetPosLock() + Vector(0,0,25))
     else
         local ownaimvec = self:GetOwner():GetAimVector()
         local infront = (ownaimvec * 150) + self:GetOwner():GetPos() + Vector(0,0,65)
@@ -113,7 +117,7 @@ function SWEP:PrimaryAttack()
     tracedata.collisiongroup = 4
     tracedata.ignoreworld = true
     local trace = util.TraceHull(tracedata)
-    self.PosLock = nil
+    self:SetPosLock(vector_origin)
     if (trace.Hit) then
         ent:Remove()
         return 
@@ -130,9 +134,9 @@ function SWEP:SecondaryAttack()
     local hitpos = self:GetOwner():GetEyeTrace().HitPos
 
     if self:GetOwner():GetPos():DistToSqr(infront) <= self:GetOwner():GetPos():DistToSqr(hitpos) then
-        self.PosLock = infront
+        self:SetPosLock(infront)
     else
-        self.PosLock = hitpos
+        self:SetPosLock(hitpos)
     end
 
 end
@@ -150,11 +154,11 @@ function SWEP:Reload()
 end
 
 function SWEP:OnRemove()
-	if (CLIENT) && IsValid(self.c_Model) then self.c_Model:Remove() self.PosLock = nil end
+	if (CLIENT) && IsValid(self.c_Model) then self.c_Model:Remove() self:SetPosLock(vector_origin) end
 end
 
 function SWEP:Holster(plr)
 	if (CLIENT && self.c_Model ~= nil) then self.c_Model:SetNoDraw(true) end
-    self.PosLock = nil
+    self:SetPosLock(vector_origin)
 	return true
 end
