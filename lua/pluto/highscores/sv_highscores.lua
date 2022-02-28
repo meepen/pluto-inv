@@ -419,6 +419,9 @@ for name, values in pairs {
 				end
 
 				for ply, bool in pairs(players) do
+					if (not IsValid(ply)) then
+						continue
+					end
 					pluto.db.instance(function(db)
 						pluto.highscores.addscore(db, ply, "timesurvived", math.min(600, CurTime() - start))
 					end)
