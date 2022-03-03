@@ -1,7 +1,7 @@
 --[[ * This Source Code Form is subject to the terms of the Mozilla Public
      * License, v. 2.0. If a copy of the MPL was not distributed with this
      * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
-slocal map_lookup = {
+local map_lookup = {
 	de_dolls = "630780616",
 	ttt_67thway_v14 = "298470515",
 	--ttt_aircraft_v1b = "154177743",
