@@ -108,8 +108,8 @@ slocal map_lookup = {
 	ttt_upstate = "2307987701",
 	
 	--Froggo0
-	ttt_polus_v2 = "2289080684"
-	zs_abandonedmallhd_v4 = "2751750745"
+	ttt_polus_v2 = "2289080684",
+	zs_abandonedmallhd_v4 = "2751750745",
 }
 
 function pluto.GetValidMaps()
