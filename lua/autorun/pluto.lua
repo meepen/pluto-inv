@@ -51,8 +51,6 @@ pluto.files.load {
 
 		--"highscores/cl_highscores.lua",
 
-		"scalinglib/cl.lua",
-
 		"cl/fontstuff.lua",
 
 		"cl/vgui/pluto/frame.lua",
@@ -114,6 +112,8 @@ pluto.files.load {
 		"trades/cl_trade_networking.lua",
 
 		"cl/credits.lua",
+
+		"playerscaling/cl_init.lua",
 	},
 	Shared = {
 		"perfmon/sh_perfmon.lua",
@@ -171,6 +171,8 @@ pluto.files.load {
 		"inv/nodes/sh_nodes.lua",
 
 		"highscores/sh_highscores.lua",
+
+		"playerscaling/sh_init.lua",
 
 		-- "unicode/init.lua",
 		-- "unicode/casefolding.lua",

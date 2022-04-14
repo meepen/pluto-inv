@@ -83,6 +83,7 @@ if (SERVER) then
                 local dmg = DamageInfo()
                 dmg:SetDamageType(DMG_POISON)
                 dmg:SetDamage(25)
+				dmg:SetAttacker(game.GetWorld())
                 ply:TakeDamageInfo(dmg)                
             end
         end)

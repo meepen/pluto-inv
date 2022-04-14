@@ -77,7 +77,7 @@ pluto.files.load {
 
 		"highscores/sv_highscores.lua",
 
-		"scalinglib/sv.lua",
+		"playerscaling/sv_init.lua",
 	},
 	Client = {}, -- keep empty
 	Shared = {}, -- keep empty
