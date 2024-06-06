@@ -238,17 +238,17 @@ concommand.Add("pluto_blackmarket_buy", function(p, cmd, args)
 	p:ChatPrint "Buying item..."
 
 	if (num == 1) then
-		pluto.db.transact(function(db)
-			if (not pluto.inv.addcurrency(db, p, CURR.InternalName, -195)) then
-				p:ChatPrint("Error: You do not have enough ", CURR, " to buy that")
-				mysql_rollback(db)
-				return
-			end
-			pluto.inv.addcurrency(db, p, "potato", 1)
-			p:ChatPrint("You bought a ", pluto.currency.byname.potato, " for 195 ", CURR)
-			mysql_commit(db)
-			hook.Run("PlutoCurrencySpent", p, CURR.InternalName, 195)
-		end)
+		-- pluto.db.transact(function(db)
+		-- 	if (not pluto.inv.addcurrency(db, p, CURR.InternalName, -195)) then
+		-- 		p:ChatPrint("Error: You do not have enough ", CURR, " to buy that")
+		-- 		mysql_rollback(db)
+		-- 		return
+		-- 	end
+		-- 	pluto.inv.addcurrency(db, p, "potato", 1)
+		-- 	p:ChatPrint("You bought a ", pluto.currency.byname.potato, " for 195 ", CURR)
+		-- 	mysql_commit(db)
+		-- 	hook.Run("PlutoCurrencySpent", p, CURR.InternalName, 195)
+		-- end)
 	elseif (num == 2) then
 		pluto.db.transact(function(db)
 			if (not pluto.inv.addcurrency(db, p, CURR.InternalName, -60)) then

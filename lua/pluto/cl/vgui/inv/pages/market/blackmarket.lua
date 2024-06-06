@@ -301,13 +301,13 @@ function PANEL:Init()
 	cur_select:SetTall(pluto.ui.sizings "ItemSize")
 	install(cur_select, pluto.currency.byname.tp)
 
-	cur_select:AddCurrency({
-		Currency = pluto.currency.byname.potato,
-		Amount = "inf",
-		Price = 195
-	}, function()
-		RunConsoleCommand("pluto_blackmarket_buy", "1")
-	end)
+	-- cur_select:AddCurrency({
+	-- 	Currency = pluto.currency.byname.potato,
+	-- 	Amount = "inf",
+	-- 	Price = 195
+	-- }, function()
+	-- 	RunConsoleCommand("pluto_blackmarket_buy", "1")
+	-- end)
 
 	self.FiveMod = setmetatable({
 		Type = "Shard",
