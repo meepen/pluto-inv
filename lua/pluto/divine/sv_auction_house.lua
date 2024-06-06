@@ -60,6 +60,10 @@ local function get_auction_idx(db)
 	return auction_id
 end
 
+hook.Add("OnPlutoDatabaseInitialized", "pluto_auction_house", function(db)
+	get_auction_idx(db)
+end)
+
 concommand.Add("pluto_upgrade_market_data", function(p)
 	if (IsValid(p)) then
 		return

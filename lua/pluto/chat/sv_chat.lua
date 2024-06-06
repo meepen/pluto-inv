@@ -12,15 +12,39 @@ function pluto.chat.Send(ply, ...)
 end
 
 -- override PlayerSay
-for idx, name in pairs(debug.getregistry()[3]) do
-	if (name == "PlayerSay") then
-		debug.getregistry()[3][idx] = "RealPlayerSay"
+-- fuck you i do what i want i guess
+
+local hook_Add = hook.Add
+function hook.Add(what, ...)
+	if (what == "PlayerSay") then
+		what = "FakePlayerSay"
+	end
+	return hook_Add(what, ...)
+end
+
+for hookName, hookFunc in pairs(hook.GetTable().PlayerSay or {}) do
+	hook.Remove("PlayerSay", hookName, hookFunc)
+	hook.Add("FakePlayerSay", hookName, hookFunc)
+end
+
+local function init()
+	local G = gmod.GetGamemode() or GAMEMODE or GM
+	if (not G) then
+		return
+	end
+	G.FakePlayerSay = function(self, ...)
+		if (self.PlayerSay) then
+			return self:PlayerSay(...)
+		end
 	end
 end
 
+hook.Add("Initialize", "pluto_chat_override", init)
+init()
+
 local PLAYER = FindMetaTable "Player"
 function PLAYER:Say(t, teamonly)
-	hook.Run("RealPlayerSay", self, t, teamonly)
+	hook.Run("PlayerSay", self, t, teamonly)
 end
 
 local function GetLoadoutItem(ply, i)
@@ -37,7 +61,7 @@ local function GetCosmeticItem(ply, i)
 	end
 end
 
-hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
+hook_Add("PlayerSay", "pluto_chat", function(from, texts, teamchat)
 	local content = {
 		from,
 	}
@@ -60,7 +84,7 @@ hook.Add("RealPlayerSay", "pluto_chat", function(from, texts, teamchat)
 	end
 
 	if (sent_in == pluto.chat.channels.byname.Server) then
-		replace = hook.Run("PlayerSay", from, replace, teamchat)
+		replace = hook.Run("FakePlayerSay", from, replace, teamchat)
 
 		if (replace == "" or not replace) then
 			return ""
@@ -231,7 +255,7 @@ function pluto.inv.readchat(from)
 	local texts = net.ReadString():gsub("[\r\n]", "")
 
 	timer.Simple(0, function()
-		hook.Run("RealPlayerSay", from, texts, teamchat)
+		hook.Run("PlayerSay", from, texts, teamchat)
 	end)
 end
 

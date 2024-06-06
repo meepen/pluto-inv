@@ -1,6 +1,11 @@
 --[[ * This Source Code Form is subject to the terms of the Mozilla Public
      * License, v. 2.0. If a copy of the MPL was not distributed with this
      * file, You can obtain one at https://mozilla.org/MPL/2.0/. ]]
+
+
+-- THIS IS BROKEN
+do return end
+
 -- override PreRender and PostRender
 for idx, name in pairs(debug.getregistry()[3]) do
 	if (name == "PreRender" or name == "PostRender") then

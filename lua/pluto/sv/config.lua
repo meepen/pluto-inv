@@ -117,7 +117,7 @@ hook.Add("Initialize", "pluto_database", function()
 		pprintf "Initializing database..."
 		hook.Run("PlutoDatabaseInitialize", db)
 		pprintf "Initializing server database data..."
-		hook.Run "OnPlutoDatabaseInitialized"
+		hook.Run("OnPlutoDatabaseInitialized", db)
 		pprintf "All database information completed!"
 	end)
 end)
