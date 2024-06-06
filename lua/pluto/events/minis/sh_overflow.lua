@@ -21,7 +21,7 @@ if (SERVER) then
             end
         end
 
-        pluto.rounds.Notify("Equipment Overflow! Everyone receives a random traitor weapon.", Color(0, 102, 92))
+        pluto.rounds.Notify("Equipment Overflow! Everyone has been given a random traitor weapon", Color(0, 102, 92))
 
         timer.Simple(0.1, function()
             for k, ply in ipairs(player.GetAll()) do

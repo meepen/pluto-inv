@@ -22,5 +22,5 @@ function QUEST:Init(data)
 end
 
 function QUEST:GetProgressNeeded()
-	return math.random(80, 100)
+	return math.random(60, 75)
 end

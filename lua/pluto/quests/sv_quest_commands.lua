@@ -7,7 +7,7 @@ concommand.Add("pluto_test_quest", function(ply, cmd, args)
 		return
 	end
 
-	local quest = pluto.quests.list[args[1] or ""]
+	local quest = pluto.quests.list[args[1]]
 
 	if (not quest) then
 		ply:ChatPrint("No quest found for id ", tostring(args[1]))
@@ -32,35 +32,7 @@ concommand.Add("pluto_test_pool", function(ply, cmd, args)
 		return
 	end
 
-	local pool = args[1]
-	if (not pool) then
-		ply:ChatPrint("No quest category stated")
-		return
-	end
-
-	local pick = pluto.quests.getpoolreward(pool)
-	if (not pick) then
-		ply:ChatPrint("No quest category found with the name ", pool)
-		return
-	end
-
-	pluto.db.transact(function(db)
-		local data = {
-			Player = ply,
-			GetQuestData = function()
-				return {
-					Color = Color(255, 255, 255),
-					Name = "QUEST POOL TEST",
-				}
-			end
-		}
-		
-		pluto.quests.rewardhandlers[pick.Type].reward(pick, db, data)
-
-		print("Player " .. ply:Name() .. " has tested the " .. pool .. " reward pool")
-
-		mysql_commit(db)
-	end)
+	ply:ChatPrint("pluto_test_pool: Not finished")
 end)
 
 concommand.Add("pluto_quests_repopulate", function(ply, cmd, args)

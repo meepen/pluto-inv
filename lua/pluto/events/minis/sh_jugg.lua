@@ -5,7 +5,7 @@
 
 local name = "jugg"
 
-local jugg_mult = 2
+local jugg_mult = 3
 
 if (SERVER) then
     hook.Add("TTTBeginRound", "pluto_mini_jugg", function()
@@ -15,7 +15,7 @@ if (SERVER) then
 
 		pluto.rounds.minis[name] = nil
 
-        pluto.rounds.Notify(string.format("Juggernaut Round! Your health has been multiplied by %i.", jugg_mult), Color(50, 220, 70))
+        pluto.rounds.Notify(string.format("Operation JUGG: success! You have grown %i times sturdier.", jugg_mult), Color(50, 220, 70))
 
         timer.Simple(0.1, function()
             for k, ply in ipairs(player.GetAll()) do

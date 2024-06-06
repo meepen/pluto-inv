@@ -104,7 +104,7 @@ pluto.rounds.infobyname = {
 		NoBuy = true,
 		Small = true,
 	},
-	--[[unnested = {
+	unnested = {
 		PrintName = "Fighters Unnested",
 		Type = "Random",
 		MaxPlayers = 8,
@@ -112,7 +112,7 @@ pluto.rounds.infobyname = {
 		NoRandom = true,
 		NoBuy = true,
 		Small = true,
-	},--]]
+	},
 
 	-- Mini Events
 	aprilfools = {

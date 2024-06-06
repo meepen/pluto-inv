@@ -13,7 +13,7 @@ if (SERVER) then
 
 		pluto.rounds.minis[name] = nil
 
-        pluto.rounds.Notify("Rise, dead! After death, act for one last moment!", Color(0, 100, 0))
+        pluto.rounds.Notify("Rise, dead, and strike down your enemies!", Color(0, 100, 0))
 
         local risen = {}
 
@@ -37,9 +37,9 @@ if (SERVER) then
                 ply:Give "weapon_ttt_fists"
                 ply:SetModel "models/player/zombie_classic.mdl"
                 ply:SetupHands()
-                ply:SetMaxHealth(200)
-                ply:SetHealth(200)
-                pluto.rounds.speeds[ply] = (pluto.rounds.speeds[ply] or 1) + 0.3
+                ply:SetMaxHealth(250)
+                ply:SetHealth(250)
+                pluto.rounds.speeds[ply] = (pluto.rounds.speeds[ply] or 1) + 0.4
                 net.Start "mini_speed"
                     net.WriteFloat(pluto.rounds.speeds[ply])
                 net.Send(ply)

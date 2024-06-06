@@ -153,27 +153,25 @@ local function init()
 
 		pluto.divine.blackmarket.next = os.time() + mysql_query(db, "SELECT TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, TIMESTAMP(convert_tz(@date,'-1:00',@@session.time_zone)) + interval 1 day) as remaining;")[1].remaining
 
-		if (discord and discord.Message) then -- People's test servers will not have this
-			local msg = discord.Message()
-				:SetText("=== BLACKMARKET RESTOCK ===")
-			local send = false
-			for _, offer in ipairs(data) do
-				if (offer.new) then
-					local what = options[offer.what]
-					if (what.Item) then
-						msg:AddEmbed(
-							what.Item:GetDiscordEmbed()
-								:SetAuthor(what.Price .. " " .. CURR.Name)
-								:SetTimestamp()
-						)
-						send = true
-					end
+		local msg = discord.Message()
+			:SetText("=== BLACKMARKET RESTOCK ===")
+		local send = false
+		for _, offer in ipairs(data) do
+			if (offer.new) then
+				local what = options[offer.what]
+				if (what.Item) then
+					msg:AddEmbed(
+						what.Item:GetDiscordEmbed()
+							:SetAuthor(what.Price .. " " .. CURR.Name)
+							:SetTimestamp()
+					)
+					send = true
 				end
 			end
+		end
 
-			if (send) then
-				msg:Send "stardust-shop"
-			end
+		if (send) then
+			msg:Send "stardust-shop"
 		end
 
 		pluto.divine.blackmarket.offers = offers

@@ -25,7 +25,7 @@ if (SERVER) then
             return
         end
         
-        pluto.rounds.speeds[lime] = (pluto.rounds.speeds[lime] or 1) + 0.35
+        pluto.rounds.speeds[lime] = (pluto.rounds.speeds[lime] or 1) + 0.5
         net.Start "mini_speed"
             net.WriteFloat(pluto.rounds.speeds[lime])
         net.Send(lime)
@@ -38,8 +38,8 @@ if (SERVER) then
 
         lime:SetRole("Green")
 
-        lime:SetMaxHealth(math.min(300, lime:GetMaxHealth() * 2))
-        lime:SetHealth(math.min(300, lime:GetMaxHealth() * 2))
+        lime:SetMaxHealth(math.min(500, lime:GetMaxHealth() * 3))
+        lime:SetHealth(math.min(500, lime:GetMaxHealth() * 3))
         lime:SetJumpPower(lime:GetJumpPower() + 50)
 
         lime:StripWeapons()
@@ -47,7 +47,7 @@ if (SERVER) then
         lime:Give "weapon_ttt_fists"
         lime:Give "weapon_ttt_magneto"
 
-        pluto.rounds.Notify("RDM Limeinade! Kill him to absorb his power!", Color(85, 255, 0))
+        pluto.rounds.Notify("RDM Limeinade Round! Kill Lime to absorb his power!", Color(85, 255, 0))
 
         hook.Add("PlayerDeath", "pluto_mini_" .. name, function(vic, inf, atk)
             if (not IsValid(vic) or vic ~= lime) then
@@ -58,14 +58,14 @@ if (SERVER) then
                 return 
             end
             
-            pluto.rounds.speeds[atk] = (pluto.rounds.speeds[atk] or 1) + 0.15
+            pluto.rounds.speeds[atk] = (pluto.rounds.speeds[atk] or 1) + 0.25
             net.Start "mini_speed"
                 net.WriteFloat(pluto.rounds.speeds[atk])
             net.Send(atk)
 
-            atk:SetMaxHealth(atk:GetMaxHealth() * 1.25)
-            atk:SetHealth(atk:Health() * 1.25)
-            atk:SetJumpPower(atk:GetJumpPower() + 15)
+            atk:SetMaxHealth(atk:GetMaxHealth() * 1.5)
+            atk:SetHealth(atk:Health() * 1.5)
+            atk:SetJumpPower(atk:GetJumpPower() + 25)
 
             pluto.rounds.Notify(string.format("%s has successfully RDMed Lime and absorbed his power!", atk:Nick()), Color(85, 255, 0), nil, true)
         end)

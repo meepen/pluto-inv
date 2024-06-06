@@ -37,7 +37,7 @@ if (SERVER) then
                     end
 
                     if (try_give(_ply, class)) then
-                        pluto.rounds.Notify("LEAK: You received a traitor's recent purchase: " .. class .. "!", leak_color, _ply)
+                        pluto.rounds.Notify("You were given a copy of a traitor's recent purchase: " .. class .. "!", leak_color, _ply)
                         return -- Only gives to one player
                     end
                 end
@@ -47,13 +47,13 @@ if (SERVER) then
         {
             func = function(ply, class, cost) -- Refunds the purchaser their credit(s)
                 ply:SetCredits(ply:GetCredits() + cost)
-                pluto.rounds.Notify("LEAK: You were refunded your credit!", leak_color, ply)
+                pluto.rounds.Notify("You were refunded the cost of your purchase!", leak_color, ply)
             end,
             Shares = 3,
         },
         {
             func = function(ply, class, cost) -- Notifies the server that the item was purchased
-                pluto.rounds.Notify("LEAK: " .. string.upper(ttt.Equipment.List[class].Name) .. " was bought!", leak_color, nil)
+                pluto.rounds.Notify("INTEL LEAK: " .. string.upper(ttt.Equipment.List[class].Name) .. " WAS BOUGHT!", leak_color, nil)
             end,
             Shares = 5,
         },
@@ -67,7 +67,7 @@ if (SERVER) then
 
                     try_give(_ply, class)
                 end
-                pluto.rounds.Notify("LEAK: Everyone gets " .. string.upper(ttt.Equipment.List[class].Name) .. "!", leak_color)
+                pluto.rounds.Notify("INTEL LEAK: ALL INNOCENTS RECEIVE " .. string.upper(ttt.Equipment.List[class].Name) .. "!", leak_color)
             end,
             Shares = 3,
         },
@@ -94,7 +94,7 @@ if (SERVER) then
 
                 leaks = table.shuffle(leaks)
 
-                pluto.rounds.Notify("LEAK: Equipment bought by " .. leaks[1] .. ", " .. leaks[2] .. ", or " .. leaks[3] .. "!", leak_color)
+                pluto.rounds.Notify("INTEL LEAK: EQUIPMENT BOUGHT BY " .. leaks[1] .. ", " .. leaks[2] .. ", OR " .. leaks[3] .. "!", leak_color)
             end,
             Shares = 3,
         },
@@ -107,7 +107,7 @@ if (SERVER) then
 
 		pluto.rounds.minis[name] = nil
 
-        pluto.rounds.Notify("LEAK: Traitor equipment purchases may have unintended consequences!", leak_color)
+        pluto.rounds.Notify("INTEL LEAK: TRAITOR PURCHASES MAY HAVE UNINTENDED CONSEQUENCES!", leak_color)
 
         hook.Add("TTTOrderedEquipment", "pluto_mini_" .. name, function(ply, class, is_item, cost)
             if (not IsValid(ply) or ply:GetRoleTeam() ~= "traitor" or not class or not cost) then

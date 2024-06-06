@@ -154,13 +154,13 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		end
 	end)
 
-	pluto.rounds.Notify("Battle to see who will be the first infected!", Color(128, 85, 0))
+	pluto.rounds.Notify("Battle, survivors, to determine who will be the first infected!", Color(128, 85, 0))
 
 	GetConVar("ttt_karma"):SetBool(false)
 	
 	timer.Simple(1, function()
-		round.SetRoundEndTime(CurTime() + 135)
-		ttt.SetVisibleRoundEndTime(CurTime() + 135)
+		round.SetRoundEndTime(CurTime() + 240)
+		ttt.SetVisibleRoundEndTime(CurTime() + 240)
 	end)
 end)
 

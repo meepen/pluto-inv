@@ -122,7 +122,7 @@ function QUEST:GetQuestTypeData()
 end
 
 function pluto.quests.getpoolreward(type)
-	local typepool = pluto.quests.rewards[type]
+	local typequests = pluto.quests.rewards[type]
 
-	return typepool and typepool[pluto.inv.roll(typepool)] or { Type = "unique" }
+	return typequests and typequests[pluto.inv.roll(typequests)] or { Type="unique" }
 end

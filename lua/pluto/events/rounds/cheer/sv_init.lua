@@ -225,8 +225,8 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	end)
 	
 	timer.Simple(1, function()
-		round.SetRoundEndTime(CurTime() + 150)
-		ttt.SetVisibleRoundEndTime(CurTime() + 150)
+		round.SetRoundEndTime(CurTime() + 170)
+		ttt.SetVisibleRoundEndTime(CurTime() + 170)
 	end)
 end)
 

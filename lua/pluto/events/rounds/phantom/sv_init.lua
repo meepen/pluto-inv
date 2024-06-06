@@ -127,8 +127,8 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	GetConVar("ttt_karma"):SetBool(false)
 	
 	timer.Simple(1, function()
-		round.SetRoundEndTime(CurTime() + 150)
-		ttt.SetVisibleRoundEndTime(CurTime() + 150)
+		round.SetRoundEndTime(CurTime() + 210)
+		ttt.SetVisibleRoundEndTime(CurTime() + 210)
 	end)
 end)
 

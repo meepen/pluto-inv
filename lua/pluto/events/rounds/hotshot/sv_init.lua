@@ -33,7 +33,7 @@ function ROUND:Loadout(ply)
 	pluto.NextWeaponSpawn = false
 	local wep = ply:Give "weapon_ttt_deagle"
 	wep.Primary.Damage        = 50
-	wep.Primary.Delay         = 1.5
+	wep.Primary.Delay         = 1
 	wep.Primary.Recoil        = 4
 	wep.Primary.ClipSize      = 3
 	wep.Primary.DefaultClip   = 1000
@@ -51,11 +51,10 @@ ROUND:Hook("TTTSelectRoles", function(self, state, plys)
 		pluto.NextWeaponSpawn = false
 		local wep = ply:Give "weapon_ttt_deagle"
 		wep.Primary.Damage        = 50
-		wep.Primary.Delay         = 1.5
+		wep.Primary.Delay         = 1
 		wep.Primary.Recoil        = 4
 		wep.Primary.ClipSize      = 3
 		wep.Primary.DefaultClip   = 1000
-		wep:SetClip1(3)
 		ply:SetAmmo(1000, "AlyxGun")
 		pluto.NextWeaponSpawn = false
 		ply:Give "weapon_ttt_crowbar"
@@ -115,8 +114,8 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	GetConVar("ttt_karma"):SetBool(false)
 	
 	timer.Simple(1, function()
-		round.SetRoundEndTime(CurTime() + 150)
-		ttt.SetVisibleRoundEndTime(CurTime() + 150)
+		round.SetRoundEndTime(CurTime() + 180)
+		ttt.SetVisibleRoundEndTime(CurTime() + 180)
 	end)
 end)
 

@@ -21,7 +21,7 @@ end
 
 MOD.Tomeable = true
 
-MOD.Description = "Droplets roll an additional modifier"
+MOD.Description = "Droplets can roll max modifiers"
 
 MOD.Tiers = {
 	{ 1, 1 },

@@ -72,10 +72,6 @@ for name, values in pairs {
 				end
 			end
 
-			if (item:GetMod "dropletted") then
-				pluto.weapons.generatemod(item)
-			end
-
 			return true
 		end,
 		Types = "Weapon",
@@ -165,7 +161,6 @@ for name, values in pairs {
 					Type = "critical",
 					Shares = 2,
 					Use = function(item)
-						if (item.Tier.InternalName == "legendary") then return end -- Make legendary stay legendary
 						local newitem = pluto.weapons.generatetier(nil, item.ClassName)
 						item.Tier = newitem.Tier
 						item.Mods = newitem.Mods
@@ -332,14 +327,12 @@ for name, values in pairs {
 
 					if (item:GetMaxAffixes() >= 5) then
 						hook.Run("PlutoRareDrop", ply, "Weapon")
-						if (discord and discord.Message) then -- People's test servers will not have this
-							local msg = discord.Message()
+						local msg = discord.Message()
 
-							msg:AddEmbed(item:GetDiscordEmbed()
-								:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
-							)
-							msg:Send "drops"
-						end
+						msg:AddEmbed(item:GetDiscordEmbed()
+							:SetAuthor(ply:Nick() .. "'s", "https://steamcommunity.com/profiles/" .. ply:SteamID64())
+						)
+						msg:Send "drops"
 					end
 
 					ply:ChatPrint("You have received a ", item, white_text, "!")
@@ -559,13 +552,13 @@ for name, values in pairs {
 			if (ply:Alive()) then
 				local dmg = DamageInfo()
 				dmg:SetDamageType(DMG_BURN)
-				dmg:SetDamage(math.random(1, 3))
+				dmg:SetDamage(math.random(3, 5))
 				ply:TakeDamageInfo(dmg)
 			end
 
 			pluto.db.instance(function(db)
 				pluto.inv.addcurrency(db, ply, "stardust", 1)
-				ply:ChatPrint(white_text, "Ouch, that ", pluto.currency.byname.stardust, white_text, " burns!")
+				ply:ChatPrint(white_text, "You got a ", pluto.currency.byname.stardust, white_text, " but ouch, that burns!")
 			end)
 
 			return true
@@ -581,28 +574,28 @@ for name, values in pairs {
 
 			local chances = {
 				function()
-					ply:SetMaxHealth(ply:GetMaxHealth() + 5)
-					ply:SetHealth(ply:Health() + 5)
-					pluto.rounds.Notify("You rolled a 1: Gain 5 Health!", pluto.currency.byname._chancedice.Color, ply, true)
+					ply:SetMaxHealth(ply:GetMaxHealth() + 10)
+					ply:SetHealth(ply:Health() + 10)
+					pluto.rounds.Notify("You rolled a 1: Gain 10 Max Health!", pluto.currency.byname._chancedice.Color, ply, true)
 				end,
 				function()
-					ply:SetJumpPower(ply:GetJumpPower() + 10)
+					ply:SetJumpPower(ply:GetJumpPower() + 20)
 					pluto.rounds.Notify("You rolled a 2: Gain Jump Power!", pluto.currency.byname._chancedice.Color, ply, true)
 				end,
 				function()
-					ply:SetMaxArmor(ply:GetMaxArmor() + 5)
-					ply:SetArmor(ply:Armor() + 5)
-					pluto.rounds.Notify("You rolled a 3: Gain 5 Armor!", pluto.currency.byname._chancedice.Color, ply, true)
+					ply:SetMaxArmor(ply:GetMaxArmor() + 10)
+					ply:SetArmor(ply:Armor() + 10)
+					pluto.rounds.Notify("You rolled a 3: Gain 10 Armor!", pluto.currency.byname._chancedice.Color, ply, true)
 				end,
 				function()
 					pluto.db.instance(function(db)
-						pluto.inv.addcurrency(db, ply, "dice", 1)
-						pluto.rounds.Notify("You rolled a 4: Gain a Dice!", pluto.currency.byname._chancedice.Color, ply, true)
+						pluto.inv.addcurrency(db, ply, "dice", 5)
+						pluto.rounds.Notify("You rolled a 4: Gain 5 Dice!", pluto.currency.byname._chancedice.Color, ply, true)
 					end)
 				end,
 				function()
 					if (pluto.rounds and pluto.rounds.speeds) then
-						pluto.rounds.speeds[ply] = (pluto.rounds.speeds[ply] or 1) + 0.05
+						pluto.rounds.speeds[ply] = (pluto.rounds.speeds[ply] or 1) + 0.1
 						net.Start "mini_speed"
 							net.WriteFloat(pluto.rounds.speeds[ply])
 						net.Send(ply)
@@ -610,14 +603,14 @@ for name, values in pairs {
 					end
 				end,
 				function()
-					if (math.random() <= 0.1) then
+					if (math.random() <= 0.01) then
 						pluto.rounds.Notify("WHY DO YOU BOTHER ME WITH YOUR DICE? BEGONE, BEFORE I STRIKE BACK!", color_black, ply, true)
 						return
 					end
 
 					local dmg = DamageInfo()
 					dmg:SetDamageType(DMG_BURN)
-					dmg:SetDamage(math.random(1, 15))
+					dmg:SetDamage(math.random(15, 30))
 					ply:TakeDamageInfo(dmg)
 					pluto.rounds.Notify("You rolled a 6: Take Damage!", pluto.currency.byname._chancedice.Color, ply, true)
 				end,
