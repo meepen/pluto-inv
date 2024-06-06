@@ -17,6 +17,7 @@ function ROUND:Prepare(state)
 		for ply, count in pairs(state.active) do
 			if (IsValid(ply) and not ply:Alive()) then
 				ttt.ForcePlayerSpawn(ply)
+				state.spawntime[ply] = CurTime()
 			end
 		end
 	end)
@@ -74,11 +75,13 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	state.active = {}
 	state.kills = {}
 	state.deaths = {}
+	state.spawntime = {}
 
 	for k, ply in pairs(fighters) do
 		state.active[ply] = true
 		state.kills[ply] = 0
 		state.deaths[ply] = 0
+		state.spawntime[ply] = CurTime()
 		WriteRoundData("kills", 0, ply)
 		WriteRoundData("deaths", 0, ply)
 		if (ply:Alive()) then
@@ -244,6 +247,20 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 	end
 
 	self:UpdateScore(state, atk)
+end)
+
+ROUND:Hook("PlayerShouldTakeDamage", function(self, state, ply, atk)
+	if (IsValid(ply) and IsValid(atk) and atk:IsPlayer() and ply:IsPlayer()) then
+		return (state and state.spawntime and state.spawntime[ply] and state.spawntime[ply] + 3 < CurTime())
+	end
+end)
+
+ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)
+	timer.Simple(5, function()
+		if (IsValid(rag)) then
+			rag:Remove()
+		end
+	end)
 end)
 
 --[[function ROUND:PlayerSetModel(state, ply)

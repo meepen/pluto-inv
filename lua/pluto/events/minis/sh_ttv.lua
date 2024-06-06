@@ -71,7 +71,7 @@ if (SERVER) then
 
     local role_inits = {
         Finisher = function(ply, role)
-            pluto.rounds.Notify("Finisher! If all your teammates die, you will be powered up!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Finisher! If all your teammates die, you will be powered up!", ttt.roles[role].Color, ply)
         end,
         ["Nearly a Destroyer"] = function(ply, role)
             pluto.rounds.Notify("You are Nearly a Destroyer! In 30 seconds, you will be powered up and your role revealed!", ttt.roles[role].Color, ply)
@@ -90,71 +90,71 @@ if (SERVER) then
             end)
         end,
         Shapeshifter = function(ply, role)
-            pluto.rounds.Notify("Shapeshifter (T)! Kill people to steal their models!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Shapeshifter! Killing people to steal their models!", ttt.roles[role].Color, ply)
         end,
         --[[["Soulbound Red"] = function(ply, role)
-            pluto.rounds.Notify("Soulbound Red (T)! Your fate is tied to the innocent Soulbound Green!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Soulbound Red! Your fate is tied to the innocent Soulbound Green!", ttt.roles[role].Color, ply)
         end,--]]
         ["Savage Seer"] = function(ply, role)
-            pluto.rounds.Notify("Savage Seer (T)! You can see all innocent roles!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Savage Seer! You can see all hidden innocent roles!", ttt.roles[role].Color, ply)
         end,
         --[[Infiltrator = function(ply, role)
-            pluto.rounds.Notify("Infiltrator (T)! See Buddies and pretend to be an innocent Wannabe!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are an Infiltrator! See Buddies and pretend to be an innocent Wannabe!", ttt.roles[role].Color, ply)
         end,--]]
         Assassin = function(ply, role)
-            pluto.rounds.Notify("Assassin (T)! Strong against Detectives/Deputies, weak against others!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are an Assassin! Deal more damage to Detectives/Deputies and less to others!", ttt.roles[role].Color, ply)
         end,
         Hoarder = function(ply, role)
-            pluto.rounds.Notify("Hoarder (T)! Enjoy the bonus equipment credits!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Hoarder! Enjoy the bonus equipment credits!", ttt.roles[role].Color, ply)
             ply:SetCredits(ply:GetCredits() + 3)
         end,
         ["Yaari Spy"] = function(ply, role)
-            pluto.rounds.Notify("Yaari Spy (T)! You can see the Descendant and are immune to their scanner!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Yaari Spy! You can see the Descendant and are immune to their scanner!", ttt.roles[role].Color, ply)
         end,
         Buddy = function(ply, role)
-            pluto.rounds.Notify("Buddy (Inno)! Find your fellow Buddy and survive!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Buddy, with a Buddy! Pair up with them to survive!", ttt.roles[role].Color, ply)
         end,
         --[[Wannabe = function(ply, role)
-            pluto.rounds.Notify("Wannabe (Inno)! See the roles of the Buddies, but they don't see yours!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Wannabe! See the roles of the Buddies, but they don't see yours!", ttt.roles[role].Color, ply)
         end,--]]
         ["True Innocent"] = function(ply, role)
-            pluto.rounds.Notify("True Innocent (Inno)! Your innocence is seen by all!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a True Innocent! Your role is seen by all!", ttt.roles[role].Color, ply)
         end,
         ["Private Investigator"] = function(ply, role)
-            pluto.rounds.Notify("Private Investigator (Inno)! Use radars and a scanner to find the traitors!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Private Investigator! Use radars and a scanner to find the traitors!", ttt.roles[role].Color, ply)
             try_give(ply, "ttt_radar")
             try_give(ply, "ttt_body_finder")
             ply:Give("weapon_ttt_dna")
         end,
         Redeemer = function(ply, role)
-            pluto.rounds.Notify("Redeemer (Inno)! If all other innocents die, you will power up!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Redeemer! If all teammates die, you will be powered up!", ttt.roles[role].Color, ply)
         end,
         Listener = function(ply, role)
-            pluto.rounds.Notify("Listener (Inno)! When people die, listen and be informed!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Listener! When people die, listen and be informed!", ttt.roles[role].Color, ply)
         end,
         --[[["Soulbound Green"] = function(ply, role)
-            pluto.rounds.Notify("Soulbound Green (Inno)! Your fate is tied to the traitor Soulbound Red!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Soulbound Green! Your fate is tied to the traitor Soulbound Red!", ttt.roles[role].Color, ply)
         end,--]]
         Deputy = function(ply, role)
-            pluto.rounds.Notify("Deputy (Inno)! Detectives see your role, so you can help them!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Deputy! Detectives see your role, so you can help them!", ttt.roles[role].Color, ply)
         end,
         Coward = function(ply, role)
-            pluto.rounds.Notify("Coward (Inno)! Take armor and a wink and get running!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Coward! Take armor and a wink and get running!", ttt.roles[role].Color, ply)
             try_give(ply, "ttt_bodyarmor")
             ply:Give "weapon_ttt_wink"
         end,
         --[[["Silent Seer"] = function(ply, role)
-            pluto.rounds.Notify("Silent Seer (Inno)! You see all roles but nobody can hear you!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Silent Seer! You see all roles but nobody can hear you!", ttt.roles[role].Color, ply)
             ply:StripWeapons()
             ply:StripAmmo()
             ply:Give "weapon_ttt_fists"
         end,--]]
         Descendant = function(ply, role)
-            pluto.rounds.Notify("Descendant (Inno)! Use your role scanner to uncover secrets!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Descendant! Use your role scanner but beware the immune Yaari Spy!", ttt.roles[role].Color, ply)
             ply:Give "weapon_ttt_descendant"
         end,
         Defector = function(ply, role)
-            pluto.rounds.Notify("Defector (Inno/T)! Survive 60 seconds as an innocent to defect!", ttt.roles[role].Color, ply)
+            pluto.rounds.Notify("You are a Defector! Survive 60 seconds as an innocent to defect!", ttt.roles[role].Color, ply)
             timer.Create("pluto_mini_defector", 60, 1, function()
                 if (IsValid(ply) and ply:Alive()) then
                     ply:SetRole("Defected")

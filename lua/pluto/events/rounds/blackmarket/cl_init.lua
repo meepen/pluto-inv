@@ -60,5 +60,5 @@ end)
 function ROUND:NotifyPrepare()
 	FirstColor = pluto.tiers.byname.legendary.Color
 
-	pluto.rounds.Notify("A legendary battle approaches!", FirstColor)
+	pluto.rounds.Notify("A uniquely legendary battle approaches!", FirstColor)
 end
