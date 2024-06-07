@@ -7,14 +7,14 @@ pluto.currency.byname = pluto.currency.byname or {}
 local list = {
 	{
 		InternalName = "droplet",
-		Name = "Magic Droplet",
+		Name = "Crystal Droplet",
 		Icon = "pluto/currencies/droplet.png",
 		Description = "Removes all modifiers and rolls new ones",
-		SubDescription = "It's said this magic droplet was formed from one of Yaari's many former lovers",
+		SubDescription = "Some kind of crystal.",
 		Color = Color(24, 125, 216),
 		Crafted = {
 			Chance = 1 / 4,
-			Mod = "dropletted",
+			Mod = "modified",
 		},
 		StardustRatio = 2,
 
@@ -26,7 +26,7 @@ local list = {
 		Name = "Acidic Droplet",
 		Icon = "pluto/currencies/green_droplet.png",
 		Description = "Rerolls prefix modifiers on an item",
-		SubDescription = "What have Yaari done to you, my children?!",
+		SubDescription = "Some kind of caustic crystal.",
 		Color = Color(11, 84, 51),
 		StardustRatio = 75,
 
@@ -35,10 +35,10 @@ local list = {
 	},
 	{
 		InternalName = "pdrop",
-		Name = "Plutonic Droplet",
+		Name = "Phoric Droplet",
 		Icon = "pluto/currencies/purple_droplet.png",
 		Description = "Rerolls suffix modifiers on an item",
-		SubDescription = "Back when these things first were created, the military bought them straight from the man himself... paid upwards to a million for a single liter. Nowadays they are shot straight up to the skies",
+		SubDescription = "Some kind of crystal imbued with a strange energy.",
 		Color = Color(117, 28, 178),
 		StardustRatio = 100,
 
@@ -47,14 +47,14 @@ local list = {
 	},
 	{
 		InternalName = "hand",
-		Name = "Yaari's Taking",
+		Name = "Hand",
 		Icon = "pluto/currencies/goldenhand.png",
 		Description = "Removes a random modifier and enhances the tier of another",
-		SubDescription = "One of the many hands of Yaari's victims",
+		SubDescription = "WIP",
 		Color = Color(255, 208, 86),
 		Crafted = {
 			Chance = 1 / 4,
-			Mod = "handed",
+			Mod = "gambler",
 		},
 		StardustRatio = 5,
 
@@ -62,14 +62,14 @@ local list = {
 	},
 	{
 		InternalName = "dice",
-		Name = "Reflective Die",
+		Name = "Randomizer Die",
 		Icon = "pluto/currencies/dice.png",
 		Description = "Randomizes all the rolls on modifiers",
-		SubDescription = "Arizor lost this die in a bet with a farmer long ago. That farmer won a bet with Yaari later on and gave him the power to create these at will",
+		SubDescription = "WIP",
 		Color = Color(255, 208, 86),
 		Crafted = {
 			Chance = 1 / 3,
-			Mod = "diced",
+			Mod = "rolled",
 		},
 		StardustRatio = 4,
 
@@ -77,10 +77,10 @@ local list = {
 	},
 	{
 		InternalName = "tome",
-		Name = "Arizor's Tome",
+		Name = "Magic Tome",
 		Icon = "pluto/currencies/tome.png",
 		Description = "Corrupts an item unpredictably",
-		SubDescription = "Arizor hands these out to ruthless gunsmiths to augment their weapons and further themselves in life",
+		SubDescription = "WIP",
 		Color = Color(142, 94, 166),
 		Crafted = {
 			Chance = 1 / 5,
@@ -94,7 +94,7 @@ local list = {
 		InternalName = "endround",
 		Name = "End-round Crate",
 		Icon = "pluto/currencies/crate0.png",
-		Description = "Contains an item",
+		Description = "Contains an item!",
 		SubDescription = "",
 		NoTarget = true,
 		Color = Color(133, 92, 58),
@@ -118,7 +118,7 @@ local list = {
 		InternalName = "crate0",
 		Name = "Blue Egg",
 		Icon = "pluto/currencies/crate0_new.png",
-		Description = "Contains a model or a very rare weapon",
+		Description = "Contains a model or a very rare weapon!",
 		SubDescription = "Who's there? It's been so long... please don't open me... I want to live...",
 		NoTarget = true,
 		Color = Color(71, 170, 222),
@@ -176,7 +176,7 @@ local list = {
 		InternalName = "crate2",
 		Name = "Orange Egg",
 		Icon = "pluto/currencies/crate2.png",
-		Description = "Contains a model or a very rare weapon",
+		Description = "Contains a model or a very rare weapon!",
 		SubDescription = "Hi! I missed you!! How have you been?!",
 		NoTarget = true,
 		Color = Color(242, 132, 57),
@@ -274,7 +274,7 @@ local list = {
 		InternalName = "crate1",
 		Name = "Present (2019)",
 		Icon = "pluto/currencies/crate1.png",
-		Description = "Contains a 2019 Holiday Item",
+		Description = "Contains a 2019 Holiday Item!",
 		SubDescription = "Is that... it couldn't be... and what is he holding?",
 		NoTarget = true,
 		Color = Color(188, 2, 1),
@@ -353,7 +353,7 @@ local list = {
 		InternalName = "xmas2020",
 		Name = "Present",
 		Icon = "pluto/currencies/xmas2020.png",
-		Description = "Contains a 2020 Holiday Item",
+		Description = "Contains a 2020 Holiday Item!",
 		SubDescription = "Joy to the world!",
 		NoTarget = true,
 		Color = Color(17, 110, 191),
@@ -420,10 +420,10 @@ local list = {
 	},
 	{
 		InternalName = "heart",
-		Name = "Mara's Heart",
+		Name = "Crystal Heart",
 		Icon = "pluto/currencies/heart.png",
-		Description = "Adds a random modifier",
-		SubDescription = "Mara gives her heart to people who have shown compassion in their time of need",
+		Description = "Adds a random modifier.",
+		SubDescription = "WIP",
 		Color = Color(204, 43, 75),
 		Crafted = {
 			Chance = 1 / 3,
@@ -437,7 +437,7 @@ local list = {
 		InternalName = "coin",
 		Name = "Coin",
 		Icon = "pluto/currencies/coin.png",
-		Description = "Adds a storage tab",
+		Description = "Adds a storage tab.",
 		SubDescription = "$$$",
 		Color = Color(254, 233, 105),
 		NoTarget = true,
@@ -449,10 +449,10 @@ local list = {
 	},
 	{
 		InternalName = "mirror",
-		Name = "Mara's Mirror",
+		Name = "Silver Mirror",
 		Icon = "pluto/currencies/brokenmirror.png",
-		Description = "Creates a mirror image of an item which is unmodifiable",
-		SubDescription = "Mara threw this mirror out after seeing what she had become",
+		Description = "Creates a mirror image of an item which is unmodifiable.",
+		SubDescription = "WIP",
 		Color = Color(177, 173, 205),
 
 		Category = "Modify",
@@ -462,7 +462,7 @@ local list = {
 		Name = "Glass Quill",
 		Icon = "pluto/currencies/quill.png",
 		Description = "Set an item's nickname",
-		SubDescription = "This glass quill was used by the inscribers to write history before it was even made. What will you do with it?",
+		SubDescription = "WIP",
 		Color = Color(23, 127, 105),
 		StardustRatio = 9000,
 		ClientsideUse = function(item)
@@ -523,15 +523,15 @@ local list = {
 		},
 		Icon = "pluto/currencies/plutonicvial.png",
 		Description = "Valuable Black Market Currency",
-		SubDescription = "Once the mission was complete, it was revealed what Yaari was truly after...",
+		SubDescription = "WIP",
 		Color = Color(150, 50, 213),
 	},
 	{
 		InternalName = "brainegg",
-		Name = "Brain Egg",
+		Name = "Infested Brain",
 		Icon = "pluto/currencies/brainegg.png",
 		Description = "Contains a Halloween 2020 Item",
-		SubDescription = "Brraaaaiiinsss...",
+		SubDescription = "WIP",
 		Color = Color(0x92, 0xd4, 0x00),
 		NoTarget = true,
 		ClientsideUse = function()
@@ -541,7 +541,7 @@ local list = {
 
 			pluto.opener = vgui.Create "tttrw_base"
 
-			pluto.opener:AddTab("Open Brain Egg", vgui.Create "pluto_box_open" :SetCurrency "brainegg")
+			pluto.opener:AddTab("Smash Open Brain", vgui.Create "pluto_box_open" :SetCurrency "brainegg")
 
 			pluto.opener:SetSize(640, 400)
 			pluto.opener:Center()
@@ -623,7 +623,7 @@ local list = {
 		Name = "Consumed Pink Egg",
 		Icon = "pluto/currencies/crate3.png",
 		Description = "Contains a Easter Unique",
-		SubDescription = "...they are torturing me in here",
+		SubDescription = "...they are torturing me in here.",
 		Color = Color(235, 70, 150, 255),
 		NoTarget = true,
 		ClientsideUse = function()
