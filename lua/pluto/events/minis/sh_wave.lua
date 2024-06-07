@@ -5,9 +5,9 @@
 
 local name = "wave"
 
-local wave_min = 0.8
-local wave_max = 1.2
-local period = 2
+local wave_min = 0.7
+local wave_max = 1.4
+local period = 1.75
 
 local start_time = 0
 

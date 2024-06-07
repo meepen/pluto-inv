@@ -154,13 +154,13 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		end
 	end)
 
-	pluto.rounds.Notify("Battle to see who will be the first infected!", Color(128, 85, 0))
+	pluto.rounds.Notify("Battle, survivors, to determine who will be the first infected!", Color(128, 85, 0))
 
 	GetConVar("ttt_karma"):SetBool(false)
 	
 	timer.Simple(1, function()
-		round.SetRoundEndTime(CurTime() + 135)
-		ttt.SetVisibleRoundEndTime(CurTime() + 135)
+		round.SetRoundEndTime(CurTime() + 240)
+		ttt.SetVisibleRoundEndTime(CurTime() + 240)
 	end)
 end)
 
@@ -421,9 +421,17 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 end)
 
 ROUND:Hook("PlayerShouldTakeDamage", function(self, state, ply, atk)
-	if (IsValid(ply) and IsValid(atk) and atk:IsPlayer() and ply:IsPlayer() and ply:GetRole() ~= atk:GetRole()) then
-		return (not state or not state.infectedfound)
+	if (IsValid(ply) and IsValid(atk) and atk:IsPlayer() and ply:IsPlayer()) then
+		return (ply:GetRole() ~= atk:GetRole() or not state or not state.infectedfound)
 	end
+end)
+
+ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)
+	timer.Simple(5, function()
+		if (IsValid(rag)) then
+			rag:Remove()
+		end
+	end)
 end)
 
 ROUND:Hook("PlutoHealthGain", function(self, state, ply)

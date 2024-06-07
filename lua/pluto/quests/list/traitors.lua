@@ -8,15 +8,8 @@ QUEST.RewardPool = "hourly"
 
 function QUEST:Init(data)
 	local good = false
-	local altgood = false
 	data:Hook("TTTBeginRound", function(data)
-		if (data.Player:Alive() and data.Player:GetRoleTeam() == "traitor") then
-			good = #round.GetActivePlayersByRole "traitor" >= 3
-			if (not good) then
-				altgood = true
-				data.Player:ChatPrint("Because there aren't 3 traitors, you can do Flawless Victory by winning without taking damage!")
-			end
-		end
+		good = data.Player:Alive() and data.Player:GetRoleTeam() == "traitor" and #round.GetActivePlayersByRole "traitor" >= 3
 	end)
 
 	data:Hook("DoPlayerDeath", function(data, ply)
@@ -25,21 +18,11 @@ function QUEST:Init(data)
 		end
 	end)
 
-	data:Hook("EntityTakeDamage", function(data, vic, dmg)
-		if (not altgood or vic ~= data.Player or dmg:GetDamage() < 1) then
-			return
-		end
-
-		altgood = false
-		data.Player:ChatPrint("You failed Flawless Victory by taking damage!")
-	end)
-
 	data:Hook("TTTEndRound", function(data)
-		if (good or altgood) then
+		if (good) then
 			data:UpdateProgress(1)
 		end
 		good = false
-		altgood = false
 	end)
 end
 

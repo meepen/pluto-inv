@@ -58,8 +58,8 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	state.scores = {}
 	state.targets = {}
 	state.attacked = {}
-	state.endtime = CurTime() + 90
-	state.left = 1
+	state.endtime = CurTime() + 120
+	state.left = 2
 
 	WriteRoundData("left", state.left)
 	WriteRoundData("score", 0)
@@ -96,9 +96,9 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 			state.winner = nil
 		end
 
-		--[[if (state.endtime <= CurTime()) then
+		if (state.endtime <= CurTime()) then
 			pluto.rounds.Notify("Ran out of time, moving on!")
-		end--]]
+		end
 
 		if (state.left <= -1) then
 			ttt.CheckTeamWin()
@@ -106,9 +106,9 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 		else
 			WriteRoundData("left", state.left)
 
-			state.endtime = CurTime() + 90
+			state.endtime = CurTime() + 120
 
-			pluto.rounds.Notify("Respawning everyone for round 2!", Color(34, 102, 0))
+			pluto.rounds.Notify("Respawning all players for the next round of Hit List!", Color(34, 102, 0))
 
 			for ply, count in pairs(state.scores) do
 				if (IsValid(ply)) then
@@ -127,8 +127,8 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	GetConVar("ttt_karma"):SetBool(false)
 	
 	timer.Simple(1, function()
-		round.SetRoundEndTime(CurTime() + 180)
-		ttt.SetVisibleRoundEndTime(CurTime() + 180)
+		round.SetRoundEndTime(CurTime() + 360)
+		ttt.SetVisibleRoundEndTime(CurTime() + 360)
 	end)
 end)
 
@@ -329,6 +329,14 @@ ROUND:Hook("PlayerShouldTakeDamage", function(self, state, ply, atk)
 
 		return (atk == ply) or (state.attacked[ply] == atk)
 	end
+end)
+
+ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)
+	timer.Simple(5, function()
+		if (IsValid(rag)) then
+			rag:Remove()
+		end
+	end)
 end)
 
 --[[function ROUND:PlayerSetModel(state, ply)

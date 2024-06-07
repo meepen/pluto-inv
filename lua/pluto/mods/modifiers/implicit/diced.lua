@@ -29,7 +29,7 @@ MOD.Tiers = {
 
 function MOD:OnRollMod(item, mod)
 	for i = 1, #mod.Roll do
-		mod.Roll[i] = Lerp(mod.Roll[i] + 0.3, 0.5, 1)
+		mod.Roll[i] = math.min(1, mod.Roll[i] + 0.15)
 	end
 end
 

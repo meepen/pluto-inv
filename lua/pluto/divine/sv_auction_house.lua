@@ -161,12 +161,10 @@ concommand.Add("pluto_auction_list", function(p, c, a)
 
 		mysql_commit(db)
 
-		if (discord and discord.Message) then -- People's test servers will not have this
-			discord.Message():AddEmbed(
-				gun:GetDiscordEmbed()
-					:SetAuthor("Listed for " .. price .. " stardust...")
-			):Send "auction-house"
-		end
+		discord.Message():AddEmbed(
+			gun:GetDiscordEmbed()
+				:SetAuthor("Listed for " .. price .. " droplet...")
+		):Send "auction-house"
 
 		p:ChatPrint "Item listed!"
 	end)

@@ -57,6 +57,6 @@ function ROUND:NotifyPrepare()
 	FirstColor = pluto.currency.byname._quill.Color
 	SecondColor = pluto.currency.byname.quill.Color
 
-	pluto.rounds.Notify("King of the Quill will be crowned next round!", FirstColor)
+	pluto.rounds.Notify("Which of you shall be the king of the quill?", FirstColor)
 	print("Sort-of-credits to Limeinade for the 'original' King of the Hill idea (not really original but oh well)")
 end

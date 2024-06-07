@@ -153,8 +153,8 @@ ROUND:Hook("TTTBeginRound", function(self, state)
 	GetConVar("ttt_karma"):SetBool(false)
 	
 	timer.Simple(1, function()
-		round.SetRoundEndTime(CurTime() + 150)
-		ttt.SetVisibleRoundEndTime(CurTime() + 150)
+		round.SetRoundEndTime(CurTime() + 165)
+		ttt.SetVisibleRoundEndTime(CurTime() + 165)
 	end)
 end)
 
@@ -357,6 +357,14 @@ ROUND:Hook("PlayerDeath", function(self, state, vic, inf, atk)
 	end
 
 	self:SendUpdateBananas(state)
+end)
+
+ROUND:Hook("PlayerRagdollCreated", function(self, state, ply, rag, atk, dmg)
+	timer.Simple(5, function()
+		if (IsValid(rag)) then
+			rag:Remove()
+		end
+	end)
 end)
 
 function ROUND:PlayerSetModel(state, ply)

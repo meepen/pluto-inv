@@ -6,27 +6,6 @@
 local name = "stars"
 
 if (SERVER) then
-	function pluto.rounds.shootstars()
-		timer.Create("pluto_mini_" .. name, 0.33, 30, function()
-			for _, ply in pairs(player.GetHumans()) do
-				if (not ply:Alive()) then
-					continue
-				end
-				local e = pluto.currency.spawnfor(ply, "_shootingstar", nil, true)
-				local eyes = ply:GetEyeTrace().HitPos - ply:GetPos()
-				eyes = Vector(eyes.x, eyes.y, 0)
-				eyes = eyes:GetNormalized()
-				local target = ply:GetPos() + Vector(eyes.x * 150 + math.random(-100, 100), eyes.y * 150 + math.random(-100, 100), math.random(-10, 30))
-				local start = target + Vector(eyes.x * 500 + math.random(-300, 300), eyes.y * 500 + math.random(-300, 300), math.random(200, 300))
-				e.SkipCrossmap = true
-				e:SetPos(start)
-				e:SetMovementType(CURRENCY_MOVEVECTOR)
-				e:SetMovementVector((target - start):GetNormalized() * 7.5)
-				e:Update()
-			end
-		end)
-	end
-
 	hook.Add("TTTBeginRound", "pluto_shooting_" .. name, function()
         if (not pluto.rounds.minis[name]) then
             return
@@ -36,7 +15,23 @@ if (SERVER) then
 
 		pluto.rounds.Notify("It's shooting stars!", pluto.currency.byname.stardust.Color)
 
-		pluto.rounds.shootstars()
+		local count = #player.GetHumans()
+
+		timer.Create("pluto_mini_" .. name, math.max(3, 2 + count / 8), math.max(20 - count / 6, 15), function()
+			for _, ply in pairs(player.GetHumans()) do
+				if (not ply:Alive()) then
+					continue
+				end
+				local e = pluto.currency.spawnfor(ply, "_shootingstar", nil, true)
+				local target = ply:GetPos() + Vector(math.random(-80, 80), math.random(-80, 80), 0)
+				local start = target + Vector(math.random(-500, 500), math.random(-500, 500), 350)
+				e.SkipCrossmap = true
+				e:SetPos(start)
+				e:SetMovementType(CURRENCY_MOVEVECTOR)
+				e:SetMovementVector((target - start):GetNormalized() * 2.5)
+				e:Update()
+			end
+		end)
 		
 		hook.Add("TTTEndRound", "pluto_mini_" .. name, function()
             hook.Remove("TTTEndRound", "pluto_mini_" .. name)

@@ -21,14 +21,16 @@ end
 
 MOD.Tomeable = true
 
-MOD.Description = "Mods always roll one tier better"
+MOD.Description = "Mods roll one tier lower 50% of the time"
 
 MOD.Tiers = {
 	{ 1, 1 },
 }
 
 function MOD:OnRollMod(item, mod)
-	mod.Tier = math.max(1, mod.Tier - 1)
+	if (math.random() < 0.5) then
+		mod.Tier = math.max(1, mod.Tier - 1)
+	end
 end
 
 return MOD

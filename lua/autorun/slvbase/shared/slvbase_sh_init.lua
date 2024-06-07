@@ -1,10 +1,6 @@
 if(SLVBase_Fixed) then return end // Has already been initialized by another addon
 if(SERVER) then
-	if (file.Exists("includes/modules/tracex.lua", "LUA")) then -- People's test servers may not have this
-		pcall(require,"tracex") // This module isn't required, but some NPCs might behave slightly dumber
-	else
-		print("lua/includes/modules/tracex.lua not found, skipping module inclusion")
-	end
+	pcall(require,"tracex") // This module isn't required, but some NPCs might behave slightly dumber
 	AI_TYPE_STATIC = 1
 	AI_TYPE_GROUND = 2
 	AI_TYPE_AIR = 3

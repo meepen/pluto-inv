@@ -21,7 +21,7 @@ pluto.rounds.infobyname = {
 		PrintName = "Bunny Attack",
 		Type = "Event",
 		MinPlayers = 8,
-		Shares = 0,
+		Shares = 1,
 		NoRandom = true,
 		NoBuy = true,
 	},
@@ -29,15 +29,13 @@ pluto.rounds.infobyname = {
 		PrintName = "Monke Mania",
 		Type = "Event",
 		MinPlayers = 6,
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
 	},
 	cheer = {
 		PrintName = "Operation Cheer",
 		Type = "Event",
 		MinPlayers = 8,
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
 	},
 
 	-- Random Rounds
@@ -45,64 +43,55 @@ pluto.rounds.infobyname = {
 		PrintName = "Hotshot",
 		Type = "Random",
 		MinPlayers = 4,
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
 	},
 	blackmarket = {
 		PrintName = "Black Market Brawl",
 		Type = "Random",
 		MinPlayers = 4,
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
 	},
 	boom = {
 		PrintName = "Boomer Time",
 		Type = "Random",
 		MinPlayers = 4,
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
 	},
 	kingofthequill = {
 		PrintName = "King of the Quill",
 		Type = "Random",
 		MinPlayers = 6,
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
 	},
 	hitlist = {
 		PrintName = "Hit List",
 		Type = "Random",
 		MinPlayers = 4,
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
 	},
 	phantom = {
 		PrintName = "Phantom Fight",
 		Type = "Random",
 		MinPlayers = 8,
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
 	},
 	trifight = {
 		PrintName = "Tri-Fight",
 		Type = "Random",
 		MinPlayers = 9,
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
 	},
 	infection = {
 		PrintName = "Infection",
 		Type = "Random",
 		MinPlayers = 4,
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
 	},
 	soulhoarders = {
 		PrintName = "Soul Hoarders",
 		Type = "Random",
 		MinPlayers = 4,
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
 	},
 
 	-- Small Randoms
@@ -110,12 +99,12 @@ pluto.rounds.infobyname = {
 		PrintName = "Saber Fools",
 		Type = "Random",
 		MaxPlayers = 8,
-		Shares = 0,
+		Shares = 1,
 		NoRandom = true,
 		NoBuy = true,
 		Small = true,
 	},
-	--[[unnested = {
+	unnested = {
 		PrintName = "Fighters Unnested",
 		Type = "Random",
 		MaxPlayers = 8,
@@ -123,131 +112,143 @@ pluto.rounds.infobyname = {
 		NoRandom = true,
 		NoBuy = true,
 		Small = true,
-	},--]]
+	},
 
 	-- Mini Events
 	aprilfools = {
 		PrintName = "April Fools",
-		Type = "Event",
-		Shares = 0,
+		Type = "Mini",
+		Shares = 1,
+		Odds = 1 / 16,
+		NoRandom = true,
 		NoBuy = true,
 	},
 	raining = {
 		PrintName = "Droplet Rain",
-		Type = "Event",
+		Type = "Mini",
 		MinPlayers = 3,
-		Shares = 2,
+		Shares = 1,
+		Odds = 1 / 32,
 	},
 	dice = {
 		PrintName = "Chance Dice",
-		Type = "Event",
+		Type = "Mini",
 		MinPlayers = 3,
-		Shares = 2,
+		Shares = 1,
+		Odds = 1 / 32,
 	},
 	stars = {
 		PrintName = "Shooting Stars",
-		Type = "Event",
+		Type = "Mini",
 		MinPlayers = 3,
-		Shares = 2,
+		Shares = 1,
+		Odds = 1 / 32,
 	},
 	dash = {
 		PrintName = "Dasher",
 		Type = "Mini",
-		Shares = 0,
-		NoBuy = true,
+		MinPlayers = 4,
+		Shares = 1,
+		Odds = 1 / 48,
 	},
 	hops = {
 		PrintName = "Leg Day",
 		Type = "Mini",
-		Shares = 0,
-		NoBuy = true,
+		MaxPlayers = 10,
+		Shares = 1,
+		Odds = 1 / 48,
 	},
 	panic = {
 		PrintName = "Panic",
 		Type = "Mini",
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
+		Odds = 1 / 48,
 	},
 	leak = {
 		PrintName = "Intel Leak",
 		Type = "Mini",
 		MinPlayers = 4,
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
+		Odds = 1 / 48,
 	},
 	jugg = {
 		PrintName = "Operation JUGG",
 		Type = "Mini",
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
+		Odds = 1 / 48,
 	},
 	luck = {
 		PrintName = "Press Your Luck",
 		Type = "Mini",
 		MinPlayers = 4,
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
+		Odds = 1 / 48,
 	},
 	rise = {
 		PrintName = "Rise, Dead",
 		Type = "Mini",
 		MinPlayers = 4,
 		MaxPlayers = 10,
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
+		Odds = 1 / 48,
 	},
 	saber = {
 		PrintName = "Saber Round",
 		Type = "Mini",
 		MaxPlayers = 10,
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
+		Odds = 1 / 48,
 	},
 	ticket = {
 		PrintName = "Ticket Round",
 		Type = "Mini",
 		MinPlayers = 5,
-		Shares = 0,
+		Shares = 1,
+		Odds = 1 / 16,
 		NoBuy = true,
 	},
 	wink = {
 		PrintName = "Wink Round",
 		Type = "Mini",
 		MaxPlayers = 7,
-		Shares = 0,
+		Shares = 1,
+		Odds = 1 / 24,
 		NoBuy = true,
 	},
 	overflow = {
 		PrintName = "Equipment Overflow",
 		Type = "Mini",
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
+		Odds = 1 / 48,
 	},
 	ttv = {
 		PrintName = "TTVillage",
 		Type = "Mini",
 		MinPlayers = 6,
-		Shares = 0,
-		NoBuy = true,
+		Shares = 1,
+		Odds = 1 / 24,
 	},
 	lime = {
 		PrintName = "RDM Limeinade Round",
 		Type = "Mini",
-		Shares = 0,
+		Shares = 1,
+		Odds = 1 / 128,
 		NoBuy = true,
 	},
 	wave = {
 		PrintName = "Wave Speed",
 		Type = "Mini",
 		MaxPlayers = 7,
-		Shares = 0,
+		Shares = 1,
+		Odds = 1 / 24,
 		NoBuy = true,
 	},
 	smalls = {
 		PrintName = "Smalls Activator",
 		Type = "Mini",
 		MaxPlayers = 7,
-		Shares = 0, -- Raise back to 1 once there are more small rounds in the pool
+		Shares = 1,
+		Odds = 0.3 / 16, -- TODO(Addi) Remove once there are more
 		NoBuy = true,
 	},
 }
@@ -452,10 +453,6 @@ hook.Add("OnCurrentRoundEventChange", "pluto_event", function(old, new)
 				return fn(event, pluto.rounds.state, ...)
 			end)
 		end
-
-		if (SERVER) then
-			pluto.rounds.preparecommon(event, pluto.rounds.state)
-		end
 	end
 end)
 
@@ -473,10 +470,6 @@ hook.Add("TTTEndRound", "pluto_event_manager", function()
 	end
 
 	ttt.SetCurrentRoundEvent ""
-
-	if (SERVER) then
-		pluto.rounds.endcommon()
-	end
 end)
 
 --- Minis ---

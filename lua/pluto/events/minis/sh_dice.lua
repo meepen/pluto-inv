@@ -23,7 +23,7 @@ if (SERVER) then
             if (not ply:Alive()) then
                 continue
             end
-            for i = 1, math.max(8 - count / 6, 4) do
+            for i = 1, math.max(10 - count / 6, 5) do
                 table.insert(chancedice, pluto.currency.spawnfor(ply, "_chancedice", nil, true))
             end
         end

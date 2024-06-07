@@ -13,7 +13,6 @@ pluto.rounds = pluto.rounds or {}
 
 pluto.rounds.minis = pluto.rounds.minis or {}
 
--- Prepares a round
 function pluto.rounds.prepare(name)
     if (not name) then
         return false, "No name provided"
@@ -49,7 +48,6 @@ function pluto.rounds.prepare(name)
 
 end
 
--- Queues a round
 function pluto.rounds.queue(name, steamid, db)
     steamid = steamid or 0
     if (not name) then
@@ -74,7 +72,6 @@ function pluto.rounds.queue(name, steamid, db)
     return true, "Event Queue Attempted"
 end
 
--- Checks if the given event has sufficient players
 function pluto.rounds.goodplayercount(name)
 	local event = pluto.rounds.infobyname[name]
 
@@ -93,11 +90,9 @@ function pluto.rounds.goodplayercount(name)
 	return true
 end
 
--- Chooses a random round of the given parameters
 function pluto.rounds.chooserandom(typ, needminplayers, smalls)
 	local events = {}
 
-    -- Skips ineligible rounds
 	for name, event in pairs(pluto.rounds.infobyname) do
 		if (not event.Type or event.Type ~= typ) then
 			continue
@@ -125,7 +120,6 @@ function pluto.rounds.chooserandom(typ, needminplayers, smalls)
 	return pluto.inv.roll(events)
 end
 
--- Clears the current round
 function pluto.rounds.clear()
 	ttt.SetNextRoundEvent("")
 
@@ -134,63 +128,6 @@ function pluto.rounds.clear()
 	return true, "NextRoundEvent cleared"
 end
 
--- Called in sh_init OnCurrentRoundEventChange, prepares common round functions
-function pluto.rounds.preparecommon(event, state)
-    -- Cleans up laggy entities
-    if (not event.NoCleanup) then
-        hook.Add("PlayerRagdollCreated", "pluto_event_cleanup", function(ply, rag, atk, dmg)
-            timer.Simple(1, function()
-                -- Deletes ragdolls
-                if (IsValid(rag)) then
-                    rag:Remove()
-                end
-            end)
-        end)
-
-        timer.Create("pluto_event_cleanup", 10, 0, function()
-            -- Removes decals
-            game.GetWorld():RemoveAllDecals()
-
-            for k, ent in ipairs(ents.GetAll()) do
-                -- Removes floor weapons
-                if (ent:IsWeapon() and not IsValid(ent:GetOwner())) then
-                    ent:Remove()
-                end
-
-                local classname = ent:GetClass()
-
-                -- Removes ammo, body entities
-                if (string.find(classname, "item_ammo") or string.find(classname, "item_box") or string.find(classname, "ttt_body_info")) then
-                    ent:Remove()
-                end
-            end
-        end)
-    end
-
-    -- Sets up respawn protection
-    if (not event.NoProtection) then
-        state.protectuntil = {}
-        hook.Add("PlayerSpawn", "pluto_event_protection", function(ply)
-            state.protectuntil[ply] = CurTime() + (event.ProtectionTime or 1.5)
-        end)
-
-        hook.Add("PlayerShouldTakeDamage", "pluto_event_protection", function(self, state, ply, atk)
-            if (IsValid(ply) and IsValid(atk) and atk:IsPlayer()) then
-                return (state and state.protectuntil and state.protectuntil[ply] and state.protectuntil[ply] < CurTime())
-            end
-        end)
-    end
-end
-
--- Called in sh_init TTTEndRound, terminates common round functions
-function pluto.rounds.endcommon()
-    hook.Remove("PlayerRagdollCreated", "pluto_event_cleanup")
-    timer.Remove("pluto_event_cleanup")
-    hook.Remove("PlayerSpawn", "pluto_event_protection")
-    hook.Remove("PlayerShouldTakeDamage", "pluto_event_protection")
-end
-
--- Sounds info about the current round to the players
 pluto.rounds.WriteRoundData = function(name, arg, ply)
     net.Start "round_data"
         local typ = type(arg)
@@ -210,7 +147,6 @@ pluto.rounds.WriteRoundData = function(name, arg, ply)
     end
 end
 
--- Sends a notification to the players
 pluto.rounds.Notify = function(msg, col, ply, short)
     col = col or color_white
 
@@ -227,7 +163,6 @@ pluto.rounds.Notify = function(msg, col, ply, short)
     end
 end
 
--- Gives the player their regular inventory loadout
 pluto.rounds.GiveDefaults = function(ply, nogrenade)
 	ply:StripAmmo()
 	ply:StripWeapons()
@@ -257,7 +192,6 @@ pluto.rounds.GiveDefaults = function(ply, nogrenade)
     pluto.rounds.LoadAmmo(ply)
 end
 
--- Gives the player an endless amount of ammo
 pluto.rounds.LoadAmmo = function(ply)
     for k, wep in ipairs(ply:GetWeapons()) do
 		if (wep.Primary and wep.Primary.Ammo and wep.Primary.ClipSize) then
@@ -266,45 +200,33 @@ pluto.rounds.LoadAmmo = function(ply)
 	end
 end
 
--- Prepares mini events
 hook.Add("TTTPrepareRound", "pluto_minis", function()
 	if (ttt.GetCurrentRoundEvent() ~= "" or ttt.GetNextRoundEvent() ~= "" or not pluto.rounds.infobyname or not pluto.rounds.minis) then
 		return
 	end
 
-    -- Decides which mini events are playable
-    local playable = {}
     for name, event in pairs(pluto.rounds.infobyname) do
-        -- Skip if already added
+        if (not event.Type or event.Type ~= "Mini") then
+            continue
+        end
+
         if (pluto.rounds.minis[name]) then
             continue
         end
 
-        -- Skip if ineligible
-        if (event.NoRandom or not event.Type or event.Type ~= "Mini") then
+        if (pluto.rounds.infobyname[name].NoRandom) then
             continue
         end
 
-        -- Skip if bad player count
         if (not pluto.rounds.goodplayercount(name)) then
             continue
         end
 
-        playable[name] = event
-    end
-
-    -- Chooses mini events to prepare
-    local odds = 1/4
-    local chosen = 0
-    local choosemore = true
-    while (choosemore) do
-        -- Makes sure that if pluto_mini_boost is set really high high we'll still only have up to 10 mini events at once
-        if (math.random() < math.min(1 - 0.1 * chosen, odds * pluto_mini_boost:GetFloat())) then
-            pluto.rounds.minis[pluto.inv.roll(playable)] = true
-            chosen = chosen + 1
-        else
-            choosemore = false
+        if (math.random() > pluto.rounds.infobyname[name].Odds * pluto_mini_boost:GetFloat()) then
+            continue
         end
+
+        pluto.rounds.minis[name] = true
     end
 end)
 
@@ -477,11 +399,6 @@ end)
 
 concommand.Add("pluto_prepare_mini", function(ply, cmd, args)
     if (not pluto.cancheat(ply) or not args[1]) then
-        return
-    end
-
-    if (not pluto.rounds.infobyname[args[1]] or pluto.rounds.infobyname[args[1]].Type ~= "Mini") then
-        ply:ChatPrint("There is no mini-event with the name of " .. tostring(args[1]))
         return
     end
 
