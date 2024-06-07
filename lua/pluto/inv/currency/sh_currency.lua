@@ -14,7 +14,7 @@ local list = {
 		Color = Color(24, 125, 216),
 		Crafted = {
 			Chance = 1 / 4,
-			Mod = "modified",
+			Mod = "dropletted",
 		},
 		StardustRatio = 2,
 
@@ -54,7 +54,7 @@ local list = {
 		Color = Color(255, 208, 86),
 		Crafted = {
 			Chance = 1 / 4,
-			Mod = "gambler",
+			Mod = "handed",
 		},
 		StardustRatio = 5,
 
@@ -69,7 +69,7 @@ local list = {
 		Color = Color(255, 208, 86),
 		Crafted = {
 			Chance = 1 / 3,
-			Mod = "rolled",
+			Mod = "diced",
 		},
 		StardustRatio = 4,
 
